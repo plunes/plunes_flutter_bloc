@@ -1,9 +1,10 @@
 // This is a generated file; do not edit or check into version control.
 FLUTTER_ROOT=/Users/craterzone/Documents/systemdata/flutter
-FLUTTER_APPLICATION_PATH=/Users/craterzone/Downloads/MobileApp_Develop
-FLUTTER_TARGET=lib/main.dart
+FLUTTER_APPLICATION_PATH=/Users/craterzone/Documents/projects/plunes_flutter_bloc
+FLUTTER_TARGET=/Users/craterzone/Documents/projects/plunes_flutter_bloc/lib/main.dart
 FLUTTER_BUILD_DIR=build
 SYMROOT=${SOURCE_ROOT}/../build/ios
 FLUTTER_FRAMEWORK_DIR=/Users/craterzone/Documents/systemdata/flutter/bin/cache/artifacts/engine/ios
 FLUTTER_BUILD_NAME=1.2.3
 FLUTTER_BUILD_NUMBER=39
+TRACK_WIDGET_CREATION=true
