@@ -62,8 +62,6 @@ class Preferences {
     sharedPreferences.setInt(key, intValue);
   }
 
-
-
   ///Below method is to get the int value from the SharedPreferences.
   int getPreferenceInt(String key) {
     return sharedPreferences.getInt(key) ?? 0;

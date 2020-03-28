@@ -7,8 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
  * Description - FirebaseDeviceToken class is for storing FCM Device Token .
  */
 
-class FirebaseDeviceToken{
-
+class FirebaseDeviceToken {
   FirebaseMessaging _firebaseMessaging;
 
   void generateDeviceToken() {
@@ -29,5 +28,4 @@ class FirebaseDeviceToken{
       print("Push Messaging token: $token");
     }
   }
-
 }

@@ -9,7 +9,6 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
@@ -32,7 +31,6 @@ class _BiddingScreenState extends State<BiddingScreen> {
   double _bottomSpace = 0;
   bool hideTip = true;
 
-
   @override
   void initState() {
     animateObject();
@@ -42,10 +40,8 @@ class _BiddingScreenState extends State<BiddingScreen> {
   @override
   void dispose() {
     super.dispose();
-    if(_timer!=null)
-    _timer.cancel();
-    if(_timerTip!=null)
-    _timerTip.cancel();
+    if (_timer != null) _timer.cancel();
+    if (_timerTip != null) _timerTip.cancel();
   }
 
   @override
@@ -123,7 +119,8 @@ class _BiddingScreenState extends State<BiddingScreen> {
                           }
                         });
                       },
-                      decoration: widget.inputDecorationWithoutError(stringsFile.searchHint)),
+                      decoration: widget
+                          .inputDecorationWithoutError(stringsFile.searchHint)),
                   suggestionsCallback: (pattern) {
                     if (pattern != '') {
 //                      filter_data(pattern);
@@ -314,7 +311,8 @@ class _BiddingScreenState extends State<BiddingScreen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  widget.createTextViews(stringsFile.solutionActivity, 18, colorsFile.black0, TextAlign.center, FontWeight.normal),
+                  widget.createTextViews(stringsFile.solutionActivity, 18,
+                      colorsFile.black0, TextAlign.center, FontWeight.normal),
                   AnimatedContainer(
                     duration: Duration(seconds: 1),
                     margin: EdgeInsets.only(bottom: _bottomSpace),
@@ -347,7 +345,6 @@ class _BiddingScreenState extends State<BiddingScreen> {
         });
       });
     }
-
   }
 
   Route _createRoute() {

@@ -17,7 +17,6 @@ import 'CheckOTP.dart';
  * Description - ForgetPassword class is for create the new password using Phone or mobile Number.
  */
 
-
 class ForgetPassword extends BaseActivity {
   static const tag = '/forget_password';
 
@@ -25,14 +24,14 @@ class ForgetPassword extends BaseActivity {
   _ForgetPasswordState createState() => _ForgetPasswordState();
 }
 
-class _ForgetPasswordState extends State<ForgetPassword> implements DialogCallBack{
-
+class _ForgetPasswordState extends State<ForgetPassword>
+    implements DialogCallBack {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final phoneNumberController = new TextEditingController();
   bool progress = false, isValidNumber = true;
   var globalHeight, globalWidth;
 
-@override
+  @override
   void dispose() {
     bloc.dispose();
     phoneNumberController.dispose();
@@ -47,7 +46,8 @@ class _ForgetPasswordState extends State<ForgetPassword> implements DialogCallBa
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        appBar:  widget.getAppBar(context, stringsFile.forgotPasswordTitle, false),
+        appBar:
+            widget.getAppBar(context, stringsFile.forgotPasswordTitle, false),
         body: GestureDetector(
           onTap: () {
             CommonMethods.hideSoftKeyboard();
@@ -56,25 +56,43 @@ class _ForgetPasswordState extends State<ForgetPassword> implements DialogCallBa
         ));
   }
 
-   Widget getBodyView(){
+  Widget getBodyView() {
     return Container(
-      margin: EdgeInsets.only(left: 25, right: 25,bottom: 50),
+      margin: EdgeInsets.only(left: 25, right: 25, bottom: 50),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Center(child: widget.createTextViews(stringsFile.enterEmailOrPhone, 25, colorsFile.darkBrown, TextAlign.start, FontWeight.normal)),
+          Center(
+              child: widget.createTextViews(stringsFile.enterEmailOrPhone, 25,
+                  colorsFile.darkBrown, TextAlign.start, FontWeight.normal)),
           widget.getSpacer(0.0, 30.0),
-          createTextField(phoneNumberController, stringsFile.phoneNo, TextInputType.number, TextCapitalization.none, isValidNumber, stringsFile.enterValidNumber),
+          createTextField(
+              phoneNumberController,
+              stringsFile.phoneNo,
+              TextInputType.number,
+              TextCapitalization.none,
+              isValidNumber,
+              stringsFile.enterValidNumber),
           widget.getSpacer(0.0, 30.0),
-          progress ? SpinKitThreeBounce(color: Color(hexColorCode.defaultGreen), size: 30.0) : widget.getDefaultButton(stringsFile.submit, globalWidth, 42,submitForOTP),
+          progress
+              ? SpinKitThreeBounce(
+                  color: Color(hexColorCode.defaultGreen), size: 30.0)
+              : widget.getDefaultButton(
+                  stringsFile.submit, globalWidth, 42, submitForOTP),
           widget.getSpacer(0.0, 30.0),
           widget.getBorderButton(stringsFile.cancel, globalWidth, onBackPressed)
         ],
       ),
-
     );
-}
-   Widget createTextField(TextEditingController controller, String placeHolder, TextInputType inputType, TextCapitalization textCapitalization, bool fieldFlag, String errorMsg) {
+  }
+
+  Widget createTextField(
+      TextEditingController controller,
+      String placeHolder,
+      TextInputType inputType,
+      TextCapitalization textCapitalization,
+      bool fieldFlag,
+      String errorMsg) {
     return Container(
         padding: EdgeInsets.zero,
         width: MediaQuery.of(context).size.width,
@@ -84,19 +102,27 @@ class _ForgetPasswordState extends State<ForgetPassword> implements DialogCallBa
             keyboardType: inputType,
             onChanged: (text) {
               setState(() {
-                 if(controller == phoneNumberController){
+                if (controller == phoneNumberController) {
                   validation(text);
                 }
               });
             },
             controller: controller,
-            cursorColor: Color(CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
+            cursorColor: Color(
+                CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
             style: TextStyle(
               fontSize: 15.0,
             ),
-            decoration: widget.myInputBoxDecoration(colorsFile.defaultGreen, colorsFile.lightGrey1, placeHolder, errorMsg, fieldFlag, controller)));
+            decoration: widget.myInputBoxDecoration(
+                colorsFile.defaultGreen,
+                colorsFile.lightGrey1,
+                placeHolder,
+                errorMsg,
+                fieldFlag,
+                controller)));
   }
-   bool validation(text) {
+
+  bool validation(text) {
     if (CommonMethods.checkIfNumber(text)) {
       if (text.length == 10 || text.length == 0) {
         isValidNumber = true;
@@ -110,40 +136,53 @@ class _ForgetPasswordState extends State<ForgetPassword> implements DialogCallBa
       return false;
     }
   }
-   submitForOTP() async {
-    if(isValidNumber && phoneNumberController.text != ''){
-        progress = true;
-        bloc.checkUserExistence(context, this, phoneNumberController.text);
-        bloc.isUserExist.listen((data) {
-          getUserExistenceData(data);
-        }, onDone: () {
-          bloc.dispose();
-        });
-    }else
-      widget.showInSnackBar(stringsFile.enterValidNumber, Colors.red, _scaffoldKey);
+
+  submitForOTP() async {
+    if (isValidNumber && phoneNumberController.text != '') {
+      progress = true;
+      bloc.checkUserExistence(context, this, phoneNumberController.text);
+      bloc.isUserExist.listen((data) {
+        getUserExistenceData(data);
+      }, onDone: () {
+        bloc.dispose();
+      });
+    } else
+      widget.showInSnackBar(
+          stringsFile.enterValidNumber, Colors.red, _scaffoldKey);
   }
-   onBackPressed() {
+
+  onBackPressed() {
     Navigator.pop(context);
   }
-   getUserExistenceData(data) async {
+
+  getUserExistenceData(data) async {
     progress = false;
     Constants.OTP = CommonMethods.getRandomOTP();
-    if (data['success']!=null && data['success']) {
-      bloc.sendOTP(context, this, (urls.sendOTPUrl + phoneNumberController.text.trim() + urls.otpConfig));
+    if (data['success'] != null && data['success']) {
+      bloc.sendOTP(
+          context,
+          this,
+          (urls.sendOTPUrl +
+              phoneNumberController.text.trim() +
+              urls.otpConfig));
       bloc.userOTP.listen((data) {
-        if(data['type']!=null && data['type']=='success'){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => CheckOTP(phone:phoneNumberController.text,from: stringsFile.forgotPasswordTitle)));
+        if (data['type'] != null && data['type'] == 'success') {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CheckOTP(
+                      phone: phoneNumberController.text,
+                      from: stringsFile.forgotPasswordTitle)));
         }
       }, onDone: () {
         bloc.dispose();
       });
-    } else if(!data['success']){
-      widget.showInSnackBar(stringsFile.somethingWentWrong, Colors.red, _scaffoldKey);
+    } else if (!data['success']) {
+      widget.showInSnackBar(
+          stringsFile.somethingWentWrong, Colors.red, _scaffoldKey);
     }
   }
 
   @override
-  dialogCallBackFunction(String action) {
-
-  }
+  dialogCallBackFunction(String action) {}
 }

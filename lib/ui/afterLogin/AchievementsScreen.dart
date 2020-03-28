@@ -13,7 +13,6 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class AchievementsScreen extends BaseActivity {
   static const tag = '/achievemntsscreen';
 
@@ -21,7 +20,9 @@ class AchievementsScreen extends BaseActivity {
   _AchievementsScreenState createState() => _AchievementsScreenState();
 }
 
-class _AchievementsScreenState extends State<AchievementsScreen> with TickerProviderStateMixin,ImagePickerListener implements DialogCallBack {
+class _AchievementsScreenState extends State<AchievementsScreen>
+    with TickerProviderStateMixin, ImagePickerListener
+    implements DialogCallBack {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth, backAssetImage, counter = 0, selectedIndex;
   List selectedImageList = new List();
@@ -33,8 +34,6 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
   String user_token = "";
   String user_id = "";
   File _image;
-
-
 
   getSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -50,13 +49,13 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
     super.initState();
     initialize();
   }
+
   @override
   void dispose() {
     _animationController.dispose();
     _controller.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -80,15 +79,20 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
           getShareAchievementBoxView(),
           Container(
             margin: EdgeInsets.only(top: 10, left: 20, right: 20),
-            child: widget.createTextViews('$counter/250', 16, colorsFile.lightGrey2, TextAlign.right, FontWeight.normal),
+            child: widget.createTextViews('$counter/250', 16,
+                colorsFile.lightGrey2, TextAlign.right, FontWeight.normal),
           ),
           widget.getSpacer(0.0, 20.0),
           getBackFilterView(),
           widget.getSpacer(0.0, 30.0),
           getImageFetcherView(),
-
-          Container(margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-              child: progress ? SpinKitThreeBounce(color: Color(hexColorCode.defaultGreen), size: 30.0) : widget.getDefaultButton(stringsFile.add, globalWidth - 100,42, addAchievement)),
+          Container(
+              margin: EdgeInsets.only(top: 20, left: 20, right: 20),
+              child: progress
+                  ? SpinKitThreeBounce(
+                      color: Color(hexColorCode.defaultGreen), size: 30.0)
+                  : widget.getDefaultButton(
+                      stringsFile.add, globalWidth - 100, 42, addAchievement)),
         ],
       ),
     );
@@ -102,16 +106,19 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
       child: Container(
         padding: EdgeInsets.all(10),
         child: Center(
-            child: createTextField(_textController, context, TextInputType.multiline, stringsFile.shareYourAchievement)),
+            child: createTextField(_textController, context,
+                TextInputType.multiline, stringsFile.shareYourAchievement)),
       ),
       decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage(backAssetImage), fit: BoxFit.cover),
+          image: DecorationImage(
+              image: AssetImage(backAssetImage), fit: BoxFit.cover),
           border: Border.all(color: Colors.grey, width: 0.5),
           borderRadius: BorderRadius.all(Radius.circular(10))),
     );
   }
 
-  Widget createTextField(TextEditingController controller, BuildContext context, TextInputType inputType, String hintText) {
+  Widget createTextField(TextEditingController controller, BuildContext context,
+      TextInputType inputType, String hintText) {
     return Container(
         padding: EdgeInsets.zero,
         width: MediaQuery.of(context).size.width,
@@ -127,14 +134,23 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
               counter = text.length;
             });
           },
-          cursorColor: backAssetImage == assetsImageFile.whiteImage ? Color(CommonMethods.getColorHexFromStr(colorsFile.black)) : Color(CommonMethods.getColorHexFromStr(colorsFile.white)),
+          cursorColor: backAssetImage == assetsImageFile.whiteImage
+              ? Color(CommonMethods.getColorHexFromStr(colorsFile.black))
+              : Color(CommonMethods.getColorHexFromStr(colorsFile.white)),
           style: TextStyle(
               height: 1.5,
               fontSize: 18.0,
               letterSpacing: 1.1,
-              color: backAssetImage == assetsImageFile.whiteImage ? Color(CommonMethods.getColorHexFromStr(colorsFile.black0)) : Color(CommonMethods.getColorHexFromStr(colorsFile.white))),
+              color: backAssetImage == assetsImageFile.whiteImage
+                  ? Color(CommonMethods.getColorHexFromStr(colorsFile.black0))
+                  : Color(CommonMethods.getColorHexFromStr(colorsFile.white))),
           decoration: InputDecoration(
-            hintStyle: TextStyle(color: backAssetImage == assetsImageFile.whiteImage ? Color(CommonMethods.getColorHexFromStr(colorsFile.lightGrey2)) : Color(CommonMethods.getColorHexFromStr(colorsFile.white))),
+            hintStyle: TextStyle(
+                color: backAssetImage == assetsImageFile.whiteImage
+                    ? Color(
+                        CommonMethods.getColorHexFromStr(colorsFile.lightGrey2))
+                    : Color(
+                        CommonMethods.getColorHexFromStr(colorsFile.white))),
             hintText: hintText,
             border: InputBorder.none,
             counterText: '',
@@ -143,9 +159,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
         ));
   }
 
-  void addAchievement() {
-
-  }
+  void addAchievement() {}
 
   Widget getBackFilterView() {
     return Container(
@@ -159,6 +173,7 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
               return getItemRowView(index);
             }));
   }
+
   Widget getItemRowView(int index) {
     return Container(
         width: 50,
@@ -175,7 +190,11 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                  image: DecorationImage(image: AssetImage(assetsImageFile.gradientImageArray[index]), fit: BoxFit.cover,),
+                  image: DecorationImage(
+                    image:
+                        AssetImage(assetsImageFile.gradientImageArray[index]),
+                    fit: BoxFit.cover,
+                  ),
                   border: Border.all(color: Colors.grey, width: 0.5),
                   borderRadius: BorderRadius.all(
                     Radius.circular(30),
@@ -193,26 +212,31 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
             scrollDirection: Axis.horizontal,
             itemCount: selectedImageList.length + 1,
             itemBuilder: (context, index) {
-              return index==selectedImageList.length? getImageViewItem(index): getAddedImageView(index);
+              return index == selectedImageList.length
+                  ? getImageViewItem(index)
+                  : getAddedImageView(index);
             }));
   }
 
-  Widget getImageViewItem(index){
-    return  InkWell(onTap: (){
-      imagePicker.showDialog(context);
-    },child: Container(
-      margin: EdgeInsets.only(left:5,top: 8, bottom: 12, right: 10),
-      width: 120,
-      height: 100,
-
-      child: Center(child: widget.getAssetIconWidget(assetsImageFile.plusIcon, 50, 50, BoxFit.cover),),
-      decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey, width: 0.5),
-          borderRadius: BorderRadius.all(Radius.circular(10))),
-    ),);
+  Widget getImageViewItem(index) {
+    return InkWell(
+      onTap: () {
+        imagePicker.showDialog(context);
+      },
+      child: Container(
+        margin: EdgeInsets.only(left: 5, top: 8, bottom: 12, right: 10),
+        width: 120,
+        height: 100,
+        child: Center(
+          child: widget.getAssetIconWidget(
+              assetsImageFile.plusIcon, 50, 50, BoxFit.cover),
+        ),
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey, width: 0.5),
+            borderRadius: BorderRadius.all(Radius.circular(10))),
+      ),
+    );
   }
-
-
 
   Widget getAddedImageView(int index) {
     return Container(
@@ -220,33 +244,39 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
       height: 100,
       child: Stack(
         children: <Widget>[
-      Container(
-          margin: EdgeInsets.only(top: 3),
-          child: Card(
-              elevation: 3,
-              semanticContainer: true,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: widget.getAssetIconWidget(selectedImageList[index],100,120, BoxFit.cover)
-
-
-          )),
-      Align(alignment: FractionalOffset.topRight,
-          child: InkWell(onTap: (){
-            selectedIndex = index;
-            CommonMethods.confirmationDialog(context,stringsFile.removeImageMsg, this);},child: widget.getCrossButton(),)),
-    ],),);
+          Container(
+              margin: EdgeInsets.only(top: 3),
+              child: Card(
+                  elevation: 3,
+                  semanticContainer: true,
+                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: widget.getAssetIconWidget(
+                      selectedImageList[index], 100, 120, BoxFit.cover))),
+          Align(
+              alignment: FractionalOffset.topRight,
+              child: InkWell(
+                onTap: () {
+                  selectedIndex = index;
+                  CommonMethods.confirmationDialog(
+                      context, stringsFile.removeImageMsg, this);
+                },
+                child: widget.getCrossButton(),
+              )),
+        ],
+      ),
+    );
   }
 
   @override
   dialogCallBackFunction(String action) {
-    if(action =='DONE'){
+    if (action == 'DONE') {
       selectedImageList.removeAt(selectedIndex);
-    setState(() {});}
+      setState(() {});
+    }
   }
-
 
   @override
   fetchImageCallBack(File _image) {
@@ -254,14 +284,17 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
       print("image==" + base64Encode(_image.readAsBytesSync()).toString());
       this._image = _image;
       selectedImageList.add(_image.path);
-      _controller.animateTo(_controller.offset + 150.0, duration: Duration(microseconds: 100), curve: Curves.ease);
+      _controller.animateTo(_controller.offset + 150.0,
+          duration: Duration(microseconds: 100), curve: Curves.ease);
     }
   }
 
   void initializeForImageFetching() {
-    _animationController = new AnimationController(vsync: this, duration: const Duration(milliseconds: 500))..addListener(() {
-      print("===called");
-    });
+    _animationController = new AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500))
+      ..addListener(() {
+        print("===called");
+      });
     imagePicker = new ImagePickerHandler(this, _animationController, false);
     imagePicker.init();
   }
@@ -272,6 +305,4 @@ class _AchievementsScreenState extends State<AchievementsScreen> with TickerProv
     getSharedPreferences();
     initializeForImageFetching();
   }
-
-
 }

@@ -16,7 +16,6 @@ import 'Registration.dart';
  * Description - CheckOTP class is used for OTP verification by entering the four digit otp code.
  */
 
-
 class CheckOTP extends BaseActivity {
   static const tag = '/checkOTP';
   final String phone, from;
@@ -35,9 +34,17 @@ class _CheckOTPState extends State<CheckOTP> {
   void _checkOTP(String pin, BuildContext context) async {
     setState(() {
       if (pin == Constants.OTP) {
-        if(widget.from==stringsFile.forgotPasswordTitle)
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ChangePassword(phone:widget.phone, from: stringsFile.createPassword)));
-        else Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Registration(phone:widget.phone)));
+        if (widget.from == stringsFile.forgotPasswordTitle)
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChangePassword(
+                      phone: widget.phone, from: stringsFile.createPassword)));
+        else
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Registration(phone: widget.phone)));
       } else {
         errorMsg = true;
       }
@@ -108,19 +115,22 @@ class _CheckOTPState extends State<CheckOTP> {
         children: <Widget>[
           Container(
             alignment: Alignment.center,
-            child: widget.createTextViews(stringsFile.enterYourOTPMsg, 22, colorsFile.black0, TextAlign.center, FontWeight.normal),
+            child: widget.createTextViews(stringsFile.enterYourOTPMsg, 22,
+                colorsFile.black0, TextAlign.center, FontWeight.normal),
           ),
           Container(
             alignment: Alignment.center,
             child: Padding(
-              padding: const EdgeInsets.only(left: 60.0, right: 20, top: 50, bottom: 20),
+              padding: const EdgeInsets.only(
+                  left: 60.0, right: 20, top: 50, bottom: 20),
               child: Center(
                 child: PinPut(
                   fieldsCount: 4,
                   autoFocus: true,
                   spaceBetween: 20,
                   textStyle: TextStyle(
-                    color: Color(CommonMethods.getColorHexFromStr(colorsFile.black0)),
+                    color: Color(
+                        CommonMethods.getColorHexFromStr(colorsFile.black0)),
                     fontSize: 22,
                   ),
                   onSubmit: (String pin) => _checkOTP(pin, context),
@@ -143,7 +153,8 @@ class _CheckOTPState extends State<CheckOTP> {
                     ),
                   ),
                   clearButtonIcon: Icon(Icons.clear, color: Colors.transparent),
-                  pasteButtonIcon: Icon(Icons.content_paste, color: Colors.transparent),
+                  pasteButtonIcon:
+                      Icon(Icons.content_paste, color: Colors.transparent),
                 ),
               ),
             ),
@@ -172,7 +183,8 @@ class _CheckOTPState extends State<CheckOTP> {
                               text: stringsFile.resendCodeIn,
                               style: new TextStyle(
                                   fontSize: 16,
-                                  color: Color(CommonMethods.getColorHexFromStr(colorsFile.black0)))),
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      colorsFile.black0)))),
                           new TextSpan(
                               text: '00:$_current',
                               style: new TextStyle(

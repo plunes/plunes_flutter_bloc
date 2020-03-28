@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/ui/afterLogin/AccountSettings.dart';
@@ -35,7 +34,6 @@ import 'ui/beforeLogin/SplashScreen.dart';
  */
 
 class MyApp extends StatefulWidget {
-
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -59,7 +57,8 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         fontFamily: fontFile.appDefaultFont,
         accentColor: Color(hexColorCode.defaultGreen),
-        highlightColor: Color(CommonMethods.getColorHexFromStr(colorsFile.lightGreen)),
+        highlightColor:
+            Color(CommonMethods.getColorHexFromStr(colorsFile.lightGreen)),
         indicatorColor: Color(hexColorCode.defaultGreen),
         primaryColor: Color(hexColorCode.defaultGreen),
         cursorColor: Color(hexColorCode.defaultGreen),

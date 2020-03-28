@@ -24,20 +24,19 @@ class NotificationScreen extends BaseActivity {
   _NotificationScreenState createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen> implements DialogCallBack{
+class _NotificationScreenState extends State<NotificationScreen>
+    implements DialogCallBack {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
-  bool isSelected =false;
+  bool isSelected = false;
   List<String> selectedPositions = new List();
   AllNotificationsPost items;
-
 
   @override
   void initState() {
     super.initState();
     initialize();
   }
-
 
   @override
   void dispose() {
@@ -53,23 +52,25 @@ class _NotificationScreenState extends State<NotificationScreen> implements Dial
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        body: Container(child: StreamBuilder(
-          stream: bloc.notificationApiFetcherList,
-          builder: ((context, snapshot) {
-            items = snapshot.data;
-            if (snapshot.hasData) {
-              if(items.posts.length==0)
-                return Center(
-                  child: Text(stringsFile.noRecordsFound),
-                );
-             else
-              return buildList(snapshot);
-            }return Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
-        ),)
-    );
+        body: Container(
+          child: StreamBuilder(
+            stream: bloc.notificationApiFetcherList,
+            builder: ((context, snapshot) {
+              items = snapshot.data;
+              if (snapshot.hasData) {
+                if (items.posts.length == 0)
+                  return Center(
+                    child: Text(stringsFile.noRecordsFound),
+                  );
+                else
+                  return buildList(snapshot);
+              }
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }),
+          ),
+        ));
   }
 
   Widget buildList(AsyncSnapshot<AllNotificationsPost> snapshot) {
@@ -81,16 +82,16 @@ class _NotificationScreenState extends State<NotificationScreen> implements Dial
     );
   }
 
-  Widget rowLayout(result){
+  Widget rowLayout(result) {
     int removePosition = selectedPositions.indexOf(result.id.toString());
-    return InkWell(onTap: ()=>addRemoveSelectedItem(result, removePosition),
+    return InkWell(
+      onTap: () => addRemoveSelectedItem(result, removePosition),
       onLongPress: () {
         reset();
         isSelected = true;
         addRemoveSelectedItem(result, removePosition);
       },
-
-        child: Container(
+      child: Container(
         margin: EdgeInsets.all(5.0),
         child: Card(
           elevation: 2,
@@ -101,84 +102,100 @@ class _NotificationScreenState extends State<NotificationScreen> implements Dial
           child: Container(
             decoration: BoxDecoration(
                 color: Colors.red,
-                borderRadius: BorderRadius.all(Radius.circular(5.0))
-            ),
-            child:  Container(
-              margin: EdgeInsets.only(left: selectedPositions.indexOf(result.id.toString()) > -1 ? 5.0:0.0),
+                borderRadius: BorderRadius.all(Radius.circular(5.0))),
+            child: Container(
+              margin: EdgeInsets.only(
+                  left: selectedPositions.indexOf(result.id.toString()) > -1
+                      ? 5.0
+                      : 0.0),
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))
-              ),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-              Container(
-              margin: EdgeInsets.only(bottom: 0, right: 10),
-              child: result.senderImageUrl !='' && !result.senderImageUrl.contains("default") ? CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(result.senderImageUrl),
-              ): Container(
-                  height: 40,
-                  width: 40,
-                  alignment: Alignment.center,
-                  child:
-                  Text((result.senderName!=''? CommonMethods.getInitialName(result.senderName):'').toUpperCase(),
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.normal)),
-
-                  decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),
-                    gradient: new LinearGradient(
-                        colors: [Color(0xffababab), Color(0xff686868)],
-                        begin: FractionalOffset.topCenter,
-                        end: FractionalOffset.bottomCenter,
-                        stops: [0.0, 1.0],
-                        tileMode: TileMode.clamp
-                    ),) ),
-            ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 0, right: 10),
+                    child: result.senderImageUrl != '' &&
+                            !result.senderImageUrl.contains("default")
+                        ? CircleAvatar(
+                            radius: 20,
+                            backgroundImage:
+                                NetworkImage(result.senderImageUrl),
+                          )
+                        : Container(
+                            height: 40,
+                            width: 40,
+                            alignment: Alignment.center,
+                            child: Text(
+                                (result.senderName != ''
+                                        ? CommonMethods.getInitialName(
+                                            result.senderName)
+                                        : '')
+                                    .toUpperCase(),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.normal)),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              gradient: new LinearGradient(
+                                  colors: [
+                                    Color(0xffababab),
+                                    Color(0xff686868)
+                                  ],
+                                  begin: FractionalOffset.topCenter,
+                                  end: FractionalOffset.bottomCenter,
+                                  stops: [0.0, 1.0],
+                                  tileMode: TileMode.clamp),
+                            )),
+                  ),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text(result.senderName,
+                        Text(
+                          result.senderName,
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 16,
-                              fontWeight: FontWeight.w500
-                          ),
+                              fontWeight: FontWeight.w500),
                         ),
                         SizedBox(
                           height: 5,
                         ),
-
                         Container(
                           width: 200,
                           child: Text(
                             result.notification,
                             maxLines: null,
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 12),
+                            style: TextStyle(color: Colors.grey, fontSize: 12),
                           ),
                         )
-                      ],),
+                      ],
+                    ),
                   ),
-
                   Container(
                     margin: EdgeInsets.only(bottom: 20),
                     alignment: Alignment.topRight,
-                    child: Text(CommonMethods.getDuration(result.createdTime) ,
-                      style: TextStyle(
-                          fontSize: 13),
+                    child: Text(
+                      CommonMethods.getDuration(result.createdTime),
+                      style: TextStyle(fontSize: 13),
                     ),
                   )
                 ],
               ),
-            ),),
-        ),),);
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
-  Future addRemoveSelectedItem(result, int removePosition) async{
-    if(isSelected){
+  Future addRemoveSelectedItem(result, int removePosition) async {
+    if (isSelected) {
       List<String> list = new List();
       setState(() {
         String pos = result.id.toString();
@@ -188,55 +205,59 @@ class _NotificationScreenState extends State<NotificationScreen> implements Dial
           selectedPositions.add(pos);
         }
       });
-      if(selectedPositions.length==0)
-        reset();
+      if (selectedPositions.length == 0) reset();
       list = selectedPositions;
       var body = {};
       body['selectedItemList'] = list;
       body['isSelected'] = isSelected;
       bloc.changeAppBar(context, body);
-    }else {
+    } else {
       isSelected = false;
       bloc.changeAppBar(context, null);
-     if(result.notificationType == 'solution' || result.notificationType == 'price'){
+      if (result.notificationType == 'solution' ||
+          result.notificationType == 'price') {
 //        Navigator.push(context,MaterialPageRoute(builder: (context) => BiddingActivity(screen: 0)));
-      }else if(result.notificationType == 'booking'){
+      } else if (result.notificationType == 'booking') {
 //        Navigator.push(context, MaterialPageRoute(builder: (context) => Appointments(screen: 0)));
-      }else if(result.notificationType == 'plockr'){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(screen: "plocker")));
+      } else if (result.notificationType == 'plockr') {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => HomeScreen(screen: "plocker")));
       }
-
-
     }
   }
+
   void reset() {
     setState(() {
-      if(selectedPositions.length>0){
+      if (selectedPositions.length > 0) {
         selectedPositions.clear();
         isSelected = false;
       }
     });
   }
+
   void initialize() {
     bloc.fetchNotificationData(context, this);
     bloc.deleteListenerFetcher.listen((data) {
-     if(data==null)
-       reset();
-     else if(data!=null&& data['isYes'] !=null && data['isYes']){
-       CommonMethods.confirmationDialog(context, stringsFile.deleteNotificationMsg, this);
-     }
+      if (data == null)
+        reset();
+      else if (data != null && data['isYes'] != null && data['isYes']) {
+        CommonMethods.confirmationDialog(
+            context, stringsFile.deleteNotificationMsg, this);
+      }
     });
-
   }
+
   @override
   dialogCallBackFunction(String action) {
-    if(action =='CANCEL') {
+    if (action == 'CANCEL') {
       reset();
-    }else {
-      for(int i=0; i< items.posts.length;i++){
-        bool flag =false;
-        for(int j=0; j<selectedPositions.length;j++) {
-          if(!flag &&  items.posts[i].id.toString()==selectedPositions[j]){
+    } else {
+      for (int i = 0; i < items.posts.length; i++) {
+        bool flag = false;
+        for (int j = 0; j < selectedPositions.length; j++) {
+          if (!flag && items.posts[i].id.toString() == selectedPositions[j]) {
             items.posts.removeAt(i);
             flag = true;
             i--;
@@ -245,5 +266,6 @@ class _NotificationScreenState extends State<NotificationScreen> implements Dial
       }
       reset();
       bloc.notificationApiFetcher.sink.add(items);
-    }}
+    }
+  }
 }

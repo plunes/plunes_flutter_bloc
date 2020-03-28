@@ -32,11 +32,13 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   Timer mTimer;
   Preferences preferences;
   var location = new loc.Location();
+
   @override
   void initState() {
     super.initState();
     startTime();
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -48,17 +50,16 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
       CommonMethods.catalogueLists.add(data.posts[i]);
     }
     mTimer = new Timer(Duration(seconds: 7), navigationPage);
-
   }
 
   startTime() async {
     await Preferences().instantiatePreferences();
     preferences = new Preferences();
     var getLocation = await location.getLocation();
-    var  _latitude = getLocation.latitude.toString();
+    var _latitude = getLocation.latitude.toString();
     var _longitude = getLocation.longitude.toString();
 
-    if(_latitude!=null && _longitude!=null){
+    if (_latitude != null && _longitude != null) {
       preferences.setPreferencesString(Constants.LATITUDE, _latitude);
       preferences.setPreferencesString(Constants.LONGITUDE, _longitude);
     }
@@ -71,15 +72,15 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
     return mTimer;
   }
 
-   navigationPage() {
+  navigationPage() {
     Route route;
-    if (preferences.getPreferenceString(Constants.ACCESS_TOKEN) != null && preferences.getPreferenceString(Constants.ACCESS_TOKEN).length > 0) {
+    if (preferences.getPreferenceString(Constants.ACCESS_TOKEN) != null &&
+        preferences.getPreferenceString(Constants.ACCESS_TOKEN).length > 0) {
       route = MaterialPageRoute(builder: (context) => HomeScreen());
     } else {
       route = MaterialPageRoute(builder: (context) => GuidedTour());
     }
     Navigator.pushReplacement(context, route);
-
   }
 
   @override

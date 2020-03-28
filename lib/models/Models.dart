@@ -293,7 +293,6 @@ class TimeSlotsData {
   }
 }
 
-
 class AllNotificationsPost {
   final bool success;
   final String message;
@@ -302,13 +301,12 @@ class AllNotificationsPost {
   AllNotificationsPost({this.success, this.message, this.posts});
 
   factory AllNotificationsPost.fromJson(Map<String, dynamic> json) {
-
     return AllNotificationsPost(
-      success: json['success']!= null ? json['success']: false,
-      message: json['message']!= null ? json['message']: '',
-      posts: List<PostsData>.from(json['notifications'].map((i) => PostsData.fromJson(i))),
+      success: json['success'] != null ? json['success'] : false,
+      message: json['message'] != null ? json['message'] : '',
+      posts: List<PostsData>.from(
+          json['notifications'].map((i) => PostsData.fromJson(i))),
     );
-
   }
 }
 
@@ -321,20 +319,32 @@ class PostsData {
   final String notification;
   final String senderName;
 
-
-  PostsData({this.senderImageUrl, this.createdTime,
-    this.notificationType, this.senderUserId, this.id, this.notification,
-    this.senderName});
+  PostsData(
+      {this.senderImageUrl,
+      this.createdTime,
+      this.notificationType,
+      this.senderUserId,
+      this.id,
+      this.notification,
+      this.senderName});
 
   factory PostsData.fromJson(Map<String, dynamic> parsedJson) {
     return new PostsData(
-      senderImageUrl: parsedJson['senderImageUrl'] != null ? parsedJson['senderImageUrl'] : '',
-      createdTime: parsedJson['createdTime'] != null ? parsedJson['createdTime'] : 0,
-      notificationType: parsedJson['notificationType'] != null ? parsedJson['notificationType'] : '',
-      senderUserId: parsedJson['senderUserId'] != null ? parsedJson['senderUserId'] : '',
+      senderImageUrl: parsedJson['senderImageUrl'] != null
+          ? parsedJson['senderImageUrl']
+          : '',
+      createdTime:
+          parsedJson['createdTime'] != null ? parsedJson['createdTime'] : 0,
+      notificationType: parsedJson['notificationType'] != null
+          ? parsedJson['notificationType']
+          : '',
+      senderUserId:
+          parsedJson['senderUserId'] != null ? parsedJson['senderUserId'] : '',
       id: parsedJson['_id'] != null ? parsedJson['_id'] : '',
-      notification: parsedJson['notification'] != null ? parsedJson['notification'] : '',
-      senderName: parsedJson['senderName'] != null ? parsedJson['senderName'] : '',
+      notification:
+          parsedJson['notification'] != null ? parsedJson['notification'] : '',
+      senderName:
+          parsedJson['senderName'] != null ? parsedJson['senderName'] : '',
     );
   }
 }

@@ -10,12 +10,12 @@ import 'MyApp.dart';
  */
 
 ///Below  method is the entry point of the application.
- main() {
+main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-   systemNavigationBarColor: Colors.white, // navigation bar color
-   statusBarColor: Colors.white, // status bar color
+    systemNavigationBarColor: Colors.white, // navigation bar color
+    statusBarColor: Colors.white, // status bar color
   ));
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_) => runApp(MyApp()));
-
- }
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+      .then((_) => runApp(MyApp()));
+}

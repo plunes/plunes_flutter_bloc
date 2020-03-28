@@ -8,7 +8,6 @@ import 'package:plunes/res/StringsFile.dart';
 import 'AccountSettings.dart';
 import 'SecuritySettings.dart';
 
-
 /*
  * Created by - Plunes Technologies.
  * Developer - Manvendra Kumar Singh
@@ -32,35 +31,36 @@ class _SettingScreenState extends State<SettingScreen> {
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.white,
-      appBar:widget.getAppBar(context, stringsFile.settings, true),
-      body: getBody()
-    );
+        key: _scaffoldKey,
+        backgroundColor: Colors.white,
+        appBar: widget.getAppBar(context, stringsFile.settings, true),
+        body: getBody());
   }
 
- Widget getBody() {
+  Widget getBody() {
     return Container(
       child: Column(
         children: <Widget>[
-          getSettingRow(assetsImageFile.settingIcon, stringsFile.accountSettings, 0),
+          getSettingRow(
+              assetsImageFile.settingIcon, stringsFile.accountSettings, 0),
           widget.getDividerRow(context, 0, 0, 0),
-          getSettingRow(assetsImageFile.securityIcon, stringsFile.securitySettings, 1),
+          getSettingRow(
+              assetsImageFile.securityIcon, stringsFile.securitySettings, 1),
           widget.getDividerRow(context, 0, 0, 0),
         ],
       ),
     );
- }
+  }
 
- Widget getSettingRow(String firstIcon, String title, int pos){
+  Widget getSettingRow(String firstIcon, String title, int pos) {
     return InkWell(
-      onTap: (){
-        switch(pos){
+      onTap: () {
+        switch (pos) {
           case 0:
-             Navigator.pushNamed(context, AccountSettings.tag);
+            Navigator.pushNamed(context, AccountSettings.tag);
             break;
           case 1:
-        Navigator.pushNamed(context, SecuritySettings.tag);
+            Navigator.pushNamed(context, SecuritySettings.tag);
             break;
         }
       },
@@ -69,13 +69,16 @@ class _SettingScreenState extends State<SettingScreen> {
         child: Row(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: widget.getAssetIconWidget(firstIcon, 25, 25, BoxFit.contain)),
-            Expanded(child: widget.createTextViews(title, 16, colorsFile.black0, TextAlign.start, FontWeight.normal)),
+                padding: const EdgeInsets.all(10.0),
+                child: widget.getAssetIconWidget(
+                    firstIcon, 25, 25, BoxFit.contain)),
+            Expanded(
+                child: widget.createTextViews(title, 16, colorsFile.black0,
+                    TextAlign.start, FontWeight.normal)),
             Icon(Icons.keyboard_arrow_right, color: Colors.black)
           ],
         ),
       ),
     );
- }
+  }
 }
