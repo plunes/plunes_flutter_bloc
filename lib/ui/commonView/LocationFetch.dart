@@ -33,8 +33,9 @@ class _LocationFetchState extends State<LocationFetch> {
   var location = new loc.Location(), globalHeight, globalWidth;
   List _coordinateList = new List();
   String latitude = '0.0', longitude = '0.0', address = '';
-  bool  _isAddFetch = false;
+  bool _isAddFetch = false;
   Preferences _preferences;
+
   @override
   void initState() {
     super.initState();
@@ -46,23 +47,31 @@ class _LocationFetchState extends State<LocationFetch> {
     String lat = _preferences.getPreferenceString(Constants.LATITUDE);
     String lng = _preferences.getPreferenceString(Constants.LONGITUDE);
     final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
-    var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+    var addresses =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
     var addr = addresses.first;
     String full_address = addr.addressLine;
     latitude = lat;
     longitude = lng;
     locationController.text = full_address;
-    setState(() {
-    });
+    setState(() {});
   }
 
-   saveLatLang() async {
+  saveLatLang() async {
     _preferences.setPreferencesString(Constants.LATITUDE, latitude);
     _preferences.setPreferencesString(Constants.LONGITUDE, longitude);
     String home = houseController.text;
     String land = landMarkController.text;
     print(home + "," + land + "," + address + "," + latitude + "," + longitude);
-    Navigator.of(context).pop(home + ":" + land + ":" + locationController.text + ":" + latitude + ":" + longitude);
+    Navigator.of(context).pop(home +
+        ":" +
+        land +
+        ":" +
+        locationController.text +
+        ":" +
+        latitude +
+        ":" +
+        longitude);
 
 //    if (houseController.text == '' && landMarkController.text == '') {
 //      Navigator.of(context).pop(address);
@@ -83,30 +92,29 @@ class _LocationFetchState extends State<LocationFetch> {
 
     return Scaffold(
       body: GestureDetector(
-        onTap: () => CommonMethods.hideSoftKeyboard(),
-        child: Container(
-                child: Stack(
+          onTap: () => CommonMethods.hideSoftKeyboard(),
+          child: Container(
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Stack(
                       children: <Widget>[
-                        Stack(
-                          children: <Widget>[
-                            Container(
-                              height: globalHeight / 2,
-                              child: getGoogleMapView(),
-                            ),
-                            widget.getBlackBackButton(context),
-                            widget.getBlackLocationIcon(globalHeight / 2),
-                          ],
+                        Container(
+                          height: globalHeight / 2,
+                          child: getGoogleMapView(),
                         ),
+                        widget.getBlackBackButton(context),
+                        widget.getBlackLocationIcon(globalHeight / 2),
                       ],
                     ),
-                    getBottomView()
                   ],
                 ),
-              )
-      ),
+                getBottomView()
+              ],
+            ),
+          )),
     );
   }
 
@@ -123,14 +131,19 @@ class _LocationFetchState extends State<LocationFetch> {
           children: <Widget>[
             widget.getLinearProgressView(_isAddFetch),
             widget.getSpacer(0.0, 10.0),
-            widget.createTextViews(stringsFile.setLocation, 16.0, colorsFile.black0, TextAlign.left, FontWeight.bold),
+            widget.createTextViews(stringsFile.setLocation, 16.0,
+                colorsFile.black0, TextAlign.left, FontWeight.bold),
             widget.getSpacer(0.0, 20.0),
-            createTextField(locationController, stringsFile.address, TextInputType.text, TextCapitalization.none, false, ''),
-            createTextField(houseController, stringsFile.houseFlatNo, TextInputType.text, TextCapitalization.none, true, ''),
+            createTextField(locationController, stringsFile.address,
+                TextInputType.text, TextCapitalization.none, false, ''),
+            createTextField(houseController, stringsFile.houseFlatNo,
+                TextInputType.text, TextCapitalization.none, true, ''),
             widget.getSpacer(0.0, 20.0),
-            createTextField(landMarkController, stringsFile.landMark, TextInputType.text, TextCapitalization.none, true, ''),
+            createTextField(landMarkController, stringsFile.landMark,
+                TextInputType.text, TextCapitalization.none, true, ''),
             widget.getSpacer(0.0, 20.0),
-            widget.getDefaultButton(stringsFile.proceed, globalWidth - 40,42, saveLatLang),
+            widget.getDefaultButton(
+                stringsFile.proceed, globalWidth - 40, 42, saveLatLang),
             widget.getSpacer(0.0, 20.0),
           ],
         ),
@@ -138,11 +151,18 @@ class _LocationFetchState extends State<LocationFetch> {
     );
   }
 
-  Widget createTextField(TextEditingController controller, String placeHolder, TextInputType inputType, TextCapitalization textCapitalization, bool fieldFlag, String errorMsg) {
+  Widget createTextField(
+      TextEditingController controller,
+      String placeHolder,
+      TextInputType inputType,
+      TextCapitalization textCapitalization,
+      bool fieldFlag,
+      String errorMsg) {
     return InkWell(
       onTap: () async {
         if (controller == locationController) {
-          Prediction p = await PlacesAutocomplete.show(context: context, apiKey: Urls.googleApiKey);
+          Prediction p = await PlacesAutocomplete.show(
+              context: context, apiKey: Urls.googleApiKey);
           displayPrediction(p);
         }
       },
@@ -155,12 +175,20 @@ class _LocationFetchState extends State<LocationFetch> {
               keyboardType: inputType,
               textInputAction: TextInputAction.next,
               controller: controller,
-              cursorColor: Color(CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
+              cursorColor: Color(
+                  CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
               enabled: (controller == locationController) ? false : true,
               style: TextStyle(
                 fontSize: 15.0,
               ),
-              decoration: widget.myInputBoxDecoration(colorsFile.defaultGreen, colorsFile.lightGrey1, placeHolder, errorMsg, fieldFlag, controller, null))),
+              decoration: widget.myInputBoxDecoration(
+                  colorsFile.defaultGreen,
+                  colorsFile.lightGrey1,
+                  placeHolder,
+                  errorMsg,
+                  fieldFlag,
+                  controller,
+                  null))),
     );
   }
 
@@ -187,7 +215,8 @@ class _LocationFetchState extends State<LocationFetch> {
           Coordinates coordinates = _coordinateList[_coordinateList.length - 1];
           latitude = coordinates.latitude.toString();
           longitude = coordinates.longitude.toString();
-          var addresses = await Geocoder.local.findAddressesFromCoordinates(_coordinateList[_coordinateList.length - 1]);
+          var addresses = await Geocoder.local.findAddressesFromCoordinates(
+              _coordinateList[_coordinateList.length - 1]);
           var addr = addresses.first;
           String full_address = addr.addressLine;
           locationController.text = full_address;
@@ -196,7 +225,8 @@ class _LocationFetchState extends State<LocationFetch> {
         }
       },
       onCameraMove: ((_p) async {
-        _coordinateList.add(Coordinates(_p.target.latitude, _p.target.longitude));
+        _coordinateList
+            .add(Coordinates(_p.target.latitude, _p.target.longitude));
       }),
       initialCameraPosition: CameraPosition(
         target: LatLng(double.parse(latitude), double.parse(longitude)),
@@ -210,7 +240,8 @@ class _LocationFetchState extends State<LocationFetch> {
 
   Future<Null> displayPrediction(Prediction p) async {
     if (p != null) {
-      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
+      PlacesDetailsResponse detail =
+          await _places.getDetailsByPlaceId(p.placeId);
       double lat = detail.result.geometry.location.lat;
       double lng = detail.result.geometry.location.lng;
       setState(() {

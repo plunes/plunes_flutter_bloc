@@ -10,11 +10,14 @@ class AvailabilitySelectionScreen extends BaseActivity {
   final String url;
 
   AvailabilitySelectionScreen({Key key, this.url}) : super(key: key);
+
   @override
-  _AvailabilitySelectionScreenState createState() => _AvailabilitySelectionScreenState();
+  _AvailabilitySelectionScreenState createState() =>
+      _AvailabilitySelectionScreenState();
 }
 
-class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScreen> {
+class _AvailabilitySelectionScreenState
+    extends State<AvailabilitySelectionScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
 
@@ -31,21 +34,29 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
   List timeslots_ = new List();
 
   List<String> days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-  List<String> days_name = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
-    'Sunday'];
+  List<String> days_name = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday'
+  ];
 
   Future<Null> _selectdata(String check, int position, String time) async {
     TimeOfDay _startTime = TimeOfDay(
         hour: int.parse(time.split(":")[0]),
-        minute: int.parse(time.split(":")[1].substring(0,2))
-    );
+        minute: int.parse(time.split(":")[1].substring(0, 2)));
 
     final TimeOfDay picker = await showTimePicker(
       context: context,
       initialTime: _startTime,
       builder: (BuildContext context, Widget child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false, ),
+          data: MediaQuery.of(context).copyWith(
+            alwaysUse24HourFormat: false,
+          ),
           child: child,
         );
       },
@@ -56,37 +67,32 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
         if (check == 'form1') {
           from_1[position] = picker.format(context);
         } else if (check == 'form2') {
-          from_2[position] =picker.format(context);
+          from_2[position] = picker.format(context);
         } else if (check == 'to1') {
-          to_1[position] =picker.format(context);
+          to_1[position] = picker.format(context);
         } else if (check == 'to2') {
-
-          if(position == 0){
-
+          if (position == 0) {
             showDialog(
               context: context,
               barrierDismissible: true,
               builder: (
-                  BuildContext context,
-                  ) =>
+                BuildContext context,
+              ) =>
                   _confirmation(context),
-            ).then((text){
-
-            setState(() {
-
-              if(text == "Done"){
-                for(int i =0; i< days.length; i++){
-                  from_1[i] = from_1[0];
-                  from_2[i] =  from_2[0];
-                  to_1[i] = to_1[0];
-                  to_2[i] = to_2[0];
+            ).then((text) {
+              setState(() {
+                if (text == "Done") {
+                  for (int i = 0; i < days.length; i++) {
+                    from_1[i] = from_1[0];
+                    from_2[i] = from_2[0];
+                    to_1[i] = to_1[0];
+                    to_2[i] = to_2[0];
+                  }
                 }
-              }
-            });
-
+              });
             });
           }
-          to_2[position] =picker.format(context);
+          to_2[position] = picker.format(context);
         }
       });
     }
@@ -97,10 +103,7 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
     super.initState();
   }
 
-
-
-  void get_slots() async{
-
+  void get_slots() async {
     check.clear();
     from_1.clear();
     from_2.clear();
@@ -152,17 +155,17 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
 
   void addslot() async {
     setState(() {
-        progress = true;
+      progress = true;
     });
 
-    for(int i =0; i< 7; i++){
+    for (int i = 0; i < 7; i++) {
       timeslots_.add({
         "slots": [
-        from_1[i]+"-"+to_1[i],
-          from_2[i]+"-"+to_2[i],
+          from_1[i] + "-" + to_1[i],
+          from_2[i] + "-" + to_2[i],
         ],
         "day": days_name[i],
-        "closed":check[i]
+        "closed": check[i]
       });
     }
 
@@ -170,30 +173,20 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
     var data;
     List doctors = new List();
 
-    if(url.contains("doctors")) {
+    if (url.contains("doctors")) {
       List doctor_id = url.split("/");
 
-      body = {
-          "doctorId": doctor_id[6],
-          "timeSlots": timeslots_
-      };
+      body = {"doctorId": doctor_id[6], "timeSlots": timeslots_};
 
       doctors.add(body);
-      data = {
-        "doctors": doctors
-      };
-
-    }else{
-      data = {
-      "timeSlots":timeslots_
-      };
+      data = {"doctors": doctors};
+    } else {
+      data = {"timeSlots": timeslots_};
     }
-
-
 
     print(data);
 
-   /* TimeSlotsPost timeSlotsPost = await set_time_slots(data, user_token).catchError((error){
+    /* TimeSlotsPost timeSlotsPost = await set_time_slots(data, user_token).catchError((error){
       config.Config.showLongToast("Something went wrong!");
       progress = false;
     });*/
@@ -217,7 +210,6 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
 
       });
 */
-
   }
 
   @override
@@ -294,8 +286,6 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
                     ),
                   ),
                 ),
-
-
                 Expanded(
                   flex: 3,
                   child: Center(
@@ -311,9 +301,9 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
                             height: 25,
                             decoration: BoxDecoration(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(5)),
                                 border:
-                                Border.all(width: 0.5, color: Colors.grey)),
+                                    Border.all(width: 0.5, color: Colors.grey)),
                             alignment: Alignment.center,
                             child: Padding(
                               padding: const EdgeInsets.all(2.0),
@@ -336,9 +326,9 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
                             height: 25,
                             decoration: BoxDecoration(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(5)),
                                 border:
-                                Border.all(width: 0.5, color: Colors.grey)),
+                                    Border.all(width: 0.5, color: Colors.grey)),
                             alignment: Alignment.center,
                             child: Padding(
                               padding: const EdgeInsets.all(2.0),
@@ -368,9 +358,9 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
                             height: 25,
                             decoration: BoxDecoration(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(5)),
                                 border:
-                                Border.all(width: 0.5, color: Colors.grey)),
+                                    Border.all(width: 0.5, color: Colors.grey)),
                             alignment: Alignment.center,
                             child: Padding(
                               padding: const EdgeInsets.all(2.0),
@@ -381,13 +371,9 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
                             ),
                           ),
                         ),
-
-
                         SizedBox(
                           width: 5,
                         ),
-
-
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: () {
@@ -397,9 +383,9 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
                             height: 25,
                             decoration: BoxDecoration(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(5)),
                                 border:
-                                Border.all(width: 0.5, color: Colors.grey)),
+                                    Border.all(width: 0.5, color: Colors.grey)),
                             alignment: Alignment.center,
                             child: Padding(
                               padding: const EdgeInsets.all(2.0),
@@ -414,48 +400,42 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
                     ),
                   ),
                 ),
-
-
-
                 Expanded(
                     flex: 1,
                     child: Center(
                         child: Theme(
-                          data: Theme.of(context).copyWith(
-                            unselectedWidgetColor: Colors.grey,
+                      data: Theme.of(context).copyWith(
+                        unselectedWidgetColor: Colors.grey,
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        onTap: () {
+                          setState(() {
+                            if (check[index] == 'true') {
+                              check[index] = 'false';
+                            } else {
+                              check[index] = 'true';
+                            }
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                            child: check[index] == 'true'
+                                ? Image.asset(
+                                    'assets/images/bid/check.png',
+                                    height: 20,
+                                    width: 20,
+                                  )
+                                : Image.asset(
+                                    'assets/images/bid/uncheck.png',
+                                    height: 20,
+                                    width: 20,
+                                  ),
                           ),
-                          child: InkWell(
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(30)),
-                            onTap: () {
-                              setState(() {
-
-                                if(check[index] =='true'){
-                                  check[index] = 'false';
-                                }else{
-                                  check[index] = 'true';
-                                }
-
-                              });
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Container(
-                                child: check[index] == 'true'
-                                    ? Image.asset(
-                                  'assets/images/bid/check.png',
-                                  height: 20,
-                                  width: 20,
-                                )
-                                    : Image.asset(
-                                  'assets/images/bid/uncheck.png',
-                                  height: 20,
-                                  width: 20,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ))),
+                        ),
+                      ),
+                    ))),
               ],
             ),
           );
@@ -468,11 +448,11 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
       margin: EdgeInsets.only(bottom: 20),
       child: InkWell(
         borderRadius: BorderRadius.all(Radius.circular(5)),
-        onTap:addslot,
+        onTap: addslot,
         child: Container(
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(Radius.circular(5)),
-              color:Color(0xff01d35a)),
+              color: Color(0xff01d35a)),
           alignment: Alignment.center,
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -484,213 +464,193 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
         ),
       ),
     );
-    
 
     final loading = Expanded(
-        child: ListView.builder(itemBuilder: (context, index) {
-          return Shimmer.fromColors(
-              baseColor: Color(0xffF5F5F5),
-              highlightColor: Color(0xffFAFAFA),
-              child: Container(
-                margin: EdgeInsets.only(top: 10),
-
-                child: Row(
-                  children: <Widget>[
-
-                    Expanded(
+        child: ListView.builder(
+      itemBuilder: (context, index) {
+        return Shimmer.fromColors(
+            baseColor: Color(0xffF5F5F5),
+            highlightColor: Color(0xffFAFAFA),
+            child: Container(
+              margin: EdgeInsets.only(top: 10),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Center(
+                      child: Container(
+                        height: 40,
+                        width: 40,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            color: Color(0xffefefef)),
+                        child: Center(
+                          child: Text(""),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            height: 25,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                color: Colors.grey),
+                            alignment: Alignment.center,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                "00:00",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Container(
+                            height: 25,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                color: Colors.grey),
+                            alignment: Alignment.center,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                "",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                            height: 25,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                color: Colors.grey),
+                            alignment: Alignment.center,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                "",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Container(
+                            height: 25,
+                            width: 40,
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                color: Colors.grey),
+                            alignment: Alignment.center,
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                "",
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
                       flex: 1,
                       child: Center(
+                          child: Padding(
+                        padding: const EdgeInsets.all(12.0),
                         child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(20)),
-                              color: Color(0xffefefef)),
-                          child: Center(
-                            child: Text(""),
-                          ),
-                        ),
-                      ),
-                    ),
-
-
-                    Expanded(
-                      flex: 2,
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              height: 25,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                                  color: Colors.grey),
-                              alignment: Alignment.center,
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "00:00",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-
-                              ),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                              height: 25,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                                  color: Colors.grey),
-                              alignment: Alignment.center,
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-
-                    Expanded(
-                      flex: 2,
-                      child: Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                              height: 25,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                                  color: Colors.grey),
-                              alignment: Alignment.center,
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Container(
-                              height: 25,
-                              width: 40,
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                                  color: Colors.grey),
-                              alignment: Alignment.center,
-                              child: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  "",
-                                  style: TextStyle(fontSize: 12),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-
-                    Expanded(
-                        flex: 1,
-                        child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Container(
-                                  child: Image.asset('assets/images/bid/check.png', height: 20, width: 20)
-                              ),
-                            ))),
-
-                  ],
-                ),
-              )
-
-          );
-        }, itemCount: 7,)
-
-    );
+                            child: Image.asset('assets/images/bid/check.png',
+                                height: 20, width: 20)),
+                      ))),
+                ],
+              ),
+            ));
+      },
+      itemCount: 7,
+    ));
 
     final form = Container(
         child: Padding(
-          padding: const EdgeInsets.only(
-              left: 20.0, right: 20, top: 5, bottom: 10),
-          child: Column(
-            children: <Widget>[
-              header,
-              progress?loading: list_days,
-              submit
-            ],
-          ),
-        ));
+      padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 10),
+      child: Column(
+        children: <Widget>[header, progress ? loading : list_days, submit],
+      ),
+    ));
 
     return Scaffold(
         appBar: widget.getAppBar(context, stringsFile.availability, true),
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        body: form
-    );
+        body: form);
   }
-
 
   Widget _confirmation(BuildContext context) {
     return new CupertinoAlertDialog(
       title: new Text('Repeat'),
       content: new Container(
         child: Column(
-
           children: <Widget>[
-
             Text("Repeat this slot in whole week"),
-
-            SizedBox(height: 20,),
-
+            SizedBox(
+              height: 20,
+            ),
             Container(
-
               child: Row(
-
                 children: <Widget>[
                   Expanded(
                     child: GestureDetector(
-                      onTap: (){
+                      onTap: () {
                         Navigator.of(context).pop("Done");
                       },
                       child: Container(
-                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("Yes", style: TextStyle(color: Colors.white),),
-                       ),
-                       decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color: Color(0xff01d35a), border: Border.all(width: 1, color: Color(0xff01d35a))),
-                    ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Yes",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            color: Color(0xff01d35a),
+                            border:
+                                Border.all(width: 1, color: Color(0xff01d35a))),
+                      ),
                     ),
                   ),
-
                   SizedBox(
                     width: 20,
                   ),
-
-                  Expanded(child: GestureDetector(
-                    onTap: (){
+                  Expanded(
+                      child: GestureDetector(
+                    onTap: () {
                       Navigator.pop(context);
                     },
                     child: Container(
@@ -698,27 +658,17 @@ class _AvailabilitySelectionScreenState extends State<AvailabilitySelectionScree
                         padding: const EdgeInsets.all(8.0),
                         child: Text("No"),
                       ),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)),
-                         border: Border.all(width: 1, color: Colors.grey)),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          border: Border.all(width: 1, color: Colors.grey)),
                     ),
                   )),
-
-
-
                 ],
               ),
-
             )
-
           ],
         ),
-
       ),
     );
   }
-
-
-
-
-
 }

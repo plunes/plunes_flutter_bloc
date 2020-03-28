@@ -11,7 +11,6 @@ import 'package:plunes/ui/beforeLogin/ChangePassword.dart';
 
 import 'AccountSettings.dart';
 
-
 /*
  * Created by - Plunes Technologies.
  * Developer - Manvendra Kumar Singh
@@ -25,7 +24,8 @@ class SecuritySettings extends BaseActivity {
   _SecuritySettingsState createState() => _SecuritySettingsState();
 }
 
-class _SecuritySettingsState extends State<SecuritySettings> implements  DialogCallBack{
+class _SecuritySettingsState extends State<SecuritySettings>
+    implements DialogCallBack {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
 
@@ -37,35 +37,37 @@ class _SecuritySettingsState extends State<SecuritySettings> implements  DialogC
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: Colors.white,
-      appBar:widget.getAppBar(context, stringsFile.securitySettings, true),
-      body: getBody()
-    );
+        key: _scaffoldKey,
+        backgroundColor: Colors.white,
+        appBar: widget.getAppBar(context, stringsFile.securitySettings, true),
+        body: getBody());
   }
 
- Widget getBody() {
+  Widget getBody() {
     return Container(
       child: Column(
         children: <Widget>[
-          getSettingRow(assetsImageFile.changePassIcon, stringsFile.changePassword, 0),
+          getSettingRow(
+              assetsImageFile.changePassIcon, stringsFile.changePassword, 0),
           widget.getDividerRow(context, 0, 0, 0),
-          getSettingRow(assetsImageFile.logoutIcon2, stringsFile.logoutFromAllDevices, 1),
+          getSettingRow(
+              assetsImageFile.logoutIcon2, stringsFile.logoutFromAllDevices, 1),
           widget.getDividerRow(context, 0, 0, 0),
         ],
       ),
     );
- }
+  }
 
- Widget getSettingRow(String firstIcon, String title, int pos){
+  Widget getSettingRow(String firstIcon, String title, int pos) {
     return InkWell(
-      onTap: (){
-        switch(pos){
+      onTap: () {
+        switch (pos) {
           case 0:
             Navigator.pushNamed(context, ChangePassword.tag);
             break;
           case 1:
-            CommonMethods.confirmationDialog(context,stringsFile.logoutAllMsg, this);
+            CommonMethods.confirmationDialog(
+                context, stringsFile.logoutAllMsg, this);
             break;
         }
       },
@@ -74,38 +76,41 @@ class _SecuritySettingsState extends State<SecuritySettings> implements  DialogC
         child: Row(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: widget.getAssetIconWidget(firstIcon, 25, 25, BoxFit.contain)),
-            Expanded(child: widget.createTextViews(title, 16, colorsFile.black0, TextAlign.start, FontWeight.normal)),
+                padding: const EdgeInsets.all(10.0),
+                child: widget.getAssetIconWidget(
+                    firstIcon, 25, 25, BoxFit.contain)),
+            Expanded(
+                child: widget.createTextViews(title, 16, colorsFile.black0,
+                    TextAlign.start, FontWeight.normal)),
             Icon(Icons.keyboard_arrow_right, color: Colors.black)
           ],
         ),
       ),
     );
- }
-
+  }
 
   @override
   dialogCallBackFunction(String action) {
-    if(action!=null && action =='DONE')
-      logout();
+    if (action != null && action == 'DONE') logout();
   }
 
   void logout() {
     bloc.logoutService(context, this);
     bloc.logout.listen((data) {
-      if(data!=null && data['success']!=null && data['success'])
+      if (data != null && data['success'] != null && data['success'])
         navigationPage();
       else
-        widget.showInSnackBar(stringsFile.somethingWentWrong, Colors.red, _scaffoldKey);
-
+        widget.showInSnackBar(
+            stringsFile.somethingWentWrong, Colors.red, _scaffoldKey);
     });
   }
+
   void navigationPage() {
-    preferences =  Preferences();
+    preferences = Preferences();
     preferences.clearPreferences();
     Future.delayed(Duration(milliseconds: 200), () {
-      return  Navigator.of(context).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+      return Navigator.of(context)
+          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     });
   }
 }

@@ -14,6 +14,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/commonView/UploadPrescriptionDialog.dart';
 import 'package:share/share.dart';
+
 /// New 28/02/2020 - 03:30PM
 class PlockrMainScreen extends BaseActivity {
   static const tag = '/plockrmainscreen';
@@ -29,7 +30,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final searchController = new TextEditingController();
   final Map<String, IconData> _data =
-  Map.fromIterables(['Share'], [Icons.filter_1]);
+      Map.fromIterables(['Share'], [Icons.filter_1]);
   AnimationController _animationController;
   ImagePickerHandler imagePicker;
   var globalHeight, globalWidth;
@@ -56,7 +57,6 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     _preferences = Preferences();
     _userType = _preferences.getPreferenceString(Constants.PREF_USER_TYPE);
     initializeForImageFetching();
-
   }
 
   initializeForImageFetching() {
@@ -341,7 +341,8 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
 
   showMenuSelection(String value, int index) {
     if (value == 'Delete') {
-      CommonMethods.confirmationDialog(context, stringsFile.deleteReportMsg, this);
+      CommonMethods.confirmationDialog(
+          context, stringsFile.deleteReportMsg, this);
     } else if (value == "Share") {
       Share.share('www.google.com');
     }

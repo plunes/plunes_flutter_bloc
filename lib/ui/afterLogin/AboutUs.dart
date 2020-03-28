@@ -9,12 +9,12 @@ import 'package:plunes/resources/network/Urls.dart';
 
 class AboutUs extends BaseActivity {
   static const tag = '/aboutus';
+
   @override
   _AboutUsState createState() => _AboutUsState();
 }
 
 class _AboutUsState extends State<AboutUs> {
-
   @override
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
@@ -25,18 +25,14 @@ class _AboutUsState extends State<AboutUs> {
       hidden: true,
       initialChild: Container(
         color: Colors.white,
-        child:  Center(
-          child: SpinKitThreeBounce(
-            color: Color(hexColorCode.defaultTransGreen),
-            size: 30.0,
-          )
-        ),
+        child: Center(
+            child: SpinKitThreeBounce(
+          color: Color(hexColorCode.defaultTransGreen),
+          size: 30.0,
+        )),
       ),
       url: urls.aboutUs,
       appBar: widget.getAppBar(context, stringsFile.aboutUs, true),
-
-
     );
-
   }
 }

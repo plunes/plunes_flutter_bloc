@@ -19,7 +19,6 @@ class GuidedTour extends StatefulWidget {
 }
 
 class GuidedTourState extends State<GuidedTour> {
-
   onDonePress() {
     Navigator.pushNamed(context, EnterPhoneScreen.tag);
   }

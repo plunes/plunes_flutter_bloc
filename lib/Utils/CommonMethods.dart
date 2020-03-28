@@ -1,4 +1,3 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -24,27 +23,27 @@ import 'package:url_launcher/url_launcher.dart';
  * Description - This class is used for holding commonly and frequently used methods used within the application.
  */
 
-
 class CommonMethods {
-
   static List catalogueLists = new List();
   static bool checkOTPVerification = true; // true for production
   static BuildContext globalContext;
 
-
   ///Below method is to navigate the user to the received page.
   static Future<dynamic> goToPage(BuildContext buildContext, dynamic) async {
-    return await Navigator.push(buildContext, MaterialPageRoute(builder: (buildContext) => dynamic));
+    return await Navigator.push(
+        buildContext, MaterialPageRoute(builder: (buildContext) => dynamic));
   }
 
   ///Below method is to navigate the user to the received page clearing the below pages in the stack
   static removePagesUntilPushedName(BuildContext context, String pageRoute) {
-    Navigator.of(context).pushNamedAndRemoveUntil(pageRoute, (Route<dynamic> route) => false);
+    Navigator.of(context)
+        .pushNamedAndRemoveUntil(pageRoute, (Route<dynamic> route) => false);
   }
 
   ///Below method is to navigate the user to the received page replacing the current one.
   static pushReplacement(BuildContext buildContext, dynamic) {
-    Navigator.pushReplacement(buildContext, MaterialPageRoute(builder: (buildContext) => dynamic));
+    Navigator.pushReplacement(
+        buildContext, MaterialPageRoute(builder: (buildContext) => dynamic));
   }
 
   ///Below method is to ignore rendering issue and will show the image instead throughout the application.
@@ -83,7 +82,13 @@ class CommonMethods {
   }
 
   static showLongToast(String message) {
-    Fluttertoast.showToast(msg:message, gravity: ToastGravity.BOTTOM, backgroundColor: Colors.transparent, textColor: Colors.black, toastLength: Toast.LENGTH_LONG, timeInSecForIos: 2);
+    Fluttertoast.showToast(
+        msg: message,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.transparent,
+        textColor: Colors.black,
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIos: 2);
   }
 
   ///Below method is here for convert string color code into Hex color code.
@@ -106,6 +111,7 @@ class CommonMethods {
     }
     return val;
   }
+
   ///Below method is used for date different type date format.
   static format(DateTime date, String from) {
     var suffix = "th";
@@ -119,10 +125,6 @@ class CommonMethods {
     if (from == '2') return new DateFormat("hh:mm a").format(date);
   }
 
-
-
-
-
   ///Below method is used for check internet connectivity for the application .
   static Future<bool> checkInternetConnectivity() async {
     String connectionStatus;
@@ -132,11 +134,11 @@ class CommonMethods {
       connectionStatus = (await _connectivity.checkConnectivity()).toString();
       if (await _connectivity.checkConnectivity() == ConnectivityResult.mobile)
         isConnected = true;
-      else if (await _connectivity.checkConnectivity() == ConnectivityResult.wifi)
+      else if (await _connectivity.checkConnectivity() ==
+          ConnectivityResult.wifi)
         isConnected = true;
-       else if (await _connectivity.checkConnectivity() == ConnectivityResult.none)
-        isConnected = false;
-
+      else if (await _connectivity.checkConnectivity() ==
+          ConnectivityResult.none) isConnected = false;
     } on PlatformException catch (e) {
       print("===internet==not connected" + e.toString());
       connectionStatus = 'Failed to get connectivity.';
@@ -186,19 +188,17 @@ class CommonMethods {
     return minutes + ":" + seconds;
   }
 
-
-
   ///Below method is used for move the textField cursor to the end of its text.
   static void moveCursorToLastPos(TextEditingController textField) {
-    var cursorPos = new TextSelection.fromPosition(new TextPosition(offset: textField.text.length));
+    var cursorPos = new TextSelection.fromPosition(
+        new TextPosition(offset: textField.text.length));
     textField.selection = cursorPos;
   }
 
-
-
   ///Below method is used for check valid email or not using given regex pattern.
   static bool validateEmail(String value) {
-    Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value))
       return false;
@@ -218,43 +218,46 @@ class CommonMethods {
     return true;
   }
 
-
-
   ///Below method is used for open default Date Picker Dialog.
   static Future<String> selectDate(BuildContext context) async {
     var now = new DateTime.now();
-    DateTime twelveYearsBack = now.subtract(new Duration(days: 0));//3650
-    final DateTime picked = await showDatePicker(context: context, initialDate: twelveYearsBack, firstDate: new DateTime(1900), lastDate: twelveYearsBack);
-    return picked != null? DateFormat('dd MMM yyyy').format(DateTime.parse(picked.toString())):'';
+    DateTime twelveYearsBack = now.subtract(new Duration(days: 0)); //3650
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: twelveYearsBack,
+        firstDate: new DateTime(1900),
+        lastDate: twelveYearsBack);
+    return picked != null
+        ? DateFormat('dd MMM yyyy').format(DateTime.parse(picked.toString()))
+        : '';
   }
-
-
 
   ///Below method is used for open default Time Picker Dialog.
   static Future<String> selectTime(BuildContext context, String time) async {
-    TimeOfDay _startTime = TimeOfDay(hour: int.parse(time.split(":")[0]), minute: int.parse(time.split(":")[1].substring(0, 2)));
-    final TimeOfDay picker = await showTimePicker(context: context, initialTime: _startTime, builder: (BuildContext context, Widget child) {
+    TimeOfDay _startTime = TimeOfDay(
+        hour: int.parse(time.split(":")[0]),
+        minute: int.parse(time.split(":")[1].substring(0, 2)));
+    final TimeOfDay picker = await showTimePicker(
+      context: context,
+      initialTime: _startTime,
+      builder: (BuildContext context, Widget child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
           child: child,
         );
       },
     );
-    return picker != null? picker.format(context):'';
+    return picker != null ? picker.format(context) : '';
   }
-
-
 
   ///Below method is used hide soft-Keyboard.
   static void hideSoftKeyboard() {
     SystemChannels.textInput.invokeMethod('TextInput.hide');
   }
 
-
-
   ///Below method is used launch third party application or browser using given url or string value like for the open
   ///phone dialer application or default messaging application.
-  static  launchURL(String url) async {
+  static launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -262,33 +265,34 @@ class CommonMethods {
     }
   }
 
-
-
   ///Below method is used for open CupertinoAlertDialog with its callback.
-  static void commonDialog(BuildContext context, DialogCallBack _callBack, String title, String content) {
+  static void commonDialog(BuildContext context, DialogCallBack _callBack,
+      String title, String content) {
     DialogCallBack callBack = _callBack;
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder:(
+      builder: (
         BuildContext context,
       ) =>
           CupertinoAlertDialog(
-            title: new Text(title),
-            content: new Text(content),
-            actions: <Widget>[
-            new FlatButton(
-              onPressed: () {
-                if(title==stringsFile.success){
-                  Navigator.pop(context);
+        title: new Text(title),
+        content: new Text(content),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () {
+              if (title == stringsFile.success) {
+                Navigator.pop(context);
 //                  callBack.dialogCallBackFunction('CANCEL');
-                }else {
-                  Navigator.pop(context);
-                  callBack.dialogCallBackFunction('DONE');
-                }
-
-              },
-             child: new Text(title==stringsFile.success?stringsFile.ok: StringsFile.tryAgain,
+              } else {
+                Navigator.pop(context);
+                callBack.dialogCallBackFunction('DONE');
+              }
+            },
+            child: new Text(
+                title == stringsFile.success
+                    ? stringsFile.ok
+                    : StringsFile.tryAgain,
                 style: TextStyle(color: Color(hexColorCode.defaultGreen))),
           ),
         ],
@@ -296,68 +300,74 @@ class CommonMethods {
     );
   }
 
-
-
   static Widget getSpacer(double top, double bottom) {
     return Container(
       margin: EdgeInsets.only(top: top, bottom: bottom),
     );
   }
 
-
-
   ///Below method is used for open CupertinoAlertDialog with its callback.
-  static Widget messageSubmitDialog(BuildContext context,String _title, TextEditingController controller, DialogCallBack _callBack) {
+  static Widget messageSubmitDialog(BuildContext context, String _title,
+      TextEditingController controller, DialogCallBack _callBack) {
     DialogCallBack callBack = _callBack;
     return Container(
       color: Color(0xff90000000),
       child: CupertinoAlertDialog(
-        content: Column(
-            children: <Widget>[
-              Align(
-                  alignment: Alignment.topRight,
-                  child: GestureDetector(
-                    onTap: ()=> callBack.dialogCallBackFunction('CANCEL'),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom:8.0),
-                      child: Icon(Icons.clear),
-                    ))
-              ),
-              Center(child: Text(_title, style: TextStyle(fontSize: 16),)),
-              getSpacer(0 , 20),
-              Container(
-                height: 80,
+          content: Column(children: <Widget>[
+        Align(
+            alignment: Alignment.topRight,
+            child: GestureDetector(
+                onTap: () => callBack.dialogCallBackFunction('CANCEL'),
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    autofocus: true,
-                    controller: controller,
-                    decoration: InputDecoration.collapsed(hintText: stringsFile.description),
-                  ),
-                ),
-                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)), border:
-                Border.all(color: Colors.grey, width: 0.3))  ,
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Icon(Icons.clear),
+                ))),
+        Center(
+            child: Text(
+          _title,
+          style: TextStyle(fontSize: 16),
+        )),
+        getSpacer(0, 20),
+        Container(
+          height: 80,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              autofocus: true,
+              controller: controller,
+              decoration:
+                  InputDecoration.collapsed(hintText: stringsFile.description),
+            ),
+          ),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              border: Border.all(color: Colors.grey, width: 0.3)),
+        ),
+        getSpacer(0, 20),
+        GestureDetector(
+            onTap: () {
+              callBack.dialogCallBackFunction('DONE');
+            },
+            child: Container(
+              height: 35,
+              width: 200,
+              alignment: Alignment.center,
+              child: Text(
+                stringsFile.submit,
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
-              getSpacer(0 , 20),
-              GestureDetector(
-                  onTap: (){
-                    callBack.dialogCallBackFunction('DONE');
-                  },
-                  child: Container(
-                    height: 35,
-                    width: 200,
-                    alignment: Alignment.center,
-                    child: Text(stringsFile.submit, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)), color: Color(0xff01d35a)),
-                  ))])
-    ),);
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  color: Color(0xff01d35a)),
+            ))
+      ])),
+    );
   }
 
-
-
-
   ///Below method is used for open Alert Dialog with Animation and callback.
-  static  confirmationDialog(BuildContext context, String action, DialogCallBack _callBack) {
+  static confirmationDialog(
+      BuildContext context, String action, DialogCallBack _callBack) {
     DialogCallBack callBack = _callBack;
 
     return showGeneralDialog<bool>(
@@ -380,9 +390,9 @@ class CommonMethods {
                       style: TextStyle(color: Colors.grey),
                     ),
                     onPressed: () {
-                      Navigator.pop(context, false); // showDialog() returns false
-                     callBack.dialogCallBackFunction('CANCEL');
-
+                      Navigator.pop(
+                          context, false); // showDialog() returns false
+                      callBack.dialogCallBackFunction('CANCEL');
                     },
                   ),
                   new FlatButton(
@@ -391,7 +401,8 @@ class CommonMethods {
                       style: TextStyle(color: Colors.black),
                     ),
                     onPressed: () {
-                      Navigator.pop(context);_callBack.dialogCallBackFunction('DONE');
+                      Navigator.pop(context);
+                      _callBack.dialogCallBackFunction('DONE');
                     },
                   ),
                 ],
@@ -405,7 +416,6 @@ class CommonMethods {
         context: context,
         pageBuilder: (context, animation1, animation2) {});
   }
-
 
   ///Below method is used for adding multiple images using arrayList into slide.
   static List<Slide> addSlideImages() {
@@ -422,13 +432,10 @@ class CommonMethods {
     return slides;
   }
 
-
   ///Below method is used for generating Random OTP or 4 digit code for the OTP Verification.
-  static String getRandomOTP(){
+  static String getRandomOTP() {
     return (Random().nextInt(9000) + 1000).toString();
   }
-
-
 
   ///Below method is used for fetch specific Device ID.
   static Future<String> getDeviceId() async {
@@ -444,8 +451,13 @@ class CommonMethods {
         'Error:': 'Failed to get platform version.'
       };
     }
-    return Platform.isAndroid ? (deviceData['id'] != null ? deviceData['id'] : '') : (deviceData['identifierForVendor'] != null ? deviceData['identifierForVendor'] : '');
+    return Platform.isAndroid
+        ? (deviceData['id'] != null ? deviceData['id'] : '')
+        : (deviceData['identifierForVendor'] != null
+            ? deviceData['identifierForVendor']
+            : '');
   }
+
   ///Below method is used for fetch specific Device information.
   static Future<String> getDeviceInfo() async {
     final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
@@ -514,43 +526,42 @@ class CommonMethods {
     };
   }
 
-  static String getInitialName(String _name){
-    String name  = _name;
-    String initialName =  _name.substring(0,1);
+  static String getInitialName(String _name) {
+    String name = _name;
+    String initialName = _name.substring(0, 1);
     List nameList = name.split(" ");
-    print(name+nameList.length.toString());
-    try{
+    print(name + nameList.length.toString());
+    try {
       if (name.contains("Dr")) {
         if (nameList.length > 2) {
           initialName = nameList[1].toString().substring(0, 1);
-          if(nameList[2] != ''){
+          if (nameList[2] != '') {
             initialName = nameList[1].toString().substring(0, 1) +
                 nameList[2].toString().substring(0, 1);
           }
-        } else if(nameList[1] !='') {
-
+        } else if (nameList[1] != '') {
           initialName = nameList[1].toString().substring(0, 1);
-        }else{
+        } else {
           initialName = nameList[0].toString().substring(0, 1);
         }
       } else {
-        if(initialName != ''){
+        if (initialName != '') {
           initialName = nameList[0].toString().substring(0, 1);
-          if(nameList.length>1){
-            if(nameList[1] != ''){
+          if (nameList.length > 1) {
+            if (nameList[1] != '') {
               initialName = nameList[0].toString().substring(0, 1) +
                   nameList[1].toString().substring(0, 1);
             }
           }
         }
       }
-    }catch(Exception ){
-      initialName = name.substring(0,1).toUpperCase();
+    } catch (Exception) {
+      initialName = name.substring(0, 1).toUpperCase();
     }
     return initialName;
   }
 
-  static String getDuration(int epoch_time){
+  static String getDuration(int epoch_time) {
     var curr_time = new DateTime.now().millisecondsSinceEpoch;
     int time_diff = curr_time.round() - epoch_time;
 
@@ -567,9 +578,9 @@ class CommonMethods {
         if (minutes < 60) {
           s = minutes.toString() + "m ago";
           if (seconds < 60) {
-            if(seconds< 0){
-              s =   "0 sec ago";
-            }else{
+            if (seconds < 0) {
+              s = "0 sec ago";
+            } else {
               s = seconds.toString() + " sec ago";
             }
           }
@@ -581,56 +592,65 @@ class CommonMethods {
     return s;
   }
 
-
-
-  static Widget getDialogView(BuildContext context, DialogCallBack callBack, String _title, TextEditingController controller) {
+  static Widget getDialogView(BuildContext context, DialogCallBack callBack,
+      String _title, TextEditingController controller) {
     return Card(
       color: Colors.transparent,
       elevation: 0.0,
-      child: Stack(
-        children: <Widget>[
-          Align(
-              alignment: Alignment.topRight,
-              child: GestureDetector(
-                onTap: ()=> Navigator.pop(context),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom:8.0),
-                  child: Icon(Icons.clear),
-                ),
-              )
+      child: Stack(children: <Widget>[
+        Align(
+            alignment: Alignment.topRight,
+            child: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Icon(Icons.clear),
+              ),
+            )),
+        Column(children: <Widget>[
+          getSpacer(0, 20),
+          Center(
+              child: Text(
+            _title,
+            style: TextStyle(fontSize: 16),
+          )),
+          getSpacer(0, 20),
+          Container(
+            height: 80,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                autofocus: true,
+                controller: controller,
+                decoration: InputDecoration.collapsed(
+                    hintText: stringsFile.description),
+              ),
+            ),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                border: Border.all(color: Colors.grey, width: 0.3)),
           ),
-          Column(
-              children: <Widget>[
-                getSpacer(0 , 20),
-                Center(child: Text(_title, style: TextStyle(fontSize: 16),)),
-                getSpacer(0 , 20),
-                     Container(
-                      height: 80,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: TextField(
-                          autofocus: true,
-                          controller: controller,
-                          decoration: InputDecoration.collapsed(hintText: stringsFile.description),
-                        ),
-                      ),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(10)), border:
-                      Border.all(color: Colors.grey, width: 0.3))  ,
-                    ),
-                getSpacer(0 , 20),
-                GestureDetector(
-                    onTap: (){
-                      Navigator.pop(context);
-                      callBack.dialogCallBackFunction('DONE');
-                    },
-                    child: Container(
-                      height: 35,
-                      width: 200,
-                      alignment: Alignment.center,
-                      child: Text(stringsFile.submit, style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)), color: Color(0xff01d35a)),
-                    ))])
-        ]),);
+          getSpacer(0, 20),
+          GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+                callBack.dialogCallBackFunction('DONE');
+              },
+              child: Container(
+                height: 35,
+                width: 200,
+                alignment: Alignment.center,
+                child: Text(
+                  stringsFile.submit,
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.w600),
+                ),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    color: Color(0xff01d35a)),
+              ))
+        ])
+      ]),
+    );
   }
-
 }

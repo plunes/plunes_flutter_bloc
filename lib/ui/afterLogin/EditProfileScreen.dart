@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -12,21 +11,43 @@ import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:plunes/ui/commonView/SelectSpecialization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 class EditProfileScreen extends BaseActivity {
   static const tag = '/editprofile';
-  final fullName, dateOfBirth, education, college, location, userType, userEducation, userCollege, profRegNo, practising, introduction,specializations, experience;
+  final fullName,
+      dateOfBirth,
+      education,
+      college,
+      location,
+      userType,
+      userEducation,
+      userCollege,
+      profRegNo,
+      practising,
+      introduction,
+      specializations,
+      experience;
 
-  EditProfileScreen({this.userType, this.fullName, this.dateOfBirth, this.education, this.college, this.location,
-    this.userEducation, this.userCollege, this.profRegNo, this.practising, this.introduction, this.specializations, this.experience});
+  EditProfileScreen(
+      {this.userType,
+      this.fullName,
+      this.dateOfBirth,
+      this.education,
+      this.college,
+      this.location,
+      this.userEducation,
+      this.userCollege,
+      this.profRegNo,
+      this.practising,
+      this.introduction,
+      this.specializations,
+      this.experience});
 
   @override
   _EditProfileState createState() => _EditProfileState();
 }
 
-class _EditProfileState extends State<EditProfileScreen> implements DialogCallBack{
-
+class _EditProfileState extends State<EditProfileScreen>
+    implements DialogCallBack {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final nameController = TextEditingController();
@@ -41,7 +62,7 @@ class _EditProfileState extends State<EditProfileScreen> implements DialogCallBa
   final docNameController = new TextEditingController();
   final educationController = TextEditingController();
   final collegeController = TextEditingController();
-  List<dynamic> _selectedItemId = List(),_selectedSpecializationData = List();
+  List<dynamic> _selectedItemId = List(), _selectedSpecializationData = List();
   FocusNode nameFocusNode = new FocusNode(),
       educationFocusNode = new FocusNode(),
       professionalFocusNode = new FocusNode(),
@@ -61,17 +82,17 @@ class _EditProfileState extends State<EditProfileScreen> implements DialogCallBa
   String user_token = "";
   String user_id = "";
 
-@override
+  @override
   void dispose() {
-  bloc.disposeEditStream();
+    bloc.disposeEditStream();
     super.dispose();
   }
+
   @override
   void initState() {
     initialize();
     super.initState();
   }
-
 
   getSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -82,7 +103,6 @@ class _EditProfileState extends State<EditProfileScreen> implements DialogCallBa
       user_id = uid;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -112,39 +132,100 @@ class _EditProfileState extends State<EditProfileScreen> implements DialogCallBa
   Widget getUserOrDoctorView() {
     return Expanded(
         child: Container(
-          margin: EdgeInsets.only(left: 20, right: 20),
-          child: ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              widget.getSpacer(0.0, 10.0),
-              createTextField(nameController, stringsFile.fullName, TextInputType.text, TextCapitalization.words, name_valid, stringsFile.errorMsgEnterFullName),
-              widget.getSpacer(0.0, 20.0),
-              widget.userType  !=  Constants.hospital?  createTextField(dobController, stringsFile.dateOfBirth, TextInputType.datetime, TextCapitalization.none, false, ''): Container(),
-              widget.userType  !=  Constants.hospital?  createTextField(educationController, isDoctor ? stringsFile.qualification : stringsFile.education, TextInputType.text, TextCapitalization.words, true, ''): Container(),
-              widget.getSpacer(0.0,widget.userType  !=  Constants.hospital? 20.0: 0),
-              isDoctor ? createTextField(professionRegController, stringsFile.professionalRegNo, TextInputType.text, TextCapitalization.characters, true, '') : Container(),
-              widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-              isDoctor ? createTextField(specializationController, '${stringsFile.specialization}*', TextInputType.text, TextCapitalization.words, true, '') : Container(),
-              widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-              isDoctor ? createTextField(experienceController, stringsFile.experienceInNo, TextInputType.numberWithOptions(decimal: true), TextCapitalization.none, true, '') : Container(),
-              widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-              isDoctor ? createTextField(practisingController, stringsFile.practising, TextInputType.text, TextCapitalization.words, true, '') : Container(),
-              widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-              widget.userType  !=  Constants.hospital?  createTextField(collegeController, stringsFile.college, TextInputType.text, TextCapitalization.words, true, ''): Container(),
-              widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-              isDoctor ? createTextField(aboutController, stringsFile.introduction, TextInputType.text, TextCapitalization.words, true, '') : Container(),
-              widget.getSpacer(0.0,  widget.userType  !=  Constants.hospital? 20.0: 0),
-              createTextField(locationController, stringsFile.location, TextInputType.text, TextCapitalization.none, false, ''),
-              progress ? SpinKitThreeBounce(color: Color(hexColorCode.defaultGreen), size: 30.0) : widget.getDefaultButton(stringsFile.update, globalWidth - 40, 42,updateProfileRequest),
-              widget.getSpacer(0.0, 30.0),
-            ],
-          ),
-        ));
+      margin: EdgeInsets.only(left: 20, right: 20),
+      child: ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          widget.getSpacer(0.0, 10.0),
+          createTextField(
+              nameController,
+              stringsFile.fullName,
+              TextInputType.text,
+              TextCapitalization.words,
+              name_valid,
+              stringsFile.errorMsgEnterFullName),
+          widget.getSpacer(0.0, 20.0),
+          widget.userType != Constants.hospital
+              ? createTextField(dobController, stringsFile.dateOfBirth,
+                  TextInputType.datetime, TextCapitalization.none, false, '')
+              : Container(),
+          widget.userType != Constants.hospital
+              ? createTextField(
+                  educationController,
+                  isDoctor ? stringsFile.qualification : stringsFile.education,
+                  TextInputType.text,
+                  TextCapitalization.words,
+                  true,
+                  '')
+              : Container(),
+          widget.getSpacer(
+              0.0, widget.userType != Constants.hospital ? 20.0 : 0),
+          isDoctor
+              ? createTextField(
+                  professionRegController,
+                  stringsFile.professionalRegNo,
+                  TextInputType.text,
+                  TextCapitalization.characters,
+                  true,
+                  '')
+              : Container(),
+          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+          isDoctor
+              ? createTextField(
+                  specializationController,
+                  '${stringsFile.specialization}*',
+                  TextInputType.text,
+                  TextCapitalization.words,
+                  true,
+                  '')
+              : Container(),
+          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+          isDoctor
+              ? createTextField(
+                  experienceController,
+                  stringsFile.experienceInNo,
+                  TextInputType.numberWithOptions(decimal: true),
+                  TextCapitalization.none,
+                  true,
+                  '')
+              : Container(),
+          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+          isDoctor
+              ? createTextField(practisingController, stringsFile.practising,
+                  TextInputType.text, TextCapitalization.words, true, '')
+              : Container(),
+          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+          widget.userType != Constants.hospital
+              ? createTextField(collegeController, stringsFile.college,
+                  TextInputType.text, TextCapitalization.words, true, '')
+              : Container(),
+          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+          isDoctor
+              ? createTextField(aboutController, stringsFile.introduction,
+                  TextInputType.text, TextCapitalization.words, true, '')
+              : Container(),
+          widget.getSpacer(
+              0.0, widget.userType != Constants.hospital ? 20.0 : 0),
+          createTextField(locationController, stringsFile.location,
+              TextInputType.text, TextCapitalization.none, false, ''),
+          progress
+              ? SpinKitThreeBounce(
+                  color: Color(hexColorCode.defaultGreen), size: 30.0)
+              : widget.getDefaultButton(stringsFile.update, globalWidth - 40,
+                  42, updateProfileRequest),
+          widget.getSpacer(0.0, 30.0),
+        ],
+      ),
+    ));
   }
 
-  Widget createTextField(TextEditingController controller, String placeHolder,
-      TextInputType inputType, TextCapitalization textCapitalization,
-      bool fieldFlag, String errorMsg) {
+  Widget createTextField(
+      TextEditingController controller,
+      String placeHolder,
+      TextInputType inputType,
+      TextCapitalization textCapitalization,
+      bool fieldFlag,
+      String errorMsg) {
     return InkWell(
       onTap: () {
         if (controller == dobController)
@@ -159,24 +240,43 @@ class _EditProfileState extends State<EditProfileScreen> implements DialogCallBa
       child: Container(
           padding: EdgeInsets.zero,
           width: MediaQuery.of(context).size.width,
-          child: TextField(maxLines: (controller == locationController) ||
-              (controller == aboutController) ? 4 : null,
-              maxLength: (controller == aboutController) ? 250 : ((controller == experienceController) ? 2 : null),
+          child: TextField(
+              maxLines: (controller == locationController) ||
+                      (controller == aboutController)
+                  ? 4
+                  : null,
+              maxLength: (controller == aboutController)
+                  ? 250
+                  : ((controller == experienceController) ? 2 : null),
               textCapitalization: textCapitalization,
               keyboardType: inputType,
-              textInputAction: controller == aboutController ? TextInputAction.done : TextInputAction.next,
+              textInputAction: controller == aboutController
+                  ? TextInputAction.done
+                  : TextInputAction.next,
               onSubmitted: (String value) {
                 setFocus(controller).unfocus();
                 FocusScope.of(context).requestFocus(setTargetFocus(controller));
               },
               controller: controller,
-              cursorColor: Color(CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
+              cursorColor: Color(
+                  CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
               focusNode: setFocus(controller),
-              enabled: (controller == dobController || controller == locationController || controller == specializationController) ? false : true,
+              enabled: (controller == dobController ||
+                      controller == locationController ||
+                      controller == specializationController)
+                  ? false
+                  : true,
               style: TextStyle(
                 fontSize: 15.0,
               ),
-              decoration: widget.myInputBoxDecoration(colorsFile.defaultGreen, colorsFile.lightGrey1, placeHolder, errorMsg, fieldFlag, controller, null))),
+              decoration: widget.myInputBoxDecoration(
+                  colorsFile.defaultGreen,
+                  colorsFile.lightGrey1,
+                  placeHolder,
+                  errorMsg,
+                  fieldFlag,
+                  controller,
+                  null))),
     );
   }
 
@@ -219,10 +319,18 @@ class _EditProfileState extends State<EditProfileScreen> implements DialogCallBa
   }
 
   fetchLocation() {
-    Navigator.of(context).push(PageRouteBuilder(opaque: false, pageBuilder: (BuildContext context, _, __) => LocationFetch())).then((val) {
+    Navigator.of(context)
+        .push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) => LocationFetch()))
+        .then((val) {
       var addressControllerList = new List();
       addressControllerList = val.toString().split(":");
-      locationController.text = addressControllerList[0] + ' ' + addressControllerList[1] + ' ' + addressControllerList[2];
+      locationController.text = addressControllerList[0] +
+          ' ' +
+          addressControllerList[1] +
+          ' ' +
+          addressControllerList[2];
       _latitude = addressControllerList[3];
       _longitude = addressControllerList[4];
     });
@@ -271,7 +379,7 @@ class _EditProfileState extends State<EditProfileScreen> implements DialogCallBa
     bloc.updateRequest(context, this, body);
     bloc.updateProfileFetcher.listen((data) async {
       progress = false;
-      if (data!=null && data['success']!=null && data['success']) {
+      if (data != null && data['success'] != null && data['success']) {
         await bloc.saveEditProfileDataInPreferences(context, body);
         widget.showInSnackBar(stringsFile.success, Colors.green, _scaffoldKey);
       } else {
@@ -279,21 +387,25 @@ class _EditProfileState extends State<EditProfileScreen> implements DialogCallBa
       }
     });
   }
+
   getSpecializationData() {
-    showDialog(context: context, builder: (BuildContext context) =>
-        SelectSpecialization(spec: CommonMethods.catalogueLists, from: Constants.doctor, selectedItemId: _selectedItemId, selectedItemData: _selectedSpecializationData)).then((val) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) => SelectSpecialization(
+            spec: CommonMethods.catalogueLists,
+            from: Constants.doctor,
+            selectedItemId: _selectedItemId,
+            selectedItemData: _selectedSpecializationData)).then((val) {
       if (val != '' && val != null) {
         _selectedItemId = val['SelectedId'];
-        specializationController.text = val['SelectedData'].toString().replaceAll('[', '').replaceAll(']', '');
+        specializationController.text = val['SelectedData']
+            .toString()
+            .replaceAll('[', '')
+            .replaceAll(']', '');
       }
     });
   }
 
   @override
-  dialogCallBackFunction(String action) {
-
-  }
-
-
-
+  dialogCallBackFunction(String action) {}
 }

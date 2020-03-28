@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -28,24 +26,26 @@ import 'Registration.dart';
 
 class EnterPhoneScreen extends BaseActivity {
   static const tag = 'enter_phonescreen';
-   String  from;
+  String from;
+
   EnterPhoneScreen({Key key, this.from}) : super(key: key);
 
   @override
   _EnterPhoneScreenState createState() => _EnterPhoneScreenState();
 }
 
-class _EnterPhoneScreenState extends State<EnterPhoneScreen> implements DialogCallBack{
+class _EnterPhoneScreenState extends State<EnterPhoneScreen>
+    implements DialogCallBack {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final phoneNumberController = new TextEditingController();
   bool progress = false, isValidNumber = false;
 
-
   @override
   void initState() {
     super.initState();
   }
+
   @override
   void dispose() {
     super.dispose();
@@ -84,8 +84,9 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> implements DialogCa
       ),
     );
   }
+
   bool validation(text) {
-     if (CommonMethods.checkIfNumber(text)) {
+    if (CommonMethods.checkIfNumber(text)) {
       if (text.length == 10 || text.length == 0) {
         isValidNumber = false;
         return false;
@@ -93,14 +94,14 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> implements DialogCa
         isValidNumber = true;
         return true;
       }
-     } else {
-       isValidNumber = true;
-       return true;
-     }
+    } else {
+      isValidNumber = true;
+      return true;
     }
+  }
 
   void submitForOTP() async {
-    if(!isValidNumber && phoneNumberController.text != ''){
+    if (!isValidNumber && phoneNumberController.text != '') {
       if (CommonMethods.checkOTPVerification) {
         progress = true;
         bloc.checkUserExistence(context, this, phoneNumberController.text);
@@ -111,10 +112,15 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> implements DialogCa
         });
       } else {
         progress = false;
-        Navigator.push(context, MaterialPageRoute(builder: (context) => Registration(phone:phoneNumberController.text)));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    Registration(phone: phoneNumberController.text)));
       }
-    }else
-      widget.showInSnackBar(stringsFile.enterValidNumber, Colors.red, _scaffoldKey);
+    } else
+      widget.showInSnackBar(
+          stringsFile.enterValidNumber, Colors.red, _scaffoldKey);
   }
 
   @override
@@ -123,86 +129,119 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen> implements DialogCa
 
     return Scaffold(
         key: _scaffoldKey,
-        appBar: widget.from == stringsFile.login? widget.getAppBar(context, '', true):null,
+        appBar: widget.from == stringsFile.login
+            ? widget.getAppBar(context, '', true)
+            : null,
         body: GestureDetector(
-      onTap: () {
-        CommonMethods.hideSoftKeyboard();
-      },
-      child: Container(
-        margin: EdgeInsets.only(left: 25, right: 25),
-        child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 25, right: 25),
-                child:
-                    widget.getAssetImageWidget(assetsImageFile.firstUserImage),
-              ),
-              SizedBox(
-                height: 50,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          onTap: () {
+            CommonMethods.hideSoftKeyboard();
+          },
+          child: Container(
+            margin: EdgeInsets.only(left: 25, right: 25),
+            child: Center(
+              child: ListView(
+                shrinkWrap: true,
                 children: <Widget>[
-                  Center(child: widget.createTextViews(stringsFile.enterANewEra, 23, colorsFile.darkBrown, TextAlign.center, FontWeight.normal)),
-                  Container(margin: EdgeInsets.only(top: 50), child: widget.createTextViews(stringsFile.phoneNumber, 20, colorsFile.darkGrey1, TextAlign.start, FontWeight.normal)),
                   Container(
-                      margin: EdgeInsets.only(top: 20, bottom: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          widget.getCountryBox(),
-                          Expanded(
-                              child: Column(
+                    margin: EdgeInsets.only(left: 25, right: 25),
+                    child: widget
+                        .getAssetImageWidget(assetsImageFile.firstUserImage),
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Center(
+                          child: widget.createTextViews(
+                              stringsFile.enterANewEra,
+                              23,
+                              colorsFile.darkBrown,
+                              TextAlign.center,
+                              FontWeight.normal)),
+                      Container(
+                          margin: EdgeInsets.only(top: 50),
+                          child: widget.createTextViews(
+                              stringsFile.phoneNumber,
+                              20,
+                              colorsFile.darkGrey1,
+                              TextAlign.start,
+                              FontWeight.normal)),
+                      Container(
+                          margin: EdgeInsets.only(top: 20, bottom: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              getEnterPhoneNumberRow(),
-                              Container(
-                                  margin: EdgeInsets.only(left: 20),
-                                  child: Visibility(visible: isValidNumber, child: widget.createTextViews(stringsFile.enterValidNumber, 14, colorsFile.redColor, TextAlign.start, FontWeight.normal)))
+                              widget.getCountryBox(),
+                              Expanded(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  getEnterPhoneNumberRow(),
+                                  Container(
+                                      margin: EdgeInsets.only(left: 20),
+                                      child: Visibility(
+                                          visible: isValidNumber,
+                                          child: widget.createTextViews(
+                                              stringsFile.enterValidNumber,
+                                              14,
+                                              colorsFile.redColor,
+                                              TextAlign.start,
+                                              FontWeight.normal)))
+                                ],
+                              ))
                             ],
-                          ))
-                        ],
-                      )),
-                  Center(
-                    child: progress
-                        ? SpinKitThreeBounce(
-                            color: Color(hexColorCode.defaultGreen),
-                            size: 30.0,
-                          )
-                        : widget.getDefaultButton(stringsFile.enter, 130.0, 42,submitForOTP),
+                          )),
+                      Center(
+                        child: progress
+                            ? SpinKitThreeBounce(
+                                color: Color(hexColorCode.defaultGreen),
+                                size: 30.0,
+                              )
+                            : widget.getDefaultButton(
+                                stringsFile.enter, 130.0, 42, submitForOTP),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
+            ),
           ),
-        ),
-      ),
-    ));
+        ));
   }
 
   @override
-  dialogCallBackFunction(String action) {
-
-  }
+  dialogCallBackFunction(String action) {}
 
   void getUserExistenceData(data) async {
     Constants.OTP = CommonMethods.getRandomOTP();
-    if (data!=null&& data['success']!=null && !data['success']) {
-      bloc.sendOTP(context, this, (urls.sendOTPUrl + phoneNumberController.text.trim() + urls.otpConfig));
+    if (data != null && data['success'] != null && !data['success']) {
+      bloc.sendOTP(
+          context,
+          this,
+          (urls.sendOTPUrl +
+              phoneNumberController.text.trim() +
+              urls.otpConfig));
       bloc.userOTP.listen((data) {
-        if(data['type']!=null && data['type']=='success'){
+        if (data['type'] != null && data['type'] == 'success') {
           progress = false;
-          Navigator.push(context, MaterialPageRoute(builder: (context) => CheckOTP(phone: phoneNumberController.text,from: '')));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      CheckOTP(phone: phoneNumberController.text, from: '')));
         }
       }, onDone: () {
         bloc.dispose();
       });
     } else {
       progress = false;
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Login(phone:phoneNumberController.text)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Login(phone: phoneNumberController.text)));
     }
   }
 }
