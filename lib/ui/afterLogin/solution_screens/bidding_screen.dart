@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 
@@ -15,10 +18,24 @@ class SolutionBiddingScreen extends BaseActivity {
 class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   List<SolutionDummyModel> _solutions = [SolutionDummyModel()];
   Function onViewMoreTap;
+  TextEditingController _searchController;
+  Timer _debounce;
+  SearchSolutionBloc _searchSolutionBloc;
 
   @override
   void initState() {
+    _searchSolutionBloc = SearchSolutionBloc();
+    _searchController = TextEditingController()..addListener(_onSearch);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _searchController?.removeListener(_onSearch);
+    _searchController?.dispose();
+    _debounce?.cancel();
+    _searchSolutionBloc?.dispose();
+    super.dispose();
   }
 
   @override
@@ -47,7 +64,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
       children: <Widget>[
         CustomWidgets().searchBar(
             hintText: plunesStrings.searchHint,
-            searchController: TextEditingController()),
+            hasFocus: true,
+            searchController: _searchController),
         widget.getSpacer(
             AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
         Container(
@@ -115,6 +133,21 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
 
   _onViewMoreTap(int solution) {
     print("index is $solution");
+  }
+
+  _onSearch() {
+    if (_debounce?.isActive ?? false) _debounce.cancel();
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      if (_searchController != null &&
+          _searchController.text != null &&
+          _searchController.text.isNotEmpty) {
+        print("Text is ${_searchController.text}");
+        _searchSolutionBloc.getSearchedSolution(
+            searchedString: _searchController.text.toString(), index: 0);
+      } else {
+        print("text is empty");
+      }
+    });
   }
 }
 

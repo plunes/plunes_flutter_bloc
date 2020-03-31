@@ -12,6 +12,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 
 class BiddingScreen extends BaseActivity {
@@ -68,7 +69,7 @@ class _BiddingScreenState extends State<BiddingScreen> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SolutionBiddingScreen()));
+                                builder: (context) => BiddingMainScreen()));
                       },
                       child: widget.createTextViews(
                           plunesStrings.solutionNearYouMsg,

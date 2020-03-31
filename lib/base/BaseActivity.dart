@@ -324,9 +324,12 @@ class BaseActivity extends StatefulWidget {
   }
 
   Widget getHomeAppBar(BuildContext context, String title, bool isSelected,
-      List<String> selectedPositions, String from, _homeScreenState) {
+      List<String> selectedPositions, String from, _homeScreenState,
+      {bool isSolutionPageSelected = false}) {
     return AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            isSolutionPageSelected ? Colors.transparent : Colors.white,
+        elevation: isSolutionPageSelected ? 0.0 : 1.0,
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.black),
         centerTitle: true,

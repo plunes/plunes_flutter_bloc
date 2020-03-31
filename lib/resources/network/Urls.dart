@@ -9,13 +9,16 @@ final urls = Urls();
 
 class Urls {
   get otpConfig => '&sender=Plunes&otp=' + Constants.OTP;
+  static final int CONNECTION_TIMEOUT = 60000;
+  static final int RECEIVE_TIMEOUT = 60000;
+  static final int SEND_TIMEOUT = 120000;
 
   ///'Plunes is the sender id'
   get sendOTPUrl =>
       'https://control.msg91.com/api/sendotp.php?authkey=278069AIdfPwGj5ce79990&mobile=91';
   static String googleApiKey = 'AIzaSyAXz9PuBzPhMjAdUZmlyFdst6J8v6Vx1IU';
-  static String baseUrl = 'https://plunes.co/v4/'; // production server
-//  static String baseUrl = 'http://13.233.151.26:5000/'; // testing server
+  static const String baseUrl = 'https://plunes.co/v4/'; // production server
+//  static const String baseUrl = 'http://13.233.151.26:5000/'; // testing server
 
   get catalogue => baseUrl + 'catalogue';
 
@@ -42,4 +45,5 @@ class Urls {
   get help => baseUrl + "enquiry/help";
 
   get notification => baseUrl + "notification/0";
+  static const String SEARCH_SOLUTION_API = "catalogue/search/";
 }

@@ -10,6 +10,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/BiddingScreen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 
 import 'AboutUs.dart';
 import 'Coupons.dart';
@@ -51,13 +52,15 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       screen;
   bool _showBadge = false, progress = false, isSelected = false;
   final List<Widget> _widgetOptionsForUser = [
-    BiddingScreen(),
+//    BiddingScreen(),
+    BiddingMainScreen(),
     PlockrMainScreen(),
     NotificationScreen(),
-    ProfileScreen()
+//    ProfileScreen()
   ];
   final List<Widget> _widgetOptionsHospital = [
-    BiddingScreen(),
+//    BiddingScreen(),
+    BiddingMainScreen(),
     NotificationScreen(),
     ProfileScreen()
   ];
@@ -85,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
+        extendBodyBehindAppBar: _selectedIndex == 0 ? true : false,
         appBar: widget.getHomeAppBar(
             context,
             _userType != Constants.hospital
@@ -92,14 +96,17 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                     ? plunesStrings.plockr
                     : _selectedIndex == 3
                         ? plunesStrings.profiles
-                        : _selectedIndex == 2 ? plunesStrings.notifications : '')
+                        : _selectedIndex == 2
+                            ? plunesStrings.notifications
+                            : '')
                 : (_selectedIndex == 1
                     ? plunesStrings.notifications
                     : _selectedIndex == 2 ? plunesStrings.profiles : ''),
             isSelected,
             selectedPositions,
             from,
-            this),
+            this,
+            isSolutionPageSelected: _selectedIndex == 0),
         drawer: getDrawerView(),
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()),
@@ -125,8 +132,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             plunesStrings.notification,
             assetsImageFile.notificationIcon,
             assetsImageFile.notificationActiveIcon),
-        bottomNavigationBarItem(plunesStrings.profile,
-            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
+//        bottomNavigationBarItem(plunesStrings.profile,
+//            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
       ],
     );
   }
@@ -152,8 +159,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             plunesStrings.notification,
             assetsImageFile.notificationIcon,
             assetsImageFile.notificationActiveIcon),
-        bottomNavigationBarItem(plunesStrings.profile,
-            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
+//        bottomNavigationBarItem(plunesStrings.profile,
+//            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
       ],
     );
   }
@@ -365,8 +372,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                     getListTile(2, plunesStrings.appointments,
                         assetsImageFile.appointmentIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
-                    getListTile(
-                        3, plunesStrings.settings, assetsImageFile.settingsIcon),
+                    getListTile(3, plunesStrings.settings,
+                        assetsImageFile.settingsIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     _userType != Constants.user
                         ? getListTile(4, plunesStrings.managePayment,
@@ -375,7 +382,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                     _userType != Constants.user
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
-                    getListTile(5, plunesStrings.help, assetsImageFile.helpIcon),
+                    getListTile(
+                        5, plunesStrings.help, assetsImageFile.helpIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     getListTile(
                         6, plunesStrings.aboutUs, assetsImageFile.aboutUsIcon),
@@ -468,7 +476,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         break;
       case 9:
         closeDrawer();
-        CommonMethods.confirmationDialog(context, plunesStrings.logoutMsg, this);
+        CommonMethods.confirmationDialog(
+            context, plunesStrings.logoutMsg, this);
         break;
     }
   }
