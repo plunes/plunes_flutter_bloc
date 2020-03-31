@@ -66,7 +66,7 @@ class _AccountSettingsState extends State<AccountSettings> {
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        appBar: widget.getAppBar(context, stringsFile.accountSettings, true),
+        appBar: widget.getAppBar(context, plunesStrings.accountSettings, true),
         body: getBody());
   }
 
@@ -75,10 +75,10 @@ class _AccountSettingsState extends State<AccountSettings> {
       child: Column(
         children: <Widget>[
           getSettingRow(assetsImageFile.settingNotificationIcon,
-              stringsFile.notifications, 0),
+              plunesStrings.notifications, 0),
           widget.getDividerRow(context, 0, 0, 0),
           getSettingRow(
-              assetsImageFile.editProfileIcon, stringsFile.editProfile, 1),
+              assetsImageFile.editProfileIcon, plunesStrings.editProfile, 1),
           widget.getDividerRow(context, 0, 0, 0),
         ],
       ),

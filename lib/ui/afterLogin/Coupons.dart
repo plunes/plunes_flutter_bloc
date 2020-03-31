@@ -28,7 +28,7 @@ class _CouponsState extends State<Coupons> {
   String user_token = "";
   String user_id = "";
   String credit = "";
-  String refer_code = "", title = stringsFile.coupons;
+  String refer_code = "", title = plunesStrings.coupons;
   bool isFetchingData = true;
   var couponName = '',
       consulCount = '',

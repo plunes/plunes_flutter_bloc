@@ -103,7 +103,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
               children: <Widget>[
                 Expanded(
                     child: widget.createTextViews(
-                        stringsFile.uploadReports,
+                        plunesStrings.uploadReports,
                         16,
                         colorsFile.darkGrey1,
                         TextAlign.start,
@@ -141,7 +141,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                           colorsFile.defaultGreen)),
                       controller: searchController,
                       decoration: InputDecoration.collapsed(
-                          hintText: stringsFile.search),
+                          hintText: plunesStrings.search),
                       onChanged: (text) {
                         setState(() {
                           if (text.length > 0) {
@@ -342,7 +342,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   showMenuSelection(String value, int index) {
     if (value == 'Delete') {
       CommonMethods.confirmationDialog(
-          context, stringsFile.deleteReportMsg, this);
+          context, plunesStrings.deleteReportMsg, this);
     } else if (value == "Share") {
       Share.share('www.google.com');
     }

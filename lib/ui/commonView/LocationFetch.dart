@@ -49,8 +49,8 @@ class _LocationFetchState extends State<LocationFetch> {
     final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
     var addresses =
         await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    var addr = addresses.first;
-    String full_address = addr.addressLine;
+    var addr = addresses?.first;
+    String full_address = addr?.addressLine;
     latitude = lat;
     longitude = lng;
     locationController.text = full_address;
@@ -131,19 +131,19 @@ class _LocationFetchState extends State<LocationFetch> {
           children: <Widget>[
             widget.getLinearProgressView(_isAddFetch),
             widget.getSpacer(0.0, 10.0),
-            widget.createTextViews(stringsFile.setLocation, 16.0,
+            widget.createTextViews(plunesStrings.setLocation, 16.0,
                 colorsFile.black0, TextAlign.left, FontWeight.bold),
             widget.getSpacer(0.0, 20.0),
-            createTextField(locationController, stringsFile.address,
+            createTextField(locationController, plunesStrings.address,
                 TextInputType.text, TextCapitalization.none, false, ''),
-            createTextField(houseController, stringsFile.houseFlatNo,
+            createTextField(houseController, plunesStrings.houseFlatNo,
                 TextInputType.text, TextCapitalization.none, true, ''),
             widget.getSpacer(0.0, 20.0),
-            createTextField(landMarkController, stringsFile.landMark,
+            createTextField(landMarkController, plunesStrings.landMark,
                 TextInputType.text, TextCapitalization.none, true, ''),
             widget.getSpacer(0.0, 20.0),
             widget.getDefaultButton(
-                stringsFile.proceed, globalWidth - 40, 42, saveLatLang),
+                plunesStrings.proceed, globalWidth - 40, 42, saveLatLang),
             widget.getSpacer(0.0, 20.0),
           ],
         ),

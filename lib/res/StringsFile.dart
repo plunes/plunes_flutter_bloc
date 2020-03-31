@@ -1,12 +1,13 @@
 /// Created by Manvendra Kumar Singh
 
-final stringsFile = StringsFile();
+final plunesStrings = PlunesStrings();
 
-class StringsFile {
-  static String exceptionMsg = 'An error occurred when converting a color';
-  static String noInternetMsg = 'No Internet';
-  static String cantConnectInternet = 'Can\'t connect to the Internet ';
-  static String tryAgain = 'Try Again';
+class PlunesStrings {
+  static const String exceptionMsg =
+      'An error occurred when converting a color';
+  static const String noInternetMsg = 'No Internet';
+  static const String cantConnectInternet = 'Can\'t connect to the Internet ';
+  static const String tryAgain = 'Try Again';
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
@@ -414,4 +415,11 @@ class StringsFile {
 
   get text2Referral =>
       'You will get instant cash as soon as your friend registers successfully';
+
+  //Solution strings
+  static const String solutionSearched = "Solution Searched";
+  static const String consultations = "Consultations";
+  static const String tests = "Tests";
+  static const String procedures = "Procedures";
+  static const String NA = "NA";
 }

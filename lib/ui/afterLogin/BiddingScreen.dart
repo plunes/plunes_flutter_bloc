@@ -12,6 +12,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 
 class BiddingScreen extends BaseActivity {
   static const tag = '/biddingscreen';
@@ -63,10 +64,14 @@ class _BiddingScreenState extends State<BiddingScreen> {
                   alignment: Alignment.topCenter,
                   child: InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, HealthSolutionNear.tag);
+//                        Navigator.pushNamed(context, HealthSolutionNear.tag);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SolutionBiddingScreen()));
                       },
                       child: widget.createTextViews(
-                          stringsFile.solutionNearYouMsg,
+                          plunesStrings.solutionNearYouMsg,
                           20,
                           colorsFile.black0,
                           TextAlign.center,
@@ -80,7 +85,7 @@ class _BiddingScreenState extends State<BiddingScreen> {
                   children: <Widget>[
                     Center(
                         child: widget.createTextViews(
-                            stringsFile.searchNearByMsg,
+                            plunesStrings.searchNearByMsg,
                             20,
                             colorsFile.black0,
                             TextAlign.center,
@@ -120,7 +125,7 @@ class _BiddingScreenState extends State<BiddingScreen> {
                         });
                       },
                       decoration: widget
-                          .inputDecorationWithoutError(stringsFile.searchHint)),
+                          .inputDecorationWithoutError(plunesStrings.searchHint)),
                   suggestionsCallback: (pattern) {
                     if (pattern != '') {
 //                      filter_data(pattern);
@@ -311,7 +316,7 @@ class _BiddingScreenState extends State<BiddingScreen> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[
-                  widget.createTextViews(stringsFile.solutionActivity, 18,
+                  widget.createTextViews(plunesStrings.solutionActivity, 18,
                       colorsFile.black0, TextAlign.center, FontWeight.normal),
                   AnimatedContainer(
                     duration: Duration(seconds: 1),

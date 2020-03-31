@@ -1,0 +1,127 @@
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/res/StringsFile.dart';
+
+// ignore: must_be_immutable
+class SolutionBiddingScreen extends BaseActivity {
+  @override
+  _SolutionBiddingScreenState createState() => _SolutionBiddingScreenState();
+}
+
+class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
+  List<SolutionDummyModel> _solutions = [SolutionDummyModel()];
+  Function onViewMoreTap;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        bottom: false,
+        top: false,
+        child: Scaffold(
+          key: scaffoldKey,
+          appBar:
+              widget.getAppBar(context, PlunesStrings.solutionSearched, true),
+          body: Builder(builder: (context) {
+            return Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 6,
+                  vertical: AppConfig.verticalBlockSize * 3),
+              width: double.infinity,
+              child: _showBody(),
+            );
+          }),
+        ));
+  }
+
+  Widget _showBody() {
+    return Column(
+      children: <Widget>[
+        CustomWidgets().searchBar(
+            hintText: plunesStrings.searchHint,
+            searchController: TextEditingController()),
+        widget.getSpacer(
+            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
+        Container(
+          padding: EdgeInsets.only(
+              left: AppConfig.horizontalBlockSize * 0.2,
+              right: AppConfig.horizontalBlockSize * 0.2),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              CustomWidgets().rectangularButtonWithPadding(
+                  buttonColor: PlunesColors.WHITECOLOR,
+                  buttonText: PlunesStrings.consultations,
+                  textColor: PlunesColors.GREYCOLOR,
+                  borderColor: PlunesColors.LIGHTGREYCOLOR,
+                  horizontalPadding: AppConfig.horizontalBlockSize * 4,
+                  verticalPadding: AppConfig.verticalBlockSize * 1,
+                  onTap: () => _onConsultationButtonClick()),
+              CustomWidgets().rectangularButtonWithPadding(
+                  buttonColor: PlunesColors.WHITECOLOR,
+                  buttonText: PlunesStrings.tests,
+                  textColor: PlunesColors.GREYCOLOR,
+                  borderColor: PlunesColors.LIGHTGREYCOLOR,
+                  horizontalPadding: AppConfig.horizontalBlockSize * 4,
+                  verticalPadding: AppConfig.verticalBlockSize * 1,
+                  onTap: () => _onTestButtonClick()),
+              CustomWidgets().rectangularButtonWithPadding(
+                  buttonColor: PlunesColors.WHITECOLOR,
+                  buttonText: PlunesStrings.procedures,
+                  textColor: PlunesColors.GREYCOLOR,
+                  borderColor: PlunesColors.LIGHTGREYCOLOR,
+                  horizontalPadding: AppConfig.horizontalBlockSize * 4,
+                  verticalPadding: AppConfig.verticalBlockSize * 1,
+                  onTap: () => _onProcedureButtonClick()),
+            ],
+          ),
+        ),
+        widget.getSpacer(
+            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
+        Expanded(
+            child: ListView.builder(
+          itemBuilder: (context, index) {
+            TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
+              ..onTap = () => _onViewMoreTap(index);
+            return CustomWidgets().getSolutionRow(_solutions, index,
+                onButtonTap: () => _onSolutionItemTap(index),
+                onViewMoreTap: tapRecognizer);
+          },
+          itemCount: 50,
+        ))
+      ],
+    );
+  }
+
+  _onConsultationButtonClick() {
+    print("sdsdssdsds");
+  }
+
+  _onTestButtonClick() {}
+
+  _onProcedureButtonClick() {}
+
+  _onSolutionItemTap(int index) {
+    print("whole button tapped");
+  }
+
+  _onViewMoreTap(int solution) {
+    print("index is $solution");
+  }
+}
+
+class SolutionDummyModel {
+  String fileUrl =
+      "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg";
+  String heading = "Dentist Consultation";
+  String procedure = "Procedure";
+  String subTitleText = "Do tests under plunes ,lorem ispum ";
+}

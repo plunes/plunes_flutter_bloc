@@ -112,7 +112,7 @@ class _EditProfileState extends State<EditProfileScreen>
 
     return Scaffold(
         key: _scaffoldKey,
-        appBar: widget.getAppBar(context, stringsFile.editProfile, true),
+        appBar: widget.getAppBar(context, plunesStrings.editProfile, true),
         backgroundColor: Colors.white,
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()));
@@ -139,20 +139,20 @@ class _EditProfileState extends State<EditProfileScreen>
           widget.getSpacer(0.0, 10.0),
           createTextField(
               nameController,
-              stringsFile.fullName,
+              plunesStrings.fullName,
               TextInputType.text,
               TextCapitalization.words,
               name_valid,
-              stringsFile.errorMsgEnterFullName),
+              plunesStrings.errorMsgEnterFullName),
           widget.getSpacer(0.0, 20.0),
           widget.userType != Constants.hospital
-              ? createTextField(dobController, stringsFile.dateOfBirth,
+              ? createTextField(dobController, plunesStrings.dateOfBirth,
                   TextInputType.datetime, TextCapitalization.none, false, '')
               : Container(),
           widget.userType != Constants.hospital
               ? createTextField(
                   educationController,
-                  isDoctor ? stringsFile.qualification : stringsFile.education,
+                  isDoctor ? plunesStrings.qualification : plunesStrings.education,
                   TextInputType.text,
                   TextCapitalization.words,
                   true,
@@ -163,7 +163,7 @@ class _EditProfileState extends State<EditProfileScreen>
           isDoctor
               ? createTextField(
                   professionRegController,
-                  stringsFile.professionalRegNo,
+                  plunesStrings.professionalRegNo,
                   TextInputType.text,
                   TextCapitalization.characters,
                   true,
@@ -173,7 +173,7 @@ class _EditProfileState extends State<EditProfileScreen>
           isDoctor
               ? createTextField(
                   specializationController,
-                  '${stringsFile.specialization}*',
+                  '${plunesStrings.specialization}*',
                   TextInputType.text,
                   TextCapitalization.words,
                   true,
@@ -183,7 +183,7 @@ class _EditProfileState extends State<EditProfileScreen>
           isDoctor
               ? createTextField(
                   experienceController,
-                  stringsFile.experienceInNo,
+                  plunesStrings.experienceInNo,
                   TextInputType.numberWithOptions(decimal: true),
                   TextCapitalization.none,
                   true,
@@ -191,27 +191,27 @@ class _EditProfileState extends State<EditProfileScreen>
               : Container(),
           widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
           isDoctor
-              ? createTextField(practisingController, stringsFile.practising,
+              ? createTextField(practisingController, plunesStrings.practising,
                   TextInputType.text, TextCapitalization.words, true, '')
               : Container(),
           widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
           widget.userType != Constants.hospital
-              ? createTextField(collegeController, stringsFile.college,
+              ? createTextField(collegeController, plunesStrings.college,
                   TextInputType.text, TextCapitalization.words, true, '')
               : Container(),
           widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
           isDoctor
-              ? createTextField(aboutController, stringsFile.introduction,
+              ? createTextField(aboutController, plunesStrings.introduction,
                   TextInputType.text, TextCapitalization.words, true, '')
               : Container(),
           widget.getSpacer(
               0.0, widget.userType != Constants.hospital ? 20.0 : 0),
-          createTextField(locationController, stringsFile.location,
+          createTextField(locationController, plunesStrings.location,
               TextInputType.text, TextCapitalization.none, false, ''),
           progress
               ? SpinKitThreeBounce(
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
-              : widget.getDefaultButton(stringsFile.update, globalWidth - 40,
+              : widget.getDefaultButton(plunesStrings.update, globalWidth - 40,
                   42, updateProfileRequest),
           widget.getSpacer(0.0, 30.0),
         ],
@@ -381,7 +381,7 @@ class _EditProfileState extends State<EditProfileScreen>
       progress = false;
       if (data != null && data['success'] != null && data['success']) {
         await bloc.saveEditProfileDataInPreferences(context, body);
-        widget.showInSnackBar(stringsFile.success, Colors.green, _scaffoldKey);
+        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
       } else {
         widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
       }

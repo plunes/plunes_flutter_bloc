@@ -218,7 +218,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                                                       22,
                                                       assetsImageFile
                                                           .locationIcon,
-                                                      stringsFile.locationSep,
+                                                      plunesStrings.locationSep,
                                                       _userLocation)),
                                               editButton('1')
                                             ],
@@ -232,7 +232,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                                             children: <Widget>[
                                               Expanded(
                                                 child: widget.createTextViews(
-                                                    stringsFile.introduction,
+                                                    plunesStrings.introduction,
                                                     15,
                                                     colorsFile.black0,
                                                     TextAlign.start,
@@ -250,7 +250,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                                               FontWeight.w100),
                                           widget.getSpacer(0.0, 20.0),
                                           widget.createTextViews(
-                                              stringsFile.specialization,
+                                              plunesStrings.specialization,
                                               15,
                                               colorsFile.black0,
                                               TextAlign.start,
@@ -270,7 +270,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                                                 value: _speciality,
                                                 decoration: InputDecoration
                                                     .collapsed(
-                                                        hintText: stringsFile
+                                                        hintText: plunesStrings
                                                             .chooseSpeciality,
                                                         hintStyle: TextStyle(
                                                             color:
@@ -296,7 +296,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                                             children: <Widget>[
                                               Expanded(
                                                 child: widget.createTextViews(
-                                                    stringsFile.teamOfExperts,
+                                                    plunesStrings.teamOfExperts,
                                                     15,
                                                     colorsFile.black0,
                                                     TextAlign.start,
@@ -516,7 +516,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                                                 Center(
                                                     child:
                                                         widget.createTextViews(
-                                                            stringsFile
+                                                            plunesStrings
                                                                 .achievementBook,
                                                             15,
                                                             colorsFile.black0,
@@ -552,7 +552,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           getSingleTabView(
-              assetsImageFile.achievementIcon, stringsFile.achievements),
+              assetsImageFile.achievementIcon, plunesStrings.achievements),
         ],
       ),
     );
@@ -757,16 +757,16 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
     bloc.profileData.listen((data) async {
       if (data.success) {
         await bloc.saveDataInPreferences(data, context, null);
-        widget.showInSnackBar(stringsFile.success, Colors.green, _scaffoldKey1);
+        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey1);
       } else {
         await bloc.saveDataInPreferences(data, context, null);
         widget.showInSnackBar(
-            stringsFile.somethingWentWrong, Colors.red, _scaffoldKey1);
+            plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey1);
       }
     }, onDone: () {
       bloc.disposeProfileStream();
     });
-    _special_lities.add(stringsFile.chooseSpeciality);
+    _special_lities.add(plunesStrings.chooseSpeciality);
     _dropDownMenuItems = getDropDownMenuItems();
     _speciality = _dropDownMenuItems[0].value;
     get_data();
@@ -810,7 +810,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
         child: Container(
             padding: EdgeInsets.only(left: 10, bottom: 10),
             child: widget.createTextViews(
-                _for == '3' ? stringsFile.add : stringsFile.edit,
+                _for == '3' ? plunesStrings.add : plunesStrings.edit,
                 15,
                 colorsFile.defaultGreen,
                 TextAlign.start,

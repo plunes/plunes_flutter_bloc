@@ -38,7 +38,7 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
     globalWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        appBar: widget.getAppBar(context, stringsFile.help, true),
+        appBar: widget.getAppBar(context, plunesStrings.help, true),
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: Stack(
@@ -71,10 +71,10 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
             Expanded(
                 child: widget.createTextViews(_title, fontSize,
                     colorsFile.black0, TextAlign.start, fontWeight)),
-            ((stringsFile.bookingAppointments == _title && booking) ||
-                    (stringsFile.onlineSolution == _title &&
+            ((plunesStrings.bookingAppointments == _title && booking) ||
+                    (plunesStrings.onlineSolution == _title &&
                         isOnlineSolution) ||
-                    (stringsFile.feedBacks == _title && isFeedback))
+                    (plunesStrings.feedBacks == _title && isFeedback))
                 ? Icon(
                     Icons.keyboard_arrow_down,
                     color: Colors.black,
@@ -96,13 +96,13 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
           padding: EdgeInsets.only(left: 20, top: 10, bottom: 10),
           width: globalWidth,
           color: Color(CommonMethods.getColorHexFromStr(colorsFile.grey)),
-          child: widget.createTextViews(stringsFile.iHaveIssueWith, 14,
+          child: widget.createTextViews(plunesStrings.iHaveIssueWith, 14,
               colorsFile.black0, TextAlign.start, FontWeight.normal),
         ),
         Column(
           children: <Widget>[
             getHelpContentRow(true, assetsImageFile.appointCalIcon,
-                stringsFile.bookingAppointments, 15, FontWeight.w600),
+                plunesStrings.bookingAppointments, 15, FontWeight.w600),
             widget.getDividerRow(context, 0, 0, 0),
             Visibility(
                 visible: booking,
@@ -110,31 +110,31 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
                     color: Color(
                         CommonMethods.getColorHexFromStr(colorsFile.grey)),
                     child: Column(children: <Widget>[
-                      getHelpContentRow(false, null, stringsFile.bookingFailure,
+                      getHelpContentRow(false, null, plunesStrings.bookingFailure,
                           14, FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
                       getHelpContentRow(
                           false,
                           null,
-                          stringsFile.wrongContactDetails,
+                          plunesStrings.wrongContactDetails,
                           14,
                           FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
                       getHelpContentRow(
                           false,
                           null,
-                          stringsFile.appointmentDelayed,
+                          plunesStrings.appointmentDelayed,
                           14,
                           FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
                       getHelpContentRow(
                           false,
                           null,
-                          stringsFile.cancellingAppointment,
+                          plunesStrings.cancellingAppointment,
                           14,
                           FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
-                      getHelpContentRow(false, null, stringsFile.smsOtpIssues,
+                      getHelpContentRow(false, null, plunesStrings.smsOtpIssues,
                           14, FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
                     ])))
@@ -144,7 +144,7 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
         Column(
           children: <Widget>[
             getHelpContentRow(true, assetsImageFile.onlineSolIcon,
-                stringsFile.onlineSolution, 15, FontWeight.w600),
+                plunesStrings.onlineSolution, 15, FontWeight.w600),
             widget.getDividerRow(context, 0, 0, 0),
             Visibility(
                 visible: isOnlineSolution,
@@ -153,12 +153,12 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
                         CommonMethods.getColorHexFromStr(colorsFile.grey)),
                     child: Column(children: <Widget>[
                       getHelpContentRow(false, null,
-                          stringsFile.questionsNotAns, 14, FontWeight.normal),
+                          plunesStrings.questionsNotAns, 14, FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
                       getHelpContentRow(false, null,
-                          stringsFile.notHappyWithRes, 14, FontWeight.normal),
+                          plunesStrings.notHappyWithRes, 14, FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
-                      getHelpContentRow(false, null, stringsFile.paymentIssues,
+                      getHelpContentRow(false, null, plunesStrings.paymentIssues,
                           14, FontWeight.normal),
                     ])))
           ],
@@ -167,7 +167,7 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
         Column(
           children: <Widget>[
             getHelpContentRow(true, assetsImageFile.feedbackIcon,
-                stringsFile.feedBacks, 15, FontWeight.w600),
+                plunesStrings.feedBacks, 15, FontWeight.w600),
             widget.getDividerRow(context, 0, 0, 0),
             Visibility(
                 visible: isFeedback,
@@ -178,22 +178,22 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
                       getHelpContentRow(
                           false,
                           null,
-                          stringsFile.feedBackNotPublished,
+                          plunesStrings.feedBackNotPublished,
                           14,
                           FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
                       getHelpContentRow(
                           false,
                           null,
-                          stringsFile.unableWriteFeedBack,
+                          plunesStrings.unableWriteFeedBack,
                           14,
                           FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
-                      getHelpContentRow(false, null, stringsFile.bookingFailure,
+                      getHelpContentRow(false, null, plunesStrings.bookingFailure,
                           14, FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
                       getHelpContentRow(false, null,
-                          stringsFile.wantEditFeedBack, 14, FontWeight.normal),
+                          plunesStrings.wantEditFeedBack, 14, FontWeight.normal),
                     ])))
           ],
         ),
@@ -204,62 +204,62 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
 
   onTapAction(String _title) {
     setState(() {
-      if (_title == stringsFile.bookingAppointments) {
+      if (_title == plunesStrings.bookingAppointments) {
         booking = !booking;
         isOnlineSolution = false;
         isFeedback = false;
-      } else if (_title == stringsFile.onlineSolution) {
+      } else if (_title == plunesStrings.onlineSolution) {
         isOnlineSolution = !isOnlineSolution;
         booking = false;
         isFeedback = false;
-      } else if (_title == stringsFile.feedBacks) {
+      } else if (_title == plunesStrings.feedBacks) {
         isFeedback = !isFeedback;
         isOnlineSolution = false;
         booking = false;
-      } else if (_title == stringsFile.bookingFailure) {
+      } else if (_title == plunesStrings.bookingFailure) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.bookingFailure;
-      } else if (_title == stringsFile.wrongContactDetails) {
+        title = plunesStrings.bookingFailure;
+      } else if (_title == plunesStrings.wrongContactDetails) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.wrongContactDetails;
-      } else if (_title == stringsFile.appointmentDelayed) {
+        title = plunesStrings.wrongContactDetails;
+      } else if (_title == plunesStrings.appointmentDelayed) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.appointmentDelayed;
-      } else if (_title == stringsFile.cancellingAppointment) {
+        title = plunesStrings.appointmentDelayed;
+      } else if (_title == plunesStrings.cancellingAppointment) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.cancellingAppointment;
-      } else if (_title == stringsFile.smsOtpIssues) {
+        title = plunesStrings.cancellingAppointment;
+      } else if (_title == plunesStrings.smsOtpIssues) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.smsOtpIssues;
-      } else if (_title == stringsFile.questionsNotAns) {
+        title = plunesStrings.smsOtpIssues;
+      } else if (_title == plunesStrings.questionsNotAns) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.questionsNotAns;
-      } else if (_title == stringsFile.notHappyWithRes) {
+        title = plunesStrings.questionsNotAns;
+      } else if (_title == plunesStrings.notHappyWithRes) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.notHappyWithRes;
-      } else if (_title == stringsFile.paymentIssues) {
+        title = plunesStrings.notHappyWithRes;
+      } else if (_title == plunesStrings.paymentIssues) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.paymentIssues;
-      } else if (_title == stringsFile.feedBackNotPublished) {
+        title = plunesStrings.paymentIssues;
+      } else if (_title == plunesStrings.feedBackNotPublished) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.feedBackNotPublished;
-      } else if (_title == stringsFile.unableWriteFeedBack) {
+        title = plunesStrings.feedBackNotPublished;
+      } else if (_title == plunesStrings.unableWriteFeedBack) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.unableWriteFeedBack;
-      } else if (_title == stringsFile.wantEditFeedBack) {
+        title = plunesStrings.unableWriteFeedBack;
+      } else if (_title == plunesStrings.wantEditFeedBack) {
         isPopupShowing = true;
         _descriptionController.text = '';
-        title = stringsFile.wantEditFeedBack;
+        title = plunesStrings.wantEditFeedBack;
       }
     });
   }
@@ -276,12 +276,12 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
     if (result['success'] != null && result['success']) {
       isPopupShowing = false;
       CommonMethods.commonDialog(
-          context, this, stringsFile.success, stringsFile.successfullySent);
+          context, this, plunesStrings.success, plunesStrings.successfullySent);
     } else
       widget.showInSnackBar(
           result['message'] != null
               ? result['message']
-              : stringsFile.somethingWentWrong,
+              : plunesStrings.somethingWentWrong,
           Colors.red,
           _scaffoldKey);
   }

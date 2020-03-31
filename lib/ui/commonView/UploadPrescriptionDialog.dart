@@ -105,21 +105,21 @@ class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
                     widget.getSpacer(0.0, 20.0),
                     createTextField(
                         specializationController,
-                        '${stringsFile.chooseSpeciality}',
+                        '${plunesStrings.chooseSpeciality}',
                         TextInputType.text,
                         TextCapitalization.words,
                         true,
-                        stringsFile.errorMsgEnterSpecialization),
+                        plunesStrings.errorMsgEnterSpecialization),
                     widget.getSpacer(0.0, 20.0),
                     createTextField(
                         reportNameController,
-                        '${stringsFile.reportName}',
+                        '${plunesStrings.reportName}',
                         TextInputType.text,
                         TextCapitalization.words,
                         true,
                         ''),
                     widget.getSpacer(0.0, 20.0),
-                    createTextField(notesController, '${stringsFile.addNotes}',
+                    createTextField(notesController, '${plunesStrings.addNotes}',
                         TextInputType.text, TextCapitalization.words, true, ''),
                     widget.getSpacer(0.0, 20.0),
                     getButton(),
@@ -205,7 +205,7 @@ class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
               child: Container(
                   margin: EdgeInsets.only(right: 5),
                   child: widget.getBorderButton(
-                      stringsFile.cancel, globalWidth, onBackPressed))),
+                      plunesStrings.cancel, globalWidth, onBackPressed))),
           Expanded(
               child: Container(
             margin: EdgeInsets.only(left: 5),
@@ -213,7 +213,7 @@ class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
                 ? SpinKitThreeBounce(
                     color: Color(hexColorCode.defaultGreen), size: 30.0)
                 : widget.getDefaultButton(
-                    stringsFile.upload, globalWidth, 42, upload),
+                    plunesStrings.upload, globalWidth, 42, upload),
           ))
         ],
       ),

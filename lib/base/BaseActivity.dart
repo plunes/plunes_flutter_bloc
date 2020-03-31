@@ -55,7 +55,7 @@ class BaseActivity extends StatefulWidget {
         textAlign: textAlign,
         style: TextStyle(
             fontSize: fontSize,
-            decoration: label == stringsFile.solutionNearYouMsg
+            decoration: label == plunesStrings.solutionNearYouMsg
                 ? TextDecoration.underline
                 : TextDecoration.none,
             color: Color(CommonMethods.getColorHexFromStr(colorCode)),
@@ -232,7 +232,7 @@ class BaseActivity extends StatefulWidget {
         width: 50,
         decoration: myBoxDecorationBottom(),
         child: Center(
-            child: createTextViews(stringsFile.countryCode, 18,
+            child: createTextViews(plunesStrings.countryCode, 18,
                 colorsFile.black0, TextAlign.center, FontWeight.normal)));
   }
 
@@ -255,7 +255,7 @@ class BaseActivity extends StatefulWidget {
   Widget getBorderButton(String text, double _width, void Function() sendOtp) {
     return Container(
       width: _width,
-      height: text == stringsFile.upload ? 35 : 42.0,
+      height: text == plunesStrings.upload ? 35 : 42.0,
       child: FlatButton(
         onPressed: sendOtp,
         color: Colors.white,
@@ -339,7 +339,7 @@ class BaseActivity extends StatefulWidget {
                   onPressed: () => reset(context),
                 )
               : Container(),
-          (isSelected && from == stringsFile.notification)
+          (isSelected && from == plunesStrings.notification)
               ? IconButton(
                   padding: EdgeInsets.zero,
                   icon: Icon(Icons.delete, color: Colors.grey),
@@ -350,7 +350,7 @@ class BaseActivity extends StatefulWidget {
                   },
                 )
               : Container(),
-          (isSelected && from == stringsFile.notification)
+          (isSelected && from == plunesStrings.notification)
               ? Padding(
                   padding: EdgeInsets.fromLTRB(0.0, 20, 20, 20),
                   child: Text('${selectedPositions.length}'),
@@ -370,12 +370,12 @@ class BaseActivity extends StatefulWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          createTextViews(stringsFile.signUpMsg, 13, colorsFile.lightGrey2,
+          createTextViews(plunesStrings.signUpMsg, 13, colorsFile.lightGrey2,
               TextAlign.center, FontWeight.normal),
           InkWell(
               onTap: () => CommonMethods.launchURL(urls.terms),
               child: Container(
-                  child: Text(stringsFile.termsServices,
+                  child: Text(plunesStrings.termsServices,
                       style: TextStyle(decoration: TextDecoration.underline))))
         ],
       ),

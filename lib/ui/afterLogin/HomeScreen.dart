@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       count = 0,
       screen;
   bool _showBadge = false, progress = false, isSelected = false;
-  final List<Widget> _widgetOptions = [
+  final List<Widget> _widgetOptionsForUser = [
     BiddingScreen(),
     PlockrMainScreen(),
     NotificationScreen(),
@@ -89,13 +89,13 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             context,
             _userType != Constants.hospital
                 ? (_selectedIndex == 1
-                    ? stringsFile.plockr
+                    ? plunesStrings.plockr
                     : _selectedIndex == 3
-                        ? stringsFile.profiles
-                        : _selectedIndex == 2 ? stringsFile.notifications : '')
+                        ? plunesStrings.profiles
+                        : _selectedIndex == 2 ? plunesStrings.notifications : '')
                 : (_selectedIndex == 1
-                    ? stringsFile.notifications
-                    : _selectedIndex == 2 ? stringsFile.profiles : ''),
+                    ? plunesStrings.notifications
+                    : _selectedIndex == 2 ? plunesStrings.profiles : ''),
             isSelected,
             selectedPositions,
             from,
@@ -119,13 +119,13 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: <BottomNavigationBarItem>[
-        bottomNavigationBarItem(stringsFile.solution, assetsImageFile.bidIcon,
+        bottomNavigationBarItem(plunesStrings.solution, assetsImageFile.bidIcon,
             assetsImageFile.bidActiveIcon),
         bottomNavigationBarItem(
-            stringsFile.notification,
+            plunesStrings.notification,
             assetsImageFile.notificationIcon,
             assetsImageFile.notificationActiveIcon),
-        bottomNavigationBarItem(stringsFile.profile,
+        bottomNavigationBarItem(plunesStrings.profile,
             assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
       ],
     );
@@ -142,17 +142,17 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: <BottomNavigationBarItem>[
-        bottomNavigationBarItem(stringsFile.solution, assetsImageFile.bidIcon,
+        bottomNavigationBarItem(plunesStrings.solution, assetsImageFile.bidIcon,
             assetsImageFile.bidActiveIcon),
         bottomNavigationBarItem(
-            stringsFile.plockr,
+            plunesStrings.plockr,
             assetsImageFile.plockrUnselectedIcon,
             assetsImageFile.plockrSelectedIcon),
         bottomNavigationBarItem(
-            stringsFile.notification,
+            plunesStrings.notification,
             assetsImageFile.notificationIcon,
             assetsImageFile.notificationActiveIcon),
-        bottomNavigationBarItem(stringsFile.profile,
+        bottomNavigationBarItem(plunesStrings.profile,
             assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
       ],
     );
@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   BottomNavigationBarItem bottomNavigationBarItem(
       String title, String icon, String activeIcon) {
     return BottomNavigationBarItem(
-        icon: (_showBadge && title == stringsFile.notification)
+        icon: (_showBadge && title == plunesStrings.notification)
             ? badgeIconWidget(icon)
             : widget.getAssetIconWidget(icon, 32, 32, BoxFit.contain),
         activeIcon:
@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   Widget bodyView() {
     return Container(
         child: _userType != Constants.hospital
-            ? _widgetOptions[_selectedIndex]
+            ? _widgetOptionsForUser[_selectedIndex]
             : _widgetOptionsHospital[_selectedIndex]);
   }
 
@@ -204,7 +204,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     bloc.deleteListenerFetcher.listen((data) {
       setState(() {
         if (data != null) {
-          from = stringsFile.notification;
+          from = plunesStrings.notification;
           isSelected = data['isSelected'] != null ? data['isSelected'] : false;
           selectedPositions = data['selectedItemList'] != null
               ? data['selectedItemList']
@@ -238,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         navigationPage();
       } else {
         widget.showInSnackBar(
-            stringsFile.somethingWentWrong, Colors.red, _scaffoldKey);
+            plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
       }
     });
   }
@@ -356,46 +356,46 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                     ),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     _userType != Constants.user
-                        ? getListTile(1, stringsFile.myAvailability,
+                        ? getListTile(1, plunesStrings.myAvailability,
                             assetsImageFile.availIcon)
                         : Container(),
                     _userType != Constants.user
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
-                    getListTile(2, stringsFile.appointments,
+                    getListTile(2, plunesStrings.appointments,
                         assetsImageFile.appointmentIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     getListTile(
-                        3, stringsFile.settings, assetsImageFile.settingsIcon),
+                        3, plunesStrings.settings, assetsImageFile.settingsIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     _userType != Constants.user
-                        ? getListTile(4, stringsFile.managePayment,
+                        ? getListTile(4, plunesStrings.managePayment,
                             assetsImageFile.walletIcon)
                         : Container(),
                     _userType != Constants.user
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
-                    getListTile(5, stringsFile.help, assetsImageFile.helpIcon),
+                    getListTile(5, plunesStrings.help, assetsImageFile.helpIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     getListTile(
-                        6, stringsFile.aboutUs, assetsImageFile.aboutUsIcon),
+                        6, plunesStrings.aboutUs, assetsImageFile.aboutUsIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     _userType != Constants.hospital
-                        ? getListTile(7, stringsFile.referAndEarn,
+                        ? getListTile(7, plunesStrings.referAndEarn,
                             assetsImageFile.referIcon)
                         : Container(),
                     _userType != Constants.hospital
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
                     _userType != Constants.hospital
-                        ? getListTile(8, stringsFile.coupons,
+                        ? getListTile(8, plunesStrings.coupons,
                             assetsImageFile.navCouponIcon)
                         : Container(),
                     _userType != Constants.hospital
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
                     getListTile(
-                        9, stringsFile.logout, assetsImageFile.logoutIcon),
+                        9, plunesStrings.logout, assetsImageFile.logoutIcon),
                     InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, HealthSolutionNear.tag);
@@ -408,7 +408,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                         child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: widget.createTextViews(
-                                stringsFile.availOfferMsg,
+                                plunesStrings.availOfferMsg,
                                 16.0,
                                 colorsFile.lightGrey2,
                                 TextAlign.left,
@@ -468,7 +468,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         break;
       case 9:
         closeDrawer();
-        CommonMethods.confirmationDialog(context, stringsFile.logoutMsg, this);
+        CommonMethods.confirmationDialog(context, plunesStrings.logoutMsg, this);
         break;
     }
   }

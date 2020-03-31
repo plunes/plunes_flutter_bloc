@@ -43,7 +43,7 @@ class _ReferScreenState extends State<ReferScreen> {
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: widget.getAppBar(context, stringsFile.referAndEarn, true),
+        appBar: widget.getAppBar(context, plunesStrings.referAndEarn, true),
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: getBodyView());
@@ -55,12 +55,12 @@ class _ReferScreenState extends State<ReferScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          widget.createTextViews(stringsFile.inviteYourFriends, 22,
+          widget.createTextViews(plunesStrings.inviteYourFriends, 22,
               colorsFile.black1, TextAlign.start, FontWeight.bold),
           widget.getSpacer(0.0, 20.0),
-          getBulletRow(stringsFile.text1Referral),
-          getBulletRow(stringsFile.text2Referral),
-          getBulletRow(stringsFile.cashCanBeUsed),
+          getBulletRow(plunesStrings.text1Referral),
+          getBulletRow(plunesStrings.text2Referral),
+          getBulletRow(plunesStrings.cashCanBeUsed),
           Expanded(
             child: Image.asset(
               assetsImageFile.coverIcon,
@@ -69,7 +69,7 @@ class _ReferScreenState extends State<ReferScreen> {
             ),
           ),
           widget.getSpacer(0.0, 10.0),
-          widget.createTextViews(stringsFile.availableCredits, 14,
+          widget.createTextViews(plunesStrings.availableCredits, 14,
               colorsFile.darkGrey1, TextAlign.start, FontWeight.normal),
           widget.getSpacer(0.0, 10.0),
           Container(
@@ -89,13 +89,13 @@ class _ReferScreenState extends State<ReferScreen> {
             ),
           ),
           widget.getSpacer(0.0, 30.0),
-          widget.createTextViews(stringsFile.shareYourInviteCode, 14,
+          widget.createTextViews(plunesStrings.shareYourInviteCode, 14,
               colorsFile.darkGrey1, TextAlign.start, FontWeight.normal),
           widget.getSpacer(0.0, 10.0),
           InkWell(
             onTap: () {
               Clipboard.setData(new ClipboardData(text: _referralCode));
-              CommonMethods.showLongToast(stringsFile.copyToClipboard);
+              CommonMethods.showLongToast(plunesStrings.copyToClipboard);
             },
             child: Container(
               color: Color(0xffF9F9F9),
@@ -112,7 +112,7 @@ class _ReferScreenState extends State<ReferScreen> {
                         FontWeight.normal),
                     Expanded(child: Container()),
                     widget.createTextViews(
-                        stringsFile.copyCode,
+                        plunesStrings.copyCode,
                         15,
                         colorsFile.defaultGreen,
                         TextAlign.start,
@@ -136,7 +136,7 @@ class _ReferScreenState extends State<ReferScreen> {
             child: Container(
               height: 45,
               alignment: Alignment.center,
-              child: widget.createTextViews(stringsFile.inviteFriends, 18,
+              child: widget.createTextViews(plunesStrings.inviteFriends, 18,
                   colorsFile.white, TextAlign.center, FontWeight.normal),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(20)),
