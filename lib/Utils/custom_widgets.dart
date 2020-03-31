@@ -22,7 +22,9 @@ class CustomWidgets {
 
   Widget searchBar(
       {@required final TextEditingController searchController,
-      @required final String hintText}) {
+      @required final String hintText,
+      bool hasFocus = false,
+      FocusNode focusNode}) {
     return StatefulBuilder(builder: (context, newState) {
       return Card(
         elevation: 3.0,
@@ -46,6 +48,8 @@ class CustomWidgets {
               Expanded(
                 child: TextField(
                   controller: searchController,
+                  focusNode: focusNode,
+                  autofocus: hasFocus,
                   maxLines: 1,
                   style: TextStyle(
                       color: PlunesColors.BLACKCOLOR,

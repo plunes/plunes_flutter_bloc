@@ -9,6 +9,15 @@ class PlunesStrings {
   static const String cantConnectInternet = 'Can\'t connect to the Internet ';
   static const String tryAgain = 'Try Again';
 
+  static const String cancelError = "Request cancelled";
+
+  static const String pleaseCheckInternetConnection =
+      "Slow or no internet connection";
+
+  static const String noInternet = noInternetMsg;
+
+  static const String receiveTimeOut = "Server timeout, please try again later";
+
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
         'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
@@ -422,4 +431,7 @@ class PlunesStrings {
   static const String tests = "Tests";
   static const String procedures = "Procedures";
   static const String NA = "NA";
+  static const String negotiateForBestPrice =
+      "Negotiate for the best price solution near you";
+  static const String previousActivities = "Previous Activities";
 }
