@@ -605,7 +605,7 @@ class _AvailabilitySelectionScreenState
     ));
 
     return Scaffold(
-        appBar: widget.getAppBar(context, stringsFile.availability, true),
+        appBar: widget.getAppBar(context, plunesStrings.availability, true),
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: form);

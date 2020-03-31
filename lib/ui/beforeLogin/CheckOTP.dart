@@ -34,12 +34,12 @@ class _CheckOTPState extends State<CheckOTP> {
   void _checkOTP(String pin, BuildContext context) async {
     setState(() {
       if (pin == Constants.OTP) {
-        if (widget.from == stringsFile.forgotPasswordTitle)
+        if (widget.from == plunesStrings.forgotPasswordTitle)
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => ChangePassword(
-                      phone: widget.phone, from: stringsFile.createPassword)));
+                      phone: widget.phone, from: plunesStrings.createPassword)));
         else
           Navigator.pushReplacement(
               context,
@@ -115,7 +115,7 @@ class _CheckOTPState extends State<CheckOTP> {
         children: <Widget>[
           Container(
             alignment: Alignment.center,
-            child: widget.createTextViews(stringsFile.enterYourOTPMsg, 22,
+            child: widget.createTextViews(plunesStrings.enterYourOTPMsg, 22,
                 colorsFile.black0, TextAlign.center, FontWeight.normal),
           ),
           Container(
@@ -164,7 +164,7 @@ class _CheckOTPState extends State<CheckOTP> {
             child: Visibility(
                 visible: errorMsg,
                 child: Center(
-                    child: widget.createTextViews(stringsFile.wrongOTPError, 12,
+                    child: widget.createTextViews(plunesStrings.wrongOTPError, 12,
                         colorsFile.red, TextAlign.center, FontWeight.normal))),
           ),
           Visibility(
@@ -180,7 +180,7 @@ class _CheckOTPState extends State<CheckOTP> {
                       text: new TextSpan(
                         children: <TextSpan>[
                           new TextSpan(
-                              text: stringsFile.resendCodeIn,
+                              text: plunesStrings.resendCodeIn,
                               style: new TextStyle(
                                   fontSize: 16,
                                   color: Color(CommonMethods.getColorHexFromStr(
@@ -206,7 +206,7 @@ class _CheckOTPState extends State<CheckOTP> {
                     child: InkWell(
                         onTap: send_otp,
                         child: widget.createTextViews(
-                            stringsFile.resendCode,
+                            plunesStrings.resendCode,
                             16,
                             colorsFile.defaultGreen,
                             TextAlign.center,
@@ -218,7 +218,7 @@ class _CheckOTPState extends State<CheckOTP> {
 
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: widget.getAppBar(context, stringsFile.checkOTP, true),
+        appBar: widget.getAppBar(context, plunesStrings.checkOTP, true),
         body: GestureDetector(
           onTap: () {
             CommonMethods.hideSoftKeyboard();

@@ -25,7 +25,7 @@ class Constants {
   static const String IS_TIP_HIDE = 'isTipHide';
   static String OTP = '1111';
 
-  //Preferences
+  //Preference keys
   static const String PREF_USER_ID = 'ID';
   static const String ACCESS_TOKEN = 'Token';
   static const String PREF_USERNAME = 'UserName';

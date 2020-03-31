@@ -65,7 +65,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
 
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: widget.getAppBar(context, stringsFile.achievement, true),
+      appBar: widget.getAppBar(context, plunesStrings.achievement, true),
       key: _scaffoldKey,
       body: GestureDetector(
           onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()),
@@ -92,7 +92,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
                   ? SpinKitThreeBounce(
                       color: Color(hexColorCode.defaultGreen), size: 30.0)
                   : widget.getDefaultButton(
-                      stringsFile.add, globalWidth - 100, 42, addAchievement)),
+                      plunesStrings.add, globalWidth - 100, 42, addAchievement)),
         ],
       ),
     );
@@ -107,7 +107,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
         padding: EdgeInsets.all(10),
         child: Center(
             child: createTextField(_textController, context,
-                TextInputType.multiline, stringsFile.shareYourAchievement)),
+                TextInputType.multiline, plunesStrings.shareYourAchievement)),
       ),
       decoration: BoxDecoration(
           image: DecorationImage(
@@ -261,7 +261,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
                 onTap: () {
                   selectedIndex = index;
                   CommonMethods.confirmationDialog(
-                      context, stringsFile.removeImageMsg, this);
+                      context, plunesStrings.removeImageMsg, this);
                 },
                 child: widget.getCrossButton(),
               )),

@@ -26,7 +26,7 @@ class _HealthSolutionNearState extends State<HealthSolutionNear> {
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
     return Scaffold(
-      appBar: widget.getAppBar(context, stringsFile.availUpTo, true),
+      appBar: widget.getAppBar(context, plunesStrings.availUpTo, true),
       backgroundColor: Colors.white,
       body: Container(
           margin: EdgeInsets.only(left: 10, right: 10, top: 20),
@@ -84,7 +84,7 @@ class _HealthSolutionNearState extends State<HealthSolutionNear> {
                           child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: widget.createTextViews(
-                                  stringsFile.viewMore,
+                                  plunesStrings.viewMore,
                                   13,
                                   colorsFile.defaultGreen,
                                   TextAlign.center,
@@ -138,7 +138,7 @@ class _HealthSolutionNearState extends State<HealthSolutionNear> {
                     fontWeight: FontWeight.w100)),
           ),
           widget.getSpacer(0, 20.0),
-          widget.getDefaultButton(stringsFile.ok, 150.0, 42, onBackPressed),
+          widget.getDefaultButton(plunesStrings.ok, 150.0, 42, onBackPressed),
         ],
       ),
     );
@@ -152,9 +152,9 @@ class _HealthSolutionNearState extends State<HealthSolutionNear> {
     for (int i = 0; i < 9; i++) {
       Map map = new Map();
       map['Image'] = assetsImageFile.healthSolNearImageArray[i];
-      map['Info'] = stringsFile.healthSolInfoArray[i];
-      map['Specialist'] = stringsFile.healthSolSpecialistArray[i];
-      map['Procedure'] = stringsFile.healthSolProcedureArray[i];
+      map['Info'] = plunesStrings.healthSolInfoArray[i];
+      map['Specialist'] = plunesStrings.healthSolSpecialistArray[i];
+      map['Procedure'] = plunesStrings.healthSolProcedureArray[i];
       healthSolDataList.add(map);
     }
   }

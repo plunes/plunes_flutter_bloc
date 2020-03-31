@@ -101,10 +101,10 @@ class _ProfileScreenState extends State<ProfileScreen>
           widget.getSpacer(0.0, 10.0),
           getCatAchievementTabView(),
           getProfileInfoView(22, 22, assetsImageFile.locationIcon,
-              stringsFile.locationSep, _userLocation),
+              plunesStrings.locationSep, _userLocation),
           widget.getSpacer(0.0, 15.0),
           getProfileInfoView(22, 22, assetsImageFile.emailIcon,
-              stringsFile.emailId.toString().replaceAll('*', ''), _userEmail),
+              plunesStrings.emailId.toString().replaceAll('*', ''), _userEmail),
           widget.getSpacer(0.0, 15.0),
           getProfileInfoView(
               22,
@@ -112,26 +112,26 @@ class _ProfileScreenState extends State<ProfileScreen>
               _isDoctor
                   ? assetsImageFile.expertiseIcon
                   : assetsImageFile.genderIcon,
-              '${_isDoctor ? stringsFile.areaExpertise : stringsFile.gender}',
+              '${_isDoctor ? plunesStrings.areaExpertise : plunesStrings.gender}',
               _isDoctor
                   ? 'Dentist'
-                  : _gender == 'M' ? stringsFile.male : stringsFile.female),
+                  : _gender == 'M' ? plunesStrings.male : plunesStrings.female),
           widget.getSpacer(0.0, 15.0),
           getProfileInfoView(
               22,
               22,
               _isDoctor ? assetsImageFile.clockIcon : assetsImageFile.phoneIcon,
-              '${_isDoctor ? stringsFile.expOfPractice : stringsFile.phoneNumber}',
+              '${_isDoctor ? plunesStrings.expOfPractice : plunesStrings.phoneNumber}',
               _isDoctor ? '$_experience years' : _phoneNo),
           widget.getSpacer(0.0, 15.0),
           _isDoctor && _practising != ''
               ? getProfileInfoView(22, 22, assetsImageFile.practisingIcon,
-                  '${stringsFile.practising}', _practising)
+                  '${plunesStrings.practising}', _practising)
               : Container(),
           widget.getSpacer(0.0, _isDoctor && _practising != '' ? 15.0 : 0),
           _userDOB != ''
               ? getProfileInfoView(22, 22, assetsImageFile.calIcon,
-                  '${stringsFile.dateOfBirth}', _userDOB)
+                  '${plunesStrings.dateOfBirth}', _userDOB)
               : Container(),
           widget.getSpacer(0.0, _userDOB != '' ? 15.0 : 0),
           _userEducation != ''
@@ -139,13 +139,13 @@ class _ProfileScreenState extends State<ProfileScreen>
                   22,
                   22,
                   assetsImageFile.eduIcon,
-                  '${_isDoctor ? stringsFile.qualification : stringsFile.education}',
+                  '${_isDoctor ? plunesStrings.qualification : plunesStrings.education}',
                   _userEducation)
               : Container(),
           widget.getSpacer(0.0, _userEducation != '' ? 15.0 : 0),
           _userCollege != ''
               ? getProfileInfoView(22, 22, assetsImageFile.uniIcon,
-                  '${stringsFile.college}', _userCollege)
+                  '${plunesStrings.college}', _userCollege)
               : Container(),
           widget.getSpacer(0.0, _userCollege != '' ? 15.0 : 0),
           getDoctorBottomView()
@@ -240,7 +240,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               child: Container(
                   padding: EdgeInsets.all(10),
                   child: widget.createTextViews(
-                      stringsFile.editProfile,
+                      plunesStrings.editProfile,
                       15,
                       colorsFile.defaultGreen,
                       TextAlign.start,
@@ -261,9 +261,9 @@ class _ProfileScreenState extends State<ProfileScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 getSingleTabView(
-                    assetsImageFile.catalogTabIcon, stringsFile.catalogue),
+                    assetsImageFile.catalogTabIcon, plunesStrings.catalogue),
                 getSingleTabView(
-                    assetsImageFile.achievementIcon, stringsFile.achievements),
+                    assetsImageFile.achievementIcon, plunesStrings.achievements),
               ],
             ),
           )
@@ -333,7 +333,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                widget.createTextViews(stringsFile.utilityNetwork, 15,
+                widget.createTextViews(plunesStrings.utilityNetwork, 15,
                     colorsFile.black0, TextAlign.start, FontWeight.normal),
                 widget.getSpacer(0.0, 20.0),
                 UtilityNetItemAdapter(
@@ -352,7 +352,7 @@ class _ProfileScreenState extends State<ProfileScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 widget.getDividerRow(context, 20, 20, 0.0),
-                widget.createTextViews(stringsFile.introduction, 15,
+                widget.createTextViews(plunesStrings.introduction, 15,
                     colorsFile.black0, TextAlign.start, FontWeight.normal),
                 widget.getSpacer(0.0, 10.0),
                 widget.createTextViews(
@@ -371,7 +371,7 @@ class _ProfileScreenState extends State<ProfileScreen>
                       widget.getSpacer(0.0, 30.0),
                       Center(
                           child: widget.createTextViews(
-                              stringsFile.achievementBook,
+                              plunesStrings.achievementBook,
                               15,
                               colorsFile.black0,
                               TextAlign.center,

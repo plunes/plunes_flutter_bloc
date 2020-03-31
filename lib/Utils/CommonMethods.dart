@@ -106,7 +106,7 @@ class CommonMethods {
       } else if (hexDigit >= 97 && hexDigit <= 102) {
         val += (hexDigit - 87) * (1 << (4 * (len - 1 - i)));
       } else {
-        throw new FormatException(StringsFile.exceptionMsg);
+        throw new FormatException(PlunesStrings.exceptionMsg);
       }
     }
     return val;
@@ -210,7 +210,7 @@ class CommonMethods {
   static bool checkIfNumber(String value) {
     for (int i = 0; i < value.length; i++) {
       int n = value.codeUnitAt(i);
-      print("ASCII==$n");
+//      print("ASCII==$n");
       if (n < 48 || n > 57) {
         return false;
       }
@@ -281,7 +281,7 @@ class CommonMethods {
         actions: <Widget>[
           new FlatButton(
             onPressed: () {
-              if (title == stringsFile.success) {
+              if (title == plunesStrings.success) {
                 Navigator.pop(context);
 //                  callBack.dialogCallBackFunction('CANCEL');
               } else {
@@ -290,9 +290,9 @@ class CommonMethods {
               }
             },
             child: new Text(
-                title == stringsFile.success
-                    ? stringsFile.ok
-                    : StringsFile.tryAgain,
+                title == plunesStrings.success
+                    ? plunesStrings.ok
+                    : PlunesStrings.tryAgain,
                 style: TextStyle(color: Color(hexColorCode.defaultGreen))),
           ),
         ],
@@ -336,7 +336,7 @@ class CommonMethods {
               autofocus: true,
               controller: controller,
               decoration:
-                  InputDecoration.collapsed(hintText: stringsFile.description),
+                  InputDecoration.collapsed(hintText: plunesStrings.description),
             ),
           ),
           decoration: BoxDecoration(
@@ -353,7 +353,7 @@ class CommonMethods {
               width: 200,
               alignment: Alignment.center,
               child: Text(
-                stringsFile.submit,
+                plunesStrings.submit,
                 style:
                     TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
               ),
@@ -623,7 +623,7 @@ class CommonMethods {
                 autofocus: true,
                 controller: controller,
                 decoration: InputDecoration.collapsed(
-                    hintText: stringsFile.description),
+                    hintText: plunesStrings.description),
               ),
             ),
             decoration: BoxDecoration(
@@ -641,7 +641,7 @@ class CommonMethods {
                 width: 200,
                 alignment: Alignment.center,
                 child: Text(
-                  stringsFile.submit,
+                  plunesStrings.submit,
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.w600),
                 ),

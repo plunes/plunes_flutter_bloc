@@ -47,7 +47,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         appBar:
-            widget.getAppBar(context, stringsFile.forgotPasswordTitle, false),
+            widget.getAppBar(context, plunesStrings.forgotPasswordTitle, false),
         body: GestureDetector(
           onTap: () {
             CommonMethods.hideSoftKeyboard();
@@ -63,24 +63,24 @@ class _ForgetPasswordState extends State<ForgetPassword>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Center(
-              child: widget.createTextViews(stringsFile.enterEmailOrPhone, 25,
+              child: widget.createTextViews(plunesStrings.enterEmailOrPhone, 25,
                   colorsFile.darkBrown, TextAlign.start, FontWeight.normal)),
           widget.getSpacer(0.0, 30.0),
           createTextField(
               phoneNumberController,
-              stringsFile.phoneNo,
+              plunesStrings.phoneNo,
               TextInputType.number,
               TextCapitalization.none,
               isValidNumber,
-              stringsFile.enterValidNumber),
+              plunesStrings.enterValidNumber),
           widget.getSpacer(0.0, 30.0),
           progress
               ? SpinKitThreeBounce(
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
               : widget.getDefaultButton(
-                  stringsFile.submit, globalWidth, 42, submitForOTP),
+                  plunesStrings.submit, globalWidth, 42, submitForOTP),
           widget.getSpacer(0.0, 30.0),
-          widget.getBorderButton(stringsFile.cancel, globalWidth, onBackPressed)
+          widget.getBorderButton(plunesStrings.cancel, globalWidth, onBackPressed)
         ],
       ),
     );
@@ -148,7 +148,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
       });
     } else
       widget.showInSnackBar(
-          stringsFile.enterValidNumber, Colors.red, _scaffoldKey);
+          plunesStrings.enterValidNumber, Colors.red, _scaffoldKey);
   }
 
   onBackPressed() {
@@ -172,14 +172,14 @@ class _ForgetPasswordState extends State<ForgetPassword>
               MaterialPageRoute(
                   builder: (context) => CheckOTP(
                       phone: phoneNumberController.text,
-                      from: stringsFile.forgotPasswordTitle)));
+                      from: plunesStrings.forgotPasswordTitle)));
         }
       }, onDone: () {
         bloc.dispose();
       });
     } else if (!data['success']) {
       widget.showInSnackBar(
-          stringsFile.somethingWentWrong, Colors.red, _scaffoldKey);
+          plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
     }
   }
 

@@ -60,7 +60,7 @@ class _NotificationScreenState extends State<NotificationScreen>
               if (snapshot.hasData) {
                 if (items.posts.length == 0)
                   return Center(
-                    child: Text(stringsFile.noRecordsFound),
+                    child: Text(plunesStrings.noRecordsFound),
                   );
                 else
                   return buildList(snapshot);
@@ -244,7 +244,7 @@ class _NotificationScreenState extends State<NotificationScreen>
         reset();
       else if (data != null && data['isYes'] != null && data['isYes']) {
         CommonMethods.confirmationDialog(
-            context, stringsFile.deleteNotificationMsg, this);
+            context, plunesStrings.deleteNotificationMsg, this);
       }
     });
   }

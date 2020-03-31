@@ -6,6 +6,8 @@ import 'package:location/location.dart' as loc;
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/log.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -55,9 +57,11 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   startTime() async {
     await Preferences().instantiatePreferences();
     preferences = new Preferences();
-    var getLocation = await location.getLocation();
-    var _latitude = getLocation.latitude.toString();
-    var _longitude = getLocation.longitude.toString();
+    var getLocation = await location.getLocation().catchError((e) {
+      AppLog.printError("Location denied splash $e");
+    });
+    var _latitude = getLocation?.latitude?.toString();
+    var _longitude = getLocation?.longitude?.toString();
 
     if (_latitude != null && _longitude != null) {
       preferences.setPreferencesString(Constants.LATITUDE, _latitude);
@@ -86,7 +90,7 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   @override
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
-
+    AppConfig.init(context);
     return Scaffold(
         backgroundColor: Color(hexColorCode.defaultGreen),
         body: Center(child: Image.asset(AssetsImagesFile.splashImage)));

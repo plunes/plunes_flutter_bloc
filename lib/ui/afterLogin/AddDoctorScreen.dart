@@ -124,7 +124,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           widget.getSpacer(20.0, 0.0),
-          widget.createTextViews(stringsFile.profileImage, 18,
+          widget.createTextViews(plunesStrings.profileImage, 18,
               colorsFile.black0, TextAlign.left, FontWeight.normal),
           widget.getSpacer(0.0, 20.0),
           Row(
@@ -160,42 +160,42 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
               SizedBox(
                 width: 20,
               ),
-              widget.getDefaultButton(stringsFile.upload, 100, 35, _pickImage),
+              widget.getDefaultButton(plunesStrings.upload, 100, 35, _pickImage),
             ],
           ),
           widget.getSpacer(0.0, 30.0),
-          createTextField(docNameController, stringsFile.fullName,
+          createTextField(docNameController, plunesStrings.fullName,
               TextInputType.text, TextCapitalization.words, true, ''),
           widget.getSpacer(0.0, 20.0),
           createTextField(
               docEducationController,
-              stringsFile.educationQualification,
+              plunesStrings.educationQualification,
               TextInputType.text,
               TextCapitalization.characters,
               true,
               ''),
           widget.getSpacer(0.0, 20.0),
-          createTextField(docDesignationController, stringsFile.designation,
+          createTextField(docDesignationController, plunesStrings.designation,
               TextInputType.text, TextCapitalization.characters, true, ''),
           widget.getSpacer(0.0, 20.0),
-          createTextField(docDepartmentController, stringsFile.department,
+          createTextField(docDepartmentController, plunesStrings.department,
               TextInputType.text, TextCapitalization.words, true, ''),
           widget.getSpacer(0.0, 20.0),
           createTextField(
               specializationController,
-              stringsFile.speciality,
+              plunesStrings.speciality,
               TextInputType.text,
               TextCapitalization.words,
               isSpecificationValid,
-              stringsFile.errorMsgEnterSpecialization),
+              plunesStrings.errorMsgEnterSpecialization),
           widget.getSpacer(0.0, 20.0),
           createTextField(
               experienceController,
-              stringsFile.experienceInNo,
+              plunesStrings.experienceInNo,
               TextInputType.numberWithOptions(decimal: true),
               TextCapitalization.none,
               isExperienceValid,
-              stringsFile.errorMsgEnterExp),
+              plunesStrings.errorMsgEnterExp),
           widget.getSpacer(0.0, 20.0),
           /*     widget.createTextViews(stringsFile.availability, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
           widget.getSpacer(0.0, 10.0),
@@ -209,11 +209,11 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
             ],
           ),*/
           widget.getSpacer(0.0, 20.0),
-          widget.getDefaultButton(stringsFile.availability, globalWidth - 40,
+          widget.getDefaultButton(plunesStrings.availability, globalWidth - 40,
               42, goToAvailabilityScreen),
           widget.getSpacer(0.0, 20.0),
           widget.getDefaultButton(
-              stringsFile.add, globalWidth - 40, 42, addDoctorsInRow),
+              plunesStrings.add, globalWidth - 40, 42, addDoctorsInRow),
           widget.getSpacer(0.0, 40.0),
         ],
       ),
@@ -363,7 +363,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
       progress = false;
       if (data != null && data['success'] != null && data['success']) {
         await bloc.saveEditProfileDataInPreferences(context, body);
-        widget.showInSnackBar(stringsFile.success, Colors.green, _scaffoldKey);
+        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
       } else {
         widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
       }
@@ -399,19 +399,19 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
 
   bool validationAddDoctors() {
     if (docNameController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterDocName;
+      errorMessage = plunesStrings.errorMsgEnterDocName;
       return false;
     } else if (docEducationController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterEducation;
+      errorMessage = plunesStrings.errorMsgEnterEducation;
       return false;
     } else if (docDepartmentController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterDocDep;
+      errorMessage = plunesStrings.errorMsgEnterDocDep;
       return false;
     } else if (specializationController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterSpecialization;
+      errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
     } else if (experienceController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterExp;
+      errorMessage = plunesStrings.errorMsgEnterExp;
       return false;
     } else {
       return true;

@@ -73,7 +73,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
             });
           },
           decoration: InputDecoration(
-              hintText: stringsFile.enterNumber,
+              hintText: plunesStrings.enterNumber,
               hintStyle: TextStyle(
                   fontSize: 18,
                   color: Color(
@@ -120,7 +120,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
       }
     } else
       widget.showInSnackBar(
-          stringsFile.enterValidNumber, Colors.red, _scaffoldKey);
+          plunesStrings.enterValidNumber, Colors.red, _scaffoldKey);
   }
 
   @override
@@ -129,7 +129,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
 
     return Scaffold(
         key: _scaffoldKey,
-        appBar: widget.from == stringsFile.login
+        appBar: widget.from == plunesStrings.login
             ? widget.getAppBar(context, '', true)
             : null,
         body: GestureDetector(
@@ -155,7 +155,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                     children: <Widget>[
                       Center(
                           child: widget.createTextViews(
-                              stringsFile.enterANewEra,
+                              plunesStrings.enterANewEra,
                               23,
                               colorsFile.darkBrown,
                               TextAlign.center,
@@ -163,7 +163,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                       Container(
                           margin: EdgeInsets.only(top: 50),
                           child: widget.createTextViews(
-                              stringsFile.phoneNumber,
+                              plunesStrings.phoneNumber,
                               20,
                               colorsFile.darkGrey1,
                               TextAlign.start,
@@ -185,7 +185,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                                       child: Visibility(
                                           visible: isValidNumber,
                                           child: widget.createTextViews(
-                                              stringsFile.enterValidNumber,
+                                              plunesStrings.enterValidNumber,
                                               14,
                                               colorsFile.redColor,
                                               TextAlign.start,
@@ -201,7 +201,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                                 size: 30.0,
                               )
                             : widget.getDefaultButton(
-                                stringsFile.enter, 130.0, 42, submitForOTP),
+                                plunesStrings.enter, 130.0, 42, submitForOTP),
                       ),
                     ],
                   ),

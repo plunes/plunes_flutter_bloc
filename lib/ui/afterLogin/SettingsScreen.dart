@@ -33,7 +33,7 @@ class _SettingScreenState extends State<SettingScreen> {
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        appBar: widget.getAppBar(context, stringsFile.settings, true),
+        appBar: widget.getAppBar(context, plunesStrings.settings, true),
         body: getBody());
   }
 
@@ -42,10 +42,10 @@ class _SettingScreenState extends State<SettingScreen> {
       child: Column(
         children: <Widget>[
           getSettingRow(
-              assetsImageFile.settingIcon, stringsFile.accountSettings, 0),
+              assetsImageFile.settingIcon, plunesStrings.accountSettings, 0),
           widget.getDividerRow(context, 0, 0, 0),
           getSettingRow(
-              assetsImageFile.securityIcon, stringsFile.securitySettings, 1),
+              assetsImageFile.securityIcon, plunesStrings.securitySettings, 1),
           widget.getDividerRow(context, 0, 0, 0),
         ],
       ),

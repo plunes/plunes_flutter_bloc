@@ -32,7 +32,7 @@ class _AboutUsState extends State<AboutUs> {
         )),
       ),
       url: urls.aboutUs,
-      appBar: widget.getAppBar(context, stringsFile.aboutUs, true),
+      appBar: widget.getAppBar(context, plunesStrings.aboutUs, true),
     );
   }
 }

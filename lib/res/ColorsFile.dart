@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
+
 /// Created by Manvendra Kumar Singh
 
-final colorsFile = ColorsFile();
+final colorsFile = PlunesColors();
 
-class ColorsFile {
+class PlunesColors {
   get viewColor => "#CCCCCC";
 
   get redColor => "#EC2C23";
@@ -62,6 +64,11 @@ class ColorsFile {
   get defaultTransGreen => '#0001D35A';
 
   get lightGrey9 => '#7E7E7E';
+  static const Color BLACKCOLOR = Colors.black;
+  static const Color GREYCOLOR = Colors.grey;
+  static const Color GREENCOLOR = Colors.green;
+  static const Color LIGHTGREYCOLOR = Color(0xFFEEEEEE);
+  static const Color WHITECOLOR = Colors.white;
 }
 
 final hexColorCode = HexColorCode();

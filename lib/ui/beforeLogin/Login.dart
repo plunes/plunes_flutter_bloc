@@ -61,7 +61,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
       onWillPop: _onWillPop,
       child: Scaffold(
           key: _scaffoldKey,
-          appBar: widget.getAppBar(context, stringsFile.login, false),
+          appBar: widget.getAppBar(context, plunesStrings.login, false),
           backgroundColor: Colors.white,
           body: GestureDetector(
               onTap: () => CommonMethods.hideSoftKeyboard(),
@@ -86,21 +86,21 @@ class _LoginState extends State<Login> implements DialogCallBack {
               child: Column(children: <Widget>[
                 createTextField(
                     phoneController,
-                    stringsFile.phoneNo,
+                    plunesStrings.phoneNo,
                     TextInputType.number,
                     TextCapitalization.none,
                     isValidNumber,
-                    stringsFile.enterValidNumber),
+                    plunesStrings.enterValidNumber),
                 widget.getSpacer(0.0, 20.0),
-                getPasswordRow(stringsFile.password
+                getPasswordRow(plunesStrings.password
                     .toString()
-                    .substring(0, stringsFile.password.toString().length - 1)),
+                    .substring(0, plunesStrings.password.toString().length - 1)),
                 widget.getSpacer(0.0, 40.0),
                 progress
                     ? SpinKitThreeBounce(
                         color: Color(hexColorCode.defaultGreen), size: 30.0)
                     : widget.getDefaultButton(
-                        stringsFile.login, globalWidth - 40, 42, submitLogin),
+                        plunesStrings.login, globalWidth - 40, 42, submitLogin),
                 widget.getSpacer(0.0, 20.0),
                 getForgotPasswordButton(),
                 getSignUpViewButton()
@@ -184,7 +184,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
             TextInputType.text,
             TextCapitalization.none,
             isValidPassword,
-            stringsFile.errorMsgPassword),
+            plunesStrings.errorMsgPassword),
         Container(
           margin: EdgeInsets.only(right: 10, top: 10),
           child: Align(
@@ -225,7 +225,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
       },
       child: Container(
         padding: EdgeInsets.all(10),
-        child: widget.createTextViews(stringsFile.forgotPassword, 16,
+        child: widget.createTextViews(plunesStrings.forgotPassword, 16,
             colorsFile.defaultGreen, TextAlign.center, FontWeight.normal),
       ),
     );
@@ -238,7 +238,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
             context,
             MaterialPageRoute(
                 builder: (context) =>
-                    EnterPhoneScreen(from: stringsFile.login)));
+                    EnterPhoneScreen(from: plunesStrings.login)));
       },
       child: Container(
           padding: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
@@ -246,13 +246,13 @@ class _LoginState extends State<Login> implements DialogCallBack {
             text: new TextSpan(
               children: <TextSpan>[
                 new TextSpan(
-                    text: stringsFile.dontHaveAccount,
+                    text: plunesStrings.dontHaveAccount,
                     style: new TextStyle(
                         fontSize: 16,
                         color: Color(CommonMethods.getColorHexFromStr(
                             colorsFile.grey1)))),
                 new TextSpan(
-                    text: stringsFile.signUp,
+                    text: plunesStrings.signUp,
                     style: new TextStyle(
                         fontSize: 16, color: Color(hexColorCode.defaultGreen))),
               ],
@@ -285,10 +285,10 @@ class _LoginState extends State<Login> implements DialogCallBack {
   submitLogin() {
     if (!isValidNumber || phoneController.text.isEmpty)
       widget.showInSnackBar(
-          stringsFile.enterValidNumber, Colors.red, _scaffoldKey);
+          plunesStrings.enterValidNumber, Colors.red, _scaffoldKey);
     else if (!isValidPassword || passwordController.text.isEmpty)
       widget.showInSnackBar(
-          stringsFile.errorMsgPassword, Colors.red, _scaffoldKey);
+          plunesStrings.errorMsgPassword, Colors.red, _scaffoldKey);
     else
       userLoginRequest();
   }
@@ -300,11 +300,11 @@ class _LoginState extends State<Login> implements DialogCallBack {
     bloc.loginData.listen((data) async {
       progress = false;
       if (data.success) {
-        await bloc.saveDataInPreferences(data, context, stringsFile.login);
-        widget.showInSnackBar(stringsFile.success, Colors.green, _scaffoldKey);
+        await bloc.saveDataInPreferences(data, context, plunesStrings.login);
+        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
       } else
         widget.showInSnackBar(
-            stringsFile.somethingWentWrong, Colors.red, _scaffoldKey);
+            plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
     });
   }
 

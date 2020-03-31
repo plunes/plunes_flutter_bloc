@@ -39,7 +39,7 @@ class _SecuritySettingsState extends State<SecuritySettings>
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        appBar: widget.getAppBar(context, stringsFile.securitySettings, true),
+        appBar: widget.getAppBar(context, plunesStrings.securitySettings, true),
         body: getBody());
   }
 
@@ -48,10 +48,10 @@ class _SecuritySettingsState extends State<SecuritySettings>
       child: Column(
         children: <Widget>[
           getSettingRow(
-              assetsImageFile.changePassIcon, stringsFile.changePassword, 0),
+              assetsImageFile.changePassIcon, plunesStrings.changePassword, 0),
           widget.getDividerRow(context, 0, 0, 0),
           getSettingRow(
-              assetsImageFile.logoutIcon2, stringsFile.logoutFromAllDevices, 1),
+              assetsImageFile.logoutIcon2, plunesStrings.logoutFromAllDevices, 1),
           widget.getDividerRow(context, 0, 0, 0),
         ],
       ),
@@ -67,7 +67,7 @@ class _SecuritySettingsState extends State<SecuritySettings>
             break;
           case 1:
             CommonMethods.confirmationDialog(
-                context, stringsFile.logoutAllMsg, this);
+                context, plunesStrings.logoutAllMsg, this);
             break;
         }
       },
@@ -101,7 +101,7 @@ class _SecuritySettingsState extends State<SecuritySettings>
         navigationPage();
       else
         widget.showInSnackBar(
-            stringsFile.somethingWentWrong, Colors.red, _scaffoldKey);
+            plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
     });
   }
 

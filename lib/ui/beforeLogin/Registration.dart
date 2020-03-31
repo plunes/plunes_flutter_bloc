@@ -61,7 +61,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
   List<dynamic> _selectedItemId = List(),
       _doctorsList = List(),
       _selectedSpecializationData = List();
-  String _userType, _latitude, _longitude, gender = stringsFile.male;
+  String _userType, _latitude, _longitude, gender = plunesStrings.male;
   bool _isHospital = false,
       _isAddManualOpen = false,
       isExperienceValid = true,
@@ -118,8 +118,8 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       _longitude = preferences.getPreferenceString(Constants.LONGITUDE);
     } else {
       var getLocation = await location.getLocation();
-      _latitude = getLocation.latitude.toString();
-      _longitude = getLocation.longitude.toString();
+      _latitude = getLocation?.latitude?.toString();
+      _longitude = getLocation?.longitude?.toString();
     }
     if (_latitude != null && _longitude != null) {
       preferences.setPreferencesString(Constants.LATITUDE, _latitude);
@@ -143,7 +143,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
 
     return Scaffold(
         key: _scaffoldKey,
-        appBar: widget.getAppBar(context, stringsFile.signUp, true),
+        appBar: widget.getAppBar(context, plunesStrings.signUp, true),
         backgroundColor: Colors.white,
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()));
@@ -243,38 +243,38 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
             ],
           ),*/
           widget.getSpacer(0.0, 30.0),
-          createTextField(docNameController, stringsFile.fullName,
+          createTextField(docNameController, plunesStrings.fullName,
               TextInputType.text, TextCapitalization.words, true, ''),
           widget.getSpacer(0.0, 20.0),
           createTextField(
               docEducationController,
-              stringsFile.educationQualification,
+              plunesStrings.educationQualification,
               TextInputType.text,
               TextCapitalization.characters,
               true,
               ''),
           widget.getSpacer(0.0, 20.0),
-          createTextField(docDesignationController, stringsFile.designation,
+          createTextField(docDesignationController, plunesStrings.designation,
               TextInputType.text, TextCapitalization.characters, true, ''),
           widget.getSpacer(0.0, 20.0),
-          createTextField(docDepartmentController, stringsFile.department,
+          createTextField(docDepartmentController, plunesStrings.department,
               TextInputType.text, TextCapitalization.words, true, ''),
           widget.getSpacer(0.0, 20.0),
           createTextField(
               specializationController,
-              stringsFile.speciality,
+              plunesStrings.speciality,
               TextInputType.text,
               TextCapitalization.words,
               isSpecificationValid,
-              stringsFile.errorMsgEnterSpecialization),
+              plunesStrings.errorMsgEnterSpecialization),
           widget.getSpacer(0.0, 20.0),
           createTextField(
               experienceController,
-              stringsFile.experienceInNo,
+              plunesStrings.experienceInNo,
               TextInputType.numberWithOptions(decimal: true),
               TextCapitalization.none,
               isExperienceValid,
-              stringsFile.errorMsgEnterExp),
+              plunesStrings.errorMsgEnterExp),
           widget.getSpacer(0.0, 20.0),
           /*     widget.createTextViews(stringsFile.availability, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
           widget.getSpacer(0.0, 10.0),
@@ -289,7 +289,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           ),*/
           widget.getSpacer(0.0, 20.0),
           widget.getDefaultButton(
-              stringsFile.add, globalWidth - 40, 42, addDoctorsInRow),
+              plunesStrings.add, globalWidth - 40, 42, addDoctorsInRow),
           widget.getSpacer(0.0, 10.0),
         ],
       ),
@@ -338,22 +338,22 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
             child: Column(
               children: <Widget>[
                 widget.getSpacer(0.0, 20.0),
-                widget.createTextViews(stringsFile.profileInformation, 18,
+                widget.createTextViews(plunesStrings.profileInformation, 18,
                     colorsFile.black0, TextAlign.center, FontWeight.bold),
                 widget.getSpacer(0.0, 20.0),
-                createTextField(nameController, stringsFile.hospitalName,
+                createTextField(nameController, plunesStrings.hospitalName,
                     TextInputType.text, TextCapitalization.words, true, ''),
                 widget.getSpacer(0.0, 20.0),
-                createTextField(locationController, stringsFile.location,
+                createTextField(locationController, plunesStrings.location,
                     TextInputType.text, TextCapitalization.none, false, ''),
-                createTextField(phoneController, stringsFile.phoneNo,
+                createTextField(phoneController, plunesStrings.phoneNo,
                     TextInputType.number, TextCapitalization.none, false, ''),
-                createTextField(aboutController, stringsFile.aboutHospital,
+                createTextField(aboutController, plunesStrings.aboutHospital,
                     TextInputType.text, TextCapitalization.none, true, ''),
                 widget.getSpacer(0.0, 20.0),
                 createTextField(
                     professionRegController,
-                    stringsFile.registrationNo,
+                    plunesStrings.registrationNo,
                     TextInputType.text,
                     TextCapitalization.characters,
                     true,
@@ -361,23 +361,23 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                 widget.getSpacer(0.0, 40.0),
                 widget.getDividerRow(context, 0.0, 0.0, 0.0),
                 widget.getSpacer(0.0, 30.0),
-                widget.createTextViews(stringsFile.addSpecialization, 18,
+                widget.createTextViews(plunesStrings.addSpecialization, 18,
                     colorsFile.black0, TextAlign.center, FontWeight.bold),
                 widget.getSpacer(0.0, 5.0),
                 widget.createTextViews(
-                    stringsFile.addSpecializationServices,
+                    plunesStrings.addSpecializationServices,
                     16,
                     colorsFile.lightGrey2,
                     TextAlign.center,
                     FontWeight.w100),
                 widget.getSpacer(0.0, 20.0),
-                widget.getDefaultButton(stringsFile.add, globalWidth - 40, 42,
+                widget.getDefaultButton(plunesStrings.add, globalWidth - 40, 42,
                     getHospitalSpecializationData),
                 getSpecializationRow(),
                 widget.getSpacer(0.0, 40.0),
                 widget.getDividerRow(context, 0.0, 0.0, 0.0),
                 widget.getSpacer(0.0, 40.0),
-                widget.createTextViews(stringsFile.addDoctors, 18,
+                widget.createTextViews(plunesStrings.addDoctors, 18,
                     colorsFile.black0, TextAlign.center, FontWeight.bold),
                 getAddManualButton(),
                 _isAddManualOpen ? getAddDoctorsView() : Container(),
@@ -520,10 +520,10 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           widget.getSpacer(0.0, 20.0),
           widget.getDividerRow(context, 0.0, 30.0, 0.0),
           widget.getSpacer(0.0, 0.0),
-          widget.createTextViews(stringsFile.manageAccount, 18,
+          widget.createTextViews(plunesStrings.manageAccount, 18,
               colorsFile.black0, TextAlign.center, FontWeight.bold),
           widget.getSpacer(0.0, 5.0),
-          widget.createTextViews(stringsFile.addUsers, 16,
+          widget.createTextViews(plunesStrings.addUsers, 16,
               colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
           widget.getSpacer(0.0, 20.0),
           Container(
@@ -531,12 +531,12 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                widget.createTextViews(stringsFile.admin, 18, colorsFile.black0,
+                widget.createTextViews(plunesStrings.admin, 18, colorsFile.black0,
                     TextAlign.left, FontWeight.bold),
                 widget.getSpacer(0.0, 10.0),
                 widget.createTextViews(
-                    stringsFile.addUsers.toString().substring(
-                        0, stringsFile.addUsers.toString().length - 1),
+                    plunesStrings.addUsers.toString().substring(
+                        0, plunesStrings.addUsers.toString().length - 1),
                     18,
                     colorsFile.black0,
                     TextAlign.left,
@@ -544,21 +544,21 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                 widget.getSpacer(0.0, 20.0),
                 createTextField(
                     emailController,
-                    stringsFile.userEmail,
+                    plunesStrings.userEmail,
                     TextInputType.emailAddress,
                     TextCapitalization.none,
                     isEmailValid,
-                    stringsFile.errorValidEmailMsg),
+                    plunesStrings.errorValidEmailMsg),
                 widget.getSpacer(0.0, 20.0),
-                getPasswordRow(stringsFile.userPassword),
+                getPasswordRow(plunesStrings.userPassword),
                 widget.getSpacer(0.0, 20.0),
-                widget.createTextViews(stringsFile.errorMsgPassword, 16,
+                widget.createTextViews(plunesStrings.errorMsgPassword, 16,
                     colorsFile.black0, TextAlign.center, FontWeight.normal),
                 widget.getSpacer(0.0, 20.0),
                 progress
                     ? SpinKitThreeBounce(
                         color: Color(hexColorCode.defaultGreen), size: 30.0)
-                    : widget.getDefaultButton(stringsFile.submit,
+                    : widget.getDefaultButton(plunesStrings.submit,
                         globalWidth - 40, 42, submitRegistrationRequest),
                 widget.getSpacer(0.0, 30.0),
               ],
@@ -580,64 +580,64 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           widget.getSpacer(0.0, 10.0),
           createTextField(
               nameController,
-              stringsFile.name,
+              plunesStrings.name,
               TextInputType.text,
               TextCapitalization.words,
               isNameValid,
-              stringsFile.errorMsgEnterFullName),
+              plunesStrings.errorMsgEnterFullName),
           widget.getSpacer(0.0, 20.0),
-          createTextField(phoneController, stringsFile.phoneNo,
+          createTextField(phoneController, plunesStrings.phoneNo,
               TextInputType.number, TextCapitalization.none, false, ''),
           createTextField(
               emailController,
-              stringsFile.emailId,
+              plunesStrings.emailId,
               TextInputType.emailAddress,
               TextCapitalization.none,
               isEmailValid,
-              stringsFile.errorValidEmailMsg),
+              plunesStrings.errorValidEmailMsg),
           widget.getSpacer(0.0, 20.0),
-          createTextField(dobController, stringsFile.dateOfBirth,
+          createTextField(dobController, plunesStrings.dateOfBirth,
               TextInputType.datetime, TextCapitalization.none, false, ''),
-          getPasswordRow(stringsFile.password),
+          getPasswordRow(plunesStrings.password),
           widget.getSpacer(0.0, 20.0),
-          createTextField(locationController, stringsFile.location,
+          createTextField(locationController, plunesStrings.location,
               TextInputType.text, TextCapitalization.none, false, ''),
           Visibility(
               visible: isDoctor,
               child: Column(children: <Widget>[
                 createTextField(
                     professionRegController,
-                    stringsFile.professionalRegNo,
+                    plunesStrings.professionalRegNo,
                     TextInputType.text,
                     TextCapitalization.words,
                     isProfessionValid,
-                    stringsFile.errorMsgEnterProfRegNo),
+                    plunesStrings.errorMsgEnterProfRegNo),
                 widget.getSpacer(0.0, 20.0),
                 createTextField(
                     specializationController,
-                    '${stringsFile.specialization}*',
+                    '${plunesStrings.specialization}*',
                     TextInputType.text,
                     TextCapitalization.words,
                     isSpecificationValid,
-                    stringsFile.errorMsgEnterSpecialization),
+                    plunesStrings.errorMsgEnterSpecialization),
                 widget.getSpacer(0.0, 20.0),
                 createTextField(
                     experienceController,
-                    stringsFile.experienceInNo,
+                    plunesStrings.experienceInNo,
                     TextInputType.numberWithOptions(
                         signed: true, decimal: true),
                     TextCapitalization.none,
                     isExperienceValid,
-                    stringsFile.errorMsgEnterExp),
+                    plunesStrings.errorMsgEnterExp),
                 widget.getSpacer(0.0, 20.0)
               ])),
-          createTextField(referralController, stringsFile.referralCode,
+          createTextField(referralController, plunesStrings.referralCode,
               TextInputType.text, TextCapitalization.none, true, ''),
           widget.getSpacer(0.0, 20.0),
           progress
               ? SpinKitThreeBounce(
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
-              : widget.getDefaultButton(stringsFile.signUpBtn, globalWidth - 40,
+              : widget.getDefaultButton(plunesStrings.signUpBtn, globalWidth - 40,
                   42, submitRegistrationRequest),
           widget.getSpacer(0.0, 15.0),
           widget.getTermsOfUseRow(),
@@ -656,7 +656,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
             TextInputType.text,
             TextCapitalization.none,
             isPasswordValid,
-            stringsFile.errorMsgPassword),
+            plunesStrings.errorMsgPassword),
         Container(
           margin: EdgeInsets.only(right: 10, top: 10),
           child: Align(
@@ -780,7 +780,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          widget.createTextViews(stringsFile.addManually, 16,
+          widget.createTextViews(plunesStrings.addManually, 16,
               colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
           Container(
               margin: EdgeInsets.only(top: 5),
@@ -857,9 +857,9 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         progress = false;
         if (data.success) {
           await bloc.saveDataInPreferences(
-              data, context, stringsFile.registration);
+              data, context, plunesStrings.registration);
           widget.showInSnackBar(
-              stringsFile.success, Colors.green, _scaffoldKey);
+              plunesStrings.success, Colors.green, _scaffoldKey);
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -877,36 +877,36 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     if (nameController.text.trim().isEmpty ||
         (isDoctor && nameController.text.toString().length == 4)) {
       errorMessage = _userType == Constants.hospital
-          ? stringsFile.errorMsgEnterHosName
-          : stringsFile.errorMsgEnterFullName;
+          ? plunesStrings.errorMsgEnterHosName
+          : plunesStrings.errorMsgEnterFullName;
       return false;
     } else if (_userType == Constants.hospital &&
         professionRegController.text.isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterRegNo;
+      errorMessage = plunesStrings.errorMsgEnterRegNo;
       return false;
     } else if (emailController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorEmptyEmailMsg;
+      errorMessage = plunesStrings.errorEmptyEmailMsg;
       return false;
     } else if (!CommonMethods.validateEmail(emailController.text.trim())) {
-      errorMessage = stringsFile.errorValidEmailMsg;
+      errorMessage = plunesStrings.errorValidEmailMsg;
       return false;
     } else if (passwordController.text.isEmpty) {
-      errorMessage = stringsFile.emptyPasswordError;
+      errorMessage = plunesStrings.emptyPasswordError;
       return false;
     } else if (passwordController.text.length < 8) {
-      errorMessage = stringsFile.errorMsgPassword;
+      errorMessage = plunesStrings.errorMsgPassword;
       return false;
     } else if (isDoctor && professionRegController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterProfRegNo;
+      errorMessage = plunesStrings.errorMsgEnterProfRegNo;
       return false;
     } else if (isDoctor && specializationController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterSpecialization;
+      errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
     } else if (isDoctor && experienceController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterExp;
+      errorMessage = plunesStrings.errorMsgEnterExp;
       return false;
     } else if (_userType == Constants.hospital && _doctorsList.length == 0) {
-      errorMessage = stringsFile.errorMsgAddDoctor;
+      errorMessage = plunesStrings.errorMsgAddDoctor;
       return false;
     } else {
       return true;
@@ -915,19 +915,19 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
 
   bool validationAddDoctors() {
     if (docNameController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterDocName;
+      errorMessage = plunesStrings.errorMsgEnterDocName;
       return false;
     } else if (docEducationController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterEducation;
+      errorMessage = plunesStrings.errorMsgEnterEducation;
       return false;
     } else if (docDepartmentController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterDocDep;
+      errorMessage = plunesStrings.errorMsgEnterDocDep;
       return false;
     } else if (specializationController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterSpecialization;
+      errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
     } else if (experienceController.text.trim().isEmpty) {
-      errorMessage = stringsFile.errorMsgEnterExp;
+      errorMessage = plunesStrings.errorMsgEnterExp;
       return false;
     } else {
       return true;
@@ -984,13 +984,13 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     setState(() {
                       male = 0;
                       female = 1;
-                      gender = stringsFile.male;
+                      gender = plunesStrings.male;
                     });
                   },
                 ),
                 Container(
                     margin: EdgeInsets.only(right: 50),
-                    child: widget.createTextViews(stringsFile.male, 18,
+                    child: widget.createTextViews(plunesStrings.male, 18,
                         colorsFile.black0, TextAlign.left, FontWeight.normal)),
                 Radio(
                   value: male,
@@ -1000,11 +1000,11 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     setState(() {
                       male = 1;
                       female = 0;
-                      gender = stringsFile.female;
+                      gender = plunesStrings.female;
                     });
                   },
                 ),
-                widget.createTextViews(stringsFile.female, 18,
+                widget.createTextViews(plunesStrings.female, 18,
                     colorsFile.black0, TextAlign.left, FontWeight.normal)
               ],
             ),

@@ -71,7 +71,7 @@ class _ItemCardState extends State<AchievementItemAdapter> implements DialogCall
 
                       )),
                     Align(alignment: FractionalOffset.topRight,
-                      child: InkWell(onTap: ()=>CommonMethods.confirmationDialog(context,stringsFile.deleteAchievementMsg, this),child: widget.getCrossButton())),
+                      child: InkWell(onTap: ()=>CommonMethods.confirmationDialog(context,plunesStrings.deleteAchievementMsg, this),child: widget.getCrossButton())),
                   ],),)),
                 widget.getSpacer(0.0, 10),
                 Container(
