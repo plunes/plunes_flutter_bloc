@@ -19,7 +19,7 @@ class SearchedSolutionRepo {
       String searchedString, int index) async {
     var response = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
-        queryParameter: {"expression": "den", "limit": 10, "page": 1},
+        postData: {"expression": "den", "limit": 10, "page": 1},
         url: Urls.SEARCH_SOLUTION_API);
     print(response.isRequestSucceed);
     print(response.response?.data);
