@@ -15,8 +15,16 @@
       <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/taskHistory/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/taskHistory/taskHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/taskHistory/taskHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/taskHistory/taskHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Pods/Pods.xcodeproj/xcuserdata/craterzone.xcuserdatad/xcschemes/TOCropViewController-TOCropViewControllerBundle.xcscheme" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Pods/Pods.xcodeproj/xcuserdata/craterzone.xcuserdatad/xcschemes/TOCropViewController-TOCropViewControllerBundle.xcscheme" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/Utils/custom_widgets.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Utils/custom_widgets.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/blocs/base_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/blocs/base_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/blocs/solution_blocs/search_solution_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/blocs/solution_blocs/search_solution_bloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/solution_models/solution_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/solution_models/solution_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/repositories/solution_repo/searched_solution_repo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/repositories/solution_repo/searched_solution_repo.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/requester/request_handler.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/requester/request_handler.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/res/ColorsFile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/res/ColorsFile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/resources/network/Urls.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/resources/network/Urls.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_main_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_main_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_screen.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

@@ -10,6 +10,12 @@ abstract class BlocBase {
 
   get baseStream => _baseStream;
 
+  void addIntoStream(RequestState result) {
+    if (_baseStreamProvider != null && !_baseStreamProvider.isClosed) {
+      _baseStreamProvider.add(result);
+    }
+  }
+
   void dispose() {
     _baseStreamProvider?.close();
   }

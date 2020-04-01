@@ -1,11 +1,12 @@
 import 'dart:async';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 
@@ -17,6 +18,7 @@ class SolutionBiddingScreen extends BaseActivity {
 
 class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   List<SolutionDummyModel> _solutions = [SolutionDummyModel()];
+  List<CatalougeData> _catlouges;
   Function onViewMoreTap;
   TextEditingController _searchController;
   Timer _debounce;
@@ -24,6 +26,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
 
   @override
   void initState() {
+    _catlouges = [];
     _searchSolutionBloc = SearchSolutionBloc();
     _searchController = TextEditingController()..addListener(_onSearch);
     super.initState();
@@ -105,15 +108,28 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         widget.getSpacer(
             AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
         Expanded(
-            child: ListView.builder(
-          itemBuilder: (context, index) {
-            TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
-              ..onTap = () => _onViewMoreTap(index);
-            return CustomWidgets().getSolutionRow(_solutions, index,
-                onButtonTap: () => _onSolutionItemTap(index),
-                onViewMoreTap: tapRecognizer);
+            child: StreamBuilder<RequestState>(
+          builder: (context, snapShot) {
+            print("hello ${snapShot.runtimeType}");
+            if (snapShot.data is RequestSuccess) {
+              RequestSuccess _requestSuccessObject = snapShot.data;
+              if (_requestSuccessObject.requestCode ==
+                  SearchSolutionBloc.initialIndex) {
+                _catlouges = [];
+              }
+              Set _allItems = _catlouges.toSet();
+              _allItems.addAll(_requestSuccessObject.response);
+              _catlouges = _allItems.toList(growable: true);
+              print("success occurred ${_catlouges.length}");
+            } else if (snapShot.data is RequestFailed) {
+              print("request failed occur ${snapShot.data.toString()}");
+            }
+            print("snap shot occr ${_catlouges.length}");
+            return _catlouges == null || _catlouges.isEmpty
+                ? Text("null")
+                : _showSearchedItems();
           },
-          itemCount: 50,
+          stream: _searchSolutionBloc.baseStream,
         ))
       ],
     );
@@ -148,6 +164,19 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         print("text is empty");
       }
     });
+  }
+
+  Widget _showSearchedItems() {
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
+          ..onTap = () => _onViewMoreTap(index);
+        return CustomWidgets().getSolutionRow(_catlouges, index,
+            onButtonTap: () => _onSolutionItemTap(index),
+            onViewMoreTap: tapRecognizer);
+      },
+      itemCount: _catlouges.length,
+    );
   }
 }
 
