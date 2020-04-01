@@ -17,14 +17,6 @@
       <change beforePath="$PROJECT_DIR$/android/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Pods/Pods.xcodeproj/xcuserdata/craterzone.xcuserdatad/xcschemes/TOCropViewController-TOCropViewControllerBundle.xcscheme" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Pods/Pods.xcodeproj/xcuserdata/craterzone.xcuserdatad/xcschemes/TOCropViewController-TOCropViewControllerBundle.xcscheme" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Utils/custom_widgets.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Utils/custom_widgets.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/base/BaseActivity.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/base/BaseActivity.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/requester/dio_requester.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/requester/dio_requester.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/res/StringsFile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/res/StringsFile.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/resources/network/Urls.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/resources/network/Urls.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/BiddingScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/BiddingScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/HomeScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/HomeScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_screen.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
