@@ -1,3 +1,4 @@
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
@@ -17,11 +18,19 @@ class SearchedSolutionRepo {
 
   Future<RequestState> getSearchedSolution(
       String searchedString, int index) async {
-    var response = await DioRequester().requestMethod(
+    var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
-        postData: {"expression": "den", "limit": 10, "page": 1},
+        postData: {"expression": "den", "page": index},
         url: Urls.SEARCH_SOLUTION_API);
-    print(response.isRequestSucceed);
-    print(response.response?.data);
+    if (serverResponse.isRequestSucceed) {
+      List<CatalougeData> _solutions = [];
+      Iterable _items = serverResponse.response.data;
+      _solutions = _items
+          .map((item) => CatalougeData.fromJson(item))
+          .toList(growable: true);
+      return RequestSuccess(response: _solutions, requestCode: index);
+    } else {
+      return RequestFailed(failureCause: serverResponse.failureCause);
+    }
   }
 }

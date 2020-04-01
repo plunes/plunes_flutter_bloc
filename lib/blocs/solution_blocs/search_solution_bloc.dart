@@ -3,10 +3,13 @@ import 'package:plunes/blocs/base_bloc.dart';
 import 'package:plunes/repositories/solution_repo/searched_solution_repo.dart';
 
 class SearchSolutionBloc extends BlocBase {
+  static const int initialIndex = 0;
+
   Future getSearchedSolution({
     @required String searchedString,
-    int index = 0,
+    int index = initialIndex,
   }) async {
-    await SearchedSolutionRepo().getSearchedSolution(searchedString, index);
+    super.addIntoStream(await SearchedSolutionRepo()
+        .getSearchedSolution(searchedString, index));
   }
 }

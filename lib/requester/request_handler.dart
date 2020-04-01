@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:plunes/res/Http_constants.dart';
 
@@ -19,13 +17,11 @@ class ResponseStatusCodeHandler {
     RequestOutput _response;
     print(response);
     if (response.statusCode == HttpResponseCode.OK) {
-      _response = RequestOutput(
-          isRequestSucceed: true, response: json.decode(response.data));
+      _response = RequestOutput(isRequestSucceed: true, response: response);
       return _response;
     }
     if (response.statusCode == HttpResponseCode.CREATED) {
-      _response = RequestOutput(
-          isRequestSucceed: true, response: json.decode(response.data));
+      _response = RequestOutput(isRequestSucceed: true, response: response);
       return _response;
     }
 
@@ -42,7 +38,7 @@ class ResponseStatusCodeHandler {
 class RequestOutput {
   bool isRequestSucceed;
   String failureCause;
-  var response;
+  Response response;
   int statusCode;
 
   RequestOutput(

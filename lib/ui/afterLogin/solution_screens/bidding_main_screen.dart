@@ -126,18 +126,18 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                     ),
                   ),
                 ),
-                Expanded(
-                    child: ListView.builder(
-                  padding: EdgeInsets.all(0.0),
-                  itemBuilder: (context, index) {
-                    TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
-                      ..onTap = () => _onViewMoreTap(index);
-                    return CustomWidgets().getSolutionRow(_solutions, index,
-                        onButtonTap: () => _onSolutionItemTap(index),
-                        onViewMoreTap: tapRecognizer);
-                  },
-                  itemCount: 50,
-                ))
+//                Expanded(
+//                    child: ListView.builder(
+//                  padding: EdgeInsets.all(0.0),
+//                  itemBuilder: (context, index) {
+//                    TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
+//                      ..onTap = () => _onViewMoreTap(index);
+//                    return CustomWidgets().getSolutionRow(_solutions, index,
+//                        onButtonTap: () => _onSolutionItemTap(index),
+//                        onViewMoreTap: tapRecognizer);
+//                  },
+//                  itemCount: 50,
+//                ))
               ],
             )));
   }

@@ -36,9 +36,15 @@ class CatalougeData {
   String dnd;
   String category;
   String sId;
+  bool isSelected = false;
 
   CatalougeData(
-      {this.service, this.details, this.dnd, this.category, this.sId});
+      {this.service,
+      this.details,
+      this.dnd,
+      this.category,
+      this.sId,
+      this.isSelected = false});
 
   CatalougeData.fromJson(Map<String, dynamic> json) {
     service = json['service'];

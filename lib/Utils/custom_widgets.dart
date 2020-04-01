@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
@@ -118,72 +119,100 @@ class CustomWidgets {
     );
   }
 
-  Widget getSolutionRow(List<SolutionDummyModel> solutionList, int index,
+  Widget getSolutionRow(List<CatalougeData> solutionList, int index,
       {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
-    return InkWell(
-      onTap: onButtonTap,
-      child: Container(
-        child: Column(
-          children: <Widget>[
-            index == 0
-                ? Container()
-                : Container(
-                    margin: EdgeInsets.only(
-                        top: AppConfig.verticalBlockSize * 1.5,
-                        bottom: AppConfig.verticalBlockSize * 1.5),
-                    width: double.infinity,
-                    height: 0.5,
-                    color: PlunesColors.GREYCOLOR,
+    return StatefulBuilder(builder: (context, newState) {
+      return InkWell(
+        onTap: () {
+          newState(() {
+            solutionList[index].isSelected =
+                !solutionList[index].isSelected ?? false;
+          });
+        },
+        child: Container(
+          color: solutionList[index].isSelected ?? false
+              ? PlunesColors.LIGHTGREENCOLOR
+              : PlunesColors.WHITECOLOR,
+          child: Column(
+            children: <Widget>[
+              index == 0
+                  ? Container()
+                  : Container(
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.5,
+                          bottom: AppConfig.verticalBlockSize * 1.5),
+                      width: double.infinity,
+                      height: 0.5,
+                      color: PlunesColors.GREYCOLOR,
+                    ),
+              Row(
+                children: <Widget>[
+                  CircleAvatar(
+                    child: ClipOval(
+                        child: getImageFromUrl(
+                            "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                    radius: AppConfig.horizontalBlockSize * 7,
                   ),
-            Row(
-              children: <Widget>[
-                CircleAvatar(
-                  child:
-                      ClipOval(child: getImageFromUrl(solutionList[0].fileUrl)),
-                  radius: AppConfig.horizontalBlockSize * 7,
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: AppConfig.horizontalBlockSize * 2)),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      RichText(
-                          text: TextSpan(
-                              text: solutionList[0].heading ?? PlunesStrings.NA,
-                              style: TextStyle(color: Colors.black),
-                              children: [
-                            TextSpan(
-                                text: "(Procedure)",
-                                style: TextStyle(color: Colors.green))
-                          ])),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              top: AppConfig.verticalBlockSize * 1)),
-                      RichText(
-                          text: TextSpan(
-                              text: solutionList[0].subTitleText ??
-                                  PlunesStrings.NA,
-                              style: TextStyle(color: Colors.black),
-                              children: [
-                            TextSpan(
-                                text: "(view more)",
-                                recognizer: onViewMoreTap,
-                                style:
-                                    TextStyle(color: PlunesColors.GREENCOLOR))
-                          ])),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ],
+                  Padding(
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 2)),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        RichText(
+                            text: TextSpan(
+                                text: solutionList[index].service ??
+                                    PlunesStrings.NA,
+                                style: TextStyle(color: Colors.black),
+                                children: [
+                              TextSpan(
+                                  text:
+                                      "(${solutionList[index].category ?? PlunesStrings.NA})",
+                                  style: TextStyle(color: Colors.green))
+                            ])),
+                        Padding(
+                            padding: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1)),
+                        RichText(
+                            text: TextSpan(
+                                text:
+                                    solutionList[0].details ?? PlunesStrings.NA,
+                                style: TextStyle(color: Colors.black),
+                                children: [
+                              TextSpan(
+                                  text: "(view more)",
+                                  recognizer: onViewMoreTap,
+                                  style:
+                                      TextStyle(color: PlunesColors.GREENCOLOR))
+                            ])),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+              solutionList[index].isSelected ?? false
+                  ? Container(
+                      color: PlunesColors.WHITECOLOR,
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 24,
+                          top: AppConfig.verticalBlockSize * 1,
+                          right: AppConfig.horizontalBlockSize * 24),
+                      child: _getRoundedButton(
+                          "Negotiate",
+                          AppConfig.horizontalBlockSize * 8,
+                          PlunesColors.GREENCOLOR,
+                          AppConfig.horizontalBlockSize * 4,
+                          AppConfig.verticalBlockSize * 2,
+                          PlunesColors.WHITECOLOR))
+                  : Container()
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget getImageFromUrl(final String imageUrl,
@@ -194,6 +223,28 @@ class CustomWidgets {
       fit: boxFit,
       errorWidget: (_, str, sds) => Icon(Icons.account_circle),
       placeholder: (_, sds) => Icon(Icons.all_inclusive),
+    );
+  }
+
+  Widget _getRoundedButton(
+      String buttonName,
+      double cornerPadding,
+      Color buttonColor,
+      double horizontalPadding,
+      double verticalPadding,
+      Color textColor) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding, vertical: verticalPadding),
+      decoration: BoxDecoration(
+          color: buttonColor ?? PlunesColors.WHITECOLOR,
+          borderRadius: BorderRadius.all(Radius.circular(cornerPadding))),
+      child: Center(
+        child: Text(
+          buttonName,
+          style: TextStyle(color: textColor ?? PlunesColors.BLACKCOLOR),
+        ),
+      ),
     );
   }
 }

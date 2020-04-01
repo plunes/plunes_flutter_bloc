@@ -1,0 +1,680 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-63:12
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-63:12
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-63:12
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-63:12
+MERGED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-63:12
+MERGED from [:location] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-10:12
+MERGED from [:flutter_local_notifications] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:file_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/file_picker/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-22:12
+MERGED from [:image_cropper] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_cropper/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:geocoder] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/geocoder/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:google_maps_flutter] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/google_maps_flutter/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:shared_preferences] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-20:12
+MERGED from [:device_info] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/device_info/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:share] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/share/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-24:12
+MERGED from [:fluttertoast] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/fluttertoast/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:location_permissions] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location_permissions/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:keyboard_visibility] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/keyboard_visibility/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:sqflite] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/sqflite/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:url_launcher] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-14:12
+MERGED from [:connectivity] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-10:12
+MERGED from [:intro_slider] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/intro_slider/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:path_provider] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/path_provider/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:2:1-21:12
+MERGED from [com.google.firebase:firebase-core:16.0.9] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-core-16.0.9.aar/f835047a015ea836ea6960d36cbc627b/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/legacy-support-v4-1.0.0.aar/c9c0a697429381b9334c30c9fa284f27/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/legacy-support-core-ui-1.0.0.aar/7e46abbc8499f1f1d3e64e2f31bd4e52/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.firebase:firebase-messaging:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-firebase-messaging-20.0.0.aar/07be075a2415c5d6315cb4847052bff0/AndroidManifest.xml:17:1-37:12
+MERGED from [com.google.firebase:firebase-analytics:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-analytics-16.5.0.aar/d91d09af6a29a35a366532e8e9d65125/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:17:1-36:12
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:17:1-47:12
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:17:1-55:12
+MERGED from [com.google.android.gms:play-services-measurement-sdk:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-16.5.0.aar/005d9f761822ed2dbe48ce0ebb9cbb8f/AndroidManifest.xml:17:1-25:12
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:17:1-40:12
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-stats-17.0.0.aar/968e77cdfd493a0d5767229346f5954a/AndroidManifest.xml:2:1-9:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/legacy-support-core-utils-1.0.0.aar/fb1daacd6b2c2fcccc82027ecf371fdd/AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:17:1-38:12
+MERGED from [com.github.yalantis:ucrop:2.2.4] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/ucrop-2.2.4.aar/971babcde41ac150f2605267e36ff406/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/appcompat-1.1.0.aar/593f2ec25567f4984c4de3897030da1d/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-location-16.0.0.aar/266e8d17e2328a1b51c1ca8f22ee9150/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/89e9eb7685a37b08159d2fe0e59f7de5/AndroidManifest.xml:2:1-10:12
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-base-17.0.0.aar/c3e541ec08c968a5a04e9f056921bad8/AndroidManifest.xml:17:1-29:12
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-places-placereport-16.0.0.aar/6e3248117d18c2ec274b74ddeec5624f/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:2:1-19:12
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-tasks-17.0.0.aar/4d72a567702473d971778d12cf63bf28/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-measurement-connector-18.0.0.aar/53a4675467b1471cbb05b2faabb32bc2/AndroidManifest.xml:17:1-25:12
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:17:1-40:12
+MERGED from [com.google.android.gms:play-services-measurement-base:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-base-16.5.0.aar/7372dfef3fc61683330d402919bd7cc9/AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-ads-identifier:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-ads-identifier-16.0.0.aar/16ea3df29f685fd7d45cf0e47b27c153/AndroidManifest.xml:17:1-24:12
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-basement-17.0.0.aar/8a117bcef52e05c52e18986373013365/AndroidManifest.xml:17:1-28:12
+MERGED from [androidx.fragment:fragment:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/fragment-1.1.0.aar/1fc7aabf56da78870153e3bb62628f31/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/loader-1.0.0.aar/a648f67948855e471952b20da8f0ce1e/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-2.0.0.aar/96d792d04f3ece07b55f7767c6834bb5/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-core-2.0.0.aar/b1edaadbad11e4c7e58b6b8ed1976ef7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.transition:transition:1.2.0-rc01] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/transition-1.2.0-rc01.aar/37d259ee8f2b19dcb847f86442ef865b/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.media:media:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/media-1.0.0.aar/6277c2dce3fcf617b6c84b535955bf8d/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/viewpager-1.0.0.aar/d62b004c22b297a81d6ab2810706d87b/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/coordinatorlayout-1.0.0.aar/77d9efa0c0194489916d1493211c2f5c/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/drawerlayout-1.0.0.aar/2114a767ee6a446336d8ad6739da2c8d/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/slidingpanelayout-1.0.0.aar/e43a5e0fbd46d0fd3ac6a3348e2029fe/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/customview-1.0.0.aar/96323753e0ad0f69be5c6e64d85fb4f0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/swiperefreshlayout-1.0.0.aar/26189a05d8101d8beb331837f949712d/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-1.0.0.aar/b351d3ed8c2ba3d6ef21dcc24f4a71d7/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/appcompat-resources-1.1.0.aar/0ced7bd538479062ca6af14d8c0cfb4f/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/activity-1.0.0.aar/d23aaf47ff9a3be59d6b7278dacf9d0b/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/vectordrawable-animated-1.1.0.aar/28ed249f1e3c5689b798123054d4270e/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/vectordrawable-1.1.0.aar/ff4406407257d0f939222c5751537ac3/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.core:core:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/core-1.1.0.aar/93e95aaedca5a17c62ac39c6a124cb69/AndroidManifest.xml:17:1-26:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-runtime-2.1.0.aar/417964bf0a6c39c93d7973e0c5653a47/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/savedstate-1.0.0.aar/b0cfe50d2530a2def798d7e5fa6e3309/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/localbroadcastmanager-1.0.0.aar/b9f69fa985d304446952a9d7d7b4c611/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.exifinterface:exifinterface:1.1.0-beta01] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/exifinterface-1.1.0-beta01.aar/e759b5707d03b514cc350d10dff658c1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/interpolator-1.0.0.aar/3cf63526c47e298783170498bfe1e695/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/cursoradapter-1.0.0.aar/86ca83c8d6c3a4bcc92cc0077a69820c/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/documentfile-1.0.0.aar/4be40123179b68a5645a509accf765f4/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/print-1.0.0.aar/f88e64710a728ae22a67e6a6840c636f/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/core-runtime-2.0.0.aar/90a4f790393a855f3da6ca00f8d7a0d3/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/ba1e959152065207ced712f59e4753ba/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-2.1.0.aar/f1e42795a6ed208dca99881efba6e1db/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.multidex:multidex:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/multidex-2.0.0.aar/c6134d69d1ee7b6b259abba3667f7c6c/AndroidManifest.xml:17:1-22:12
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+	package
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:2:5-25
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-63:12
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:1-63:12
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:9:5-80
+MERGED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-81
+MERGED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-81
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:9:22-78
+uses-permission#android.permission.INTERNET
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:10:5-66
+MERGED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:10:5-66
+MERGED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:10:5-66
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:22:5-67
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:22:5-67
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:23:5-67
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:24:5-67
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:24:5-67
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:23:5-67
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:23:5-67
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:10:22-64
+uses-permission#READ_EXTERNAL_STORAGE
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:11:5-60
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:11:22-58
+uses-permission#android.permission.REQUEST_INSTALL_PACKAGES
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:12:5-83
+MERGED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-83
+MERGED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-83
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:12:22-80
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:13:5-79
+MERGED from [:location] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-79
+MERGED from [:location] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-79
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:13:22-76
+uses-permission#android.permission.VIBRATE
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:14:5-66
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:14:22-63
+uses-permission#android.permission.RECEIVE_BOOT_COMPLETED
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:15:5-80
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:15:22-78
+application
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:17:5-62:19
+MERGED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-20:19
+MERGED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:10:5-20:19
+MERGED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-18:19
+MERGED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-18:19
+MERGED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-22:19
+MERGED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:11:5-22:19
+MERGED from [:url_launcher] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-12:19
+MERGED from [:url_launcher] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-12:19
+MERGED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-19:19
+MERGED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-19:19
+MERGED from [com.google.firebase:firebase-core:16.0.9] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-core-16.0.9.aar/f835047a015ea836ea6960d36cbc627b/AndroidManifest.xml:7:5-20
+MERGED from [com.google.firebase:firebase-core:16.0.9] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-core-16.0.9.aar/f835047a015ea836ea6960d36cbc627b/AndroidManifest.xml:7:5-20
+MERGED from [com.google.firebase:firebase-messaging:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-firebase-messaging-20.0.0.aar/07be075a2415c5d6315cb4847052bff0/AndroidManifest.xml:22:5-35:19
+MERGED from [com.google.firebase:firebase-messaging:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-firebase-messaging-20.0.0.aar/07be075a2415c5d6315cb4847052bff0/AndroidManifest.xml:22:5-35:19
+MERGED from [com.google.firebase:firebase-analytics:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-analytics-16.5.0.aar/d91d09af6a29a35a366532e8e9d65125/AndroidManifest.xml:7:5-20
+MERGED from [com.google.firebase:firebase-analytics:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-analytics-16.5.0.aar/d91d09af6a29a35a366532e8e9d65125/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:26:5-34:19
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:26:5-34:19
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:28:5-45:19
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:28:5-45:19
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:28:5-53:19
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:28:5-53:19
+MERGED from [com.google.android.gms:play-services-measurement-sdk:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-16.5.0.aar/005d9f761822ed2dbe48ce0ebb9cbb8f/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.android.gms:play-services-measurement-sdk:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-16.5.0.aar/005d9f761822ed2dbe48ce0ebb9cbb8f/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:28:5-38:19
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:28:5-38:19
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-stats-17.0.0.aar/968e77cdfd493a0d5767229346f5954a/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-stats-17.0.0.aar/968e77cdfd493a0d5767229346f5954a/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:30:5-36:19
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:30:5-36:19
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-location-16.0.0.aar/266e8d17e2328a1b51c1ca8f22ee9150/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-location-16.0.0.aar/266e8d17e2328a1b51c1ca8f22ee9150/AndroidManifest.xml:7:5-20
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/89e9eb7685a37b08159d2fe0e59f7de5/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/89e9eb7685a37b08159d2fe0e59f7de5/AndroidManifest.xml:7:5-8:19
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-base-17.0.0.aar/c3e541ec08c968a5a04e9f056921bad8/AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-base-17.0.0.aar/c3e541ec08c968a5a04e9f056921bad8/AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-places-placereport-16.0.0.aar/6e3248117d18c2ec274b74ddeec5624f/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-places-placereport-16.0.0.aar/6e3248117d18c2ec274b74ddeec5624f/AndroidManifest.xml:22:5-20
+MERGED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:11:5-17:19
+MERGED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:11:5-17:19
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-tasks-17.0.0.aar/4d72a567702473d971778d12cf63bf28/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-tasks-17.0.0.aar/4d72a567702473d971778d12cf63bf28/AndroidManifest.xml:7:5-20
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-measurement-connector-18.0.0.aar/53a4675467b1471cbb05b2faabb32bc2/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-measurement-connector-18.0.0.aar/53a4675467b1471cbb05b2faabb32bc2/AndroidManifest.xml:22:5-23:19
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:28:5-38:19
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:28:5-38:19
+MERGED from [com.google.android.gms:play-services-measurement-base:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-base-16.5.0.aar/7372dfef3fc61683330d402919bd7cc9/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-measurement-base:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-base-16.5.0.aar/7372dfef3fc61683330d402919bd7cc9/AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-ads-identifier:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-ads-identifier-16.0.0.aar/16ea3df29f685fd7d45cf0e47b27c153/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-ads-identifier:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-ads-identifier-16.0.0.aar/16ea3df29f685fd7d45cf0e47b27c153/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-basement-17.0.0.aar/8a117bcef52e05c52e18986373013365/AndroidManifest.xml:22:5-26:19
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-basement-17.0.0.aar/8a117bcef52e05c52e18986373013365/AndroidManifest.xml:22:5-26:19
+MERGED from [androidx.core:core:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/core-1.1.0.aar/93e95aaedca5a17c62ac39c6a124cb69/AndroidManifest.xml:24:5-89
+MERGED from [androidx.core:core:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/core-1.1.0.aar/93e95aaedca5a17c62ac39c6a124cb69/AndroidManifest.xml:24:5-89
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/ba1e959152065207ced712f59e4753ba/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/ba1e959152065207ced712f59e4753ba/AndroidManifest.xml:24:5-25:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/core-1.1.0.aar/93e95aaedca5a17c62ac39c6a124cb69/AndroidManifest.xml:24:18-86
+	android:label
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:19:9-31
+	android:icon
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:21:9-43
+	android:usesCleartextTraffic
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:20:9-44
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:18:9-57
+meta-data#com.google.android.geo.API_KEY
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:23:9-24:70
+	android:value
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:24:13-68
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:23:20-65
+meta-data#com.google.firebase.messaging.default_notification_channel_id
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:26:9-28:63
+	android:value
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:28:13-60
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:27:13-89
+activity#com.yalantis.ucrop.UCropActivity
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:34:9-37:71
+	android:screenOrientation
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:36:13-49
+	android:theme
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:37:13-69
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:35:13-60
+activity#com.plunes.MainActivity
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:39:9-61:20
+	android:launchMode
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:41:13-43
+	android:hardwareAccelerated
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:44:13-47
+	android:windowSoftInputMode
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:45:13-55
+	android:configChanges
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:43:13-144
+	android:theme
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:42:13-47
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:40:13-41
+meta-data#io.flutter.app.android.SplashScreenUntilFirstFrame
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:50:13-52:40
+	android:value
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:52:17-37
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:51:17-82
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:53:13-56:29
+action#android.intent.action.MAIN
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:54:17-68
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:54:25-66
+category#android.intent.category.LAUNCHER
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:55:17-76
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:55:27-74
+intent-filter#action:name:FLUTTER_NOTIFICATION_CLICK+category:name:android.intent.category.DEFAULT
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:57:13-60:29
+action#FLUTTER_NOTIFICATION_CLICK
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:58:17-69
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:58:25-66
+category#android.intent.category.DEFAULT
+ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:59:17-76
+	android:name
+		ADDED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml:59:27-73
+uses-sdk
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml
+MERGED from [:location] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:location] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_local_notifications] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_local_notifications] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_local_notifications/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:file_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/file_picker/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:file_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/file_picker/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:image_cropper] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_cropper/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:image_cropper] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_cropper/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:geocoder] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/geocoder/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:geocoder] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/geocoder/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:google_maps_flutter] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/google_maps_flutter/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:google_maps_flutter] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/google_maps_flutter/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/shared_preferences/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:device_info] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/device_info/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:device_info] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/device_info/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:share] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/share/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:share] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/share/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-44
+MERGED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-44
+MERGED from [:fluttertoast] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/fluttertoast/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:fluttertoast] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/fluttertoast/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:location_permissions] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location_permissions/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:location_permissions] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location_permissions/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:keyboard_visibility] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/keyboard_visibility/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:keyboard_visibility] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/keyboard_visibility/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:sqflite] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/sqflite/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:sqflite] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/sqflite/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:url_launcher] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:connectivity] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:intro_slider] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/intro_slider/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:intro_slider] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/intro_slider/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:path_provider] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/path_provider/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:path_provider] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/path_provider/intermediates/library_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-44
+MERGED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:6:5-44
+MERGED from [com.google.firebase:firebase-core:16.0.9] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-core-16.0.9.aar/f835047a015ea836ea6960d36cbc627b/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-core:16.0.9] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-core-16.0.9.aar/f835047a015ea836ea6960d36cbc627b/AndroidManifest.xml:5:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/legacy-support-v4-1.0.0.aar/c9c0a697429381b9334c30c9fa284f27/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-v4:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/legacy-support-v4-1.0.0.aar/c9c0a697429381b9334c30c9fa284f27/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/legacy-support-core-ui-1.0.0.aar/7e46abbc8499f1f1d3e64e2f31bd4e52/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/legacy-support-core-ui-1.0.0.aar/7e46abbc8499f1f1d3e64e2f31bd4e52/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-messaging:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-firebase-messaging-20.0.0.aar/07be075a2415c5d6315cb4847052bff0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-messaging:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-firebase-messaging-20.0.0.aar/07be075a2415c5d6315cb4847052bff0/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-analytics:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-analytics-16.5.0.aar/d91d09af6a29a35a366532e8e9d65125/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-analytics:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-analytics-16.5.0.aar/d91d09af6a29a35a366532e8e9d65125/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-sdk:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-16.5.0.aar/005d9f761822ed2dbe48ce0ebb9cbb8f/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-sdk:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-16.5.0.aar/005d9f761822ed2dbe48ce0ebb9cbb8f/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-stats-17.0.0.aar/968e77cdfd493a0d5767229346f5954a/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-stats:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-stats-17.0.0.aar/968e77cdfd493a0d5767229346f5954a/AndroidManifest.xml:5:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/legacy-support-core-utils-1.0.0.aar/fb1daacd6b2c2fcccc82027ecf371fdd/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/legacy-support-core-utils-1.0.0.aar/fb1daacd6b2c2fcccc82027ecf371fdd/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:20:5-44
+MERGED from [com.github.yalantis:ucrop:2.2.4] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/ucrop-2.2.4.aar/971babcde41ac150f2605267e36ff406/AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.yalantis:ucrop:2.2.4] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/ucrop-2.2.4.aar/971babcde41ac150f2605267e36ff406/AndroidManifest.xml:7:5-9:41
+MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/appcompat-1.1.0.aar/593f2ec25567f4984c4de3897030da1d/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/appcompat-1.1.0.aar/593f2ec25567f4984c4de3897030da1d/AndroidManifest.xml:20:5-22:41
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-location-16.0.0.aar/266e8d17e2328a1b51c1ca8f22ee9150/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-location:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-location-16.0.0.aar/266e8d17e2328a1b51c1ca8f22ee9150/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/89e9eb7685a37b08159d2fe0e59f7de5/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-iid-interop:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-interop-17.0.0.aar/89e9eb7685a37b08159d2fe0e59f7de5/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-base-17.0.0.aar/c3e541ec08c968a5a04e9f056921bad8/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-base:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-base-17.0.0.aar/c3e541ec08c968a5a04e9f056921bad8/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-places-placereport-16.0.0.aar/6e3248117d18c2ec274b74ddeec5624f/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-places-placereport:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-places-placereport-16.0.0.aar/6e3248117d18c2ec274b74ddeec5624f/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:6:5-8:41
+MERGED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:6:5-8:41
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-tasks-17.0.0.aar/4d72a567702473d971778d12cf63bf28/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-tasks-17.0.0.aar/4d72a567702473d971778d12cf63bf28/AndroidManifest.xml:5:5-44
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-measurement-connector-18.0.0.aar/53a4675467b1471cbb05b2faabb32bc2/AndroidManifest.xml:20:5-44
+MERGED from [com.google.firebase:firebase-measurement-connector:18.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-measurement-connector-18.0.0.aar/53a4675467b1471cbb05b2faabb32bc2/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-measurement-base:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-base-16.5.0.aar/7372dfef3fc61683330d402919bd7cc9/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-measurement-base:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-base-16.5.0.aar/7372dfef3fc61683330d402919bd7cc9/AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-ads-identifier:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-ads-identifier-16.0.0.aar/16ea3df29f685fd7d45cf0e47b27c153/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-ads-identifier:16.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-ads-identifier-16.0.0.aar/16ea3df29f685fd7d45cf0e47b27c153/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-basement-17.0.0.aar/8a117bcef52e05c52e18986373013365/AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-basement:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-basement-17.0.0.aar/8a117bcef52e05c52e18986373013365/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/fragment-1.1.0.aar/1fc7aabf56da78870153e3bb62628f31/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/fragment-1.1.0.aar/1fc7aabf56da78870153e3bb62628f31/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.loader:loader:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/loader-1.0.0.aar/a648f67948855e471952b20da8f0ce1e/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/loader-1.0.0.aar/a648f67948855e471952b20da8f0ce1e/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-2.0.0.aar/96d792d04f3ece07b55f7767c6834bb5/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-2.0.0.aar/96d792d04f3ece07b55f7767c6834bb5/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-core-2.0.0.aar/b1edaadbad11e4c7e58b6b8ed1976ef7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-livedata-core-2.0.0.aar/b1edaadbad11e4c7e58b6b8ed1976ef7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.transition:transition:1.2.0-rc01] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/transition-1.2.0-rc01.aar/37d259ee8f2b19dcb847f86442ef865b/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0-rc01] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/transition-1.2.0-rc01.aar/37d259ee8f2b19dcb847f86442ef865b/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.media:media:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/media-1.0.0.aar/6277c2dce3fcf617b6c84b535955bf8d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.media:media:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/media-1.0.0.aar/6277c2dce3fcf617b6c84b535955bf8d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/viewpager-1.0.0.aar/d62b004c22b297a81d6ab2810706d87b/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/viewpager-1.0.0.aar/d62b004c22b297a81d6ab2810706d87b/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/coordinatorlayout-1.0.0.aar/77d9efa0c0194489916d1493211c2f5c/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/coordinatorlayout-1.0.0.aar/77d9efa0c0194489916d1493211c2f5c/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/drawerlayout-1.0.0.aar/2114a767ee6a446336d8ad6739da2c8d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/drawerlayout-1.0.0.aar/2114a767ee6a446336d8ad6739da2c8d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/slidingpanelayout-1.0.0.aar/e43a5e0fbd46d0fd3ac6a3348e2029fe/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/slidingpanelayout-1.0.0.aar/e43a5e0fbd46d0fd3ac6a3348e2029fe/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/customview-1.0.0.aar/96323753e0ad0f69be5c6e64d85fb4f0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/customview-1.0.0.aar/96323753e0ad0f69be5c6e64d85fb4f0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/swiperefreshlayout-1.0.0.aar/26189a05d8101d8beb331837f949712d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/swiperefreshlayout-1.0.0.aar/26189a05d8101d8beb331837f949712d/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-1.0.0.aar/b351d3ed8c2ba3d6ef21dcc24f4a71d7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/asynclayoutinflater-1.0.0.aar/b351d3ed8c2ba3d6ef21dcc24f4a71d7/AndroidManifest.xml:20:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/appcompat-resources-1.1.0.aar/0ced7bd538479062ca6af14d8c0cfb4f/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/appcompat-resources-1.1.0.aar/0ced7bd538479062ca6af14d8c0cfb4f/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/activity-1.0.0.aar/d23aaf47ff9a3be59d6b7278dacf9d0b/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/activity-1.0.0.aar/d23aaf47ff9a3be59d6b7278dacf9d0b/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/vectordrawable-animated-1.1.0.aar/28ed249f1e3c5689b798123054d4270e/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/vectordrawable-animated-1.1.0.aar/28ed249f1e3c5689b798123054d4270e/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/vectordrawable-1.1.0.aar/ff4406407257d0f939222c5751537ac3/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/vectordrawable-1.1.0.aar/ff4406407257d0f939222c5751537ac3/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/core-1.1.0.aar/93e95aaedca5a17c62ac39c6a124cb69/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.core:core:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/core-1.1.0.aar/93e95aaedca5a17c62ac39c6a124cb69/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-runtime-2.1.0.aar/417964bf0a6c39c93d7973e0c5653a47/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-runtime-2.1.0.aar/417964bf0a6c39c93d7973e0c5653a47/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/savedstate-1.0.0.aar/b0cfe50d2530a2def798d7e5fa6e3309/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.savedstate:savedstate:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/savedstate-1.0.0.aar/b0cfe50d2530a2def798d7e5fa6e3309/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/localbroadcastmanager-1.0.0.aar/b9f69fa985d304446952a9d7d7b4c611/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/localbroadcastmanager-1.0.0.aar/b9f69fa985d304446952a9d7d7b4c611/AndroidManifest.xml:20:5-44
+MERGED from [androidx.exifinterface:exifinterface:1.1.0-beta01] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/exifinterface-1.1.0-beta01.aar/e759b5707d03b514cc350d10dff658c1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.1.0-beta01] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/exifinterface-1.1.0-beta01.aar/e759b5707d03b514cc350d10dff658c1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/interpolator-1.0.0.aar/3cf63526c47e298783170498bfe1e695/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/interpolator-1.0.0.aar/3cf63526c47e298783170498bfe1e695/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/cursoradapter-1.0.0.aar/86ca83c8d6c3a4bcc92cc0077a69820c/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/cursoradapter-1.0.0.aar/86ca83c8d6c3a4bcc92cc0077a69820c/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/documentfile-1.0.0.aar/4be40123179b68a5645a509accf765f4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/documentfile-1.0.0.aar/4be40123179b68a5645a509accf765f4/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/print-1.0.0.aar/f88e64710a728ae22a67e6a6840c636f/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/print-1.0.0.aar/f88e64710a728ae22a67e6a6840c636f/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/core-runtime-2.0.0.aar/90a4f790393a855f3da6ca00f8d7a0d3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/core-runtime-2.0.0.aar/90a4f790393a855f3da6ca00f8d7a0d3/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/ba1e959152065207ced712f59e4753ba/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/versionedparcelable-1.1.0.aar/ba1e959152065207ced712f59e4753ba/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-2.1.0.aar/f1e42795a6ed208dca99881efba6e1db/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.1.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/lifecycle-viewmodel-2.1.0.aar/f1e42795a6ed208dca99881efba6e1db/AndroidManifest.xml:20:5-44
+MERGED from [androidx.multidex:multidex:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/multidex-2.0.0.aar/c6134d69d1ee7b6b259abba3667f7c6c/AndroidManifest.xml:20:5-43
+MERGED from [androidx.multidex:multidex:2.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/multidex-2.0.0.aar/c6134d69d1ee7b6b259abba3667f7c6c/AndroidManifest.xml:20:5-43
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml
+INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/craterzone/Documents/projects/plunes_flutter_bloc/android/app/src/debug/AndroidManifest.xml
+uses-permission#android.permission.ACCESS_COARSE_LOCATION
+ADDED from [:location] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-81
+	android:name
+		ADDED from [:location] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/location/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-78
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from [:file_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/file_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-80
+MERGED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-80
+MERGED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-80
+MERGED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:9:5-80
+MERGED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:9:5-80
+	android:name
+		ADDED from [:file_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/file_picker/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-77
+provider#io.flutter.plugins.imagepicker.ImagePickerFileProvider
+ADDED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:11:9-19:20
+	android:grantUriPermissions
+		ADDED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-47
+	android:authorities
+		ADDED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-74
+	android:exported
+		ADDED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-37
+	android:name
+		ADDED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:12:13-82
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-18:75
+MERGED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-17:53
+MERGED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-17:53
+	android:resource
+		ADDED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:18:17-72
+	android:name
+		ADDED from [:image_picker] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/image_picker/intermediates/library_manifest/debug/AndroidManifest.xml:17:17-67
+service#io.flutter.plugins.firebasemessaging.FlutterFirebaseMessagingService
+ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:8:9-12:19
+	android:name
+		ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:8:18-101
+intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
+ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-11:29
+action#com.google.firebase.MESSAGING_EVENT
+ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:10:17-78
+	android:name
+		ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:10:25-75
+service#com.google.firebase.components.ComponentDiscoveryService
+ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:13:9-17:19
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:27:9-33:19
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:27:9-33:19
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:29:9-35:19
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:29:9-35:19
+	android:exported
+		ADDED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:29:13-37
+	android:name
+		ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:13:18-89
+meta-data#com.google.firebase.components:io.flutter.plugins.firebasemessaging.FlutterFirebaseAppRegistrar
+ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-16:85
+	android:value
+		ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:16:17-82
+	android:name
+		ADDED from [:firebase_messaging] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/firebase_messaging/intermediates/library_manifest/debug/AndroidManifest.xml:15:17-127
+provider#androidx.core.content.FileProvider
+ADDED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:12:9-21:20
+MERGED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:9:9-18:20
+MERGED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:9:9-18:20
+	android:grantUriPermissions
+		ADDED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:16:13-47
+	android:authorities
+		ADDED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:14:13-64
+		REJECTED from [:flutter_webview_plugin] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/flutter_webview_plugin/intermediates/library_manifest/debug/AndroidManifest.xml:11:13-64
+	android:exported
+		ADDED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:15:13-37
+	tools:replace
+		ADDED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:17:13-48
+	android:name
+		ADDED from [:open_file] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/open_file/intermediates/library_manifest/debug/AndroidManifest.xml:13:13-62
+activity#io.flutter.plugins.urllauncher.WebViewActivity
+ADDED from [:url_launcher] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:8:9-11:74
+	android:exported
+		ADDED from [:url_launcher] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:10:13-37
+	android:theme
+		ADDED from [:url_launcher] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:11:13-71
+	android:name
+		ADDED from [:url_launcher] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/url_launcher/intermediates/library_manifest/debug/AndroidManifest.xml:9:13-74
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from [:connectivity] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:7:5-79
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:23:5-79
+MERGED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:23:5-79
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:22:5-79
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:22:5-79
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:23:5-79
+MERGED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:23:5-79
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:24:5-79
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:24:5-79
+	android:name
+		ADDED from [:connectivity] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:7:22-76
+uses-permission#android.permission.ACCESS_WIFI_STATE
+ADDED from [:connectivity] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:8:5-76
+	android:name
+		ADDED from [:connectivity] /Users/craterzone/Documents/projects/plunes_flutter_bloc/build/connectivity/intermediates/library_manifest/debug/AndroidManifest.xml:8:22-73
+service#com.google.firebase.messaging.FirebaseMessagingService
+ADDED from [com.google.firebase:firebase-messaging:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-firebase-messaging-20.0.0.aar/07be075a2415c5d6315cb4847052bff0/AndroidManifest.xml:28:9-34:19
+	android:exported
+		ADDED from [com.google.firebase:firebase-messaging:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-firebase-messaging-20.0.0.aar/07be075a2415c5d6315cb4847052bff0/AndroidManifest.xml:30:13-37
+	android:name
+		ADDED from [com.google.firebase:firebase-messaging:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-firebase-messaging-20.0.0.aar/07be075a2415c5d6315cb4847052bff0/AndroidManifest.xml:29:13-82
+uses-permission#android.permission.WAKE_LOCK
+ADDED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:24:5-68
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:24:5-68
+MERGED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:24:5-68
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:25:5-68
+MERGED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:25:5-68
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:25:5-68
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:25:5-68
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:25:5-68
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:25:5-68
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:24:22-65
+meta-data#com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar
+ADDED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:30:13-32:85
+	android:value
+		ADDED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:32:17-82
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-api-16.5.0.aar/0f47d2be3f30d367d4e59348a1ccd770/AndroidManifest.xml:31:17-139
+uses-permission#com.google.android.c2dm.permission.RECEIVE
+ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:26:5-82
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:26:22-79
+meta-data#com.google.firebase.components:com.google.firebase.iid.Registrar
+ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:32:13-34:85
+	android:value
+		ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:34:17-82
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:33:17-96
+receiver#com.google.firebase.iid.FirebaseInstanceIdReceiver
+ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:37:9-44:20
+	android:exported
+		ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:39:13-36
+	android:permission
+		ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:40:13-73
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:38:13-78
+intent-filter#action:name:com.google.android.c2dm.intent.RECEIVE
+ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:41:13-43:29
+action#com.google.android.c2dm.intent.RECEIVE
+ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:42:17-81
+	android:name
+		ADDED from [com.google.firebase:firebase-iid:20.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-iid-20.0.0.aar/acd5e16aea16b871202aacd8df57bb19/AndroidManifest.xml:42:25-78
+uses-permission#com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE
+ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:26:5-110
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:26:5-110
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:26:5-110
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:26:5-110
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:26:5-110
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:26:22-107
+receiver#com.google.android.gms.measurement.AppMeasurementReceiver
+ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:29:9-33:20
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:31:13-35
+	android:exported
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:32:13-37
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:30:13-85
+receiver#com.google.android.gms.measurement.AppMeasurementInstallReferrerReceiver
+ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:34:9-42:20
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:29:9-37:20
+MERGED from [com.google.android.gms:play-services-measurement-impl:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-impl-16.5.0.aar/37d1f426f89a9c2530688790fc91a58f/AndroidManifest.xml:29:9-37:20
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:29:9-37:20
+MERGED from [com.google.android.gms:play-services-measurement-sdk-api:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-sdk-api-16.5.0.aar/f91ecbcd9cb64ab65672bfcd6a125294/AndroidManifest.xml:29:9-37:20
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:36:13-35
+	android:exported
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:37:13-36
+	android:permission
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:38:13-69
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:35:13-100
+intent-filter#action:name:com.android.vending.INSTALL_REFERRER
+ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:39:13-41:29
+action#com.android.vending.INSTALL_REFERRER
+ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:40:17-79
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:40:25-76
+service#com.google.android.gms.measurement.AppMeasurementService
+ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:44:9-47:40
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:46:13-35
+	android:exported
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:47:13-37
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:45:13-84
+service#com.google.android.gms.measurement.AppMeasurementJobService
+ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:48:9-52:72
+	android:enabled
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:50:13-35
+	android:exported
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:51:13-37
+	android:permission
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:52:13-69
+	android:name
+		ADDED from [com.google.android.gms:play-services-measurement:16.5.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-measurement-16.5.0.aar/d3ae23515980f40a58aa45e32adcf25a/AndroidManifest.xml:49:13-87
+uses-feature#0x00020000
+ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:26:5-28:35
+	android:glEsVersion
+		ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:27:9-41
+	android:required
+		ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:28:9-32
+uses-library#org.apache.http.legacy
+ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:33:9-35:40
+	android:required
+		ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:35:13-37
+	android:name
+		ADDED from [com.google.android.gms:play-services-maps:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-maps-17.0.0.aar/a6facf76685d074955a88964b1ea8f08/AndroidManifest.xml:34:13-50
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-base-17.0.0.aar/c3e541ec08c968a5a04e9f056921bad8/AndroidManifest.xml:23:9-26:75
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-base-17.0.0.aar/c3e541ec08c968a5a04e9f056921bad8/AndroidManifest.xml:25:13-37
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-base-17.0.0.aar/c3e541ec08c968a5a04e9f056921bad8/AndroidManifest.xml:26:13-72
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/play-services-base-17.0.0.aar/c3e541ec08c968a5a04e9f056921bad8/AndroidManifest.xml:24:13-79
+provider#com.google.firebase.provider.FirebaseInitProvider
+ADDED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:12:9-16:39
+	android:authorities
+		ADDED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:14:13-72
+	android:exported
+		ADDED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:15:13-37
+	android:initOrder
+		ADDED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:16:13-36
+	android:name
+		ADDED from [com.google.firebase:firebase-common:19.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/firebase-common-19.0.0.aar/2dcdc3ee2e8d22a937a00fd9791af7a5/AndroidManifest.xml:13:13-77
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-basement-17.0.0.aar/8a117bcef52e05c52e18986373013365/AndroidManifest.xml:23:9-25:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-basement-17.0.0.aar/8a117bcef52e05c52e18986373013365/AndroidManifest.xml:25:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:17.0.0] /Users/craterzone/.gradle/caches/transforms-1/files-1.1/jetified-play-services-basement-17.0.0.aar/8a117bcef52e05c52e18986373013365/AndroidManifest.xml:24:13-58
