@@ -306,14 +306,14 @@ class BaseActivity extends StatefulWidget {
         ));
   }
 
-  Widget getAppBar(BuildContext context, String title, bool flag) {
+  Widget getAppBar(BuildContext context, String title, bool isIosBackButton) {
     return AppBar(
-        automaticallyImplyLeading: flag,
+        automaticallyImplyLeading: isIosBackButton,
         backgroundColor: Colors.white,
         brightness: Brightness.light,
         iconTheme: IconThemeData(color: Colors.black),
         centerTitle: true,
-        leading: flag
+        leading: isIosBackButton
             ? IconButton(
                 icon: Icon(Icons.arrow_back_ios),
                 onPressed: () => Navigator.pop(context, false),

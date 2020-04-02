@@ -434,4 +434,10 @@ class PlunesStrings {
   static const String negotiateForBestPrice =
       "Negotiate for the best price solution near you";
   static const String previousActivities = "Previous Activities";
+  static const String noSolutionsAvailable = "No solutions available";
+  static const String consultationNotAvailable = "Consultation not available";
+  static const String proceduresNotAvailable = "Procedures not available";
+  static const String testsNotAvailable = "Tests not available";
+  static const String serviceNotAvailable =
+      "Currently this service is not available";
 }

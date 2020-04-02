@@ -9,6 +9,8 @@ import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/testNprocedures.dart';
 
 // ignore: must_be_immutable
 class SolutionBiddingScreen extends BaseActivity {
@@ -17,17 +19,21 @@ class SolutionBiddingScreen extends BaseActivity {
 }
 
 class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
-  List<SolutionDummyModel> _solutions = [SolutionDummyModel()];
-  List<CatalougeData> _catlouges;
+  List<CatalougeData> _catalouges;
   Function onViewMoreTap;
   TextEditingController _searchController;
   Timer _debounce;
   SearchSolutionBloc _searchSolutionBloc;
+  int pageIndex = SearchSolutionBloc.initialIndex;
+  StreamController _streamController;
+  bool _endReached;
 
   @override
   void initState() {
-    _catlouges = [];
+    _catalouges = [];
+    _endReached = false;
     _searchSolutionBloc = SearchSolutionBloc();
+    _streamController = StreamController();
     _searchController = TextEditingController()..addListener(_onSearch);
     super.initState();
   }
@@ -38,6 +44,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     _searchController?.dispose();
     _debounce?.cancel();
     _searchSolutionBloc?.dispose();
+    _streamController?.close();
     super.dispose();
   }
 
@@ -52,9 +59,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               widget.getAppBar(context, PlunesStrings.solutionSearched, true),
           body: Builder(builder: (context) {
             return Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 6,
-                  vertical: AppConfig.verticalBlockSize * 3),
+              padding: CustomWidgets().getDefaultPaddingForScreens(),
               width: double.infinity,
               child: _showBody(),
             );
@@ -65,10 +70,15 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   Widget _showBody() {
     return Column(
       children: <Widget>[
-        CustomWidgets().searchBar(
-            hintText: plunesStrings.searchHint,
-            hasFocus: true,
-            searchController: _searchController),
+        StreamBuilder(
+          builder: (context, snapShot) {
+            return CustomWidgets().searchBar(
+                hintText: plunesStrings.searchHint,
+                hasFocus: true,
+                searchController: _searchController);
+          },
+          stream: _streamController.stream,
+        ),
         widget.getSpacer(
             AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
         Container(
@@ -93,7 +103,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                   borderColor: PlunesColors.LIGHTGREYCOLOR,
                   horizontalPadding: AppConfig.horizontalBlockSize * 4,
                   verticalPadding: AppConfig.verticalBlockSize * 1,
-                  onTap: () => _onTestButtonClick()),
+                  onTap: () => _onTestAndProcedureButtonClick(
+                      PlunesStrings.tests, false)),
               CustomWidgets().rectangularButtonWithPadding(
                   buttonColor: PlunesColors.WHITECOLOR,
                   buttonText: PlunesStrings.procedures,
@@ -101,7 +112,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                   borderColor: PlunesColors.LIGHTGREYCOLOR,
                   horizontalPadding: AppConfig.horizontalBlockSize * 4,
                   verticalPadding: AppConfig.verticalBlockSize * 1,
-                  onTap: () => _onProcedureButtonClick()),
+                  onTap: () => _onTestAndProcedureButtonClick(
+                      PlunesStrings.procedures, true)),
             ],
           ),
         ),
@@ -110,24 +122,43 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         Expanded(
             child: StreamBuilder<RequestState>(
           builder: (context, snapShot) {
-            print("hello ${snapShot.runtimeType}");
             if (snapShot.data is RequestSuccess) {
               RequestSuccess _requestSuccessObject = snapShot.data;
               if (_requestSuccessObject.requestCode ==
                   SearchSolutionBloc.initialIndex) {
-                _catlouges = [];
+                pageIndex = SearchSolutionBloc.initialIndex;
+                _catalouges = [];
               }
-              Set _allItems = _catlouges.toSet();
-              _allItems.addAll(_requestSuccessObject.response);
-              _catlouges = _allItems.toList(growable: true);
-              print("success occurred ${_catlouges.length}");
+              if (_requestSuccessObject.requestCode !=
+                      SearchSolutionBloc.initialIndex &&
+                  _requestSuccessObject.response.isEmpty) {
+                _endReached = true;
+              } else {
+                _endReached = false;
+                Set _allItems = _catalouges.toSet();
+                _allItems.addAll(_requestSuccessObject.response);
+                _catalouges = _allItems.toList(growable: true);
+              }
+              pageIndex++;
             } else if (snapShot.data is RequestFailed) {
-              print("request failed occur ${snapShot.data.toString()}");
+              pageIndex = SearchSolutionBloc.initialIndex;
             }
-            print("snap shot occr ${_catlouges.length}");
-            return _catlouges == null || _catlouges.isEmpty
-                ? Text("null")
-                : _showSearchedItems();
+            return _catalouges == null || _catalouges.isEmpty
+                ? Text(PlunesStrings.noSolutionsAvailable)
+                : Column(
+                    children: <Widget>[
+                      Expanded(
+                        child: _showSearchedItems(),
+                        flex: 4,
+                      ),
+                      snapShot.data is RequestInProgress
+                          ? Expanded(
+                              child: CustomWidgets().getProgressIndicator(),
+                              flex: 1,
+                            )
+                          : Container()
+                    ],
+                  );
           },
           stream: _searchSolutionBloc.baseStream,
         ))
@@ -136,12 +167,19 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   }
 
   _onConsultationButtonClick() {
-    print("sdsdssdsds");
+    return Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ConsultationScreen()));
   }
 
-  _onTestButtonClick() {}
-
-  _onProcedureButtonClick() {}
+  _onTestAndProcedureButtonClick(String title, bool isProcedure) {
+    return Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => TestAndProcedureScreen(
+                  screenTitle: title,
+                  isProcedure: isProcedure,
+                )));
+  }
 
   _onSolutionItemTap(int index) {
     print("whole button tapped");
@@ -152,38 +190,46 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   }
 
   _onSearch() {
+    _streamController.add(null);
     if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 400), () {
+    _debounce = Timer(const Duration(milliseconds: 500), () {
       if (_searchController != null &&
           _searchController.text != null &&
-          _searchController.text.isNotEmpty) {
-        print("Text is ${_searchController.text}");
+          _searchController.text.trim().isNotEmpty) {
         _searchSolutionBloc.getSearchedSolution(
-            searchedString: _searchController.text.toString(), index: 0);
+            searchedString: _searchController.text.trim().toString(), index: 0);
       } else {
-        print("text is empty");
+        _catalouges = [];
+        _searchSolutionBloc.addState(null);
       }
     });
   }
 
   Widget _showSearchedItems() {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
-          ..onTap = () => _onViewMoreTap(index);
-        return CustomWidgets().getSolutionRow(_catlouges, index,
-            onButtonTap: () => _onSolutionItemTap(index),
-            onViewMoreTap: tapRecognizer);
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollState) {
+        if (scrollState is ScrollEndNotification &&
+            scrollState.metrics.extentAfter == 0 &&
+            _searchController.text.trim().isNotEmpty &&
+            !_endReached) {
+          _searchSolutionBloc.addIntoStream(RequestInProgress());
+          _searchSolutionBloc.getSearchedSolution(
+              searchedString: _searchController.text.trim().toString(),
+              index: pageIndex);
+        }
+        return;
       },
-      itemCount: _catlouges.length,
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
+            ..onTap = () => _onViewMoreTap(index);
+          return CustomWidgets().getSolutionRow(_catalouges, index,
+              onButtonTap: () => _onSolutionItemTap(index),
+              onViewMoreTap: tapRecognizer);
+        },
+        shrinkWrap: true,
+        itemCount: _catalouges.length,
+      ),
     );
   }
-}
-
-class SolutionDummyModel {
-  String fileUrl =
-      "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg";
-  String heading = "Dentist Consultation";
-  String procedure = "Procedure";
-  String subTitleText = "Do tests under plunes ,lorem ispum ";
 }

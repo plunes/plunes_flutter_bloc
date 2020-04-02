@@ -33,4 +33,30 @@ class SearchedSolutionRepo {
       return RequestFailed(failureCause: serverResponse.failureCause);
     }
   }
+
+  Future<RequestState> getCataloguesForTestAndProcedures(
+      final String searchedString,
+      final String specId,
+      int pageIndex,
+      bool isProcedure) async {
+    var serverResponse = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {
+          "expression": searchedString ?? "",
+          "type": isProcedure ? "procedures" : "tests",
+          "specialityId": specId,
+          "page": pageIndex
+        },
+        url: Urls.GET_TEST_AND_PROCEDURES_CATALOGUE_API);
+    if (serverResponse.isRequestSucceed) {
+      List<CatalougeData> _solutions = [];
+      Iterable _items = serverResponse.response.data;
+      _solutions = _items
+          .map((item) => CatalougeData.fromJson(item))
+          .toList(growable: true);
+      return RequestSuccess(response: _solutions);
+    } else {
+      return RequestFailed(failureCause: serverResponse.failureCause);
+    }
+  }
 }

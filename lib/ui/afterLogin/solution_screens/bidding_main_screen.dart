@@ -20,7 +20,6 @@ class BiddingMainScreen extends BaseActivity {
 class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   Completer<GoogleMapController> _mapController;
   CameraPosition _initialCameraPosition;
-  List<SolutionDummyModel> _solutions = [SolutionDummyModel()];
   TextEditingController _textEditingController;
   FocusNode _focusNode;
 

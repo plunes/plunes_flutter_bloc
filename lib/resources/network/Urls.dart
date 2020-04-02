@@ -48,4 +48,9 @@ class Urls {
 
   get notification => baseUrl + "notification/0";
   static const String SEARCH_SOLUTION_API = "catalogue/search/";
+  static const String GET_CONSULTATION_API = "catalogue/category/consultations";
+  static const String GET_PROCEDURES_API = "catalogue/category/procedures";
+  static const String GET_TESTS_API = "catalogue/category/tests";
+  static const String GET_TEST_AND_PROCEDURES_CATALOGUE_API =
+      "catalogue/serviceList";
 }

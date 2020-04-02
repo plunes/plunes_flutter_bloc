@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/models/solution_models/test_and_procedure_model.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
@@ -122,79 +124,88 @@ class CustomWidgets {
   Widget getSolutionRow(List<CatalougeData> solutionList, int index,
       {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
     return StatefulBuilder(builder: (context, newState) {
-      return InkWell(
-        onTap: () {
-          newState(() {
-            solutionList[index].isSelected =
-                !solutionList[index].isSelected ?? false;
-          });
-        },
-        child: Container(
-          color: solutionList[index].isSelected ?? false
-              ? PlunesColors.LIGHTGREENCOLOR
-              : PlunesColors.WHITECOLOR,
-          child: Column(
-            children: <Widget>[
-              index == 0
-                  ? Container()
-                  : Container(
-                      margin: EdgeInsets.only(
-                          top: AppConfig.verticalBlockSize * 1.5,
-                          bottom: AppConfig.verticalBlockSize * 1.5),
-                      width: double.infinity,
-                      height: 0.5,
-                      color: PlunesColors.GREYCOLOR,
-                    ),
-              Row(
+      return Column(
+        children: <Widget>[
+          InkWell(
+            onTap: () {
+              newState(() {
+                solutionList[index].isSelected =
+                    !solutionList[index].isSelected ?? false;
+              });
+            },
+            child: Container(
+              color: solutionList[index].isSelected ?? false
+                  ? PlunesColors.LIGHTGREENCOLOR
+                  : PlunesColors.WHITECOLOR,
+              padding: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1),
+              child: Column(
                 children: <Widget>[
-                  CircleAvatar(
-                    child: ClipOval(
-                        child: getImageFromUrl(
-                            "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
-                    radius: AppConfig.horizontalBlockSize * 7,
+                  Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        child: ClipOval(
+                            child: getImageFromUrl(
+                                "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                        radius: AppConfig.horizontalBlockSize * 7,
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 2)),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            RichText(
+                                text: TextSpan(
+                                    text: solutionList[index].service ??
+                                        PlunesStrings.NA,
+                                    style: TextStyle(color: Colors.black),
+                                    children: [
+                                  TextSpan(
+                                      text:
+                                          "(${solutionList[index].category ?? PlunesStrings.NA})",
+                                      style: TextStyle(color: Colors.green))
+                                ])),
+                            Padding(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 1)),
+                            RichText(
+                                text: TextSpan(
+                                    text: solutionList[0].details ??
+                                        PlunesStrings.NA,
+                                    style: TextStyle(color: Colors.black),
+                                    children: [
+                                  TextSpan(
+                                      text: "(view more)",
+                                      recognizer: onViewMoreTap,
+                                      style: TextStyle(
+                                          color: PlunesColors.GREENCOLOR))
+                                ])),
+                          ],
+                        ),
+                      )
+                    ],
                   ),
-                  Padding(
-                      padding: EdgeInsets.only(
-                          left: AppConfig.horizontalBlockSize * 2)),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        RichText(
-                            text: TextSpan(
-                                text: solutionList[index].service ??
-                                    PlunesStrings.NA,
-                                style: TextStyle(color: Colors.black),
-                                children: [
-                              TextSpan(
-                                  text:
-                                      "(${solutionList[index].category ?? PlunesStrings.NA})",
-                                  style: TextStyle(color: Colors.green))
-                            ])),
-                        Padding(
-                            padding: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 1)),
-                        RichText(
-                            text: TextSpan(
-                                text:
-                                    solutionList[0].details ?? PlunesStrings.NA,
-                                style: TextStyle(color: Colors.black),
-                                children: [
-                              TextSpan(
-                                  text: "(view more)",
-                                  recognizer: onViewMoreTap,
-                                  style:
-                                      TextStyle(color: PlunesColors.GREENCOLOR))
-                            ])),
-                      ],
-                    ),
-                  )
                 ],
               ),
-              solutionList[index].isSelected ?? false
-                  ? Container(
+            ),
+          ),
+          index == solutionList.length - 1
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.only(
+                      bottom: AppConfig.verticalBlockSize * 1.5),
+                  width: double.infinity,
+                  height: 0.5,
+                  color: PlunesColors.GREYCOLOR,
+                ),
+          solutionList[index].isSelected ?? false
+              ? InkWell(
+                  onTap: onButtonTap,
+                  child: Container(
                       color: PlunesColors.WHITECOLOR,
                       padding: EdgeInsets.only(
                           left: AppConfig.horizontalBlockSize * 24,
@@ -206,11 +217,19 @@ class CustomWidgets {
                           PlunesColors.GREENCOLOR,
                           AppConfig.horizontalBlockSize * 4,
                           AppConfig.verticalBlockSize * 2,
-                          PlunesColors.WHITECOLOR))
-                  : Container()
-            ],
-          ),
-        ),
+                          PlunesColors.WHITECOLOR)))
+              : Container(),
+          solutionList[index].isSelected ?? true
+              ? Container(
+                  margin: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 1.5,
+                      bottom: AppConfig.verticalBlockSize * 1.5),
+                  width: double.infinity,
+                  height: 0.5,
+                  color: PlunesColors.GREYCOLOR,
+                )
+              : Container()
+        ],
       );
     });
   }
@@ -245,6 +264,95 @@ class CustomWidgets {
           style: TextStyle(color: textColor ?? PlunesColors.BLACKCOLOR),
         ),
       ),
+    );
+  }
+
+  Widget getProgressIndicator({Color color}) {
+    return Container(
+      child: Center(
+        child: SpinKitCircle(
+          color: color ?? PlunesColors.GREENCOLOR,
+        ),
+      ),
+    );
+  }
+
+  Widget errorWidget(String failureCause) {
+    return Container(
+      child: Center(
+        child: Text(
+          failureCause ?? plunesStrings.somethingWentWrong,
+          style: TextStyle(
+              color: PlunesColors.BLACKCOLOR, fontWeight: FontWeight.bold),
+        ),
+      ),
+    );
+  }
+
+  EdgeInsetsGeometry getDefaultPaddingForScreens() {
+    return EdgeInsets.symmetric(
+        horizontal: AppConfig.horizontalBlockSize * 6,
+        vertical: AppConfig.verticalBlockSize * 3);
+  }
+
+  Widget getTestAndProcedureWidget(
+      List<TestAndProcedureResponseModel> testAndProcedures,
+      int index,
+      Function onButtonTap) {
+    return InkWell(
+      onTap: onButtonTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 1.5,
+        ),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CircleAvatar(
+                  child: ClipOval(
+                      child: getImageFromUrl(
+                          "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                  radius: AppConfig.horizontalBlockSize * 7,
+                ),
+                Padding(
+                    padding: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 2)),
+                Expanded(
+                  child: Text(
+                    testAndProcedures[index].sId,
+                    style: TextStyle(
+                        color: PlunesColors.BLACKCOLOR,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  flex: 3,
+                ),
+                getRightFacingWidget()
+              ],
+            ),
+            index == testAndProcedures.length - 1
+                ? Container()
+                : Container(
+                    margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 1.5,
+                        bottom: AppConfig.verticalBlockSize * 1.5),
+                    width: double.infinity,
+                    height: 0.5,
+                    color: PlunesColors.GREYCOLOR,
+                  )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getRightFacingWidget() {
+    return Icon(
+      Icons.chevron_right,
+      color: PlunesColors.GREENCOLOR,
     );
   }
 }
