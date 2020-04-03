@@ -63,7 +63,7 @@ class _ReferScreenState extends State<ReferScreen> {
           getBulletRow(plunesStrings.cashCanBeUsed),
           Expanded(
             child: Image.asset(
-              assetsImageFile.coverIcon,
+              plunesImages.coverIcon,
               height: 200,
               width: double.infinity,
             ),
@@ -76,7 +76,7 @@ class _ReferScreenState extends State<ReferScreen> {
             child: Row(
               children: <Widget>[
                 Image.asset(
-                  assetsImageFile.creditIcon,
+                  plunesImages.creditIcon,
                   height: 30,
                   width: 30,
                 ),

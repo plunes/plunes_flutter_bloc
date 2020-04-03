@@ -23,10 +23,10 @@ class SearchedSolutionRepo {
         postData: {"expression": "den", "page": index},
         url: Urls.SEARCH_SOLUTION_API);
     if (serverResponse.isRequestSucceed) {
-      List<CatalougeData> _solutions = [];
+      List<CatalogueData> _solutions = [];
       Iterable _items = serverResponse.response.data;
       _solutions = _items
-          .map((item) => CatalougeData.fromJson(item))
+          .map((item) => CatalogueData.fromJson(item))
           .toList(growable: true);
       return RequestSuccess(response: _solutions, requestCode: index);
     } else {
@@ -49,10 +49,10 @@ class SearchedSolutionRepo {
         },
         url: Urls.GET_TEST_AND_PROCEDURES_CATALOGUE_API);
     if (serverResponse.isRequestSucceed) {
-      List<CatalougeData> _solutions = [];
+      List<CatalogueData> _solutions = [];
       Iterable _items = serverResponse.response.data;
       _solutions = _items
-          .map((item) => CatalougeData.fromJson(item))
+          .map((item) => CatalogueData.fromJson(item))
           .toList(growable: true);
       return RequestSuccess(response: _solutions);
     } else {

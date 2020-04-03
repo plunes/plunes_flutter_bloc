@@ -126,12 +126,12 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: <BottomNavigationBarItem>[
-        bottomNavigationBarItem(plunesStrings.solution, assetsImageFile.bidIcon,
-            assetsImageFile.bidActiveIcon),
+        bottomNavigationBarItem(plunesStrings.solution, plunesImages.bidIcon,
+            plunesImages.bidActiveIcon),
         bottomNavigationBarItem(
             plunesStrings.notification,
-            assetsImageFile.notificationIcon,
-            assetsImageFile.notificationActiveIcon),
+            plunesImages.notificationIcon,
+            plunesImages.notificationActiveIcon),
 //        bottomNavigationBarItem(plunesStrings.profile,
 //            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
       ],
@@ -149,16 +149,16 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: <BottomNavigationBarItem>[
-        bottomNavigationBarItem(plunesStrings.solution, assetsImageFile.bidIcon,
-            assetsImageFile.bidActiveIcon),
+        bottomNavigationBarItem(plunesStrings.solution, plunesImages.bidIcon,
+            plunesImages.bidActiveIcon),
         bottomNavigationBarItem(
             plunesStrings.plockr,
-            assetsImageFile.plockrUnselectedIcon,
-            assetsImageFile.plockrSelectedIcon),
+            plunesImages.plockrUnselectedIcon,
+            plunesImages.plockrSelectedIcon),
         bottomNavigationBarItem(
             plunesStrings.notification,
-            assetsImageFile.notificationIcon,
-            assetsImageFile.notificationActiveIcon),
+            plunesImages.notificationIcon,
+            plunesImages.notificationActiveIcon),
 //        bottomNavigationBarItem(plunesStrings.profile,
 //            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
       ],
@@ -364,46 +364,46 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                     widget.getDividerRow(context, 0, 0, 70.0),
                     _userType != Constants.user
                         ? getListTile(1, plunesStrings.myAvailability,
-                            assetsImageFile.availIcon)
+                            plunesImages.availIcon)
                         : Container(),
                     _userType != Constants.user
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
                     getListTile(2, plunesStrings.appointments,
-                        assetsImageFile.appointmentIcon),
+                        plunesImages.appointmentIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     getListTile(3, plunesStrings.settings,
-                        assetsImageFile.settingsIcon),
+                        plunesImages.settingsIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     _userType != Constants.user
                         ? getListTile(4, plunesStrings.managePayment,
-                            assetsImageFile.walletIcon)
+                            plunesImages.walletIcon)
                         : Container(),
                     _userType != Constants.user
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
                     getListTile(
-                        5, plunesStrings.help, assetsImageFile.helpIcon),
+                        5, plunesStrings.help, plunesImages.helpIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     getListTile(
-                        6, plunesStrings.aboutUs, assetsImageFile.aboutUsIcon),
+                        6, plunesStrings.aboutUs, plunesImages.aboutUsIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     _userType != Constants.hospital
                         ? getListTile(7, plunesStrings.referAndEarn,
-                            assetsImageFile.referIcon)
+                            plunesImages.referIcon)
                         : Container(),
                     _userType != Constants.hospital
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
                     _userType != Constants.hospital
                         ? getListTile(8, plunesStrings.coupons,
-                            assetsImageFile.navCouponIcon)
+                            plunesImages.navCouponIcon)
                         : Container(),
                     _userType != Constants.hospital
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
                     getListTile(
-                        9, plunesStrings.logout, assetsImageFile.logoutIcon),
+                        9, plunesStrings.logout, plunesImages.logoutIcon),
                     InkWell(
                       onTap: () {
                         Navigator.pushNamed(context, HealthSolutionNear.tag);

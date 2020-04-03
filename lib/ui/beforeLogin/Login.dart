@@ -80,7 +80,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
                   CommonMethods.getColorHexFromStr(colorsFile.lightGrey4)),
               child: Center(
                   child: widget
-                      .getAssetImageWidget(assetsImageFile.loginLogoImage))),
+                      .getAssetImageWidget(plunesImages.loginLogoImage))),
           Container(
               margin: EdgeInsets.fromLTRB(20, 50, 20, 20),
               child: Column(children: <Widget>[

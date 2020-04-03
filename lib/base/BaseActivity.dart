@@ -127,7 +127,7 @@ class BaseActivity extends StatefulWidget {
         height: 25,
         margin: EdgeInsets.only(right: 0),
         child:
-            getAssetIconWidget(assetsImageFile.crossIcon, 8, 8, BoxFit.contain),
+            getAssetIconWidget(plunesImages.crossIcon, 8, 8, BoxFit.contain),
         decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(

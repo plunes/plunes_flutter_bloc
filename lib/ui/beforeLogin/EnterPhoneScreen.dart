@@ -145,7 +145,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                   Container(
                     margin: EdgeInsets.only(left: 25, right: 25),
                     child: widget
-                        .getAssetImageWidget(assetsImageFile.firstUserImage),
+                        .getAssetImageWidget(plunesImages.firstUserImage),
                   ),
                   SizedBox(
                     height: 50,

@@ -42,10 +42,10 @@ class _SettingScreenState extends State<SettingScreen> {
       child: Column(
         children: <Widget>[
           getSettingRow(
-              assetsImageFile.settingIcon, plunesStrings.accountSettings, 0),
+              plunesImages.settingIcon, plunesStrings.accountSettings, 0),
           widget.getDividerRow(context, 0, 0, 0),
           getSettingRow(
-              assetsImageFile.securityIcon, plunesStrings.securitySettings, 1),
+              plunesImages.securityIcon, plunesStrings.securitySettings, 1),
           widget.getDividerRow(context, 0, 0, 0),
         ],
       ),

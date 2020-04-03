@@ -22,10 +22,10 @@ class ConsultationTestProcedureRepo {
         requestType: HttpRequestMethods.HTTP_GET,
         url: Urls.GET_CONSULTATION_API);
     if (serverResponse.isRequestSucceed) {
-      List<CatalougeData> _solutions = [];
+      List<CatalogueData> _solutions = [];
       Iterable _items = serverResponse.response.data;
       _solutions = _items
-          .map((item) => CatalougeData.fromJson(item))
+          .map((item) => CatalogueData.fromJson(item))
           .toList(growable: true);
       return RequestSuccess(response: _solutions);
     } else {

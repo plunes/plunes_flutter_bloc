@@ -6,6 +6,7 @@ import 'package:plunes/blocs/solution_blocs/consultation_tests_procedure_bloc.da
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 
 // ignore: must_be_immutable
 class ConsultationScreen extends BaseActivity {
@@ -15,7 +16,7 @@ class ConsultationScreen extends BaseActivity {
 
 class _ConsultationState extends BaseState<ConsultationScreen> {
   ConsultationTestProcedureBloc _consultationBloc;
-  List<CatalougeData> _catalouges;
+  List<CatalogueData> _catalouges;
   String _failureCause;
 
   @override
@@ -87,5 +88,8 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
 
   _onViewMoreTap(int index) {}
 
-  _onSolutionItemTap(int index) {}
+  _onSolutionItemTap(int index) {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => BiddingLoading()));
+  }
 }

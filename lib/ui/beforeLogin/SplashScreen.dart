@@ -93,7 +93,7 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
     AppConfig.init(context);
     return Scaffold(
         backgroundColor: Color(hexColorCode.defaultGreen),
-        body: Center(child: Image.asset(AssetsImagesFile.splashImage)));
+        body: Center(child: Image.asset(PlunesImages.splashImage)));
   }
 
   @override

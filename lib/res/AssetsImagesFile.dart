@@ -1,8 +1,8 @@
 /// Created by Manvendra Kumar Singh
 
-final assetsImageFile = AssetsImagesFile();
+final plunesImages = PlunesImages();
 
-class AssetsImagesFile {
+class PlunesImages {
   static String errorPage = 'assets/error_page.png';
   static String splashImage = 'assets/images/splash_final.jpg';
   static var imageArray = [

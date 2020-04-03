@@ -10,7 +10,8 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/testNprocedures.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/testNproceduresMainScreen.dart';
 
 // ignore: must_be_immutable
 class SolutionBiddingScreen extends BaseActivity {
@@ -19,7 +20,7 @@ class SolutionBiddingScreen extends BaseActivity {
 }
 
 class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
-  List<CatalougeData> _catalouges;
+  List<CatalogueData> _catalouges;
   Function onViewMoreTap;
   TextEditingController _searchController;
   Timer _debounce;
@@ -182,7 +183,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   }
 
   _onSolutionItemTap(int index) {
-    print("whole button tapped");
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => BiddingLoading()));
   }
 
   _onViewMoreTap(int solution) {

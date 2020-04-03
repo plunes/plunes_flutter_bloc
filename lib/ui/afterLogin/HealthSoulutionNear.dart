@@ -151,7 +151,7 @@ class _HealthSolutionNearState extends State<HealthSolutionNear> {
   void getData() {
     for (int i = 0; i < 9; i++) {
       Map map = new Map();
-      map['Image'] = assetsImageFile.healthSolNearImageArray[i];
+      map['Image'] = plunesImages.healthSolNearImageArray[i];
       map['Info'] = plunesStrings.healthSolInfoArray[i];
       map['Specialist'] = plunesStrings.healthSolSpecialistArray[i];
       map['Procedure'] = plunesStrings.healthSolProcedureArray[i];
