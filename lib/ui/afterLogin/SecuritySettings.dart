@@ -48,10 +48,10 @@ class _SecuritySettingsState extends State<SecuritySettings>
       child: Column(
         children: <Widget>[
           getSettingRow(
-              assetsImageFile.changePassIcon, plunesStrings.changePassword, 0),
+              plunesImages.changePassIcon, plunesStrings.changePassword, 0),
           widget.getDividerRow(context, 0, 0, 0),
           getSettingRow(
-              assetsImageFile.logoutIcon2, plunesStrings.logoutFromAllDevices, 1),
+              plunesImages.logoutIcon2, plunesStrings.logoutFromAllDevices, 1),
           widget.getDividerRow(context, 0, 0, 0),
         ],
       ),

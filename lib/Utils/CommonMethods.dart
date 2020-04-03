@@ -55,7 +55,7 @@ class CommonMethods {
             onTap: () {
 //              Navigator.popAndPushNamed(CommonMethods.globalContext, HomeScreen.tag);
             },
-            child: Image.asset(AssetsImagesFile.errorPage, fit: BoxFit.fill),
+            child: Image.asset(PlunesImages.errorPage, fit: BoxFit.fill),
           ),
         );
   }
@@ -420,7 +420,7 @@ class CommonMethods {
   ///Below method is used for adding multiple images using arrayList into slide.
   static List<Slide> addSlideImages() {
     List<Slide> slides = new List();
-    for (var item in AssetsImagesFile.imageArray) {
+    for (var item in PlunesImages.imageArray) {
       slides.add(new Slide(
         backgroundColor: Colors.white,
         backgroundOpacity: 0,

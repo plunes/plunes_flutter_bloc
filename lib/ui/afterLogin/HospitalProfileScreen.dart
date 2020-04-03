@@ -158,7 +158,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                               image: DecorationImage(
                                 fit: BoxFit.cover,
                                 image: AssetImage(
-                                    assetsImageFile.gradientImageArray[6]),
+                                    plunesImages.gradientImageArray[6]),
                               ),
                             ),
                           ),
@@ -216,7 +216,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
                                                   child: getProfileInfoView(
                                                       25,
                                                       22,
-                                                      assetsImageFile
+                                                      plunesImages
                                                           .locationIcon,
                                                       plunesStrings.locationSep,
                                                       _userLocation)),
@@ -552,7 +552,7 @@ class HospitalProfileScreenState extends State<HospitalProfileScreen>
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           getSingleTabView(
-              assetsImageFile.achievementIcon, plunesStrings.achievements),
+              plunesImages.achievementIcon, plunesStrings.achievements),
         ],
       ),
     );

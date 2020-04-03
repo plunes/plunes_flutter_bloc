@@ -1,66 +1,46 @@
-class SolutionCatalouge {
-  bool status;
-  List<CatalougeData> data;
-  int count;
-  String msg;
-
-  SolutionCatalouge({this.status, this.data, this.count, this.msg});
-
-  SolutionCatalouge.fromJson(Map<String, dynamic> json) {
-    status = json['status'];
-    if (json['data'] != null) {
-      data = new List<CatalougeData>();
-      json['data'].forEach((v) {
-        data.add(new CatalougeData.fromJson(v));
-      });
-    }
-    count = json['count'];
-    msg = json['msg'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    if (this.data != null) {
-      data['data'] = this.data.map((v) => v.toJson()).toList();
-    }
-    data['count'] = this.count;
-    data['msg'] = this.msg;
-    return data;
-  }
-}
-
-class CatalougeData {
+class CatalogueData {
   String service;
   String details;
   String dnd;
   String category;
-  String sId;
   bool isSelected = false;
+  String speciality;
+  String specialityId;
+  String serviceId;
+  int iV;
 
-  CatalougeData(
+  CatalogueData(
       {this.service,
       this.details,
       this.dnd,
       this.category,
-      this.sId,
-      this.isSelected = false});
+      this.serviceId,
+      this.specialityId,
+      this.isSelected = false,
+      this.iV,
+      this.speciality});
 
-  CatalougeData.fromJson(Map<String, dynamic> json) {
+  CatalogueData.fromJson(Map<String, dynamic> json) {
+    speciality = json['speciality'];
+    specialityId = json['specialityId'];
+    serviceId = json['serviceId'];
     service = json['service'];
     details = json['details'];
     dnd = json['dnd'];
     category = json['category'];
-    sId = json['_id'];
+    iV = json['__v'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['speciality'] = this.speciality;
+    data['specialityId'] = this.specialityId;
+    data['serviceId'] = this.serviceId;
     data['service'] = this.service;
     data['details'] = this.details;
     data['dnd'] = this.dnd;
     data['category'] = this.category;
-    data['_id'] = this.sId;
+    data['__v'] = this.iV;
     return data;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -121,7 +122,7 @@ class CustomWidgets {
     );
   }
 
-  Widget getSolutionRow(List<CatalougeData> solutionList, int index,
+  Widget getSolutionRow(List<CatalogueData> solutionList, int index,
       {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
     return StatefulBuilder(builder: (context, newState) {
       return Column(
@@ -251,12 +252,18 @@ class CustomWidgets {
       Color buttonColor,
       double horizontalPadding,
       double verticalPadding,
-      Color textColor) {
+      Color textColor,
+      {bool hasBorder = false,
+      Color borderColor = PlunesColors.GREYCOLOR,
+      double borderWidth = 0.8}) {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding, vertical: verticalPadding),
       decoration: BoxDecoration(
           color: buttonColor ?? PlunesColors.WHITECOLOR,
+          border: hasBorder
+              ? Border.all(color: borderColor, width: borderWidth)
+              : null,
           borderRadius: BorderRadius.all(Radius.circular(cornerPadding))),
       child: Center(
         child: Text(
@@ -353,6 +360,173 @@ class CustomWidgets {
     return Icon(
       Icons.chevron_right,
       color: PlunesColors.GREENCOLOR,
+    );
+  }
+
+  Widget getMedicalDetailRow(int index) {
+    return Container(
+      padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+      child: Column(
+        children: <Widget>[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              CircleAvatar(
+                child: ClipOval(
+                    child: getImageFromUrl(
+                        "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                radius: AppConfig.horizontalBlockSize * 7,
+              ),
+              Padding(
+                  padding:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2)),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Dr. Aanchal Sehrawat",
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.horizontalBlockSize * 1)),
+                    Text(
+                      "Dermatologist Consultation",
+                      style: TextStyle(
+                        fontSize: AppConfig.mediumFont,
+                        color: PlunesColors.GREYCOLOR,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              Padding(
+                  padding:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RichText(
+                      text: TextSpan(
+                          text: "£300",
+                          style: TextStyle(color: PlunesColors.GREYCOLOR),
+                          children: <TextSpan>[
+                        TextSpan(
+                          text: " £200",
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              color: PlunesColors.BLACKCOLOR,
+                              fontWeight: FontWeight.bold),
+                        )
+                      ])),
+                  Padding(
+                      padding: EdgeInsets.only(
+                          top: AppConfig.horizontalBlockSize * 1)),
+                  Text(
+                    "Save 30%",
+                    style: TextStyle(color: PlunesColors.GREENCOLOR),
+                  )
+                ],
+              ),
+            ],
+          ),
+          Padding(
+              padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(width: AppConfig.horizontalBlockSize * 14),
+              Padding(
+                  padding: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 1.5)),
+              Icon(Icons.recent_actors),
+              Expanded(child: Container()),
+              Text("0.009 kms away")
+            ],
+          ),
+          Padding(
+              padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+//              Expanded(
+//                  flex: 2,
+//                  child: buttonWithImageAhead(
+//                      textColor: PlunesColors.GREENCOLOR,
+//                      buttonText: PlunesStrings.homeCollectionAvailable,
+//                      backgroundColor: PlunesColors.LIGHTGREYCOLOR,
+//                      verticalPadding: AppConfig.verticalBlockSize * 1,
+//                      horizontalPadding: AppConfig.horizontalBlockSize * 3)),
+              _getRoundedButton(
+                  PlunesStrings.checkAvailability,
+                  AppConfig.horizontalBlockSize * 8,
+                  PlunesColors.WHITECOLOR,
+                  AppConfig.horizontalBlockSize * 3,
+                  AppConfig.verticalBlockSize * 1,
+                  PlunesColors.BLACKCOLOR,
+                  hasBorder: true),
+              Padding(
+                  padding:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2)),
+              _getRoundedButton(
+                  PlunesStrings.bookIn + "100",
+                  AppConfig.horizontalBlockSize * 8,
+                  PlunesColors.GREENCOLOR,
+                  AppConfig.horizontalBlockSize * 3,
+                  AppConfig.verticalBlockSize * 1,
+                  PlunesColors.WHITECOLOR),
+            ],
+          ),
+          index == 5 - 1 ? Container() : getSeparatorLine()
+        ],
+      ),
+    );
+  }
+
+  Widget buttonWithImageAhead(
+      {String imageName,
+      final String buttonText,
+      Color textColor,
+      Color backgroundColor,
+      double verticalPadding,
+      double horizontalPadding}) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          vertical: verticalPadding, horizontal: horizontalPadding),
+      decoration: BoxDecoration(
+          color: backgroundColor ?? PlunesColors.WHITECOLOR,
+          shape: BoxShape.rectangle),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(Icons.enhanced_encryption),
+          Padding(
+            padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 1),
+            child: Text(
+              buttonText,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: textColor ?? PlunesColors.BLACKCOLOR),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget getSeparatorLine() {
+    return Container(
+      margin: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 1.5,
+          bottom: AppConfig.verticalBlockSize * 1.5),
+      width: double.infinity,
+      height: 0.5,
+      color: PlunesColors.GREYCOLOR,
     );
   }
 }

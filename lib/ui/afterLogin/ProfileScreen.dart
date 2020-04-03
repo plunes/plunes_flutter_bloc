@@ -100,18 +100,18 @@ class _ProfileScreenState extends State<ProfileScreen>
           getImageHeaderView(),
           widget.getSpacer(0.0, 10.0),
           getCatAchievementTabView(),
-          getProfileInfoView(22, 22, assetsImageFile.locationIcon,
+          getProfileInfoView(22, 22, plunesImages.locationIcon,
               plunesStrings.locationSep, _userLocation),
           widget.getSpacer(0.0, 15.0),
-          getProfileInfoView(22, 22, assetsImageFile.emailIcon,
+          getProfileInfoView(22, 22, plunesImages.emailIcon,
               plunesStrings.emailId.toString().replaceAll('*', ''), _userEmail),
           widget.getSpacer(0.0, 15.0),
           getProfileInfoView(
               22,
               22,
               _isDoctor
-                  ? assetsImageFile.expertiseIcon
-                  : assetsImageFile.genderIcon,
+                  ? plunesImages.expertiseIcon
+                  : plunesImages.genderIcon,
               '${_isDoctor ? plunesStrings.areaExpertise : plunesStrings.gender}',
               _isDoctor
                   ? 'Dentist'
@@ -120,17 +120,17 @@ class _ProfileScreenState extends State<ProfileScreen>
           getProfileInfoView(
               22,
               22,
-              _isDoctor ? assetsImageFile.clockIcon : assetsImageFile.phoneIcon,
+              _isDoctor ? plunesImages.clockIcon : plunesImages.phoneIcon,
               '${_isDoctor ? plunesStrings.expOfPractice : plunesStrings.phoneNumber}',
               _isDoctor ? '$_experience years' : _phoneNo),
           widget.getSpacer(0.0, 15.0),
           _isDoctor && _practising != ''
-              ? getProfileInfoView(22, 22, assetsImageFile.practisingIcon,
+              ? getProfileInfoView(22, 22, plunesImages.practisingIcon,
                   '${plunesStrings.practising}', _practising)
               : Container(),
           widget.getSpacer(0.0, _isDoctor && _practising != '' ? 15.0 : 0),
           _userDOB != ''
-              ? getProfileInfoView(22, 22, assetsImageFile.calIcon,
+              ? getProfileInfoView(22, 22, plunesImages.calIcon,
                   '${plunesStrings.dateOfBirth}', _userDOB)
               : Container(),
           widget.getSpacer(0.0, _userDOB != '' ? 15.0 : 0),
@@ -138,13 +138,13 @@ class _ProfileScreenState extends State<ProfileScreen>
               ? getProfileInfoView(
                   22,
                   22,
-                  assetsImageFile.eduIcon,
+                  plunesImages.eduIcon,
                   '${_isDoctor ? plunesStrings.qualification : plunesStrings.education}',
                   _userEducation)
               : Container(),
           widget.getSpacer(0.0, _userEducation != '' ? 15.0 : 0),
           _userCollege != ''
-              ? getProfileInfoView(22, 22, assetsImageFile.uniIcon,
+              ? getProfileInfoView(22, 22, plunesImages.uniIcon,
                   '${plunesStrings.college}', _userCollege)
               : Container(),
           widget.getSpacer(0.0, _userCollege != '' ? 15.0 : 0),
@@ -261,9 +261,9 @@ class _ProfileScreenState extends State<ProfileScreen>
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 getSingleTabView(
-                    assetsImageFile.catalogTabIcon, plunesStrings.catalogue),
+                    plunesImages.catalogTabIcon, plunesStrings.catalogue),
                 getSingleTabView(
-                    assetsImageFile.achievementIcon, plunesStrings.achievements),
+                    plunesImages.achievementIcon, plunesStrings.achievements),
               ],
             ),
           )

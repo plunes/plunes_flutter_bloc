@@ -134,19 +134,19 @@ class _AchievementsScreenState extends State<AchievementsScreen>
               counter = text.length;
             });
           },
-          cursorColor: backAssetImage == assetsImageFile.whiteImage
+          cursorColor: backAssetImage == plunesImages.whiteImage
               ? Color(CommonMethods.getColorHexFromStr(colorsFile.black))
               : Color(CommonMethods.getColorHexFromStr(colorsFile.white)),
           style: TextStyle(
               height: 1.5,
               fontSize: 18.0,
               letterSpacing: 1.1,
-              color: backAssetImage == assetsImageFile.whiteImage
+              color: backAssetImage == plunesImages.whiteImage
                   ? Color(CommonMethods.getColorHexFromStr(colorsFile.black0))
                   : Color(CommonMethods.getColorHexFromStr(colorsFile.white))),
           decoration: InputDecoration(
             hintStyle: TextStyle(
-                color: backAssetImage == assetsImageFile.whiteImage
+                color: backAssetImage == plunesImages.whiteImage
                     ? Color(
                         CommonMethods.getColorHexFromStr(colorsFile.lightGrey2))
                     : Color(
@@ -168,7 +168,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
         child: ListView.builder(
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
-            itemCount: assetsImageFile.gradientImageArray.length,
+            itemCount: plunesImages.gradientImageArray.length,
             itemBuilder: (context, index) {
               return getItemRowView(index);
             }));
@@ -182,7 +182,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
         child: InkWell(
           onTap: () {
             setState(() {
-              backAssetImage = assetsImageFile.gradientImageArray[index];
+              backAssetImage = plunesImages.gradientImageArray[index];
             });
           },
           child: Container(
@@ -192,7 +192,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
               decoration: BoxDecoration(
                   image: DecorationImage(
                     image:
-                        AssetImage(assetsImageFile.gradientImageArray[index]),
+                        AssetImage(plunesImages.gradientImageArray[index]),
                     fit: BoxFit.cover,
                   ),
                   border: Border.all(color: Colors.grey, width: 0.5),
@@ -229,7 +229,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
         height: 100,
         child: Center(
           child: widget.getAssetIconWidget(
-              assetsImageFile.plusIcon, 50, 50, BoxFit.cover),
+              plunesImages.plusIcon, 50, 50, BoxFit.cover),
         ),
         decoration: BoxDecoration(
             border: Border.all(color: Colors.grey, width: 0.5),
@@ -301,7 +301,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
 
   void initialize() {
     _controller = ScrollController();
-    backAssetImage = assetsImageFile.whiteImage;
+    backAssetImage = plunesImages.whiteImage;
     getSharedPreferences();
     initializeForImageFetching();
   }

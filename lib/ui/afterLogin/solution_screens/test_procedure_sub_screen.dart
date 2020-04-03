@@ -9,6 +9,7 @@ import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 
 // ignore: must_be_immutable
 class TestProcedureCatalogueScreen extends BaseActivity {
@@ -25,8 +26,8 @@ class TestProcedureCatalogueScreen extends BaseActivity {
 
 class _TestProcedureSubScreenState
     extends BaseState<TestProcedureCatalogueScreen> {
-  List<CatalougeData> _searchedCatalogueList;
-  List<CatalougeData> _defaultCatalogueList;
+  List<CatalogueData> _searchedCatalogueList;
+  List<CatalogueData> _defaultCatalogueList;
   Function onViewMoreTap;
   TextEditingController _searchController;
   Timer _debounce;
@@ -275,7 +276,8 @@ class _TestProcedureSubScreenState
   }
 
   _onSolutionItemTap(int index) {
-    print("whole button tapped");
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => BiddingLoading()));
   }
 
   _onViewMoreTap(int solution) {
@@ -346,7 +348,7 @@ class _TestProcedureSubScreenState
     );
   }
 
-  Widget _renderList(List<CatalougeData> catalogueList) {
+  Widget _renderList(List<CatalogueData> catalogueList) {
     return ListView.builder(
       itemBuilder: (context, index) {
         TapGestureRecognizer tapRecognizer = TapGestureRecognizer()

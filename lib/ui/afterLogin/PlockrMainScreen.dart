@@ -109,7 +109,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                         TextAlign.start,
                         FontWeight.normal)),
                 widget.getAssetIconWidget(
-                    assetsImageFile.uploadIcon, 20, 20, BoxFit.cover)
+                    plunesImages.uploadIcon, 20, 20, BoxFit.cover)
               ],
             ),
             widget.getSpacer(0.0, 20),
@@ -282,7 +282,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
       ),
       child: Container(
           decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage(assetsImageFile.pdfIcon1)),
+        image: DecorationImage(image: AssetImage(plunesImages.pdfIcon1)),
         borderRadius: BorderRadius.all(Radius.circular(8.0)),
       )),
       alignment: Alignment.center,

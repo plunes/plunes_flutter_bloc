@@ -74,11 +74,11 @@ class _AccountSettingsState extends State<AccountSettings> {
     return Container(
       child: Column(
         children: <Widget>[
-          getSettingRow(assetsImageFile.settingNotificationIcon,
+          getSettingRow(plunesImages.settingNotificationIcon,
               plunesStrings.notifications, 0),
           widget.getDividerRow(context, 0, 0, 0),
           getSettingRow(
-              assetsImageFile.editProfileIcon, plunesStrings.editProfile, 1),
+              plunesImages.editProfileIcon, plunesStrings.editProfile, 1),
           widget.getDividerRow(context, 0, 0, 0),
         ],
       ),

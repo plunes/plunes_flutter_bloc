@@ -101,7 +101,7 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
         ),
         Column(
           children: <Widget>[
-            getHelpContentRow(true, assetsImageFile.appointCalIcon,
+            getHelpContentRow(true, plunesImages.appointCalIcon,
                 plunesStrings.bookingAppointments, 15, FontWeight.w600),
             widget.getDividerRow(context, 0, 0, 0),
             Visibility(
@@ -143,7 +143,7 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
         widget.getDividerRow(context, 0, 0, 0),
         Column(
           children: <Widget>[
-            getHelpContentRow(true, assetsImageFile.onlineSolIcon,
+            getHelpContentRow(true, plunesImages.onlineSolIcon,
                 plunesStrings.onlineSolution, 15, FontWeight.w600),
             widget.getDividerRow(context, 0, 0, 0),
             Visibility(
@@ -166,7 +166,7 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
         widget.getDividerRow(context, 0, 0, 0),
         Column(
           children: <Widget>[
-            getHelpContentRow(true, assetsImageFile.feedbackIcon,
+            getHelpContentRow(true, plunesImages.feedbackIcon,
                 plunesStrings.feedBacks, 15, FontWeight.w600),
             widget.getDividerRow(context, 0, 0, 0),
             Visibility(
