@@ -149,9 +149,11 @@ class _TestProcedureSubScreenState
         Expanded(
             child: StreamBuilder(
           builder: (context, snapShot) {
-            return _searchController != null &&
+            print(
+                "will show searched list ${(_searchController != null && _searchController.text != null && _searchController.text.trim().isNotEmpty)}");
+            return (_searchController != null &&
                     _searchController.text != null &&
-                    _searchController.text.trim().isNotEmpty
+                    _searchController.text.trim().isNotEmpty)
                 ? _streamBuilderForSearchedList()
                 : _streamBuilderForDefaultList();
           },
@@ -170,6 +172,9 @@ class _TestProcedureSubScreenState
               SearchSolutionBloc.initialIndex) {
             _pageIndexForSearchedCatalogues = SearchSolutionBloc.initialIndex;
             _searchedCatalogueList = [];
+            if (_requestSuccessObject.response.isEmpty) {
+              _failureCause = PlunesStrings.serviceNotAvailable;
+            }
           }
           if (_requestSuccessObject.requestCode !=
                   SearchSolutionBloc.initialIndex &&
@@ -179,21 +184,24 @@ class _TestProcedureSubScreenState
             _endReachedForSearchedList = false;
             Set _allItems = _searchedCatalogueList.toSet();
             _allItems.addAll(_requestSuccessObject.response);
+            _searchedCatalogueList = [];
             _searchedCatalogueList = _allItems.toList(growable: true);
           }
-          if (_requestSuccessObject.requestCode ==
-                  SearchSolutionBloc.initialIndex &&
-              _requestSuccessObject.response.isEmpty) {
-            _failureCause = PlunesStrings.serviceNotAvailable;
-          }
           _pageIndexForSearchedCatalogues++;
+          _searchSolutionBloc.addIntoSearchedStream(null);
         } else if (snapShot.data is RequestFailed) {
           RequestFailed _requestFailedObject = snapShot.data;
           _failureCause = _requestFailedObject.failureCause;
           _pageIndexForSearchedCatalogues = SearchSolutionBloc.initialIndex;
+          _searchSolutionBloc.addIntoSearchedStream(null);
         }
         return _searchedCatalogueList == null || _searchedCatalogueList.isEmpty
-            ? Text(PlunesStrings.noSolutionsAvailable)
+            ? snapShot.data is RequestInProgress &&
+                    _pageIndexForSearchedCatalogues ==
+                        SearchSolutionBloc.initialIndex
+                ? CustomWidgets().getProgressIndicator()
+                : CustomWidgets().errorWidget(
+                    _failureCause ?? PlunesStrings.noSolutionsAvailable)
             : Column(
                 children: <Widget>[
                   Expanded(
@@ -222,6 +230,9 @@ class _TestProcedureSubScreenState
               SearchSolutionBloc.initialIndex) {
             _pageIndexForDefaultCatalogueList = SearchSolutionBloc.initialIndex;
             _defaultCatalogueList = [];
+            if (_requestSuccessObject.response.isEmpty) {
+              _failureCause = PlunesStrings.serviceNotAvailable;
+            }
           }
           if (_requestSuccessObject.requestCode !=
                   SearchSolutionBloc.initialIndex &&
@@ -229,20 +240,18 @@ class _TestProcedureSubScreenState
             _endReachedForDefaultList = true;
           } else {
             _endReachedForDefaultList = false;
-            Set _allItems = _searchedCatalogueList.toSet();
+            Set _allItems = _defaultCatalogueList.toSet();
             _allItems.addAll(_requestSuccessObject.response);
+            _defaultCatalogueList = [];
             _defaultCatalogueList = _allItems.toList(growable: true);
           }
-          if (_requestSuccessObject.requestCode ==
-                  SearchSolutionBloc.initialIndex &&
-              _requestSuccessObject.response.isEmpty) {
-            _failureCause = PlunesStrings.serviceNotAvailable;
-          }
           _pageIndexForDefaultCatalogueList++;
+          _searchSolutionBloc.addIntoDefaultStream(null);
         } else if (snapShot.data is RequestFailed) {
           RequestFailed _requestFailedObject = snapShot.data;
           _failureCause = _requestFailedObject.failureCause;
           _pageIndexForDefaultCatalogueList = SearchSolutionBloc.initialIndex;
+          _searchSolutionBloc.addIntoDefaultStream(null);
         }
         return _defaultCatalogueList == null || _defaultCatalogueList.isEmpty
             ? CustomWidgets().errorWidget(_failureCause)
@@ -276,16 +285,18 @@ class _TestProcedureSubScreenState
   _onSearch() {
     _searchStreamController.add(null);
     if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
-      if (_searchController != null &&
-          _searchController.text != null &&
-          _searchController.text.trim().isNotEmpty) {
+    if (_searchController != null &&
+        _searchController.text != null &&
+        _searchController.text.trim().isNotEmpty) {
+      _searchSolutionBloc.addIntoSearchedStream(RequestInProgress());
+      _debounce = Timer(const Duration(milliseconds: 500), () {
         _getSearchedCatalogueList();
-      } else {
-        _searchedCatalogueList = [];
-        _searchSolutionBloc.addIntoSearchedStream(null);
-      }
-    });
+      });
+    } else {
+      _searchedCatalogueList = [];
+      _pageIndexForSearchedCatalogues = SearchSolutionBloc.initialIndex;
+      _searchSolutionBloc.addIntoSearchedStream(null);
+    }
   }
 
   Widget _showSearchedItems() {
@@ -300,13 +311,10 @@ class _TestProcedureSubScreenState
           }
           if (_isAlreadyFetchingSearchedData) return;
           _isAlreadyFetchingSearchedData = true;
-          Future.delayed(Duration(milliseconds: 200), () {
+          Future.delayed(Duration(milliseconds: 1000), () {
             _isAlreadyFetchingSearchedData = false;
           });
-
-          print(
-              "_pageIndexForSearchedCatalogues _showSearchedItems $_pageIndexForSearchedCatalogues");
-          _searchSolutionBloc.addIntoStream(RequestInProgress());
+          _searchSolutionBloc.addIntoSearchedStream(RequestInProgress());
           _getSearchedCatalogueList();
         }
         return;
@@ -321,8 +329,6 @@ class _TestProcedureSubScreenState
         if (scrollState is ScrollEndNotification &&
             scrollState.metrics.extentAfter == 0 &&
             !_endReachedForDefaultList) {
-          print(
-              "_endReachedForDefaultList _showDefaultItems $_endReachedForDefaultList");
           if (_isAlreadyFetchingDefaultData == null) {
             _isAlreadyFetchingDefaultData = false;
           }
@@ -331,8 +337,6 @@ class _TestProcedureSubScreenState
           Future.delayed(Duration(milliseconds: 1000), () {
             _isAlreadyFetchingDefaultData = false;
           });
-          print(
-              "_endReachedForDefaultList _showDefaultItems $_endReachedForDefaultList");
           _searchSolutionBloc.addIntoDefaultStream(RequestInProgress());
           _getDefaultCatalogueList();
         }
