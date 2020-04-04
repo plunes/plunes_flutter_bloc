@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:date_picker_timeline/date_picker_timeline.dart';
 
 class DialogWidgets{
   static DialogWidgets _instance;
@@ -163,7 +164,23 @@ Widget buildProfileDialog({
                  ),
                   Divider(color:Colors.black54),
 
-                  Text('Available Slots')
+                  Text('Available Slots'),
+
+                  Padding(
+                    padding: const EdgeInsets.only(top:30),
+                    child: DatePicker(
+                      DateTime.now(),
+                      initialSelectedDate: DateTime.now(),
+                      selectionColor: Colors.green,
+                      selectedTextColor: Colors.white,
+                      onDateChange: (date) {
+                        // // New date selected
+                        // setState(() {
+                        //   _selectedValue = date;
+                        // });
+                      },
+                    ),
+                  ),
                   
                 ],
                 ),
