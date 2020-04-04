@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -44,7 +45,7 @@ class BaseActivity extends StatefulWidget {
   void showInSnackBar(String value, MaterialColor color,
       GlobalKey<ScaffoldState> _scaffoldKey) {
     _scaffoldKey.currentState.showSnackBar(new SnackBar(
-      content: new Text(value),
+      content: new Text(value ?? plunesStrings.somethingWentWrong),
       backgroundColor: color,
     ));
   }
@@ -126,8 +127,7 @@ class BaseActivity extends StatefulWidget {
         width: 25,
         height: 25,
         margin: EdgeInsets.only(right: 0),
-        child:
-            getAssetIconWidget(plunesImages.crossIcon, 8, 8, BoxFit.contain),
+        child: getAssetIconWidget(plunesImages.crossIcon, 8, 8, BoxFit.contain),
         decoration: BoxDecoration(
             color: Colors.white,
             border: Border.all(
@@ -551,27 +551,26 @@ abstract class BaseState<T extends BaseActivity> extends State<T>
   /// @Params errorMessage, the message which will be visible in dialog
   void handleAuthTokenExpired(
       {BuildContext buildContext, String errorMessage}) {
-    showDialog(
-      context: scaffoldKey.currentState.context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: new Text("FnpStrings.alert"),
-          content: new Text(errorMessage),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            new FlatButton(
-              child: new Text("ok"),
-              onPressed: () {
-//                UserBloc().logout();
-//                Navigator.pushNamedAndRemoveUntil(
-//                    context, RouteNames.loginPageName, (_) => false);
-              },
-            ),
-          ],
-        );
-      },
-    );
+//    showDialog(
+//      context: scaffoldKey.currentState.context,
+//      barrierDismissible: false,
+//      builder: (BuildContext context) {
+//        return AlertDialog(
+//          title: new Text("Session Expired"),
+//          content: new Text(errorMessage),
+//          actions: <Widget>[
+//            new FlatButton(
+//              child: new Text("ok"),
+//              onPressed: () {
+//                Preferences().clearPreferences();
+//                Navigator.of(context).pushNamedAndRemoveUntil(
+//                    '/login', (Route<dynamic> route) => false);
+//              },
+//            ),
+//          ],
+//        );
+//      },
+//    );
   }
 
 //  Widget getProgressWidget({int progressType}) {

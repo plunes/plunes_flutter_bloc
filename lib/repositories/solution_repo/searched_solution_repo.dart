@@ -1,4 +1,7 @@
+import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
@@ -57,6 +60,26 @@ class SearchedSolutionRepo {
       return RequestSuccess(response: _solutions);
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
+    }
+  }
+
+  Future<RequestState> getDocHosSolution(final String serviceId) async {
+    User _user = UserManager().getUserDetails();
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_GET,
+        url: Urls.GET_DOCHOS_API,
+        headerIncluded: true,
+        queryParameter: {
+          "serviceId": serviceId,
+          "latitude": double.parse(_user.latitude),
+          "longitude": double.parse(_user.longitude)
+        });
+    if (result.isRequestSucceed) {
+      SearchedDocResults _searchedDocResult =
+          SearchedDocResults.fromJson(result.response.data);
+      return RequestSuccess(response: _searchedDocResult);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
     }
   }
 }

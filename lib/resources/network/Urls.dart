@@ -20,7 +20,7 @@ class Urls {
 
 //  static const String baseUrl = 'https://plunes.co/v4/'; // production server
   static const String baseUrl =
-      'https://devapi.plunes.com/v4/'; // staging server
+      'https://devapi.plunes.com/v5/'; // staging server
 
   get catalogue => baseUrl + 'catalogue';
 
@@ -53,4 +53,6 @@ class Urls {
   static const String GET_TESTS_API = "catalogue/category/tests";
   static const String GET_TEST_AND_PROCEDURES_CATALOGUE_API =
       "catalogue/serviceList";
+  static const String CHECK_LOCATION_API = "user/checkLocation";
+  static const String GET_DOCHOS_API = "solution";
 }

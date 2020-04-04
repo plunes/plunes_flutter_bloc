@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -9,6 +10,10 @@ import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.d
 
 // ignore: must_be_immutable
 class BiddingLoading extends BaseActivity {
+  final String specialityId;
+
+  BiddingLoading({this.specialityId});
+
   @override
   _BiddingLoadingState createState() => _BiddingLoadingState();
 }
@@ -31,10 +36,11 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
         _start = _start + 1;
         if (_start > 9) {
           Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SolutionReceivedScreen()))
-              .then((value) {
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SolutionReceivedScreen(
+                        specialityId: widget.specialityId,
+                      ))).then((value) {
             Navigator.pop(context);
           });
         } else {

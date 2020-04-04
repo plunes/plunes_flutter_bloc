@@ -363,7 +363,8 @@ class CustomWidgets {
     );
   }
 
-  Widget getMedicalDetailRow(int index) {
+  Widget getDocOrHospitalDetailRow(
+      int index, Function checkAvailability, Function onBookingTap) {
     return Container(
       padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
       child: Column(
@@ -414,15 +415,18 @@ class CustomWidgets {
                 children: <Widget>[
                   RichText(
                       text: TextSpan(
-                          text: "£300",
-                          style: TextStyle(color: PlunesColors.GREYCOLOR),
+                          text: "\u20B9300 ",
+                          style: TextStyle(
+                              color: PlunesColors.GREYCOLOR,
+                              decoration: TextDecoration.lineThrough),
                           children: <TextSpan>[
                         TextSpan(
-                          text: " £200",
+                          text: " \u20B9200",
                           style: TextStyle(
                               fontSize: AppConfig.mediumFont,
                               color: PlunesColors.BLACKCOLOR,
-                              fontWeight: FontWeight.bold),
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.none),
                         )
                       ])),
                   Padding(

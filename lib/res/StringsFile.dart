@@ -18,6 +18,9 @@ class PlunesStrings {
 
   static const String receiveTimeOut = "Server timeout, please try again later";
 
+  static const String pleaseSelectLocation =
+      "We are not able to find you, please select a location first";
+
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
         'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
@@ -446,4 +449,6 @@ class PlunesStrings {
   static const String checkAvailability = "Check Availability";
   static const String bookIn = "Book in ";
   static const String homeCollectionAvailable = "Home Collection Available";
+  static const String oopsServiceNotAvailable =
+      "Oops, this service is not available now.";
 }

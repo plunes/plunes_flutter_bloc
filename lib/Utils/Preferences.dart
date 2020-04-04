@@ -28,8 +28,8 @@ class Preferences {
   }
 
   ///Below method is to set the string value in the SharedPreferences.
-  setPreferencesString(String key, String stringValue) {
-    sharedPreferences.setString(key, stringValue);
+  Future setPreferencesString(String key, String stringValue) {
+    return sharedPreferences.setString(key, stringValue);
   }
 
   ///Below method is to get the string value from the SharedPreferences.

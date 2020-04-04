@@ -8,12 +8,15 @@ class SearchSolutionBloc extends BlocBase {
   static const int initialIndex = 0;
   final _defaultStreamProvider = PublishSubject<RequestState>();
   final _searchStreamProvider = PublishSubject<RequestState>();
+  final _docHosStreamProvider = PublishSubject<RequestState>();
 
   Observable<RequestState> getDefaultCatalogueStream() =>
       _defaultStreamProvider.stream;
 
   Observable<RequestState> getSearchCatalogueStream() =>
       _searchStreamProvider.stream;
+
+  Observable<RequestState> getDocHosStream() => _docHosStreamProvider.stream;
 
   Future getSearchedSolution({
     @required String searchedString,
@@ -56,6 +59,19 @@ class SearchSolutionBloc extends BlocBase {
   void dispose() {
     _defaultStreamProvider?.close();
     _searchStreamProvider?.close();
+    _docHosStreamProvider?.close();
     super.dispose();
+  }
+
+  Future<RequestState> getDocHosSolution(final String serviceId) async {
+    var result = await SearchedSolutionRepo().getDocHosSolution(serviceId);
+    addIntoDocHosStream(result);
+    return result;
+  }
+
+  void addIntoDocHosStream(RequestState requestState) {
+    if (_docHosStreamProvider != null && !_docHosStreamProvider.isClosed) {
+      _docHosStreamProvider.add(requestState);
+    }
   }
 }

@@ -184,7 +184,11 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
 
   _onSolutionItemTap(int index) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => BiddingLoading()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => BiddingLoading(
+                  specialityId: _catalouges[index].serviceId,
+                )));
   }
 
   _onViewMoreTap(int solution) {
