@@ -90,6 +90,10 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
 
   _onSolutionItemTap(int index) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => BiddingLoading()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => BiddingLoading(
+                  specialityId: _catalouges[index].serviceId,
+                )));
   }
 }

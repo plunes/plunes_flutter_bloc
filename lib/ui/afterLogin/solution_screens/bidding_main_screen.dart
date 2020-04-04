@@ -7,9 +7,13 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
+import 'package:plunes/ui/commonView/LocationFetch.dart';
 
 // ignore: must_be_immutable
 class BiddingMainScreen extends BaseActivity {
@@ -22,13 +26,26 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   CameraPosition _initialCameraPosition;
   TextEditingController _textEditingController;
   FocusNode _focusNode;
+  bool _progressEnabled;
+  bool _canGoAhead;
+  String _failureCause;
 
   @override
   void initState() {
+    _progressEnabled = false;
+    _canGoAhead = false;
     _textEditingController = TextEditingController();
     _focusNode = FocusNode()
       ..addListener(() async {
         if (_focusNode.hasFocus) {
+          if (!_canGoAhead) {
+            _focusNode?.unfocus();
+            widget.showInSnackBar(
+                "Kindly switch to Gurgaoun location, currently we are not providing service in your area",
+                PlunesColors.GREYCOLOR,
+                scaffoldKey);
+            return;
+          }
           print("got focus");
           await Future.delayed(Duration(milliseconds: 100));
           _focusNode?.unfocus();
@@ -37,6 +54,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         }
       });
     _mapController = Completer();
+    _checkUserLocation();
     _initialCameraPosition =
         CameraPosition(target: LatLng(45.521563, -122.677433), zoom: 14);
     super.initState();
@@ -164,10 +182,46 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: AppConfig.mediumFont),
           ),
-          CustomWidgets().searchBar(
-              searchController: _textEditingController,
-              focusNode: _focusNode,
-              hintText: plunesStrings.searchHint)
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Flexible(
+                  child: CustomWidgets().searchBar(
+                      searchController: _textEditingController,
+                      focusNode: _focusNode,
+                      hintText: plunesStrings.searchHint)),
+              InkWell(
+                onTap: () {
+                  Navigator.of(context)
+                      .push(PageRouteBuilder(
+                          opaque: false,
+                          pageBuilder: (BuildContext context, _, __) =>
+                              LocationFetch()))
+                      .then((val) {
+                    if (val != null) {
+                      var addressControllerList = new List();
+                      addressControllerList = val.toString().split(":");
+                      String addr = addressControllerList[0] +
+                          ' ' +
+                          addressControllerList[1] +
+                          ' ' +
+                          addressControllerList[2];
+                      print("addr is $addr");
+                      var _latitude = addressControllerList[3];
+                      var _longitude = addressControllerList[4];
+                      print("_latitude $_latitude");
+                      print("_longitude $_longitude");
+                      _checkUserLocation();
+                    }
+                  });
+                },
+                child: Icon(
+                  Icons.my_location,
+                  color: PlunesColors.GREYCOLOR,
+                ),
+              )
+            ],
+          )
         ],
       ),
     );
@@ -176,4 +230,39 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   _onViewMoreTap(int index) {}
 
   _onSolutionItemTap(int index) {}
+
+  User _getUserDetails() {
+    return UserManager().getUserDetails();
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
+
+  _checkUserLocation() async {
+    if (!_progressEnabled) {
+      _progressEnabled = true;
+      _setState();
+    }
+    UserBloc().isUserInServiceLocation().then((result) {
+      if (result.isRequestSucceed) {
+        print("request succ ${result.response.data}");
+        if (result.response.data == null || !result.response.data) {
+          widget.showInSnackBar(
+              "Kindly switch to Gurgaoun location, currently we are not providing service in your area",
+              PlunesColors.GREYCOLOR,
+              scaffoldKey);
+        } else {
+          _canGoAhead = true;
+        }
+      } else {
+        print("error ${result.failureCause}");
+        _failureCause = result.failureCause;
+        widget.showInSnackBar(
+            _failureCause, PlunesColors.GREYCOLOR, scaffoldKey);
+      }
+      _progressEnabled = false;
+      _setState();
+    });
+  }
 }

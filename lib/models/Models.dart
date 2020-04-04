@@ -116,7 +116,9 @@ class User {
       biography,
       registrationNumber,
       prescriptionLogoUrl,
+      accessToken,
       credits;
+
   List<ProcedureList> specialities = [];
   List<TimeSlotsData> timeSlots = [];
   List<DoctorsData> doctorsData = [];
@@ -148,6 +150,9 @@ class User {
       this.longitude,
       this.doctorsData,
       this.coverImageUrl,
+      this.accessToken,
+      this.about,
+      this.speciality,
       this.prescriptionLogoUrl,
       this.credits});
 
@@ -203,6 +208,11 @@ class User {
       credits:
           json['credits'].toString() != null ? json['credits'].toString() : '0',
     );
+  }
+
+  @override
+  String toString() {
+    return 'User{email: $email, name: $name, activated: $activated, userType: $userType, uid: $uid, imageUrl: $imageUrl, speciality: $speciality, profRegistrationNumber: $profRegistrationNumber, qualification: $qualification, experience: $experience, practising: $practising, college: $college, about: $about, gender: $gender, birthDate: $birthDate, referralCode: $referralCode, coverImageUrl: $coverImageUrl, mobileNumber: $mobileNumber, latitude: $latitude, longitude: $longitude, address: $address, biography: $biography, registrationNumber: $registrationNumber, prescriptionLogoUrl: $prescriptionLogoUrl, accessToken: $accessToken, credits: $credits, specialities: $specialities, timeSlots: $timeSlots, doctorsData: $doctorsData, achievements: $achievements, verifiedUser: $verifiedUser}';
   }
 }
 

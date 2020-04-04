@@ -74,8 +74,8 @@ class Bloc {
           _catalogueFetcher.sink.add(itemModel);
         });
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -87,8 +87,8 @@ class Bloc {
         dynamic success = await _repository.fetchUserExistence(context, value);
         _checkUserFetcher.sink.add(success);
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -98,8 +98,8 @@ class Bloc {
       if (isConnected) {
         _checkUserOTP.sink.add(await _repository.fetchUserOTP(context, url));
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -111,8 +111,8 @@ class Bloc {
         loginResponseFetcher.sink
             .add(await _repository.fetchLoginData(context, phone, password));
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -124,8 +124,8 @@ class Bloc {
         __changePasswordFetcher.sink.add(
             await _repository.fetchChangePassword(context, phone, password));
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -137,8 +137,8 @@ class Bloc {
         _registrationResponseFetcher.sink
             .add(await _repository.fetchRegistrationData(context, body));
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -151,8 +151,8 @@ class Bloc {
           _logout.sink.add(await _repository.logoutService(context, _token));
         });
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -166,8 +166,8 @@ class Bloc {
               .add(await _repository.updateProfileData(context, body, _token));
         });
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -181,8 +181,8 @@ class Bloc {
               .add(await _repository.fetchProfileData(context, _token));
         });
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -197,8 +197,8 @@ class Bloc {
               .add(await _repository.fetchHelpResult(context, details, _token));
         });
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -212,8 +212,8 @@ class Bloc {
               .add(await _repository.fetchNotificationResult(context, _token));
         });
       } else
-        CommonMethods.commonDialog(context, callBack, PlunesStrings.noInternetMsg,
-            PlunesStrings.cantConnectInternet);
+        CommonMethods.commonDialog(context, callBack,
+            PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
     });
   }
 
@@ -282,6 +282,8 @@ class Bloc {
         Constants.PREF_USER_BANNER_IMAGE, data.user.coverImageUrl);
     preferences.setPreferencesString(
         Constants.PREF_REFERRAL_CODE, data.user.referralCode);
+    preferences.setPreferencesString(Constants.LATITUDE, data.user.latitude);
+    preferences.setPreferencesString(Constants.LONGITUDE, data.user.longitude);
     preferences.setPreferencesString(Constants.PREF_CREDITS, data.user.credits);
     if (_from != null)
       Navigator.push(

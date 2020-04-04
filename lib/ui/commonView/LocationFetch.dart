@@ -11,10 +11,10 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Urls.googleApiKey);
 
+// ignore: must_be_immutable
 class LocationFetch extends BaseActivity {
   static const tag = '/location_fetch';
 
@@ -33,7 +33,7 @@ class _LocationFetchState extends State<LocationFetch> {
   var location = new loc.Location(), globalHeight, globalWidth;
   List _coordinateList = new List();
   String latitude = '0.0', longitude = '0.0', address = '';
-  bool _isAddFetch = false;
+  bool _isAddFetch = false, _isSettingLocationFromPlacesApi = false;
   Preferences _preferences;
 
   @override
@@ -58,8 +58,8 @@ class _LocationFetchState extends State<LocationFetch> {
   }
 
   saveLatLang() async {
-    _preferences.setPreferencesString(Constants.LATITUDE, latitude);
-    _preferences.setPreferencesString(Constants.LONGITUDE, longitude);
+    await _preferences.setPreferencesString(Constants.LATITUDE, latitude);
+    await _preferences.setPreferencesString(Constants.LONGITUDE, longitude);
     String home = houseController.text;
     String land = landMarkController.text;
     print(home + "," + land + "," + address + "," + latitude + "," + longitude);
@@ -210,7 +210,7 @@ class _LocationFetchState extends State<LocationFetch> {
         print("Started to move");
       },
       onCameraIdle: () async {
-        if (_coordinateList.length != 0) {
+        if (_coordinateList.length != 0 && !_isSettingLocationFromPlacesApi) {
           _isAddFetch = true;
           Coordinates coordinates = _coordinateList[_coordinateList.length - 1];
           latitude = coordinates.latitude.toString();
@@ -242,6 +242,7 @@ class _LocationFetchState extends State<LocationFetch> {
     if (p != null) {
       PlacesDetailsResponse detail =
           await _places.getDetailsByPlaceId(p.placeId);
+      _isSettingLocationFromPlacesApi = true;
       double lat = detail.result.geometry.location.lat;
       double lng = detail.result.geometry.location.lng;
       setState(() {
@@ -253,6 +254,10 @@ class _LocationFetchState extends State<LocationFetch> {
         latitude = lat.toString();
         longitude = lng.toString();
         locationController.text = detail.result.formattedAddress;
+      });
+      Future.delayed(Duration(milliseconds: 1500)).then((value) {
+        _coordinateList = [];
+        _isSettingLocationFromPlacesApi = false;
       });
     }
   }

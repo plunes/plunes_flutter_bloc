@@ -275,9 +275,13 @@ class _TestProcedureSubScreenState
     );
   }
 
-  _onSolutionItemTap(int index) {
+  _onSolutionItemTap(CatalogueData catalogueData) {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => BiddingLoading()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => BiddingLoading(
+                  specialityId: catalogueData.serviceId,
+                )));
   }
 
   _onViewMoreTap(int solution) {
@@ -354,7 +358,7 @@ class _TestProcedureSubScreenState
         TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
           ..onTap = () => _onViewMoreTap(index);
         return CustomWidgets().getSolutionRow(catalogueList, index,
-            onButtonTap: () => _onSolutionItemTap(index),
+            onButtonTap: () => _onSolutionItemTap(catalogueList[index]),
             onViewMoreTap: tapRecognizer);
       },
       shrinkWrap: true,
