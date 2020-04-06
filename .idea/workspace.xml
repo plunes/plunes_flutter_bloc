@@ -7,6 +7,7 @@
     <list default="true" id="07d5795a-4ac5-48a4-8e0d-1f72bed10fd6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/res/StringsFile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/res/StringsFile.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/solution_received_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/solution_received_screen.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
