@@ -187,7 +187,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => BiddingLoading(
-                  specialityId: _catalouges[index].serviceId,
+                  catalogueData: _catalouges[index],
                 )));
   }
 

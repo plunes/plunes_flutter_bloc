@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/models/solution_models/test_and_procedure_model.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -212,7 +213,7 @@ class CustomWidgets {
                           left: AppConfig.horizontalBlockSize * 24,
                           top: AppConfig.verticalBlockSize * 1,
                           right: AppConfig.horizontalBlockSize * 24),
-                      child: _getRoundedButton(
+                      child: getRoundedButton(
                           "Negotiate",
                           AppConfig.horizontalBlockSize * 8,
                           PlunesColors.GREENCOLOR,
@@ -246,7 +247,7 @@ class CustomWidgets {
     );
   }
 
-  Widget _getRoundedButton(
+  Widget getRoundedButton(
       String buttonName,
       double cornerPadding,
       Color buttonColor,
@@ -363,8 +364,12 @@ class CustomWidgets {
     );
   }
 
-  Widget getDocOrHospitalDetailRow(
-      int index, Function checkAvailability, Function onBookingTap) {
+  Widget getDocOrHospitalDetailWidget(
+      List<Services> solutions,
+      int index,
+      Function checkAvailability,
+      Function onBookingTap,
+      CatalogueData catalogueData) {
     return Container(
       padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
       child: Column(
@@ -374,8 +379,8 @@ class CustomWidgets {
             children: <Widget>[
               CircleAvatar(
                 child: ClipOval(
-                    child: getImageFromUrl(
-                        "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                    child: getImageFromUrl(solutions[index].imageUrl,
+                        boxFit: BoxFit.fitHeight)),
                 radius: AppConfig.horizontalBlockSize * 7,
               ),
               Padding(
@@ -387,7 +392,7 @@ class CustomWidgets {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "Dr. Aanchal Sehrawat",
+                      solutions[index].name ?? PlunesStrings.NA,
                       style: TextStyle(
                           fontSize: AppConfig.mediumFont,
                           color: PlunesColors.BLACKCOLOR,
@@ -397,7 +402,7 @@ class CustomWidgets {
                         padding: EdgeInsets.only(
                             top: AppConfig.horizontalBlockSize * 1)),
                     Text(
-                      "Dermatologist Consultation",
+                      catalogueData.category ?? PlunesStrings.NA,
                       style: TextStyle(
                         fontSize: AppConfig.mediumFont,
                         color: PlunesColors.GREYCOLOR,
@@ -415,13 +420,15 @@ class CustomWidgets {
                 children: <Widget>[
                   RichText(
                       text: TextSpan(
-                          text: "\u20B9300 ",
+                          text:
+                              "\u20B9${solutions[index].price[0] ?? PlunesStrings.NA} ",
                           style: TextStyle(
                               color: PlunesColors.GREYCOLOR,
                               decoration: TextDecoration.lineThrough),
                           children: <TextSpan>[
                         TextSpan(
-                          text: " \u20B9200",
+                          text:
+                              " \u20B9${solutions[index].newPrice[0] ?? PlunesStrings.NA}",
                           style: TextStyle(
                               fontSize: AppConfig.mediumFont,
                               color: PlunesColors.BLACKCOLOR,
@@ -433,7 +440,9 @@ class CustomWidgets {
                       padding: EdgeInsets.only(
                           top: AppConfig.horizontalBlockSize * 1)),
                   Text(
-                    "Save 30%",
+                    solutions[index].discount == null
+                        ? ""
+                        : "${PlunesStrings.save} ${solutions[index].discount.toStringAsFixed(3)}%",
                     style: TextStyle(color: PlunesColors.GREENCOLOR),
                   )
                 ],
@@ -451,7 +460,9 @@ class CustomWidgets {
                       left: AppConfig.horizontalBlockSize * 1.5)),
               Icon(Icons.recent_actors),
               Expanded(child: Container()),
-              Text("0.009 kms away")
+              Text(solutions[index].distance == null
+                  ? ""
+                  : "${solutions[index].distance.toStringAsFixed(3)} ${PlunesStrings.kmsAway}")
             ],
           ),
           Padding(
@@ -467,27 +478,35 @@ class CustomWidgets {
 //                      backgroundColor: PlunesColors.LIGHTGREYCOLOR,
 //                      verticalPadding: AppConfig.verticalBlockSize * 1,
 //                      horizontalPadding: AppConfig.horizontalBlockSize * 3)),
-              _getRoundedButton(
-                  PlunesStrings.checkAvailability,
-                  AppConfig.horizontalBlockSize * 8,
-                  PlunesColors.WHITECOLOR,
-                  AppConfig.horizontalBlockSize * 3,
-                  AppConfig.verticalBlockSize * 1,
-                  PlunesColors.BLACKCOLOR,
-                  hasBorder: true),
+              InkWell(
+                onTap: checkAvailability,
+                child: getRoundedButton(
+                    PlunesStrings.checkAvailability,
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.WHITECOLOR,
+                    AppConfig.horizontalBlockSize * 3,
+                    AppConfig.verticalBlockSize * 1,
+                    PlunesColors.BLACKCOLOR,
+                    hasBorder: true),
+              ),
               Padding(
                   padding:
                       EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2)),
-              _getRoundedButton(
-                  PlunesStrings.bookIn + "100",
-                  AppConfig.horizontalBlockSize * 8,
-                  PlunesColors.GREENCOLOR,
-                  AppConfig.horizontalBlockSize * 3,
-                  AppConfig.verticalBlockSize * 1,
-                  PlunesColors.WHITECOLOR),
+              InkWell(
+                onTap: onBookingTap,
+                child: getRoundedButton(
+                    solutions[index].bookIn == null
+                        ? PlunesStrings.book
+                        : "${PlunesStrings.bookIn} + ${solutions[index].bookIn}",
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.GREENCOLOR,
+                    AppConfig.horizontalBlockSize * 3,
+                    AppConfig.verticalBlockSize * 1,
+                    PlunesColors.WHITECOLOR),
+              ),
             ],
           ),
-          index == 5 - 1 ? Container() : getSeparatorLine()
+          index == solutions.length - 1 ? Container() : getSeparatorLine()
         ],
       ),
     );
