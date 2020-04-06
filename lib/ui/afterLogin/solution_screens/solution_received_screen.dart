@@ -113,6 +113,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       }
     } else if (result is RequestFailed) {
       _failureCause = result.failureCause;
+      _timer?.cancel();
     }
     _isFetchingInitialData = false;
     _setState();
@@ -125,8 +126,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 2), (timer) {
       _negotiate();
-      timer.cancel();
-      return;
       _tenMinutesInSeconds = _tenMinutesInSeconds - 2;
       if (_tenMinutesInSeconds <= 0) {
         timer?.cancel();
@@ -196,6 +195,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         } else if (snapShot.data is RequestFailed) {
                           RequestFailed _failedObject = snapShot.data;
                           _failureCause = _failedObject.failureCause;
+                          _timer?.cancel();
                         }
                         return _showContent();
                       },
