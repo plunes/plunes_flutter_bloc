@@ -93,7 +93,7 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => BiddingLoading(
-                  specialityId: _catalouges[index].serviceId,
+                  catalogueData: _catalouges[index],
                 )));
   }
 }

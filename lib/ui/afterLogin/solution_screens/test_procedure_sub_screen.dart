@@ -280,7 +280,7 @@ class _TestProcedureSubScreenState
         context,
         MaterialPageRoute(
             builder: (context) => BiddingLoading(
-                  specialityId: catalogueData.serviceId,
+                  catalogueData: catalogueData,
                 )));
   }
 

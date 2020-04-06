@@ -3,6 +3,7 @@ import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -10,9 +11,9 @@ import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.d
 
 // ignore: must_be_immutable
 class BiddingLoading extends BaseActivity {
-  final String specialityId;
+  final CatalogueData catalogueData;
 
-  BiddingLoading({this.specialityId});
+  BiddingLoading({this.catalogueData});
 
   @override
   _BiddingLoadingState createState() => _BiddingLoadingState();
@@ -39,7 +40,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
               context,
               MaterialPageRoute(
                   builder: (context) => SolutionReceivedScreen(
-                        specialityId: widget.specialityId,
+                        catalogueData: widget.catalogueData,
                       ))).then((value) {
             Navigator.pop(context);
           });

@@ -86,13 +86,13 @@ class Services {
   String professionalId;
   String name;
   String imageUrl;
-  double discount;
+  num discount;
   double latitude;
   double longitude;
   double distance;
   bool homeCollection;
   int recommendation;
-  int bookIn;
+  num bookIn;
   bool negotiating;
 
   Services(

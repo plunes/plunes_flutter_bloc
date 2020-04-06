@@ -7,15 +7,16 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 
 // ignore: must_be_immutable
 class SolutionReceivedScreen extends BaseActivity {
-  final String specialityId;
+  final CatalogueData catalogueData;
 
-  SolutionReceivedScreen({this.specialityId});
+  SolutionReceivedScreen({this.catalogueData});
 
   @override
   _SolutionReceivedScreenState createState() => _SolutionReceivedScreenState();
@@ -26,7 +27,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   Timer _timer;
   int _tenMinutesInSeconds = 600;
   SearchSolutionBloc _searchSolutionBloc;
-  List<Services> _docHosList;
   SearchedDocResults _searchedDocResults;
 
   bool _isFetchingInitialData;
@@ -34,7 +34,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   @override
   void initState() {
-    _docHosList = [];
     _isFetchingInitialData = true;
     _googleMapController = Completer();
     _searchSolutionBloc = SearchSolutionBloc();
@@ -51,45 +50,65 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+        top: false,
+        bottom: false,
         child: Scaffold(
-      key: scaffoldKey,
-      appBar: widget.getAppBar(context, PlunesStrings.solutionSearched, true),
-      body: Builder(builder: (context) {
-        return _isFetchingInitialData
-            ? CustomWidgets().getProgressIndicator()
-            : _searchedDocResults == null ||
-                    _docHosList == null ||
-                    _docHosList.isEmpty
-                ? CustomWidgets().errorWidget(_failureCause)
-                : _showBody();
-      }),
-    ));
+          key: scaffoldKey,
+          appBar:
+              widget.getAppBar(context, PlunesStrings.solutionSearched, true),
+          body: Builder(builder: (context) {
+            return _isFetchingInitialData
+                ? CustomWidgets().getProgressIndicator()
+                : _searchedDocResults == null ||
+                        _searchedDocResults.solution == null ||
+                        _searchedDocResults.solution.services == null ||
+                        _searchedDocResults.solution.services.isEmpty
+                    ? CustomWidgets().errorWidget(_failureCause)
+                    : _showBody();
+          }),
+        ));
   }
 
   Widget _showContent() {
     return ListView.builder(
-      itemBuilder: (context, index) {
-        return CustomWidgets().getDocOrHospitalDetailRow(
-            index, () => _checkAvailability(), () => _onBookingTap());
-      },
-      itemCount: 5,
-    );
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return CustomWidgets().getDocOrHospitalDetailWidget(
+              _searchedDocResults.solution?.services ?? [],
+              index,
+              () => _checkAvailability(index),
+              () => _onBookingTap(index),
+              widget.catalogueData);
+        },
+        itemCount: _searchedDocResults.solution == null
+            ? 0
+            : _searchedDocResults.solution.services == null ||
+                    _searchedDocResults.solution.services.isEmpty
+                ? 0
+                : _searchedDocResults.solution.services.length);
   }
 
-  _checkAvailability() {}
+  _checkAvailability(int selectedIndex) {
+    print("_checkAvailability");
+  }
 
-  _onBookingTap() {}
+  _onBookingTap(int selectedIndex) {
+    print("_onBookingTap");
+  }
 
   Future<RequestState> _negotiate() async {
-    var result =
-        await _searchSolutionBloc.getDocHosSolution(widget.specialityId);
-    if (_docHosList != null && _docHosList.isNotEmpty) {
-      return null;
+    var result = await _searchSolutionBloc
+        .getDocHosSolution(widget.catalogueData.serviceId);
+    if (_searchedDocResults != null &&
+        _searchedDocResults.solution != null &&
+        _searchedDocResults.solution.services != null &&
+        _searchedDocResults.solution.services.isNotEmpty) {
+      return result;
     }
     if (result is RequestSuccess) {
       _searchedDocResults = result.response;
-      _docHosList = _searchedDocResults?.solution?.services;
-      if (_docHosList == null || _docHosList.isEmpty) {
+      if (_searchedDocResults.solution?.services == null ||
+          _searchedDocResults.solution.services.isEmpty) {
         _failureCause = PlunesStrings.oopsServiceNotAvailable;
       }
     } else if (result is RequestFailed) {
@@ -132,29 +151,68 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               child: Card(
             elevation: 0.0,
             margin: EdgeInsets.all(0.0),
-            child: Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 4,
-                  vertical: AppConfig.verticalBlockSize * 2),
-              child: StreamBuilder<RequestState>(
-                builder: (context, snapShot) {
-                  if (snapShot.data is RequestSuccess) {
-                    RequestSuccess _successObject = snapShot.data;
-                    _searchedDocResults = _successObject.response;
-                    _docHosList = _searchedDocResults?.solution?.services;
-                  } else if (snapShot.data is RequestFailed) {
-                    RequestFailed _failedObject = snapShot.data;
-                    _failureCause = _failedObject.failureCause;
-                  }
-                  return _showContent();
-                },
-                stream: _searchSolutionBloc.getDocHosStream(),
-              ),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 4,
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Text(
+                          widget.catalogueData.service ?? PlunesStrings.NA,
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              color: PlunesColors.BLACKCOLOR,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      Expanded(child: Container()),
+                      InkWell(
+                        onTap: () => _viewDetails(),
+                        child: CustomWidgets().getRoundedButton(
+                            PlunesStrings.viewDetails,
+                            AppConfig.horizontalBlockSize * 8,
+                            PlunesColors.GREENCOLOR,
+                            AppConfig.horizontalBlockSize * 3,
+                            AppConfig.verticalBlockSize * 1,
+                            PlunesColors.WHITECOLOR),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 4,
+                        vertical: AppConfig.verticalBlockSize * 2),
+                    child: StreamBuilder<RequestState>(
+                      builder: (context, snapShot) {
+                        if (snapShot.data is RequestSuccess) {
+                          RequestSuccess _successObject = snapShot.data;
+                          _searchedDocResults = _successObject.response;
+                        } else if (snapShot.data is RequestFailed) {
+                          RequestFailed _failedObject = snapShot.data;
+                          _failureCause = _failedObject.failureCause;
+                        }
+                        return _showContent();
+                      },
+                      stream: _searchSolutionBloc.getDocHosStream(),
+                    ),
+                  ),
+                ),
+              ],
             ),
             color: PlunesColors.WHITECOLOR,
           ))
         ],
       ),
     );
+  }
+
+  _viewDetails() {
+    print("view details");
   }
 }

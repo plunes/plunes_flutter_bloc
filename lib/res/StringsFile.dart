@@ -451,4 +451,8 @@ class PlunesStrings {
   static const String homeCollectionAvailable = "Home Collection Available";
   static const String oopsServiceNotAvailable =
       "Oops, this service is not available now.";
+  static const String save = "Save";
+  static const String kmsAway = "kms away";
+  static const String book = "Book";
+  static const String viewDetails = 'View Details';
 }

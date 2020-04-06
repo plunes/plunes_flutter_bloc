@@ -7,23 +7,14 @@
     <list default="true" id="07d5795a-4ac5-48a4-8e0d-1f72bed10fd6" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Utils/Preferences.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Utils/Preferences.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/Utils/custom_widgets.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Utils/custom_widgets.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/base/BaseActivity.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/base/BaseActivity.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/blocs/bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/blocs/bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/blocs/solution_blocs/search_solution_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/blocs/solution_blocs/search_solution_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/Models.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/Models.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/repositories/solution_repo/searched_solution_repo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/repositories/solution_repo/searched_solution_repo.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/requester/dio_requester.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/requester/dio_requester.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/solution_models/searched_doc_hospital_result.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/solution_models/searched_doc_hospital_result.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/res/StringsFile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/res/StringsFile.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/resources/network/Urls.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/resources/network/Urls.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_main_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_main_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/consultations.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/consultations.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/solution_received_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/solution_received_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/test_procedure_sub_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/test_procedure_sub_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/commonView/LocationFetch.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/commonView/LocationFetch.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
