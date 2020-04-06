@@ -428,7 +428,7 @@ class PlunesStrings {
   get text2Referral =>
       'You will get instant cash as soon as your friend registers successfully';
 
-  //Solution strings
+  ///Solution strings
   static const String solutionSearched = "Solution Searched";
   static const String consultations = "Consultations";
   static const String tests = "Tests";
@@ -455,4 +455,16 @@ class PlunesStrings {
   static const String kmsAway = "kms away";
   static const String book = "Book";
   static const String viewDetails = 'View Details';
+  static const String confirmYourBooking = "Confirm your Booking";
+
+  ///Booking strings
+  static const String whyPlunes = "Why Plunes?";
+  static const String getDirection = "Get Direction";
+  static const String addressInSmall = "Address";
+  static const String availableSlots = "Available Slots";
+  static const String slot1 = "Slot 1";
+  static const String slot2 = "Slot 2";
+  static const String appointmentTime = "Appointment Time";
+  static const String tcApply = "T&C Apply.";
+  static const String payNow = "PAY NOW";
 }

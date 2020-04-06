@@ -11,6 +11,7 @@ import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 
 // ignore: must_be_immutable
 class SolutionReceivedScreen extends BaseActivity {
@@ -93,7 +94,11 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   _onBookingTap(int selectedIndex) {
-    print("_onBookingTap");
+    print("timer rinning ${_timer?.isActive}");
+    _timer.cancel();
+    print("timer rinning ${_timer?.isActive}");
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => BookingMainScreen()));
   }
 
   Future<RequestState> _negotiate() async {
