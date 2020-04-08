@@ -42,8 +42,8 @@ class BaseActivity extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => null;
 
-  void showInSnackBar(String value, MaterialColor color,
-      GlobalKey<ScaffoldState> _scaffoldKey) {
+  void showInSnackBar(
+      String value, Color color, GlobalKey<ScaffoldState> _scaffoldKey) {
     _scaffoldKey.currentState.showSnackBar(new SnackBar(
       content: new Text(value ?? plunesStrings.somethingWentWrong),
       backgroundColor: color,

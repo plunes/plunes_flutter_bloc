@@ -184,6 +184,13 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_rating_bar">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_rating_bar-3.0.1+1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter_screenutil">
           <value>
             <list>
@@ -202,6 +209,13 @@
           <value>
             <list>
               <option value="$PROJECT_DIR$/../../systemdata/flutter/packages/flutter_test/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="flutter_time_picker_spinner">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_time_picker_spinner-1.0.6/lib" />
             </list>
           </value>
         </entry>
@@ -618,8 +632,10 @@
       <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_cache_manager-1.1.3/lib" />
       <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_google_places-0.2.3/lib" />
       <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_local_notifications-0.8.4/lib" />
+      <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_rating_bar-3.0.1+1/lib" />
       <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_screenutil-0.6.0/lib" />
       <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_spinkit-4.0.0/lib" />
+      <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_time_picker_spinner-1.0.6/lib" />
       <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_typeahead-1.6.1/lib" />
       <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_webview_plugin-0.3.8/lib" />
       <root url="file://$PROJECT_DIR$/../../systemdata/flutter/.pub-cache/hosted/pub.dartlang.org/fluttertoast-3.1.3/lib" />

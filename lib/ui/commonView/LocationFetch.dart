@@ -58,8 +58,8 @@ class _LocationFetchState extends State<LocationFetch> {
   }
 
   saveLatLang() async {
-    await _preferences.setPreferencesString(Constants.LATITUDE, latitude);
-    await _preferences.setPreferencesString(Constants.LONGITUDE, longitude);
+//    await _preferences.setPreferencesString(Constants.LATITUDE, latitude);
+//    await _preferences.setPreferencesString(Constants.LONGITUDE, longitude);
     String home = houseController.text;
     String land = landMarkController.text;
     print(home + "," + land + "," + address + "," + latitude + "," + longitude);

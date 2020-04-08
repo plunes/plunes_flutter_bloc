@@ -1,25 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/log.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
+import 'package:plunes/resources/network/Urls.dart';
 
 // ignore: must_be_immutable
 class BookingMainScreen extends BaseActivity {
+  final List<TimeSlots> timeSlots;
+  final String price, solutionType, profId;
+  final String screenName = "BookingMainScreen";
+
+  BookingMainScreen(
+      {this.price, this.profId, this.solutionType, this.timeSlots});
+
   @override
   _BookingMainScreenState createState() => _BookingMainScreenState();
 }
 
 class _BookingMainScreenState extends BaseState<BookingMainScreen> {
-  DateTime _currentDate, _selectedDate;
+  DateTime _currentDate, _selectedDate, _tempSelectedDateTime;
+  int _selectedPaymentType, _paymentTypeCash = 0, _paymentTypeCoupon = 1;
+  String _appointmentTime,
+      _firstSlotTime,
+      _secondSlotTime,
+      _notSelectedEntry,
+      _userFailureCause;
+  bool _isFetchingDocHosInfo;
+  LoginPost _loginPost;
 
   @override
   void initState() {
+    _appointmentTime = "00:00";
+    _notSelectedEntry = _appointmentTime;
+    _selectedPaymentType = _paymentTypeCash;
+    _getDocHosInfo();
     _currentDate = DateTime.now();
-    _selectedDate = _currentDate;
+    _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
     super.initState();
+  }
+
+  void _getSlotsInfo(String dateAsString) {
+    _firstSlotTime = PlunesStrings.NA;
+    _secondSlotTime = _firstSlotTime;
+    widget.timeSlots.forEach((slot) {
+      if (slot.day.toLowerCase().contains(dateAsString.toLowerCase())) {
+        if (!slot.closed) {
+          _firstSlotTime = slot.slots[0] ?? _firstSlotTime;
+          _secondSlotTime = slot.slots[1] ?? _secondSlotTime;
+        }
+      }
+    });
+    _setState();
   }
 
   @override
@@ -28,13 +70,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         top: false,
         bottom: false,
         child: Scaffold(
+          key: scaffoldKey,
           appBar:
               widget.getAppBar(context, PlunesStrings.confirmYourBooking, true),
           body: Builder(builder: (context) {
             return Container(
-              padding: CustomWidgets().getDefaultPaddingForScreens(),
-              child: _getBody(),
-            );
+                padding: CustomWidgets().getDefaultPaddingForScreens(),
+                child: _isFetchingDocHosInfo
+                    ? CustomWidgets().getProgressIndicator()
+                    : (_loginPost == null || _loginPost.user == null)
+                        ? CustomWidgets().errorWidget(_userFailureCause)
+                        : _getBody());
           }),
         ));
   }
@@ -168,8 +214,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       children: <Widget>[
         CircleAvatar(
           child: ClipOval(
-              child: CustomWidgets().getImageFromUrl(
-                  "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+              child:
+                  CustomWidgets().getImageFromUrl(_loginPost.user?.imageUrl)),
           radius: AppConfig.horizontalBlockSize * 5.5,
         ),
         Expanded(
@@ -182,39 +228,38 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 children: <Widget>[
                   Expanded(
                     flex: 5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          "Dr . Something here",
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              fontWeight: FontWeight.bold,
-                              color: PlunesColors.BLACKCOLOR),
-                        ),
-                        Text(
-                          "Speciality here",
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: PlunesColors.GREYCOLOR),
-                        ),
-                      ],
+                    child: Text(
+                      _loginPost.user?.name ?? PlunesStrings.NA,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          fontWeight: FontWeight.bold,
+                          color: PlunesColors.BLACKCOLOR),
                     ),
                   ),
                   Expanded(
                     child: InkWell(
                       onTap: () => _getDirections(),
-                      child: Text(
-                        PlunesStrings.getDirection,
-                        style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            fontSize: AppConfig.mediumFont,
-                            color: PlunesColors.GREENCOLOR),
+                      onDoubleTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Text(
+                          PlunesStrings.getDirection,
+                          style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontSize: AppConfig.mediumFont,
+                              color: PlunesColors.GREENCOLOR),
+                        ),
                       ),
                     ),
                     flex: 3,
                   ),
                 ],
+              ),
+              Text(
+                _loginPost.user?.speciality ?? PlunesStrings.NA,
+                style: TextStyle(
+                    fontSize: AppConfig.mediumFont,
+                    color: PlunesColors.GREYCOLOR),
               ),
               Padding(
                 padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
@@ -232,10 +277,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                               color: PlunesColors.GREYCOLOR,
                               fontSize: AppConfig.mediumFont)),
                       new TextSpan(
-                          text:
-                              "dsfdsdsdsfdsfsdfdf dsfdsdsfjkbhsdfbvsdfjdsvfdghjskgyefgfusydifhggkdfsgydhksfbhkdsfkghdshfdfsbhkdfsbhjdfscddsfdsfwdfdwfed",
+                          text: _loginPost.user?.address ?? PlunesStrings.NA,
                           style: new TextStyle(
-                              fontSize: AppConfig.mediumFont,
+                              fontSize: AppConfig.smallFont,
                               fontWeight: FontWeight.w300,
                               color: PlunesColors.BLACKCOLOR)),
                     ],
@@ -249,13 +293,22 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     );
   }
 
-  _getDirections() {}
+  void _getDirections() {
+    (_loginPost.user.latitude == null ||
+            _loginPost.user.latitude.isEmpty ||
+            _loginPost.user.latitude == null ||
+            _loginPost.user.latitude.isEmpty)
+        ? widget.showInSnackBar(PlunesStrings.locationNotAvailable,
+            PlunesColors.BLACKCOLOR, scaffoldKey)
+        : LauncherUtil.openMap(double.tryParse(_loginPost.user.latitude),
+            double.tryParse(_loginPost.user.longitude));
+  }
 
   Widget _getDatePicker() {
     return DatePickerTimeline(
-      _currentDate,
+      _selectedDate ?? _currentDate,
       width: double.infinity,
-      height: AppConfig.verticalBlockSize * 11,
+      height: AppConfig.verticalBlockSize * 15,
       daysCount: 100,
       dateTextStyle: TextStyle(
           color: PlunesColors.BLACKCOLOR, fontSize: AppConfig.largeFont),
@@ -265,6 +318,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       onDateChange: (DateTime selectedDateTime) {
         _selectedDate = selectedDateTime;
         print("selected date is ${selectedDateTime.toString()}");
+        _openTimePicker();
       },
     );
   }
@@ -285,9 +339,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           child: Text(
             fromAndToText,
             style: TextStyle(
-//                decoration: TextDecoration.underline,
-                color: PlunesColors.BLACKCOLOR,
-                fontSize: AppConfig.mediumFont),
+                color: PlunesColors.BLACKCOLOR, fontSize: AppConfig.mediumFont),
           ),
         ),
         Container(
@@ -305,10 +357,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   Widget _getSlots() {
     return Row(
       children: <Widget>[
-        Expanded(
-            child: _getSlotInfo(PlunesStrings.slot1, "10:00 am - 13:00 pm")),
-        Expanded(
-            child: _getSlotInfo(PlunesStrings.slot2, "10:00 am - 13:00 pm"))
+        Expanded(child: _getSlotInfo(PlunesStrings.slot1, _firstSlotTime)),
+        Expanded(child: _getSlotInfo(PlunesStrings.slot2, _secondSlotTime))
       ],
     );
   }
@@ -317,8 +367,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     return Row(
       children: <Widget>[
         Expanded(
-            child: _getSlotInfo(
-                PlunesStrings.appointmentTime, "10:00 am - 13:00 pm")),
+            child:
+                _getSlotInfo(PlunesStrings.appointmentTime, _appointmentTime)),
         Expanded(child: Container())
       ],
     );
@@ -335,9 +385,27 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           height: 0.5,
           color: PlunesColors.GREYCOLOR,
         ),
-        Text("Apply Cash"),
-        Text("Apply Cash"),
-        Text("Apply Cash"),
+        Text(PlunesStrings.availableCash),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Radio(
+                value: _paymentTypeCash,
+                groupValue: _selectedPaymentType,
+                onChanged: (value) => _paymentTypeOnChange(value)),
+            Text("Apply Cash     ")
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Radio(
+                value: _paymentTypeCoupon,
+                groupValue: _selectedPaymentType,
+                onChanged: (value) => _paymentTypeOnChange(value)),
+            Text("Apply Coupon")
+          ],
+        ),
         Container(
           margin: EdgeInsets.only(
               top: AppConfig.verticalBlockSize * 3,
@@ -362,7 +430,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         Container(
           padding: EdgeInsets.only(
               left: AppConfig.horizontalBlockSize * 24,
-              bottom: AppConfig.verticalBlockSize * 2.3,
+              bottom: AppConfig.verticalBlockSize * 1.5,
               top: AppConfig.verticalBlockSize * 2.3,
               right: AppConfig.horizontalBlockSize * 24),
           child: CustomWidgets().getRoundedButton(
@@ -375,12 +443,238 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               hasBorder: true),
         ),
         InkWell(
-          child: Text(
-            PlunesStrings.tcApply,
-            style: TextStyle(decoration: TextDecoration.underline),
+          onTap: () => LauncherUtil.launchUrl(urls.terms),
+          onDoubleTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              PlunesStrings.tcApply,
+              style: TextStyle(decoration: TextDecoration.underline),
+            ),
           ),
         ),
       ],
     );
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
+
+  void _paymentTypeOnChange(int value) {
+    _selectedPaymentType = value;
+    _setState();
+  }
+
+  _openTimePicker() {
+    return showDialog(
+        builder: (context) {
+          return Container(
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 15,
+                horizontal: AppConfig.horizontalBlockSize * 5),
+            child: Material(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Icon(Icons.close),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      PlunesStrings.setYourTime,
+                      style: TextStyle(fontSize: AppConfig.mediumFont),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: TimePickerSpinner(
+                      is24HourMode: false,
+                      time: _selectedDate,
+                      normalTextStyle: TextStyle(
+                          fontSize: 24, color: PlunesColors.BLACKCOLOR),
+                      highlightedTextStyle: TextStyle(
+                          fontSize: 24, color: PlunesColors.GREENCOLOR),
+                      spacing: AppConfig.horizontalBlockSize * 8,
+                      isShowSeconds: false,
+                      itemHeight: AppConfig.verticalBlockSize * 10,
+                      isForce2Digits: true,
+                      onTimeChange: (time) {
+                        _tempSelectedDateTime = time;
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 30,
+                        bottom: AppConfig.verticalBlockSize * 2,
+                        top: AppConfig.verticalBlockSize * 2.3,
+                        right: AppConfig.horizontalBlockSize * 30),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        _timeChooseCallBack();
+                        return;
+                      },
+                      child: CustomWidgets().getRoundedButton(
+                          PlunesStrings.choose,
+                          AppConfig.horizontalBlockSize * 8,
+                          PlunesColors.GREENCOLOR,
+                          AppConfig.horizontalBlockSize * 3,
+                          AppConfig.verticalBlockSize * 1,
+                          PlunesColors.WHITECOLOR,
+                          hasBorder: false),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        barrierDismissible: true,
+        context: context);
+  }
+
+  _timeChooseCallBack() {
+//    print(
+//        "${_tempSelectedDateTime.hour} selected Date Time is $_tempSelectedDateTime");
+    _getSlotsInfo(DateUtil.getDayAsString(_tempSelectedDateTime));
+    _checkAndValidateSelectedTime();
+    _setState();
+  }
+
+  void _checkAndValidateSelectedTime() {
+    if (widget.timeSlots != null && widget.timeSlots.isNotEmpty) {
+      String selectedDay = DateUtil.getDayAsString(_tempSelectedDateTime);
+      if (selectedDay == PlunesStrings.NA) {
+        AppLog.printError(
+            "${widget.screenName} Day is not parsable day is $selectedDay");
+        return;
+      }
+      bool hasFoundEntry = false;
+      widget.timeSlots.forEach((timeSlot) {
+        if (timeSlot.day.toLowerCase().contains(selectedDay.toLowerCase()) &&
+            !timeSlot.closed) {
+          _setTime(timeSlot);
+          hasFoundEntry = true;
+        }
+      });
+      if (!hasFoundEntry) {
+        _appointmentTime = _notSelectedEntry;
+      }
+    }
+  }
+
+  void _setTime(TimeSlots timeSlot) {
+//    print("timeSlot ${timeSlot.toString()}");
+    List<String> _firstSlotFromTimeHourMinute =
+        timeSlot.slots[0].split("-")[0].split(" ")[0].split(":");
+
+    List<String> _firstSlotToTimeHourMinute =
+        timeSlot.slots[0].split("-")[1].split(" ")[0].split(":");
+    List<String> _secondSlotFromTimeHourMinute =
+        timeSlot.slots[1].split("-")[0].split(" ")[0].split(":");
+    List<String> _secondSlotToTimeHourMinute =
+        timeSlot.slots[1].split("-")[1].split(" ")[0].split(":");
+    int _fft = int.tryParse(_firstSlotFromTimeHourMinute[0]);
+    if (timeSlot.slots[0].split("-")[0].contains("PM")) {
+      _fft = _fft + 12;
+    }
+    TimeOfDay _firstFromTime = TimeOfDay(
+        hour: _fft,
+        minute: int.tryParse(_firstSlotFromTimeHourMinute[1].trim()));
+    int _ftt = int.tryParse(_firstSlotToTimeHourMinute[0]);
+    if (timeSlot.slots[1].split("-")[0].contains("PM")) {
+      _ftt = _ftt + 12;
+    }
+    TimeOfDay _firstToTime = TimeOfDay(
+        hour: _ftt, minute: int.tryParse(_firstSlotToTimeHourMinute[1].trim()));
+    int _sft = int.tryParse(_secondSlotFromTimeHourMinute[0]);
+    if (timeSlot.slots[1].split("-")[0].contains("PM")) {
+      _sft = _sft + 12;
+    }
+    TimeOfDay _secondFromTime = TimeOfDay(
+        hour: _sft,
+        minute: int.tryParse(_secondSlotFromTimeHourMinute[1].trim()));
+    int _stt = int.tryParse(_secondSlotToTimeHourMinute[0]);
+    if (timeSlot.slots[1].split("-")[1].contains("PM")) {
+      _stt = _stt + 12;
+    }
+    TimeOfDay _secondToTime = TimeOfDay(
+        hour: _stt,
+        minute: int.tryParse(_secondSlotToTimeHourMinute[1].trim()));
+    bool isValidEntryFilled =
+        _validateTimeSlotWise(_firstFromTime, _firstToTime);
+    if (!isValidEntryFilled) {
+      isValidEntryFilled =
+          _validateTimeSlotWise(_secondFromTime, _secondToTime);
+    }
+    if (!isValidEntryFilled) {
+      _appointmentTime = _notSelectedEntry;
+    }
+  }
+
+  bool _validateTimeSlotWise(TimeOfDay fromDuration, TimeOfDay toDuration) {
+    bool isValidEntryFilled = false;
+    var _dateNow = DateTime.now();
+    String appointmentTime =
+        DateUtil.getTimeWithAmAndPmFormat(_tempSelectedDateTime);
+    List<String> _hourNMinute = appointmentTime.split(":");
+    int _selectedHour = int.tryParse(_hourNMinute[0]);
+    if (_selectedHour == 12 && appointmentTime.contains("AM")) {
+      return isValidEntryFilled;
+    }
+    if (appointmentTime.contains("PM")) {
+      _selectedHour = _selectedHour + 12;
+    }
+    TimeOfDay _selectedTime = TimeOfDay(
+        hour: _selectedHour,
+        minute: int.tryParse(_hourNMinute[1].trim().split(" ")[0]));
+    if (_selectedTime.hour >= fromDuration.hour &&
+        _selectedTime.hour <= toDuration.hour &&
+        _tempSelectedDateTime.day == _dateNow.day &&
+        _selectedTime.hour >= _dateNow.hour) {
+      //same day same hour case handled
+      if (_selectedTime.hour == _dateNow.hour &&
+          _selectedTime.minute >= _dateNow.minute) {
+        //make it true
+        _appointmentTime = appointmentTime;
+        isValidEntryFilled = true;
+      } else if (_selectedTime.hour > _dateNow.hour) {
+        //success
+        _appointmentTime = appointmentTime;
+        isValidEntryFilled = true;
+      } else {
+        print("failed case 1");
+      }
+    } else if (_tempSelectedDateTime.day != _dateNow.day &&
+        _selectedTime.hour >= fromDuration.hour &&
+        _selectedTime.hour <= toDuration.hour) {
+      _appointmentTime = appointmentTime;
+      isValidEntryFilled = true;
+      //success
+    } else {
+      print("failed case2");
+    }
+    return isValidEntryFilled;
+  }
+
+  void _getDocHosInfo() async {
+    _isFetchingDocHosInfo = true;
+    RequestState requestState = await UserBloc().getUserProfile(widget.profId);
+    if (requestState is RequestSuccess) {
+      _loginPost = requestState.response;
+    } else if (requestState is RequestFailed) {
+      _userFailureCause = requestState.failureCause;
+    }
+    _isFetchingDocHosInfo = false;
+    _setState();
   }
 }

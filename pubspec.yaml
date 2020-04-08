@@ -56,6 +56,8 @@ dependencies:
   dio: ^3.0.9
   event_bus: ^1.1.1
   cached_network_image: ^2.0.0
+  flutter_time_picker_spinner: ^1.0.6
+  flutter_rating_bar: ^3.0.1+1
 
   #  flutter_facebook_login: ^3.0.0
   rxdart:

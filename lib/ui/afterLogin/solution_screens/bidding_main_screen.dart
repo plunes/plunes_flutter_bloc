@@ -54,7 +54,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         }
       });
     _mapController = Completer();
-    _checkUserLocation();
+    _getUserDetails();
     _initialCameraPosition =
         CameraPosition(target: LatLng(45.521563, -122.677433), zoom: 14);
     super.initState();
@@ -105,7 +105,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               ],
             ),
           ),
-          _getBottomView()
+          _canGoAhead ? Container() : holdOnPopUp,
+          _getBottomView(),
         ],
       ),
     );
@@ -211,7 +212,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                       var _longitude = addressControllerList[4];
                       print("_latitude $_latitude");
                       print("_longitude $_longitude");
-                      _checkUserLocation();
+                      _checkUserLocation(_latitude, _longitude);
                     }
                   });
                 },
@@ -231,32 +232,28 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   _onSolutionItemTap(int index) {}
 
-  User _getUserDetails() {
-    return UserManager().getUserDetails();
+  _getUserDetails() {
+    _canGoAhead = UserManager().getIsUserInServiceLocation();
   }
 
   void _setState() {
     if (mounted) setState(() {});
   }
 
-  _checkUserLocation() async {
+  _checkUserLocation(var latitude, var longitude) async {
     if (!_progressEnabled) {
       _progressEnabled = true;
       _setState();
     }
-    UserBloc().isUserInServiceLocation().then((result) {
+    UserBloc().isUserInServiceLocation(latitude, longitude).then((result) {
       if (result.isRequestSucceed) {
-        print("request succ ${result.response.data}");
         if (result.response.data == null || !result.response.data) {
-          widget.showInSnackBar(
-              "Kindly switch to Gurgaoun location, currently we are not providing service in your area",
-              PlunesColors.GREYCOLOR,
-              scaffoldKey);
+          widget.showInSnackBar(PlunesStrings.switchToGurLoc,
+              PlunesColors.GREYCOLOR, scaffoldKey);
         } else {
           _canGoAhead = true;
         }
       } else {
-        print("error ${result.failureCause}");
         _failureCause = result.failureCause;
         widget.showInSnackBar(
             _failureCause, PlunesColors.GREYCOLOR, scaffoldKey);
@@ -265,4 +262,49 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       _setState();
     });
   }
+
+  final holdOnPopUp = Container(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Container(
+          child: Container(
+            color: Color(0xff99000000),
+//            decoration: BoxDecoration(
+//                borderRadius: BorderRadius.all(Radius.circular(10)),
+//                color: Color(0xff99000000)),
+            padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 5),
+            child: Stack(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.location_off,
+                      color: PlunesColors.GREENCOLOR,
+                      size: AppConfig.verticalBlockSize * 4,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: Text(
+                          PlunesStrings.weAreNotAvailableInYourArea,
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: AppConfig.mediumFont),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    ),
+  );
 }

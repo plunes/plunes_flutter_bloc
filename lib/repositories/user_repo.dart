@@ -3,6 +3,7 @@ import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_handler.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
@@ -17,6 +18,20 @@ class UserManager {
       _instance = UserManager._init();
     }
     return _instance;
+  }
+
+  bool getIsUserInServiceLocation() {
+    return Preferences().getPreferenceBoolean(Constants.IS_IN_SERVICE_LOCATION);
+  }
+
+  setIsUserInServiceLocation(bool isInServiceLocation) {
+    return Preferences().setPreferencesBoolean(
+        Constants.IS_IN_SERVICE_LOCATION, isInServiceLocation);
+  }
+
+  setLanLong(var lat, var long) {
+    Preferences().setPreferencesString(Constants.LATITUDE, lat.toString());
+    Preferences().setPreferencesString(Constants.LONGITUDE, long.toString());
   }
 
   User getUserDetails() {
@@ -50,22 +65,45 @@ class UserManager {
         credits: preferences.getPreferenceString(Constants.PREF_CREDITS));
   }
 
-  Future<RequestOutput> isUserInServiceLocation() async {
-    User _user = getUserDetails();
-    print(_user.toString());
-    if (_user.longitude == null ||
-        _user.longitude.isEmpty ||
-        _user.latitude == null ||
-        _user.latitude.isEmpty) {
+  Future<RequestOutput> isUserInServiceLocation(
+      var latitude, var longitude) async {
+    if (longitude == null ||
+        longitude.isEmpty ||
+        latitude == null ||
+        latitude.isEmpty) {
       return RequestOutput(failureCause: PlunesStrings.pleaseSelectLocation);
     }
-    return await DioRequester().requestMethod(
+    var result = await DioRequester().requestMethod(
       url: Urls.CHECK_LOCATION_API,
       postData: {
-        "latitude": double.parse(_user.latitude),
-        "longitude": double.parse(_user.longitude)
+        "latitude": double.parse(latitude),
+        "longitude": double.parse(longitude)
       },
       requestType: HttpRequestMethods.HTTP_POST,
     );
+    if (result.isRequestSucceed) {
+      if (result.response.data != null && result.response.data) {
+        setIsUserInServiceLocation(result.response.data);
+        setLanLong(latitude, longitude);
+      }
+    }
+    return result;
+  }
+
+  Future<RequestState> getUserProfile(String userId,
+      {bool shouldSaveInfo}) async {
+    var result = await DioRequester().requestMethod(
+        url: urls.userBaseUrl,
+        headerIncluded: true,
+        requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {"userId": userId});
+    if (result.isRequestSucceed) {
+      LoginPost _loginPost = LoginPost.fromJson(result.response.data);
+      print(_loginPost == null);
+      if (shouldSaveInfo) {}
+      return RequestSuccess(response: _loginPost);
+    } else {
+      return RequestFailed(response: result.failureCause);
+    }
   }
 }

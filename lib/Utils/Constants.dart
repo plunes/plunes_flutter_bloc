@@ -52,6 +52,7 @@ class Constants {
   static const String LONGITUDE = 'longitude';
   static const String SUCCESS = 'success';
   static const String MESSAGE = 'message';
+  static const String IS_IN_SERVICE_LOCATION = "IS_IN_SERVICE_LOCATION";
 
   static const List<dynamic> PREF_SPECIALITIES = [];
 }
