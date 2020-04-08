@@ -21,6 +21,20 @@ class PlunesStrings {
   static const String pleaseSelectLocation =
       "We are not able to find you, please select a location first";
 
+  ////
+
+  static const String setYourTime = "Set your Time";
+
+  static const String choose = "Choose";
+
+  static const String locationNotAvailable = "Location not available";
+
+  static const String weAreNotAvailableInYourArea =
+      "Sorry, We are currently not available in your area.";
+
+  static const String switchToGurLoc =
+      "Kindly switch to Gurgaoun location, currently we are not providing service in your area";
+
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
         'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
@@ -456,6 +470,7 @@ class PlunesStrings {
   static const String book = "Book";
   static const String viewDetails = 'View Details';
   static const String confirmYourBooking = "Confirm your Booking";
+  static const String negotiating = "Negotiating. . .";
 
   ///Booking strings
   static const String whyPlunes = "Why Plunes?";
@@ -467,4 +482,5 @@ class PlunesStrings {
   static const String appointmentTime = "Appointment Time";
   static const String tcApply = "T&C Apply.";
   static const String payNow = "PAY NOW";
+  static const String availableCash = "Available Cash";
 }

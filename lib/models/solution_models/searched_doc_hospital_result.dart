@@ -89,10 +89,11 @@ class Services {
   num discount;
   double latitude;
   double longitude;
-  double distance;
+  num distance;
   bool homeCollection;
-  int recommendation;
+  num recommendation;
   num bookIn;
+  num rating;
   bool negotiating;
 
   Services(
@@ -111,6 +112,7 @@ class Services {
       this.homeCollection,
       this.recommendation,
       this.bookIn,
+      this.rating,
       this.negotiating});
 
   Services.fromJson(Map<String, dynamic> json) {
@@ -134,6 +136,7 @@ class Services {
     homeCollection = json['homeCollection'];
     recommendation = json['recommendation'];
     bookIn = json['bookIn'];
+    rating = json['rating'];
     negotiating = json['negotiating'];
   }
 
@@ -156,6 +159,7 @@ class Services {
     data['homeCollection'] = this.homeCollection;
     data['recommendation'] = this.recommendation;
     data['bookIn'] = this.bookIn;
+    data['rating'] = this.rating;
     data['negotiating'] = this.negotiating;
     return data;
   }
@@ -165,6 +169,11 @@ class TimeSlots {
   List<String> slots;
   String day;
   bool closed;
+
+  @override
+  String toString() {
+    return 'TimeSlots{slots: $slots, day: $day, closed: $closed}';
+  }
 
   TimeSlots({this.slots, this.day, this.closed});
 

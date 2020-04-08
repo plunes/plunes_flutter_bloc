@@ -37,6 +37,7 @@ class ProcedureList {
 
 class _Services {
   String _id, _service, _details, _category, _description;
+  List<String> _categoriesArray;
 
   get id => _id;
 
@@ -52,7 +53,14 @@ class _Services {
     _id = result['_id'] != null ? result['_id'] : '';
     _service = result['service'] != null ? result['service'] : '';
     _details = result['details'] != null ? result['details'] : '';
-    _category = result['category'] != null ? result['category'] : '';
+    if (result['category'] != null && result['category'] is String) {
+      _category = result['category'] != null ? result['category'] : '';
+    } else if (result['category'] != null && result['category'] is List) {
+      _categoriesArray =
+          (result['category'] != null && result['category'].isNotEmpty)
+              ? result['category']
+              : [];
+    }
     _description = result['dnd'] != null ? result['dnd'] : '';
   }
 }
@@ -158,56 +166,61 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      uid: json['_id'] != null ? json['_id'] : '',
-      name: json['name'] != null ? json['name'] : '',
-      gender: json['gender'] != null ? json['gender'] : '',
-      birthDate: json['birthDate'] != null ? json['birthDate'] : '',
-      mobileNumber: json['mobileNumber'] != null ? json['mobileNumber'] : '',
-      email: json['email'] != null ? json['email'] : '',
-      verifiedUser: json['verifiedUser'] != null ? json['verifiedUser'] : false,
-      userType: json['userType'] != null ? json['userType'] : '',
-      address: json['address'] != null ? json['address'] : '',
-      referralCode: json['referralCode'] != null ? json['referralCode'] : '',
-      coverImageUrl: json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
-      specialities: json['specialities'] != null
-          ? List<ProcedureList>.from(
-              json['specialities'].map((i) => ProcedureList.fromJson(i)))
-          : List(),
-      achievements: json['achievements'] != null
-          ? List<AchievementsData>.from(
-              json['achievements'].map((i) => AchievementsData.fromJson(i)))
-          : List(),
-      doctorsData: json['doctors'] != null
-          ? List<DoctorsData>.from(
-              json['doctors'].map((i) => DoctorsData.fromJson(i)))
-          : List(),
-      experience:
-          json['experience'] != null ? json['experience'].toString() : '',
-      practising: json['practising'] != null ? json['practising'] : '',
-      college: json['college'] != null ? json['college'] : '',
-      biography: json['biography'] != null ? json['biography'] : '',
-      registrationNumber:
-          json['registrationNumber'] != null ? json['registrationNumber'] : '',
-      qualification: json['qualification'] != null ? json['qualification'] : '',
-      imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
-      latitude: json['geoLocation'] != null
-          ? (json['geoLocation']['latitude'].toString() != null
-              ? json['geoLocation']['latitude'].toString()
-              : '')
-          : '',
-      longitude: json['geoLocation'] != null
-          ? (json['geoLocation']['longitude'].toString() != null
-              ? json['geoLocation']['longitude'].toString()
-              : '')
-          : '',
-      prescriptionLogoUrl: json['prescription'] != null
-          ? (json['prescription']['logoUrl'] != null
-              ? json['prescription']['logoUrl']
-              : '')
-          : '',
-      credits:
-          json['credits'].toString() != null ? json['credits'].toString() : '0',
-    );
+        uid: json['_id'] != null ? json['_id'] : '',
+        name: json['name'] != null ? json['name'] : '',
+        gender: json['gender'] != null ? json['gender'] : '',
+        birthDate: json['birthDate'] != null ? json['birthDate'] : '',
+        mobileNumber: json['mobileNumber'] != null ? json['mobileNumber'] : '',
+        email: json['email'] != null ? json['email'] : '',
+        verifiedUser:
+            json['verifiedUser'] != null ? json['verifiedUser'] : false,
+        userType: json['userType'] != null ? json['userType'] : '',
+        address: json['address'] != null ? json['address'] : '',
+        referralCode: json['referralCode'] != null ? json['referralCode'] : '',
+        coverImageUrl:
+            json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
+        specialities: json['specialities'] != null
+            ? List<ProcedureList>.from(
+                json['specialities'].map((i) => ProcedureList.fromJson(i)))
+            : List(),
+        achievements: json['achievements'] != null
+            ? List<AchievementsData>.from(
+                json['achievements'].map((i) => AchievementsData.fromJson(i)))
+            : List(),
+        doctorsData: json['doctors'] != null
+            ? List<DoctorsData>.from(
+                json['doctors'].map((i) => DoctorsData.fromJson(i)))
+            : List(),
+        experience:
+            json['experience'] != null ? json['experience'].toString() : '',
+        practising: json['practising'] != null ? json['practising'] : '',
+        college: json['college'] != null ? json['college'] : '',
+        biography: json['biography'] != null ? json['biography'] : '',
+        registrationNumber: json['registrationNumber'] != null
+            ? json['registrationNumber']
+            : '',
+        qualification:
+            json['qualification'] != null ? json['qualification'] : '',
+        imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
+        latitude: json['geoLocation'] != null
+            ? (json['geoLocation']['latitude'].toString() != null
+                ? json['geoLocation']['latitude'].toString()
+                : '')
+            : '',
+        longitude: json['geoLocation'] != null
+            ? (json['geoLocation']['longitude'].toString() != null
+                ? json['geoLocation']['longitude'].toString()
+                : '')
+            : '',
+        prescriptionLogoUrl: json['prescription'] != null
+            ? (json['prescription']['logoUrl'] != null
+                ? json['prescription']['logoUrl']
+                : '')
+            : '',
+        credits: json['credits'].toString() != null
+            ? json['credits'].toString()
+            : '0',
+        speciality: json['specialityName']);
   }
 
   @override

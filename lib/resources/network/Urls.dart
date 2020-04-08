@@ -28,7 +28,7 @@ class Urls {
 
   get logoutAll => baseUrl + 'user/logout_all';
 
-  get userUpdate => baseUrl + 'user';
+  get userBaseUrl => baseUrl + 'user';
 
   get checkUserExistence => baseUrl + 'user?mobileNumber=';
 

@@ -56,6 +56,6 @@ class WebServices {
   }
 
   Future<dynamic> putUpdateProfileWebservice(BuildContext context,var body, String token) async {
-    return  await _apiCall.getAPIRequest(context, urls.userUpdate, '1', false, body: json.encode(body), method: Constants.PUT, token: token);
+    return  await _apiCall.getAPIRequest(context, urls.userBaseUrl, '1', false, body: json.encode(body), method: Constants.PUT, token: token);
   }
 }
