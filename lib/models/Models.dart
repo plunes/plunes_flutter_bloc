@@ -37,7 +37,7 @@ class ProcedureList {
 
 class _Services {
   String _id, _service, _details, _category, _description;
-  List<String> _categoriesArray;
+  List _categoriesArray;
 
   get id => _id;
 

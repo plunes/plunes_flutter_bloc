@@ -15,7 +15,7 @@ class ResponseStatusCodeHandler {
 
   RequestOutput checkRequestResponseStatusCode(final Response response) {
     RequestOutput _response;
-    print(response);
+//    print(response);
     if (response.statusCode == HttpResponseCode.OK) {
       _response = RequestOutput(isRequestSucceed: true, response: response);
       return _response;

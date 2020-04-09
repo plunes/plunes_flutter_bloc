@@ -18,9 +18,9 @@ class Urls {
       'https://control.msg91.com/api/sendotp.php?authkey=278069AIdfPwGj5ce79990&mobile=91';
   static String googleApiKey = 'AIzaSyAXz9PuBzPhMjAdUZmlyFdst6J8v6Vx1IU';
 
-//  static const String baseUrl = 'https://plunes.co/v4/'; // production server
-  static const String baseUrl =
-      'https://devapi.plunes.com/v5/'; // staging server
+  static const String baseUrl = 'https://plunes.co/v4/'; // production server
+//  static const String baseUrl =
+//      'https://devapi.plunes.com/v5/'; // staging server
 
   get catalogue => baseUrl + 'catalogue';
 
@@ -54,5 +54,7 @@ class Urls {
   static const String GET_TEST_AND_PROCEDURES_CATALOGUE_API =
       "catalogue/serviceList";
   static const String CHECK_LOCATION_API = "user/checkLocation";
-  static const String GET_DOCHOS_API = "solution";
+  static const String GET_DOC_HOS_API = "solution";
+  static const String BOOKING_URL = 'booking';
+  static const String PAYMENT_WEB_VIEW_URL = 'https://plunes.co/payment';
 }

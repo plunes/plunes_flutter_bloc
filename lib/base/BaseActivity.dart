@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
@@ -449,6 +450,25 @@ class BaseActivity extends StatefulWidget {
         ),
       );
     }));
+  }
+
+  showLongToast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.transparent,
+        textColor: Colors.grey,
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIos: 2);
+  }
+
+  showToast(String message, Color color) {
+    Fluttertoast.showToast(
+        msg: message,
+        gravity: ToastGravity.BOTTOM,
+        textColor: color ?? PlunesColors.WHITECOLOR,
+        toastLength: Toast.LENGTH_LONG,
+        timeInSecForIos: 3);
   }
 }
 
