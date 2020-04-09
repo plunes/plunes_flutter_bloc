@@ -1,28 +1,44 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/log.dart';
+import 'package:plunes/Utils/payment_web_view.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/booking_models/init_payment_model.dart';
+import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:plunes/resources/network/Urls.dart';
+import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 
 // ignore: must_be_immutable
 class BookingMainScreen extends BaseActivity {
   final List<TimeSlots> timeSlots;
-  final String price, solutionType, profId;
+  final String price, searchedSolutionServiceId, profId;
+  final num bookInPrice;
+  final DocHosSolution docHosSolution;
   final String screenName = "BookingMainScreen";
+  final int serviceIndex;
 
   BookingMainScreen(
-      {this.price, this.profId, this.solutionType, this.timeSlots});
+      {this.price,
+      this.profId,
+      this.searchedSolutionServiceId,
+      this.docHosSolution,
+      this.timeSlots,
+      this.bookInPrice,
+      this.serviceIndex});
 
   @override
   _BookingMainScreenState createState() => _BookingMainScreenState();
@@ -34,10 +50,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   String _appointmentTime,
       _firstSlotTime,
       _secondSlotTime,
+      _selectedTimeSlot,
       _notSelectedEntry,
       _userFailureCause;
   bool _isFetchingDocHosInfo;
   LoginPost _loginPost;
+  BookingBloc _bookingBloc;
 
   @override
   void initState() {
@@ -45,6 +63,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _notSelectedEntry = _appointmentTime;
     _selectedPaymentType = _paymentTypeCash;
     _getDocHosInfo();
+    _bookingBloc = BookingBloc();
     _currentDate = DateTime.now();
     _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
     super.initState();
@@ -433,14 +452,29 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               bottom: AppConfig.verticalBlockSize * 1.5,
               top: AppConfig.verticalBlockSize * 2.3,
               right: AppConfig.horizontalBlockSize * 24),
-          child: CustomWidgets().getRoundedButton(
-              PlunesStrings.payNow,
-              AppConfig.horizontalBlockSize * 8,
-              PlunesColors.WHITECOLOR,
-              AppConfig.horizontalBlockSize * 3,
-              AppConfig.verticalBlockSize * 1,
-              PlunesColors.BLACKCOLOR,
-              hasBorder: true),
+          child: InkWell(
+            onTap: () {
+              (_selectedDate == _tempSelectedDateTime &&
+                      _appointmentTime != _notSelectedEntry &&
+                      _appointmentTime != null)
+                  ? _doPaymentRelatedQueries()
+                  : _doNothing();
+              return;
+            },
+            onDoubleTap: () {},
+            child: CustomWidgets().getRoundedButton(
+                PlunesStrings.payNow,
+                AppConfig.horizontalBlockSize * 8,
+                (_selectedDate == _tempSelectedDateTime &&
+                        _appointmentTime != _notSelectedEntry &&
+                        _appointmentTime != null)
+                    ? PlunesColors.GREENCOLOR
+                    : PlunesColors.WHITECOLOR,
+                AppConfig.horizontalBlockSize * 3,
+                AppConfig.verticalBlockSize * 1,
+                PlunesColors.BLACKCOLOR,
+                hasBorder: true),
+          ),
         ),
         InkWell(
           onTap: () => LauncherUtil.launchUrl(urls.terms),
@@ -610,14 +644,27 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     TimeOfDay _secondToTime = TimeOfDay(
         hour: _stt,
         minute: int.tryParse(_secondSlotToTimeHourMinute[1].trim()));
-    bool isValidEntryFilled =
-        _validateTimeSlotWise(_firstFromTime, _firstToTime);
-    if (!isValidEntryFilled) {
+
+    ///slots calling
+    bool isValidEntryFilled = false;
+    if (timeSlot.slots[0] != null && timeSlot.slots[0].isNotEmpty)
+      isValidEntryFilled = _validateTimeSlotWise(_firstFromTime, _firstToTime);
+    if (isValidEntryFilled) {
+      _selectedTimeSlot = timeSlot.slots[0];
+    }
+    if (!isValidEntryFilled &&
+        timeSlot.slots[1] != null &&
+        timeSlot.slots[1].isNotEmpty) {
       isValidEntryFilled =
           _validateTimeSlotWise(_secondFromTime, _secondToTime);
+      if (isValidEntryFilled) {
+        _selectedTimeSlot = timeSlot.slots[1];
+      }
     }
     if (!isValidEntryFilled) {
       _appointmentTime = _notSelectedEntry;
+    } else {
+      _selectedDate = _tempSelectedDateTime;
     }
   }
 
@@ -631,7 +678,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     if (_selectedHour == 12 && appointmentTime.contains("AM")) {
       return isValidEntryFilled;
     }
-    if (appointmentTime.contains("PM")) {
+    if (appointmentTime.contains("PM") && _selectedHour != 12) {
       _selectedHour = _selectedHour + 12;
     }
     TimeOfDay _selectedTime = TimeOfDay(
@@ -661,7 +708,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       isValidEntryFilled = true;
       //success
     } else {
-      print("failed case2");
+      print(
+          "${_selectedTime.hour}failed ${fromDuration.hour}case2${toDuration.hour}");
     }
     return isValidEntryFilled;
   }
@@ -676,5 +724,156 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     }
     _isFetchingDocHosInfo = false;
     _setState();
+  }
+
+  ///payment methods
+  _initPayment(String payPercentage) async {
+    print(DateUtil.getTimeWithAmAndPmFormat(_selectedDate));
+    InitPayment _initPayment = InitPayment(
+      appointmentTime: _selectedDate.toUtc().millisecondsSinceEpoch.toString(),
+      percentage: payPercentage,
+      price_pos: widget.serviceIndex,
+      //negotiate prev id
+      docHosServiceId: widget.docHosSolution.serviceId,
+      //Services[0].id
+      service_id: widget.searchedSolutionServiceId,
+      //DocHosSolution's _id
+      sol_id: widget.docHosSolution.sId,
+      time_slot: _selectedTimeSlot,
+      professional_id: widget.profId,
+      creditsUsed: 0,
+      user_id: UserManager().getUserDetails().uid,
+      couponName: "",
+    );
+    print("initiate payment ${_initPayment.initiatePaymentToJson()}");
+    RequestState _requestState = await _bookingBloc.initPayment(_initPayment);
+    if (_requestState is RequestSuccess) {
+      print("_requestState success");
+      InitPaymentResponse _initPaymentResponse = _requestState.response;
+      print("response is ${_initPaymentResponse.toString()}");
+
+      if (_initPaymentResponse.success) {
+        if (_initPaymentResponse.status.contains("Confirmed")) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) =>
+                  PaymentSuccess(bookingId: _initPaymentResponse.referenceId));
+        } else {
+          Navigator.of(context)
+              .push(PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (BuildContext context, _, __) =>
+                      PaymentWebView(id: _initPaymentResponse.id)))
+              .then((val) {
+            if (val.toString().contains("success")) {
+              showDialog(
+                  context: context,
+                  builder: (
+                    BuildContext context,
+                  ) =>
+                      PaymentSuccess(
+                          bookingId: _initPaymentResponse.referenceId));
+            } else if (val.toString().contains("fail")) {
+              widget.showInSnackBar(
+                  "Payment Failed", PlunesColors.BLACKCOLOR, scaffoldKey);
+            } else if (val.toString().contains("cancel")) {
+              widget.showInSnackBar(
+                  "Payment Cancelled", PlunesColors.BLACKCOLOR, scaffoldKey);
+            }
+          });
+        }
+      } else {
+        widget.showInSnackBar(
+            _initPaymentResponse.message, Colors.red, scaffoldKey);
+      }
+    } else if (_requestState is RequestFailed) {
+      print("requestFailed ${_requestState.failureCause}");
+    }
+  }
+
+  _doPaymentRelatedQueries() async {
+    print("price${widget.price}");
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (
+          BuildContext context,
+        ) =>
+            PopupChoose(
+              bookInPrice: widget.bookInPrice,
+              totalPrice: widget.price,
+            )).then((returnedValue) {
+      if (returnedValue != null) {
+        print("selected payment percenatge $returnedValue");
+        _initPayment(returnedValue.toString());
+      }
+    });
+  }
+
+  ///payment methods end
+  _doNothing() {}
+}
+
+class PaymentSuccess extends StatefulWidget {
+  final String bookingId;
+
+  PaymentSuccess({Key key, this.bookingId}) : super(key: key);
+
+  @override
+  _PaymentSuccessState createState() => _PaymentSuccessState(bookingId);
+}
+
+class _PaymentSuccessState extends State<PaymentSuccess> {
+  final String bookingId;
+
+  _PaymentSuccessState(this.bookingId);
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoAlertDialog(
+        title: new Text("Payment Success"),
+        content: Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 10,
+              ),
+              Image.asset(
+                "assets/images/bid/check.png",
+                height: 50,
+                width: 50,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: Text("Your Booking ID is $bookingId"),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          CupertinoDialogAction(
+            textStyle: TextStyle(color: Color(0xff01d35a)),
+            isDefaultAction: true,
+            child: new Text("OK"),
+            onPressed: () {
+              Navigator.pop(context);
+//              Navigator.push(
+//                  context,
+//                  MaterialPageRoute(
+//                    builder: (context) => Appointments(
+//                      screen: 1,
+//                    ),
+//                  ));
+            },
+          ),
+        ]);
   }
 }

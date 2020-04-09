@@ -463,7 +463,7 @@ class CustomWidgets {
                             left: AppConfig.horizontalBlockSize * 1.5)),
                     Flexible(
                         child:
-                            _showRatingBar(solutions[index].rating.toDouble())),
+                            _showRatingBar(solutions[index].rating?.toDouble()??3.0)),
                     Expanded(child: Container()),
                     Text(solutions[index].distance == null
                         ? ""

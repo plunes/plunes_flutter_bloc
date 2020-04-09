@@ -65,7 +65,7 @@ class DioRequester {
           options: options, onSendProgress: (int sent, int total) {
         AppLog.debugLog("${sent / total * 100} total sent");
       });
-      AppLog.printLog("Response occurred");
+//      AppLog.printLog("Response occurred");
       return ResponseStatusCodeHandler()
           .checkRequestResponseStatusCode(response);
     } catch (e) {

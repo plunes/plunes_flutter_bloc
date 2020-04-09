@@ -67,7 +67,7 @@ class SearchedSolutionRepo {
     User _user = UserManager().getUserDetails();
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
-        url: Urls.GET_DOCHOS_API,
+        url: Urls.GET_DOC_HOS_API,
         headerIncluded: true,
         queryParameter: {
           "serviceId": serviceId,

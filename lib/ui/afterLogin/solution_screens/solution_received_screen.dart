@@ -30,6 +30,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   int _tenMinutesInSeconds = 600;
   SearchSolutionBloc _searchSolutionBloc;
   SearchedDocResults _searchedDocResults;
+  DocHosSolution _solution;
 
   bool _isFetchingInitialData;
   String _failureCause;
@@ -83,7 +84,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               _searchedDocResults.solution?.services ?? [],
               index,
               () => _checkAvailability(index),
-              () => _onBookingTap(_searchedDocResults.solution.services[index]),
+              () => _onBookingTap(
+                  _searchedDocResults.solution.services[index], index),
               widget.catalogueData);
         },
         itemCount: _searchedDocResults.solution == null
@@ -95,18 +97,28 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   _checkAvailability(int selectedIndex) {
-    print("_checkAvailability");
+//    print("_checkAvailability");
   }
 
-  _onBookingTap(Services service) {
+  _onBookingTap(Services service, int index) {
+    print("solutionType is ${service.sId}");
+    print("profId is ${service.professionalId}");
+    print(
+        "widget.catalogueData.specialityId is ${widget.catalogueData.specialityId}");
+    print(
+        "widget.catalogueData.serviceId is ${widget.catalogueData.serviceId}");
+    _solution = _searchedDocResults.solution;
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => BookingMainScreen(
-                  price: service.newPrice.toString(),
+                  price: service.newPrice[0].toString(),
                   profId: service.professionalId,
-                  solutionType: service.sId,
+                  searchedSolutionServiceId: service.sId,
                   timeSlots: service.timeSlots,
+                  docHosSolution: _solution,
+                  bookInPrice: service.bookIn,
+                  serviceIndex: index,
                 )));
   }
 
@@ -240,7 +252,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   _viewDetails() {
-    print("view details");
+//    print("view details");
   }
 
   final holdOnPopUp = Container(
@@ -328,7 +340,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     bool shouldNegotiate = false;
     _searchedDocResults.solution.services.forEach((service) {
       if (service.negotiating != null && service.negotiating) {
-        print("${service.negotiating} servicename ${service.name}");
+//        print("${service.negotiating} servicename ${service.name}");
         shouldNegotiate = true;
       }
     });
