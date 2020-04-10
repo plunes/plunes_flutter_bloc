@@ -46,6 +46,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _timerToUpdateSolutionReceivedTime =
         Timer.periodic(Duration(seconds: 1), (timer) {
       _timerToUpdateSolutionReceivedTime = timer;
+      print("timer $_solutionReceivedTime");
       _streamForTimer.add(null);
     });
     _solutionReceivedTime = DateTime.now().millisecondsSinceEpoch;
@@ -386,7 +387,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       return;
     }
     bool shouldNegotiate = false;
-    _solutionReceivedTime = _searchedDocResults.solution.createdTime;
+    _solutionReceivedTime = _searchedDocResults.solution?.createdTime??0;
     _searchedDocResults.solution.services.forEach((service) {
       if (service.negotiating != null && service.negotiating) {
         shouldNegotiate = true;

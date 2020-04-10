@@ -50,7 +50,7 @@ class DocHosSolution {
     userId = json['userId'];
     name = json['name'];
     imageUrl = json['imageUrl'];
-    createdTime = json['createdTime'];
+    createdTime = json['createdAt'];
     if (json['services'] != null) {
       services = new List<Services>();
       json['services'].forEach((v) {
@@ -68,7 +68,7 @@ class DocHosSolution {
     data['userId'] = this.userId;
     data['name'] = this.name;
     data['imageUrl'] = this.imageUrl;
-    data['createdTime'] = this.createdTime;
+    data['createdAt'] = this.createdTime;
     if (this.services != null) {
       data['services'] = this.services.map((v) => v.toJson()).toList();
     }
