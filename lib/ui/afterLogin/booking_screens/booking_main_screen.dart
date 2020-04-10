@@ -54,7 +54,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       _notSelectedEntry,
       _userFailureCause;
   bool _isFetchingDocHosInfo;
-  LoginPost _loginPost;
+  LoginPost _docProfileInfo, _userProfileInfo;
   BookingBloc _bookingBloc;
 
   @override
@@ -63,6 +63,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _notSelectedEntry = _appointmentTime;
     _selectedPaymentType = _paymentTypeCash;
     _getDocHosInfo();
+    _getUserInfo();
     _bookingBloc = BookingBloc();
     _currentDate = DateTime.now();
     _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
@@ -97,7 +98,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 padding: CustomWidgets().getDefaultPaddingForScreens(),
                 child: _isFetchingDocHosInfo
                     ? CustomWidgets().getProgressIndicator()
-                    : (_loginPost == null || _loginPost.user == null)
+                    : (_docProfileInfo == null || _docProfileInfo.user == null)
                         ? CustomWidgets().errorWidget(_userFailureCause)
                         : _getBody());
           }),
@@ -232,9 +233,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         CircleAvatar(
-          child: ClipOval(
-              child:
-                  CustomWidgets().getImageFromUrl(_loginPost.user?.imageUrl)),
+          child: Container(
+            height: AppConfig.horizontalBlockSize * 11,
+            width: AppConfig.horizontalBlockSize * 11,
+            child: ClipOval(
+                child: CustomWidgets().getImageFromUrl(
+                    _docProfileInfo.user?.imageUrl,
+                    boxFit: BoxFit.fill)),
+          ),
           radius: AppConfig.horizontalBlockSize * 5.5,
         ),
         Expanded(
@@ -248,7 +254,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   Expanded(
                     flex: 5,
                     child: Text(
-                      _loginPost.user?.name ?? PlunesStrings.NA,
+                      _docProfileInfo.user?.name ?? PlunesStrings.NA,
                       style: TextStyle(
                           fontSize: AppConfig.mediumFont,
                           fontWeight: FontWeight.bold,
@@ -275,7 +281,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 ],
               ),
               Text(
-                _loginPost.user?.speciality ?? PlunesStrings.NA,
+                _docProfileInfo.user?.speciality ?? PlunesStrings.NA,
                 style: TextStyle(
                     fontSize: AppConfig.mediumFont,
                     color: PlunesColors.GREYCOLOR),
@@ -296,7 +302,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                               color: PlunesColors.GREYCOLOR,
                               fontSize: AppConfig.mediumFont)),
                       new TextSpan(
-                          text: _loginPost.user?.address ?? PlunesStrings.NA,
+                          text:
+                              _docProfileInfo.user?.address ?? PlunesStrings.NA,
                           style: new TextStyle(
                               fontSize: AppConfig.smallFont,
                               fontWeight: FontWeight.w300,
@@ -313,14 +320,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   void _getDirections() {
-    (_loginPost.user.latitude == null ||
-            _loginPost.user.latitude.isEmpty ||
-            _loginPost.user.latitude == null ||
-            _loginPost.user.latitude.isEmpty)
+    (_docProfileInfo.user.latitude == null ||
+            _docProfileInfo.user.latitude.isEmpty ||
+            _docProfileInfo.user.latitude == null ||
+            _docProfileInfo.user.latitude.isEmpty)
         ? widget.showInSnackBar(PlunesStrings.locationNotAvailable,
             PlunesColors.BLACKCOLOR, scaffoldKey)
-        : LauncherUtil.openMap(double.tryParse(_loginPost.user.latitude),
-            double.tryParse(_loginPost.user.longitude));
+        : LauncherUtil.openMap(double.tryParse(_docProfileInfo.user.latitude),
+            double.tryParse(_docProfileInfo.user.longitude));
   }
 
   Widget _getDatePicker() {
@@ -458,7 +465,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       _appointmentTime != _notSelectedEntry &&
                       _appointmentTime != null)
                   ? _doPaymentRelatedQueries()
-                  : _doNothing();
+                  : _showErrorMessage(PlunesStrings.pleaseSelectValidSlot);
               return;
             },
             onDoubleTap: () {},
@@ -718,11 +725,22 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _isFetchingDocHosInfo = true;
     RequestState requestState = await UserBloc().getUserProfile(widget.profId);
     if (requestState is RequestSuccess) {
-      _loginPost = requestState.response;
+      _docProfileInfo = requestState.response;
     } else if (requestState is RequestFailed) {
       _userFailureCause = requestState.failureCause;
     }
     _isFetchingDocHosInfo = false;
+    _setState();
+  }
+
+  void _getUserInfo() async {
+    RequestState requestState =
+        await UserBloc().getUserProfile(UserManager().getUserDetails().uid);
+    if (requestState is RequestSuccess) {
+      _userProfileInfo = requestState.response;
+    } else if (requestState is RequestFailed) {
+      _userFailureCause = requestState.failureCause;
+    }
     _setState();
   }
 
@@ -811,7 +829,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   ///payment methods end
-  _doNothing() {}
+  _showErrorMessage(String message) {
+    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+  }
 }
 
 class PaymentSuccess extends StatefulWidget {

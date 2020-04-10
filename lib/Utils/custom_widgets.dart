@@ -374,9 +374,13 @@ class CustomWidgets {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               CircleAvatar(
-                child: ClipOval(
-                    child: getImageFromUrl(solutions[index].imageUrl,
-                        boxFit: BoxFit.fitHeight)),
+                child: Container(
+                  height: AppConfig.horizontalBlockSize * 14,
+                  width: AppConfig.horizontalBlockSize * 14,
+                  child: ClipOval(
+                      child: getImageFromUrl(solutions[index].imageUrl,
+                          boxFit: BoxFit.fill)),
+                ),
                 radius: AppConfig.horizontalBlockSize * 7,
               ),
               Padding(
@@ -462,8 +466,8 @@ class CustomWidgets {
                         padding: EdgeInsets.only(
                             left: AppConfig.horizontalBlockSize * 1.5)),
                     Flexible(
-                        child:
-                            _showRatingBar(solutions[index].rating?.toDouble()??3.0)),
+                        child: _showRatingBar(
+                            solutions[index].rating?.toDouble() ?? 3.0)),
                     Expanded(child: Container()),
                     Text(solutions[index].distance == null
                         ? ""
