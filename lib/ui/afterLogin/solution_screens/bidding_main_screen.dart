@@ -38,15 +38,15 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     _focusNode = FocusNode()
       ..addListener(() async {
         if (_focusNode.hasFocus) {
-          if (!_canGoAhead) {
-            _focusNode?.unfocus();
-            widget.showInSnackBar(
-                "Kindly switch to Gurgaoun location, currently we are not providing service in your area",
-                PlunesColors.GREYCOLOR,
-                scaffoldKey);
-            return;
-          }
-          print("got focus");
+//          if (!_canGoAhead) {
+//            _focusNode?.unfocus();
+//            widget.showInSnackBar(
+//                "Kindly switch to Gurgaoun location, currently we are not providing service in your area",
+//                PlunesColors.GREYCOLOR,
+//                scaffoldKey);
+//            return;
+//          }
+//          print("got focus");
           await Future.delayed(Duration(milliseconds: 100));
           _focusNode?.unfocus();
           Navigator.push(context,

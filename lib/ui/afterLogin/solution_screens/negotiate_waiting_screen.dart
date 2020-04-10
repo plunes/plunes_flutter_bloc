@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -159,6 +160,10 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                     ),
                   ),
                 ),
+                Padding(
+                    padding:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3)),
+                holdOnPopUp
               ],
             )
           ],
@@ -166,4 +171,56 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
       ),
     );
   }
+
+  final holdOnPopUp = Container(
+    margin: EdgeInsets.all(10),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Container(
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                color: PlunesColors.LIGHTGREENCOLOR),
+            padding: EdgeInsets.all(10),
+            child: Stack(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Icon(
+                      Icons.timer,
+                      color: PlunesColors.GREENCOLOR,
+                      size: 50,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                PlunesStrings.pleaseMakeSureText,
+                                maxLines: 3,
+                                style: TextStyle(
+                                    color: PlunesColors.GREENCOLOR,
+                                    fontSize: AppConfig.mediumFont,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        )
+      ],
+    ),
+  );
 }

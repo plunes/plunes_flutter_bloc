@@ -5,6 +5,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -26,7 +27,7 @@ class SolutionReceivedScreen extends BaseActivity {
 
 class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   Completer<GoogleMapController> _googleMapController;
-  Timer _timer;
+  Timer _timer, _timerToUpdateSolutionReceivedTime;
   int _tenMinutesInSeconds = 600;
   SearchSolutionBloc _searchSolutionBloc;
   SearchedDocResults _searchedDocResults;
@@ -34,12 +35,19 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   bool _isFetchingInitialData;
   String _failureCause;
-  int _solutionReceivedTime;
+  int _solutionReceivedTime = 0;
   bool _shouldStartTimer;
+  StreamController _streamForTimer;
 
   @override
   void initState() {
     _shouldStartTimer = false;
+    _streamForTimer = StreamController.broadcast();
+    _timerToUpdateSolutionReceivedTime =
+        Timer.periodic(Duration(seconds: 1), (timer) {
+      _timerToUpdateSolutionReceivedTime = timer;
+      _streamForTimer.add(null);
+    });
     _solutionReceivedTime = DateTime.now().millisecondsSinceEpoch;
     _isFetchingInitialData = true;
     _googleMapController = Completer();
@@ -51,6 +59,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   @override
   void dispose() {
     _timer?.cancel();
+    _streamForTimer?.close();
+    _timerToUpdateSolutionReceivedTime?.cancel();
     super.dispose();
   }
 
@@ -157,7 +167,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _negotiate();
       _tenMinutesInSeconds = _tenMinutesInSeconds - 2;
       if (_tenMinutesInSeconds <= 0) {
-        timer?.cancel();
+        _cancelNegotiationTimer();
       }
     });
   }
@@ -195,7 +205,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       child: Row(
                         children: <Widget>[
                           Expanded(
-                            flex: 1,
+                            flex: 2,
                             child: Text(
                               widget.catalogueData.service ?? PlunesStrings.NA,
                               style: TextStyle(
@@ -205,15 +215,35 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             ),
                           ),
                           Expanded(child: Container()),
-                          InkWell(
-                            onTap: () => _viewDetails(),
-                            child: CustomWidgets().getRoundedButton(
-                                PlunesStrings.viewDetails,
-                                AppConfig.horizontalBlockSize * 8,
-                                PlunesColors.GREENCOLOR,
-                                AppConfig.horizontalBlockSize * 3,
-                                AppConfig.verticalBlockSize * 1,
-                                PlunesColors.WHITECOLOR),
+                          Column(
+                            children: <Widget>[
+                              InkWell(
+                                onTap: () => _viewDetails(),
+                                child: CustomWidgets().getRoundedButton(
+                                    PlunesStrings.viewDetails,
+                                    AppConfig.horizontalBlockSize * 8,
+                                    PlunesColors.GREENCOLOR,
+                                    AppConfig.horizontalBlockSize * 3,
+                                    AppConfig.verticalBlockSize * 1,
+                                    PlunesColors.WHITECOLOR),
+                              ),
+                              Container(
+                                alignment: Alignment.topRight,
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 1),
+                                child: _solutionReceivedTime == null ||
+                                        _solutionReceivedTime == 0
+                                    ? Container()
+                                    : StreamBuilder(
+                                        builder: (context, snapShot) {
+                                          return Text(DateUtil.getDuration(
+                                                  _solutionReceivedTime) ??
+                                              PlunesStrings.NA);
+                                        },
+                                        stream: _streamForTimer.stream,
+                                      ),
+                              )
+                            ],
                           )
                         ],
                       ),
@@ -228,10 +258,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             if (snapShot.data is RequestSuccess) {
                               RequestSuccess _successObject = snapShot.data;
                               _searchedDocResults = _successObject.response;
+                              _searchSolutionBloc.addIntoDocHosStream(null);
+                              _checkShouldTimerRun();
                             } else if (snapShot.data is RequestFailed) {
                               RequestFailed _failedObject = snapShot.data;
                               _failureCause = _failedObject.failureCause;
-                              _timer?.cancel();
+                              _searchSolutionBloc.addIntoDocHosStream(null);
+                              _cancelNegotiationTimer();
                             }
                             return _showContent();
                           },
@@ -329,18 +362,33 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     }
   }
 
+  _cancelNegotiationTimer() {
+    if (_searchedDocResults.solution?.services != null ||
+        _searchedDocResults.solution.services.isNotEmpty) {
+      _searchedDocResults.solution.services.forEach((service) {
+        if (service.negotiating != null && service.negotiating) {
+          service.negotiating = false;
+        }
+      });
+    }
+    if (_timer != null && _timer.isActive) {
+      _timer?.cancel();
+    }
+    _setState();
+  }
+
   _checkShouldTimerRun() {
     if (_searchedDocResults.solution?.services == null ||
         _searchedDocResults.solution.services.isEmpty) {
       if (_timer != null && _timer.isActive) {
-        _timer?.cancel();
+        _cancelNegotiationTimer();
       }
       return;
     }
     bool shouldNegotiate = false;
+    _solutionReceivedTime = _searchedDocResults.solution.createdTime;
     _searchedDocResults.solution.services.forEach((service) {
       if (service.negotiating != null && service.negotiating) {
-//        print("${service.negotiating} servicename ${service.name}");
         shouldNegotiate = true;
       }
     });
@@ -348,8 +396,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _shouldStartTimer = true;
     } else {
       if (_timer != null && _timer.isActive) {
-        _timer?.cancel();
-        _setState();
+        _cancelNegotiationTimer();
       }
     }
   }
