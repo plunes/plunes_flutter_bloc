@@ -524,7 +524,11 @@
       "languageVersion": "2.1"
     }
   ],
+<<<<<<< HEAD
   "generated": "2020-04-11T12:38:07.979248Z",
+=======
+  "generated": "2020-04-11T07:07:29.907317Z",
+>>>>>>> doctor_flow
   "generator": "pub",
   "generatorVersion": "2.7.2"
 }

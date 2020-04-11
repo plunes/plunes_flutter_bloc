@@ -87,7 +87,6 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
   }
 
   _onViewMoreTap(int index) {
-
     showDialog(
       context: context,
       builder: (BuildContext context) => CustomWidgets().buildAboutDialog(

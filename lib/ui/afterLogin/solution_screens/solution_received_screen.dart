@@ -39,15 +39,23 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   int _solutionReceivedTime = 0;
   bool _shouldStartTimer;
   StreamController _streamForTimer;
+  TextEditingController _searchController;
+  FocusNode _focusNode;
 
   @override
   void initState() {
+    _focusNode = FocusNode()
+      ..addListener(() {
+        if (_focusNode.hasFocus) {
+          Navigator.pop(context, true);
+        }
+      });
+    _searchController = TextEditingController();
     _shouldStartTimer = false;
     _streamForTimer = StreamController.broadcast();
     _timerToUpdateSolutionReceivedTime =
         Timer.periodic(Duration(seconds: 1), (timer) {
       _timerToUpdateSolutionReceivedTime = timer;
-      print("timer $_solutionReceivedTime");
       _streamForTimer.add(null);
     });
     _solutionReceivedTime = DateTime.now().millisecondsSinceEpoch;
@@ -63,6 +71,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _timer?.cancel();
     _streamForTimer?.close();
     _timerToUpdateSolutionReceivedTime?.cancel();
+    _searchController?.dispose();
+    _focusNode?.dispose();
     super.dispose();
   }
 
@@ -118,12 +128,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   _onBookingTap(Services service, int index) {
-    print("solutionType is ${service.sId}");
-    print("profId is ${service.professionalId}");
-    print(
-        "widget.catalogueData.specialityId is ${widget.catalogueData.specialityId}");
-    print(
-        "widget.catalogueData.serviceId is ${widget.catalogueData.serviceId}");
     _solution = _searchedDocResults.solution;
     Navigator.push(
         context,
@@ -187,6 +191,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         children: <Widget>[
           Column(
             children: <Widget>[
+              Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 3,
+                    vertical: AppConfig.verticalBlockSize * 1),
+                child: CustomWidgets().searchBar(
+                    searchController: _searchController,
+                    hintText: PlunesStrings.chooseLocation,
+                    focusNode: _focusNode,
+                    searchBarHeight: 5.5),
+              ),
               Expanded(
                 child: GoogleMap(
                     padding: EdgeInsets.all(0.0),
@@ -393,7 +407,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       return;
     }
     bool shouldNegotiate = false;
-    _solutionReceivedTime = _searchedDocResults.solution?.createdTime??0;
+    _solutionReceivedTime = _searchedDocResults.solution?.createdTime ?? 0;
     _searchedDocResults.solution.services.forEach((service) {
       if (service.negotiating != null && service.negotiating) {
         shouldNegotiate = true;

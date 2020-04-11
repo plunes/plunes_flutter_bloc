@@ -7,13 +7,17 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
+import './previous_activity_screen.dart';
 
 // ignore: must_be_immutable
 class BiddingMainScreen extends BaseActivity {
@@ -29,12 +33,22 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   bool _progressEnabled;
   bool _canGoAhead;
   String _failureCause;
+  PrevMissSolutionBloc _prevMissSolutionBloc;
+  PrevSearchedSolution _prevSearchedSolution;
+  Timer _timer;
+  StreamController _controller;
 
   @override
   void initState() {
     _progressEnabled = false;
     _canGoAhead = false;
+    _prevMissSolutionBloc = PrevMissSolutionBloc();
     _textEditingController = TextEditingController();
+    _controller = StreamController.broadcast();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _timer = timer;
+      _controller.add(null);
+    });
     _focusNode = FocusNode()
       ..addListener(() async {
         if (_focusNode.hasFocus) {
@@ -55,9 +69,17 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       });
     _mapController = Completer();
     _getUserDetails();
+    _getPreviousSolutions();
     _initialCameraPosition =
         CameraPosition(target: LatLng(45.521563, -122.677433), zoom: 14);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.close();
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -113,51 +135,66 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 
   _getBottomView() {
-    TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
-      ..onTap = () => {};
     return Expanded(
-        flex: 1,
-        child: Card(
-            margin: EdgeInsets.all(0.0),
-            child: Column(
-              children: <Widget>[
-                InkWell(
-                  onTap: () {
-                    print("Previous activity called");
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          PlunesStrings.previousActivities,
-                          style: TextStyle(fontWeight: FontWeight.w500),
+        flex: (_prevSearchedSolution == null ||
+                _prevSearchedSolution.data == null ||
+                _prevSearchedSolution.data.isEmpty)
+            ? 0
+            : 1,
+        child: StreamBuilder<Object>(
+            stream: _controller.stream,
+            builder: (context, snapshot) {
+              return Card(
+                  margin: EdgeInsets.all(0.0),
+                  child: Column(
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {
+                           Navigator.push(
+                              context, MaterialPageRoute(builder: (context) => PreviousActivity()));
+                          print("Previous activity called");
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 2),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                PlunesStrings.previousActivities,
+                                style: TextStyle(fontWeight: FontWeight.w500),
+                              ),
+                              Icon(
+                                Icons.chevron_right,
+                                color: PlunesColors.GREENCOLOR,
+                              )
+                            ],
+                          ),
                         ),
-                        Icon(
-                          Icons.chevron_right,
-                          color: PlunesColors.GREENCOLOR,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-//                Expanded(
-//                    child: ListView.builder(
-//                  padding: EdgeInsets.all(0.0),
-//                  itemBuilder: (context, index) {
-//                    TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
-//                      ..onTap = () => _onViewMoreTap(index);
-//                    return CustomWidgets().getSolutionRow(_solutions, index,
-//                        onButtonTap: () => _onSolutionItemTap(index),
-//                        onViewMoreTap: tapRecognizer);
-//                  },
-//                  itemCount: 50,
-//                ))
-              ],
-            )));
+                      ),
+                      (_prevSearchedSolution == null ||
+                              _prevSearchedSolution.data == null ||
+                              _prevSearchedSolution.data.isEmpty)
+                          ? Container()
+                          : Expanded(
+                              child: ListView.builder(
+                              padding: EdgeInsets.all(0.0),
+                              itemBuilder: (context, index) {
+                                TapGestureRecognizer tapRecognizer =
+                                    TapGestureRecognizer()
+                                      ..onTap = () => _onViewMoreTap(index);
+                                return CustomWidgets().getPrevMissSolutionRow(
+                                    _prevSearchedSolution.data, index,
+                                    onButtonTap: () =>
+                                        _onSolutionItemTap(index),
+                                    onViewMoreTap: tapRecognizer);
+                              },
+                              itemCount: _prevSearchedSolution.data.length,
+                            ))
+                    ],
+                  ));
+            }));
   }
 
   _getCurrentLocation() async {
@@ -307,4 +344,12 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       ],
     ),
   );
+
+  void _getPreviousSolutions() async {
+    var requestState = await _prevMissSolutionBloc.getPreviousSolutions();
+    if (requestState is RequestSuccess) {
+      _prevSearchedSolution = requestState.response;
+      _setState();
+    }
+  }
 }
