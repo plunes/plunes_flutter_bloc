@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/models/solution_models/test_and_procedure_model.dart';
@@ -30,7 +32,8 @@ class CustomWidgets {
       {@required final TextEditingController searchController,
       @required final String hintText,
       bool hasFocus = false,
-      FocusNode focusNode}) {
+      FocusNode focusNode,
+      double searchBarHeight = 7}) {
     return StatefulBuilder(builder: (context, newState) {
       return Card(
         elevation: 3.0,
@@ -38,7 +41,7 @@ class CustomWidgets {
             borderRadius: BorderRadius.horizontal(),
             side: BorderSide(color: PlunesColors.GREYCOLOR, width: 0.2)),
         child: Container(
-          height: AppConfig.verticalBlockSize * 7,
+          height: AppConfig.verticalBlockSize * searchBarHeight,
           padding: EdgeInsets.only(
               left: AppConfig.horizontalBlockSize * 2,
               right: AppConfig.horizontalBlockSize * 2),
@@ -142,9 +145,13 @@ class CustomWidgets {
                   Row(
                     children: <Widget>[
                       CircleAvatar(
-                        child: ClipOval(
-                            child: getImageFromUrl(
-                                "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                        child: Container(
+                          height: AppConfig.horizontalBlockSize * 14,
+                          width: AppConfig.horizontalBlockSize * 14,
+                          child: ClipOval(
+                              child: getImageFromUrl(
+                                  "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                        ),
                         radius: AppConfig.horizontalBlockSize * 7,
                       ),
                       Padding(
@@ -182,6 +189,127 @@ class CustomWidgets {
                                       style: TextStyle(
                                           color: PlunesColors.GREENCOLOR))
                                 ])),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          index == solutionList.length - 1
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.only(
+                      bottom: AppConfig.verticalBlockSize * 1.5),
+                  width: double.infinity,
+                  height: 0.5,
+                  color: PlunesColors.GREYCOLOR,
+                ),
+          solutionList[index].isSelected ?? false
+              ? InkWell(
+                  onTap: onButtonTap,
+                  child: Container(
+                      color: PlunesColors.WHITECOLOR,
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 24,
+                          top: AppConfig.verticalBlockSize * 1,
+                          right: AppConfig.horizontalBlockSize * 24),
+                      child: getRoundedButton(
+                          "Negotiate",
+                          AppConfig.horizontalBlockSize * 8,
+                          PlunesColors.GREENCOLOR,
+                          AppConfig.horizontalBlockSize * 4,
+                          AppConfig.verticalBlockSize * 2,
+                          PlunesColors.WHITECOLOR)))
+              : Container(),
+          solutionList[index].isSelected ?? true
+              ? Container(
+                  margin: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 1.5,
+                      bottom: AppConfig.verticalBlockSize * 1.5),
+                  width: double.infinity,
+                  height: 0.5,
+                  color: PlunesColors.GREYCOLOR,
+                )
+              : Container()
+        ],
+      );
+    });
+  }
+
+  Widget getPrevMissSolutionRow(List<PrevSolution> solutionList, int index,
+      {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
+    return StatefulBuilder(builder: (context, newState) {
+      return Column(
+        children: <Widget>[
+          InkWell(
+            onTap: () {
+//              newState(() {
+//                solutionList[index].isSelected =
+//                    !solutionList[index].isSelected ?? false;
+//              });
+            },
+            child: Container(
+              color: solutionList[index].isSelected ?? false
+                  ? PlunesColors.LIGHTGREENCOLOR
+                  : PlunesColors.WHITECOLOR,
+              padding: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      CircleAvatar(
+                        child: Container(
+                          height: AppConfig.horizontalBlockSize * 14,
+                          width: AppConfig.horizontalBlockSize * 14,
+                          child: ClipOval(
+                              child: getImageFromUrl(
+                                  "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                        ),
+                        radius: AppConfig.horizontalBlockSize * 7,
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 2)),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            RichText(
+                                text: TextSpan(
+                                    text: solutionList[index].serviceName ??
+                                        PlunesStrings.NA,
+                                    style: TextStyle(color: Colors.black),
+                                    children: [
+                                  TextSpan(
+                                      text:
+                                          "(${solutionList[index].serviceCategory ?? PlunesStrings.NA})",
+                                      style: TextStyle(color: Colors.green))
+                                ])),
+                            Padding(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 1)),
+                            Text((solutionList[index].createdAt != null)
+                                ? DateUtil.getDuration(
+                                    solutionList[index].createdAt)
+                                : PlunesStrings.NA)
+//                            RichText(
+//                                text: TextSpan(
+//                                    text: solutionList[0].details ??
+//                                        PlunesStrings.NA,
+//                                    style: TextStyle(color: Colors.black),
+//                                    children: [
+//                                  TextSpan(
+//                                      text: "(view more)",
+//                                      recognizer: onViewMoreTap,
+//                                      style: TextStyle(
+//                                          color: PlunesColors.GREENCOLOR))
+//                                ])),
                           ],
                         ),
                       )

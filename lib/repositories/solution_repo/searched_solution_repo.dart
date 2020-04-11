@@ -65,6 +65,7 @@ class SearchedSolutionRepo {
 
   Future<RequestState> getDocHosSolution(final String serviceId) async {
     User _user = UserManager().getUserDetails();
+    print("userdetsils ${_user.toString()}");
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         url: Urls.GET_DOC_HOS_API,

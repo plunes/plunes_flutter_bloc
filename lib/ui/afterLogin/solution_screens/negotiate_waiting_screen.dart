@@ -1,7 +1,5 @@
 import 'dart:async';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -9,6 +7,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
+import 'package:plunes/ui/commonView/LocationFetch.dart';
 
 // ignore: must_be_immutable
 class BiddingLoading extends BaseActivity {
@@ -43,7 +42,41 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   builder: (context) => SolutionReceivedScreen(
                         catalogueData: widget.catalogueData,
                       ))).then((value) {
-            Navigator.pop(context);
+            if (value != null && value) {
+              Navigator.of(context)
+                  .push(PageRouteBuilder(
+                      opaque: false,
+                      pageBuilder: (BuildContext context, _, __) =>
+                          LocationFetch()))
+                  .then((val) {
+                if (val != null) {
+                  var addressControllerList = new List();
+                  addressControllerList = val.toString().split(":");
+                  String addr = addressControllerList[0] +
+                      ' ' +
+                      addressControllerList[1] +
+                      ' ' +
+                      addressControllerList[2];
+//                  print("addr is $addr");
+                  var _latitude = addressControllerList[3];
+                  var _longitude = addressControllerList[4];
+//                  print("_latitude $_latitude");
+//                  print("_longitude $_longitude");
+//                  _checkUserLocation(_latitude, _longitude);
+                  Navigator.pop(context);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BiddingLoading(
+                                catalogueData: widget.catalogueData,
+                              )));
+                } else {
+                  Navigator.pop(context);
+                }
+              });
+            } else {
+              Navigator.pop(context);
+            }
           });
         } else {
           _bidProgress = _bidProgress + 0.1;

@@ -35,11 +35,13 @@ class PlunesStrings {
   static const String switchToGurLoc =
       "Kindly switch to Gurgaoun location, currently we are not providing service in your area";
 
-  static String pleaseSelectValidSlot =
+  static const String pleaseSelectValidSlot =
       "Please select a valid appointment time";
 
-  static String pleaseMakeSureText =
+  static const String pleaseMakeSureText =
       "Please make sure you book within a short time, keeping in mind it is valid for only 1 hour.";
+
+  static const String chooseLocation = "Choose Location";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
