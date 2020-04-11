@@ -7,6 +7,8 @@ class CatalogueData {
   String speciality;
   String specialityId;
   String serviceId;
+//  String sitting;
+//  String duration;
   int iV;
 
   CatalogueData(
@@ -18,6 +20,8 @@ class CatalogueData {
       this.specialityId,
       this.isSelected = false,
       this.iV,
+//      this.sitting,
+//      this.duration,
       this.speciality});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
@@ -28,6 +32,8 @@ class CatalogueData {
     details = json['details'];
     dnd = json['dnd'];
     category = json['category'];
+//    sitting = json['sitting'];
+//    duration = json['duration'];
     iV = json['__v'];
   }
 
@@ -41,6 +47,8 @@ class CatalogueData {
     data['dnd'] = this.dnd;
     data['category'] = this.category;
     data['__v'] = this.iV;
+//    data['sitting'] = this.sitting;
+//    data['duration'] = this.duration;
     return data;
   }
 }

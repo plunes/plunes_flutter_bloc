@@ -607,4 +607,101 @@ class CustomWidgets {
       ),
     );
   }
+
+  Widget buildAboutDialog({
+    //@required final String dialogTitle,
+    // @required final String dialogMsg,
+    CatalogueData catalogueData,
+  }) {
+    return StatefulBuilder(builder: (context, newState) {
+      //CatalogueData catalogueData;
+      if(catalogueData.service==null){
+        catalogueData.service= 'NA';
+      }
+      if(catalogueData.dnd==null){
+        catalogueData.dnd= 'NA';
+      }
+//      if(catalogueData.sitting == null){
+//        catalogueData.sitting = 'NA';
+//      }
+//      if(catalogueData.duration==null){
+//        catalogueData.duration = 'NA';
+//      }
+
+      return  AlertDialog(
+        contentPadding: EdgeInsets.only(left: 25, right: 25),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))
+        ),
+        title: Text('Details',style: TextStyle(),
+          textAlign: TextAlign.center,
+        ),
+        content: Container(
+          margin: EdgeInsets.symmetric(vertical:20),
+          height:300,
+          width: 300,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text( 'Defination:', style: TextStyle(fontWeight: FontWeight.bold),),
+                Text( catalogueData.service, style: TextStyle(
+                  color: Colors.black38,
+                ),),
+
+                Divider(
+                  color: Colors.black45,
+                ),
+                Text( 'Duration', style: TextStyle(fontWeight: FontWeight.bold),),
+                Text( 'NA' , style: TextStyle(
+                  color: Colors.black45,
+                ),),
+
+                Divider(
+                  color: Colors.black45,
+                ),
+
+                Text( 'Sittings:', style: TextStyle(fontWeight: FontWeight.bold),),
+                Text( 'NA' , style: TextStyle(
+                  color: Colors.black38,
+                ),),
+
+                Divider(
+                  color: Colors.black45,
+                ),
+
+                Text( 'Do\'s and Don\'t:', style: TextStyle(fontWeight: FontWeight.bold),),
+                Text( catalogueData.dnd, style: TextStyle(
+                  color: Colors.black38,
+                ),),
+              ],
+            ),
+          ),
+        ),
+
+        actions: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right:90),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text('Expand', style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,),
+                new IconButton(
+                  alignment: Alignment.center,
+                  icon:Icon(Icons.expand_more),
+                  onPressed: () => {
+                    Navigator.of(context).pop(),
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+
+
+      );
+    });
+  }
+
 }

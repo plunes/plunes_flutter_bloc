@@ -285,7 +285,12 @@ class _TestProcedureSubScreenState
   }
 
   _onViewMoreTap(int solution) {
-    print("index is $solution");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => CustomWidgets().buildAboutDialog(
+        catalogueData: CatalogueData(),
+      ),
+    );
   }
 
   _onSearch() {

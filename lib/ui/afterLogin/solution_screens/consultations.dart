@@ -86,7 +86,15 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
     );
   }
 
-  _onViewMoreTap(int index) {}
+  _onViewMoreTap(int index) {
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => CustomWidgets().buildAboutDialog(
+        catalogueData:_catalouges[index],
+      ),
+    );
+  }
 
   _onSolutionItemTap(int index) {
     Navigator.push(
