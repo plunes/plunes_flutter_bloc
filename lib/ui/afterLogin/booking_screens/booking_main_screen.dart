@@ -331,7 +331,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   Widget _getDatePicker() {
-    return DatePickerTimeline(
+    return DatePicker(
       _selectedDate ?? _currentDate,
       width: double.infinity,
       height: AppConfig.verticalBlockSize * 15,

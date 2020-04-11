@@ -199,7 +199,7 @@ Widget dialogProfileContent(BuildContext context) {
               Text('Available Slots'),
               Padding(
                 padding: const EdgeInsets.only(top: 30),
-                child: DatePickerTimeline(
+                child: DatePicker(
                   DateTime.now(),
                   selectionColor: Colors.green,
 //                      selectedTextColor: Colors.white,
