@@ -621,12 +621,12 @@ class CustomWidgets {
       if(catalogueData.dnd==null){
         catalogueData.dnd= 'NA';
       }
-//      if(catalogueData.sitting == null){
-//        catalogueData.sitting = 'NA';
-//      }
-//      if(catalogueData.duration==null){
-//        catalogueData.duration = 'NA';
-//      }
+      if(catalogueData.sitting == null){
+        catalogueData.sitting = 'NA';
+      }
+      if(catalogueData.duration==null){
+        catalogueData.duration = 'NA';
+      }
 
       return  AlertDialog(
         contentPadding: EdgeInsets.only(left: 25, right: 25),
@@ -653,7 +653,7 @@ class CustomWidgets {
                   color: Colors.black45,
                 ),
                 Text( 'Duration', style: TextStyle(fontWeight: FontWeight.bold),),
-                Text( 'NA' , style: TextStyle(
+                Text( catalogueData.duration , style: TextStyle(
                   color: Colors.black45,
                 ),),
 
@@ -662,7 +662,7 @@ class CustomWidgets {
                 ),
 
                 Text( 'Sittings:', style: TextStyle(fontWeight: FontWeight.bold),),
-                Text( 'NA' , style: TextStyle(
+                Text( catalogueData.sitting , style: TextStyle(
                   color: Colors.black38,
                 ),),
 

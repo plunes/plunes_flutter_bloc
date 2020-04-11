@@ -14,6 +14,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
+import '../../widgets/dialogPopScreen.dart';
 
 // ignore: must_be_immutable
 class SolutionReceivedScreen extends BaseActivity {
@@ -108,7 +109,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   _checkAvailability(int selectedIndex) {
-//    print("_checkAvailability");
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => DialogWidgets().buildProfileDialog(
+
+      ),
+    );
   }
 
   _onBookingTap(Services service, int index) {

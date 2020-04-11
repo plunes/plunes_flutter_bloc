@@ -7,8 +7,8 @@ class CatalogueData {
   String speciality;
   String specialityId;
   String serviceId;
-//  String sitting;
-//  String duration;
+  String sitting;
+  String duration;
   int iV;
 
   CatalogueData(
@@ -20,8 +20,8 @@ class CatalogueData {
       this.specialityId,
       this.isSelected = false,
       this.iV,
-//      this.sitting,
-//      this.duration,
+      this.sitting,
+      this.duration,
       this.speciality});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
