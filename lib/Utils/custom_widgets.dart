@@ -248,10 +248,10 @@ class CustomWidgets {
         children: <Widget>[
           InkWell(
             onTap: () {
-//              newState(() {
-//                solutionList[index].isSelected =
-//                    !solutionList[index].isSelected ?? false;
-//              });
+              newState(() {
+                solutionList[index].isSelected =
+                    !solutionList[index].isSelected ?? false;
+              });
             },
             child: Container(
               color: solutionList[index].isSelected ?? false
@@ -259,7 +259,7 @@ class CustomWidgets {
                   : PlunesColors.WHITECOLOR,
               padding: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 1,
-              horizontal: AppConfig.horizontalBlockSize* 5),
+                  horizontal: AppConfig.horizontalBlockSize * 5),
               child: Column(
                 children: <Widget>[
                   Row(
@@ -746,93 +746,110 @@ class CustomWidgets {
   }) {
     return StatefulBuilder(builder: (context, newState) {
       //CatalogueData catalogueData;
-      if(catalogueData.service==null){
-        catalogueData.service= 'NA';
+      if (catalogueData.service == null) {
+        catalogueData.service = 'NA';
       }
-      if(catalogueData.dnd==null){
-        catalogueData.dnd= 'NA';
+      if (catalogueData.dnd == null) {
+        catalogueData.dnd = 'NA';
       }
-      if(catalogueData.sitting == null){
+      if (catalogueData.sitting == null) {
         catalogueData.sitting = 'NA';
       }
-      if(catalogueData.duration==null){
+      if (catalogueData.duration == null) {
         catalogueData.duration = 'NA';
       }
 
-      return  AlertDialog(
+      return AlertDialog(
         contentPadding: EdgeInsets.only(left: 25, right: 25),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20.0))
-        ),
-        title: Text('Details',style: TextStyle(),
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+        title: Text(
+          'Details',
+          style: TextStyle(),
           textAlign: TextAlign.center,
         ),
         content: Container(
-          margin: EdgeInsets.symmetric(vertical:20),
-          height:300,
+          margin: EdgeInsets.symmetric(vertical: 20),
+          height: 300,
           width: 300,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
-                Text( 'Defination:', style: TextStyle(fontWeight: FontWeight.bold),),
-                Text( catalogueData.service, style: TextStyle(
-                  color: Colors.black38,
-                ),),
-
+                Text(
+                  'Defination:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  catalogueData.service,
+                  style: TextStyle(
+                    color: Colors.black38,
+                  ),
+                ),
                 Divider(
                   color: Colors.black45,
                 ),
-                Text( 'Duration', style: TextStyle(fontWeight: FontWeight.bold),),
-                Text( catalogueData.duration , style: TextStyle(
-                  color: Colors.black45,
-                ),),
-
+                Text(
+                  'Duration',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  catalogueData.duration,
+                  style: TextStyle(
+                    color: Colors.black45,
+                  ),
+                ),
                 Divider(
                   color: Colors.black45,
                 ),
-
-                Text( 'Sittings:', style: TextStyle(fontWeight: FontWeight.bold),),
-                Text( catalogueData.sitting , style: TextStyle(
-                  color: Colors.black38,
-                ),),
-
+                Text(
+                  'Sittings:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  catalogueData.sitting,
+                  style: TextStyle(
+                    color: Colors.black38,
+                  ),
+                ),
                 Divider(
                   color: Colors.black45,
                 ),
-
-                Text( 'Do\'s and Don\'t:', style: TextStyle(fontWeight: FontWeight.bold),),
-                Text( catalogueData.dnd, style: TextStyle(
-                  color: Colors.black38,
-                ),),
+                Text(
+                  'Do\'s and Don\'t:',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  catalogueData.dnd,
+                  style: TextStyle(
+                    color: Colors.black38,
+                  ),
+                ),
               ],
             ),
           ),
         ),
-
         actions: <Widget>[
           Container(
-            margin: EdgeInsets.only(right:90),
+            margin: EdgeInsets.only(right: 90),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text('Expand', style: TextStyle(fontSize: 18),
-                  textAlign: TextAlign.center,),
+                Text(
+                  'Expand',
+                  style: TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+                ),
                 new IconButton(
                   alignment: Alignment.center,
-                  icon:Icon(Icons.expand_more),
-                  onPressed: () => {
-                    Navigator.of(context).pop(),
-                  },
+                  icon: Icon(Icons.expand_more),
+                  onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
             ),
           ),
         ],
-
-
       );
     });
   }
-
 }

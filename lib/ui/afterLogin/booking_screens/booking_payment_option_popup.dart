@@ -1,28 +1,48 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 
 class PopupChoose extends StatefulWidget {
   final num bookInPrice;
   final String totalPrice;
+  final Services services;
 
-  PopupChoose({this.bookInPrice, this.totalPrice});
+  PopupChoose({this.bookInPrice, this.totalPrice, this.services});
 
   @override
   _PopupChooseState createState() => _PopupChooseState();
 }
 
 class _PopupChooseState extends State<PopupChoose> {
-  bool _valueTwentyP, _valuePayFull, _payOnly;
+  List<PaymentSelector> _paymentSelectionOptions;
 
   @override
   void initState() {
+    _paymentSelectionOptions = [];
     if (widget.bookInPrice != null) {
-      _payOnly = true;
-      _valueTwentyP = false;
+      _paymentSelectionOptions.add(PaymentSelector(
+          isInPercent: false,
+          isSelected: true,
+          paymentUnit: "${widget.bookInPrice}"));
+      widget.services.paymentOptions.forEach((option) {
+        _paymentSelectionOptions.add(PaymentSelector(
+            isInPercent: true,
+            isSelected: false,
+            paymentUnit: "${option.toString()}"));
+      });
     } else {
-      _valueTwentyP = true;
+      for (int pIndex = 0;
+          pIndex < widget.services.paymentOptions.length;
+          pIndex++) {
+        _paymentSelectionOptions.add(PaymentSelector(
+            isInPercent: true,
+            isSelected: pIndex == 0 ? true : false,
+            paymentUnit:
+                "${widget.services.paymentOptions[pIndex].toString()}"));
+      }
     }
-    _valuePayFull = false;
+    print("_paymentSelectionOptions${_paymentSelectionOptions.toString()}");
     super.initState();
   }
 
@@ -55,26 +75,33 @@ class _PopupChooseState extends State<PopupChoose> {
             SizedBox(
               height: 20,
             ),
-            widget.bookInPrice == null
-                ? Container()
-                : Card(
+            Container(
+              height: AppConfig.verticalBlockSize * 15,
+              width: double.infinity,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (context, count) {
+                  return Card(
                     elevation: 0,
+                    margin: EdgeInsets.only(
+                        bottom: AppConfig.verticalBlockSize * 3),
                     color: Colors.transparent,
                     child: GestureDetector(
                       onTap: () {
                         setState(() {
-                          print(_payOnly);
-                          _payOnly = true;
-                          _valueTwentyP = false;
-                          _valuePayFull = false;
+                          _paymentSelectionOptions.forEach((paymentOption) {
+                            paymentOption.isSelected = false;
+                          });
+                          _paymentSelectionOptions[count].isSelected = true;
                         });
                       },
+                      onDoubleTap: () {},
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          _payOnly
-                              ? new Image.asset(
+                          _paymentSelectionOptions[count].isSelected
+                              ? Image.asset(
                                   'assets/images/bid/check.png',
                                   height: 20,
                                   width: 20,
@@ -88,124 +115,27 @@ class _PopupChooseState extends State<PopupChoose> {
                             width: 10,
                           ),
                           Container(
-                            width: 150,
-                            child: Text(
-                              'Pay ${widget.bookInPrice}',
-                              style: new TextStyle(
-                                fontSize: 16.0,
-                              ),
-                            ),
-                          ),
+                              width: 150,
+                              child: Text(
+                                  (widget.bookInPrice != null && count == 0)
+                                      ? 'Book in ${_paymentSelectionOptions[count].paymentUnit}'
+                                      : count !=
+                                              _paymentSelectionOptions.length -
+                                                  1
+                                          ? 'Pay ${_paymentSelectionOptions[count].paymentUnit}%'
+                                          : 'Pay full. No Hassle',
+                                  style: TextStyle(fontSize: 16.0))),
                         ],
                       ),
                     ),
-                  ),
-            SizedBox(
-              height: 15,
-            ),
-            Card(
-              elevation: 0,
-              color: Colors.transparent,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    if (widget.bookInPrice != null) {
-                      _payOnly = false;
-                    }
-                    _valueTwentyP = true;
-                    _valuePayFull = false;
-                  });
+                  );
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _valueTwentyP
-                        ? Image.asset(
-                            'assets/images/bid/check.png',
-                            height: 20,
-                            width: 20,
-                          )
-                        : Image.asset(
-                            'assets/images/bid/uncheck.png',
-                            height: 20,
-                            width: 20,
-                          ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                        width: 150,
-                        child: new Text('Pay 20%',
-                            style: new TextStyle(fontSize: 16.0))),
-                  ],
-                ),
+                itemCount: _paymentSelectionOptions.length ?? 0,
               ),
-            ),
-            SizedBox(
-              height: 15,
-            ),
-            Card(
-              elevation: 0,
-              color: Colors.transparent,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    if (widget.bookInPrice != null) {
-                      _payOnly = false;
-                    }
-                    _valueTwentyP = false;
-                    _valuePayFull = true;
-                  });
-                },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    _valuePayFull
-                        ? new Image.asset(
-                            'assets/images/bid/check.png',
-                            height: 20,
-                            width: 20,
-                          )
-                        : Image.asset(
-                            'assets/images/bid/uncheck.png',
-                            height: 20,
-                            width: 20,
-                          ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      width: 150,
-                      child: new Text(
-                        'Pay full. No Hassle!',
-                        style: new TextStyle(
-                          fontSize: 16.0,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 30,
             ),
             GestureDetector(
               onTap: () {
-                if (widget.bookInPrice != null && _payOnly) {
-                  num totalPrice = num.tryParse(widget.totalPrice);
-                  var percentage = ((widget.bookInPrice * 100) / totalPrice)
-                          .floorToDouble() ??
-                      0;
-                  print("percentage$percentage");
-                  Navigator.of(context).pop("$percentage");
-                } else if (_valueTwentyP) {
-                  Navigator.of(context).pop("20");
-                } else {
-                  Navigator.of(context).pop("100");
-                }
+//                  Navigator.of(context).pop("100");
               },
               child: Container(
                 height: 35,
@@ -230,4 +160,18 @@ class _PopupChooseState extends State<PopupChoose> {
       ),
     );
   }
+}
+
+class PaymentSelector {
+  String paymentUnit;
+
+  @override
+  String toString() {
+    return 'PaymentSelector{paymentUnit: $paymentUnit, isSelected: $isSelected, isInPercent: $isInPercent}';
+  }
+
+  bool isSelected;
+  bool isInPercent;
+
+  PaymentSelector({this.isSelected, this.paymentUnit, this.isInPercent});
 }

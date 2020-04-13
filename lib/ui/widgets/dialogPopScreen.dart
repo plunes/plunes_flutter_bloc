@@ -119,8 +119,7 @@ class DialogWidgets {
           new IconButton(
             alignment: Alignment.center,
             icon: Icon(Icons.expand_more),
-            onPressed: () =>
-            {
+            onPressed: () => {
               Navigator.of(context).pop(),
             },
           ),
@@ -129,16 +128,14 @@ class DialogWidgets {
     });
   }
 
-
   Widget buildProfileDialog({
     @required final String dialogTitle,
     @required final String dialogMsg,
-
   }) {
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         elevation: 0.0,
         //backgroundColor: Colors.transparent,
         child: dialogProfileContent(context),
@@ -149,8 +146,6 @@ class DialogWidgets {
   Widget dialogProfileContent(BuildContext context) {
     Services services;
     return Container(
-      // padding: EdgeInsets.only(left: 25, right: 25),
-
       margin: EdgeInsets.all(20),
       child: Stack(
         alignment: Alignment.topCenter,
@@ -181,8 +176,7 @@ class DialogWidgets {
                             image: new DecorationImage(
                                 fit: BoxFit.fill,
                                 image: new NetworkImage(
-                                    "https://i.imgur.com/BoN9kdC.png"
-                                )))),
+                                    "https://i.imgur.com/BoN9kdC.png")))),
                     Column(
                       //mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -206,7 +200,7 @@ class DialogWidgets {
                 Padding(
                   padding: const EdgeInsets.only(top: 30),
                   child: DatePicker(
-                    DateTime.now(),
+                    DateTime.now(), initialSelectedDate: DateTime.now(),
                     selectionColor: Colors.green,
 //                      selectedTextColor: Colors.white,
                     onDateChange: (date) {

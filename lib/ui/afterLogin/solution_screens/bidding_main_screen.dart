@@ -11,11 +11,13 @@ import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import './previous_activity_screen.dart';
 
@@ -150,8 +152,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                     children: <Widget>[
                       InkWell(
                         onTap: () {
-                           Navigator.push(
-                              context, MaterialPageRoute(builder: (context) => PreviousActivity()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => PreviousActivity()));
                           print("Previous activity called");
                         },
                         child: Container(
@@ -267,7 +271,17 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   _onViewMoreTap(int index) {}
 
-  _onSolutionItemTap(int index) {}
+  _onSolutionItemTap(int index) {
+//    CatalogueData _catalogueData = CatalogueData(
+//        category: _prevSearchedSolution.data[index].serviceCategory,
+//      details: "details",
+//      dnd: "DnD",
+//      serviceId: _prevSearchedSolution.data[index].serviceId,
+//      specialityId: _prevSearchedSolution.data[index]
+//    );
+//    Navigator.push(
+//        context, MaterialPageRoute(builder: (context) => BiddingLoading()));
+  }
 
   _getUserDetails() {
     _canGoAhead = UserManager().getIsUserInServiceLocation();
@@ -349,6 +363,18 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     var requestState = await _prevMissSolutionBloc.getPreviousSolutions();
     if (requestState is RequestSuccess) {
       _prevSearchedSolution = requestState.response;
+//      List<PrevSolution> _prevSolutions = [], missedSolutions = [];
+//      if (_prevSearchedSolution != null &&
+//          _prevSearchedSolution.data != null &&
+//          _prevSearchedSolution.data.isNotEmpty) {
+//        _prevSearchedSolution.data.forEach((solution) {
+//          if (solution.active) {
+//            _prevSolutions.add(solution);
+//          } else {
+//            missedSolutions.add(solution);
+//          }
+//        });
+//      }
       _setState();
     }
   }

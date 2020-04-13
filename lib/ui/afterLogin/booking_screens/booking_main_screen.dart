@@ -30,6 +30,7 @@ class BookingMainScreen extends BaseActivity {
   final DocHosSolution docHosSolution;
   final String screenName = "BookingMainScreen";
   final int serviceIndex;
+  final Services service;
 
   BookingMainScreen(
       {this.price,
@@ -38,7 +39,8 @@ class BookingMainScreen extends BaseActivity {
       this.docHosSolution,
       this.timeSlots,
       this.bookInPrice,
-      this.serviceIndex});
+      this.serviceIndex,
+      this.service});
 
   @override
   _BookingMainScreenState createState() => _BookingMainScreenState();
@@ -331,21 +333,25 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   Widget _getDatePicker() {
-    return DatePicker(
-      _selectedDate ?? _currentDate,
+    return Container(
       width: double.infinity,
-      height: AppConfig.verticalBlockSize * 15,
-      daysCount: 100,
-      dateTextStyle: TextStyle(
-          color: PlunesColors.BLACKCOLOR, fontSize: AppConfig.largeFont),
-      dayTextStyle: TextStyle(color: PlunesColors.BLACKCOLOR),
-      monthTextStyle: TextStyle(color: PlunesColors.BLACKCOLOR),
-      selectionColor: PlunesColors.GREENCOLOR,
-      onDateChange: (DateTime selectedDateTime) {
-        _selectedDate = selectedDateTime;
-        print("selected date is ${selectedDateTime.toString()}");
-        _openTimePicker();
-      },
+      height: AppConfig.verticalBlockSize * 16,
+      child: DatePicker(
+        _currentDate,
+        height: AppConfig.verticalBlockSize * 15,
+        daysCount: 100,
+        initialSelectedDate: _currentDate,
+        dateTextStyle: TextStyle(
+            color: PlunesColors.BLACKCOLOR, fontSize: AppConfig.largeFont),
+        dayTextStyle: TextStyle(color: PlunesColors.BLACKCOLOR),
+        monthTextStyle: TextStyle(color: PlunesColors.BLACKCOLOR),
+        selectionColor: PlunesColors.GREENCOLOR,
+        onDateChange: (DateTime selectedDateTime) {
+          _selectedDate = selectedDateTime;
+          print("selected date is ${selectedDateTime.toString()}");
+          _openTimePicker();
+        },
+      ),
     );
   }
 
@@ -820,6 +826,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             PopupChoose(
               bookInPrice: widget.bookInPrice,
               totalPrice: widget.price,
+              services: widget.service,
             )).then((returnedValue) {
       if (returnedValue != null) {
         print("selected payment percenatge $returnedValue");
@@ -850,7 +857,6 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -8,8 +7,10 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -41,6 +42,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   StreamController _streamForTimer;
   TextEditingController _searchController;
   FocusNode _focusNode;
+  final double lat = 28.4594965, long = 77.0266383;
+  User _user;
+  Set<Marker> _markers = {};
 
   @override
   void initState() {
@@ -62,6 +66,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _isFetchingInitialData = true;
     _googleMapController = Completer();
     _searchSolutionBloc = SearchSolutionBloc();
+    _user = UserManager().getUserDetails();
     _fetchResultAndStartTimer();
     super.initState();
   }
@@ -121,9 +126,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   _checkAvailability(int selectedIndex) {
     showDialog(
       context: context,
-      builder: (BuildContext context) => DialogWidgets().buildProfileDialog(
-
-      ),
+      builder: (BuildContext context) => DialogWidgets().buildProfileDialog(),
     );
   }
 
@@ -140,6 +143,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   docHosSolution: _solution,
                   bookInPrice: service.bookIn,
                   serviceIndex: index,
+                  service: service,
                 )));
   }
 
@@ -158,6 +162,19 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
           _searchedDocResults.solution.services.isEmpty) {
         _failureCause = PlunesStrings.oopsServiceNotAvailable;
       } else {
+        _searchedDocResults.solution.services.forEach((docData) {
+//          print("docDataidis  ${docData.toString()}");
+          _markers.add(Marker(
+              markerId: MarkerId(docData.sId),
+              icon: BitmapDescriptor.defaultMarker,
+              position:
+                  LatLng(docData.latitude ?? lat, docData.longitude ?? long),
+              infoWindow: InfoWindow(
+                  title: docData.name,
+                  snippet:
+                      "\n${docData.distance?.toStringAsFixed(3)} kms away")));
+        });
+//        print("docDataidis  ${_markers.length}");
         _checkShouldTimerRun();
       }
     } else if (result is RequestFailed) {
@@ -205,12 +222,15 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                 child: GoogleMap(
                     padding: EdgeInsets.all(0.0),
                     myLocationEnabled: true,
+                    markers: _markers,
                     myLocationButtonEnabled: false,
                     onMapCreated: (mapController) {
                       _googleMapController.complete(mapController);
                     },
                     initialCameraPosition: CameraPosition(
-                        target: LatLng(17.23432, 18.343), zoom: 4.0)),
+                        target: LatLng(double.tryParse(_user.latitude) ?? lat,
+                            double.tryParse(_user.longitude) ?? long),
+                        zoom: 10.0)),
                 flex: 1,
               ),
               Expanded(
