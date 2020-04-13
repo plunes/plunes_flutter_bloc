@@ -17,5 +17,4 @@ class PrevMissSolutionRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
-
 }

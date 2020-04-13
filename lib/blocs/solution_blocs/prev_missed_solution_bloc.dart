@@ -8,4 +8,5 @@ class PrevMissSolutionBloc extends BlocBase {
     super.addIntoStream(result);
     return result;
   }
+
 }

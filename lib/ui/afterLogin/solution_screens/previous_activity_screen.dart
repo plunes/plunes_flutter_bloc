@@ -8,8 +8,6 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/requester/request_states.dart';
-import 'package:plunes/res/ColorsFile.dart';
-import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/Utils/app_config.dart';
 
 class PreviousActivity extends BaseActivity {
@@ -22,6 +20,7 @@ class PreviousActivity extends BaseActivity {
 class _PreviousActivityState extends BaseState<PreviousActivity> {
   PrevMissSolutionBloc _prevMissSolutionBloc;
   PrevSearchedSolution _prevSearchedSolution;
+  List<PrevSolution> _prevSolutions = [], missedSolutions = [];
 
   Timer _timer;
   StreamController _controller;
@@ -34,9 +33,13 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       _timer = timer;
       _controller.add(null);
     });
+
+
      _getPreviousSolutions();
     super.initState();
   }
+
+
 
   @override
   void dispose() {
@@ -82,7 +85,6 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-
                       (_prevSearchedSolution == null ||
                           _prevSearchedSolution.data == null ||
                           _prevSearchedSolution.data.isEmpty)
@@ -95,12 +97,12 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                             TapGestureRecognizer()
                               ..onTap = () => _onViewMoreTap(index);
                             return CustomWidgets().getPrevMissSolutionRow(
-                                _prevSearchedSolution.data, index,
+                                missedSolutions, index,
                                 onButtonTap: () =>
                                     _onSolutionItemTap(index),
                                 onViewMoreTap: tapRecognizer);
                           },
-                          itemCount: _prevSearchedSolution.data.length,
+                          itemCount: missedSolutions.length,
                         ),
                       ),
                     _reminderView(),
@@ -134,12 +136,12 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                               TapGestureRecognizer()
                                 ..onTap = () => _onViewMoreTap(index);
                               return CustomWidgets().getPrevMissSolutionRow(
-                                  _prevSearchedSolution.data, index,
+                                  _prevSolutions, index,
                                   onButtonTap: () =>
                                       _onSolutionItemTap(index),
                                   onViewMoreTap: tapRecognizer);
                             },
-                            itemCount: _prevSearchedSolution.data.length,
+                            itemCount:  _prevSolutions.length,
                           ),
                       ),
                      Container(
@@ -161,7 +163,29 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       _prevSearchedSolution = requestState.response;
       _setState();
     }
+
+    if (_prevSearchedSolution != null &&
+        _prevSearchedSolution.data != null &&
+        _prevSearchedSolution.data.isNotEmpty)
+      _prevSearchedSolution.data.forEach((solution){
+        if(solution.active==false){
+          missedSolutions.add(solution);
+        } else{
+          _prevSolutions.add(solution);
+        }
+      });
+    _setState();
+
   }
+
+
+//  void _getMissedNegotiationSol() async {
+//    var requestState = await _prevMissSolutionBloc.getMissedNegotiationSolutions();
+//    if (requestState is RequestSuccess) {
+//      _prevMissedNegotiationSolution = requestState.response;
+//      _setState();
+//    }
+//  }
 
   _onViewMoreTap(int index) {}
 
