@@ -835,4 +835,100 @@ class CustomWidgets {
     });
   }
 
+
+  Widget UpdatePricePopUp(
+      {
+        @required final String dialogTitle,
+        @required final String dialogMsg,
+
+      }) {
+    return StatefulBuilder(builder: (context, newState) {
+      return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        elevation: 0.0,
+        child: updatePriceContent(context),
+      );
+    });
+  }
+
+
+  Widget updatePriceContent(BuildContext context) {
+    bool isChecked = false;
+    var sliderVal = 0.0;
+
+    void isToggle(){
+      isChecked = !isChecked;
+    }
+    return  Container(
+      margin: EdgeInsets.only(top:5),
+      child: Stack(
+        children: <Widget>[
+          Text('',textAlign: TextAlign.center,
+            style: TextStyle(fontSize:20, fontWeight: FontWeight.bold),
+          ),
+          Container(
+            height:374,
+            //padding: EdgeInsets.only(top: 18.0),
+            margin: EdgeInsets.only(left: 30, right: 30, top:30),
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+
+                  Text('Update Price in your Catalogue for maximum Bookings',style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center,),
+                  Column(
+                    children: <Widget>[
+                      SizedBox( height:10),
+                      Text('Amalgam Fillings', style: TextStyle(fontSize: 20, color:Colors.black54),),
+                      // Divider(color: Colors.black38,),
+                      SizedBox( height:20),
+                      Slider(
+                          value: sliderVal,
+                          min:0,
+                          max:3000,
+                          divisions: 100,
+                          activeColor: Colors.green,
+                          onChanged:(newValue){
+                            setState(){
+                              sliderVal = newValue;
+                            };
+                          }),
+                      Container(
+                        margin: EdgeInsets.only(top:30, bottom:30),
+                        child: Text(' \u20B9 ${sliderVal}',style: TextStyle(fontSize:20, fontWeight:FontWeight.bold ),),
+                      ),
+
+                      Text('Chances of Booking increases by', style: TextStyle(fontSize:18, ),),
+                      SizedBox(height:10),
+                      Text('20 to 25%', style: TextStyle(fontSize:18, fontWeight:FontWeight.bold),),
+                      SizedBox(height:20),
+                      FlatButton(
+                        child: Text('Apply here',style: TextStyle(fontSize:20,color: Colors.green, decoration: TextDecoration.underline, fontWeight:FontWeight.w400), ),
+                        onPressed:() {},)
+
+
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          Positioned(
+            right: 0.0,
+            child: Align(
+              alignment: Alignment.topRight,
+              child: IconButton(
+                icon:Icon(Icons.close),
+                onPressed: () => {
+                  Navigator.of(context).pop(),
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }
