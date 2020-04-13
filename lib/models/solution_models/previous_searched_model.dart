@@ -86,3 +86,4 @@ class PrevSolution {
     return data;
   }
 }
+

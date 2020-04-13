@@ -58,4 +58,5 @@ class Urls {
   static const String BOOKING_URL = 'booking';
   static const String PAYMENT_WEB_VIEW_URL = 'https://plunes.co/payment';
   static const String PREV_SOLUTION_URL = "solution/search";
+  static const String MISSED_NEGOTIATIONS_URL = "";
 }

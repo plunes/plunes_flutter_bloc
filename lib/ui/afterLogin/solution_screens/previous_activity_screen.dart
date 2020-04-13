@@ -22,6 +22,7 @@ class PreviousActivity extends BaseActivity {
 class _PreviousActivityState extends BaseState<PreviousActivity> {
   PrevMissSolutionBloc _prevMissSolutionBloc;
   PrevSearchedSolution _prevSearchedSolution;
+
   Timer _timer;
   StreamController _controller;
 
