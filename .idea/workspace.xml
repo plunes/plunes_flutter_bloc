@@ -5,17 +5,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07d5795a-4ac5-48a4-8e0d-1f72bed10fd6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/repositories/solution_repo/PrevMissSolution.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/fileHashes/resourceHashesCache.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/javaCompile/jarAnalysis.bin" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/javaCompile/jarAnalysis.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/javaCompile/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/javaCompile/taskHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/taskHistory/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/taskHistory/taskHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.gradle/4.10.2/taskHistory/taskHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/4.10.2/taskHistory/taskHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/android/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/android/.idea/caches/build_file_checksums.ser" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/App.framework/flutter_assets/kernel_blob.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/Utils/custom_widgets.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/Utils/custom_widgets.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Runner.xcworkspace/xcuserdata/craterzone.xcuserdatad/UserInterfaceState.xcuserstate" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Runner.xcworkspace/xcuserdata/craterzone.xcuserdatad/UserInterfaceState.xcuserstate" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/solution_models/searched_doc_hospital_result.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/solution_models/searched_doc_hospital_result.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/repositories/solution_repo/searched_solution_repo.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/repositories/solution_repo/searched_solution_repo.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/res/StringsFile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/res/StringsFile.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/resources/network/Urls.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/resources/network/Urls.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/booking_screens/booking_main_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/booking_screens/booking_main_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/booking_screens/booking_payment_option_popup.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/booking_screens/booking_payment_option_popup.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_main_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/bidding_main_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/solution_received_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/solution_received_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/commonView/LocationFetch.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/commonView/LocationFetch.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

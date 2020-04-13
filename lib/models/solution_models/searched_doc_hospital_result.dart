@@ -81,6 +81,7 @@ class Services {
   List<int> price;
   List<int> newPrice;
   List<String> category;
+  List<num> paymentOptions;
   List<TimeSlots> timeSlots;
   String sId;
   String professionalId;
@@ -113,7 +114,8 @@ class Services {
       this.recommendation,
       this.bookIn,
       this.rating,
-      this.negotiating});
+      this.negotiating,
+      this.paymentOptions});
 
   Services.fromJson(Map<String, dynamic> json) {
     price = json['price'].cast<int>();
@@ -138,6 +140,9 @@ class Services {
     bookIn = json['bookIn'];
     rating = json['rating'];
     negotiating = json['negotiating'];
+    if (json['paymentOptions'] != null && json['paymentOptions'].isNotEmpty) {
+      paymentOptions = json['paymentOptions'].cast<num>();
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -161,6 +166,7 @@ class Services {
     data['bookIn'] = this.bookIn;
     data['rating'] = this.rating;
     data['negotiating'] = this.negotiating;
+    data['paymentOptions'] = paymentOptions;
     return data;
   }
 }

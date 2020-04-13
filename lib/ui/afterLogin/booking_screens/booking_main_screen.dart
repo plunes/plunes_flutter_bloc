@@ -30,6 +30,7 @@ class BookingMainScreen extends BaseActivity {
   final DocHosSolution docHosSolution;
   final String screenName = "BookingMainScreen";
   final int serviceIndex;
+  final Services service;
 
   BookingMainScreen(
       {this.price,
@@ -38,7 +39,8 @@ class BookingMainScreen extends BaseActivity {
       this.docHosSolution,
       this.timeSlots,
       this.bookInPrice,
-      this.serviceIndex});
+      this.serviceIndex,
+      this.service});
 
   @override
   _BookingMainScreenState createState() => _BookingMainScreenState();
@@ -820,6 +822,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             PopupChoose(
               bookInPrice: widget.bookInPrice,
               totalPrice: widget.price,
+              services: widget.service,
             )).then((returnedValue) {
       if (returnedValue != null) {
         print("selected payment percenatge $returnedValue");
@@ -850,7 +853,6 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

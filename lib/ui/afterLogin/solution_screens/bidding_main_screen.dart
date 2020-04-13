@@ -346,6 +346,18 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     var requestState = await _prevMissSolutionBloc.getPreviousSolutions();
     if (requestState is RequestSuccess) {
       _prevSearchedSolution = requestState.response;
+//      List<PrevSolution> _prevSolutions = [], missedSolutions = [];
+//      if (_prevSearchedSolution != null &&
+//          _prevSearchedSolution.data != null &&
+//          _prevSearchedSolution.data.isNotEmpty) {
+//        _prevSearchedSolution.data.forEach((solution) {
+//          if (solution.active) {
+//            _prevSolutions.add(solution);
+//          } else {
+//            missedSolutions.add(solution);
+//          }
+//        });
+//      }
       _setState();
     }
   }
