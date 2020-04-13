@@ -5,11 +5,45 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07d5795a-4ac5-48a4-8e0d-1f72bed10fd6" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.dart_tool/package_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/.dart_tool/package_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/blocs/solution_blocs/prev_missed_solution_bloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/blocs/solution_blocs/prev_missed_solution_bloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/solution_models/previous_searched_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/solution_models/previous_searched_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/repositories/solution_repo/PrevMissSolution.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/repositories/solution_repo/PrevMissSolution.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/previous_activity_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/ui/afterLogin/solution_screens/previous_activity_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/local.properties" beforeDir="false" afterPath="$PROJECT_DIR$/android/local.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/flutter_assets/isolate_snapshot_data" beforeDir="false" afterPath="$PROJECT_DIR$/build/flutter_assets/isolate_snapshot_data" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/flutter_assets/kernel_blob.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/flutter_assets/kernel_blob.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/ios/Runner.build/Release-iphoneos/Runner.build/dgph" beforeDir="false" afterPath="$PROJECT_DIR$/build/ios/Runner.build/Release-iphoneos/Runner.build/dgph" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/snapshot_blob.bin.d" beforeDir="false" afterPath="$PROJECT_DIR$/build/snapshot_blob.bin.d" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/flutter" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/flutter" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/connectivity" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/connectivity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/device_info" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/device_info" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/file_picker" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/file_picker" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/firebase_messaging" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/firebase_messaging" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/flutter_local_notifications" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/flutter_local_notifications" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/flutter_webview_plugin" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/flutter_webview_plugin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/fluttertoast" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/fluttertoast" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/geocoder" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/geocoder" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/google_maps_flutter" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/google_maps_flutter" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/image_cropper" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/image_cropper" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/image_picker" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/image_picker" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/intro_slider" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/intro_slider" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/keyboard_visibility" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/keyboard_visibility" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/location" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/location" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/location_permissions" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/location_permissions" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/open_file" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/open_file" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/path_provider" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/path_provider" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/share" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/share" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/shared_preferences" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/shared_preferences" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/sqflite" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/sqflite" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/.symlinks/plugins/url_launcher" beforeDir="false" afterPath="$PROJECT_DIR$/ios/.symlinks/plugins/url_launcher" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Flutter/Generated.xcconfig" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/Generated.xcconfig" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Flutter/flutter_export_environment.sh" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/flutter_export_environment.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ios/Pods/Manifest.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/widget_test.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,7 +51,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_3a_API_29" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_27" />
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
