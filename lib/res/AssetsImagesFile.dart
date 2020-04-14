@@ -5,6 +5,10 @@ final plunesImages = PlunesImages();
 class PlunesImages {
   static String errorPage = 'assets/error_page.png';
   static String splashImage = 'assets/images/splash_final.jpg';
+  static String userLandingImage = 'assets/images/user_landing_map.png';
+  static String userLandingGoogleIcon =
+      'assets/images/locationIconUserLandingScreen.png';
+
   static var imageArray = [
     'assets/images/sliders/bidding.png',
     'assets/images/sliders/search.png',

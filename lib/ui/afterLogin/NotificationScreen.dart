@@ -229,12 +229,13 @@ class _NotificationScreenState extends State<NotificationScreen>
   }
 
   void reset() {
-    setState(() {
-      if (selectedPositions.length > 0) {
-        selectedPositions.clear();
-        isSelected = false;
-      }
-    });
+    if (mounted)
+      setState(() {
+        if (selectedPositions.length > 0) {
+          selectedPositions.clear();
+          isSelected = false;
+        }
+      });
   }
 
   void initialize() {

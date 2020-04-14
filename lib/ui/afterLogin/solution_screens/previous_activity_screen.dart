@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import '../../../Utils/app_config.dart';
 import '../../../base/BaseActivity.dart';
-import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -10,9 +10,8 @@ import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/Utils/app_config.dart';
 
+// ignore: must_be_immutable
 class PreviousActivity extends BaseActivity {
-  static const routeName = '/prevActivity';
-
   @override
   _PreviousActivityState createState() => _PreviousActivityState();
 }
@@ -20,32 +19,15 @@ class PreviousActivity extends BaseActivity {
 class _PreviousActivityState extends BaseState<PreviousActivity> {
   PrevMissSolutionBloc _prevMissSolutionBloc;
   PrevSearchedSolution _prevSearchedSolution;
-  List<PrevSolution> _prevSolutions = [], missedSolutions = [];
-
-  Timer _timer;
-  StreamController _controller;
+  List<CatalogueData> _prevSolutions = [], missedSolutions = [];
 
   @override
   void initState() {
+    _prevSolutions = [];
+    missedSolutions = [];
     _prevMissSolutionBloc = PrevMissSolutionBloc();
-    _controller = StreamController.broadcast();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      _timer = timer;
-      _controller.add(null);
-    });
-
-
-     _getPreviousSolutions();
+    _getPreviousSolutions();
     super.initState();
-  }
-
-
-
-  @override
-  void dispose() {
-    _controller.close();
-    _timer?.cancel();
-    super.dispose();
   }
 
   @override
@@ -54,138 +36,124 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       appBar: AppBar(
         title: Text('Previous Activities'),
       ),
-      body: _getWidgetBody(),
+      body: Container(child: _getWidgetBody()),
     );
   }
-
 
   Widget _getWidgetBody() {
     return Column(
       children: <Widget>[
         Container(
-          child:
-        _getPreviousView(),
+          child: _getPreviousView(),
         ),
         Container(
-          child:
-          _getMissedNagotiationView(),
+          child: _getMissedNagotiationView(),
         ),
-
       ],
     );
   }
 
-  _getMissedNagotiationView(){
+  _getMissedNagotiationView() {
+    return Expanded(child: StreamBuilder<Object>(builder: (context, snapshot) {
+      return Card(
+          margin: EdgeInsets.all(0.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              (_prevSearchedSolution == null ||
+                      _prevSearchedSolution.data == null ||
+                      _prevSearchedSolution.data.isEmpty ||
+                      missedSolutions == null ||
+                      missedSolutions.isEmpty)
+                  ? Expanded(
+                      child: Center(
+                      child: Container(
+                        child: Text("You don't have any missed negotiations"),
+                      ),
+                    ))
+                  : Expanded(
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(0.0),
+                        itemBuilder: (context, index) {
+                          TapGestureRecognizer tapRecognizer =
+                              TapGestureRecognizer()
+                                ..onTap = () => _onViewMoreTap(index);
+                          return CustomWidgets().getSolutionRow(
+                              missedSolutions, index,
+                              onButtonTap: () => _onSolutionItemTap(index),
+                              onViewMoreTap: tapRecognizer);
+                        },
+                        itemCount: missedSolutions.length,
+                      ),
+                    ),
+              _reminderView(),
+            ],
+          ));
+    }));
+  }
+
+  _getPreviousView() {
     return Expanded(
-        child: StreamBuilder<Object>(
-            stream: _controller.stream,
-            builder: (context, snapshot) {
-              return Card(
-                  margin: EdgeInsets.all(0.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      (_prevSearchedSolution == null ||
-                          _prevSearchedSolution.data == null ||
-                          _prevSearchedSolution.data.isEmpty)
-                          ? Container()
-                          : Expanded(
+        child: Card(
+            margin: EdgeInsets.all(0.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                (_prevSearchedSolution == null ||
+                        _prevSearchedSolution.data == null ||
+                        _prevSearchedSolution.data.isEmpty ||
+                        _prevSolutions == null ||
+                        _prevSolutions.isEmpty)
+                    ? Expanded(
+                        child: Center(
+                        child: Container(
+                          child: Text("You don't have any previous activities"),
+                        ),
+                      ))
+                    : Expanded(
                         child: ListView.builder(
                           padding: EdgeInsets.all(0.0),
                           itemBuilder: (context, index) {
                             TapGestureRecognizer tapRecognizer =
-                            TapGestureRecognizer()
-                              ..onTap = () => _onViewMoreTap(index);
-                            return CustomWidgets().getPrevMissSolutionRow(
-                                missedSolutions, index,
-                                onButtonTap: () =>
-                                    _onSolutionItemTap(index),
+                                TapGestureRecognizer()
+                                  ..onTap = () => _onViewMoreTap(index);
+                            return CustomWidgets().getSolutionRow(
+                                _prevSolutions, index,
+                                onButtonTap: () => _onSolutionItemTap(index),
                                 onViewMoreTap: tapRecognizer);
                           },
-                          itemCount: missedSolutions.length,
+                          itemCount: _prevSolutions.length,
                         ),
                       ),
-                    _reminderView(),
-                    ],
-                  ));
-            }));
-
-  }
-
-
-  _getPreviousView() {
-    return Expanded(
-        child: StreamBuilder<Object>(
-            stream: _controller.stream,
-            builder: (context, snapshot) {
-              return Card(
-                  margin: EdgeInsets.all(0.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-
-                      (_prevSearchedSolution == null ||
-                          _prevSearchedSolution.data == null ||
-                          _prevSearchedSolution.data.isEmpty)
-                          ? Container()
-                          : Expanded(
-                          child: ListView.builder(
-                            padding: EdgeInsets.all(0.0),
-                            itemBuilder: (context, index) {
-                              TapGestureRecognizer tapRecognizer =
-                              TapGestureRecognizer()
-                                ..onTap = () => _onViewMoreTap(index);
-                              return CustomWidgets().getPrevMissSolutionRow(
-                                  _prevSolutions, index,
-                                  onButtonTap: () =>
-                                      _onSolutionItemTap(index),
-                                  onViewMoreTap: tapRecognizer);
-                            },
-                            itemCount:  _prevSolutions.length,
-                          ),
-                      ),
-                     Container(
-                       margin: EdgeInsets.symmetric(
-                         vertical: AppConfig.verticalBlockSize*2
-                       ),
-                       child:
-                     Text('Missed Negotiations', style:TextStyle(fontSize: 18, fontWeight: FontWeight.w500),)
-                     )
-                    ],
-                  ));
-            }));
-
+                Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 2),
+                    child: Text(
+                      'Missed Negotiations',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    ))
+              ],
+            )));
   }
 
   void _getPreviousSolutions() async {
     var requestState = await _prevMissSolutionBloc.getPreviousSolutions();
     if (requestState is RequestSuccess) {
       _prevSearchedSolution = requestState.response;
-      _setState();
     }
-
     if (_prevSearchedSolution != null &&
         _prevSearchedSolution.data != null &&
         _prevSearchedSolution.data.isNotEmpty)
-      _prevSearchedSolution.data.forEach((solution){
-        if(solution.active==false){
+      _prevSearchedSolution.data.forEach((solution) {
+        if (solution.isActive == false) {
           missedSolutions.add(solution);
-        } else{
+        } else {
           _prevSolutions.add(solution);
         }
       });
     _setState();
-
   }
-
-
-//  void _getMissedNegotiationSol() async {
-//    var requestState = await _prevMissSolutionBloc.getMissedNegotiationSolutions();
-//    if (requestState is RequestSuccess) {
-//      _prevMissedNegotiationSolution = requestState.response;
-//      _setState();
-//    }
-//  }
 
   _onViewMoreTap(int index) {}
 
@@ -194,36 +162,28 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   void _setState() {
     if (mounted) setState(() {});
   }
-
 }
 
-//class RemiderText extends StatelessWidget {
-//  const RemiderText({
-//    Key key,
-//  }) : super(key: key);
-//
-
-  Widget _reminderView(){
-    return Card(
-      margin: EdgeInsets.all(15),
-      child: Padding(
-        padding: EdgeInsets.all(15),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Flexible(
-              child: Text(
-                  'Please Make Sure You book within a short time, keeping in mind it is valid only for 1 hour',
-                  style: TextStyle(
-                    fontSize: 17,
-                  )),
-            ),
-          ],
-        ),
+Widget _reminderView() {
+  return Card(
+    margin: EdgeInsets.all(15),
+    child: Padding(
+      padding: EdgeInsets.all(15),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Flexible(
+            child: Text(
+                'Please Make Sure You book within a short time, keeping in mind it is valid only for 1 hour',
+                style: TextStyle(
+                  fontSize: 17,
+                )),
+          ),
+        ],
       ),
-    );
-  }
-
+    ),
+  );
+}
 
 //class RowBlock extends StatelessWidget {
 //  final String name;
@@ -274,4 +234,3 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 //      ),
 //    );
 //  }
-

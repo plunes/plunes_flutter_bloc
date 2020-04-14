@@ -40,8 +40,8 @@ class PlunesStrings {
 
   static const String pleaseMakeSureText =
       "Please make sure you book within a short time, keeping in mind it is valid for only 1 hour.";
-
   static const String chooseLocation = "Choose Location";
+  static const String topSearches = "Top Searches";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

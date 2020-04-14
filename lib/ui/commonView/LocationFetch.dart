@@ -99,15 +99,18 @@ class _LocationFetchState extends State<LocationFetch> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Container(
-                          height: globalHeight / 2,
-                          child: getGoogleMapView(),
-                        ),
-                        widget.getBlackBackButton(context),
-                        widget.getBlackLocationIcon(globalHeight / 2),
-                      ],
+                    Expanded(
+                      flex: 1,
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            height: globalHeight / 2,
+                            child: getGoogleMapView(),
+                          ),
+                          widget.getBlackBackButton(context),
+                          widget.getBlackLocationIcon(globalHeight / 2),
+                        ],
+                      ),
                     ),
                   ],
                 ),

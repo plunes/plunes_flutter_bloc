@@ -34,13 +34,16 @@ class CustomWidgets {
       {@required final TextEditingController searchController,
       @required final String hintText,
       bool hasFocus = false,
+      isRounded = false,
       FocusNode focusNode,
       double searchBarHeight = 7}) {
     return StatefulBuilder(builder: (context, newState) {
       return Card(
-        elevation: 3.0,
+        elevation: 1.0,
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.horizontal(),
+            borderRadius: isRounded
+                ? BorderRadius.circular(AppConfig.horizontalBlockSize * 10)
+                : BorderRadius.horizontal(),
             side: BorderSide(color: PlunesColors.GREYCOLOR, width: 0.2)),
         child: Container(
           height: AppConfig.verticalBlockSize * searchBarHeight,
@@ -71,7 +74,11 @@ class CustomWidgets {
                 ),
               ),
               searchController.text.trim().isEmpty
-                  ? Container()
+                  ? Icon(
+                      Icons.search,
+                      size: AppConfig.verticalBlockSize * 2.8,
+                      color: PlunesColors.GREYCOLOR,
+                    )
                   : InkWell(
                       onTap: () {
                         searchController.text = "";
@@ -131,6 +138,16 @@ class CustomWidgets {
         children: <Widget>[
           InkWell(
             onTap: () {
+              if (solutionList[index].isActive != null &&
+                  !(solutionList[index].isActive)) {
+                return;
+              } else if (solutionList[index].createdAt != null &&
+                  solutionList[index].createdAt != 0) {
+                var difference = DateTime.fromMillisecondsSinceEpoch(
+                        solutionList[index].createdAt)
+                    .difference(DateTime.now());
+                if (difference.inHours >= 1) return;
+              }
               newState(() {
                 solutionList[index].isSelected =
                     !solutionList[index].isSelected ?? false;
@@ -179,18 +196,25 @@ class CustomWidgets {
                             Padding(
                                 padding: EdgeInsets.only(
                                     top: AppConfig.verticalBlockSize * 1)),
-                            RichText(
-                                text: TextSpan(
-                                    text: solutionList[0].details ??
-                                        PlunesStrings.NA,
-                                    style: TextStyle(color: Colors.black),
-                                    children: [
-                                  TextSpan(
-                                      text: "(view more)",
-                                      recognizer: onViewMoreTap,
-                                      style: TextStyle(
-                                          color: PlunesColors.GREENCOLOR))
-                                ])),
+                            (solutionList[index].details == null ||
+                                    solutionList[index].details.isEmpty)
+                                ? (solutionList[index].createdAt == null ||
+                                        solutionList[index].createdAt == 0)
+                                    ? Container()
+                                    : Text(DateUtil.getDuration(
+                                        solutionList[index].createdAt))
+                                : RichText(
+                                    text: TextSpan(
+                                        text: solutionList[index].details ??
+                                            PlunesStrings.NA,
+                                        style: TextStyle(color: Colors.black),
+                                        children: [
+                                        TextSpan(
+                                            text: "(view more)",
+                                            recognizer: onViewMoreTap,
+                                            style: TextStyle(
+                                                color: PlunesColors.GREENCOLOR))
+                                      ])),
                           ],
                         ),
                       )
@@ -241,127 +265,127 @@ class CustomWidgets {
     });
   }
 
-  Widget getPrevMissSolutionRow(List<PrevSolution> solutionList, int index,
-      {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
-    return StatefulBuilder(builder: (context, newState) {
-      return Column(
-        children: <Widget>[
-          InkWell(
-            onTap: () {
-              newState(() {
-                solutionList[index].isSelected =
-                    !solutionList[index].isSelected ?? false;
-              });
-            },
-            child: Container(
-              color: solutionList[index].isSelected ?? false
-                  ? PlunesColors.LIGHTGREENCOLOR
-                  : PlunesColors.WHITECOLOR,
-              padding: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 1,
-                  horizontal: AppConfig.horizontalBlockSize * 5),
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      CircleAvatar(
-                        child: Container(
-                          height: AppConfig.horizontalBlockSize * 14,
-                          width: AppConfig.horizontalBlockSize * 14,
-                          child: ClipOval(
-                              child: getImageFromUrl(
-                                  "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
-                        ),
-                        radius: AppConfig.horizontalBlockSize * 7,
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: AppConfig.horizontalBlockSize * 2)),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            RichText(
-                                text: TextSpan(
-                                    text: solutionList[index].serviceName ??
-                                        PlunesStrings.NA,
-                                    style: TextStyle(color: Colors.black),
-                                    children: [
-                                  TextSpan(
-                                      text:
-                                          "(${solutionList[index].serviceCategory ?? PlunesStrings.NA})",
-                                      style: TextStyle(color: Colors.green))
-                                ])),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 1)),
-                            Text((solutionList[index].createdAt != null)
-                                ? DateUtil.getDuration(
-                                    solutionList[index].createdAt)
-                                : PlunesStrings.NA)
+//  Widget getPrevMissSolutionRow(List<CatalogueData> solutionList, int index,
+//      {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
+//    return StatefulBuilder(builder: (context, newState) {
+//      return Column(
+//        children: <Widget>[
+//          InkWell(
+//            onTap: () {
+//              newState(() {
+//                solutionList[index].isSelected =
+//                    !solutionList[index].isSelected ?? false;
+//              });
+//            },
+//            child: Container(
+//              color: solutionList[index].isSelected ?? false
+//                  ? PlunesColors.LIGHTGREENCOLOR
+//                  : PlunesColors.WHITECOLOR,
+//              padding: EdgeInsets.symmetric(
+//                  vertical: AppConfig.verticalBlockSize * 1,
+//                  horizontal: AppConfig.horizontalBlockSize * 5),
+//              child: Column(
+//                children: <Widget>[
+//                  Row(
+//                    children: <Widget>[
+//                      CircleAvatar(
+//                        child: Container(
+//                          height: AppConfig.horizontalBlockSize * 14,
+//                          width: AppConfig.horizontalBlockSize * 14,
+//                          child: ClipOval(
+//                              child: getImageFromUrl(
+//                                  "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+//                        ),
+//                        radius: AppConfig.horizontalBlockSize * 7,
+//                      ),
+//                      Padding(
+//                          padding: EdgeInsets.only(
+//                              left: AppConfig.horizontalBlockSize * 2)),
+//                      Expanded(
+//                        child: Column(
+//                          mainAxisAlignment: MainAxisAlignment.start,
+//                          crossAxisAlignment: CrossAxisAlignment.start,
+//                          mainAxisSize: MainAxisSize.min,
+//                          children: <Widget>[
 //                            RichText(
 //                                text: TextSpan(
-//                                    text: solutionList[0].details ??
+//                                    text: solutionList[index].serviceName ??
 //                                        PlunesStrings.NA,
 //                                    style: TextStyle(color: Colors.black),
 //                                    children: [
 //                                  TextSpan(
-//                                      text: "(view more)",
-//                                      recognizer: onViewMoreTap,
-//                                      style: TextStyle(
-//                                          color: PlunesColors.GREENCOLOR))
+//                                      text:
+//                                          "(${solutionList[index].serviceCategory ?? PlunesStrings.NA})",
+//                                      style: TextStyle(color: Colors.green))
 //                                ])),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          index == solutionList.length - 1
-              ? Container()
-              : Container(
-                  margin: EdgeInsets.only(
-                      bottom: AppConfig.verticalBlockSize * 1.5),
-                  width: double.infinity,
-                  height: 0.5,
-                  color: PlunesColors.GREYCOLOR,
-                ),
-          solutionList[index].isSelected ?? false
-              ? InkWell(
-                  onTap: onButtonTap,
-                  child: Container(
-                      color: PlunesColors.WHITECOLOR,
-                      padding: EdgeInsets.only(
-                          left: AppConfig.horizontalBlockSize * 24,
-                          top: AppConfig.verticalBlockSize * 1,
-                          right: AppConfig.horizontalBlockSize * 24),
-                      child: getRoundedButton(
-                          "Negotiate",
-                          AppConfig.horizontalBlockSize * 8,
-                          PlunesColors.GREENCOLOR,
-                          AppConfig.horizontalBlockSize * 4,
-                          AppConfig.verticalBlockSize * 2,
-                          PlunesColors.WHITECOLOR)))
-              : Container(),
-          solutionList[index].isSelected ?? true
-              ? Container(
-                  margin: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 1.5,
-                      bottom: AppConfig.verticalBlockSize * 1.5),
-                  width: double.infinity,
-                  height: 0.5,
-                  color: PlunesColors.GREYCOLOR,
-                )
-              : Container()
-        ],
-      );
-    });
-  }
+//                            Padding(
+//                                padding: EdgeInsets.only(
+//                                    top: AppConfig.verticalBlockSize * 1)),
+//                            Text((solutionList[index].createdAt != null)
+//                                ? DateUtil.getDuration(
+//                                    solutionList[index].createdAt)
+//                                : PlunesStrings.NA)
+////                            RichText(
+////                                text: TextSpan(
+////                                    text: solutionList[0].details ??
+////                                        PlunesStrings.NA,
+////                                    style: TextStyle(color: Colors.black),
+////                                    children: [
+////                                  TextSpan(
+////                                      text: "(view more)",
+////                                      recognizer: onViewMoreTap,
+////                                      style: TextStyle(
+////                                          color: PlunesColors.GREENCOLOR))
+////                                ])),
+//                          ],
+//                        ),
+//                      )
+//                    ],
+//                  ),
+//                ],
+//              ),
+//            ),
+//          ),
+//          index == solutionList.length - 1
+//              ? Container()
+//              : Container(
+//                  margin: EdgeInsets.only(
+//                      bottom: AppConfig.verticalBlockSize * 1.5),
+//                  width: double.infinity,
+//                  height: 0.5,
+//                  color: PlunesColors.GREYCOLOR,
+//                ),
+//          solutionList[index].isSelected ?? false
+//              ? InkWell(
+//                  onTap: onButtonTap,
+//                  child: Container(
+//                      color: PlunesColors.WHITECOLOR,
+//                      padding: EdgeInsets.only(
+//                          left: AppConfig.horizontalBlockSize * 24,
+//                          top: AppConfig.verticalBlockSize * 1,
+//                          right: AppConfig.horizontalBlockSize * 24),
+//                      child: getRoundedButton(
+//                          "Negotiate",
+//                          AppConfig.horizontalBlockSize * 8,
+//                          PlunesColors.GREENCOLOR,
+//                          AppConfig.horizontalBlockSize * 4,
+//                          AppConfig.verticalBlockSize * 2,
+//                          PlunesColors.WHITECOLOR)))
+//              : Container(),
+//          solutionList[index].isSelected ?? true
+//              ? Container(
+//                  margin: EdgeInsets.only(
+//                      top: AppConfig.verticalBlockSize * 1.5,
+//                      bottom: AppConfig.verticalBlockSize * 1.5),
+//                  width: double.infinity,
+//                  height: 0.5,
+//                  color: PlunesColors.GREYCOLOR,
+//                )
+//              : Container()
+//        ],
+//      );
+//    });
+//  }
 
   Widget getImageFromUrl(final String imageUrl,
       {BoxFit boxFit = BoxFit.contain}) {
@@ -849,97 +873,121 @@ class CustomWidgets {
             ),
           ),
         ],
-
-
       );
     });
   }
 
-
-  Widget UpdatePricePopUp(
-      {
-        @required final String dialogTitle,
-        @required final String dialogMsg,
-
-      }) {
+  Widget UpdatePricePopUp({
+    @required final String dialogTitle,
+    @required final String dialogMsg,
+  }) {
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         elevation: 0.0,
         child: updatePriceContent(context),
       );
     });
   }
 
-
   Widget updatePriceContent(BuildContext context) {
     bool isChecked = false;
     var sliderVal = 0.0;
 
-    void isToggle(){
+    void isToggle() {
       isChecked = !isChecked;
     }
-    return  Container(
-      margin: EdgeInsets.only(top:5),
+
+    return Container(
+      margin: EdgeInsets.only(top: 5),
       child: Stack(
         children: <Widget>[
-          Text('',textAlign: TextAlign.center,
-            style: TextStyle(fontSize:20, fontWeight: FontWeight.bold),
+          Text(
+            '',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           Container(
-            height:374,
+            height: 374,
             //padding: EdgeInsets.only(top: 18.0),
-            margin: EdgeInsets.only(left: 30, right: 30, top:30),
+            margin: EdgeInsets.only(left: 30, right: 30, top: 30),
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-
-                  Text('Update Price in your Catalogue for maximum Bookings',style:TextStyle(fontSize: 20) ,textAlign: TextAlign.center,),
+                  Text(
+                    'Update Price in your Catalogue for maximum Bookings',
+                    style: TextStyle(fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
                   Column(
                     children: <Widget>[
-                      SizedBox( height:10),
-                      Text('Amalgam Fillings', style: TextStyle(fontSize: 20, color:Colors.black54),),
+                      SizedBox(height: 10),
+                      Text(
+                        'Amalgam Fillings',
+                        style: TextStyle(fontSize: 20, color: Colors.black54),
+                      ),
                       // Divider(color: Colors.black38,),
-                      SizedBox( height:20),
+                      SizedBox(height: 20),
                       Slider(
                           value: sliderVal,
-                          min:0,
-                          max:3000,
+                          min: 0,
+                          max: 3000,
                           divisions: 100,
                           activeColor: Colors.green,
-                          onChanged:(newValue){
-                            setState(){
+                          onChanged: (newValue) {
+                            setState() {
                               sliderVal = newValue;
-                            };
+                            }
+
+                            ;
                           }),
                       Container(
-                        margin: EdgeInsets.only(top:30, bottom:30),
-                        child: Text(' \u20B9 ${sliderVal}',style: TextStyle(fontSize:20, fontWeight:FontWeight.bold ),),
+                        margin: EdgeInsets.only(top: 30, bottom: 30),
+                        child: Text(
+                          ' \u20B9 ${sliderVal}',
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
                       ),
 
-                      Text('Chances of Booking increases by', style: TextStyle(fontSize:18, ),),
-                      SizedBox(height:10),
-                      Text('20 to 25%', style: TextStyle(fontSize:18, fontWeight:FontWeight.bold),),
-                      SizedBox(height:20),
+                      Text(
+                        'Chances of Booking increases by',
+                        style: TextStyle(
+                          fontSize: 18,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Text(
+                        '20 to 25%',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 20),
                       FlatButton(
-                        child: Text('Apply here',style: TextStyle(fontSize:20,color: Colors.green, decoration: TextDecoration.underline, fontWeight:FontWeight.w400), ),
-                        onPressed:() {},)
-
-
+                        child: Text(
+                          'Apply here',
+                          style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.green,
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        onPressed: () {},
+                      )
                     ],
                   ),
                 ],
               ),
             ),
           ),
-
           Positioned(
             right: 0.0,
             child: Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                icon:Icon(Icons.close),
+                icon: Icon(Icons.close),
                 onPressed: () => {
                   Navigator.of(context).pop(),
                 },
@@ -950,5 +998,4 @@ class CustomWidgets {
       ),
     );
   }
-
 }

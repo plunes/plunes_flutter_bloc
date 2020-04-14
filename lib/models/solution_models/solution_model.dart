@@ -3,13 +3,13 @@ class CatalogueData {
   String details;
   String dnd;
   String category;
-  bool isSelected = false;
+  bool isSelected = false, isActive;
   String speciality;
   String specialityId;
   String serviceId;
   String sitting;
   String duration;
-  int iV;
+  int iV, createdAt;
 
   CatalogueData(
       {this.service,
@@ -20,8 +20,10 @@ class CatalogueData {
       this.specialityId,
       this.isSelected = false,
       this.iV,
+      this.isActive,
       this.sitting,
       this.duration,
+      this.createdAt,
       this.speciality});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,8 @@ class CatalogueData {
     details = json['details'];
     dnd = json['dnd'];
     category = json['category'];
+    isActive = json['active'];
+    createdAt = json['createdAt'];
 //    sitting = json['sitting'];
 //    duration = json['duration'];
     iV = json['__v'];
@@ -47,6 +51,8 @@ class CatalogueData {
     data['dnd'] = this.dnd;
     data['category'] = this.category;
     data['__v'] = this.iV;
+    data['active'] = this.isActive;
+    data['createdAt'] = this.createdAt;
 //    data['sitting'] = this.sitting;
 //    data['duration'] = this.duration;
     return data;

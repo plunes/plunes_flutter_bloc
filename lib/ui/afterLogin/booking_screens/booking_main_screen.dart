@@ -78,8 +78,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     widget.timeSlots.forEach((slot) {
       if (slot.day.toLowerCase().contains(dateAsString.toLowerCase())) {
         if (!slot.closed) {
-          _firstSlotTime = slot.slots[0] ?? _firstSlotTime;
-          _secondSlotTime = slot.slots[1] ?? _secondSlotTime;
+          if (slot.slots.length >= 1)
+            _firstSlotTime = slot?.slots[0] ?? _firstSlotTime;
+          if (slot.slots.length >= 2)
+            _secondSlotTime = slot?.slots[1] ?? _secondSlotTime;
         }
       }
     });
@@ -620,10 +622,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   void _setTime(TimeSlots timeSlot) {
-//    print("timeSlot ${timeSlot.toString()}");
+    if (timeSlot.slots.length == 1) {
+      widget.showInSnackBar("Oops, Invalid time slot found.",
+          PlunesColors.BLACKCOLOR, scaffoldKey);
+      return;
+    }
+//    print("timeSlot ${timeSlot.slots.length}");
     List<String> _firstSlotFromTimeHourMinute =
         timeSlot.slots[0].split("-")[0].split(" ")[0].split(":");
-
     List<String> _firstSlotToTimeHourMinute =
         timeSlot.slots[0].split("-")[1].split(" ")[0].split(":");
     List<String> _secondSlotFromTimeHourMinute =

@@ -20,7 +20,7 @@ class SolutionBiddingScreen extends BaseActivity {
 }
 
 class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
-  List<CatalogueData> _catalouges;
+  List<CatalogueData> _catalogues;
   Function onViewMoreTap;
   TextEditingController _searchController;
   Timer _debounce;
@@ -31,7 +31,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
 
   @override
   void initState() {
-    _catalouges = [];
+    _catalogues = [];
     _endReached = false;
     _searchSolutionBloc = SearchSolutionBloc();
     _streamController = StreamController();
@@ -128,7 +128,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               if (_requestSuccessObject.requestCode ==
                   SearchSolutionBloc.initialIndex) {
                 pageIndex = SearchSolutionBloc.initialIndex;
-                _catalouges = [];
+                _catalogues = [];
               }
               if (_requestSuccessObject.requestCode !=
                       SearchSolutionBloc.initialIndex &&
@@ -136,15 +136,15 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                 _endReached = true;
               } else {
                 _endReached = false;
-                Set _allItems = _catalouges.toSet();
+                Set _allItems = _catalogues.toSet();
                 _allItems.addAll(_requestSuccessObject.response);
-                _catalouges = _allItems.toList(growable: true);
+                _catalogues = _allItems.toList(growable: true);
               }
               pageIndex++;
             } else if (snapShot.data is RequestFailed) {
               pageIndex = SearchSolutionBloc.initialIndex;
             }
-            return _catalouges == null || _catalouges.isEmpty
+            return _catalogues == null || _catalogues.isEmpty
                 ? Text(PlunesStrings.noSolutionsAvailable)
                 : Column(
                     children: <Widget>[
@@ -187,7 +187,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => BiddingLoading(
-                  catalogueData: _catalouges[index],
+                  catalogueData: _catalogues[index],
                 )));
   }
 
@@ -195,7 +195,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) => CustomWidgets().buildAboutDialog(
-        catalogueData:_catalouges[solution],
+        catalogueData: _catalogues[solution],
       ),
     );
   }
@@ -210,7 +210,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         _searchSolutionBloc.getSearchedSolution(
             searchedString: _searchController.text.trim().toString(), index: 0);
       } else {
-        _catalouges = [];
+        _catalogues = [];
         _searchSolutionBloc.addState(null);
       }
     });
@@ -234,12 +234,12 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         itemBuilder: (context, index) {
           TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
             ..onTap = () => _onViewMoreTap(index);
-          return CustomWidgets().getSolutionRow(_catalouges, index,
+          return CustomWidgets().getSolutionRow(_catalogues, index,
               onButtonTap: () => _onSolutionItemTap(index),
               onViewMoreTap: tapRecognizer);
         },
         shrinkWrap: true,
-        itemCount: _catalouges.length,
+        itemCount: _catalogues.length,
       ),
     );
   }

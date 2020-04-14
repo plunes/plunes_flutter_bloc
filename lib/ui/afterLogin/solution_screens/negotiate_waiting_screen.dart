@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -63,6 +64,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 //                  print("_latitude $_latitude");
 //                  print("_longitude $_longitude");
 //                  _checkUserLocation(_latitude, _longitude);
+                  UserBloc().isUserInServiceLocation(_latitude, _longitude);
                   Navigator.pop(context);
                   Navigator.push(
                       context,
@@ -109,7 +111,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  height: AppConfig.verticalBlockSize * 16,
+                  height: AppConfig.verticalBlockSize * 5,
                 ),
                 Stack(
                   children: <Widget>[

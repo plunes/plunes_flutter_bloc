@@ -186,7 +186,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     return result;
   }
 
-  _setState() {
+  _setState() async {
+    await Future.delayed(Duration(milliseconds: 30));
     if (mounted) setState(() {});
   }
 

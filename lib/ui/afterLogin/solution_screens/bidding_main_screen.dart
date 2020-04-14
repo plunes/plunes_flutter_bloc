@@ -14,6 +14,7 @@ import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
@@ -28,8 +29,6 @@ class BiddingMainScreen extends BaseActivity {
 }
 
 class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
-  Completer<GoogleMapController> _mapController;
-  CameraPosition _initialCameraPosition;
   TextEditingController _textEditingController;
   FocusNode _focusNode;
   bool _progressEnabled;
@@ -65,15 +64,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //          print("got focus");
           await Future.delayed(Duration(milliseconds: 100));
           _focusNode?.unfocus();
-          Navigator.push(context,
+          await Navigator.push(context,
               MaterialPageRoute(builder: (context) => SolutionBiddingScreen()));
+          _getPreviousSolutions();
         }
       });
-    _mapController = Completer();
     _getUserDetails();
     _getPreviousSolutions();
-    _initialCameraPosition =
-        CameraPosition(target: LatLng(45.521563, -122.677433), zoom: 14);
     super.initState();
   }
 
@@ -93,29 +90,25 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 
   Widget _getWidgetBody() {
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            flex: 3,
-            child: Stack(
-              children: <Widget>[
-                GoogleMap(
-                  initialCameraPosition: _initialCameraPosition,
-                  onMapCreated: (GoogleMapController controller) {
-                    if (!_mapController.isCompleted)
-                      _mapController.complete(controller);
-                  },
-                  mapType: MapType.normal,
-                  myLocationButtonEnabled: false,
-                  myLocationEnabled: false,
-                ),
-                Positioned(
-                  child: _getSearchWidget(),
-                  left: 0.0,
-                  right: 0.0,
-                  top: AppConfig.verticalBlockSize * 15,
-                )
+    return Stack(
+      children: <Widget>[
+        Container(
+          decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: ExactAssetImage(PlunesImages.userLandingImage),
+                  fit: BoxFit.cover)),
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                flex: 7,
+                child: Stack(
+                  children: <Widget>[
+                    Positioned(
+                      child: _getSearchWidget(),
+                      left: 0.0,
+                      right: 0.0,
+                      top: AppConfig.verticalBlockSize * 15,
+                    )
 //              Positioned(
 //                  right: 0.0,
 //                  bottom: 0.0,
@@ -126,79 +119,93 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //                        Icons.my_location,
 //                        color: Colors.indigo,
 //                      ))),
-              ],
-            ),
+                  ],
+                ),
+              ),
+              _canGoAhead ? Container() : holdOnPopUp,
+              _getBottomView(),
+            ],
           ),
-          _canGoAhead ? Container() : holdOnPopUp,
-          _getBottomView(),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   _getBottomView() {
-    return Expanded(
-        flex: (_prevSearchedSolution == null ||
-                _prevSearchedSolution.data == null ||
-                _prevSearchedSolution.data.isEmpty)
-            ? 0
-            : 1,
-        child: StreamBuilder<Object>(
-            stream: _controller.stream,
-            builder: (context, snapshot) {
-              return Card(
-                  margin: EdgeInsets.all(0.0),
-                  child: Column(
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => PreviousActivity()));
-                          print("Previous activity called");
-                        },
-                        child: Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 2),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                PlunesStrings.previousActivities,
-                                style: TextStyle(fontWeight: FontWeight.w500),
+    return (_prevSearchedSolution == null ||
+            _prevSearchedSolution.data == null ||
+            _prevSearchedSolution.data.isEmpty)
+        ? Container()
+        : Expanded(
+            flex: 3,
+            child: StreamBuilder<Object>(
+                stream: _controller.stream,
+                builder: (context, snapshot) {
+                  return Card(
+                      margin: EdgeInsets.all(0.0),
+                      child: Column(
+                        children: <Widget>[
+                          InkWell(
+                            onTap: () {
+                              if (_prevSearchedSolution.topSearches != null &&
+                                  _prevSearchedSolution.topSearches) {
+                                return;
+                              }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PreviousActivity()));
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                  vertical: AppConfig.verticalBlockSize * 2),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    (_prevSearchedSolution.topSearches !=
+                                                null &&
+                                            _prevSearchedSolution.topSearches)
+                                        ? PlunesStrings.topSearches
+                                        : PlunesStrings.previousActivities,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500),
+                                  ),
+                                  (_prevSearchedSolution.topSearches != null &&
+                                          _prevSearchedSolution.topSearches)
+                                      ? Container()
+                                      : Icon(
+                                          Icons.chevron_right,
+                                          color: PlunesColors.GREENCOLOR,
+                                        )
+                                ],
                               ),
-                              Icon(
-                                Icons.chevron_right,
-                                color: PlunesColors.GREENCOLOR,
-                              )
-                            ],
+                            ),
                           ),
-                        ),
-                      ),
-                      (_prevSearchedSolution == null ||
-                              _prevSearchedSolution.data == null ||
-                              _prevSearchedSolution.data.isEmpty)
-                          ? Container()
-                          : Expanded(
-                              child: ListView.builder(
-                              padding: EdgeInsets.all(0.0),
-                              itemBuilder: (context, index) {
-                                TapGestureRecognizer tapRecognizer =
-                                    TapGestureRecognizer()
-                                      ..onTap = () => _onViewMoreTap(index);
-                                return CustomWidgets().getPrevMissSolutionRow(
-                                    _prevSearchedSolution.data, index,
-                                    onButtonTap: () =>
-                                        _onSolutionItemTap(index),
-                                    onViewMoreTap: tapRecognizer);
-                              },
-                              itemCount: _prevSearchedSolution.data.length,
-                            ))
-                    ],
-                  ));
-            }));
+                          (_prevSearchedSolution == null ||
+                                  _prevSearchedSolution.data == null ||
+                                  _prevSearchedSolution.data.isEmpty)
+                              ? Container()
+                              : Expanded(
+                                  child: ListView.builder(
+                                  padding: EdgeInsets.all(0.0),
+                                  itemBuilder: (context, index) {
+                                    TapGestureRecognizer tapRecognizer =
+                                        TapGestureRecognizer()
+                                          ..onTap = () => _onViewMoreTap(index);
+                                    return CustomWidgets().getSolutionRow(
+                                        _prevSearchedSolution.data, index,
+                                        onButtonTap: () => _onSolutionItemTap(
+                                            _prevSearchedSolution.data[index]),
+                                        onViewMoreTap: tapRecognizer);
+                                  },
+                                  itemCount: _prevSearchedSolution.data.length,
+                                ))
+                        ],
+                      ));
+                }));
   }
 
   _getCurrentLocation() async {
@@ -210,59 +217,71 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   Widget _getSearchWidget() {
     return Container(
-      decoration: BoxDecoration(
-          shape: BoxShape.rectangle, color: PlunesColors.WHITECOLOR),
-      padding: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 6,
-          vertical: AppConfig.verticalBlockSize * 3),
+//      decoration: BoxDecoration(
+//          shape: BoxShape.rectangle, color: PlunesColors.WHITECOLOR),
+      padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
       margin:
           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 6),
       child: Column(
         children: <Widget>[
-          Text(
-            PlunesStrings.negotiateForBestPrice,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: AppConfig.mediumFont),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: AppConfig.horizontalBlockSize * 10,
+            ),
+            child: Text(
+              PlunesStrings.negotiateForBestPrice,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: AppConfig.largeFont),
+            ),
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Flexible(
-                  child: CustomWidgets().searchBar(
-                      searchController: _textEditingController,
-                      focusNode: _focusNode,
-                      hintText: plunesStrings.searchHint)),
-              InkWell(
-                onTap: () {
-                  Navigator.of(context)
-                      .push(PageRouteBuilder(
-                          opaque: false,
-                          pageBuilder: (BuildContext context, _, __) =>
-                              LocationFetch()))
-                      .then((val) {
-                    if (val != null) {
-                      var addressControllerList = new List();
-                      addressControllerList = val.toString().split(":");
-                      String addr = addressControllerList[0] +
-                          ' ' +
-                          addressControllerList[1] +
-                          ' ' +
-                          addressControllerList[2];
-                      print("addr is $addr");
-                      var _latitude = addressControllerList[3];
-                      var _longitude = addressControllerList[4];
-                      print("_latitude $_latitude");
-                      print("_longitude $_longitude");
-                      _checkUserLocation(_latitude, _longitude);
-                    }
-                  });
-                },
-                child: Icon(
-                  Icons.my_location,
-                  color: PlunesColors.GREYCOLOR,
-                ),
-              )
-            ],
+          Padding(
+            padding: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 1,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Flexible(
+                    child: CustomWidgets().searchBar(
+                        searchController: _textEditingController,
+                        isRounded: true,
+                        focusNode: _focusNode,
+                        hintText: plunesStrings.searchHint)),
+                InkWell(
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(PageRouteBuilder(
+                              opaque: false,
+                              pageBuilder: (BuildContext context, _, __) =>
+                                  LocationFetch()))
+                          .then((val) {
+                        if (val != null) {
+                          var addressControllerList = new List();
+                          addressControllerList = val.toString().split(":");
+                          String addr = addressControllerList[0] +
+                              ' ' +
+                              addressControllerList[1] +
+                              ' ' +
+                              addressControllerList[2];
+                          print("addr is $addr");
+                          var _latitude = addressControllerList[3];
+                          var _longitude = addressControllerList[4];
+                          print("_latitude $_latitude");
+                          print("_longitude $_longitude");
+                          _checkUserLocation(_latitude, _longitude);
+                        }
+                      });
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(6.0),
+                      height: AppConfig.verticalBlockSize * 5,
+                      width: AppConfig.horizontalBlockSize * 10,
+                      child: Image.asset(
+                        PlunesImages.userLandingGoogleIcon,
+                      ),
+                    ))
+              ],
+            ),
           )
         ],
       ),
@@ -271,16 +290,14 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   _onViewMoreTap(int index) {}
 
-  _onSolutionItemTap(int index) {
-//    CatalogueData _catalogueData = CatalogueData(
-//        category: _prevSearchedSolution.data[index].serviceCategory,
-//      details: "details",
-//      dnd: "DnD",
-//      serviceId: _prevSearchedSolution.data[index].serviceId,
-//      specialityId: _prevSearchedSolution.data[index]
-//    );
-//    Navigator.push(
-//        context, MaterialPageRoute(builder: (context) => BiddingLoading()));
+  _onSolutionItemTap(CatalogueData catalogueData) async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BiddingLoading(
+                  catalogueData: catalogueData,
+                )));
+    _getPreviousSolutions();
   }
 
   _getUserDetails() {

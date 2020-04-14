@@ -240,6 +240,9 @@ flutter:
     - assets/images/refer.png
     - assets/images/cover.png
 
+    - assets/images/user_landing_map.png
+    - assets/images/locationIconUserLandingScreen.png
+
 
 
 
