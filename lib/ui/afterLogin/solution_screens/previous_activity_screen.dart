@@ -36,7 +36,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       appBar: AppBar(
         title: Text('Previous Activities'),
       ),
-      body: Container(child: _getWidgetBody()),
+      body: _getWidgetBody(),
     );
   }
 

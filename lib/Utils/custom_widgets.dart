@@ -764,12 +764,9 @@ class CustomWidgets {
   }
 
   Widget buildAboutDialog({
-    //@required final String dialogTitle,
-    // @required final String dialogMsg,
     CatalogueData catalogueData,
   }) {
     return StatefulBuilder(builder: (context, newState) {
-      //CatalogueData catalogueData;
       if (catalogueData.service == null) {
         catalogueData.service = 'NA';
       }
@@ -782,7 +779,6 @@ class CustomWidgets {
       if (catalogueData.duration == null) {
         catalogueData.duration = 'NA';
       }
-
       return AlertDialog(
         contentPadding: EdgeInsets.only(left: 25, right: 25),
         shape: RoundedRectangleBorder(
@@ -853,26 +849,26 @@ class CustomWidgets {
             ),
           ),
         ),
-        actions: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 90),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Expand',
-                  style: TextStyle(fontSize: 18),
-                  textAlign: TextAlign.center,
-                ),
-                new IconButton(
-                  alignment: Alignment.center,
-                  icon: Icon(Icons.expand_more),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              ],
-            ),
-          ),
-        ],
+//        actions: <Widget>[
+//          Container(
+//            margin: EdgeInsets.only(right: 90),
+//            child: Row(
+//              crossAxisAlignment: CrossAxisAlignment.center,
+//              children: <Widget>[
+//                Text(
+//                  'Expand',
+//                  style: TextStyle(fontSize: 18),
+//                  textAlign: TextAlign.center,
+//                ),
+//                new IconButton(
+//                  alignment: Alignment.center,
+//                  icon: Icon(Icons.expand_more),
+//                  onPressed: () => Navigator.of(context).pop(),
+//                ),
+//              ],
+//            ),
+//          ),
+//        ],
       );
     });
   }

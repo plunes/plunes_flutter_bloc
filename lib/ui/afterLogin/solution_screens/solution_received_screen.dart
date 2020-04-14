@@ -125,9 +125,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   _checkAvailability(int selectedIndex) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) => DialogWidgets().buildProfileDialog(),
-    );
+        context: context,
+        builder: (BuildContext context) => DialogWidgets().buildProfileDialog(
+            catalogueData: widget.catalogueData,
+            solutions: _searchedDocResults.solution.services[selectedIndex]));
   }
 
   _onBookingTap(Services service, int index) {
@@ -187,7 +188,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   _setState() async {
-    await Future.delayed(Duration(milliseconds: 30));
+    await Future.delayed(Duration(milliseconds: 15));
     if (mounted) setState(() {});
   }
 
@@ -327,6 +328,11 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   _viewDetails() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) =>
+          CustomWidgets().buildAboutDialog(catalogueData: widget.catalogueData),
+    );
 //    print("view details");
   }
 

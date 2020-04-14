@@ -93,6 +93,7 @@ class Services {
   String professionalId;
   String name;
   String imageUrl;
+  String address;
   num discount;
   double latitude;
   double longitude;
@@ -112,6 +113,7 @@ class Services {
       this.professionalId,
       this.name,
       this.imageUrl,
+      this.address,
       this.discount,
       this.latitude,
       this.longitude,
@@ -137,6 +139,7 @@ class Services {
     professionalId = json['professionalId'];
     name = json['name'];
     imageUrl = json['imageUrl'];
+    address = json['address'];
     discount = json['discount'];
     latitude = json['latitude'];
     longitude = json['longitude'];
@@ -163,6 +166,7 @@ class Services {
     data['professionalId'] = this.professionalId;
     data['name'] = this.name;
     data['imageUrl'] = this.imageUrl;
+    data['address'] = this.address;
     data['discount'] = this.discount;
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;
@@ -203,3 +207,4 @@ class TimeSlots {
     return data;
   }
 }
+

@@ -16,6 +16,7 @@ import 'package:plunes/ui/commonView/UploadPrescriptionDialog.dart';
 import 'package:share/share.dart';
 
 /// New 28/02/2020 - 03:30PM
+// ignore: must_be_immutable
 class PlockrMainScreen extends BaseActivity {
   static const tag = '/plockrmainscreen';
 
@@ -120,7 +121,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
 
   Widget getSearchRow() {
     return Container(
-      height: 50,
+      height: 60,
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
       child: Card(
           semanticContainer: true,
@@ -130,12 +131,13 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
             borderRadius: BorderRadius.circular(12.0),
           ),
           child: Container(
-            height: 50,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+            height: 55,
+            child: Container(
+              padding: EdgeInsets.only(left: 8.0),
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Expanded(
+                  Flexible(
                     child: TextField(
                       cursorColor: Color(CommonMethods.getColorHexFromStr(
                           colorsFile.defaultGreen)),

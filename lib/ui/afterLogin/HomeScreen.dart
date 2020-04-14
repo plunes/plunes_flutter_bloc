@@ -128,10 +128,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       items: <BottomNavigationBarItem>[
         bottomNavigationBarItem(plunesStrings.solution, plunesImages.bidIcon,
             plunesImages.bidActiveIcon),
-        bottomNavigationBarItem(
-            plunesStrings.notification,
-            plunesImages.notificationIcon,
-            plunesImages.notificationActiveIcon),
+        bottomNavigationBarItem(plunesStrings.notification,
+            plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
 //        bottomNavigationBarItem(plunesStrings.profile,
 //            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
       ],
@@ -151,14 +149,10 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       items: <BottomNavigationBarItem>[
         bottomNavigationBarItem(plunesStrings.solution, plunesImages.bidIcon,
             plunesImages.bidActiveIcon),
-        bottomNavigationBarItem(
-            plunesStrings.plockr,
-            plunesImages.plockrUnselectedIcon,
-            plunesImages.plockrSelectedIcon),
-        bottomNavigationBarItem(
-            plunesStrings.notification,
-            plunesImages.notificationIcon,
-            plunesImages.notificationActiveIcon),
+        bottomNavigationBarItem(plunesStrings.plockr,
+            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
+        bottomNavigationBarItem(plunesStrings.notification,
+            plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
 //        bottomNavigationBarItem(plunesStrings.profile,
 //            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
       ],
@@ -372,8 +366,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                     getListTile(2, plunesStrings.appointments,
                         plunesImages.appointmentIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
-                    getListTile(3, plunesStrings.settings,
-                        plunesImages.settingsIcon),
+                    getListTile(
+                        3, plunesStrings.settings, plunesImages.settingsIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     _userType != Constants.user
                         ? getListTile(4, plunesStrings.managePayment,
@@ -382,8 +376,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                     _userType != Constants.user
                         ? widget.getDividerRow(context, 0, 0, 70.0)
                         : Container(),
-                    getListTile(
-                        5, plunesStrings.help, plunesImages.helpIcon),
+                    getListTile(5, plunesStrings.help, plunesImages.helpIcon),
                     widget.getDividerRow(context, 0, 0, 70.0),
                     getListTile(
                         6, plunesStrings.aboutUs, plunesImages.aboutUsIcon),
