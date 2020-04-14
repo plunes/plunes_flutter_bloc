@@ -125,9 +125,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   _checkAvailability(int selectedIndex) {
     showDialog(
-      context: context,
-      builder: (BuildContext context) => DialogWidgets().buildProfileDialog(),
-    );
+        context: context,
+        builder: (BuildContext context) => DialogWidgets().buildProfileDialog(
+            catalogueData: widget.catalogueData,
+            solutions: _searchedDocResults.solution.services[selectedIndex]));
   }
 
   _onBookingTap(Services service, int index) {

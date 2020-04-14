@@ -64,16 +64,23 @@ class SearchedSolutionRepo {
   }
 
   Future<RequestState> getDocHosSolution(final String serviceId) async {
+    final double _lat = 28.4594965, _long = 77.0266383;
     User _user = UserManager().getUserDetails();
-//    print("userdetsils ${_user.toString()}");
+    print("userdetsils ${_user.toString()}");
+    double lat;
+    double long;
+    try {
+      lat = double.parse(_user.latitude);
+      long = double.parse(_user.longitude);
+    } catch (e) {}
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         url: Urls.GET_DOC_HOS_API,
         headerIncluded: true,
         queryParameter: {
           "serviceId": serviceId,
-          "latitude": double.parse(_user.latitude),
-          "longitude": double.parse(_user.longitude)
+          "latitude": lat ?? _lat,
+          "longitude": long ?? _long
         });
     if (result.isRequestSucceed) {
       SearchedDocResults _searchedDocResult =

@@ -179,14 +179,6 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   }
 
 
-//  void _getMissedNegotiationSol() async {
-//    var requestState = await _prevMissSolutionBloc.getMissedNegotiationSolutions();
-//    if (requestState is RequestSuccess) {
-//      _prevMissedNegotiationSolution = requestState.response;
-//      _setState();
-//    }
-//  }
-
   _onViewMoreTap(int index) {}
 
   _onSolutionItemTap(int index) {}
@@ -197,11 +189,6 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
 }
 
-//class RemiderText extends StatelessWidget {
-//  const RemiderText({
-//    Key key,
-//  }) : super(key: key);
-//
 
   Widget _reminderView(){
     return Card(
@@ -223,55 +210,4 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       ),
     );
   }
-
-
-//class RowBlock extends StatelessWidget {
-//  final String name;
-//  final String btnName;
-//  final bool isShow;
-//
-//  RowBlock(this.name, this.btnName, this.isShow);
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Container(
-//      margin: EdgeInsets.symmetric(horizontal: 20.0),
-//      height: 100,
-//      decoration: BoxDecoration(
-//        border: Border(bottom: BorderSide(color: Colors.black)),
-//      ),
-//      child: Row(
-//        children: <Widget>[
-//          Container(
-//              width: 50.0,
-//              height: 50.0,
-//              margin: EdgeInsets.all(10),
-//              decoration: new BoxDecoration(
-//                  shape: BoxShape.circle,
-//                  image: new DecorationImage(
-//                      fit: BoxFit.fill,
-//                      image: new NetworkImage(
-//                          "https://i.imgur.com/BoN9kdC.png")))),
-//          Flexible(
-//            child:
-//                // 'Dentist Consultation and X-ray (Single Film)'
-//                Text(name),
-//          ),
-//          FlatButton(
-//            child: Text(btnName),
-//            onPressed: () {
-//              showDialog(
-//                context: context,
-//                builder: (BuildContext context) => DialogWidgets().buildAboutDialog(
-//                    dialogTitle: '',
-//                    dialogMsg:
-//                        'Now you can have a multiple telephonic consltaoipn & one free vist'),
-//              );
-//            },
-//            textColor: Theme.of(context).primaryColor,
-//          ),
-//        ],
-//      ),
-//    );
-//  }
 
