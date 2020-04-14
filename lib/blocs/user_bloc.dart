@@ -22,4 +22,9 @@ class UserBloc extends BlocBase {
     return result;
   }
 
+  Future<RequestState> getVerifyOtp(String mobileNumber, int otp) async {
+    var result = await UserManager().getVerifyOtp(mobileNumber, otp);
+    super.addIntoStream(result);
+    return result;
+  }
 }

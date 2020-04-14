@@ -109,14 +109,29 @@ class UserManager {
 
   Future<RequestState> getGenerateOtp(String mobileNumber) async {
     var result = await DioRequester().requestMethod(
-      url:Urls.GENERATE_OTP_URL,
-      headerIncluded: false,
-      requestType: HttpRequestMethods.HTTP_GET,
-      queryParameter: {'mobileNumber':mobileNumber});
-    if(result.isRequestSucceed){
-     getOTP _getOtp = getOTP.fromJson(result.response.data);
-     print(_getOtp);
-     return RequestSuccess(response:_getOtp);
+        url: Urls.GENERATE_OTP_URL,
+        headerIncluded: false,
+        requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {'mobileNumber': mobileNumber});
+    if (result.isRequestSucceed) {
+      GetOtpModel _getOtp = GetOtpModel.fromJson(result.response.data);
+      print(_getOtp);
+      return RequestSuccess(response: _getOtp);
+    } else {
+      return RequestFailed(response: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getVerifyOtp(String mobileNumber, int otp) async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.VERIFY_OTP_URL,
+        headerIncluded: false,
+        requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {'mobileNumber': mobileNumber, "otp": otp});
+    if (result.isRequestSucceed) {
+      verifyOTP _verifyOtp = verifyOTP.fromJson(result.response.data);
+      print(_verifyOtp);
+      return RequestSuccess(response: _verifyOtp);
     } else {
       return RequestFailed(response: result.failureCause);
     }

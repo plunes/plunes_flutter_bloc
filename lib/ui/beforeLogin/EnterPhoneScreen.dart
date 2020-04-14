@@ -5,12 +5,13 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/FontFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
-import 'package:plunes/resources/network/Urls.dart';
 
 import 'CheckOTP.dart';
 import 'Login.dart';
@@ -24,6 +25,7 @@ import 'Registration.dart';
  *                 or if No then it'll go for registration.
  */
 
+// ignore: must_be_immutable
 class EnterPhoneScreen extends BaseActivity {
   static const tag = 'enter_phonescreen';
   String from;
@@ -40,9 +42,11 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
 
   final phoneNumberController = new TextEditingController();
   bool progress = false, isValidNumber = false;
+  UserBloc _userBloc;
 
   @override
   void initState() {
+    _userBloc = UserBloc();
     super.initState();
   }
 
@@ -144,8 +148,8 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.only(left: 25, right: 25),
-                    child: widget
-                        .getAssetImageWidget(plunesImages.firstUserImage),
+                    child:
+                        widget.getAssetImageWidget(plunesImages.firstUserImage),
                   ),
                   SizedBox(
                     height: 50,
@@ -218,24 +222,39 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   void getUserExistenceData(data) async {
     Constants.OTP = CommonMethods.getRandomOTP();
     if (data != null && data['success'] != null && !data['success']) {
-      bloc.sendOTP(
-          context,
-          this,
-          (urls.sendOTPUrl +
-              phoneNumberController.text.trim() +
-              urls.otpConfig));
-      bloc.userOTP.listen((data) {
-        if (data['type'] != null && data['type'] == 'success') {
-          progress = false;
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      CheckOTP(phone: phoneNumberController.text, from: '')));
-        }
-      }, onDone: () {
-        bloc.dispose();
-      });
+      var requestState =
+          await _userBloc.getGenerateOtp(phoneNumberController.text.trim());
+      progress = false;
+      if (mounted) setState(() {});
+      if (requestState is RequestSuccess) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    CheckOTP(phone: phoneNumberController.text, from: '')));
+      } else if (requestState is RequestFailed) {
+        widget.showInSnackBar(
+            requestState.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      }
+//      bloc.sendOTP(
+//          context,
+//          this,
+//          (urls.sendOTPUrl +
+//              phoneNumberController.text.trim() +
+//              urls.otpConfig));
+
+//      bloc.userOTP.listen((data) {
+//        if (data['type'] != null && data['type'] == 'success') {
+//          progress = false;
+//          Navigator.push(
+//              context,
+//              MaterialPageRoute(
+//                  builder: (context) =>
+//                      CheckOTP(phone: phoneNumberController.text, from: '')));
+//        }
+//      }, onDone: () {
+//        bloc.dispose();
+//      });
     } else {
       progress = false;
       Navigator.push(
