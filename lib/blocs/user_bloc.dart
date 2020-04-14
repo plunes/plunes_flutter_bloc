@@ -16,8 +16,8 @@ class UserBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> getGenerateOtp() async {
-    var result = await UserManager().getGenerateOtp();
+  Future<RequestState> getGenerateOtp(String mobileNumber) async {
+    var result = await UserManager().getGenerateOtp(mobileNumber);
     super.addIntoStream(result);
     return result;
   }
