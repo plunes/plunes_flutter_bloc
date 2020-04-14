@@ -3,6 +3,8 @@ import 'package:pinput/pin_put/pin_put.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:quiver/async.dart';
@@ -16,6 +18,7 @@ import 'Registration.dart';
  * Description - CheckOTP class is used for OTP verification by entering the four digit otp code.
  */
 
+// ignore: must_be_immutable
 class CheckOTP extends BaseActivity {
   static const tag = '/checkOTP';
   final String phone, from;
@@ -26,29 +29,29 @@ class CheckOTP extends BaseActivity {
   _CheckOTPState createState() => _CheckOTPState();
 }
 
-class _CheckOTPState extends State<CheckOTP> {
+class _CheckOTPState extends BaseState<CheckOTP> {
   bool progress = false, time = true, resend = false, errorMsg = false;
   int _start = 30, _current = 30;
   CountdownTimer countDownTimer;
 
   void _checkOTP(String pin, BuildContext context) async {
-    setState(() {
-      if (pin == Constants.OTP) {
-        if (widget.from == plunesStrings.forgotPasswordTitle)
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ChangePassword(
-                      phone: widget.phone, from: plunesStrings.createPassword)));
-        else
-          Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => Registration(phone: widget.phone)));
-      } else {
-        errorMsg = true;
-      }
-    });
+    var result = await UserBloc().getVerifyOtp(widget.phone, int.parse(pin));
+    if (result is RequestSuccess) {
+      if (widget.from == plunesStrings.forgotPasswordTitle)
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ChangePassword(
+                    phone: widget.phone, from: plunesStrings.createPassword)));
+      else
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Registration(phone: widget.phone)));
+    } else if (result is RequestFailed) {
+      widget.showInSnackBar(
+          result.failureCause, PlunesColors.BLACKCOLOR, scaffoldKey);
+    }
   }
 
   void send_otp() async {
@@ -159,14 +162,14 @@ class _CheckOTPState extends State<CheckOTP> {
               ),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(bottom: 30),
-            child: Visibility(
-                visible: errorMsg,
-                child: Center(
-                    child: widget.createTextViews(plunesStrings.wrongOTPError, 12,
-                        colorsFile.red, TextAlign.center, FontWeight.normal))),
-          ),
+//          Container(
+//            margin: EdgeInsets.only(bottom: 30),
+//            child: Visibility(
+//                visible: errorMsg,
+//                child: Center(
+//                    child: widget.createTextViews(plunesStrings.wrongOTPError, 12,
+//                        colorsFile.red, TextAlign.center, FontWeight.normal))),
+//          ),
           Visibility(
             visible: time,
             child: Container(
@@ -218,6 +221,7 @@ class _CheckOTPState extends State<CheckOTP> {
 
     return Scaffold(
         backgroundColor: Colors.white,
+        key: scaffoldKey,
         appBar: widget.getAppBar(context, plunesStrings.checkOTP, true),
         body: GestureDetector(
           onTap: () {

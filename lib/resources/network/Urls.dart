@@ -59,4 +59,5 @@ class Urls {
   static const String PAYMENT_WEB_VIEW_URL = 'https://plunes.co/payment';
   static const String PREV_SOLUTION_URL = "solution/search";
   static const String GENERATE_OTP_URL = "user/generateOtp";
+  static const String VERIFY_OTP_URL = "user/verifyOtp";
 }
