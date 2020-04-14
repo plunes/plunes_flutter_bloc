@@ -107,12 +107,12 @@ class UserManager {
     }
   }
 
-  Future<RequestState> getGenerateOtp() async {
+  Future<RequestState> getGenerateOtp(String mobileNumber) async {
     var result = await DioRequester().requestMethod(
       url:Urls.GENERATE_OTP_URL,
       headerIncluded: false,
       requestType: HttpRequestMethods.HTTP_GET,
-      queryParameter: {'mobileNumber':9650728354});
+      queryParameter: {'mobileNumber':mobileNumber});
     if(result.isRequestSucceed){
      getOTP _getOtp = getOTP.fromJson(result.response.data);
      print(_getOtp);
