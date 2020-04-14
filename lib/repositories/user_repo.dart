@@ -106,4 +106,19 @@ class UserManager {
       return RequestFailed(response: result.failureCause);
     }
   }
+
+  Future<RequestState> getGenerateOtp() async {
+    var result = await DioRequester().requestMethod(
+      url:Urls.GENERATE_OTP_URL,
+      headerIncluded: false,
+      requestType: HttpRequestMethods.HTTP_GET,
+      queryParameter: {'mobileNumber':9650728354});
+    if(result.isRequestSucceed){
+     getOTP _getOtp = getOTP.fromJson(result.response.data);
+     print(_getOtp);
+     return RequestSuccess(response:_getOtp);
+    } else {
+      return RequestFailed(response: result.failureCause);
+    }
+  }
 }
