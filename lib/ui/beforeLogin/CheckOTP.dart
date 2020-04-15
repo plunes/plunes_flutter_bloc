@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/blocs/user_bloc.dart';
@@ -123,8 +124,9 @@ class _CheckOTPState extends BaseState<CheckOTP> {
     CommonMethods.globalContext = context;
 
     final form = Container(
+      margin: EdgeInsets.symmetric(vertical:AppConfig.horizontalBlockSize*40),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+       // mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
             alignment: Alignment.center,
@@ -133,9 +135,10 @@ class _CheckOTPState extends BaseState<CheckOTP> {
           ),
           Container(
             alignment: Alignment.center,
+
             child: Padding(
               padding: const EdgeInsets.only(
-                  left: 60.0, right: 20, top: 50, bottom: 20),
+                  left: 60.0, right: 20, top: 70, bottom: 80),
               child: Center(
                 child: PinPut(
                   fieldsCount: 4,
@@ -150,19 +153,19 @@ class _CheckOTPState extends BaseState<CheckOTP> {
                   inputDecoration: InputDecoration(
                     counterText: "",
                     contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-                    focusedBorder: OutlineInputBorder(
+                    focusedBorder: UnderlineInputBorder(
                       borderRadius: const BorderRadius.all(
                         const Radius.circular(10.0),
                       ),
                       borderSide: BorderSide(
-                          color: Color(hexColorCode.defaultGreen), width: 1.0),
+                          color: Color(hexColorCode.defaultGreen), width: 3.0),
                     ),
-                    enabledBorder: OutlineInputBorder(
+                    enabledBorder: UnderlineInputBorder(
                       borderRadius: const BorderRadius.all(
                         const Radius.circular(10.0),
                       ),
                       borderSide: BorderSide(
-                          color: Color(hexColorCode.defaultGreen), width: 1.0),
+                          color: Color(hexColorCode.defaultGreen), width: 3.0),
                     ),
                   ),
                   clearButtonIcon: Icon(Icons.clear, color: Colors.transparent),
