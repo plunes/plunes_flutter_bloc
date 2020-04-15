@@ -60,7 +60,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               widget.getAppBar(context, PlunesStrings.solutionSearched, true),
           body: Builder(builder: (context) {
             return Container(
-              padding: CustomWidgets().getDefaultPaddingForScreens(),
+              padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize*3),
               width: double.infinity,
               child: _showBody(),
             );
@@ -73,10 +73,13 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
       children: <Widget>[
         StreamBuilder(
           builder: (context, snapShot) {
-            return CustomWidgets().searchBar(
+            return Container(
+                margin: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*2),
+                child:CustomWidgets().searchBar(
                 hintText: plunesStrings.searchHint,
                 hasFocus: true,
-                searchController: _searchController);
+                searchController: _searchController)
+            );
           },
           stream: _streamController.stream,
         ),
@@ -84,8 +87,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
             AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
         Container(
           padding: EdgeInsets.only(
-              left: AppConfig.horizontalBlockSize * 0.2,
-              right: AppConfig.horizontalBlockSize * 0.2),
+              left: AppConfig.horizontalBlockSize * 3,
+              right: AppConfig.horizontalBlockSize * 3),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -102,7 +105,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                   buttonText: PlunesStrings.tests,
                   textColor: PlunesColors.GREYCOLOR,
                   borderColor: PlunesColors.LIGHTGREYCOLOR,
-                  horizontalPadding: AppConfig.horizontalBlockSize * 4,
+                  horizontalPadding: AppConfig.horizontalBlockSize * 11,
                   verticalPadding: AppConfig.verticalBlockSize * 1,
                   onTap: () => _onTestAndProcedureButtonClick(
                       PlunesStrings.tests, false)),
@@ -111,7 +114,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                   buttonText: PlunesStrings.procedures,
                   textColor: PlunesColors.GREYCOLOR,
                   borderColor: PlunesColors.LIGHTGREYCOLOR,
-                  horizontalPadding: AppConfig.horizontalBlockSize * 4,
+                  horizontalPadding: AppConfig.horizontalBlockSize * 5,
                   verticalPadding: AppConfig.verticalBlockSize * 1,
                   onTap: () => _onTestAndProcedureButtonClick(
                       PlunesStrings.procedures, true)),

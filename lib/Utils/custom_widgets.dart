@@ -34,12 +34,12 @@ class CustomWidgets {
       {@required final TextEditingController searchController,
       @required final String hintText,
       bool hasFocus = false,
-      isRounded = false,
+      isRounded = true,
       FocusNode focusNode,
-      double searchBarHeight = 7}) {
+      double searchBarHeight = 6}) {
     return StatefulBuilder(builder: (context, newState) {
       return Card(
-        elevation: 1.0,
+        elevation: 3.0,
         shape: RoundedRectangleBorder(
             borderRadius: isRounded
                 ? BorderRadius.circular(AppConfig.horizontalBlockSize * 10)
@@ -48,8 +48,8 @@ class CustomWidgets {
         child: Container(
           height: AppConfig.verticalBlockSize * searchBarHeight,
           padding: EdgeInsets.only(
-              left: AppConfig.horizontalBlockSize * 2,
-              right: AppConfig.horizontalBlockSize * 2),
+              left: AppConfig.horizontalBlockSize * 4,
+              right: AppConfig.horizontalBlockSize * 4),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.max,
@@ -70,7 +70,7 @@ class CustomWidgets {
                       hintText: hintText,
                       hintStyle: TextStyle(
                           color: PlunesColors.GREYCOLOR,
-                          fontSize: AppConfig.mediumFont)),
+                          fontSize: AppConfig.smallFont)),
                 ),
               ),
               searchController.text.trim().isEmpty
@@ -158,10 +158,14 @@ class CustomWidgets {
                   ? PlunesColors.LIGHTGREENCOLOR
                   : PlunesColors.WHITECOLOR,
               padding: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 1),
+                  vertical: AppConfig.verticalBlockSize * 1.5,
+                 horizontal: AppConfig.horizontalBlockSize*3
+              ),
               child: Column(
+
                 children: <Widget>[
                   Row(
+
                     children: <Widget>[
                       CircleAvatar(
                         child: Container(
@@ -186,7 +190,7 @@ class CustomWidgets {
                                 text: TextSpan(
                                     text: solutionList[index].service ??
                                         PlunesStrings.NA,
-                                    style: TextStyle(color: Colors.black),
+                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500),
                                     children: [
                                   TextSpan(
                                       text:
@@ -228,7 +232,9 @@ class CustomWidgets {
               ? Container()
               : Container(
                   margin: EdgeInsets.only(
-                      bottom: AppConfig.verticalBlockSize * 1.5),
+                      bottom: AppConfig.verticalBlockSize * 0,
+                  right:AppConfig.horizontalBlockSize*3,
+                  left:AppConfig.horizontalBlockSize*3),
                   width: double.infinity,
                   height: 0.5,
                   color: PlunesColors.GREYCOLOR,

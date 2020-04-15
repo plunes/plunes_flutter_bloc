@@ -137,7 +137,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
             _prevSearchedSolution.data.isEmpty)
         ? Container()
         : Expanded(
-            flex: 3,
+            flex: 5,
             child: StreamBuilder<Object>(
                 stream: _controller.stream,
                 builder: (context, snapshot) {
@@ -171,7 +171,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                         ? PlunesStrings.topSearches
                                         : PlunesStrings.previousActivities,
                                     style:
-                                        TextStyle(fontWeight: FontWeight.w500),
+                                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                                   ),
                                   (_prevSearchedSolution.topSearches != null &&
                                           _prevSearchedSolution.topSearches)
@@ -179,6 +179,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                       : Icon(
                                           Icons.chevron_right,
                                           color: PlunesColors.GREENCOLOR,
+                                          size:35,
                                         )
                                 ],
                               ),
@@ -221,7 +222,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //          shape: BoxShape.rectangle, color: PlunesColors.WHITECOLOR),
       padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
       margin:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 6),
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
       child: Column(
         children: <Widget>[
           Padding(

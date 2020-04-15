@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -275,7 +276,11 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   }
 
   Widget getDrawerView() {
-    return Drawer(
+    return Container(
+      margin: EdgeInsets.only(
+          top:AppConfig.verticalBlockSize*5,
+           bottom:AppConfig.verticalBlockSize*10),
+      child: Drawer(
       child: Container(
         color: Colors.white,
         child: Column(
@@ -285,8 +290,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                 child: ListView(
                   children: <Widget>[
                     Container(
-                      padding: EdgeInsets.only(top: 20),
-                      height: 120,
+                      //padding: EdgeInsets.only(top: 10),
+                     // height: 100,
                       child: InkWell(
                         onTap: () => navigatePage(0),
                         child: Row(
@@ -423,6 +428,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
           ],
         ),
       ),
+    ),
     );
   }
 

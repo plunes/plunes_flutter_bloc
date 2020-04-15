@@ -42,7 +42,7 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
           body: (Builder(builder: (context) {
             return Container(
               width: double.infinity,
-              padding: CustomWidgets().getDefaultPaddingForScreens(),
+              //padding: CustomWidgets().getDefaultPaddingForScreens(),
               child: StreamBuilder<RequestState>(
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestFailed) {
