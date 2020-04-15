@@ -457,7 +457,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       children: <Widget>[
         Center(
           child: Text(
-            "Make a payment of  300/- to confirm the booking",
+            "Make a payment of  ${_calcPriceToShow()}/- to confirm the booking",
             style: TextStyle(fontSize: 14),
           ),
         ),
@@ -849,6 +849,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   ///payment methods end
   _showErrorMessage(String message) {
     widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+  }
+
+  _calcPriceToShow() {
+    if (widget.bookInPrice != null) {
+      return "${widget.bookInPrice}";
+    } else {
+      num price = widget.service.newPrice[0]?.toDouble() ?? 0;
+      num percentage = widget.service.paymentOptions[0] ?? 0;
+      var finalPrice = (price * percentage) / 100;
+      return finalPrice == null
+          ? PlunesStrings.NA
+          : "${finalPrice.ceilToDouble().toInt()}";
+    }
   }
 }
 

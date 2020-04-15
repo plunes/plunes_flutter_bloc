@@ -33,7 +33,7 @@ class PlunesStrings {
       "Sorry, We are currently not available in your area.";
 
   static const String switchToGurLoc =
-      "Kindly switch to Gurgaoun location, currently we are not providing service in your area";
+      "Kindly switch to Gurgaon location, currently we are not providing service in your area";
 
   static const String pleaseSelectValidSlot =
       "Please select a valid appointment time";

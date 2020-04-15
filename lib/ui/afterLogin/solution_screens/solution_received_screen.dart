@@ -146,7 +146,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   timeSlots: service.timeSlots,
                   docHosSolution: _solution,
                   bookInPrice: service.bookIn,
-                  serviceIndex: index,
+                  serviceIndex: 0,
                   service: service,
                 )));
   }

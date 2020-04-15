@@ -320,6 +320,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         if (result.response.data == null || !result.response.data) {
           widget.showInSnackBar(PlunesStrings.switchToGurLoc,
               PlunesColors.GREYCOLOR, scaffoldKey);
+          _canGoAhead = UserManager().getIsUserInServiceLocation();
         } else {
           _canGoAhead = true;
         }
