@@ -149,6 +149,8 @@ flutter:
     - assets/images/bottom_tabs/search.png
     - assets/images/bottom_tabs/solution-active.png
     - assets/images/bottom_tabs/solution.png
+    - assets/images/bottom_tabs/homeActive.png
+    - assets/images/bottom_tabs/homeNonActive.png
     - assets/images/catalogue/catalog.png
     - assets/images/catalogue/edit.png
     - assets/images/catalogue/uploadPlus.png
@@ -242,6 +244,7 @@ flutter:
 
     - assets/images/user_landing_map.png
     - assets/images/locationIconUserLandingScreen.png
+    - assets/images/cashIcon.png
 
 
 

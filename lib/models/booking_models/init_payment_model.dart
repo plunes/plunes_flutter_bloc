@@ -6,7 +6,7 @@ class InitPayment {
   String appointmentTime;
   String percentage;
   int price_pos;
-  int creditsUsed;
+  bool creditsUsed;
   String docHosServiceId;
   String user_id;
   String couponName, bookIn;

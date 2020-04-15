@@ -56,6 +56,10 @@ class PlunesImages {
 
   get notificationIcon => 'assets/images/bottom_tabs/notification.png';
 
+  get homeActive => 'assets/images/bottom_tabs/homeActive.png';
+
+  get homeNonActive => 'assets/images/bottom_tabs/homeNonActive.png';
+
   get solutionIcon => 'assets/images/bottom_tabs/solution.png';
 
   get solutionActiveIcon => 'assets/images/bottom_tabs/solution-active.png';
@@ -151,4 +155,10 @@ class PlunesImages {
   get referIcon => 'assets/images/refer.png';
 
   get coverIcon => 'assets/images/cover.png';
+
+  get cashIcon => 'assets/images/cashIcon.png';
+
+  get checkIcon => 'assets/images/bid/check.png';
+
+  get unCheckIcon => 'assets/images/bid/uncheck.png';
 }

@@ -46,14 +46,16 @@ class _LocationFetchState extends State<LocationFetch> {
     _preferences = new Preferences();
     String lat = _preferences.getPreferenceString(Constants.LATITUDE);
     String lng = _preferences.getPreferenceString(Constants.LONGITUDE);
-    final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
-    var addresses =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    var addr = addresses?.first;
-    String full_address = addr?.addressLine;
-    latitude = lat;
-    longitude = lng;
-    locationController.text = full_address;
+    if (lat != null && lat.isNotEmpty && lng != null && lng.isNotEmpty) {
+      final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
+      var addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var addr = addresses?.first;
+      String full_address = addr?.addressLine;
+      latitude = lat;
+      longitude = lng;
+      locationController.text = full_address;
+    }
     setState(() {});
   }
 

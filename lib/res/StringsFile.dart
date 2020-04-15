@@ -280,6 +280,8 @@ class PlunesStrings {
 
   get solution => 'SOLUTION';
 
+  get home => 'HOME';
+
   get appointments => 'Appointments';
 
   get help => 'Help';
@@ -472,7 +474,7 @@ class PlunesStrings {
   static const String bookIn = "Book in ";
   static const String homeCollectionAvailable = "Home Collection Available";
   static const String oopsServiceNotAvailable =
-      "Oops, seems like we are not providing services in your area, kindly search in gurgoun location.";
+      "Oops, seems like we are not providing services in your area, kindly search in gurgaon location.";
   static const String save = "Save";
   static const String kmsAway = "kms away";
   static const String book = "Book";

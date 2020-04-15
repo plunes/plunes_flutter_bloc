@@ -1,34 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:plunes/base/BaseActivity.dart';
 import '../../../Utils/custom_widgets.dart';
 
-class Duration {
+class CustomDuration {
   final String name;
 
-  Duration(this.name);
+  CustomDuration(this.name);
 
-  static List<Duration> getDuration() {
-    return <Duration>[
-      Duration('Select'),
-      Duration('Today'),
-      Duration('Weekly'),
-      Duration('Monthly'),
-      Duration('Yearly'),
+  static List<CustomDuration> getDuration() {
+    return <CustomDuration>[
+      CustomDuration('Select'),
+      CustomDuration('Today'),
+      CustomDuration('Weekly'),
+      CustomDuration('Monthly'),
+      CustomDuration('Yearly'),
     ];
   }
 }
 
-class HospitalOverviewScreen extends StatelessWidget {
-  static const routeName = '/hospitalOverview';
+// ignore: must_be_immutable
+class HospitalDoctorOverviewScreen extends BaseActivity {
+  @override
+  _HospitalOverviewScreenState createState() => _HospitalOverviewScreenState();
+}
 
-  Duration _selectLanguage;
-
+class _HospitalOverviewScreenState
+    extends BaseState<HospitalDoctorOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: Text('hospital OverView'),
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

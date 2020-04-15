@@ -9,7 +9,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
-import 'package:plunes/ui/afterLogin/BiddingScreen.dart';
+import 'package:plunes/ui/afterLogin/doc_hos_screen/hosptal_overview_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 
 import 'AboutUs.dart';
@@ -28,6 +28,7 @@ import 'SettingsScreen.dart';
  * Description - HomeScreen class is the main class which will open after login, it's just a Dashboard of the application.
  */
 
+// ignore: must_be_immutable
 class HomeScreen extends BaseActivity {
   static const tag = '/homescreen';
   final String screen;
@@ -52,14 +53,17 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       screen;
   bool _showBadge = false, progress = false, isSelected = false;
   final List<Widget> _widgetOptionsForUser = [
-//    BiddingScreen(),
     BiddingMainScreen(),
     PlockrMainScreen(),
     NotificationScreen(),
-//    ProfileScreen()
+  ];
+  final List<Widget> _widgetOptionsForDoctor = [
+    HospitalDoctorOverviewScreen(),
+    PlockrMainScreen(),
+    NotificationScreen(),
+    ProfileScreen()
   ];
   final List<Widget> _widgetOptionsHospital = [
-//    BiddingScreen(),
     BiddingMainScreen(),
     NotificationScreen(),
     ProfileScreen()
@@ -88,7 +92,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        extendBodyBehindAppBar: _selectedIndex == 0 ? true : false,
+        extendBodyBehindAppBar:
+            (_selectedIndex == 0 && _userType == Constants.user) ? true : false,
         appBar: widget.getHomeAppBar(
             context,
             _userType != Constants.hospital
@@ -106,13 +111,16 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             selectedPositions,
             from,
             this,
-            isSolutionPageSelected: _selectedIndex == 0),
+            isSolutionPageSelected:
+                (_selectedIndex == 0 && _userType == Constants.user)),
         drawer: getDrawerView(),
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()),
-        bottomNavigationBar: _userType != Constants.hospital
-            ? getBottomNavigationView()
-            : getBottomNavigationHospitalView());
+        bottomNavigationBar: _userType == Constants.user
+            ? getBottomNavigationViewForGeneralUser()
+            : _userType == Constants.doctor
+                ? getBottomNavigationViewForDoctor()
+                : getBottomNavigationHospitalView());
   }
 
   Widget getBottomNavigationHospitalView() {
@@ -126,17 +134,40 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: <BottomNavigationBarItem>[
-        bottomNavigationBarItem(plunesStrings.solution, plunesImages.bidIcon,
-            plunesImages.bidActiveIcon),
+        bottomNavigationBarItem(plunesStrings.home, plunesImages.homeNonActive,
+            plunesImages.homeActive),
         bottomNavigationBarItem(plunesStrings.notification,
             plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
-//        bottomNavigationBarItem(plunesStrings.profile,
-//            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
+        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
+            plunesImages.profileActiveIcon)
       ],
     );
   }
 
-  Widget getBottomNavigationView() {
+  Widget getBottomNavigationViewForDoctor() {
+    return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
+      backgroundColor: Colors.white,
+      elevation: 20,
+      unselectedItemColor: Colors.grey,
+      showSelectedLabels: true,
+      selectedItemColor: Color(hexColorCode.defaultGreen),
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
+      items: <BottomNavigationBarItem>[
+        bottomNavigationBarItem(plunesStrings.home, plunesImages.homeNonActive,
+            plunesImages.homeActive),
+        bottomNavigationBarItem(plunesStrings.plockr,
+            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
+        bottomNavigationBarItem(plunesStrings.notification,
+            plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
+        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
+            plunesImages.profileActiveIcon)
+      ],
+    );
+  }
+
+  Widget getBottomNavigationViewForGeneralUser() {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.white,
@@ -153,8 +184,6 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
         bottomNavigationBarItem(plunesStrings.notification,
             plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
-//        bottomNavigationBarItem(plunesStrings.profile,
-//            assetsImageFile.profileIcon, assetsImageFile.profileActiveIcon)
       ],
     );
   }
@@ -173,9 +202,11 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
 
   Widget bodyView() {
     return Container(
-        child: _userType != Constants.hospital
+        child: _userType == Constants.user
             ? _widgetOptionsForUser[_selectedIndex]
-            : _widgetOptionsHospital[_selectedIndex]);
+            : _userType == Constants.doctor
+                ? _widgetOptionsForDoctor[_selectedIndex]
+                : _widgetOptionsHospital[_selectedIndex]);
   }
 
   void initialize() {
@@ -494,5 +525,6 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     _userType = preferences.getPreferenceString(Constants.PREF_USER_TYPE);
     _userName = preferences.getPreferenceString(Constants.PREF_USERNAME);
     _imageUrl = preferences.getPreferenceString(Constants.PREF_USER_IMAGE);
+    print("_userType is $_userType");
   }
 }

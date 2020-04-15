@@ -15,6 +15,7 @@ import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
@@ -55,15 +56,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       _selectedTimeSlot,
       _notSelectedEntry,
       _userFailureCause;
-  bool _isFetchingDocHosInfo;
+  bool _isFetchingDocHosInfo, _shouldUseCredit;
   LoginPost _docProfileInfo, _userProfileInfo;
   BookingBloc _bookingBloc;
 
   @override
   void initState() {
+    _shouldUseCredit = false;
     _appointmentTime = "00:00";
     _notSelectedEntry = _appointmentTime;
-    _selectedPaymentType = _paymentTypeCash;
+    _selectedPaymentType = _paymentTypeCoupon;
     _getDocHosInfo();
     _getUserInfo();
     _bookingBloc = BookingBloc();
@@ -409,100 +411,144 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   _getApplyCouponAndCashWidget() {
-    return Column(
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 3,
-              bottom: AppConfig.verticalBlockSize * 3),
-          width: double.infinity,
-          height: 0.5,
-          color: PlunesColors.GREYCOLOR,
-        ),
-        Text(PlunesStrings.availableCash),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Radio(
-                value: _paymentTypeCash,
-                groupValue: _selectedPaymentType,
-                onChanged: (value) => _paymentTypeOnChange(value)),
-            Text("Apply Cash     ")
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Radio(
-                value: _paymentTypeCoupon,
-                groupValue: _selectedPaymentType,
-                onChanged: (value) => _paymentTypeOnChange(value)),
-            Text("Apply Coupon")
-          ],
-        ),
-        Container(
-          margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 3,
-              bottom: AppConfig.verticalBlockSize * 3),
-          width: double.infinity,
-          height: 0.5,
-          color: PlunesColors.GREYCOLOR,
-        ),
-      ],
-    );
+    return (_userProfileInfo == null ||
+            _userProfileInfo.user == null ||
+            _userProfileInfo.user.credits == null ||
+            _userProfileInfo.user.credits == "0")
+        ? Container()
+        : Column(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(
+                    top: AppConfig.verticalBlockSize * 3,
+                    bottom: AppConfig.verticalBlockSize * 3),
+                width: double.infinity,
+                height: 0.5,
+                color: PlunesColors.GREYCOLOR,
+              ),
+              Text(PlunesStrings.availableCash),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: Image.asset(plunesImages.cashIcon),
+                    height: AppConfig.verticalBlockSize * 3,
+                    width: AppConfig.horizontalBlockSize * 6,
+                    margin: EdgeInsets.only(
+                        right: AppConfig.horizontalBlockSize * 2),
+                  ),
+                  Text(
+                    _userProfileInfo.user.credits,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              InkWell(
+                onTap: () {
+                  _shouldUseCredit = !_shouldUseCredit;
+                  _setState();
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        _shouldUseCredit
+                            ? plunesImages.checkIcon
+                            : plunesImages.unCheckIcon,
+                        height: 20,
+                        width: 20,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 2),
+                        child: Text("Apply Cash     "),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+//        Row(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          children: <Widget>[
+//            Radio(
+//                value: _paymentTypeCoupon,
+//                groupValue: _selectedPaymentType,
+//                onChanged: (value) => _paymentTypeOnChange(value)),
+//            Text("Apply Coupon")
+//          ],
+//        ),
+              Container(
+                margin: EdgeInsets.only(
+                    top: AppConfig.verticalBlockSize * 3,
+                    bottom: AppConfig.verticalBlockSize * 3),
+                width: double.infinity,
+                height: 0.5,
+                color: PlunesColors.GREYCOLOR,
+              ),
+            ],
+          );
   }
 
   _getPayNowWidget() {
-    return Column(
-      children: <Widget>[
-        Center(
-          child: Text(
-            "Make a payment of  ${_calcPriceToShow()}/- to confirm the booking",
-            style: TextStyle(fontSize: 14),
+    return Padding(
+      padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+      child: Column(
+        children: <Widget>[
+          Center(
+            child: Text(
+              "Make a payment of  ${_calcPriceToShow()}/- to confirm the booking",
+              style: TextStyle(fontSize: 14),
+            ),
           ),
-        ),
-        Container(
-          padding: EdgeInsets.only(
-              left: AppConfig.horizontalBlockSize * 24,
-              bottom: AppConfig.verticalBlockSize * 1.5,
-              top: AppConfig.verticalBlockSize * 2.3,
-              right: AppConfig.horizontalBlockSize * 24),
-          child: InkWell(
-            onTap: () {
-              (_selectedDate == _tempSelectedDateTime &&
-                      _appointmentTime != _notSelectedEntry &&
-                      _appointmentTime != null)
-                  ? _doPaymentRelatedQueries()
-                  : _showErrorMessage(PlunesStrings.pleaseSelectValidSlot);
-              return;
-            },
-            onDoubleTap: () {},
-            child: CustomWidgets().getRoundedButton(
-                PlunesStrings.payNow,
-                AppConfig.horizontalBlockSize * 8,
+          Container(
+            padding: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 24,
+                bottom: AppConfig.verticalBlockSize * 1.5,
+                top: AppConfig.verticalBlockSize * 2.3,
+                right: AppConfig.horizontalBlockSize * 24),
+            child: InkWell(
+              onTap: () {
                 (_selectedDate == _tempSelectedDateTime &&
                         _appointmentTime != _notSelectedEntry &&
                         _appointmentTime != null)
-                    ? PlunesColors.GREENCOLOR
-                    : PlunesColors.WHITECOLOR,
-                AppConfig.horizontalBlockSize * 3,
-                AppConfig.verticalBlockSize * 1,
-                PlunesColors.BLACKCOLOR,
-                hasBorder: true),
-          ),
-        ),
-        InkWell(
-          onTap: () => LauncherUtil.launchUrl(urls.terms),
-          onDoubleTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              PlunesStrings.tcApply,
-              style: TextStyle(decoration: TextDecoration.underline),
+                    ? _doPaymentRelatedQueries()
+                    : _showErrorMessage(PlunesStrings.pleaseSelectValidSlot);
+                return;
+              },
+              onDoubleTap: () {},
+              child: CustomWidgets().getRoundedButton(
+                  PlunesStrings.payNow,
+                  AppConfig.horizontalBlockSize * 8,
+                  (_selectedDate == _tempSelectedDateTime &&
+                          _appointmentTime != _notSelectedEntry &&
+                          _appointmentTime != null)
+                      ? PlunesColors.GREENCOLOR
+                      : PlunesColors.WHITECOLOR,
+                  AppConfig.horizontalBlockSize * 3,
+                  AppConfig.verticalBlockSize * 1,
+                  (_selectedDate == _tempSelectedDateTime &&
+                          _appointmentTime != _notSelectedEntry &&
+                          _appointmentTime != null)
+                      ? PlunesColors.WHITECOLOR
+                      : PlunesColors.BLACKCOLOR,
+                  hasBorder: true),
             ),
           ),
-        ),
-      ],
+          InkWell(
+            onTap: () => LauncherUtil.launchUrl(urls.terms),
+            onDoubleTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                PlunesStrings.tcApply,
+                style: TextStyle(decoration: TextDecoration.underline),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -774,7 +820,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         sol_id: widget.docHosSolution.sId,
         time_slot: _selectedTimeSlot,
         professional_id: widget.profId,
-        creditsUsed: 0,
+        creditsUsed: _shouldUseCredit,
         user_id: UserManager().getUserDetails().uid,
         couponName: "",
         bookIn: !(paymentSelector.isInPercent)
