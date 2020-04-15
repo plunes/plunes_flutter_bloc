@@ -60,7 +60,6 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
     return Container(
       height: 45,
       padding: EdgeInsets.only(left: 10, right: 10),
-//      decoration: widget.myBoxDecoration(),
       margin: EdgeInsets.only(left: 10),
       child: Center(
         child: TextField(
@@ -104,10 +103,16 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
     }
   }
 
+  _setState() {
+    if (mounted) setState(() {});
+  }
+
   void submitForOTP() async {
     if (!isValidNumber && phoneNumberController.text != '') {
       if (CommonMethods.checkOTPVerification) {
         progress = true;
+        _setState();
+        await Future.delayed(Duration(milliseconds: 200));
         bloc.checkUserExistence(context, this, phoneNumberController.text);
         bloc.isUserExist.listen((data) {
           getUserExistenceData(data);
@@ -220,12 +225,12 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   dialogCallBackFunction(String action) {}
 
   void getUserExistenceData(data) async {
-    Constants.OTP = CommonMethods.getRandomOTP();
+//    Constants.OTP = CommonMethods.getRandomOTP();
     if (data != null && data['success'] != null && !data['success']) {
       var requestState =
           await _userBloc.getGenerateOtp(phoneNumberController.text.trim());
       progress = false;
-      if (mounted) setState(() {});
+      _setState();
       if (requestState is RequestSuccess) {
         Navigator.push(
             context,

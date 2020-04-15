@@ -66,7 +66,7 @@ class SearchedSolutionRepo {
   Future<RequestState> getDocHosSolution(final String serviceId) async {
     final double _lat = 28.4594965, _long = 77.0266383;
     User _user = UserManager().getUserDetails();
-    print("userdetsils ${_user.toString()}");
+//    print("userdetsils ${_user.toString()}");
     double lat;
     double long;
     try {

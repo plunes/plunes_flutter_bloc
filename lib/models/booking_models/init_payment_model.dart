@@ -9,7 +9,7 @@ class InitPayment {
   int creditsUsed;
   String docHosServiceId;
   String user_id;
-  String couponName;
+  String couponName, bookIn;
 
   InitPayment(
       {this.docHosServiceId,
@@ -22,7 +22,8 @@ class InitPayment {
       this.service_id,
       this.sol_id,
       this.time_slot,
-      this.user_id});
+      this.user_id,
+      this.bookIn});
 
   Map<String, dynamic> initiatePaymentToJson() {
     Map<String, dynamic> body = {
@@ -35,7 +36,8 @@ class InitPayment {
       "appointmentTime": appointmentTime,
       "userId": user_id,
       "creditsUsed": creditsUsed,
-      'coupon': couponName
+      'coupon': couponName,
+      'bookIn': bookIn
     };
     return body;
   }

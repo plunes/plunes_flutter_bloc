@@ -23,6 +23,7 @@ import 'ForgotPassword.dart';
  * Description - Login class is for sign in into the application for all User Type: General User, Doctor and Hospital.
  */
 
+// ignore: must_be_immutable
 class Login extends BaseActivity {
   static const tag = '/login';
   String phone;
@@ -79,8 +80,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
               color: Color(
                   CommonMethods.getColorHexFromStr(colorsFile.lightGrey4)),
               child: Center(
-                  child: widget
-                      .getAssetImageWidget(plunesImages.loginLogoImage))),
+                  child:
+                      widget.getAssetImageWidget(plunesImages.loginLogoImage))),
           Container(
               margin: EdgeInsets.fromLTRB(20, 50, 20, 20),
               child: Column(children: <Widget>[
@@ -92,9 +93,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
                     isValidNumber,
                     plunesStrings.enterValidNumber),
                 widget.getSpacer(0.0, 20.0),
-                getPasswordRow(plunesStrings.password
-                    .toString()
-                    .substring(0, plunesStrings.password.toString().length - 1)),
+                getPasswordRow(plunesStrings.password.toString().substring(
+                    0, plunesStrings.password.toString().length - 1)),
                 widget.getSpacer(0.0, 40.0),
                 progress
                     ? SpinKitThreeBounce(
@@ -266,7 +266,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
           context: context,
           builder: (context) => new CupertinoAlertDialog(
             title: new Text('Are you sure?'),
-            content: new Text('Do you want to exit an App'),
+            content: new Text('Do you want to exit'),
             actions: <Widget>[
               new FlatButton(
                 onPressed: () => Navigator.of(context).pop(false),
@@ -301,7 +301,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
       progress = false;
       if (data.success) {
         await bloc.saveDataInPreferences(data, context, plunesStrings.login);
-        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
+        widget.showInSnackBar(
+            plunesStrings.success, Colors.green, _scaffoldKey);
       } else
         widget.showInSnackBar(
             plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);

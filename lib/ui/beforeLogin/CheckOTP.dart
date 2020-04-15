@@ -72,6 +72,16 @@ class _CheckOTPState extends BaseState<CheckOTP> {
     startTimer();
     Post p = await sendotp(url);
     print("data getting ## =====" + p.type);*/
+    var requestState = await UserBloc().getGenerateOtp(widget.phone);
+    if (requestState is RequestSuccess) {
+      _start = 30;
+      _current = 30;
+      countDownTimer?.cancel();
+      startTimer();
+    } else if (requestState is RequestFailed) {
+      widget.showInSnackBar(
+          requestState.failureCause, PlunesColors.BLACKCOLOR, scaffoldKey);
+    }
   }
 
   @override
@@ -105,7 +115,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
   @override
   void dispose() {
     super.dispose();
-    countDownTimer.cancel();
+    countDownTimer?.cancel();
   }
 
   @override

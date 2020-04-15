@@ -472,7 +472,7 @@ class PlunesStrings {
   static const String bookIn = "Book in ";
   static const String homeCollectionAvailable = "Home Collection Available";
   static const String oopsServiceNotAvailable =
-      "Oops, this service is not available now.";
+      "Oops, seems like we are not providing services in your area, kindly search in gurgoun location.";
   static const String save = "Save";
   static const String kmsAway = "kms away";
   static const String book = "Book";

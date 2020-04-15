@@ -757,24 +757,29 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   ///payment methods
-  _initPayment(String payPercentage) async {
+  _initPayment(PaymentSelector paymentSelector) async {
+    print(paymentSelector.toString());
     print(DateUtil.getTimeWithAmAndPmFormat(_selectedDate));
     InitPayment _initPayment = InitPayment(
-      appointmentTime: _selectedDate.toUtc().millisecondsSinceEpoch.toString(),
-      percentage: payPercentage,
-      price_pos: widget.serviceIndex,
-      //negotiate prev id
-      docHosServiceId: widget.docHosSolution.serviceId,
-      //Services[0].id
-      service_id: widget.searchedSolutionServiceId,
-      //DocHosSolution's _id
-      sol_id: widget.docHosSolution.sId,
-      time_slot: _selectedTimeSlot,
-      professional_id: widget.profId,
-      creditsUsed: 0,
-      user_id: UserManager().getUserDetails().uid,
-      couponName: "",
-    );
+        appointmentTime:
+            _selectedDate.toUtc().millisecondsSinceEpoch.toString(),
+        percentage:
+            paymentSelector.isInPercent ? paymentSelector.paymentUnit : null,
+        price_pos: widget.serviceIndex,
+        //negotiate prev id
+        docHosServiceId: widget.docHosSolution.serviceId,
+        //Services[0].id
+        service_id: widget.searchedSolutionServiceId,
+        //DocHosSolution's _id
+        sol_id: widget.docHosSolution.sId,
+        time_slot: _selectedTimeSlot,
+        professional_id: widget.profId,
+        creditsUsed: 0,
+        user_id: UserManager().getUserDetails().uid,
+        couponName: "",
+        bookIn: !(paymentSelector.isInPercent)
+            ? paymentSelector.paymentUnit
+            : null);
     print("initiate payment ${_initPayment.initiatePaymentToJson()}");
     RequestState _requestState = await _bookingBloc.initPayment(_initPayment);
     if (_requestState is RequestSuccess) {
@@ -836,7 +841,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             )).then((returnedValue) {
       if (returnedValue != null) {
         print("selected payment percenatge $returnedValue");
-        _initPayment(returnedValue.toString());
+        _initPayment(returnedValue);
       }
     });
   }

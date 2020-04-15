@@ -135,7 +135,16 @@ class _PopupChooseState extends State<PopupChoose> {
             ),
             GestureDetector(
               onTap: () {
-//                  Navigator.of(context).pop("100");
+                PaymentSelector _paymentSelector;
+                if (_paymentSelectionOptions != null &&
+                    _paymentSelectionOptions.isNotEmpty) {
+                  _paymentSelectionOptions.forEach((paymentObj) {
+                    if (paymentObj.isSelected) {
+                      _paymentSelector = paymentObj;
+                    }
+                  });
+                }
+                Navigator.of(context).pop(_paymentSelector);
               },
               child: Container(
                 height: 35,

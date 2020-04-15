@@ -97,7 +97,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         _searchedDocResults.solution == null ||
                         _searchedDocResults.solution.services == null ||
                         _searchedDocResults.solution.services.isEmpty
-                    ? CustomWidgets().errorWidget(_failureCause)
+                    ? Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 8),
+                        child: CustomWidgets().errorWidget(_failureCause))
                     : _showBody();
           }),
         ));

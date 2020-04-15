@@ -210,7 +210,6 @@ class CommonMethods {
   static bool checkIfNumber(String value) {
     for (int i = 0; i < value.length; i++) {
       int n = value.codeUnitAt(i);
-//      print("ASCII==$n");
       if (n < 48 || n > 57) {
         return false;
       }
@@ -335,8 +334,8 @@ class CommonMethods {
             child: TextField(
               autofocus: true,
               controller: controller,
-              decoration:
-                  InputDecoration.collapsed(hintText: plunesStrings.description),
+              decoration: InputDecoration.collapsed(
+                  hintText: plunesStrings.description),
             ),
           ),
           decoration: BoxDecoration(

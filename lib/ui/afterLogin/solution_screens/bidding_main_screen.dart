@@ -302,6 +302,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   _getUserDetails() {
     _canGoAhead = UserManager().getIsUserInServiceLocation();
+    var user = UserManager().getUserDetails();
+    _checkUserLocation(user?.latitude, user?.longitude);
   }
 
   void _setState() {

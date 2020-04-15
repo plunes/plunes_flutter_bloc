@@ -441,6 +441,7 @@ class CustomWidgets {
       child: Center(
         child: Text(
           failureCause ?? plunesStrings.somethingWentWrong,
+          textAlign: TextAlign.center,
           style: TextStyle(
               color: PlunesColors.BLACKCOLOR, fontWeight: FontWeight.bold),
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import '../../../Utils/app_config.dart';
 import '../../../base/BaseActivity.dart';
 import 'package:flutter/gestures.dart';
@@ -157,7 +158,14 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
   _onViewMoreTap(int index) {}
 
-  _onSolutionItemTap(int index) {}
+  _onSolutionItemTap(int index) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BiddingLoading(
+                  catalogueData: _prevSolutions[index],
+                )));
+  }
 
   void _setState() {
     if (mounted) setState(() {});

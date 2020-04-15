@@ -286,10 +286,11 @@ class Bloc {
     preferences.setPreferencesString(Constants.LONGITUDE, data.user.longitude);
     preferences.setPreferencesString(Constants.PREF_CREDITS, data.user.credits);
     if (_from != null)
-      Navigator.push(
+      Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => HomeScreen(screen: Constants.BIDS)));
+              builder: (context) => HomeScreen(screen: Constants.BIDS)),
+          (_) => false);
   }
 
   ///Below method is for saving data in the preferences
