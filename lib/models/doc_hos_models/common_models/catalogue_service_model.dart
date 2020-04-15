@@ -1,0 +1,54 @@
+class CatalogueServiceModel {
+  bool success;
+  List<CatalogueServiceData> data;
+
+  CatalogueServiceModel({this.success, this.data});
+
+  CatalogueServiceModel.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    if (json['data'] != null) {
+      data = new List<CatalogueServiceData>();
+      json['data'].forEach((v) {
+        data.add(new CatalogueServiceData.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    if (this.data != null) {
+      data['data'] = this.data.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class CatalogueServiceData {
+  String specialityId;
+  String speciality;
+  List services;
+
+  CatalogueServiceData({this.specialityId, this.speciality, this.services});
+
+  CatalogueServiceData.fromJson(Map<String, dynamic> json) {
+    specialityId = json['specialityId'];
+    speciality = json['speciality'];
+//    if (json['services'] != null) {
+//      services = new List<Null>();
+//      json['services'].forEach((v) {
+//        services.add(new Null.fromJson(v));
+//      });
+//    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['specialityId'] = this.specialityId;
+    data['speciality'] = this.speciality;
+//    if (this.services != null) {
+//      data['services'] = this.services.map((v) => v.toJson()).toList();
+//    }
+    return data;
+  }
+}

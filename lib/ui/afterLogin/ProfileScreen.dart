@@ -15,6 +15,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/HospitalProfileScreen.dart';
+import 'package:plunes/ui/afterLogin/doc_hos_screen/catalogue_view_screen.dart';
 
 import 'AchievementsScreen.dart';
 import 'Adapter/AchievementItemAdapter.dart';
@@ -26,6 +27,7 @@ import 'Adapter/UtilityNetItemAdapter.dart';
  * Description - ProfileScreen class account holder information and that also can be updated.
  */
 
+// ignore: must_be_immutable
 class ProfileScreen extends BaseActivity {
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -109,9 +111,7 @@ class _ProfileScreenState extends State<ProfileScreen>
           getProfileInfoView(
               22,
               22,
-              _isDoctor
-                  ? plunesImages.expertiseIcon
-                  : plunesImages.genderIcon,
+              _isDoctor ? plunesImages.expertiseIcon : plunesImages.genderIcon,
               '${_isDoctor ? plunesStrings.areaExpertise : plunesStrings.gender}',
               _isDoctor
                   ? 'Dentist'
@@ -308,9 +308,10 @@ class _ProfileScreenState extends State<ProfileScreen>
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             InkWell(
-                onTap: () {
-                  Navigator.pushNamed(context, AchievementsScreen.tag);
-                },
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => CatalogueViewScreen())),
                 child: Container(
                     alignment: Alignment.center,
                     width: 70,

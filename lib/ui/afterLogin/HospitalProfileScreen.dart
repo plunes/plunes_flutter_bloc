@@ -21,6 +21,7 @@ import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'AchievementsScreen.dart';
 import 'Adapter/AchievementItemAdapter.dart';
 
+// ignore: must_be_immutable
 class HospitalProfileScreen extends BaseActivity {
   final String title;
 

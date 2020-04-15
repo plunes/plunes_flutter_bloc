@@ -21,27 +21,68 @@ class PlunesStrings {
   static const String pleaseSelectLocation =
       "We are not able to find you, please select a location first";
 
-  ////
-
-  static const String setYourTime = "Set your Time";
-
-  static const String choose = "Choose";
-
-  static const String locationNotAvailable = "Location not available";
-
-  static const String weAreNotAvailableInYourArea =
-      "Sorry, We are currently not available in your area.";
-
+  /////
+  ///Solution strings
+  static const String solutionSearched = "Solution Searched";
+  static const String consultations = "Consultations";
+  static const String tests = "Tests";
+  static const String procedures = "Procedures";
+  static const String NA = "NA";
+  static const String negotiateForBestPrice =
+      "Negotiate for the best price solution near you";
+  static const String previousActivities = "Previous Activities";
+  static const String noSolutionsAvailable = "No solutions available";
+  static const String consultationNotAvailable = "Consultation not available";
+  static const String proceduresNotAvailable = "Procedures not available";
+  static const String testsNotAvailable = "Tests not available";
+  static const String serviceNotAvailable =
+      "Currently this service is not available";
+  static const String weAreGettingBestSolution =
+      "WE ARE GETTING THE BEST SOLUTIONS FOR YOU";
+  static const String receiving = "Receiving...";
+  static const String checkAvailability = "Check Availability";
+  static const String bookIn = "Book in ";
+  static const String homeCollectionAvailable = "Home Collection Available";
+  static const String oopsServiceNotAvailable =
+      "Oops, seems like we are not providing services in your area, kindly search in gurgaon location.";
+  static const String save = "Save";
+  static const String kmsAway = "kms away";
+  static const String book = "Book";
+  static const String viewDetails = 'View Details';
+  static const String confirmYourBooking = "Confirm your Booking";
+  static const String negotiating = "Negotiating. . .";
+  static const String topSearches = "Top Searches";
   static const String switchToGurLoc =
       "Kindly switch to Gurgaon location, currently we are not providing service in your area";
-
+  static const String setYourTime = "Set your Time";
+  static const String choose = "Choose";
+  static const String locationNotAvailable = "Location not available";
+  static const String weAreNotAvailableInYourArea =
+      "Sorry, We are currently not available in your area.";
   static const String pleaseSelectValidSlot =
       "Please select a valid appointment time";
-
   static const String pleaseMakeSureText =
       "Please make sure you book within a short time, keeping in mind it is valid for only 1 hour.";
   static const String chooseLocation = "Choose Location";
-  static const String topSearches = "Top Searches";
+
+  ///Booking strings
+  static const String whyPlunes = "Why Plunes?";
+  static const String getDirection = "Get Direction";
+  static const String addressInSmall = "Address";
+  static const String availableSlots = "Available Slots";
+  static const String slot1 = "Slot 1";
+  static const String slot2 = "Slot 2";
+  static const String appointmentTime = "Appointment Time";
+  static const String tcApply = "T&C Apply.";
+  static const String payNow = "PAY NOW";
+  static const String availableCash = "Available Cash";
+
+  ///Catalogue View Screen
+  static String youHaveNotAddedAnyServicesYet =
+      "You haven't added any services in your catalogue yet.";
+
+  static const String toChangePriceOrVarianceString =
+      "To change price or variance in catalogue, please add again with new price and variance. ";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
@@ -451,46 +492,4 @@ class PlunesStrings {
 
   get text2Referral =>
       'You will get instant cash as soon as your friend registers successfully';
-
-  ///Solution strings
-  static const String solutionSearched = "Solution Searched";
-  static const String consultations = "Consultations";
-  static const String tests = "Tests";
-  static const String procedures = "Procedures";
-  static const String NA = "NA";
-  static const String negotiateForBestPrice =
-      "Negotiate for the best price solution near you";
-  static const String previousActivities = "Previous Activities";
-  static const String noSolutionsAvailable = "No solutions available";
-  static const String consultationNotAvailable = "Consultation not available";
-  static const String proceduresNotAvailable = "Procedures not available";
-  static const String testsNotAvailable = "Tests not available";
-  static const String serviceNotAvailable =
-      "Currently this service is not available";
-  static const String weAreGettingBestSolution =
-      "WE ARE GETTING THE BEST SOLUTIONS FOR YOU";
-  static const String receiving = "Receiving...";
-  static const String checkAvailability = "Check Availability";
-  static const String bookIn = "Book in ";
-  static const String homeCollectionAvailable = "Home Collection Available";
-  static const String oopsServiceNotAvailable =
-      "Oops, seems like we are not providing services in your area, kindly search in gurgaon location.";
-  static const String save = "Save";
-  static const String kmsAway = "kms away";
-  static const String book = "Book";
-  static const String viewDetails = 'View Details';
-  static const String confirmYourBooking = "Confirm your Booking";
-  static const String negotiating = "Negotiating. . .";
-
-  ///Booking strings
-  static const String whyPlunes = "Why Plunes?";
-  static const String getDirection = "Get Direction";
-  static const String addressInSmall = "Address";
-  static const String availableSlots = "Available Slots";
-  static const String slot1 = "Slot 1";
-  static const String slot2 = "Slot 2";
-  static const String appointmentTime = "Appointment Time";
-  static const String tcApply = "T&C Apply.";
-  static const String payNow = "PAY NOW";
-  static const String availableCash = "Available Cash";
 }
