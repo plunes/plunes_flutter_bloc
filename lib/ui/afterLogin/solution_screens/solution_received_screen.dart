@@ -78,6 +78,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _timerToUpdateSolutionReceivedTime?.cancel();
     _searchController?.dispose();
     _focusNode?.dispose();
+    _searchSolutionBloc?.dispose();
     super.dispose();
   }
 

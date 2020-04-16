@@ -103,7 +103,6 @@ class _TestProcedureSubScreenState
     _debounce?.cancel();
     _searchSolutionBloc?.dispose();
     _searchStreamController?.close();
-    _searchSolutionBloc?.dispose();
     super.dispose();
   }
 

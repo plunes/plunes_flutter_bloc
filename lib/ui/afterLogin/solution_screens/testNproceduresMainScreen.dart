@@ -24,6 +24,12 @@ class _TestAndProcedureScreenState extends BaseState<TestAndProcedureScreen> {
   String _failureCause;
 
   @override
+  void dispose() {
+    _consultationTestProcedureBloc?.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     _testAndProcedures = [];
     _consultationTestProcedureBloc = ConsultationTestProcedureBloc();

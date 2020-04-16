@@ -76,8 +76,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   @override
   void dispose() {
-    _controller.close();
+    _controller?.close();
     _timer?.cancel();
+    _prevMissSolutionBloc?.dispose();
     super.dispose();
   }
 

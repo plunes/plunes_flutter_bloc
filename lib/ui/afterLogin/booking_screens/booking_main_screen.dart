@@ -74,6 +74,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _bookingBloc?.dispose();
+    super.dispose();
+  }
+
   void _getSlotsInfo(String dateAsString) {
     _firstSlotTime = PlunesStrings.NA;
     _secondSlotTime = _firstSlotTime;
@@ -906,7 +912,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       var finalPrice = (price * percentage) / 100;
       return finalPrice == null
           ? PlunesStrings.NA
-          : "${finalPrice.ceilToDouble().toInt()}";
+          : "${finalPrice.floorToDouble().toInt()}";
     }
   }
 }

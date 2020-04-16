@@ -76,6 +76,7 @@ class PlunesStrings {
   static const String tcApply = "T&C Apply.";
   static const String payNow = "PAY NOW";
   static const String availableCash = "Available Cash";
+  static const String closed = "Closed";
 
   ///Catalogue View Screen
   static String youHaveNotAddedAnyServicesYet =

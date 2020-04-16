@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
+import 'package:intl/intl.dart';
+import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -35,6 +37,12 @@ class DialogWidgets {
 
   Widget dialogProfileContent(
       BuildContext context, Services solutions, CatalogueData catalogueData) {
+    List<DateTime> _slots = [];
+    var now = DateTime.now();
+    for (int index = 0; index < 100; index++) {
+      _slots.add(DateTime(now.year, now.month, now.day + index));
+    }
+    var monthFormat = DateFormat.MMM();
     return Material(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
@@ -95,20 +103,65 @@ class DialogWidgets {
                   ),
                   Divider(color: Colors.black54),
                   Text('Available Slots'),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: DatePicker(
-                      DateTime.now(), initialSelectedDate: DateTime.now(),
-                      selectionColor: Colors.green,
-//                      selectedTextColor: Colors.white,
-                      onDateChange: (date) {
-                        // // New date selected
-                        // setState(() {
-                        //   _selectedValue = date;
-                        // });
-                      },
-                    ),
-                  ),
+                  Container(
+                      padding: const EdgeInsets.only(top: 30),
+                      height: AppConfig.verticalBlockSize * 14,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          bool isAvailableSlot = true;
+                          String day = DateUtil.getDayAsString(_slots[index]);
+                          solutions.timeSlots.forEach((slot) {
+                            if (slot.day
+                                    .toLowerCase()
+                                    .contains(day.toLowerCase()) &&
+                                slot.closed) {
+                              isAvailableSlot = false;
+                            }
+                          });
+                          return Container(
+                            decoration: BoxDecoration(
+                                shape: BoxShape.rectangle,
+                                borderRadius: BorderRadius.circular(8.0),
+                                color: isAvailableSlot
+                                    ? PlunesColors.LIGHTGREYCOLOR
+                                    : Colors.red),
+                            padding: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 1,
+                                horizontal: AppConfig.horizontalBlockSize * 3),
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 1,
+                                horizontal: AppConfig.horizontalBlockSize * 1),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Visibility(
+                                    visible: isAvailableSlot,
+                                    child: Text(
+                                        monthFormat.format(_slots[index]))),
+                                Visibility(
+                                  visible: isAvailableSlot,
+                                  child: Text(
+                                    _slots[index].day.toString(),
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont),
+                                  ),
+                                ),
+                                Visibility(
+                                    visible: isAvailableSlot, child: Text(day)),
+                                Visibility(
+                                    visible: !isAvailableSlot,
+                                    child: Text(
+                                      PlunesStrings.closed,
+                                      style: TextStyle(
+                                          color: PlunesColors.WHITECOLOR),
+                                    )),
+                              ],
+                            ),
+                          );
+                        },
+                        scrollDirection: Axis.horizontal,
+                      )),
                 ],
               ),
             ),
