@@ -196,7 +196,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
                   });
                 },
                 child: _passwordVisible
-                    ? Icon(Icons.visibility_off)
+                    ? Image.asset("assets/images/eye-with-a-diagonal-line3x.png", width:24, height: 24,)
                     : Icon(Icons.visibility),
               )),
         ),

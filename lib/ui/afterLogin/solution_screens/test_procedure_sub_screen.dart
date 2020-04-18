@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -113,12 +114,13 @@ class _TestProcedureSubScreenState
         bottom: false,
         top: false,
         child: Scaffold(
+          backgroundColor: PlunesColors.WHITECOLOR,
           key: scaffoldKey,
           appBar:
               widget.getAppBar(context, widget.title ?? PlunesStrings.NA, true),
           body: Builder(builder: (context) {
             return Container(
-              padding: CustomWidgets().getDefaultPaddingForScreens(),
+             padding: CustomWidgets().getDefaultPaddingForScreensVertical(3),
               width: double.infinity,
               child: _isFetchingInitialData
                   ? CustomWidgets().getProgressIndicator()
@@ -136,11 +138,16 @@ class _TestProcedureSubScreenState
       children: <Widget>[
         StreamBuilder(
           builder: (context, snapShot) {
-            return CustomWidgets().searchBar(
+            return
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*2),
+              child:CustomWidgets().searchBar(
                 hintText: plunesStrings.searchHint,
                 hasFocus: false,
-                searchController: _searchController);
+                searchController: _searchController),
+              );
           },
+
           stream: _searchStreamController.stream,
         ),
         widget.getSpacer(
@@ -287,7 +294,7 @@ class _TestProcedureSubScreenState
   _onViewMoreTap(int solution) {
     showDialog(
       context: context,
-      builder: (BuildContext context) => CustomWidgets().buildAboutDialog(
+      builder: (BuildContext context) => CustomWidgets().buildViewMoreDialog(
         catalogueData: CatalogueData(),
       ),
     );

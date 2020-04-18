@@ -334,7 +334,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) =>
-          CustomWidgets().buildAboutDialog(catalogueData: widget.catalogueData),
+          CustomWidgets().buildViewMoreDialog(catalogueData: widget.catalogueData),
     );
 //    print("view details");
   }

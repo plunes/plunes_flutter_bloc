@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geocoder/geocoder.dart';
@@ -167,6 +168,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       child: DropdownButtonFormField(
         value: _userType,
         items: _dropDownMenuItems,
+        icon:  SvgPicture.asset("assets/images/arrow-down-sign-to-navigate.svg", color: PlunesColors.GREYCOLOR,),
         onChanged: changedDropDownItem,
         decoration: widget.myInputBoxDecoration(colorsFile.lightGrey1,
             colorsFile.lightGrey1, null, null, true, null),
@@ -668,7 +670,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                   });
                 },
                 child: _passwordVisible
-                    ? Icon(Icons.visibility_off)
+                    ? Image.asset("assets/images/eye-with-a-diagonal-line3x.png", width:24, height: 24,)
                     : Icon(Icons.visibility),
               )),
         ),

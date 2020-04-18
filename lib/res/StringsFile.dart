@@ -116,6 +116,8 @@ class PlunesStrings {
 
   get phoneNo => 'Phone No';
 
+  get EmailOrMobileNumber =>'Email id or Mobile Number';
+
   get emailId => 'Email Id*';
 
   get dateOfBirth => 'Date of Birth';
@@ -236,6 +238,8 @@ class PlunesStrings {
 
   get resetPassword => 'Reset Password';
 
+  get reset => 'Reset';
+
   get createPassword => 'Create Password';
 
   get changePasswordMsg =>
@@ -251,7 +255,6 @@ class PlunesStrings {
 
   get changePassword => 'Change Password';
 
-  get reset => 'Reset';
 
   get change => 'Change';
 
@@ -490,5 +493,6 @@ class PlunesStrings {
   static const String appointmentTime = "Appointment Time";
   static const String tcApply = "T&C Apply.";
   static const String payNow = "PAY NOW";
+  static const String prePayConfirmBooking ="Make a payment of  300/- to confirm the booking";
   static const String availableCash = "Available Cash";
 }

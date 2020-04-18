@@ -3,13 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 class AppointmentScreen extends StatelessWidget {
-  static const routeName = '/appointment';
+  static const tag = '/appointment';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Appointment'),
-        backgroundColor: Colors.green,
       ),
       body:Container(
         margin: EdgeInsets.all(5),
@@ -40,6 +39,7 @@ class AppointmentScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         IconButton(icon: Icon(
+                            //Image.asset("assets/images/drop-location-icon.png", width:40,height: 40,)
                             Icons.location_on,size:40,
                             color:Colors.blueGrey),
                             onPressed: (){

@@ -26,14 +26,19 @@ class GuidedTourState extends State<GuidedTour> {
   @override
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: new IntroSlider(
-          slides: CommonMethods.addSlideImages(),
-          colorDoneBtn: Color(hexColorCode.defaultGreen),
-          colorActiveDot: Color(hexColorCode.defaultGreen),
-          colorDot: Color(hexColorCode.white1),
-          onDonePress: this.onDonePress),
-    );
+    return
+        Container(
+          alignment: Alignment.center,
+            child: WillPopScope(
+              onWillPop: () async => false,
+              child:new IntroSlider(
+              slides: CommonMethods.addSlideImages(),
+              colorDoneBtn: Color(hexColorCode.defaultGreen),
+              colorActiveDot: Color(hexColorCode.defaultGreen),
+              colorDot: Color(hexColorCode.white1),
+              onDonePress: this.onDonePress),
+
+        )
+        );
   }
 }

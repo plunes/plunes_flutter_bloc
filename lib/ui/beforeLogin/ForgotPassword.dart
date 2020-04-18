@@ -68,7 +68,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
           widget.getSpacer(0.0, 30.0),
           createTextField(
               phoneNumberController,
-              plunesStrings.phoneNo,
+              plunesStrings.EmailOrMobileNumber,
               TextInputType.number,
               TextCapitalization.none,
               isValidNumber,
@@ -78,7 +78,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
               ? SpinKitThreeBounce(
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
               : widget.getDefaultButton(
-                  plunesStrings.submit, globalWidth, 42, submitForOTP),
+                  plunesStrings.ok, globalWidth, 42, submitForOTP),
           widget.getSpacer(0.0, 30.0),
           widget.getBorderButton(plunesStrings.cancel, globalWidth, onBackPressed)
         ],

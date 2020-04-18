@@ -74,11 +74,14 @@ class CustomWidgets {
                 ),
               ),
               searchController.text.trim().isEmpty
-                  ? Icon(
-                      Icons.search,
-                      size: AppConfig.verticalBlockSize * 2.8,
-                      color: PlunesColors.GREYCOLOR,
-                    )
+                  ?  Image.asset("assets/images/search@3x.png",
+                width:  AppConfig.verticalBlockSize * 2.0,
+                  height: AppConfig.verticalBlockSize * 2.0,)
+//              Icon(
+//                      Icons.search,
+//                      size: AppConfig.verticalBlockSize * 2.8,
+//                      color: PlunesColors.GREYCOLOR,
+//                    )
                   : InkWell(
                       onTap: () {
                         searchController.text = "";
@@ -154,11 +157,12 @@ class CustomWidgets {
               });
             },
             child: Container(
+
               color: solutionList[index].isSelected ?? false
                   ? PlunesColors.LIGHTGREENCOLOR
                   : PlunesColors.WHITECOLOR,
               padding: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 1.5,
+                  vertical: AppConfig.verticalBlockSize * 2.5,
                  horizontal: AppConfig.horizontalBlockSize*3
               ),
               child: Column(
@@ -208,20 +212,35 @@ class CustomWidgets {
                                     : Text(DateUtil.getDuration(
                                         solutionList[index].createdAt))
                                 : RichText(
+                                     maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
                                     text: TextSpan(
-                                        text: solutionList[index].details ??
+                                        text:solutionList[index].details ??
                                             PlunesStrings.NA,
                                         style: TextStyle(color: Colors.black),
-                                        children: [
-                                        TextSpan(
-                                            text: "(view more)",
-                                            recognizer: onViewMoreTap,
-                                            style: TextStyle(
-                                                color: PlunesColors.GREENCOLOR))
-                                      ])),
+//                                        children: [
+//                                        TextSpan(
+//                                            text: "(view more)",
+//                                            recognizer: onViewMoreTap,
+//                                            style: TextStyle(
+//                                                color: PlunesColors.GREENCOLOR))
+//                                      ]
+                                    )),
+                            (solutionList[index].details == null ||
+                                solutionList[index].details.isEmpty)
+                                ? Container()
+                                    :RichText(
+                                      text: TextSpan(
+                                          text: "view more",
+                                          recognizer: onViewMoreTap,
+                                          style: TextStyle(
+                                              color: PlunesColors.GREENCOLOR,
+                                              decoration: TextDecoration.underline)),
+                                    ),
                           ],
                         ),
-                      )
+                      ),
+                      //CustomWidgets().getRightFacingWidget(),
                     ],
                   ),
                 ],
@@ -461,6 +480,11 @@ class CustomWidgets {
         vertical: AppConfig.verticalBlockSize * 3);
   }
 
+  EdgeInsetsGeometry getDefaultPaddingForScreensVertical(double size) {
+    return EdgeInsets.symmetric(
+        vertical: AppConfig.verticalBlockSize * size);
+  }
+
   Widget getTestAndProcedureWidget(
       List<TestAndProcedureResponseModel> testAndProcedures,
       int index,
@@ -519,6 +543,7 @@ class CustomWidgets {
     return Icon(
       Icons.chevron_right,
       color: PlunesColors.GREENCOLOR,
+
     );
   }
 
@@ -770,7 +795,8 @@ class CustomWidgets {
     );
   }
 
-  Widget buildAboutDialog({
+
+  Widget buildViewMoreDialog({
     CatalogueData catalogueData,
   }) {
     return StatefulBuilder(builder: (context, newState) {
@@ -786,101 +812,239 @@ class CustomWidgets {
       if (catalogueData.duration == null) {
         catalogueData.duration = 'NA';
       }
-      return AlertDialog(
-        contentPadding: EdgeInsets.only(left: 25, right: 25),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(20.0))),
-        title: Text(
-          'Details',
-          style: TextStyle(),
-          textAlign: TextAlign.center,
-        ),
-        content: Container(
-          margin: EdgeInsets.symmetric(vertical: 20),
-          height: 300,
-          width: 300,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                Text(
-                  'Defination:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  catalogueData.service,
-                  style: TextStyle(
-                    color: Colors.black38,
-                  ),
-                ),
-                Divider(
-                  color: Colors.black45,
-                ),
-                Text(
-                  'Duration',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  catalogueData.duration,
-                  style: TextStyle(
-                    color: Colors.black45,
-                  ),
-                ),
-                Divider(
-                  color: Colors.black45,
-                ),
-                Text(
-                  'Sittings:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  catalogueData.sitting,
-                  style: TextStyle(
-                    color: Colors.black38,
-                  ),
-                ),
-                Divider(
-                  color: Colors.black45,
-                ),
-                Text(
-                  'Do\'s and Don\'t:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  catalogueData.dnd,
-                  style: TextStyle(
-                    color: Colors.black38,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-//        actions: <Widget>[
-//          Container(
-//            margin: EdgeInsets.only(right: 90),
-//            child: Row(
-//              crossAxisAlignment: CrossAxisAlignment.center,
-//              children: <Widget>[
-//                Text(
-//                  'Expand',
-//                  style: TextStyle(fontSize: 18),
-//                  textAlign: TextAlign.center,
-//                ),
-//                new IconButton(
-//                  alignment: Alignment.center,
-//                  icon: Icon(Icons.expand_more),
-//                  onPressed: () => Navigator.of(context).pop(),
-//                ),
-//              ],
-//            ),
-//          ),
-//        ],
+      return Dialog(
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        elevation: 0.0,
+        child: viewMoreContent(context, catalogueData),
       );
     });
   }
 
-  Widget UpdatePricePopUp({
+
+  Widget viewMoreContent(BuildContext context, CatalogueData catalogueData, ){
+    return Container(
+        height: 475,
+        width: 300,
+        //margin: EdgeInsets.all(),
+        child:Column(
+          // mainAxisAlignment: MainAxisAlignment.start,
+            children:<Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Text('Details',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18),),
+
+                  Padding(
+                    padding: const EdgeInsets.only(left:30),
+                    child: FlatButton(
+                      child: Icon(Icons.close),
+                      onPressed: () => {
+                        Navigator.of(context).pop(),
+                      },
+                    ),
+                  ),
+
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal:10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical:10),
+                          height:350,
+                          width: 260,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+
+                                Text( 'Defination:', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text( catalogueData.service , style: TextStyle(
+                                  color: Colors.black38,
+                                ),),
+                                Divider(
+                                  color: Colors.black45,
+                                ),
+
+                                Row(
+                                  children: <Widget>[
+                                    Text( 'Duration', style: TextStyle(fontWeight: FontWeight.bold),),
+                                    SizedBox(width:5),
+                                    Text( catalogueData.duration, style: TextStyle(
+                                      color: Colors.black45,
+                                    ),),
+
+                                  ],
+                                ),
+
+                                Divider(
+                                  color: Colors.black45,
+                                ),
+
+                                Row(
+                                    children: <Widget>[
+
+                                      Text( 'Sittings:', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      SizedBox(width:5),
+                                      Text( catalogueData.sitting , style: TextStyle(
+                                        color: Colors.black38,
+                                      ),),
+                                    ]),
+
+                                Divider(
+                                  color: Colors.black45,
+                                ),
+
+                                Text( 'Do\'s and Don\'t:', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(  catalogueData.dnd , style: TextStyle(
+                                  color: Colors.black38,
+                                ),),
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+
+
+                  ],
+                ),
+              ),
+
+              FlatButton.icon(onPressed:(){},
+                label: Text('Expand', style:TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+                icon: Icon(Icons.expand_more),
+              )
+            ]
+        )
+    );
+  }
+
+
+
+
+
+//  Widget buildAboutDialog({
+//    CatalogueData catalogueData,
+//  }) {
+//    return StatefulBuilder(builder: (context, newState) {
+//      if (catalogueData.service == null) {
+//        catalogueData.service = 'NA';
+//      }
+//      if (catalogueData.dnd == null) {
+//        catalogueData.dnd = 'NA';
+//      }
+//      if (catalogueData.sitting == null) {
+//        catalogueData.sitting = 'NA';
+//      }
+//      if (catalogueData.duration == null) {
+//        catalogueData.duration = 'NA';
+//      }
+//      return AlertDialog(
+//        contentPadding: EdgeInsets.only(left: 25, right: 25),
+//        shape: RoundedRectangleBorder(
+//            borderRadius: BorderRadius.all(Radius.circular(20.0))),
+//        title: Text(
+//          'Details',
+//          style: TextStyle(),
+//          textAlign: TextAlign.center,
+//        ),
+//        content: Container(
+//          margin: EdgeInsets.symmetric(vertical: 20),
+//          height: 300,
+//          width: 300,
+//          child: SingleChildScrollView(
+//            child: Column(
+//              crossAxisAlignment: CrossAxisAlignment.stretch,
+//              children: <Widget>[
+//                Text(
+//                  'Defination:',
+//                  style: TextStyle(fontWeight: FontWeight.bold),
+//                ),
+//                Text(
+//                  catalogueData.service,
+//                  style: TextStyle(
+//                    color: Colors.black38,
+//                  ),
+//                ),
+//                Divider(
+//                  color: Colors.black45,
+//                ),
+//                Text(
+//                  'Duration',
+//                  style: TextStyle(fontWeight: FontWeight.bold),
+//                ),
+//                Text(
+//                  catalogueData.duration,
+//                  style: TextStyle(
+//                    color: Colors.black45,
+//                  ),
+//                ),
+//                Divider(
+//                  color: Colors.black45,
+//                ),
+//                Text(
+//                  'Sittings:',
+//                  style: TextStyle(fontWeight: FontWeight.bold),
+//                ),
+//                Text(
+//                  catalogueData.sitting,
+//                  style: TextStyle(
+//                    color: Colors.black38,
+//                  ),
+//                ),
+//                Divider(
+//                  color: Colors.black45,
+//                ),
+//                Text(
+//                  'Do\'s and Don\'t:',
+//                  style: TextStyle(fontWeight: FontWeight.bold),
+//                ),
+//                Text(
+//                  catalogueData.dnd,
+//                  style: TextStyle(
+//                    color: Colors.black38,
+//                  ),
+//                ),
+//              ],
+//            ),
+//          ),
+//        ),
+////        actions: <Widget>[
+////          Container(
+////            margin: EdgeInsets.only(right: 90),
+////            child: Row(
+////              crossAxisAlignment: CrossAxisAlignment.center,
+////              children: <Widget>[
+////                Text(
+////                  'Expand',
+////                  style: TextStyle(fontSize: 18),
+////                  textAlign: TextAlign.center,
+////                ),
+////                new IconButton(
+////                  alignment: Alignment.center,
+////                  icon: Icon(Icons.expand_more),
+////                  onPressed: () => Navigator.of(context).pop(),
+////                ),
+////              ],
+////            ),
+////          ),
+////        ],
+//      );
+//    });
+//  }
+
+  Widget updatePricePopUp({
     @required final String dialogTitle,
     @required final String dialogMsg,
   }) {

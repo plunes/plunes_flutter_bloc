@@ -22,6 +22,7 @@ import 'PlockrMainScreen.dart';
 import 'ProfileScreen.dart';
 import 'ReferScreen.dart';
 import 'SettingsScreen.dart';
+import 'appointmentScreen.dart';
 
 /*
  * Created by - Plunes Technologies.
@@ -454,6 +455,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         break;
       case 2:
 //        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Appointments(screen: 0,),));
+        Navigator.popAndPushNamed(context, AppointmentScreen.tag);
         break;
       case 3:
         Navigator.popAndPushNamed(context, SettingScreen.tag);

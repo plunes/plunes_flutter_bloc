@@ -296,7 +296,7 @@ class FlatButtonLinks extends StatelessWidget {
           ),), onPressed: () {
         showDialog(
           context: context,
-          builder: (BuildContext context) => CustomWidgets().UpdatePricePopUp(),
+          builder: (BuildContext context) => CustomWidgets().updatePricePopUp(),
         );
       },),
     );

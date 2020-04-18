@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/blocs/solution_blocs/consultation_tests_procedure_bloc.dart';
 import 'package:plunes/models/solution_models/test_and_procedure_model.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -41,11 +43,13 @@ class _TestAndProcedureScreenState extends BaseState<TestAndProcedureScreen> {
         top: false,
         bottom: false,
         child: Scaffold(
+          backgroundColor: PlunesColors.WHITECOLOR,
           appBar: widget.getAppBar(
               context, widget.screenTitle ?? PlunesStrings.NA, true),
           body: Builder(builder: (context) {
             return Container(
-                padding: CustomWidgets().getDefaultPaddingForScreens(),
+                width: double.infinity,
+               padding: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*3),
                 child: _renderTestAndProcedures());
           }),
         ));

@@ -56,6 +56,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         top: false,
         child: Scaffold(
           key: scaffoldKey,
+          backgroundColor: PlunesColors.WHITECOLOR,
           appBar:
               widget.getAppBar(context, PlunesStrings.solutionSearched, true),
           body: Builder(builder: (context) {
@@ -197,7 +198,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   _onViewMoreTap(int solution) {
     showDialog(
       context: context,
-      builder: (BuildContext context) => CustomWidgets().buildAboutDialog(
+      builder: (BuildContext context) => CustomWidgets().buildViewMoreDialog(
         catalogueData: _catalogues[solution],
       ),
     );

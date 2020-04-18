@@ -6,6 +6,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class DialogWidgets {
   static DialogWidgets _instance;
@@ -127,4 +128,141 @@ class DialogWidgets {
       ),
     );
   }
+
+
+
+  Widget buildViewMoreDialog({
+    CatalogueData catalogueData,
+      }) {
+    return StatefulBuilder(builder: (context, newState) {
+      if (catalogueData.service == null) {
+        catalogueData.service = 'NA';
+      }
+      if (catalogueData.dnd == null) {
+        catalogueData.dnd = 'NA';
+      }
+      if (catalogueData.sitting == null) {
+        catalogueData.sitting = 'NA';
+      }
+      if (catalogueData.duration == null) {
+        catalogueData.duration = 'NA';
+      }
+      return Dialog(
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        elevation: 0.0,
+        child: viewMoreContent(context, catalogueData),
+      );
+    });
+  }
+
+
+  Widget viewMoreContent(BuildContext context, CatalogueData catalogueData, ){
+    return Container(
+        height: 475,
+        width: 300,
+        //margin: EdgeInsets.all(),
+        child:Column(
+          // mainAxisAlignment: MainAxisAlignment.start,
+            children:<Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Text('Details',
+                    style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 18),),
+
+                  Padding(
+                    padding: const EdgeInsets.only(left:30),
+                    child: FlatButton(
+                      child: Icon(Icons.close),
+                      onPressed: () => {
+                        Navigator.of(context).pop(),
+                      },
+                    ),
+                  ),
+
+                ],
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal:10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+
+                    Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical:10),
+                          height:350,
+                          width: 260,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+
+                                Text( 'Defination:', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text( catalogueData.service , style: TextStyle(
+                                  color: Colors.black38,
+                                ),),
+                                Divider(
+                                  color: Colors.black45,
+                                ),
+
+                                Row(
+                                  children: <Widget>[
+                                    Text( 'Duration', style: TextStyle(fontWeight: FontWeight.bold),),
+                                    SizedBox(width:5),
+                                    Text( catalogueData.duration, style: TextStyle(
+                                      color: Colors.black45,
+                                    ),),
+
+                                  ],
+                                ),
+
+                                Divider(
+                                  color: Colors.black45,
+                                ),
+
+                                Row(
+                                    children: <Widget>[
+
+                                      Text( 'Sittings:', style: TextStyle(fontWeight: FontWeight.bold),),
+                                      SizedBox(width:5),
+                                      Text( catalogueData.sitting , style: TextStyle(
+                                        color: Colors.black38,
+                                      ),),
+                                    ]),
+
+                                Divider(
+                                  color: Colors.black45,
+                                ),
+
+                                Text( 'Do\'s and Don\'t:', style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text(  catalogueData.dnd , style: TextStyle(
+                                  color: Colors.black38,
+                                ),),
+
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+
+
+                  ],
+                ),
+              ),
+
+              FlatButton.icon(onPressed:(){},
+                label: Text('Expand', style:TextStyle(fontSize: 18, fontWeight: FontWeight.w500),),
+                icon: Icon(Icons.expand_more),
+              )
+            ]
+        )
+    );
+  }
+
 }

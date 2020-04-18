@@ -337,7 +337,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   Widget _getDatePicker() {
     return Container(
       width: double.infinity,
-      height: AppConfig.verticalBlockSize * 16,
+      height: AppConfig.verticalBlockSize * 13,
       child: DatePicker(
         _currentDate,
         height: AppConfig.verticalBlockSize * 15,
@@ -423,6 +423,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Image.asset('assets/images/cash.png',
+              width: AppConfig.horizontalBlockSize*9,
+             height: AppConfig.verticalBlockSize*4,),
+            SizedBox(width: 5,),
+            Text(" 250 ", style:TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
             Radio(
                 value: _paymentTypeCash,
                 groupValue: _selectedPaymentType,
@@ -457,7 +468,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       children: <Widget>[
         Center(
           child: Text(
-            "Make a payment of  300/- to confirm the booking",
+            PlunesStrings.prePayConfirmBooking,
             style: TextStyle(fontSize: 14),
           ),
         ),
@@ -517,12 +528,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   _openTimePicker() {
     return showDialog(
+
         builder: (context) {
           return Container(
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 15,
-                horizontal: AppConfig.horizontalBlockSize * 5),
+
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 31,
+               right: AppConfig.horizontalBlockSize * 10,
+                left: AppConfig.horizontalBlockSize * 10),
             child: Material(
+              borderRadius: BorderRadius.circular(16),
               child: Column(
                 children: <Widget>[
                   Container(
@@ -562,10 +577,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   ),
                   Container(
                     padding: EdgeInsets.only(
-                        left: AppConfig.horizontalBlockSize * 30,
-                        bottom: AppConfig.verticalBlockSize * 2,
+                        left: AppConfig.horizontalBlockSize * 26,
+                        bottom: AppConfig.verticalBlockSize * 4,
                         top: AppConfig.verticalBlockSize * 2.3,
-                        right: AppConfig.horizontalBlockSize * 30),
+                        right: AppConfig.horizontalBlockSize * 26),
                     child: InkWell(
                       onTap: () {
                         Navigator.pop(context);

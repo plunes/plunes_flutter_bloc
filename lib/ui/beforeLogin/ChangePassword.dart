@@ -125,7 +125,7 @@ class _ChangePasswordState extends State<ChangePassword>
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
               : widget.getDefaultButton(
                   widget.from != plunesStrings.createPassword
-                      ? plunesStrings.change
+                      ? plunesStrings.reset
                       : plunesStrings.create,
                   globalWidth,
                   42,

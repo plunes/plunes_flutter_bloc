@@ -107,11 +107,11 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
         child: ListView(
           children: <Widget>[
             Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  height: AppConfig.verticalBlockSize * 5,
+                  height: AppConfig.verticalBlockSize * 7,
                 ),
                 Stack(
                   children: <Widget>[
@@ -120,7 +120,9 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                       width: 150,
                       margin: EdgeInsets.only(top: 20, bottom: 10),
                       child: Stack(
+
                         alignment: Alignment.center,
+
                         children: <Widget>[
                           Container(
                             height: 160,
@@ -175,7 +177,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   ),
                 ),
                 SizedBox(
-                  height: 170,
+                  height: 300,
                 ),
                 Center(
                   child: Text(

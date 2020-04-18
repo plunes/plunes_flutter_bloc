@@ -59,6 +59,7 @@ dependencies:
   flutter_time_picker_spinner: ^1.0.6
   flutter_rating_bar: ^3.0.1+1
   step_progress_indicator: ^0.2.1+4
+  flutter_svg: ^0.17.4
 
   #  flutter_facebook_login: ^3.0.0
   rxdart:
@@ -242,6 +243,11 @@ flutter:
 
     - assets/images/user_landing_map.png
     - assets/images/locationIconUserLandingScreen.png
+    - assets/images/arrow-down-sign-to-navigate.svg
+    - assets/images/eye-with-a-diagonal-line3x.png
+    - assets/images/search@3x.png
+    - assets/images/cash.png
+    - assets/images/drop-location-icon.png
 
 
 
