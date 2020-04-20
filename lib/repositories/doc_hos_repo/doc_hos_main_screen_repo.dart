@@ -1,3 +1,4 @@
+import 'package:plunes/models/doc_hos_models/common_models/actionable_insights_response_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -26,6 +27,21 @@ class DocHosMainRepo {
       RealTimeInsightsResponse _realTimeInsightsResponse =
           RealTimeInsightsResponse.fromJson(result.response.data);
       return RequestSuccess(response: _realTimeInsightsResponse);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getActionableInsights() async {
+    var result = await DioRequester().requestMethod(
+      url: Urls.GET_ACTIONABLE_INSIGHTS_URL,
+      requestType: HttpRequestMethods.HTTP_GET,
+      headerIncluded: true,
+    );
+    if (result.isRequestSucceed) {
+      ActionableInsightResponseModel _actionableInsightsResponse =
+          ActionableInsightResponseModel.fromJson(result.response.data);
+      return RequestSuccess(response: _actionableInsightsResponse);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

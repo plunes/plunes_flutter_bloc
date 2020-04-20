@@ -31,8 +31,8 @@ class RealInsight {
   String profName;
   String serviceName;
   bool negotiating;
-  Null timeRemaining;
-  int userPrice;
+  int timeRemaining;
+  num userPrice;
   int createdTime;
 
   RealInsight(

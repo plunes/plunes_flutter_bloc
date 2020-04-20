@@ -7,6 +7,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -885,125 +887,152 @@ class CustomWidgets {
     });
   }
 
-  Widget UpdatePricePopUp({
-    @required final String dialogTitle,
-    @required final String dialogMsg,
-  }) {
+  // ignore: non_constant_identifier_names
+  Widget UpdatePricePopUp(
+      {RealInsight realInsight, DocHosMainInsightBloc docHosMainInsightBloc}) {
+    var sliderVal = (realInsight.userPrice.toDouble() / 2) +
+        (((realInsight.userPrice.toDouble() / 2)) / 2);
+    String failureCause;
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         elevation: 0.0,
-        child: updatePriceContent(context),
-      );
-    });
-  }
-
-  Widget updatePriceContent(BuildContext context) {
-    bool isChecked = false;
-    var sliderVal = 0.0;
-
-    void isToggle() {
-      isChecked = !isChecked;
-    }
-
-    return Container(
-      margin: EdgeInsets.only(top: 5),
-      child: Stack(
-        children: <Widget>[
-          Text(
-            '',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          Container(
-            height: 374,
-            //padding: EdgeInsets.only(top: 18.0),
-            margin: EdgeInsets.only(left: 30, right: 30, top: 30),
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Text(
-                    'Update Price in your Catalogue for maximum Bookings',
-                    style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
-                  ),
-                  Column(
+        child: StreamBuilder<Object>(
+            stream: docHosMainInsightBloc.actionableStream,
+            builder: (context, snapshot) {
+              return SingleChildScrollView(
+                reverse: true,
+                child: Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: Stack(
                     children: <Widget>[
-                      SizedBox(height: 10),
                       Text(
-                        'Amalgam Fillings',
-                        style: TextStyle(fontSize: 20, color: Colors.black54),
+                        '',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      // Divider(color: Colors.black38,),
-                      SizedBox(height: 20),
-                      Slider(
-                          value: sliderVal,
-                          min: 0,
-                          max: 3000,
-                          divisions: 100,
-                          activeColor: Colors.green,
-                          onChanged: (newValue) {
-                            setState() {
-                              sliderVal = newValue;
-                            }
-
-                            ;
-                          }),
                       Container(
-                        margin: EdgeInsets.only(top: 30, bottom: 30),
-                        child: Text(
-                          ' \u20B9 ${sliderVal}',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                        height: AppConfig.verticalBlockSize * 50,
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 5.5,
+                            right: AppConfig.horizontalBlockSize * 5.5,
+                            top: AppConfig.verticalBlockSize * 5),
+                        child: Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Text(
+                                'Update Price in your Catalogue for maximum Bookings',
+                                style: TextStyle(fontSize: 20),
+                                textAlign: TextAlign.center,
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  SizedBox(height: 10),
+                                  Text(
+                                    realInsight?.serviceName ??
+                                        PlunesStrings.NA,
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black54),
+                                  ),
+                                  SizedBox(height: 20),
+                                  Slider(
+                                      value: sliderVal,
+                                      min:
+                                          (realInsight.userPrice.floor() / 2) ??
+                                              0,
+                                      max: realInsight.userPrice
+                                          .floor()
+                                          .toDouble(),
+                                      divisions: 10,
+                                      activeColor: Colors.green,
+                                      onChanged: (newValue) {
+                                        newState(() {
+                                          sliderVal = newValue;
+                                        });
+                                      }),
+                                  Container(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                          ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(1)}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Expanded(child: Container()),
+                                        Text(
+                                          ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(1)}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 3,
+                                        bottom:
+                                            AppConfig.verticalBlockSize * 3),
+                                    child: Text(
+                                      ' \u20B9 $sliderVal',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Chances of Booking increases by',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    '20 to 25%',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 20),
+                                  FlatButton(
+                                    child: Text(
+                                      'Apply here',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.green,
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    onPressed: () {},
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-
-                      Text(
-                        'Chances of Booking increases by',
-                        style: TextStyle(
-                          fontSize: 18,
+                      Positioned(
+                        right: 0.0,
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () => {
+                              Navigator.of(context).pop(),
+                            },
+                          ),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        '20 to 25%',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 20),
-                      FlatButton(
-                        child: Text(
-                          'Apply here',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.green,
-                              decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        onPressed: () {},
-                      )
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            right: 0.0,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () => {
-                  Navigator.of(context).pop(),
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                ),
+              );
+            }),
+      );
+    });
   }
 }

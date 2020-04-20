@@ -92,6 +92,9 @@ class PlunesStrings {
   ///Insight main screen
   static const String noRealTimeInsights =
       "You don't have any real time insights yet";
+  static const String kindlyUpdateYourPrice = 'Kindly Update your price';
+  static const String noActionableInsightAvailable =
+      "No Actionable insights yet";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

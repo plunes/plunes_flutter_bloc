@@ -12,6 +12,10 @@ class DocHosMainInsightBloc extends BlocBase {
   final _actionableProvider = PublishSubject<RequestState>();
 
   Observable<RequestState> get actionableStream => _actionableProvider.stream;
+  final _realTimePriceUpdateProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get realTimePriceUpdateStream =>
+      _realTimePriceUpdateProvider.stream;
 
 //  final _businessDataProvider = PublishSubject<RequestState>();
 //
@@ -27,11 +31,25 @@ class DocHosMainInsightBloc extends BlocBase {
     super.addStateInGenericStream(_realTimeProvider, state);
   }
 
+  addStateInActionableInsightStream(RequestState state) {
+    super.addStateInGenericStream(_actionableProvider, state);
+  }
+
+  updateRealTimeInsightPrice() {
+    ///start from here
+  }
+
   @override
   void dispose() {
     _realTimeProvider?.close();
     _actionableProvider?.close();
+    _realTimePriceUpdateProvider?.close();
 //    _businessDataProvider?.close();
     super.dispose();
+  }
+
+  getActionableInsights() async {
+    addStateInActionableInsightStream(
+        await DocHosMainRepo().getActionableInsights());
   }
 }
