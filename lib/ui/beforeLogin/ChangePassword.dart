@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -77,7 +78,13 @@ class _ChangePasswordState extends State<ChangePassword>
 
   Widget getBodyView() {
     return Container(
-      margin: EdgeInsets.only(left: 25, right: 25, bottom: 50),
+     // alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize*12),
+      margin: EdgeInsets.only(left: 25, right: 25),
+    child:Column(
+    children: <Widget>[
+     Expanded(
+
       child: ListView(
         padding: EdgeInsets.zero,
         shrinkWrap: true,
@@ -133,7 +140,10 @@ class _ChangePasswordState extends State<ChangePassword>
           widget.getSpacer(0.0, 20.0),
           widget.getBorderButton(plunesStrings.cancel, globalWidth, onBackPressed)
         ],
+       ),
       ),
+    ],
+    )
     );
   }
 

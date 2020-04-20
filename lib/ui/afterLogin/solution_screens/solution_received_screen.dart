@@ -263,6 +263,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           Expanded(child: Container()),
                           Column(
                             children: <Widget>[
+                              Padding(padding: EdgeInsets.only(top:6),),
                               InkWell(
                                 onTap: () => _viewDetails(),
                                 child: CustomWidgets().getRoundedButton(

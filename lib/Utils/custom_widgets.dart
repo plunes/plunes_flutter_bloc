@@ -493,9 +493,9 @@ class CustomWidgets {
       onTap: onButtonTap,
       child: Container(
         width: double.infinity,
-        padding: EdgeInsets.only(
-          top: AppConfig.verticalBlockSize * 1.5,
-        ),
+//        padding: EdgeInsets.only(
+//          top: AppConfig.verticalBlockSize * 1.5,
+//        ),
         child: Column(
           children: <Widget>[
             Row(

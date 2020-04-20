@@ -49,7 +49,8 @@ class _TestAndProcedureScreenState extends BaseState<TestAndProcedureScreen> {
           body: Builder(builder: (context) {
             return Container(
                 width: double.infinity,
-               padding: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*3),
+               padding: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*3,
+                   vertical: AppConfig.verticalBlockSize*1.5),
                 child: _renderTestAndProcedures());
           }),
         ));

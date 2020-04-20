@@ -124,9 +124,9 @@ class _CheckOTPState extends BaseState<CheckOTP> {
     CommonMethods.globalContext = context;
 
     final form = Container(
-      margin: EdgeInsets.symmetric(vertical:AppConfig.horizontalBlockSize*40),
+      alignment: Alignment.center,
       child: Column(
-       // mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Container(
             alignment: Alignment.center,

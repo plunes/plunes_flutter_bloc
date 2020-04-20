@@ -120,7 +120,7 @@ class _TestProcedureSubScreenState
               widget.getAppBar(context, widget.title ?? PlunesStrings.NA, true),
           body: Builder(builder: (context) {
             return Container(
-             padding: CustomWidgets().getDefaultPaddingForScreensVertical(3),
+             padding: CustomWidgets().getDefaultPaddingForScreensVertical(2),
               width: double.infinity,
               child: _isFetchingInitialData
                   ? CustomWidgets().getProgressIndicator()
@@ -150,10 +150,10 @@ class _TestProcedureSubScreenState
 
           stream: _searchStreamController.stream,
         ),
-        widget.getSpacer(
-            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
-        widget.getSpacer(
-            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
+//        widget.getSpacer(
+//            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
+//        widget.getSpacer(
+//            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
         Expanded(
             child: StreamBuilder(
           builder: (context, snapShot) {

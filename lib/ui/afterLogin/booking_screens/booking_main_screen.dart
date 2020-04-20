@@ -94,6 +94,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         top: false,
         bottom: false,
         child: Scaffold(
+          backgroundColor: PlunesColors.WHITECOLOR,
           key: scaffoldKey,
           appBar:
               widget.getAppBar(context, PlunesStrings.confirmYourBooking, true),
@@ -124,7 +125,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             ),
           ),
           getWhyPlunesView(),
-          _getDoctorDetailsView(),
+      Padding(
+        padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2.5),
+         child: _getDoctorDetailsView(),
+      ),
           Padding(
             padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
             child: Text(
@@ -142,10 +146,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           ),
           _getDatePicker(),
           widget.getSpacer(
-              AppConfig.verticalBlockSize * 3, AppConfig.verticalBlockSize * 1),
+              AppConfig.verticalBlockSize * 4, AppConfig.verticalBlockSize * 2),
           _getSlots(),
           widget.getSpacer(
-              AppConfig.verticalBlockSize * 3, AppConfig.verticalBlockSize * 1),
+              AppConfig.verticalBlockSize * 4, AppConfig.verticalBlockSize * 1),
           _getSelectedSlot(),
           _getApplyCouponAndCashWidget(),
           _getPayNowWidget()
@@ -175,7 +179,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       'assets/images/doctor.png', 'First Consultation Free'),
                 ),
               )
-            ]),
+            ]
+            ),
             Row(
               children: <Widget>[
                 Expanded(
@@ -191,9 +196,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 )
               ],
             ),
+
             Container(
               margin: EdgeInsets.only(
-                  right: (MediaQuery.of(context).size.width / 2) - 10),
+                  right: (MediaQuery.of(context).size.width / 2) - 28),
               child: getTagsView('assets/images/tellIcongrey2.png',
                   'Free telephonic consultations'),
             )
@@ -217,6 +223,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   image,
                   height: 21,
                   width: 21,
+                  color:PlunesColors.BLACKCOLOR,
                 )),
             Expanded(
               child: Text(
@@ -249,7 +256,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         ),
         Expanded(
             child: Padding(
-          padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
+          padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -270,7 +277,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       onTap: () => _getDirections(),
                       onDoubleTap: () {},
                       child: Padding(
-                        padding: const EdgeInsets.all(5.0),
+                        padding: const EdgeInsets.only(left:5.0, top:5.0, bottom:5.0),
                         child: Text(
                           PlunesStrings.getDirection,
                           style: TextStyle(
@@ -337,10 +344,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   Widget _getDatePicker() {
     return Container(
       width: double.infinity,
-      height: AppConfig.verticalBlockSize * 13,
+      height: AppConfig.verticalBlockSize * 10,
       child: DatePicker(
         _currentDate,
-        height: AppConfig.verticalBlockSize * 15,
+        height: AppConfig.verticalBlockSize * 10,
         daysCount: 100,
         initialSelectedDate: _currentDate,
         dateTextStyle: TextStyle(
@@ -419,7 +426,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           height: 0.5,
           color: PlunesColors.GREYCOLOR,
         ),
-        Text(PlunesStrings.availableCash),
+        Text(PlunesStrings.availableCash, style: TextStyle(fontSize: 18),),
+        widget.getSpacer(
+            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 0),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -535,7 +544,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             margin: EdgeInsets.only(
                 top: AppConfig.verticalBlockSize * 31,
                right: AppConfig.horizontalBlockSize * 10,
-                left: AppConfig.horizontalBlockSize * 10),
+                left: AppConfig.horizontalBlockSize * 10,
+                 bottom: AppConfig.verticalBlockSize*2),
             child: Material(
               borderRadius: BorderRadius.circular(16),
               child: Column(

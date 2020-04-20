@@ -177,7 +177,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   ),
                 ),
                 SizedBox(
-                  height: 300,
+                  height: 400,
                 ),
                 Center(
                   child: Text(
