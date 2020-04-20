@@ -84,6 +84,7 @@ class FirebaseNotification {
       Constants.DEVICE_TOKEN = token;
       print('Firebase Token: $token');
     });
+    _firebaseMessaging.subscribeToTopic("Testing");
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('==firebase==onMessage== $message');

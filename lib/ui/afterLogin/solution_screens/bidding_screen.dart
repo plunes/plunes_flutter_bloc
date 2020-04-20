@@ -28,11 +28,16 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   int pageIndex = SearchSolutionBloc.initialIndex;
   StreamController _streamController;
   bool _endReached;
+  FocusNode _focusNode;
 
   @override
   void initState() {
     _catalogues = [];
     _endReached = false;
+    _focusNode = FocusNode();
+    Future.delayed(Duration(milliseconds: 450)).then((v) {
+      if (mounted) FocusScope.of(context).requestFocus(_focusNode);
+    });
     _searchSolutionBloc = SearchSolutionBloc();
     _streamController = StreamController();
     _searchController = TextEditingController()..addListener(_onSearch);
@@ -73,10 +78,15 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
       children: <Widget>[
         StreamBuilder(
           builder: (context, snapShot) {
-            return CustomWidgets().searchBar(
-                hintText: plunesStrings.searchHint,
-                hasFocus: true,
-                searchController: _searchController);
+            return Hero(
+              tag: "my_tag",
+              transitionOnUserGestures: true,
+              child: CustomWidgets().searchBar(
+                  hintText: plunesStrings.searchHint,
+                  hasFocus: false,
+                  focusNode: _focusNode,
+                  searchController: _searchController),
+            );
           },
           stream: _streamController.stream,
         ),

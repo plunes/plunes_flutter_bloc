@@ -16,6 +16,13 @@ abstract class BlocBase {
     }
   }
 
+  void addStateInGenericStream(
+      PublishSubject publishSubject, RequestState data) {
+    if (publishSubject != null && !publishSubject.isClosed) {
+      publishSubject.add(data);
+    }
+  }
+
   void dispose() {
     _baseStreamProvider?.close();
   }

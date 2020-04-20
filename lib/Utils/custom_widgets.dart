@@ -215,6 +215,17 @@ class CustomWidgets {
                                             style: TextStyle(
                                                 color: PlunesColors.GREENCOLOR))
                                       ])),
+                            (!(solutionList[index].isActive) &&
+                                    solutionList[index].maxDiscount != null &&
+                                    solutionList[index].maxDiscount != 0)
+                                ? Padding(
+                                    padding: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 1),
+                                    child: Text(
+                                      "You have missed ${solutionList[index].maxDiscount.toStringAsFixed(0)}% on your ${solutionList[index].service ?? PlunesStrings.NA} Previously",
+                                      style: TextStyle(color: Colors.black),
+                                    ))
+                                : Container()
                           ],
                         ),
                       )

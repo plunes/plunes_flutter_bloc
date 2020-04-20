@@ -52,7 +52,7 @@ class DioRequester {
       if (headerIncluded != null && accessToken != null && headerIncluded) {
         AppLog.debugLog("jwt token " + accessToken);
         options.headers = {
-          _keyAuth: 'Bearer $accessToken',
+          _keyAuth: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGY3OGQ5ZGUzNjY4YTI4MWVjZWUyYmQiLCJpYXQiOjE1ODIzNjcwNTZ9.X3zBhcRejl6AJG3MIqZRi-wdbI2qz9OU5GMTAa9eR-c',
         };
       }
 

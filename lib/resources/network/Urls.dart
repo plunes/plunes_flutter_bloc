@@ -62,4 +62,5 @@ class Urls {
   static const String GENERATE_OTP_URL = "user/generateOtp";
   static const String VERIFY_OTP_URL = "user/verifyOtp";
   static const String CATALOGUE_SERVICE_URL = "user/getServices";
+  static const String GET_REALTIME_INSIGHTS_URL = "analytics/solutionSearch";
 }

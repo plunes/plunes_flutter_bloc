@@ -23,6 +23,7 @@ import 'GuidedTour.dart';
  * Description - SplashScreen class is for showing the app logo for 7 seconds delay and doing processing in the background.
  */
 
+// ignore: must_be_immutable
 class SplashScreen extends BaseActivity {
   static const tag = 'splash';
 

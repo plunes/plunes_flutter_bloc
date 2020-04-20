@@ -59,14 +59,14 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   ];
   final List<Widget> _widgetOptionsForDoctor = [
     HospitalDoctorOverviewScreen(),
-    PlockrMainScreen(),
+//    PlockrMainScreen(),
     NotificationScreen(),
-    ProfileScreen()
+//    ProfileScreen()
   ];
   final List<Widget> _widgetOptionsHospital = [
-    BiddingMainScreen(),
+    HospitalDoctorOverviewScreen(),
     NotificationScreen(),
-    ProfileScreen()
+//    ProfileScreen()
   ];
   Preferences preferences;
   List<String> selectedPositions = new List();
@@ -138,8 +138,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             plunesImages.homeActive),
         bottomNavigationBarItem(plunesStrings.notification,
             plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
-        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
-            plunesImages.profileActiveIcon)
+//        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
+//            plunesImages.profileActiveIcon)
       ],
     );
   }
@@ -157,12 +157,12 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       items: <BottomNavigationBarItem>[
         bottomNavigationBarItem(plunesStrings.home, plunesImages.homeNonActive,
             plunesImages.homeActive),
-        bottomNavigationBarItem(plunesStrings.plockr,
-            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
+//        bottomNavigationBarItem(plunesStrings.plockr,
+//            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
         bottomNavigationBarItem(plunesStrings.notification,
             plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
-        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
-            plunesImages.profileActiveIcon)
+//        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
+//            plunesImages.profileActiveIcon)
       ],
     );
   }

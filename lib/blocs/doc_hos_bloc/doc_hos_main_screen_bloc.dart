@@ -1,0 +1,37 @@
+import 'package:plunes/blocs/base_bloc.dart';
+import 'package:plunes/repositories/doc_hos_repo/doc_hos_main_screen_repo.dart';
+import 'package:plunes/requester/request_states.dart';
+import 'package:rxdart/rxdart.dart';
+
+class DocHosMainInsightBloc extends BlocBase {
+  final _realTimeProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get realTimeInsightStream =>
+      _realTimeProvider.stream;
+
+  final _actionableProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get actionableStream => _actionableProvider.stream;
+
+//  final _businessDataProvider = PublishSubject<RequestState>();
+//
+//  Observable<RequestState> get businessDataStream =>
+//      _businessDataProvider.stream;
+
+  getRealTimeInsights() async {
+    addStateInRealTimeInsightStream(
+        await DocHosMainRepo().getRealTimeInsights());
+  }
+
+  addStateInRealTimeInsightStream(RequestState state) {
+    super.addStateInGenericStream(_realTimeProvider, state);
+  }
+
+  @override
+  void dispose() {
+    _realTimeProvider?.close();
+    _actionableProvider?.close();
+//    _businessDataProvider?.close();
+    super.dispose();
+  }
+}
