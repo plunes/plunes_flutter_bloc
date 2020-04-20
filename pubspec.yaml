@@ -249,6 +249,9 @@ flutter:
     - assets/images/search@3x.png
     - assets/images/cash.png
     - assets/images/drop-location-icon.png
+    - assets/images/consultation-avatar.png
+    - assets/images/procedure-avatar.png
+    - assets/images/test-avatar.png
 
 
 

@@ -137,6 +137,15 @@ class CustomWidgets {
   Widget getSolutionRow(List<CatalogueData> solutionList, int index,
       {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
     return StatefulBuilder(builder: (context, newState) {
+        String _imageUrl= 'assets/images/consultation-avatar.png';
+         if (solutionList[index].category == "Consultation") {
+           _imageUrl = 'assets/images/consultation-avatar.png';
+         } else if (solutionList[index].category == "Procedure") {
+           _imageUrl = 'assets/images/procedure-avatar.png';
+         } else if (solutionList[index].category == "Test") {
+           _imageUrl = 'assets/images/test-avatar.png';
+         }
+
       return Column(
         children: <Widget>[
           InkWell(
@@ -176,8 +185,13 @@ class CustomWidgets {
                           height: AppConfig.horizontalBlockSize * 14,
                           width: AppConfig.horizontalBlockSize * 14,
                           child: ClipOval(
-                              child: getImageFromUrl(
-                                  "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                            child:   Image.asset(_imageUrl,
+                              width: AppConfig.horizontalBlockSize*9,
+                              height: AppConfig.verticalBlockSize*4,),
+//                              child: getImageFromUrl(
+//                                  "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg"
+//                              )
+                          ),
                         ),
                         radius: AppConfig.horizontalBlockSize * 7,
                       ),
