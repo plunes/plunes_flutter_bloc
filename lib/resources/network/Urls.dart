@@ -61,4 +61,8 @@ class Urls {
   static const String PREV_SOLUTION_URL = "solution/search";
   static const String GENERATE_OTP_URL = "user/generateOtp";
   static const String VERIFY_OTP_URL = "user/verifyOtp";
+  static const String CATALOGUE_SERVICE_URL = "user/getServices";
+  static const String GET_REALTIME_INSIGHTS_URL = "analytics/solutionSearch";
+  static const String GET_ACTIONABLE_INSIGHTS_URL = "analytics/actionableInsight";
+  static const String GET_TOTAL_BUSINESS_EARNED_AND_LOSS_URL = "analytics/totalBusiness";
 }

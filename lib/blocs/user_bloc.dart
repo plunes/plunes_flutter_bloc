@@ -1,7 +1,10 @@
 import 'package:plunes/blocs/base_bloc.dart';
+import 'package:plunes/repositories/doc_hos_repo/doc_hos_main_screen_repo.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_handler.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+
 
 class UserBloc extends BlocBase {
   Future<RequestOutput> isUserInServiceLocation(var latitude, var longitude) {
@@ -24,6 +27,12 @@ class UserBloc extends BlocBase {
 
   Future<RequestState> getVerifyOtp(String mobileNumber, int otp) async {
     var result = await UserManager().getVerifyOtp(mobileNumber, otp);
+    super.addIntoStream(result);
+    return result;
+  }
+
+  Future<RequestState> getTotalBusiness(int days) async {
+    var result = await DocHosMainRepo().getTotalBusinessEarnedAndLoss(days);
     super.addIntoStream(result);
     return result;
   }

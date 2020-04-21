@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 
 class PopupChoose extends StatefulWidget {
   final num bookInPrice;
@@ -103,12 +104,12 @@ class _PopupChooseState extends State<PopupChoose> {
                         children: <Widget>[
                           _paymentSelectionOptions[count].isSelected
                               ? Image.asset(
-                                  'assets/images/bid/check.png',
+                                  plunesImages.checkIcon,
                                   height: 20,
                                   width: 20,
                                 )
                               : Image.asset(
-                                  'assets/images/bid/uncheck.png',
+                                  plunesImages.unCheckIcon,
                                   height: 20,
                                   width: 20,
                                 ),

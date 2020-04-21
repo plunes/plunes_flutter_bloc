@@ -8,6 +8,13 @@ class PlunesImages {
   static String userLandingImage = 'assets/images/user_landing_map.png';
   static String userLandingGoogleIcon =
       'assets/images/locationIconUserLandingScreen.png';
+  static String actionableInsightIcon = 'assets/images/actinable-insights-icon.png';
+  static String realTimeInsightIcon = 'assets/images/realtime-insight-icon.png';
+  static String totalBusinessIcon = 'assets/images/totalBusiness-icon.png';
+  static String consultationImage = 'assets/images/consultation-avatar.png';
+  static String procedureImage ='assets/images/procedure-avatar.png';
+  static String testImage ='assets/images/test-avatar.png';
+  static String  inactiveProfileIcon ='assets/images/Profile_Inactive-Icon.png';
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',
@@ -55,6 +62,10 @@ class PlunesImages {
       'assets/images/bottom_tabs/notification_active.png';
 
   get notificationIcon => 'assets/images/bottom_tabs/notification.png';
+
+  get homeActive => 'assets/images/bottom_tabs/homeActive.png';
+
+  get homeNonActive => 'assets/images/bottom_tabs/homeNonActive.png';
 
   get solutionIcon => 'assets/images/bottom_tabs/solution.png';
 
@@ -151,4 +162,10 @@ class PlunesImages {
   get referIcon => 'assets/images/refer.png';
 
   get coverIcon => 'assets/images/cover.png';
+
+  get cashIcon => 'assets/images/cashIcon.png';
+
+  get checkIcon => 'assets/images/bid/check.png';
+
+  get unCheckIcon => 'assets/images/bid/uncheck.png';
 }

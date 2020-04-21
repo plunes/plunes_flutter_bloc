@@ -32,6 +32,12 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   }
 
   @override
+  void dispose() {
+    _prevMissSolutionBloc?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

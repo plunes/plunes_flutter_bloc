@@ -85,9 +85,9 @@ class UserManager {
       if (result.response.data != null && result.response.data) {
         setIsUserInServiceLocation(result.response.data);
         setLanLong(latitude, longitude);
+      } else {
+        setIsUserInServiceLocation(false);
       }
-    } else {
-      setIsUserInServiceLocation(false);
     }
     return result;
   }

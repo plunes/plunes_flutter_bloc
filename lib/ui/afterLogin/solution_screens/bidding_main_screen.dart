@@ -76,8 +76,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   @override
   void dispose() {
-    _controller.close();
+    _controller?.close();
     _timer?.cancel();
+    _prevMissSolutionBloc?.dispose();
     super.dispose();
   }
 
@@ -243,11 +244,28 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Flexible(
-                    child: CustomWidgets().searchBar(
-                        searchController: _textEditingController,
-                        isRounded: true,
-                        focusNode: _focusNode,
-                        hintText: plunesStrings.searchHint)),
+                    child: Hero(
+                        tag: "my_tag",
+                        child: Material(
+                          child: InkWell(
+                            onTap: () async {
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          SolutionBiddingScreen()));
+                              _getPreviousSolutions();
+                            },
+                            child: IgnorePointer(
+                              ignoring: true,
+                              child: CustomWidgets().searchBar(
+                                  searchController: _textEditingController,
+                                  isRounded: true,
+                                  focusNode: _focusNode,
+                                  hintText: plunesStrings.searchHint),
+                            ),
+                          ),
+                        ))),
                 InkWell(
                     onTap: () {
                       Navigator.of(context)
@@ -321,6 +339,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         if (result.response.data == null || !result.response.data) {
           widget.showInSnackBar(PlunesStrings.switchToGurLoc,
               PlunesColors.GREYCOLOR, scaffoldKey);
+          _canGoAhead = UserManager().getIsUserInServiceLocation();
         } else {
           _canGoAhead = true;
         }
@@ -383,18 +402,6 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     var requestState = await _prevMissSolutionBloc.getPreviousSolutions();
     if (requestState is RequestSuccess) {
       _prevSearchedSolution = requestState.response;
-//      List<PrevSolution> _prevSolutions = [], missedSolutions = [];
-//      if (_prevSearchedSolution != null &&
-//          _prevSearchedSolution.data != null &&
-//          _prevSearchedSolution.data.isNotEmpty) {
-//        _prevSearchedSolution.data.forEach((solution) {
-//          if (solution.active) {
-//            _prevSolutions.add(solution);
-//          } else {
-//            missedSolutions.add(solution);
-//          }
-//        });
-//      }
       _setState();
     }
   }

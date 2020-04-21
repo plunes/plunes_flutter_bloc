@@ -7,10 +7,13 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/models/solution_models/test_and_procedure_model.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
@@ -137,13 +140,13 @@ class CustomWidgets {
   Widget getSolutionRow(List<CatalogueData> solutionList, int index,
       {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
     return StatefulBuilder(builder: (context, newState) {
-        String _imageUrl= 'assets/images/consultation-avatar.png';
+        String _imageUrl= '';
          if (solutionList[index].category == "Consultation") {
-           _imageUrl = 'assets/images/consultation-avatar.png';
+           _imageUrl = PlunesImages.consultationImage;
          } else if (solutionList[index].category == "Procedure") {
-           _imageUrl = 'assets/images/procedure-avatar.png';
+           _imageUrl = PlunesImages.procedureImage;
          } else if (solutionList[index].category == "Test") {
-           _imageUrl = 'assets/images/test-avatar.png';
+           _imageUrl = PlunesImages.testImage;
          }
 
       return Column(
@@ -178,16 +181,14 @@ class CustomWidgets {
 
                 children: <Widget>[
                   Row(
-
                     children: <Widget>[
                       CircleAvatar(
                         child: Container(
+                          color: PlunesColors.WHITECOLOR,
                           height: AppConfig.horizontalBlockSize * 14,
                           width: AppConfig.horizontalBlockSize * 14,
                           child: ClipOval(
-                            child:   Image.asset(_imageUrl,
-                              width: AppConfig.horizontalBlockSize*9,
-                              height: AppConfig.verticalBlockSize*4,),
+                            child:   Image.asset(_imageUrl,),
 //                              child: getImageFromUrl(
 //                                  "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg"
 //                              )
@@ -232,14 +233,15 @@ class CustomWidgets {
                                         text:solutionList[index].details ??
                                             PlunesStrings.NA,
                                         style: TextStyle(color: Colors.black),
-//                                        children: [
-//                                        TextSpan(
-//                                            text: "(view more)",
-//                                            recognizer: onViewMoreTap,
-//                                            style: TextStyle(
-//                                                color: PlunesColors.GREENCOLOR))
-//                                      ]
-                                    )),
+//<<<<<<< HEAD
+////                                        children: [
+////                                        TextSpan(
+////                                            text: "(view more)",
+////                                            recognizer: onViewMoreTap,
+////                                            style: TextStyle(
+////                                                color: PlunesColors.GREENCOLOR))
+////                                      ]
+                                   )),
                             (solutionList[index].details == null ||
                                 solutionList[index].details.isEmpty)
                                 ? Container()
@@ -251,6 +253,17 @@ class CustomWidgets {
                                               color: PlunesColors.GREENCOLOR,
                                               decoration: TextDecoration.underline)),
                                     ),
+                            (!(solutionList[index].isActive) &&
+                                    solutionList[index].maxDiscount != null &&
+                                    solutionList[index].maxDiscount != 0)
+                                ? Padding(
+                                    padding: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 1),
+                                    child: Text(
+                                      "You have missed ${solutionList[index].maxDiscount.toStringAsFixed(0)}% on your ${solutionList[index].service ?? PlunesStrings.NA} Previously",
+                                      style: TextStyle(color: Colors.black),
+                                    ))
+                                : Container()
                           ],
                         ),
                       ),
@@ -944,239 +957,152 @@ class CustomWidgets {
     );
   }
 
-
-
-
-
-//  Widget buildAboutDialog({
-//    CatalogueData catalogueData,
-//  }) {
-//    return StatefulBuilder(builder: (context, newState) {
-//      if (catalogueData.service == null) {
-//        catalogueData.service = 'NA';
-//      }
-//      if (catalogueData.dnd == null) {
-//        catalogueData.dnd = 'NA';
-//      }
-//      if (catalogueData.sitting == null) {
-//        catalogueData.sitting = 'NA';
-//      }
-//      if (catalogueData.duration == null) {
-//        catalogueData.duration = 'NA';
-//      }
-//      return AlertDialog(
-//        contentPadding: EdgeInsets.only(left: 25, right: 25),
-//        shape: RoundedRectangleBorder(
-//            borderRadius: BorderRadius.all(Radius.circular(20.0))),
-//        title: Text(
-//          'Details',
-//          style: TextStyle(),
-//          textAlign: TextAlign.center,
-//        ),
-//        content: Container(
-//          margin: EdgeInsets.symmetric(vertical: 20),
-//          height: 300,
-//          width: 300,
-//          child: SingleChildScrollView(
-//            child: Column(
-//              crossAxisAlignment: CrossAxisAlignment.stretch,
-//              children: <Widget>[
-//                Text(
-//                  'Defination:',
-//                  style: TextStyle(fontWeight: FontWeight.bold),
-//                ),
-//                Text(
-//                  catalogueData.service,
-//                  style: TextStyle(
-//                    color: Colors.black38,
-//                  ),
-//                ),
-//                Divider(
-//                  color: Colors.black45,
-//                ),
-//                Text(
-//                  'Duration',
-//                  style: TextStyle(fontWeight: FontWeight.bold),
-//                ),
-//                Text(
-//                  catalogueData.duration,
-//                  style: TextStyle(
-//                    color: Colors.black45,
-//                  ),
-//                ),
-//                Divider(
-//                  color: Colors.black45,
-//                ),
-//                Text(
-//                  'Sittings:',
-//                  style: TextStyle(fontWeight: FontWeight.bold),
-//                ),
-//                Text(
-//                  catalogueData.sitting,
-//                  style: TextStyle(
-//                    color: Colors.black38,
-//                  ),
-//                ),
-//                Divider(
-//                  color: Colors.black45,
-//                ),
-//                Text(
-//                  'Do\'s and Don\'t:',
-//                  style: TextStyle(fontWeight: FontWeight.bold),
-//                ),
-//                Text(
-//                  catalogueData.dnd,
-//                  style: TextStyle(
-//                    color: Colors.black38,
-//                  ),
-//                ),
-//              ],
-//            ),
-//          ),
-//        ),
-////        actions: <Widget>[
-////          Container(
-////            margin: EdgeInsets.only(right: 90),
-////            child: Row(
-////              crossAxisAlignment: CrossAxisAlignment.center,
-////              children: <Widget>[
-////                Text(
-////                  'Expand',
-////                  style: TextStyle(fontSize: 18),
-////                  textAlign: TextAlign.center,
-////                ),
-////                new IconButton(
-////                  alignment: Alignment.center,
-////                  icon: Icon(Icons.expand_more),
-////                  onPressed: () => Navigator.of(context).pop(),
-////                ),
-////              ],
-////            ),
-////          ),
-////        ],
-//      );
-//    });
-//  }
-
-  Widget updatePricePopUp({
-    @required final String dialogTitle,
-    @required final String dialogMsg,
-  }) {
+  // ignore: non_constant_identifier_names
+  Widget UpdatePricePopUp(
+      {RealInsight realInsight, DocHosMainInsightBloc docHosMainInsightBloc}) {
+    var sliderVal = (realInsight.userPrice.toDouble() / 2) +
+        (((realInsight.userPrice.toDouble() / 2)) / 2);
+    String failureCause;
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
         elevation: 0.0,
-        child: updatePriceContent(context),
-      );
-    });
-  }
-
-  Widget updatePriceContent(BuildContext context) {
-    bool isChecked = false;
-    var sliderVal = 0.0;
-
-    void isToggle() {
-      isChecked = !isChecked;
-    }
-
-    return Container(
-      margin: EdgeInsets.only(top: 5),
-      child: Stack(
-        children: <Widget>[
-          Text(
-            '',
-            textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          Container(
-            height: 374,
-            //padding: EdgeInsets.only(top: 18.0),
-            margin: EdgeInsets.only(left: 30, right: 30, top: 30),
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Text(
-                    'Update Price in your Catalogue for maximum Bookings',
-                    style: TextStyle(fontSize: 20),
-                    textAlign: TextAlign.center,
-                  ),
-                  Column(
+        child: StreamBuilder<Object>(
+            stream: docHosMainInsightBloc.actionableStream,
+            builder: (context, snapshot) {
+              return SingleChildScrollView(
+                reverse: true,
+                child: Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: Stack(
                     children: <Widget>[
-                      SizedBox(height: 10),
                       Text(
-                        'Amalgam Fillings',
-                        style: TextStyle(fontSize: 20, color: Colors.black54),
+                        '',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      // Divider(color: Colors.black38,),
-                      SizedBox(height: 20),
-                      Slider(
-                          value: sliderVal,
-                          min: 0,
-                          max: 3000,
-                          divisions: 100,
-                          activeColor: Colors.green,
-                          onChanged: (newValue) {
-                            setState() {
-                              sliderVal = newValue;
-                            }
-
-                            ;
-                          }),
                       Container(
-                        margin: EdgeInsets.only(top: 30, bottom: 30),
-                        child: Text(
-                          ' \u20B9 ${sliderVal}',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                        height: AppConfig.verticalBlockSize * 50,
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 5.5,
+                            right: AppConfig.horizontalBlockSize * 5.5,
+                            top: AppConfig.verticalBlockSize * 5),
+                        child: Center(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              Text(
+                                'Update Price in your Catalogue for maximum Bookings',
+                                style: TextStyle(fontSize: 20),
+                                textAlign: TextAlign.center,
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  SizedBox(height: 10),
+                                  Text(
+                                    realInsight?.serviceName ??
+                                        PlunesStrings.NA,
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black54),
+                                  ),
+                                  SizedBox(height: 20),
+                                  Slider(
+                                      value: sliderVal,
+                                      min:
+                                          (realInsight.userPrice.floor() / 2) ??
+                                              0,
+                                      max: realInsight.userPrice
+                                          .floor()
+                                          .toDouble(),
+                                      divisions: 10,
+                                      activeColor: Colors.green,
+                                      onChanged: (newValue) {
+                                        newState(() {
+                                          sliderVal = newValue;
+                                        });
+                                      }),
+                                  Container(
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                          ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(1)}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        Expanded(child: Container()),
+                                        Text(
+                                          ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(1)}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 3,
+                                        bottom:
+                                            AppConfig.verticalBlockSize * 3),
+                                    child: Text(
+                                      ' \u20B9 $sliderVal',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Text(
+                                    'Chances of Booking increases by',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  Text(
+                                    '20 to 25%',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 20),
+                                  FlatButton(
+                                    child: Text(
+                                      'Apply here',
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          color: Colors.green,
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.w400),
+                                    ),
+                                    onPressed: () {},
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-
-                      Text(
-                        'Chances of Booking increases by',
-                        style: TextStyle(
-                          fontSize: 18,
+                      Positioned(
+                        right: 0.0,
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () => {
+                              Navigator.of(context).pop(),
+                            },
+                          ),
                         ),
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        '20 to 25%',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 20),
-                      FlatButton(
-                        child: Text(
-                          'Apply here',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.green,
-                              decoration: TextDecoration.underline,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        onPressed: () {},
-                      )
                     ],
                   ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            right: 0.0,
-            child: Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () => {
-                  Navigator.of(context).pop(),
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                ),
+              );
+            }),
+      );
+    });
   }
 }

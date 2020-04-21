@@ -78,6 +78,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _timerToUpdateSolutionReceivedTime?.cancel();
     _searchController?.dispose();
     _focusNode?.dispose();
+    _searchSolutionBloc?.dispose();
     super.dispose();
   }
 
@@ -146,7 +147,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   timeSlots: service.timeSlots,
                   docHosSolution: _solution,
                   bookInPrice: service.bookIn,
-                  serviceIndex: index,
+                  serviceIndex: 0,
                   service: service,
                 )));
   }

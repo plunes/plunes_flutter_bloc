@@ -151,6 +151,8 @@ flutter:
     - assets/images/bottom_tabs/search.png
     - assets/images/bottom_tabs/solution-active.png
     - assets/images/bottom_tabs/solution.png
+    - assets/images/bottom_tabs/homeActive.png
+    - assets/images/bottom_tabs/homeNonActive.png
     - assets/images/catalogue/catalog.png
     - assets/images/catalogue/edit.png
     - assets/images/catalogue/uploadPlus.png
@@ -241,7 +243,6 @@ flutter:
     - assets/images/credit.png
     - assets/images/refer.png
     - assets/images/cover.png
-
     - assets/images/user_landing_map.png
     - assets/images/locationIconUserLandingScreen.png
     - assets/images/arrow-down-sign-to-navigate.svg
@@ -252,6 +253,12 @@ flutter:
     - assets/images/consultation-avatar.png
     - assets/images/procedure-avatar.png
     - assets/images/test-avatar.png
+    - assets/images/cashIcon.png
+    - assets/images/actinable-insights-icon.png
+    - assets/images/realtime-insight-icon.png
+    - assets/images/totalBusiness-icon.png
+    - assets/images/Profile_Inactive-Icon.png
+
 
 
 

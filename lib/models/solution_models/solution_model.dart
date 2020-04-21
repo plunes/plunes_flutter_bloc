@@ -10,6 +10,7 @@ class CatalogueData {
   String sitting;
   String duration;
   int iV, createdAt;
+  num maxDiscount;
 
   CatalogueData(
       {this.service,
@@ -24,7 +25,8 @@ class CatalogueData {
       this.sitting,
       this.duration,
       this.createdAt,
-      this.speciality});
+      this.speciality,
+      this.maxDiscount});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
@@ -34,10 +36,11 @@ class CatalogueData {
     details = json['details'];
     dnd = json['dnd'];
     category = json['category'];
-    isActive = json['active'];
+    isActive = json['active'] ?? true;
     createdAt = json['createdAt'];
 //    sitting = json['sitting'];
 //    duration = json['duration'];
+    maxDiscount = json['maxDiscount'];
     iV = json['__v'];
   }
 
@@ -55,6 +58,7 @@ class CatalogueData {
     data['createdAt'] = this.createdAt;
 //    data['sitting'] = this.sitting;
 //    data['duration'] = this.duration;
+    data['maxDiscount'] = this.maxDiscount;
     return data;
   }
 }

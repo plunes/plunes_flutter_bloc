@@ -16,15 +16,21 @@ class ConsultationScreen extends BaseActivity {
 
 class _ConsultationState extends BaseState<ConsultationScreen> {
   ConsultationTestProcedureBloc _consultationBloc;
-  List<CatalogueData> _catalouges;
+  List<CatalogueData> _catalogueList;
   String _failureCause;
 
   @override
   void initState() {
-    _catalouges = [];
+    _catalogueList = [];
     _consultationBloc = ConsultationTestProcedureBloc();
     _getConsultations();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _consultationBloc?.dispose();
+    super.dispose();
   }
 
   _getConsultations() {
@@ -50,17 +56,17 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
                     _failureCause = _requestFailedObject.failureCause;
                   }
                   if (snapshot.data is RequestSuccess) {
-                    _catalouges = [];
+                    _catalogueList = [];
                     RequestSuccess _requestSuccess = snapshot.data;
-                    _catalouges = _requestSuccess.response;
-                    if (_catalouges.isEmpty) {
+                    _catalogueList = _requestSuccess.response;
+                    if (_catalogueList.isEmpty) {
                       _failureCause = PlunesStrings.consultationNotAvailable;
                     }
                   }
                   if (snapshot.data is RequestInProgress) {
                     return CustomWidgets().getProgressIndicator();
                   }
-                  return _catalouges == null || _catalouges.isEmpty
+                  return _catalogueList == null || _catalogueList.isEmpty
                       ? CustomWidgets().errorWidget(_failureCause)
                       : _showConsultationList();
                 },
@@ -77,12 +83,12 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
       itemBuilder: (context, index) {
         TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
           ..onTap = () => _onViewMoreTap(index);
-        return CustomWidgets().getSolutionRow(_catalouges, index,
+        return CustomWidgets().getSolutionRow(_catalogueList, index,
             onButtonTap: () => _onSolutionItemTap(index),
             onViewMoreTap: tapRecognizer);
       },
       shrinkWrap: true,
-      itemCount: _catalouges.length,
+      itemCount: _catalogueList.length,
     );
   }
 
@@ -90,8 +96,8 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) => CustomWidgets().buildViewMoreDialog(
-        catalogueData:_catalouges[index],
-      ),
+        catalogueData:_catalogueList[index],
+    ),
     );
   }
 
@@ -100,7 +106,7 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
         context,
         MaterialPageRoute(
             builder: (context) => BiddingLoading(
-                  catalogueData: _catalouges[index],
+                  catalogueData: _catalogueList[index],
                 )));
   }
 }
