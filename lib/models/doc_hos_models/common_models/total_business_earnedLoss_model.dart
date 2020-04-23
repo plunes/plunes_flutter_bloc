@@ -1,6 +1,6 @@
 class TotalBusinessEarnedModel {
-  String businessGained;
-  String businessLost;
+  num  businessGained;
+  num businessLost;
 
   TotalBusinessEarnedModel({
    this.businessGained, this.businessLost

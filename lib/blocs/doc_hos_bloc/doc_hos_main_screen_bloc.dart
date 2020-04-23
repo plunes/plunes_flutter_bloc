@@ -9,23 +9,25 @@ class DocHosMainInsightBloc extends BlocBase {
   Observable<RequestState> get realTimeInsightStream =>
       _realTimeProvider.stream;
 
-  final _actionableProvider = PublishSubject<RequestState>();
-
-  Observable<RequestState> get actionableStream => _actionableProvider.stream;
   final _realTimePriceUpdateProvider = PublishSubject<RequestState>();
 
   Observable<RequestState> get realTimePriceUpdateStream =>
       _realTimePriceUpdateProvider.stream;
 
+  final _actionableProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get actionableStream => _actionableProvider.stream;
+
+  // ignore: close_sinks
+  final _actionablePriceUpdateProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get actionablePriceUpdateStream =>
+      _actionablePriceUpdateProvider.stream;
+
   final _businessDataProvider = PublishSubject<RequestState>();
 
   Observable<RequestState> get businessDataStream =>
       _businessDataProvider.stream;
-
-  getRealTimeInsights() async {
-    addStateInRealTimeInsightStream(
-        await DocHosMainRepo().getRealTimeInsights());
-  }
 
   addStateInRealTimeInsightStream(RequestState state) {
     super.addStateInGenericStream(_realTimeProvider, state);
@@ -34,12 +36,17 @@ class DocHosMainInsightBloc extends BlocBase {
   addStateInActionableInsightStream(RequestState state) {
     super.addStateInGenericStream(_actionableProvider, state);
   }
-  addStateInBusinessStream(RequestState state){
+
+  addStateInBusinessStream(RequestState state) {
     super.addStateInGenericStream(_businessDataProvider, state);
   }
 
-  updateRealTimeInsightPrice() {
-    ///start from here
+  updateRealTimeInsightPriceStream(RequestState state) {
+    super.addStateInGenericStream(_realTimePriceUpdateProvider, state);
+  }
+
+  addStateInActionableUpdatePriceStream(RequestState state) {
+    super.addStateInGenericStream(_actionablePriceUpdateProvider, state);
   }
 
   @override
@@ -48,7 +55,13 @@ class DocHosMainInsightBloc extends BlocBase {
     _actionableProvider?.close();
     _realTimePriceUpdateProvider?.close();
     _businessDataProvider?.close();
+    _actionablePriceUpdateProvider.close();
     super.dispose();
+  }
+
+  getRealTimeInsights() async {
+    addStateInRealTimeInsightStream(
+        await DocHosMainRepo().getRealTimeInsights());
   }
 
   getActionableInsights() async {
@@ -58,6 +71,17 @@ class DocHosMainInsightBloc extends BlocBase {
 
   getTotalBusinessData(int days) async {
     addStateInBusinessStream(
-      await DocHosMainRepo().getTotalBusinessEarnedAndLoss(days));
+        await DocHosMainRepo().getTotalBusinessEarnedAndLoss(days));
+  }
+
+  getUpdateRealTimeInsightPrice(num price, String solutionId,
+      String serviceId) async {
+    updateRealTimeInsightPriceStream(await DocHosMainRepo()
+        .updateRealTimeIsightPrice(price, solutionId, serviceId));
+  }
+
+  getUpdateActionableInsightPrice(num price, String serviceId) async {
+    addStateInActionableUpdatePriceStream(
+        await DocHosMainRepo().updateActionableInsightPrice(price, serviceId));
   }
 }

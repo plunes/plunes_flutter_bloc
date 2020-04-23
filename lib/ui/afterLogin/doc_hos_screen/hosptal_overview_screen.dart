@@ -12,7 +12,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import '../../../Utils/custom_widgets.dart';
-import 'package:plunes/blocs/user_bloc.dart';
+import './catalogue_view_screen.dart';
 
 // ignore: must_be_immutable
 class HospitalDoctorOverviewScreen extends BaseActivity {
@@ -26,8 +26,13 @@ class _HospitalOverviewScreenState
   DocHosMainInsightBloc _docHosMainInsightBloc;
   RealTimeInsightsResponse _realTimeInsightsResponse;
   ActionableInsightResponseModel _actionableInsightResponse;
-  TotalBusinessEarnedModel _totalBusinessEarnedModel;
-  String _reaTimeInsightFailureCause, _actionableInsightFailureCause, _businessFailurecause;
+  TotalBusinessEarnedModel _totalBusinessEarnedResponse;
+  String _reaTimeInsightFailureCause, _actionableInsightFailureCause,
+      _businessFailurecause, selectedDay;
+  int days = 1;
+  List<String> daysCount = ['today', 'week', 'month', 'year'];
+  List<String> daysInput;
+  // String
 
   @override
   void initState() {
@@ -35,6 +40,8 @@ class _HospitalOverviewScreenState
     _docHosMainInsightBloc = DocHosMainInsightBloc();
     _getRealTimeInsights();
     _getActionableInsights();
+    _getTotalBusinessData(days);
+     daysInput = [];
     super.initState();
   }
 
@@ -47,17 +54,12 @@ class _HospitalOverviewScreenState
   }
 
 
-  void _getTotalBusinessData() async {
-    RequestState requestState =
-    await UserBloc().getTotalBusiness(365);
-    if (requestState is RequestSuccess) {
-    _totalBusinessEarnedModel = requestState.response;
-    } else if (requestState is RequestFailed) {
-     _businessFailurecause = requestState.failureCause;
-    }
+  _getTotalBusinessData(int days) {
+    _docHosMainInsightBloc.getTotalBusinessData(days);
+    _setState();
   }
 
-  
+
   @override
   void dispose() {
     _docHosMainInsightBloc?.dispose();
@@ -69,17 +71,20 @@ class _HospitalOverviewScreenState
     return Scaffold(
       key: scaffoldKey,
       body: SingleChildScrollView(
-        child: Column(
+        child: Container(
+          margin: EdgeInsets.only(top: 5, left: 5, right: 5),
+        child:Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(top: 5, left: 5, right: 5),
+             // margin: EdgeInsets.only(top: 5, left: 5, right: 5),
               width: double.infinity,
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
                     _user?.name ?? _getNaString(),
-                    style: TextStyle(fontSize: AppConfig.smallFont, fontWeight: FontWeight.w500),
+                    style: TextStyle(fontSize: AppConfig.smallFont,
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
               ),
@@ -88,6 +93,7 @@ class _HospitalOverviewScreenState
             _getTotalBusinessWidget(),
             _getActionableInsightWidget(),
           ],
+        ),
         ),
       ),
     );
@@ -103,7 +109,7 @@ class _HospitalOverviewScreenState
       child: Container(
         width: double.infinity,
         margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2,
-        horizontal: AppConfig.horizontalBlockSize*4
+            horizontal: AppConfig.horizontalBlockSize * 4
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -122,7 +128,7 @@ class _HospitalOverviewScreenState
                     )),
                 Expanded(
                   child: Text(
-                   PlunesStrings.realTimeInsights,
+                    PlunesStrings.realTimeInsights,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -169,40 +175,43 @@ class _HospitalOverviewScreenState
                         .addStateInRealTimeInsightStream(null);
                   }
                   return (_realTimeInsightsResponse == null ||
-                          _realTimeInsightsResponse.data.isEmpty)
+                      _realTimeInsightsResponse.data.isEmpty)
                       ? Center(
-                          child: Text(_reaTimeInsightFailureCause ??
-                              PlunesStrings.noRealTimeInsights),
-                        )
+                    child: Text(_reaTimeInsightFailureCause ??
+                        PlunesStrings.noRealTimeInsights),
+                  )
                       : ListView.builder(
-                          padding: null,
-                          itemBuilder: (context, itemIndex) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                PatientServiceInfo(
-                                  imageUrl: 'https://i.imgur.com/BoN9kdC.png',
-                                  patientName: _realTimeInsightsResponse
-                                      .data[itemIndex].userName,
-                                  serviceName: "is looking for " +
-                                      "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
-                                ),
-                                FlatButtonLinks(
-                                    PlunesStrings.kindlyUpdateYourPrice,
-                                    15,
-                                    null,
-                                    AppConfig.horizontalBlockSize * 12,
-                                    true,
-                                    () => _openRealTimeInsightPriceUpdateWidget(
-                                        _realTimeInsightsResponse
-                                            .data[itemIndex])),
-                                Divider(),
-                              ],
-                            );
-                          },
-                          itemCount:
-                              _realTimeInsightsResponse.data?.length ?? 0,
-                        );
+                    padding: null,
+                    itemBuilder: (context, itemIndex) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          PatientServiceInfo(
+                            imageUrl: 'https://i.imgur.com/BoN9kdC.png',
+                            patientName: _realTimeInsightsResponse
+                                .data[itemIndex].userName,
+                            serviceName: "is looking for " +
+                                "${_realTimeInsightsResponse.data[itemIndex]
+                                    .serviceName?.toUpperCase() ??
+                                    _getNaString()}",
+                          ),
+                          FlatButtonLinks(
+                              PlunesStrings.kindlyUpdateYourPrice,
+                              15,
+                              null,
+                              AppConfig.horizontalBlockSize * 12,
+                              true,
+                                  () =>
+                                  _openRealTimeInsightPriceUpdateWidget(
+                                      _realTimeInsightsResponse
+                                          .data[itemIndex])),
+                          Divider(),
+                        ],
+                      );
+                    },
+                    itemCount:
+                    _realTimeInsightsResponse.data?.length ?? 0,
+                  );
                 },
                 initialData: _realTimeInsightsResponse == null
                     ? RequestInProgress()
@@ -228,8 +237,8 @@ class _HospitalOverviewScreenState
             children: <Widget>[
               ListTile(
                 leading: Image.asset(PlunesImages.totalBusinessIcon,
-                  width: AppConfig.horizontalBlockSize*10,
-                  height:AppConfig.horizontalBlockSize*7,
+                  width: AppConfig.horizontalBlockSize * 10,
+                  height: AppConfig.horizontalBlockSize * 7,
                 ),
                 title: Text(
                   'Total Business',
@@ -239,47 +248,84 @@ class _HospitalOverviewScreenState
                     decoration: TextDecoration.underline,
                   ),
                 ),
-                trailing: Text('add drop down here'),
+                trailing: _selectDayDropDown(),
+                //Text('drop down here'),
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 60, vertical: 15),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
+                margin: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                child: StreamBuilder<RequestState>(
+                  builder: (context, snapShot) {
+                    if (snapShot.data is RequestInProgress) {
+                      return CustomWidgets().getProgressIndicator();
+                    }
+                    if (snapShot.data is RequestSuccess) {
+                      RequestSuccess _requestSuccess = snapShot.data;
+                      _totalBusinessEarnedResponse = _requestSuccess.response;
+                      if (_totalBusinessEarnedResponse==null) {
+                        _businessFailurecause =
+                            PlunesStrings.noBusinessDataFound;
+                      }
+                      _docHosMainInsightBloc.addStateInBusinessStream(null);
+
+                    }
+                    if (snapShot.data is RequestFailed) {
+                      RequestFailed _requestFailed = snapShot.data;
+                      _businessFailurecause = _requestFailed.failureCause;
+                      _docHosMainInsightBloc
+                          .addStateInBusinessStream(null);
+                    }
+                    return (_totalBusinessEarnedResponse== null)
+                        ? Center(
+                      child: Text(_businessFailurecause ??
+                          PlunesStrings.noBusinessDataFound),
+                    ) :
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            '\u20B9 4500',
-                            style: TextStyle(
-                              color: Colors.green,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                '\u20B9 ${_totalBusinessEarnedResponse
+                                    .businessGained.toString()}',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize:25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Business Earned',
+                                style: TextStyle(color: Colors.black54),
+                              )
+                            ],
                           ),
-                          Text(
-                            'Business Earned',
-                            style: TextStyle(color: Colors.black54),
+                          SizedBox(width: 10,),
+                          Column(
+                            children: <Widget>[
+                              Text(
+                                '\u20B9 ${_totalBusinessEarnedResponse
+                                    .businessLost.toString()}',
+                                style: TextStyle(
+                                  color: Colors.yellow,
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Business Lost',
+                                style: TextStyle(color: Colors.black54),
+                              ),
+                            ],
                           )
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Text(
-                            '\u20B9 6424',
-                            style: TextStyle(
-                              color: Colors.yellow,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            'Business Lost',
-                            style: TextStyle(color: Colors.black54),
-                          ),
-                        ],
-                      )
-                    ]),
+                        ]
+                    );
+                  },
+                  initialData: _totalBusinessEarnedResponse == null
+                      ? RequestInProgress()
+                      : null,
+                  stream: _docHosMainInsightBloc.businessDataStream,
+                ),
               ),
               Container(
                   margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -304,8 +350,8 @@ class _HospitalOverviewScreenState
             children: <Widget>[
               ListTile(
                 leading: Image.asset(PlunesImages.actionableInsightIcon,
-                  width: AppConfig.horizontalBlockSize*10,
-                  height:AppConfig.horizontalBlockSize*10,
+                  width: AppConfig.horizontalBlockSize * 10,
+                  height: AppConfig.horizontalBlockSize * 10,
                 ),
                 title: Text(
                   'Actionable Insights',
@@ -344,80 +390,88 @@ class _HospitalOverviewScreenState
                           .addStateInActionableInsightStream(null);
                     }
                     return (_actionableInsightResponse == null ||
-                            _actionableInsightResponse.data.isEmpty)
+                        _actionableInsightResponse.data.isEmpty)
                         ? Center(
-                            child: Text(_actionableInsightFailureCause ??
-                                PlunesStrings.noActionableInsightAvailable),
-                          )
+                      child: Text(_actionableInsightFailureCause ??
+                          PlunesStrings.noActionableInsightAvailable),
+                    )
                         : ListView.builder(
-                            padding: null,
-                            itemBuilder: (context, itemIndex) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                      width: double.infinity,
-                                      margin: EdgeInsets.only(
-                                          right: 20, left: 20, top: 10),
-                                      child: RichText(
-                                        text: TextSpan(
-                                            text: "Your price for ",
+                      padding: null,
+                      itemBuilder: (context, itemIndex) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                                width: double.infinity,
+                                margin: EdgeInsets.only(
+                                    right: 20, left: 20, top: 10),
+                                child: RichText(
+                                  text: TextSpan(
+                                      text: "Your price for ",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.w500),
+                                      children: <TextSpan>[
+                                        TextSpan(
+                                            text:
+                                            "${_actionableInsightResponse
+                                                ?.data[itemIndex]?.serviceName
+                                                ?.toUpperCase() ??
+                                                _getNaString()}",
                                             style: TextStyle(
                                                 fontSize: 15,
-                                                color: Colors.black54,
-                                                fontWeight: FontWeight.w500),
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                  text:
-                                                      "${_actionableInsightResponse?.data[itemIndex]?.serviceName?.toUpperCase() ?? _getNaString()}",
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR,
-                                                      fontWeight:
-                                                          FontWeight.w500)),
-                                              TextSpan(
-                                                text: " is ",
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.black54,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                              TextSpan(
-                                                  text:
-                                                      "${_actionableInsightResponse?.data[itemIndex]?.percent?.toStringAsFixed(0) ?? _getNaString()}%",
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR,
-                                                      fontWeight:
-                                                          FontWeight.w500)),
-                                              TextSpan(
-                                                text:
-                                                    " higher than the booked price.",
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Colors.black54,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              )
-                                            ]),
-                                      )),
-                                  FlatButtonLinks(
-                                      'Update here',
-                                      15,
-                                      null,
-                                      0,
-                                      true,
-                                      () => _openActionableUpdatePriceWidget()),
-                                  Divider(color: Colors.black38)
-                                ],
-                              );
-                            },
-                            itemCount:
-                                _actionableInsightResponse?.data?.length ?? 0,
-                          );
+                                                color: PlunesColors
+                                                    .BLACKCOLOR,
+                                                fontWeight:
+                                                FontWeight.w500)),
+                                        TextSpan(
+                                          text: " is ",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black54,
+                                              fontWeight:
+                                              FontWeight.w500),
+                                        ),
+                                        TextSpan(
+                                            text:
+                                            "${_actionableInsightResponse
+                                                ?.data[itemIndex]?.percent
+                                                ?.toStringAsFixed(0) ??
+                                                _getNaString()}%",
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                color: PlunesColors
+                                                    .BLACKCOLOR,
+                                                fontWeight:
+                                                FontWeight.w500)),
+                                        TextSpan(
+                                          text:
+                                          " higher than the booked price.",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black54,
+                                              fontWeight:
+                                              FontWeight.w500),
+                                        )
+                                      ]),
+                                )),
+                            FlatButtonLinks(
+                                'Update here',
+                                15,
+                                null,
+                                0,
+                                true,
+                                    () => _openActionableUpdatePriceWidget(
+                                      _actionableInsightResponse.data[itemIndex]
+                                    )),
+                            Divider(color: Colors.black38)
+                          ],
+                        );
+                      },
+                      itemCount:
+                      _actionableInsightResponse?.data?.length ?? 0,
+                    );
                   },
                   initialData: _actionableInsightResponse == null
                       ? RequestInProgress()
@@ -432,20 +486,93 @@ class _HospitalOverviewScreenState
     );
   }
 
-  _openActionableUpdatePriceWidget() {
-//    showDialog(
-//        context: context,
-//        builder: (BuildContext context) => CustomWidgets().UpdatePricePopUp());
+  _openActionableUpdatePriceWidget(ActionableInsight actionableInsight) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) =>
+            CustomWidgets().UpdatePricePopUpForActionableInsight(
+                docHosMainInsightBloc: _docHosMainInsightBloc,
+                actionableInsight :actionableInsight)).then((value){
+      if(value!=null && value){
+        widget
+            .showInSnackBar("Price updated successfully!", PlunesColors.BLACKCOLOR, scaffoldKey);
+      }
+    });
   }
 
   _openRealTimeInsightPriceUpdateWidget(RealInsight realInsight) {
     showDialog(
         context: context,
-        builder: (BuildContext context) => CustomWidgets().UpdatePricePopUp(
-            docHosMainInsightBloc: _docHosMainInsightBloc,
-            realInsight: realInsight));
+         barrierDismissible: false,
+        builder: (BuildContext context) =>
+            CustomWidgets().UpdatePricePopUp(
+                docHosMainInsightBloc: _docHosMainInsightBloc,
+                realInsight: realInsight)).then((value){
+                  if(value!=null && value){
+                    widget
+                    .showInSnackBar("Price updated successfully!", PlunesColors.BLACKCOLOR, scaffoldKey);
+                  }
+    });
+  }
+
+  Widget _selectDayDropDown() {
+    List<DropdownMenuItem<String>> _varianceDropDownItems = new List();
+    for (String daysCount in daysCount) {
+      _varianceDropDownItems.add(new DropdownMenuItem(
+        value: daysCount,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: new Text(
+             daysCount ,
+            style: TextStyle(
+              fontSize: AppConfig.mediumFont,
+              color: Colors.black,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ));
+    }
+    return  Container(
+        width: AppConfig.horizontalBlockSize*20,
+        child: ListView.builder(
+        itemBuilder:(context, itemIndex){
+          daysInput.add(daysCount.first);
+         return Column(
+              children: <Widget>[
+                DropdownButtonFormField(
+              items: _varianceDropDownItems,
+              onChanged: (value) {
+                daysInput[itemIndex] = value;
+                print('valuee ${value}', );
+                if(value=='today') {
+                  _getTotalBusinessData(1);
+                } else  if(value=='week') {
+                  _getTotalBusinessData(7);
+                } else  if(value=='month') {
+                  _getTotalBusinessData(30);
+                } else {
+                  _getTotalBusinessData(365);
+                }
+                _setState();
+              },
+              value: daysInput[itemIndex],
+              decoration: InputDecoration.collapsed(
+                  hintText: "", border: InputBorder.none),
+            ),
+              ],
+          );
+        },
+         itemCount: 1,
+        )
+    );
+  }
+  void _setState() {
+    if (mounted) setState(() {});
   }
 }
+
 
 class RealTimeInsightsWIdget extends StatelessWidget {
   const RealTimeInsightsWIdget({

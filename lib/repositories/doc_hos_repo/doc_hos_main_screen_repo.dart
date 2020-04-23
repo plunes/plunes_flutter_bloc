@@ -56,9 +56,42 @@ class DocHosMainRepo {
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {
-      TotalBusinessEarnedModel _totalBussinessEarndAndLossResponse =
+      TotalBusinessEarnedModel _totalBusinessEarndAndLossResponse =
       TotalBusinessEarnedModel.fromJson(result.response.data);
-      return RequestSuccess(response: _totalBussinessEarndAndLossResponse);
+      return RequestSuccess(response: _totalBusinessEarndAndLossResponse);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> updateRealTimeIsightPrice(num price, String solutionId, String serviceId) async {
+    var result = await DioRequester().requestMethod(
+      url: Urls.UPDATE_REALTIME_INSIGHT_PRICE_URL,
+      requestType: HttpRequestMethods.HTTP_PUT,
+      postData: {
+        "solutionId":solutionId,
+        "serviceId": serviceId,
+        "updatedPrice": price},
+      headerIncluded: true,
+    );
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: "");
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+ Future<RequestState> updateActionableInsightPrice(num price, String serviceId) async {
+    var result = await DioRequester().requestMethod(
+      url: Urls.UPDATE_ACTIONABLE_INSIGHT_PRICE_URL,
+      requestType: HttpRequestMethods.HTTP_PATCH,
+      postData: {
+        "serviceId": serviceId,
+        "updatedPrice": price},
+      headerIncluded: true,
+    );
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: "");
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

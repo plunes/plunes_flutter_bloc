@@ -31,9 +31,4 @@ class UserBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> getTotalBusiness(int days) async {
-    var result = await DocHosMainRepo().getTotalBusinessEarnedAndLoss(days);
-    super.addIntoStream(result);
-    return result;
-  }
 }

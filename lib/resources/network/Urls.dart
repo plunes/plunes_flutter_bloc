@@ -65,4 +65,7 @@ class Urls {
   static const String GET_REALTIME_INSIGHTS_URL = "analytics/solutionSearch";
   static const String GET_ACTIONABLE_INSIGHTS_URL = "analytics/actionableInsight";
   static const String GET_TOTAL_BUSINESS_EARNED_AND_LOSS_URL = "analytics/totalBusiness";
+  static const String UPDATE_REALTIME_INSIGHT_PRICE_URL = 'solution';
+  static const String UPDATE_ACTIONABLE_INSIGHT_PRICE_URL = '/analytics/cataloguePriceUpdate';
+
 }
