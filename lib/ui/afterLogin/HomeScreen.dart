@@ -22,7 +22,8 @@ import 'PlockrMainScreen.dart';
 import 'ProfileScreen.dart';
 import 'ReferScreen.dart';
 import 'SettingsScreen.dart';
-import 'appointmentScreen.dart';
+import 'appointment_screens/appointmentScreen.dart';
+import 'appointment_screens/appointment_main_screen.dart';
 
 /*
  * Created by - Plunes Technologies.
@@ -98,9 +99,9 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             (_selectedIndex == 0 && _userType == Constants.user) ? true : false,
         appBar: widget.getHomeAppBar(
             context,
-            _userType != Constants.hospital
+            _userType != Constants.user
                 ? (_selectedIndex == 1
-                    ? plunesStrings.plockr
+                    ? plunesStrings.notifications
                     : _selectedIndex == 3
                         ? plunesStrings.profiles
                         : _selectedIndex == 2
@@ -486,7 +487,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         break;
       case 2:
 //        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Appointments(screen: 0,),));
-        Navigator.popAndPushNamed(context, AppointmentScreen.tag);
+       // Navigator.popAndPushNamed(context, AppointmentScreen.tag);
+        Navigator.popAndPushNamed(context, AppointmentMainScreen.tag);
         break;
       case 3:
         Navigator.popAndPushNamed(context, SettingScreen.tag);

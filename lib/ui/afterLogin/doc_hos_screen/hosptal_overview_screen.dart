@@ -12,7 +12,6 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import '../../../Utils/custom_widgets.dart';
-import './catalogue_view_screen.dart';
 
 // ignore: must_be_immutable
 class HospitalDoctorOverviewScreen extends BaseActivity {

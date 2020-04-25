@@ -78,6 +78,16 @@ class PlunesStrings {
   static const String payNow = "PAY NOW";
   static const String availableCash = "Available Cash";
   static const String closed = "Closed";
+  static const String reschedule = "Reschedule";
+  static const String requestInvoice = "Request Invoice";
+  static const String refund = "Refund";
+  static const String visitAgain = "Visit Again";
+  static const String appointmentScreenError = "Appointment Screen Error";
+  static const String paymentStatus = "Payment Status";
+  static const String rescheduledSuccessMessage= "Appointment rescheduled sucessfully!";
+  static const String rescheduledFailedMessage= "Appointment rescheduled failed!";
+
+
 
   ///Catalogue View Screen
   static String youHaveNotAddedAnyServicesYet =

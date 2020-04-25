@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -564,6 +565,59 @@ class CustomWidgets {
                     height: 0.5,
                     color: PlunesColors.GREYCOLOR,
                   )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getAppointmentList(
+      AppointmentResponseModel appointments, int index, Function onButtonTap) {
+    return InkWell(
+      onTap: onButtonTap,
+      child: Container(
+        width: double.infinity,
+//        padding: EdgeInsets.only(
+//          top: AppConfig.verticalBlockSize * 1.5,
+//        ),
+        child: Column(
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CircleAvatar(
+                  child: ClipOval(
+                      child: getImageFromUrl(
+                          appointments.bookings[index].professionalImageUrl)),
+                  radius: AppConfig.horizontalBlockSize * 7,
+                ),
+                Padding(
+                    padding: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 2)),
+                Expanded(
+                  child: Text(
+                    appointments.bookings[index].professionalName,
+                    style: TextStyle(
+                        color: PlunesColors.BLACKCOLOR,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  flex: 3,
+                ),
+                getRightFacingWidget()
+              ],
+            ),
+//            index == appointments.bookings.length +1
+//                ? Container()
+//                :
+            Container(
+              margin: EdgeInsets.only(
+                  top: AppConfig.verticalBlockSize * 1.5,
+                  bottom: AppConfig.verticalBlockSize * 1.5),
+              width: double.infinity,
+              height: 0.5,
+              color: PlunesColors.GREYCOLOR,
+            )
           ],
         ),
       ),
@@ -1164,7 +1218,7 @@ class CustomWidgets {
   // ignore: non_constant_identifier_names
   Widget UpdatePricePopUpForActionableInsight(
       {actionableInsight, DocHosMainInsightBloc docHosMainInsightBloc}) {
-    var sliderVal = (num.parse(actionableInsight.userPrice).toDouble()/ 2) +
+    var sliderVal = (num.parse(actionableInsight.userPrice).toDouble() / 2) +
         (((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2);
     String failureCause;
     return StatefulBuilder(builder: (context, newState) {
@@ -1229,11 +1283,13 @@ class CustomWidgets {
                                       SizedBox(height: 20),
                                       Slider(
                                           value: sliderVal,
-                                          min: (num.parse(actionableInsight.userPrice)
+                                          min: (num.parse(actionableInsight
+                                                          .userPrice)
                                                       .floor() /
                                                   2) ??
                                               0,
-                                          max: num.parse(actionableInsight.userPrice)
+                                          max: num.parse(
+                                                  actionableInsight.userPrice)
                                               .floor()
                                               .toDouble(),
                                           divisions: 10,
@@ -1347,5 +1403,39 @@ class CustomWidgets {
           ) ??
           false;
     });
+  }
+
+  Widget amountProgressBar(AppointmentModel appointmentModel,) {
+    var sliderVal = appointmentModel.amountPaid.toDouble();
+    return Container(
+      child: Column(
+        children: <Widget>[
+          Slider(
+              value: sliderVal,
+              min: (0.0) ?? 0,
+              max: appointmentModel.service.newPrice.first.toDouble(),
+              divisions: 100,
+              activeColor: Colors.green,
+              onChanged: (newValue) {
+                sliderVal = newValue;
+              }),
+          Container(
+            child: Row(
+              children: <Widget>[
+                Text(
+                  ' \u20B9 ${(0.0.floor() / 2)?.toStringAsFixed(1)}',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                Expanded(child: Container()),
+                Text(
+                  ' \u20B9 ${appointmentModel.service.newPrice.first.toDouble()?.toStringAsFixed(1)}',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

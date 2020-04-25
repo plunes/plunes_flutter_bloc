@@ -31,4 +31,21 @@ class BookingRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  Future<RequestState> rescheduleAppointment(String bookingId, String appointmentTime, String selectedTimeSlot) async {
+    String url=Urls.GET_CANCEL_AND_RESCHEDULE_URL+"/$bookingId/reschedule";
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_PUT,
+        headerIncluded: true,
+        postData: {
+          "timeSlot": selectedTimeSlot,
+          "appointmentTime": appointmentTime
+        },
+        url: url);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: result.isRequestSucceed);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

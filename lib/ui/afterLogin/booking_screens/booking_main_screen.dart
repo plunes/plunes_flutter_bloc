@@ -10,6 +10,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -32,6 +33,7 @@ class BookingMainScreen extends BaseActivity {
   final String screenName = "BookingMainScreen";
   final int serviceIndex;
   final Services service;
+  final AppointmentModel appointmentModel;
 
   BookingMainScreen(
       {this.price,
@@ -41,6 +43,7 @@ class BookingMainScreen extends BaseActivity {
       this.timeSlots,
       this.bookInPrice,
       this.serviceIndex,
+      this.appointmentModel,
       this.service});
 
   @override
@@ -133,10 +136,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             ),
           ),
           getWhyPlunesView(),
-      Padding(
-        padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2.5),
-         child: _getDoctorDetailsView(),
-      ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 2.5),
+            child: _getDoctorDetailsView(),
+          ),
           Padding(
             padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
             child: Text(
@@ -187,8 +191,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       'assets/images/doctor.png', 'First Consultation Free'),
                 ),
               )
-            ]
-            ),
+            ]),
             Row(
               children: <Widget>[
                 Expanded(
@@ -204,7 +207,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 )
               ],
             ),
-
             Container(
               margin: EdgeInsets.only(
                   right: (MediaQuery.of(context).size.width / 2) - 28),
@@ -231,7 +233,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   image,
                   height: 21,
                   width: 21,
-                  color:PlunesColors.BLACKCOLOR,
+                  color: PlunesColors.BLACKCOLOR,
                 )),
             Expanded(
               child: Text(
@@ -285,7 +287,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       onTap: () => _getDirections(),
                       onDoubleTap: () {},
                       child: Padding(
-                        padding: const EdgeInsets.only(left:5.0, top:5.0, bottom:5.0),
+                        padding: const EdgeInsets.only(
+                            left: 5.0, top: 5.0, bottom: 5.0),
                         child: Text(
                           PlunesStrings.getDirection,
                           style: TextStyle(
@@ -352,10 +355,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   Widget _getDatePicker() {
     return Container(
       width: double.infinity,
-      height: AppConfig.verticalBlockSize * 10,
+      //height: AppConfig.verticalBlockSize * 10,
       child: DatePicker(
         _currentDate,
-        height: AppConfig.verticalBlockSize * 10,
+       // height: AppConfig.verticalBlockSize * 10,
         daysCount: 100,
         initialSelectedDate: _currentDate,
         dateTextStyle: TextStyle(
@@ -427,8 +430,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     return (_userProfileInfo == null ||
             _userProfileInfo.user == null ||
             _userProfileInfo.user.credits == null ||
-            _userProfileInfo.user.credits == "0"
-    )
+            _userProfileInfo.user.credits == "0")
         ? Container()
         : Column(
             children: <Widget>[
@@ -510,45 +512,82 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
       child: Column(
         children: <Widget>[
-          Center(
-            child: Text(
-              "Make a payment of  ${_calcPriceToShow()}/- to confirm the booking",
-              style: TextStyle(fontSize: 14),
-            ),
-          ),
+          widget.appointmentModel == null
+              ? Center(
+                  child: Text(
+                    "Make a payment of  ${_calcPriceToShow()}/- to confirm the booking",
+                    style: TextStyle(fontSize: 14),
+                  ),
+                )
+              : Container(),
           Container(
             padding: EdgeInsets.only(
                 left: AppConfig.horizontalBlockSize * 24,
                 bottom: AppConfig.verticalBlockSize * 1.5,
                 top: AppConfig.verticalBlockSize * 2.3,
                 right: AppConfig.horizontalBlockSize * 24),
-            child: InkWell(
-              onTap: () {
-                (_selectedDate == _tempSelectedDateTime &&
-                        _appointmentTime != _notSelectedEntry &&
-                        _appointmentTime != null)
-                    ? _doPaymentRelatedQueries()
-                    : _showErrorMessage(PlunesStrings.pleaseSelectValidSlot);
-                return;
-              },
-              onDoubleTap: () {},
-              child: CustomWidgets().getRoundedButton(
-                  PlunesStrings.payNow,
-                  AppConfig.horizontalBlockSize * 8,
-                  (_selectedDate == _tempSelectedDateTime &&
-                          _appointmentTime != _notSelectedEntry &&
-                          _appointmentTime != null)
-                      ? PlunesColors.GREENCOLOR
-                      : PlunesColors.WHITECOLOR,
-                  AppConfig.horizontalBlockSize * 3,
-                  AppConfig.verticalBlockSize * 1,
-                  (_selectedDate == _tempSelectedDateTime &&
-                          _appointmentTime != _notSelectedEntry &&
-                          _appointmentTime != null)
-                      ? PlunesColors.WHITECOLOR
-                      : PlunesColors.BLACKCOLOR,
-                  hasBorder: true),
-            ),
+            child: StreamBuilder<Object>(
+                stream: _bookingBloc.rescheduleAppointmentStream,
+                builder: (context, snapshot) {
+                  if (snapshot.data != null &&
+                      snapshot.data is RequestInProgress) {
+                    return CustomWidgets().getProgressIndicator();
+                  }
+                  if (snapshot.data != null &&
+                      snapshot.data is RequestSuccess) {
+                    Future.delayed(Duration(milliseconds: 20))
+                        .then((value) async {
+                      widget.showInSnackBar(
+                          PlunesStrings.rescheduledSuccessMessage,
+                          PlunesColors.BLACKCOLOR,
+                          scaffoldKey);
+                      await Future.delayed(Duration(milliseconds: 250));
+                      Navigator.pop(context);
+                    });
+                  }
+                  if (snapshot.data != null && snapshot.data is RequestFailed) {
+                    RequestFailed requestFailed = snapshot.data;
+                    Future.delayed(Duration(milliseconds: 20))
+                        .then((value) async {
+                      widget.showInSnackBar(
+                          requestFailed.failureCause ??
+                              PlunesStrings.rescheduledFailedMessage,
+                          PlunesColors.BLACKCOLOR,
+                          scaffoldKey);
+                    });
+                    _bookingBloc.addStateInRescheduledProvider(null);
+                  }
+                  return InkWell(
+                    onTap: () {
+                      (_selectedDate == _tempSelectedDateTime &&
+                              _appointmentTime != _notSelectedEntry &&
+                              _appointmentTime != null)
+                          ? _doPaymentRelatedQueries()
+                          : _showErrorMessage(
+                              PlunesStrings.pleaseSelectValidSlot);
+                      return;
+                    },
+                    onDoubleTap: () {},
+                    child: CustomWidgets().getRoundedButton(
+                        widget.appointmentModel == null
+                            ? PlunesStrings.payNow
+                            : PlunesStrings.reschedule,
+                        AppConfig.horizontalBlockSize * 8,
+                        (_selectedDate == _tempSelectedDateTime &&
+                                _appointmentTime != _notSelectedEntry &&
+                                _appointmentTime != null)
+                            ? PlunesColors.GREENCOLOR
+                            : PlunesColors.WHITECOLOR,
+                        AppConfig.horizontalBlockSize * 3,
+                        AppConfig.verticalBlockSize * 1,
+                        (_selectedDate == _tempSelectedDateTime &&
+                                _appointmentTime != _notSelectedEntry &&
+                                _appointmentTime != null)
+                            ? PlunesColors.WHITECOLOR
+                            : PlunesColors.BLACKCOLOR,
+                        hasBorder: true),
+                  );
+                }),
           ),
           InkWell(
             onTap: () => LauncherUtil.launchUrl(urls.terms),
@@ -577,15 +616,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   _openTimePicker() {
     return showDialog(
-
         builder: (context) {
           return Container(
-
             margin: EdgeInsets.only(
                 top: AppConfig.verticalBlockSize * 31,
-               right: AppConfig.horizontalBlockSize * 10,
+                right: AppConfig.horizontalBlockSize * 10,
                 left: AppConfig.horizontalBlockSize * 10,
-                 bottom: AppConfig.verticalBlockSize*2),
+                bottom: AppConfig.verticalBlockSize * 2),
             child: Material(
               borderRadius: BorderRadius.circular(16),
               child: Column(
@@ -893,6 +930,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   _doPaymentRelatedQueries() async {
     print("price${widget.price}");
+    if (widget.appointmentModel != null) {
+      _bookingBloc.rescheduleAppointment(
+          widget.appointmentModel.bookingId,
+          _selectedDate.toUtc().millisecondsSinceEpoch.toString(),
+          _selectedTimeSlot);
+      return;
+    }
     await showDialog(
         context: context,
         barrierDismissible: false,

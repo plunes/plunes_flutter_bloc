@@ -22,6 +22,26 @@ class DateUtil {
     }
   }
 
+  static String getDateFormat(DateTime date){
+    if (date == null) return PlunesStrings.NA;
+    var _dateFormat = DateFormat('dd MMM yyyy');
+    try {
+      return _dateFormat.format(date);
+    } catch (e) {
+      return PlunesStrings.NA;
+    }
+  }
+
+  static String getMonthYear(DateTime date){
+    if (date == null) return PlunesStrings.NA;
+    var _dateFormat = DateFormat('MMM yy');
+    try {
+      return _dateFormat.format(date);
+    } catch (e) {
+      return PlunesStrings.NA;
+    }
+  }
+
   static String getDuration(int timeStamp) {
     var currTime = new DateTime.now().millisecondsSinceEpoch;
     int timeDiff = currTime.round() - timeStamp;

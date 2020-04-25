@@ -26,7 +26,8 @@ import 'ui/beforeLogin/CheckOTP.dart';
 import 'ui/beforeLogin/ForgotPassword.dart';
 import 'ui/beforeLogin/Login.dart';
 import 'ui/beforeLogin/SplashScreen.dart';
-import 'ui/afterLogin/appointmentScreen.dart';
+import 'ui/afterLogin/appointment_screens/appointmentScreen.dart';
+import 'ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 
 /*
  * Created by - Plunes Technologies .
@@ -97,7 +98,11 @@ class _MyAppState extends State<MyApp> {
         CheckOTP.tag: (context) => CheckOTP(),
         AboutUs.tag: (context) => AboutUs(),
         Login.tag: (context) => Login(),
-        AppointmentScreen.tag:(context) => AppointmentScreen(),
+        AppointmentMainScreen.tag: (context) => AppointmentMainScreen(),
+
+        //AppointmentScreen.tag:(context) => AppointmentScreen(),
+
+
       },
       initialRoute: SplashScreen.tag,
     );
