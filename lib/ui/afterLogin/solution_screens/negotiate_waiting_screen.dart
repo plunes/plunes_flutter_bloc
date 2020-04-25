@@ -120,9 +120,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                       width: 150,
                       margin: EdgeInsets.only(top: 20, bottom: 10),
                       child: Stack(
-
                         alignment: Alignment.center,
-
                         children: <Widget>[
                           Container(
                             height: 160,
@@ -177,7 +175,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   ),
                 ),
                 SizedBox(
-                  height: 400,
+                  height: 170,
                 ),
                 Center(
                   child: Text(

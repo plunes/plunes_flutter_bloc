@@ -242,7 +242,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           ),
           (widget.appointmentModel.isOpened != null &&
                   UserManager().getUserDetails().userType != Constants.user &&
-                  widget.appointmentModel.isOpened)
+                 widget.appointmentModel.isOpened
+          )
               ? Container(
                   margin: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 2),

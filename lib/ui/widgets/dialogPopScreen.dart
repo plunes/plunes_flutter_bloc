@@ -105,8 +105,8 @@ class DialogWidgets {
                   Divider(color: Colors.black54),
                   Text('Available Slots'),
                   Container(
-                      padding: const EdgeInsets.only(top: 30),
-                      height: AppConfig.verticalBlockSize * 14,
+                      padding: const EdgeInsets.only(top: 20),
+                      height: AppConfig.verticalBlockSize * 16,
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
