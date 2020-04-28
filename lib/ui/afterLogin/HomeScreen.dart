@@ -6,6 +6,7 @@ import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -15,6 +16,7 @@ import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 
 import 'AboutUs.dart';
 import 'Coupons.dart';
+import 'EditProfileScreen.dart';
 import 'HealthSoulutionNear.dart';
 import 'HelpScreen.dart';
 import 'NotificationScreen.dart';
@@ -311,60 +313,60 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   Widget getDrawerView() {
     return Container(
       margin: EdgeInsets.only(
-          top:AppConfig.verticalBlockSize*5,
-           bottom:AppConfig.verticalBlockSize*10),
+          top: AppConfig.verticalBlockSize * 5,
+          bottom: AppConfig.verticalBlockSize * 10),
       child: Drawer(
-      child: Container(
-        color: Colors.white,
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                child: ListView(
-                  children: <Widget>[
-                    Container(
-                      //padding: EdgeInsets.only(top: 10),
-                     // height: 100,
-                      child: InkWell(
-                        onTap: () => navigatePage(0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(left: 10),
-                              alignment: Alignment.center,
-                              child: CircleAvatar(
-                                child: _imageUrl != ''
-                                    ? CircleAvatar(
-                                        backgroundImage:
-                                            NetworkImage(_imageUrl),
-                                        backgroundColor: Colors.transparent,
-                                        radius: 35,
-                                      )
-                                    : Container(),
-                                backgroundImage:
-                                    AssetImage('assets/default_img.png'),
-                                backgroundColor: Colors.transparent,
-                                radius: 35,
+        child: Container(
+          color: Colors.white,
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  child: ListView(
+                    children: <Widget>[
+                      Container(
+                        //padding: EdgeInsets.only(top: 10),
+                        // height: 100,
+                        child: InkWell(
+                          onTap: () => navigatePage(0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(left: 10),
+                                alignment: Alignment.center,
+                                child: CircleAvatar(
+                                  child: _imageUrl != ''
+                                      ? CircleAvatar(
+                                          backgroundImage:
+                                              NetworkImage(_imageUrl),
+                                          backgroundColor: Colors.transparent,
+                                          radius: 35,
+                                        )
+                                      : Container(),
+                                  backgroundImage:
+                                      AssetImage('assets/default_img.png'),
+                                  backgroundColor: Colors.transparent,
+                                  radius: 35,
+                                ),
                               ),
-                            ),
-                            Expanded(
-                                child: Container(
-                              margin: EdgeInsets.only(left: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  widget.createTextViews(
-                                      _userName,
-                                      18,
-                                      colorsFile.black0,
-                                      TextAlign.left,
-                                      FontWeight.normal),
-                                  /* _userType == Constants.user ? widget.createTextViews(stringsFile.generalUser, 16, colorsFile.lightGrey2, TextAlign.left, FontWeight.w100)
+                              Expanded(
+                                  child: Container(
+                                margin: EdgeInsets.only(left: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    widget.createTextViews(
+                                        _userName,
+                                        18,
+                                        colorsFile.black0,
+                                        TextAlign.left,
+                                        FontWeight.normal),
+                                    /* _userType == Constants.user ? widget.createTextViews(stringsFile.generalUser, 16, colorsFile.lightGrey2, TextAlign.left, FontWeight.w100)
                                     : widget.createTextViews(specialities, 16, colorsFile.lightGrey2, TextAlign.left, FontWeight.w100)*/
-                                ],
-                              ) /*StreamBuilder(
+                                  ],
+                                ) /*StreamBuilder(
                              stream: bloc.preferenceFetcher,
                              builder: ((context, snapshot) {
                                if (snapshot.hasData) {
@@ -387,81 +389,81 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                                );
                              }),
                            )*/
-                              ,
-                            )),
-                          ],
+                                ,
+                              )),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    widget.getDividerRow(context, 0, 0, 70.0),
-                    _userType != Constants.user
-                        ? getListTile(1, plunesStrings.myAvailability,
-                            plunesImages.availIcon)
-                        : Container(),
-                    _userType != Constants.user
-                        ? widget.getDividerRow(context, 0, 0, 70.0)
-                        : Container(),
-                    getListTile(2, plunesStrings.appointments,
-                        plunesImages.appointmentIcon),
-                    widget.getDividerRow(context, 0, 0, 70.0),
-                    getListTile(
-                        3, plunesStrings.settings, plunesImages.settingsIcon),
-                    widget.getDividerRow(context, 0, 0, 70.0),
-                    _userType != Constants.user
-                        ? getListTile(4, plunesStrings.managePayment,
-                            plunesImages.walletIcon)
-                        : Container(),
-                    _userType != Constants.user
-                        ? widget.getDividerRow(context, 0, 0, 70.0)
-                        : Container(),
-                    getListTile(5, plunesStrings.help, plunesImages.helpIcon),
-                    widget.getDividerRow(context, 0, 0, 70.0),
-                    getListTile(
-                        6, plunesStrings.aboutUs, plunesImages.aboutUsIcon),
-                    widget.getDividerRow(context, 0, 0, 70.0),
-                    _userType != Constants.hospital
-                        ? getListTile(7, plunesStrings.referAndEarn,
-                            plunesImages.referIcon)
-                        : Container(),
-                    _userType != Constants.hospital
-                        ? widget.getDividerRow(context, 0, 0, 70.0)
-                        : Container(),
-                    _userType != Constants.hospital
-                        ? getListTile(8, plunesStrings.coupons,
-                            plunesImages.navCouponIcon)
-                        : Container(),
-                    _userType != Constants.hospital
-                        ? widget.getDividerRow(context, 0, 0, 70.0)
-                        : Container(),
-                    getListTile(
-                        9, plunesStrings.logout, plunesImages.logoutIcon),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, HealthSolutionNear.tag);
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        height: 50,
-                        color: Color(CommonMethods.getColorHexFromStr(
-                            colorsFile.white0)),
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: widget.createTextViews(
-                                plunesStrings.availOfferMsg,
-                                16.0,
-                                colorsFile.lightGrey2,
-                                TextAlign.left,
-                                FontWeight.w100)),
-                      ),
-                    )
-                  ],
+                      widget.getDividerRow(context, 0, 0, 70.0),
+                      _userType != Constants.user
+                          ? getListTile(1, plunesStrings.myAvailability,
+                              plunesImages.availIcon)
+                          : Container(),
+                      _userType != Constants.user
+                          ? widget.getDividerRow(context, 0, 0, 70.0)
+                          : Container(),
+                      getListTile(2, plunesStrings.appointments,
+                          plunesImages.appointmentIcon),
+                      widget.getDividerRow(context, 0, 0, 70.0),
+                      getListTile(
+                          3, plunesStrings.settings, plunesImages.settingsIcon),
+                      widget.getDividerRow(context, 0, 0, 70.0),
+                      _userType != Constants.user
+                          ? getListTile(4, plunesStrings.managePayment,
+                              plunesImages.walletIcon)
+                          : Container(),
+                      _userType != Constants.user
+                          ? widget.getDividerRow(context, 0, 0, 70.0)
+                          : Container(),
+                      getListTile(5, plunesStrings.help, plunesImages.helpIcon),
+                      widget.getDividerRow(context, 0, 0, 70.0),
+                      getListTile(
+                          6, plunesStrings.aboutUs, plunesImages.aboutUsIcon),
+                      widget.getDividerRow(context, 0, 0, 70.0),
+                      _userType != Constants.hospital
+                          ? getListTile(7, plunesStrings.referAndEarn,
+                              plunesImages.referIcon)
+                          : Container(),
+                      _userType != Constants.hospital
+                          ? widget.getDividerRow(context, 0, 0, 70.0)
+                          : Container(),
+                      _userType != Constants.hospital
+                          ? getListTile(8, plunesStrings.coupons,
+                              plunesImages.navCouponIcon)
+                          : Container(),
+                      _userType != Constants.hospital
+                          ? widget.getDividerRow(context, 0, 0, 70.0)
+                          : Container(),
+                      getListTile(
+                          9, plunesStrings.logout, plunesImages.logoutIcon),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, HealthSolutionNear.tag);
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 50,
+                          color: Color(CommonMethods.getColorHexFromStr(
+                              colorsFile.white0)),
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: widget.createTextViews(
+                                  plunesStrings.availOfferMsg,
+                                  16.0,
+                                  colorsFile.lightGrey2,
+                                  TextAlign.left,
+                                  FontWeight.w100)),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 
@@ -473,25 +475,44 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             TextAlign.left, FontWeight.w100));
   }
 
-  void navigatePage(int position) {
+  void navigatePage(int position) async {
     switch (position) {
       case 0:
-        setState(() {
-          _selectedIndex = 3;
-          closeDrawer();
-        });
-//        Navigator.popAndPushNamed(context, BusinessHours.tag);
+//        setState(() {
+//          _selectedIndex = 3;
+//          closeDrawer();
+//        });
+        var user = UserManager().getUserDetails();
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EditProfileScreen(
+                    userType: _userType,
+                    fullName: _userName,
+                    dateOfBirth: user.birthDate,
+                    education: user.qualification,
+                    college: user.college,
+                    location: user.address,
+                    userEducation: user.qualification,
+                    userCollege: user.college,
+                    profRegNo: user.profRegistrationNumber,
+                    practising: user.practising,
+                    introduction: user.about,
+                    specializations: user.speciality,
+                    experience: user.experience)));
+        getSharedPreferencesData();
         break;
       case 1:
 //        Navigator.popAndPushNamed(context, BusinessHours.tag);
         break;
       case 2:
 //        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Appointments(screen: 0,),));
-       // Navigator.popAndPushNamed(context, AppointmentScreen.tag);
+        // Navigator.popAndPushNamed(context, AppointmentScreen.tag);
         Navigator.popAndPushNamed(context, AppointmentMainScreen.tag);
         break;
       case 3:
-        Navigator.popAndPushNamed(context, SettingScreen.tag);
+        await Navigator.popAndPushNamed(context, SettingScreen.tag);
+        getSharedPreferencesData();
         break;
       case 4:
 //        Navigator.popAndPushNamed(context, ManagePayments.tag);
@@ -536,5 +557,12 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     _userName = preferences.getPreferenceString(Constants.PREF_USERNAME);
     _imageUrl = preferences.getPreferenceString(Constants.PREF_USER_IMAGE);
     print("_userType is $_userType");
+    _setState();
+  }
+
+  _setState() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

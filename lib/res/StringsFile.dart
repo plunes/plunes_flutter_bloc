@@ -86,7 +86,8 @@ class PlunesStrings {
   static const String paymentStatus = "Payment Status";
   static const String rescheduledSuccessMessage= "Appointment rescheduled sucessfully!";
   static const String rescheduledFailedMessage= "Appointment rescheduled failed!";
-
+  static const String cancelSuccessMessage= "Appointment cancelled sucessfully!";
+  static const String cancelFailedMessage= "Appointment cancellation failed!";
 
 
   ///Catalogue View Screen

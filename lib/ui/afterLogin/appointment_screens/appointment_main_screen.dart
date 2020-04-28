@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -20,6 +21,7 @@ class AppointmentMainScreen extends BaseActivity {
 
 class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen> {
   AppointmentBloc _appointmentBloc;
+  BookingBloc _bookingBloc;
   AppointmentResponseModel _appointmentResponse;
 
   String _appointmentFailureCause;
@@ -27,6 +29,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen> {
   @override
   void initState() {
     _appointmentBloc = AppointmentBloc();
+    _bookingBloc = BookingBloc();
     _getAppointmentDetails();
     super.initState();
   }
@@ -47,6 +50,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen> {
         top: false,
         bottom: false,
         child: Scaffold(
+          key: scaffoldKey,
           backgroundColor: PlunesColors.WHITECOLOR,
           appBar: widget.getAppBar(
               context, 'Appointment' ?? PlunesStrings.NA, true),
@@ -99,7 +103,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen> {
   Widget _showItems() {
     return ListView.builder(
       itemBuilder: (context, index) {
-        return AppointmentScreen(_appointmentResponse.bookings[index]);
+        return AppointmentScreen(_appointmentResponse.bookings[index], index, _bookingBloc, scaffoldKey);
 //        return CustomWidgets().getAppointmentList(_appointmentResponse, index,
 //            () => onTap(_appointmentResponse.bookings[index]));
       },
@@ -107,11 +111,12 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen> {
     );
   }
 
-  void onTap(AppointmentModel appointmentModel) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AppointmentScreen(appointmentModel),
-        ));
-  }
+//  void onTap(AppointmentModel appointmentModel, int index) {
+//    Navigator.push(
+//        context,
+//        MaterialPageRoute(
+//          builder: (context) => AppointmentScreen(appointmentModel, index),
+//        ));
+//  }
+
 }

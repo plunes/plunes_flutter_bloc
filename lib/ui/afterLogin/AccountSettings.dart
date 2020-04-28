@@ -3,6 +3,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -15,6 +16,7 @@ import 'EditProfileScreen.dart';
  * Description - AccountSettings class account holder information and that also can be updated.
  */
 
+// ignore: must_be_immutable
 class AccountSettings extends BaseActivity {
   static const tag = '/accountSettings';
 
@@ -139,20 +141,40 @@ class _AccountSettingsState extends State<AccountSettings> {
   }
 
   getSharedPreferenceData() {
-    _userType = preferences.getPreferenceString(Constants.PREF_USER_TYPE);
-    _userName = preferences.getPreferenceString(Constants.PREF_USERNAME);
-    _userEmail = preferences.getPreferenceString(Constants.PREF_USER_EMAIL);
-    _profRegNo =
-        preferences.getPreferenceString(Constants.PREF_PROF_REG_NUMBER);
-    _userEducation =
-        preferences.getPreferenceString(Constants.PREF_QUALIFICATION);
-    _userLocation =
-        preferences.getPreferenceString(Constants.PREF_USER_LOCATION);
-    _experience = preferences.getPreferenceString(Constants.PREF_EXPERIENCE);
-    _practising = preferences.getPreferenceString(Constants.PREF_PRACTISING);
-    _userCollege = preferences.getPreferenceString(Constants.PREF_COLLEGE);
-    _introduction =
-        preferences.getPreferenceString(Constants.PREF_INTRODUCTION);
-    _userDOB = preferences.getPreferenceString(Constants.PREF_DOB);
+    var user = UserManager().getUserDetails();
+    _userType = user.userType;
+    _userName = user.name;
+    _userEmail = user.email;
+    _userCollege = user.college;
+    _profRegNo = user.profRegistrationNumber;
+    _practising = user.practising;
+    _userEducation = user.qualification;
+    _userLocation = user.address;
+    _experience = user.experience;
+    _introduction = user.about;
+    _userDOB = user.birthDate;
+    _setState();
+
+//    _userType = preferences.getPreferenceString(Constants.PREF_USER_TYPE);
+//    _userName = preferences.getPreferenceString(Constants.PREF_USERNAME);
+//    _userEmail = preferences.getPreferenceString(Constants.PREF_USER_EMAIL);
+//    _profRegNo =
+//        preferences.getPreferenceString(Constants.PREF_PROF_REG_NUMBER);
+//    _userEducation =
+//        preferences.getPreferenceString(Constants.PREF_QUALIFICATION);
+//    _userLocation =
+//        preferences.getPreferenceString(Constants.PREF_USER_LOCATION);
+//    _experience = preferences.getPreferenceString(Constants.PREF_EXPERIENCE);
+//    _practising = preferences.getPreferenceString(Constants.PREF_PRACTISING);
+//    _userCollege = preferences.getPreferenceString(Constants.PREF_COLLEGE);
+//    _introduction =
+//        preferences.getPreferenceString(Constants.PREF_INTRODUCTION);
+//    _userDOB = preferences.getPreferenceString(Constants.PREF_DOB);
+  }
+
+  _setState() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

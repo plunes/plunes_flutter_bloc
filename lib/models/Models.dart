@@ -33,6 +33,16 @@ class ProcedureList {
     }
     _services = temp;
   }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this._id;
+    data['speciality'] = this.speciality;
+    if(this.services!=null && this.services.isNotEmpty){
+     data['services'] = <_Services>[];
+    }
+    return data;
+  }
 }
 
 class _Services {
@@ -63,6 +73,7 @@ class _Services {
     }
     _description = result['dnd'] != null ? result['dnd'] : '';
   }
+
 }
 
 class LoginPost {
@@ -222,9 +233,75 @@ class User {
         speciality: json['specialityName']);
   }
 
-  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    
+    if (this.latitude!=null && this.longitude!=null && this.latitude.isNotEmpty && this.longitude.isNotEmpty) {
+      data['location'] = Location(type: 'Point', coordinates:[double.parse(this.longitude), double.parse(this.latitude)]).toJson();
+    }
+
+    data['name'] = this.name;
+    data['gender'] = this.gender;
+    data['mobileNumber'] = this.mobileNumber;
+    data['email'] = this.email;
+    data['registrationNumber'] = this.profRegistrationNumber;
+     data['practising'] = this.practising;
+    data['experience'] = this.experience;
+    data['qualification'] = this.qualification;
+    data['college'] = this.college;
+    data['address'] = this.address;
+    data['birthDate'] = this.birthDate;
+    data['biography'] = this.biography;
+
+   // data['referralCode'] = this.referralCode;
+//    if (this.tokens != null) {
+//      data['tokens'] = this.tokens.map((v) => v.toJson()).toList();
+//    }
+//    if (this.specialities != null) {
+//      data['specialities'] = this.specialities.map((v) => v.toJson()).toList();
+//    }
+//    if (this.achievements != null) {
+//      data['achievements'] = this.achievements.map((v) => v.toJson()).toList();
+//    }
+
+//    if (this.workTimings != null) {
+//      data['workTimings'] = this.workTimings.map((v) => v.toJson()).toList();
+//    }
+//    if (this.timeSlots != null) {
+//      data['timeSlots'] = this.timeSlots.map((v) => v.toJson()).toList();
+//    }
+//
+//    if (this.doctors != null) {
+//      data['doctors'] = this.doctors.map((v) => v.toJson()).toList();
+//    }
+   // data['userReferralCode'] = this.userReferralCode;
+   // data['__v'] = this.iV;
+    return data;
+  }
+
+
+@override
   String toString() {
     return 'User{email: $email, name: $name, activated: $activated, userType: $userType, uid: $uid, imageUrl: $imageUrl, speciality: $speciality, profRegistrationNumber: $profRegistrationNumber, qualification: $qualification, experience: $experience, practising: $practising, college: $college, about: $about, gender: $gender, birthDate: $birthDate, referralCode: $referralCode, coverImageUrl: $coverImageUrl, mobileNumber: $mobileNumber, latitude: $latitude, longitude: $longitude, address: $address, biography: $biography, registrationNumber: $registrationNumber, prescriptionLogoUrl: $prescriptionLogoUrl, accessToken: $accessToken, credits: $credits, specialities: $specialities, timeSlots: $timeSlots, doctorsData: $doctorsData, achievements: $achievements, verifiedUser: $verifiedUser}';
+  }
+}
+
+class Location {
+  String type;
+  List<double> coordinates;
+
+  Location({this.type, this.coordinates});
+
+  Location.fromJson(Map<String, dynamic> json) {
+    type = json['type'];
+    coordinates = json['coordinates'].cast<int>();
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['type'] = this.type;
+    data['coordinates'] = this.coordinates;
+    return data;
   }
 }
 

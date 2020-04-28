@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'AvailabilitySelectionScreen.dart';
 
+// ignore: must_be_immutable
 class AddDoctorScreen extends BaseActivity {
   static const tag = '/addDoctor';
 

@@ -479,7 +479,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       Padding(
                         padding: EdgeInsets.only(
                             left: AppConfig.horizontalBlockSize * 2),
-                        child: Text("Apply Cash     "),
+                        child: Text("Apply Cash  "),
                       )
                     ],
                   ),

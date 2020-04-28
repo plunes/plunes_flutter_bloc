@@ -1,5 +1,6 @@
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_handler.dart';
@@ -134,6 +135,30 @@ class UserManager {
       verifyOTP _verifyOtp = verifyOTP.fromJson(result.response.data);
       print(_verifyOtp);
       return RequestSuccess(response: _verifyOtp);
+    } else {
+      return RequestFailed(response: result.failureCause);
+    }
+  }
+
+  Future<RequestState> updateUserData(Map<String, dynamic> userData) async {
+    var result = await DioRequester().requestMethod(
+      url: "user/",
+      headerIncluded: true,
+      requestType: HttpRequestMethods.HTTP_PUT,
+      postData: userData,
+    );
+    if (result.isRequestSucceed) {
+//      User _user = User.fromJson(result.response.data);
+//     print(_user);
+      LoginPost loginPost;
+      try {
+        loginPost = LoginPost.fromJson(result.response.data);
+        print("user, ${loginPost.user.toString()}");
+        Bloc().saveDataInPreferences(loginPost, null, null);
+      } catch (err) {
+        print('error $err');
+      }
+      return RequestSuccess(response: loginPost);
     } else {
       return RequestFailed(response: result.failureCause);
     }

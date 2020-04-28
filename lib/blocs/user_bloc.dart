@@ -30,5 +30,9 @@ class UserBloc extends BlocBase {
     super.addIntoStream(result);
     return result;
   }
-
+    Future<RequestState> updateUserData(Map<String, dynamic> userData) async {
+       var result = await UserManager().updateUserData(userData);
+      // super.addIntoStream(result);
+       return result;
+      }
 }

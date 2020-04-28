@@ -285,6 +285,9 @@ class Bloc {
     preferences.setPreferencesString(Constants.LATITUDE, data.user.latitude);
     preferences.setPreferencesString(Constants.LONGITUDE, data.user.longitude);
     preferences.setPreferencesString(Constants.PREF_CREDITS, data.user.credits);
+    if (_preferenceFetcher != null && !_preferenceFetcher.isClosed) {
+      _preferenceFetcher.sink.add(data);
+    }
     if (_from != null)
       Navigator.pushAndRemoveUntil(
           context,

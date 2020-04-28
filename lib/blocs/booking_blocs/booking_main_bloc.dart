@@ -7,8 +7,13 @@ import 'package:rxdart/rxdart.dart';
 class BookingBloc extends BlocBase {
   final _rescheduleAppointmentProvider = PublishSubject<RequestState>();
 
+  final _cancelAppointmentProvider = PublishSubject<RequestState>();
+
   Observable<RequestState> get rescheduleAppointmentStream =>
       _rescheduleAppointmentProvider.stream;
+
+  Observable<RequestState> get cancelAppointmentStream =>
+      _cancelAppointmentProvider.stream;
 
   Future<RequestState> initPayment(InitPayment initPayment) async {
     RequestState requestState = await BookingRepo().initPayment(initPayment);
@@ -25,6 +30,14 @@ class BookingBloc extends BlocBase {
     return result;
   }
 
+  Future cancelAppointment(String bookingId, int index) async {
+    print('index is $index');
+    addStateInCancelProvider(RequestInProgress(requestCode:index ));
+    var result = await BookingRepo().cancelAppointment(bookingId, index);
+    addStateInCancelProvider(result);
+    return result;
+  }
+
   @override
   void dispose() {
     _rescheduleAppointmentProvider?.close();
@@ -33,5 +46,9 @@ class BookingBloc extends BlocBase {
 
   void addStateInRescheduledProvider(RequestState state) {
     addStateInGenericStream(_rescheduleAppointmentProvider, state);
+  }
+
+  void addStateInCancelProvider(RequestState state) {
+    addStateInGenericStream(_cancelAppointmentProvider, state);
   }
 }

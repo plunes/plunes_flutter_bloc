@@ -4,35 +4,46 @@ import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 
 // ignore: must_be_immutable
 class AppointmentScreen extends BaseActivity {
   final AppointmentModel appointmentModel;
+  final BookingBloc bookingBloc;
+  int index;
+  GlobalKey<ScaffoldState> globalKey;
 
-  AppointmentScreen(this.appointmentModel);
+  AppointmentScreen(
+      this.appointmentModel, this.index, this.bookingBloc, this.globalKey);
 
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();
 }
 
 class _AppointmentScreenState extends BaseState<AppointmentScreen> {
+  BookingBloc _bookingBloc;
+  int index;
+
   @override
   void initState() {
+    _bookingBloc = widget.bookingBloc;
+    index = widget.index;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Material(child: _getBodyWidget(widget.appointmentModel));
+    return Material(child: _getBodyWidget(widget.appointmentModel, index));
   }
 
-  Widget _getBodyWidget(AppointmentModel appointmentModel) {
+  Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
     return Container(
       color: PlunesColors.WHITECOLOR,
       padding:
@@ -163,12 +174,68 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   },
                   padding: EdgeInsets.symmetric(horizontal: 0),
                 ),
-                FlatButton(
-                  child: Text(plunesStrings.cancel,
-                      style: TextStyle(fontSize: 17, color: Colors.red)),
-                  onPressed: () {},
-                  padding: EdgeInsets.symmetric(horizontal: 0),
-                )
+                Container(
+                  child: StreamBuilder<Object>(
+                      stream: _bookingBloc.cancelAppointmentStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data != null &&
+                            snapshot.data is RequestInProgress) {
+                          print(snapshot.data);
+                          RequestInProgress req = snapshot.data;
+                          print(req.requestCode);
+                          if (req.requestCode != null &&
+                              req.requestCode == index) {
+                            return CustomWidgets().getProgressIndicator();
+                          }
+                        }
+                        if (snapshot.data != null &&
+                            snapshot.data is RequestSuccess) {
+                          RequestSuccess req = snapshot.data;
+                          if (req.requestCode != null &&
+                              req.requestCode == index) {
+                            Future.delayed(Duration(milliseconds: 20))
+                                .then((value) async {
+                              widget.showInSnackBar(
+                                  PlunesStrings.cancelSuccessMessage,
+                                  PlunesColors.BLACKCOLOR,
+                                  widget.globalKey);
+                            });
+                            _bookingBloc.addStateInCancelProvider(null);
+                          }
+                        }
+                        if (snapshot.data != null &&
+                            snapshot.data is RequestFailed) {
+                          RequestFailed requestFailed = snapshot.data;
+
+                          if (requestFailed.requestCode != null &&
+                              requestFailed.requestCode == index) {
+                            Future.delayed(Duration(milliseconds: 20))
+                                .then((value) async {
+                              widget.showInSnackBar(
+                                  requestFailed.failureCause ??
+                                      PlunesStrings.cancelFailedMessage,
+                                  PlunesColors.BLACKCOLOR,
+                                  widget.globalKey);
+                            });
+                            _bookingBloc.addStateInCancelProvider(null);
+                          }
+                        }
+                        return InkWell(
+                          onTap: () {
+                            print('hello on tap ${appointmentModel.bookingId}');
+                            if (widget.appointmentModel != null) {
+                              _bookingBloc.cancelAppointment(
+                                  appointmentModel.bookingId, index);
+                            }
+                            return;
+                          },
+                          onDoubleTap: () {},
+                          child: Text(plunesStrings.cancel,
+                              style:
+                                  TextStyle(fontSize: 17, color: Colors.red)),
+                        );
+                      }),
+                ),
               ],
             ),
           ),
@@ -242,37 +309,11 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           ),
           (widget.appointmentModel.isOpened != null &&
                   UserManager().getUserDetails().userType != Constants.user &&
-                 widget.appointmentModel.isOpened
-          )
-              ? Container(
-                  margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 2),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        child:
-                            CustomWidgets().amountProgressBar(appointmentModel),
-                      ),
-                      SizedBox(height: AppConfig.verticalBlockSize * 3),
-                      Text('\u20B9 ${appointmentModel.amountDue}',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.green,
-                              decoration: TextDecoration.underline)),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 3,
-                            horizontal: AppConfig.horizontalBlockSize * 3),
-                        child: Text(
-                            'Please make sure that you pay through app for ${appointmentModel.service.discount}% discount to be valid',
-                            style:
-                                TextStyle(color: Colors.black87, fontSize: 16)),
-                      ),
-                    ],
-                  ),
-                )
-              : Container(),
+                  widget.appointmentModel.isOpened)
+              ? _getData(appointmentModel)
+              : UserManager().getUserDetails().userType == Constants.user
+                  ? _getData(appointmentModel)
+                  : Container(),
           Container(
             margin: EdgeInsets.symmetric(
                 horizontal: AppConfig.horizontalBlockSize * 3),
@@ -349,5 +390,37 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 
   _setState() {
     if (mounted) setState(() {});
+  }
+
+  _showErrorMessage(String message) {
+    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+  }
+
+  _getData(AppointmentModel appointmentModel) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            child: CustomWidgets().amountProgressBar(appointmentModel),
+          ),
+          SizedBox(height: AppConfig.verticalBlockSize * 3),
+          Text('\u20B9 ${appointmentModel.amountDue}',
+              style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.green,
+                  decoration: TextDecoration.underline)),
+          Container(
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 3,
+                horizontal: AppConfig.horizontalBlockSize * 3),
+            child: Text(
+                'Please make sure that you pay through app for ${appointmentModel.service.discount}% discount to be valid',
+                style: TextStyle(color: Colors.black87, fontSize: 16)),
+          ),
+        ],
+      ),
+    );
   }
 }

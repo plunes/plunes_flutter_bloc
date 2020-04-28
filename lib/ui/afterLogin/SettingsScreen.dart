@@ -14,6 +14,7 @@ import 'SecuritySettings.dart';
  * Description - SettingScreen class account holder information and that also can be updated.
  */
 
+// ignore: must_be_immutable
 class SettingScreen extends BaseActivity {
   static const tag = '/setting_screen';
 

@@ -4,6 +4,10 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
+import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -82,6 +86,8 @@ class _EditProfileState extends State<EditProfileScreen>
   String user_token = "";
   String user_id = "";
 
+  UserBloc _userBloc;
+
   @override
   void dispose() {
     bloc.disposeEditStream();
@@ -91,18 +97,19 @@ class _EditProfileState extends State<EditProfileScreen>
   @override
   void initState() {
     initialize();
+    _userBloc = UserBloc();
     super.initState();
   }
 
-  getSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token");
-    String uid = prefs.getString("uid");
-    setState(() {
-      user_token = token;
-      user_id = uid;
-    });
-  }
+//  getSharedPreferences() async {
+//    SharedPreferences prefs = await SharedPreferences.getInstance();
+//    String token = prefs.getString("token");
+//    String uid = prefs.getString("uid");
+//    setState(() {
+//      user_token = token;
+//      user_id = uid;
+//    });
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +159,9 @@ class _EditProfileState extends State<EditProfileScreen>
           widget.userType != Constants.hospital
               ? createTextField(
                   educationController,
-                  isDoctor ? plunesStrings.qualification : plunesStrings.education,
+                  isDoctor
+                      ? plunesStrings.qualification
+                      : plunesStrings.education,
                   TextInputType.text,
                   TextCapitalization.words,
                   true,
@@ -160,50 +169,50 @@ class _EditProfileState extends State<EditProfileScreen>
               : Container(),
           widget.getSpacer(
               0.0, widget.userType != Constants.hospital ? 20.0 : 0),
-          isDoctor
-              ? createTextField(
-                  professionRegController,
-                  plunesStrings.professionalRegNo,
-                  TextInputType.text,
-                  TextCapitalization.characters,
-                  true,
-                  '')
-              : Container(),
-          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-          isDoctor
-              ? createTextField(
-                  specializationController,
-                  '${plunesStrings.specialization}*',
-                  TextInputType.text,
-                  TextCapitalization.words,
-                  true,
-                  '')
-              : Container(),
-          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-          isDoctor
-              ? createTextField(
-                  experienceController,
-                  plunesStrings.experienceInNo,
-                  TextInputType.numberWithOptions(decimal: true),
-                  TextCapitalization.none,
-                  true,
-                  '')
-              : Container(),
-          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-          isDoctor
-              ? createTextField(practisingController, plunesStrings.practising,
-                  TextInputType.text, TextCapitalization.words, true, '')
-              : Container(),
+//          isDoctor
+//              ? createTextField(
+//                  professionRegController,
+//                  plunesStrings.professionalRegNo,
+//                  TextInputType.text,
+//                  TextCapitalization.characters,
+//                  true,
+//                  '')
+//              : Container(),
+         // widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+//          isDoctor
+//              ? createTextField(
+//                  specializationController,
+//                  '${plunesStrings.specialization}*',
+//                  TextInputType.text,
+//                  TextCapitalization.words,
+//                  true,
+//                  '')
+//              : Container(),
+//          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+//          isDoctor
+//              ? createTextField(
+//                  experienceController,
+//                  plunesStrings.experienceInNo,
+//                  TextInputType.numberWithOptions(decimal: true),
+//                  TextCapitalization.none,
+//                  true,
+//                  '')
+//              : Container(),
+//          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+//          isDoctor
+//              ? createTextField(practisingController, plunesStrings.practising,
+//                  TextInputType.text, TextCapitalization.words, true, '')
+//              : Container(),
           widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
           widget.userType != Constants.hospital
               ? createTextField(collegeController, plunesStrings.college,
                   TextInputType.text, TextCapitalization.words, true, '')
               : Container(),
-          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-          isDoctor
-              ? createTextField(aboutController, plunesStrings.introduction,
-                  TextInputType.text, TextCapitalization.words, true, '')
-              : Container(),
+//          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+//          isDoctor
+//              ? createTextField(aboutController, plunesStrings.introduction,
+//                  TextInputType.text, TextCapitalization.words, true, '')
+//              : Container(),
           widget.getSpacer(
               0.0, widget.userType != Constants.hospital ? 20.0 : 0),
           createTextField(locationController, plunesStrings.location,
@@ -341,23 +350,42 @@ class _EditProfileState extends State<EditProfileScreen>
     nameController.text = widget.fullName;
     dobController.text = widget.dateOfBirth;
     locationController.text = widget.location;
-    specializationController.text = widget.specializations;
-    professionRegController.text = widget.profRegNo;
-    experienceController.text = widget.experience;
-    aboutController.text = widget.introduction;
+   // specializationController.text = widget.specializations;
     educationController.text = widget.education;
     collegeController.text = widget.college;
+    var user = UserManager().getUserDetails();
+    professionRegController.text = user.profRegistrationNumber;
+    experienceController.text = user.experience;
+    aboutController.text = user.about;
+
+
   }
 
-  updateProfileRequest() {
+  updateProfileRequest() async {
+    FocusScope.of(context).requestFocus (FocusNode());
 //    List specialistId = new List();
 //    for (var item in _selectedItemId)
 //      specialistId.add({'specialityId': item});
     var body = {};
-    body['name'] = nameController.text;
-    body['latitude'] = _latitude;
-    body['longitude'] = _longitude;
-    body['address'] = locationController.text;
+    var user = User(
+      name: nameController.text.trim(),
+      latitude: _latitude,
+      longitude: _longitude,
+      address: locationController.text.trim(),
+      birthDate: dobController.text.trim(),
+      registrationNumber: professionRegController.text.trim(),
+      experience: experienceController.text.trim(),
+     // about: aboutController.text.trim(),
+      biography: aboutController.text.trim(),
+      qualification: educationController.text.trim(),
+      college: collegeController.text.trim(),
+      practising: practisingController.text.trim(),
+    );
+
+//    body['name'] = nameController.text;
+//    body['latitude'] = _latitude;
+//    body['longitude'] = _longitude;
+//    body['address'] = locationController.text;
 /*    if (_userType != Constants.hospital) {
       body['birthDate'] = dobController.text;
       body['referralCode'] = referralController.text;
@@ -375,17 +403,33 @@ class _EditProfileState extends State<EditProfileScreen>
       }
     }*/
 
+//    progress = true;
+//    bloc.updateRequest(context, this, body);
+//    bloc.updateProfileFetcher.listen((data) async {
+//      progress = false;
+//      if (data != null && data['success'] != null && data['success']) {
+//        await bloc.saveEditProfileDataInPreferences(context, body);
+//        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
+//      } else {
+//        widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
+//      }
+//    });
     progress = true;
-    bloc.updateRequest(context, this, body);
-    bloc.updateProfileFetcher.listen((data) async {
-      progress = false;
-      if (data != null && data['success'] != null && data['success']) {
-        await bloc.saveEditProfileDataInPreferences(context, body);
-        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
-      } else {
-        widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
-      }
-    });
+    _setState();
+   // print(user.toString());
+    var result = await _userBloc.updateUserData(user.toJson());
+    if (result is RequestSuccess) {
+      widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
+      Future.delayed(Duration(milliseconds: 550)).then((value){
+        Navigator.pop(context);
+      });
+    } else if (result is RequestFailed) {
+      RequestFailed requestFailed = result;
+      widget.showInSnackBar(
+          requestFailed.failureCause, Colors.red, _scaffoldKey);
+    }
+    progress = false;
+    _setState();
   }
 
   getSpecializationData() {
@@ -408,4 +452,10 @@ class _EditProfileState extends State<EditProfileScreen>
 
   @override
   dialogCallBackFunction(String action) {}
+
+  _setState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
 }
