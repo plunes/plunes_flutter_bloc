@@ -62,4 +62,20 @@ class BookingRepo {
       return RequestFailed(failureCause: result.failureCause, requestCode: index);
     }
   }
+
+  Future<RequestState> refundAppointment(String bookingId, String reason)async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_PUT,
+        headerIncluded: true,
+        postData: {
+          "bookingId":bookingId,
+          "reason":reason
+        },
+        url: Urls.GET_REFUND_URL);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: result.isRequestSucceed);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

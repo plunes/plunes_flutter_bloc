@@ -5,6 +5,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:shimmer/shimmer.dart';
 
+// ignore: must_be_immutable
 class AvailabilitySelectionScreen extends BaseActivity {
   static const tag = '/availabilitySelectionScreen';
   final String url;

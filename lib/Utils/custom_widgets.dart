@@ -7,6 +7,8 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/blocs/booking_blocs/appointment_bloc.dart';
+import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
@@ -1405,7 +1407,9 @@ class CustomWidgets {
     });
   }
 
-  Widget amountProgressBar(AppointmentModel appointmentModel,) {
+  Widget amountProgressBar(
+    AppointmentModel appointmentModel,
+  ) {
     var sliderVal = appointmentModel.amountPaid.toDouble();
     return Container(
       child: Column(
@@ -1435,6 +1439,177 @@ class CustomWidgets {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  refundPopup(BookingBloc bookingBloc, AppointmentModel appointmentModel) {
+    TextEditingController textEditingController = TextEditingController();
+    bool isSuccess = false;
+    String failureMessage;
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 8,
+          vertical: AppConfig.verticalBlockSize * 21),
+      child: Card(
+        child: StreamBuilder<RequestState>(
+          stream: bookingBloc.refundAppointmentStream,
+          builder: (BuildContext context, snapshot) {
+            if (snapshot.data != null && snapshot.data is RequestInProgress) {
+              return CustomWidgets().getProgressIndicator();
+            }
+            if (snapshot.data != null && snapshot.data is RequestSuccess) {
+              isSuccess = true;
+            }
+            if (snapshot.data != null && snapshot.data is RequestFailed) {
+              RequestFailed requestFailed = snapshot.data;
+              failureMessage = requestFailed.failureCause ??
+                  PlunesStrings.refundFailedMessage;
+              bookingBloc.addStateInRefundProvider(null);
+            }
+            return SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      return;
+                    },
+                    onDoubleTap: () {},
+                    child: Container(
+                      alignment: Alignment.bottomRight,
+                      padding: EdgeInsets.all(12),
+                      child: Icon(
+                        Icons.close,
+                        color: PlunesColors.GREYCOLOR,
+                      ),
+                    ),
+                  ),
+                  isSuccess
+                      ? Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppConfig.horizontalBlockSize * 6,
+                              vertical: AppConfig.verticalBlockSize * 2),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(PlunesStrings.thankYouMessage,
+                                  style: TextStyle(
+                                      fontSize: 36,
+                                      fontWeight: FontWeight.w600,
+                                      color: PlunesColors.BLACKCOLOR)),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.horizontalBlockSize * 6),
+                              ),
+                              Text(PlunesStrings.refundSuccessMessage,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.extraLargeFont,
+                                      fontWeight: FontWeight.w600,
+                                      color: PlunesColors.GREYCOLOR)),
+                            ],
+                          ),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppConfig.horizontalBlockSize * 6),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(PlunesStrings.refund,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.extraLargeFont,
+                                      fontWeight: FontWeight.w600,
+                                      color: PlunesColors.GREYCOLOR)),
+                              Container(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 4),
+                                  child: Text(
+                                      'Kindly Share the reason for your refund',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.largeFont,
+                                          fontWeight: FontWeight.w600,
+                                          color: PlunesColors.GREYCOLOR))),
+                              Container(
+                                  alignment: Alignment.topLeft,
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 4),
+                                  child: Text('Write here',
+                                      textAlign: TextAlign.start,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          fontWeight: FontWeight.w600,
+                                          color: PlunesColors.GREYCOLOR))),
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    child: TextField(
+                                      controller: textEditingController,
+                                      keyboardType: TextInputType.text,
+                                      maxLines: 1,
+                                      autofocus: true,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 6,
+                                ),
+                                margin: EdgeInsets.symmetric(
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 20),
+                                child: InkWell(
+                                  onTap: () {
+                                    if (appointmentModel != null &&
+                                        textEditingController.text
+                                            .trim()
+                                            .isNotEmpty) {
+                                      bookingBloc.refundAppointment(
+                                          appointmentModel.bookingId,
+                                          textEditingController.text.trim());
+                                    } else if (textEditingController.text
+                                        .trim()
+                                        .isEmpty) {
+                                      print("hello");
+                                      failureMessage =
+                                          PlunesStrings.emptyTextFieldWarning;
+                                      bookingBloc
+                                          .addStateInRefundProvider(null);
+                                    }
+                                  },
+                                  onDoubleTap: () {},
+                                  child: CustomWidgets().getRoundedButton(
+                                      plunesStrings.submit,
+                                      AppConfig.horizontalBlockSize * 6,
+                                      PlunesColors.GREENCOLOR,
+                                      AppConfig.horizontalBlockSize * 1,
+                                      AppConfig.verticalBlockSize * 1,
+                                      PlunesColors.WHITECOLOR),
+                                ),
+                              ),
+                              failureMessage == null || failureMessage.isEmpty
+                                  ? Container()
+                                  : Container(
+                                      padding: EdgeInsets.only(
+                                          top: AppConfig.verticalBlockSize * 1),
+                                      child: Text(
+                                        failureMessage,
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                            ],
+                          ),
+                        ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

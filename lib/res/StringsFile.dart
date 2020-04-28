@@ -88,6 +88,10 @@ class PlunesStrings {
   static const String rescheduledFailedMessage= "Appointment rescheduled failed!";
   static const String cancelSuccessMessage= "Appointment cancelled sucessfully!";
   static const String cancelFailedMessage= "Appointment cancellation failed!";
+  static const String refundFailedMessage= "Refund Request has been failed! try agian Later.";
+  static const String emptyTextFieldWarning= "Please Enter the Refund Reason";
+  static const String thankYouMessage= "Thank You!";
+  static const String refundSuccessMessage= "Your Refund has been initiated, Amount will be creadited in 3-4 business days.";
 
 
   ///Catalogue View Screen

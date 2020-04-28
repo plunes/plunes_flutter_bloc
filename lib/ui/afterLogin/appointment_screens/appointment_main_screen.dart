@@ -103,7 +103,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen> {
   Widget _showItems() {
     return ListView.builder(
       itemBuilder: (context, index) {
-        return AppointmentScreen(_appointmentResponse.bookings[index], index, _bookingBloc, scaffoldKey);
+        return AppointmentScreen(_appointmentResponse.bookings[index], index,
+            _bookingBloc, scaffoldKey, () => _getAppointmentDetails());
 //        return CustomWidgets().getAppointmentList(_appointmentResponse, index,
 //            () => onTap(_appointmentResponse.bookings[index]));
       },

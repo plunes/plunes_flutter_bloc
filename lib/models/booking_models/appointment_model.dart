@@ -53,6 +53,9 @@ class AppointmentModel {
   num amountPaid;
   num amountDue;
   String bookingId;
+  String refundReason;
+  String refundStatus;
+
 
 
   AppointmentModel({
@@ -78,6 +81,8 @@ class AppointmentModel {
     this.amountPaid,
     this.amountDue,
     this.bookingId,
+    this.refundReason,
+    this.refundStatus,
   });
 
 
@@ -106,6 +111,8 @@ class AppointmentModel {
     amountPaid = json['amountPaid'];
     amountDue = json['amountDue'];
     bookingId = json['_id'];
+    refundReason = json['refundReason'];
+    refundStatus = json['refundStatus'];
   }
 
   Map<String, dynamic> toJson() {
@@ -132,6 +139,8 @@ class AppointmentModel {
     data['amountPaid'] = this.amountPaid;
     data['amountDue'] = this.amountDue;
     data['_id'] = this.bookingId;
+    data['refundReason'] = this.refundReason;
+    data['refundStatus'] = this.refundStatus;
     return data;
   }
 }

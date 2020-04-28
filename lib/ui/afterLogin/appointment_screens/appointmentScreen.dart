@@ -19,9 +19,10 @@ class AppointmentScreen extends BaseActivity {
   final BookingBloc bookingBloc;
   int index;
   GlobalKey<ScaffoldState> globalKey;
+  Function getAppointment;
 
   AppointmentScreen(
-      this.appointmentModel, this.index, this.bookingBloc, this.globalKey);
+      this.appointmentModel, this.index, this.bookingBloc, this.globalKey, this.getAppointment);
 
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();
@@ -247,11 +248,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(appointmentModel.serviceName,
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black54)),
+                Expanded(
+                  child: Container(
+                    child: Text(appointmentModel.serviceName,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54)),
+                  ),
+                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: <Widget>[
@@ -321,16 +326,40 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Text(PlunesStrings.requestInvoice,
-                    style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
-                        decoration: TextDecoration.underline)),
-                Text(PlunesStrings.refund,
-                    style: TextStyle(
-                        fontSize: 17,
-                        color: Colors.black54,
-                        decoration: TextDecoration.underline)),
+                FlatButton(
+                  onPressed: () {},
+                  child: Text(PlunesStrings.requestInvoice,
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black54,
+                          decoration: TextDecoration.underline)),
+                ),
+                (appointmentModel.refundStatus != null &&
+                        appointmentModel.refundStatus == "Not Requested")
+                    ? FlatButton(
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => CustomWidgets()
+                                  .refundPopup(_bookingBloc, appointmentModel)).then((value){
+                             _bookingBloc.addStateInRefundProvider(null);
+                             if(widget.getAppointment!=null){
+                               widget.getAppointment();
+                             }
+                          });
+                        },
+                        child: Text(
+                          PlunesStrings.refund,
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.black54,
+                              decoration: TextDecoration.underline),
+                        ),
+                      )
+                    : Text(
+                        '${appointmentModel.refundStatus}',
+                        style: TextStyle(color: PlunesColors.GREENCOLOR),
+                      )
               ],
             ),
           ),
