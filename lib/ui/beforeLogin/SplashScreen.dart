@@ -10,6 +10,7 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -34,10 +35,12 @@ class SplashScreen extends BaseActivity {
 class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   Timer mTimer;
   Preferences preferences;
+  UserBloc _userBloc;
   var location = new loc.Location();
 
   @override
   void initState() {
+    _userBloc = UserBloc();
     super.initState();
     startTime();
   }
@@ -45,15 +48,16 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   @override
   void dispose() {
     super.dispose();
+    _userBloc.dispose();
     bloc.dispose();
   }
 
-  getData(data) {
-    for (int i = 0; i < data.posts.length; i++) {
-      CommonMethods.catalogueLists.add(data.posts[i]);
-    }
-    mTimer = new Timer(Duration(seconds: 7), navigationPage);
-  }
+//  getData(data) {
+//    for (int i = 0; i < data.posts.length; i++) {
+//      CommonMethods.catalogueLists.add(data.posts[i]);
+//    }
+//    mTimer = new Timer(Duration(seconds: 7), navigationPage);
+//  }
 
   startTime() async {
     await Preferences().instantiatePreferences();
@@ -68,13 +72,16 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
       preferences.setPreferencesString(Constants.LATITUDE, _latitude);
       preferences.setPreferencesString(Constants.LONGITUDE, _longitude);
     }
-    bloc.fetchCatalogue(context, this);
-    bloc.allCatalogue.listen((data) {
-      getData(data);
-    }, onDone: () {
-      bloc.dispose();
-    });
-    return mTimer;
+    await Future.delayed(Duration(seconds: 2));
+    _userBloc.getSpeciality();
+    navigationPage();
+//    bloc.fetchCatalogue(context, this);
+//    bloc.allCatalogue.listen((data) {
+//      getData(data);
+//    }, onDone: () {
+//      bloc.dispose();
+//    });
+//    return mTimer;
   }
 
   navigationPage() {

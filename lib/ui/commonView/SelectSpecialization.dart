@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/models/Models.dart';
 
 class SelectSpecialization extends StatefulWidget {
-  final List spec, selectedItemId, selectedItemData;
+  final List<SpecialityModel> spec;
+  final List selectedItemId, selectedItemData;
   final String from;
 
   SelectSpecialization(
@@ -25,7 +27,7 @@ class SelectSpecializationState extends State<SelectSpecialization> {
   List<dynamic> _selectedItemId = List();
   List<dynamic> _selectedData = List();
 
-  List specialization_filter_lists = new List();
+  List<SpecialityModel> specialization_filter_lists = new List();
   List<bool> select = new List();
   bool show_err_msg = false;
 

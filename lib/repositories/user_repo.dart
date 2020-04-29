@@ -1,3 +1,4 @@
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/blocs/bloc.dart';
@@ -158,6 +159,29 @@ class UserManager {
         print('error $err');
       }
       return RequestSuccess(response: loginPost);
+    } else {
+      return RequestFailed(response: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getSpecialities() async {
+    var result = await DioRequester().requestMethod(
+      headerIncluded: true,
+      requestType: HttpRequestMethods.HTTP_GET,
+      url: Urls.GET_SPECIALITIES_URL,
+    );
+    if (result.isRequestSucceed) {
+      List<SpecialityModel> specialityList = new List();
+      SignUpSpecialityModel signUpSpecialityModel =
+          SignUpSpecialityModel.fromJson(result.response.data);
+      if (signUpSpecialityModel != null &&
+          signUpSpecialityModel.data != null &&
+          signUpSpecialityModel.data.isNotEmpty) {
+        CommonMethods.catalogueLists = specialityList;
+        CommonMethods.catalogueLists = signUpSpecialityModel.data;
+        specialityList = signUpSpecialityModel.data;
+      }
+      return RequestSuccess(response: specialityList);
     } else {
       return RequestFailed(response: result.failureCause);
     }

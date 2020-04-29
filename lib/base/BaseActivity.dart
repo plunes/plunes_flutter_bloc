@@ -36,7 +36,8 @@ class BaseActivity extends StatefulWidget {
   final usersType = [
     Constants.generalUser,
     Constants.doctor,
-    Constants.hospital
+    Constants.hospital,
+    Constants.labDiagnosticCenter
   ]; //, Constants.diagnosticCenter
   PasswordCallback onTap;
 

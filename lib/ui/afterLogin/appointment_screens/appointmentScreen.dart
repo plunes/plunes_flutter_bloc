@@ -48,12 +48,12 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
     return Container(
       color: PlunesColors.WHITECOLOR,
       padding:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 0),
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
       child: Column(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 3),
+//            padding: EdgeInsets.symmetric(
+//                horizontal: AppConfig.horizontalBlockSize * 3),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
@@ -145,24 +145,24 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           ),
           Container(
             margin:
-                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
+                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 6),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                FlatButton(
+                InkWell(
                   child: Text(appointmentModel.bookingStatus,
                       style: TextStyle(
                           fontSize: AppConfig.mediumFont, color: Colors.green)),
-                  onPressed: () {},
-                  padding: EdgeInsets.symmetric(horizontal: 0),
+                   onTap: () {},
+                  onDoubleTap: (){},
                 ),
-                FlatButton(
+                InkWell(
                   child: Text(PlunesStrings.reschedule,
                       style: TextStyle(
                           fontSize: AppConfig.mediumFont,
                           color: Colors.black54)),
-                  onPressed: () {
+                 onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -173,7 +173,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   timeSlots: appointmentModel.service.timeSlots,
                                 )));
                   },
-                  padding: EdgeInsets.symmetric(horizontal: 0),
+                  onDoubleTap: (){},
                 ),
                 Container(
                   child: StreamBuilder<Object>(
@@ -241,9 +241,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 3),
-            // margin: EdgeInsets.symmetric(: 15),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -320,14 +317,13 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   ? _getData(appointmentModel)
                   : Container(),
           Container(
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 3),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+             crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                FlatButton(
-                  onPressed: () {},
+                InkWell(
+                  onTap: () {},
+                  onDoubleTap: (){},
                   child: Text(PlunesStrings.requestInvoice,
                       style: TextStyle(
                           fontSize: 18,
@@ -336,8 +332,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                 ),
                 (appointmentModel.refundStatus != null &&
                         appointmentModel.refundStatus == "Not Requested")
-                    ? FlatButton(
-                        onPressed: () {
+                    ? InkWell(
+                        onTap: () {
                           showDialog(
                               context: context,
                               builder: (context) => CustomWidgets()
@@ -348,6 +344,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                              }
                           });
                         },
+                   onDoubleTap: (){},
                         child: Text(
                           PlunesStrings.refund,
                           style: TextStyle(
@@ -357,7 +354,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                         ),
                       )
                     : Text(
-                        '${appointmentModel.refundStatus}',
+                        'Refund ${appointmentModel.refundStatus}',
                         style: TextStyle(color: PlunesColors.GREENCOLOR),
                       )
               ],

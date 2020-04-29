@@ -187,6 +187,9 @@ class PlunesStrings {
 
   get phoneNo => 'Phone No';
 
+  get alternatePhoneNo => 'Alternate Phone No';
+
+
   get EmailOrMobileNumber =>'Email id or Mobile Number';
 
   get emailId => 'Email Id*';
@@ -252,6 +255,10 @@ class PlunesStrings {
   get profileInformation => 'Profile Information';
 
   get hospitalName => 'Hospital Name';
+
+  get labName => 'Labs/Diagnostic Center Name';
+
+  get aboutLab => 'About Lab';
 
   get addressSmall => 'Address';
 
@@ -558,6 +565,8 @@ class PlunesStrings {
 
 
   static const String prePayConfirmBooking ="Make a payment of  300/- to confirm the booking";
+
+  String get invalidPhoneNumber => 'Valid phone number is required. Digit must be equals to 10';
 
 
 }

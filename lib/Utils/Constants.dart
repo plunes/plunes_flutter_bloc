@@ -18,7 +18,9 @@ class Constants {
 
   static get generalUser => 'General User';
 
-  static get diagnosticCenter => 'Diagnostics Center';
+  static get labDiagnosticCenter => 'Lab';
+
+  //static get diagnosticCenter => 'Diagnostics Center';
 
   static get user => 'User';
 

@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:intro_slider/intro_slider.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -24,7 +25,7 @@ import 'package:url_launcher/url_launcher.dart';
  */
 
 class CommonMethods {
-  static List catalogueLists = new List();
+  static List<SpecialityModel> catalogueLists = new List();
   static bool checkOTPVerification = true; // true for production
   static BuildContext globalContext;
 

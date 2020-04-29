@@ -36,4 +36,10 @@ class UserBloc extends BlocBase {
     super.addIntoStream(result);
     return result;
   }
+
+  Future<RequestState> getSpeciality() async {
+    var result = await UserManager().getSpecialities();
+    return result;
+  }
+
 }

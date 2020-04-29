@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geocoder/geocoder.dart';
@@ -7,8 +6,11 @@ import 'package:location/location.dart' as loc;
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -44,6 +46,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
   final locationController = TextEditingController();
   final referralController = TextEditingController();
   final phoneController = TextEditingController();
+  final alternatePhoneController = TextEditingController();
   final emailController = TextEditingController();
   final nameController = TextEditingController();
   final dobController = TextEditingController();
@@ -67,6 +70,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       _isAddManualOpen = false,
       isExperienceValid = true,
       isDoctor = false,
+      isLab = false,
       _passwordVisible = true,
       progress = false,
       isNameValid = true,
@@ -88,11 +92,15 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       expFocusNode = new FocusNode();
   int data = 1, male = 0, female = 1;
   var image;
-
+  UserBloc _userBloc;
+  String _failureCause;
+  bool _isProcessing;
   Preferences preferences;
 
   @override
   void initState() {
+    _userBloc = UserBloc();
+    _isProcessing = false;
     super.initState();
     initialize();
   }
@@ -108,6 +116,11 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     _userType = _dropDownMenuItems[0].value;
     doc_availability_from.text = "00:00 AM";
     doc_availability_to.text = "00:00 PM";
+    if (CommonMethods.catalogueLists == null ||
+        CommonMethods.catalogueLists.isEmpty) {
+      _isProcessing = true;
+      _getSpecialities();
+    }
     getLocation();
   }
 
@@ -147,7 +160,12 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         appBar: widget.getAppBar(context, plunesStrings.signUp, true),
         backgroundColor: Colors.white,
         body: GestureDetector(
-            onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()));
+            onTap: () => CommonMethods.hideSoftKeyboard(),
+            child: _isProcessing
+                ? CustomWidgets().getProgressIndicator()
+                : _failureCause == null
+                    ? bodyView()
+                    : CustomWidgets().errorWidget(_failureCause)));
   }
 
   Widget bodyView() {
@@ -156,7 +174,9 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       child: Column(
         children: <Widget>[
           userTypeDropDown(),
-          _isHospital ? getHospitalView() : getUserOrDoctorView(),
+          isLab
+              ? getLabView()
+              : _isHospital ? getHospitalView() : getUserOrDoctorView(),
         ],
       ),
     );
@@ -168,7 +188,12 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       child: DropdownButtonFormField(
         value: _userType,
         items: _dropDownMenuItems,
-        icon:  SvgPicture.asset("assets/images/arrow-down-sign-to-navigate.svg", color: PlunesColors.GREYCOLOR,),
+        icon: Image.asset(
+          "assets/images/arrow-down-Icon.png",
+          color: PlunesColors.GREYCOLOR,
+          width: 20,
+          height: 20,
+        ),
         onChanged: changedDropDownItem,
         decoration: widget.myInputBoxDecoration(colorsFile.lightGrey1,
             colorsFile.lightGrey1, null, null, true, null),
@@ -350,6 +375,13 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     TextInputType.text, TextCapitalization.none, false, ''),
                 createTextField(phoneController, plunesStrings.phoneNo,
                     TextInputType.number, TextCapitalization.none, false, ''),
+                createTextField(
+                    alternatePhoneController,
+                    plunesStrings.alternatePhoneNo,
+                    TextInputType.number,
+                    TextCapitalization.none,
+                    false,
+                    ''),
                 createTextField(aboutController, plunesStrings.aboutHospital,
                     TextInputType.text, TextCapitalization.none, true, ''),
                 widget.getSpacer(0.0, 20.0),
@@ -376,149 +408,149 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                 widget.getDefaultButton(plunesStrings.add, globalWidth - 40, 42,
                     getHospitalSpecializationData),
                 getSpecializationRow(),
-                widget.getSpacer(0.0, 40.0),
-                widget.getDividerRow(context, 0.0, 0.0, 0.0),
-                widget.getSpacer(0.0, 40.0),
-                widget.createTextViews(plunesStrings.addDoctors, 18,
-                    colorsFile.black0, TextAlign.center, FontWeight.bold),
-                getAddManualButton(),
-                _isAddManualOpen ? getAddDoctorsView() : Container(),
-                widget.getSpacer(0.0, 10.0),
+//                widget.getSpacer(0.0, 40.0),
+//                widget.getDividerRow(context, 0.0, 0.0, 0.0),
+//                widget.getSpacer(0.0, 40.0),
+//                widget.createTextViews(plunesStrings.addDoctors, 18,
+//                    colorsFile.black0, TextAlign.center, FontWeight.bold),
+//                getAddManualButton(),
+//                _isAddManualOpen ? getAddDoctorsView() : Container(),
+//                widget.getSpacer(0.0, 10.0),
               ],
             ),
           ),
-          _doctorsList.length == 0
-              ? Container()
-              : Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  height: 150,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _doctorsList.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: EdgeInsets.only(left: 10),
-                        margin: EdgeInsets.only(bottom: 10),
-                        child: Card(
-                          elevation: 3,
-                          semanticContainer: true,
-                          child: Container(
-                            padding: EdgeInsets.only(left: 10, right: 10),
-                            width: MediaQuery.of(context).size.width - 80,
-                            margin: EdgeInsets.only(top: 10, bottom: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  height: 50,
-                                  width: 50,
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(25)),
-                                    gradient: new LinearGradient(
-                                        colors: [
-                                          Color(0xffababab),
-                                          Color(0xff686868)
-                                        ],
-                                        begin: FractionalOffset.topCenter,
-                                        end: FractionalOffset.bottomCenter,
-                                        stops: [0.0, 1.0],
-                                        tileMode: TileMode.clamp),
-                                  ),
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    CommonMethods.getInitialName(
-                                        _doctorsList[index]['name']
-                                            .toString()
-                                            .toUpperCase()),
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 14),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                    child: Container(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      Text(
-                                        _doctorsList[index]['name'],
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.normal,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    colorsFile.black0))),
-                                      ),
-                                      Text(_doctorsList[index]['education'],
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w100,
-                                              color: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      colorsFile.lightGrey1)),
-                                              fontSize: 16)),
-                                      Text(_doctorsList[index]['designation'],
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w100,
-                                              color: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      colorsFile.lightGrey1)),
-                                              fontSize: 16)),
-                                      Text(
-                                        _doctorsList[index]['department'],
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w100,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    colorsFile.lightGrey1)),
-                                            fontSize: 16),
-                                      ),
-                                      Text(
-                                        _doctorsList[index]['experience'] +
-                                            ' years of Experience',
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w100,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    colorsFile.lightGrey1)),
-                                            fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                                InkWell(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 8.0, bottom: 8, right: 8),
-                                    child: Icon(
-                                      Icons.close,
-                                      size: 18,
-                                    ),
-                                  ),
-                                  onTap: () {
-                                    setState(() {
-                                      _doctorsList.removeAt(index);
-                                    });
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+//          _doctorsList.length == 0
+//              ? Container()
+//              : Container(
+//                  margin: EdgeInsets.only(top: 10, bottom: 10),
+//                  height: 150,
+//                  child: ListView.builder(
+//                    shrinkWrap: true,
+//                    scrollDirection: Axis.horizontal,
+//                    itemCount: _doctorsList.length,
+//                    itemBuilder: (context, index) {
+//                      return Container(
+//                        padding: EdgeInsets.only(left: 10),
+//                        margin: EdgeInsets.only(bottom: 10),
+//                        child: Card(
+//                          elevation: 3,
+//                          semanticContainer: true,
+//                          child: Container(
+//                            padding: EdgeInsets.only(left: 10, right: 10),
+//                            width: MediaQuery.of(context).size.width - 80,
+//                            margin: EdgeInsets.only(top: 10, bottom: 5),
+//                            child: Row(
+//                              mainAxisAlignment: MainAxisAlignment.start,
+//                              crossAxisAlignment: CrossAxisAlignment.start,
+//                              children: <Widget>[
+//                                Container(
+//                                  height: 50,
+//                                  width: 50,
+//                                  decoration: BoxDecoration(
+//                                    borderRadius:
+//                                        BorderRadius.all(Radius.circular(25)),
+//                                    gradient: new LinearGradient(
+//                                        colors: [
+//                                          Color(0xffababab),
+//                                          Color(0xff686868)
+//                                        ],
+//                                        begin: FractionalOffset.topCenter,
+//                                        end: FractionalOffset.bottomCenter,
+//                                        stops: [0.0, 1.0],
+//                                        tileMode: TileMode.clamp),
+//                                  ),
+//                                  alignment: Alignment.center,
+//                                  child: Text(
+//                                    CommonMethods.getInitialName(
+//                                        _doctorsList[index]['name']
+//                                            .toString()
+//                                            .toUpperCase()),
+//                                    style: TextStyle(
+//                                        color: Colors.white, fontSize: 14),
+//                                  ),
+//                                ),
+//                                SizedBox(
+//                                  width: 10,
+//                                ),
+//                                Expanded(
+//                                    child: Container(
+//                                  child: Column(
+//                                    crossAxisAlignment:
+//                                        CrossAxisAlignment.start,
+//                                    children: <Widget>[
+//                                      Text(
+//                                        _doctorsList[index]['name'],
+//                                        maxLines: 1,
+//                                        style: TextStyle(
+//                                            fontSize: 18,
+//                                            fontWeight: FontWeight.normal,
+//                                            color: Color(CommonMethods
+//                                                .getColorHexFromStr(
+//                                                    colorsFile.black0))),
+//                                      ),
+//                                      Text(_doctorsList[index]['education'],
+//                                          maxLines: 1,
+//                                          style: TextStyle(
+//                                              fontWeight: FontWeight.w100,
+//                                              color: Color(CommonMethods
+//                                                  .getColorHexFromStr(
+//                                                      colorsFile.lightGrey1)),
+//                                              fontSize: 16)),
+//                                      Text(_doctorsList[index]['designation'],
+//                                          maxLines: 1,
+//                                          style: TextStyle(
+//                                              fontWeight: FontWeight.w100,
+//                                              color: Color(CommonMethods
+//                                                  .getColorHexFromStr(
+//                                                      colorsFile.lightGrey1)),
+//                                              fontSize: 16)),
+//                                      Text(
+//                                        _doctorsList[index]['department'],
+//                                        maxLines: 1,
+//                                        style: TextStyle(
+//                                            fontWeight: FontWeight.w100,
+//                                            color: Color(CommonMethods
+//                                                .getColorHexFromStr(
+//                                                    colorsFile.lightGrey1)),
+//                                            fontSize: 16),
+//                                      ),
+//                                      Text(
+//                                        _doctorsList[index]['experience'] +
+//                                            ' years of Experience',
+//                                        maxLines: 1,
+//                                        style: TextStyle(
+//                                            fontWeight: FontWeight.w100,
+//                                            color: Color(CommonMethods
+//                                                .getColorHexFromStr(
+//                                                    colorsFile.lightGrey1)),
+//                                            fontSize: 16),
+//                                      ),
+//                                    ],
+//                                  ),
+//                                )),
+//                                InkWell(
+//                                  child: Padding(
+//                                    padding: const EdgeInsets.only(
+//                                        left: 8.0, bottom: 8, right: 8),
+//                                    child: Icon(
+//                                      Icons.close,
+//                                      size: 18,
+//                                    ),
+//                                  ),
+//                                  onTap: () {
+//                                    setState(() {
+//                                      _doctorsList.removeAt(index);
+//                                    });
+//                                  },
+//                                ),
+//                              ],
+//                            ),
+//                          ),
+//                        ),
+//                      );
+//                    },
+//                  ),
+//                ),
           widget.getSpacer(0.0, 20.0),
           widget.getDividerRow(context, 0.0, 30.0, 0.0),
           widget.getSpacer(0.0, 0.0),
@@ -533,8 +565,8 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                widget.createTextViews(plunesStrings.admin, 18, colorsFile.black0,
-                    TextAlign.left, FontWeight.bold),
+                widget.createTextViews(plunesStrings.admin, 18,
+                    colorsFile.black0, TextAlign.left, FontWeight.bold),
                 widget.getSpacer(0.0, 10.0),
                 widget.createTextViews(
                     plunesStrings.addUsers.toString().substring(
@@ -579,7 +611,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         shrinkWrap: true,
         children: <Widget>[
           getGenderRow(),
-          widget.getSpacer(0.0, 10.0),
+          widget.getSpacer(0.0, 15.0),
           createTextField(
               nameController,
               plunesStrings.name,
@@ -587,9 +619,20 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               TextCapitalization.words,
               isNameValid,
               plunesStrings.errorMsgEnterFullName),
-          widget.getSpacer(0.0, 20.0),
+          widget.getSpacer(0.0, 15.0),
           createTextField(phoneController, plunesStrings.phoneNo,
               TextInputType.number, TextCapitalization.none, false, ''),
+          //widget.getSpacer(0.0, 20.0),
+          _userType == Constants.doctor
+              ? createTextField(
+                  alternatePhoneController,
+                  plunesStrings.alternatePhoneNo,
+                  TextInputType.number,
+                  TextCapitalization.none,
+                  false,
+                  '')
+              : Container(),
+          widget.getSpacer(0.0, 15.0),
           createTextField(
               emailController,
               plunesStrings.emailId,
@@ -597,11 +640,11 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               TextCapitalization.none,
               isEmailValid,
               plunesStrings.errorValidEmailMsg),
-          widget.getSpacer(0.0, 20.0),
+          widget.getSpacer(0.0, 15.0),
           createTextField(dobController, plunesStrings.dateOfBirth,
               TextInputType.datetime, TextCapitalization.none, false, ''),
           getPasswordRow(plunesStrings.password),
-          widget.getSpacer(0.0, 20.0),
+          widget.getSpacer(0.0, 15.0),
           createTextField(locationController, plunesStrings.location,
               TextInputType.text, TextCapitalization.none, false, ''),
           Visibility(
@@ -614,7 +657,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     TextCapitalization.words,
                     isProfessionValid,
                     plunesStrings.errorMsgEnterProfRegNo),
-                widget.getSpacer(0.0, 20.0),
+                widget.getSpacer(0.0, 15.0),
                 createTextField(
                     specializationController,
                     '${plunesStrings.specialization}*',
@@ -622,7 +665,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     TextCapitalization.words,
                     isSpecificationValid,
                     plunesStrings.errorMsgEnterSpecialization),
-                widget.getSpacer(0.0, 20.0),
+                widget.getSpacer(0.0, 15.0),
                 createTextField(
                     experienceController,
                     plunesStrings.experienceInNo,
@@ -631,16 +674,18 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     TextCapitalization.none,
                     isExperienceValid,
                     plunesStrings.errorMsgEnterExp),
-                widget.getSpacer(0.0, 20.0)
+                widget.getSpacer(0.0, 15.0)
               ])),
-          createTextField(referralController, plunesStrings.referralCode,
-              TextInputType.text, TextCapitalization.none, true, ''),
-          widget.getSpacer(0.0, 20.0),
+          _userType == Constants.doctor
+              ? Container()
+              : createTextField(referralController, plunesStrings.referralCode,
+                  TextInputType.text, TextCapitalization.none, true, ''),
+          widget.getSpacer(0.0, 15.0),
           progress
               ? SpinKitThreeBounce(
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
-              : widget.getDefaultButton(plunesStrings.signUpBtn, globalWidth - 40,
-                  42, submitRegistrationRequest),
+              : widget.getDefaultButton(plunesStrings.signUpBtn,
+                  globalWidth - 40, 42, submitRegistrationRequest),
           widget.getSpacer(0.0, 15.0),
           widget.getTermsOfUseRow(),
           widget.getSpacer(0.0, 30.0),
@@ -670,7 +715,11 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                   });
                 },
                 child: _passwordVisible
-                    ? Image.asset("assets/images/eye-with-a-diagonal-line3x.png", width:24, height: 24,)
+                    ? Image.asset(
+                        "assets/images/eye-with-a-diagonal-line3x.png",
+                        width: 24,
+                        height: 24,
+                      )
                     : Icon(Icons.visibility),
               )),
         ),
@@ -828,6 +877,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       body['name'] = nameController.text;
       body['gender'] = gender == 'Male' ? 'M' : 'F';
       body['mobileNumber'] = phoneController.text;
+      body['alternateNumber'] = alternatePhoneController.text;
       body['email'] = emailController.text.trim();
       body['verifiedUser'] = 'true';
       body['password'] = passwordController.text;
@@ -836,23 +886,27 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           _userType == Constants.generalUser ? 'User' : _userType;
       body['address'] = locationController.text;
       body['deviceIds'] = Constants.DEVICE_TOKEN;
-      if (_userType != Constants.hospital) {
+      if (_userType != Constants.hospital &&
+          _userType != Constants.labDiagnosticCenter) {
         body['birthDate'] = dobController.text;
         body['referralCode'] = referralController.text;
       }
-      if (_userType == Constants.doctor || _userType == Constants.hospital) {
+      if (_userType == Constants.doctor ||
+          _userType == Constants.hospital ||
+          _userType == Constants.labDiagnosticCenter) {
         body['registrationNumber'] = professionRegController.text;
         body["specialities"] = specialistId;
 
         if (_userType == Constants.doctor) {
           body['experience'] = experienceController.text;
         }
-        if (_userType == Constants.hospital) {
+        if (_userType == Constants.hospital ||
+            _userType == Constants.labDiagnosticCenter) {
           body['biography'] = aboutController.text;
           body['doctors'] = _doctorsList;
         }
       }
-
+      print("body" + body.toString());
       progress = true;
       bloc.registrationRequest(context, this, body);
       bloc.registrationResult.listen((data) async {
@@ -882,7 +936,8 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           ? plunesStrings.errorMsgEnterHosName
           : plunesStrings.errorMsgEnterFullName;
       return false;
-    } else if (_userType == Constants.hospital &&
+    } else if ((_userType == Constants.hospital ||
+            _userType == Constants.labDiagnosticCenter) &&
         professionRegController.text.isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterRegNo;
       return false;
@@ -907,10 +962,17 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     } else if (isDoctor && experienceController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterExp;
       return false;
-    } else if (_userType == Constants.hospital && _doctorsList.length == 0) {
-      errorMessage = plunesStrings.errorMsgAddDoctor;
+    } else if (_userType != Constants.user &&
+        alternatePhoneController.text.trim().isNotEmpty &&
+        alternatePhoneController.text.trim().length != 10) {
+      errorMessage = plunesStrings.invalidPhoneNumber;
       return false;
-    } else {
+    }
+//    else if (_userType == Constants.hospital && _doctorsList.length == 0) {
+//      errorMessage = plunesStrings.errorMsgAddDoctor;
+//      return false;
+//    }
+    else {
       return true;
     }
   }
@@ -946,24 +1008,35 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     professionRegController.text = '';
     passwordController.text = '';
     emailController.text = '';
+    alternatePhoneController.text = '';
     _selectedSpecializationData = [];
   }
 
   changedDropDownItem(String selectedCity) {
+    print(selectedCity);
     setState(() {
       _userType = selectedCity;
       if (_userType == 'Doctor') {
         isDoctor = true;
         nameController.text = "Dr. ";
         _isHospital = false;
+        isLab = false;
       } else if (_userType == 'Hospital') {
         _isHospital = true;
+        isDoctor = false;
+        isLab = false;
+        nameController.text = '';
+        dobController.text = '';
+      } else if (_userType == Constants.labDiagnosticCenter) {
+        isLab = true;
+        _isHospital = false;
         isDoctor = false;
         nameController.text = '';
         dobController.text = '';
       } else {
         nameController.text = '';
         isDoctor = false;
+        isLab = false;
         _isHospital = false;
       }
       resetFormData();
@@ -1136,6 +1209,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     passwordFocusNode.dispose();
     referralFocusNode.dispose();
     phoneController.dispose();
+    alternatePhoneController.dispose();
     emailController.dispose();
     nameController.dispose();
     phoneFocusNode.dispose();
@@ -1143,5 +1217,138 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     dobController.dispose();
     nameFocusNode.dispose();
     expFocusNode.dispose();
+  }
+
+  Widget getLabView() {
+    return Expanded(
+        child: Container(
+      child: ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(left: 20, right: 20),
+            child: Column(
+              children: <Widget>[
+                widget.getSpacer(0.0, 20.0),
+                widget.createTextViews(plunesStrings.profileInformation, 18,
+                    colorsFile.black0, TextAlign.center, FontWeight.bold),
+                widget.getSpacer(0.0, 20.0),
+                createTextField(nameController, plunesStrings.labName,
+                    TextInputType.text, TextCapitalization.words, true, ''),
+                widget.getSpacer(0.0, 20.0),
+                createTextField(locationController, plunesStrings.location,
+                    TextInputType.text, TextCapitalization.none, false, ''),
+                createTextField(phoneController, plunesStrings.phoneNo,
+                    TextInputType.number, TextCapitalization.none, false, ''),
+                createTextField(
+                    alternatePhoneController,
+                    plunesStrings.alternatePhoneNo,
+                    TextInputType.number,
+                    TextCapitalization.none,
+                    false,
+                    ''),
+                createTextField(aboutController, plunesStrings.aboutLab,
+                    TextInputType.text, TextCapitalization.none, true, ''),
+                widget.getSpacer(0.0, 20.0),
+                createTextField(
+                    professionRegController,
+                    plunesStrings.registrationNo,
+                    TextInputType.text,
+                    TextCapitalization.characters,
+                    true,
+                    ''),
+                widget.getSpacer(0.0, 40.0),
+                widget.getDividerRow(context, 0.0, 0.0, 0.0),
+                widget.getSpacer(0.0, 30.0),
+                widget.createTextViews(plunesStrings.addSpecialization, 18,
+                    colorsFile.black0, TextAlign.center, FontWeight.bold),
+                widget.getSpacer(0.0, 5.0),
+                widget.createTextViews(
+                    plunesStrings.addSpecializationServices,
+                    16,
+                    colorsFile.lightGrey2,
+                    TextAlign.center,
+                    FontWeight.w100),
+                widget.getSpacer(0.0, 20.0),
+                widget.getDefaultButton(plunesStrings.add, globalWidth - 40, 42,
+                    getHospitalSpecializationData),
+                getSpecializationRow(),
+              ],
+            ),
+          ),
+          widget.getSpacer(0.0, 20.0),
+          widget.getDividerRow(context, 0.0, 30.0, 0.0),
+          widget.getSpacer(0.0, 0.0),
+          widget.createTextViews(plunesStrings.manageAccount, 18,
+              colorsFile.black0, TextAlign.center, FontWeight.bold),
+          widget.getSpacer(0.0, 5.0),
+          widget.createTextViews(plunesStrings.addUsers, 16,
+              colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
+          widget.getSpacer(0.0, 20.0),
+          Container(
+            margin: EdgeInsets.only(left: 20, right: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                widget.createTextViews(plunesStrings.admin, 18,
+                    colorsFile.black0, TextAlign.left, FontWeight.bold),
+                widget.getSpacer(0.0, 10.0),
+                widget.createTextViews(
+                    plunesStrings.addUsers.toString().substring(
+                        0, plunesStrings.addUsers.toString().length - 1),
+                    18,
+                    colorsFile.black0,
+                    TextAlign.left,
+                    FontWeight.normal),
+                widget.getSpacer(0.0, 20.0),
+                createTextField(
+                    emailController,
+                    plunesStrings.userEmail,
+                    TextInputType.emailAddress,
+                    TextCapitalization.none,
+                    isEmailValid,
+                    plunesStrings.errorValidEmailMsg),
+                widget.getSpacer(0.0, 20.0),
+                getPasswordRow(plunesStrings.userPassword),
+                widget.getSpacer(0.0, 20.0),
+                widget.createTextViews(plunesStrings.errorMsgPassword, 16,
+                    colorsFile.black0, TextAlign.center, FontWeight.normal),
+                widget.getSpacer(0.0, 20.0),
+                progress
+                    ? SpinKitThreeBounce(
+                        color: Color(hexColorCode.defaultGreen), size: 30.0)
+                    : widget.getDefaultButton(plunesStrings.submit,
+                        globalWidth - 40, 42, submitRegistrationRequest),
+                widget.getSpacer(0.0, 30.0),
+              ],
+            ),
+          )
+        ],
+      ),
+    ));
+  }
+
+  void _getSpecialities() async {
+    if (!_isProcessing) {
+      _isProcessing = true;
+      _setState();
+    }
+    var result = await _userBloc.getSpeciality();
+    if (result is RequestSuccess) {
+      if (CommonMethods.catalogueLists == null ||
+          CommonMethods.catalogueLists.isEmpty) {
+        _failureCause = "No Data Available";
+      }
+    } else if (result is RequestFailed) {
+      _failureCause = result.failureCause;
+    }
+    _isProcessing = false;
+    _setState();
+  }
+
+  _setState() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

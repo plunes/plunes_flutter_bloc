@@ -488,3 +488,52 @@ class verifyOTP {
     return data;
   }
 }
+
+class SignUpSpecialityModel {
+  bool success;
+  List<SpecialityModel> data;
+  String msg;
+
+  SignUpSpecialityModel({this.success, this.data, this.msg});
+
+  SignUpSpecialityModel.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    if (json['data'] != null) {
+      data = new List<SpecialityModel>();
+      json['data'].forEach((v) {
+        data.add(new SpecialityModel.fromJson(v));
+      });
+    }
+    msg = json['msg'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    if (this.data != null) {
+      data['data'] = this.data.map((v) => v.toJson()).toList();
+    }
+    data['msg'] = this.msg;
+    return data;
+  }
+}
+
+class SpecialityModel {
+  String speciality;
+  String id;
+
+  SpecialityModel({this.speciality, this.id});
+
+  SpecialityModel.fromJson(Map<String, dynamic> json) {
+    speciality = json['speciality'];
+    id = json['specialityId'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['speciality'] = this.speciality;
+    data['specialityId'] = this.id;
+    return data;
+  }
+}
+

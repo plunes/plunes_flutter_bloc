@@ -70,5 +70,6 @@ class Urls {
   static const String GET_APPOINTMENT_URL = 'booking';
   static const String GET_CANCEL_AND_RESCHEDULE_URL ='booking/';
   static const String GET_REFUND_URL ='booking/refund';
+  static const String GET_SPECIALITIES_URL = 'catalogue/getSpecialities';
 
 }
