@@ -5,7 +5,6 @@ import 'package:plunes/requester/request_handler.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
 
-
 class UserBloc extends BlocBase {
   Future<RequestOutput> isUserInServiceLocation(var latitude, var longitude) {
     return UserManager().isUserInServiceLocation(latitude, longitude);
@@ -30,9 +29,11 @@ class UserBloc extends BlocBase {
     super.addIntoStream(result);
     return result;
   }
-    Future<RequestState> updateUserData(Map<String, dynamic> userData) async {
-       var result = await UserManager().updateUserData(userData);
-      // super.addIntoStream(result);
-       return result;
-      }
+
+  Future<RequestState> updateUserData(Map<String, dynamic> userData) async {
+    super.addIntoStream(RequestInProgress());
+    var result = await UserManager().updateUserData(userData);
+    super.addIntoStream(result);
+    return result;
+  }
 }

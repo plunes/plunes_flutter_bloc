@@ -80,6 +80,7 @@ class UserManager {
         "latitude": double.parse(latitude),
         "longitude": double.parse(longitude)
       },
+      headerIncluded: true,
       requestType: HttpRequestMethods.HTTP_POST,
     );
     if (result.isRequestSucceed) {
@@ -148,8 +149,6 @@ class UserManager {
       postData: userData,
     );
     if (result.isRequestSucceed) {
-//      User _user = User.fromJson(result.response.data);
-//     print(_user);
       LoginPost loginPost;
       try {
         loginPost = LoginPost.fromJson(result.response.data);

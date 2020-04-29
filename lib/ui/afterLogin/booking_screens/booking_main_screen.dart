@@ -729,7 +729,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           PlunesColors.BLACKCOLOR, scaffoldKey);
       return;
     }
-//    print("timeSlot ${timeSlot.slots.length}");
+   print("timeSlot ${timeSlot.slots}");
     List<String> _firstSlotFromTimeHourMinute =
         timeSlot.slots[0].split("-")[0].split(" ")[0].split(":");
     List<String> _firstSlotToTimeHourMinute =

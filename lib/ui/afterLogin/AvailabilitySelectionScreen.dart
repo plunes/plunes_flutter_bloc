@@ -1,7 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
+import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -21,12 +30,13 @@ class _AvailabilitySelectionScreenState
     extends State<AvailabilitySelectionScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
-
+  UserBloc userBloc;
+  LoginPost loginPost;
+  String failureCause;
+  DateTime initialTime;
   String url;
-  String user_token = "";
-
+  bool hasSubmitted;
   bool progress = true;
-
   List<String> check = new List();
   List<String> from_1 = new List();
   List<String> from_2 = new List();
@@ -45,120 +55,124 @@ class _AvailabilitySelectionScreenState
     'Sunday'
   ];
 
-  Future<Null> _selectdata(String check, int position, String time) async {
-    TimeOfDay _startTime = TimeOfDay(
-        hour: int.parse(time.split(":")[0]),
-        minute: int.parse(time.split(":")[1].substring(0, 2)));
-
-    final TimeOfDay picker = await showTimePicker(
-      context: context,
-      initialTime: _startTime,
-      builder: (BuildContext context, Widget child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            alwaysUse24HourFormat: false,
-          ),
-          child: child,
-        );
-      },
-    );
-
-    if (picker != null) {
-      setState(() {
-        if (check == 'form1') {
-          from_1[position] = picker.format(context);
-        } else if (check == 'form2') {
-          from_2[position] = picker.format(context);
-        } else if (check == 'to1') {
-          to_1[position] = picker.format(context);
-        } else if (check == 'to2') {
-          if (position == 0) {
-            showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (
-                BuildContext context,
-              ) =>
-                  _confirmation(context),
-            ).then((text) {
-              setState(() {
-                if (text == "Done") {
-                  for (int i = 0; i < days.length; i++) {
-                    from_1[i] = from_1[0];
-                    from_2[i] = from_2[0];
-                    to_1[i] = to_1[0];
-                    to_2[i] = to_2[0];
-                  }
-                }
-              });
-            });
-          }
-          to_2[position] = picker.format(context);
-        }
-      });
-    }
-  }
-
   @override
   void initState() {
+    userBloc = UserBloc();
+    getSlots();
+    hasSubmitted = false;
+    initialTime = DateTime.now();
     super.initState();
   }
 
-  void get_slots() async {
+//  Future<Null> _selectdata(String check, int position, String time) async {
+//    TimeOfDay _startTime = TimeOfDay(
+//        hour: int.parse(time.split(":")[0]),
+//        minute: int.parse(time.split(":")[1].substring(0, 2)));
+//    final TimeOfDay picker = await showTimePicker(
+//      context: context,
+//      initialTime: _startTime,
+//      builder: (BuildContext context, Widget child) {
+//        return MediaQuery(
+//          data: MediaQuery.of(context).copyWith(
+//            alwaysUse24HourFormat: false,
+//          ),
+//          child: child,
+//        );
+//      },
+//    );
+//
+//    if (picker != null) {
+//      setState(() {
+//        if (check == 'form1') {
+//          from_1[position] = picker.format(context);
+//        } else if (check == 'form2') {
+//          from_2[position] = picker.format(context);
+//        } else if (check == 'to1') {
+//          to_1[position] = picker.format(context);
+//        } else if (check == 'to2') {
+//          if (position == 0) {
+//            showDialog(
+//              context: context,
+//              barrierDismissible: true,
+//              builder: (
+//                BuildContext context,
+//              ) =>
+//                  _confirmation(context),
+//            ).then((text) {
+//              setState(() {
+//                if (text == "Done") {
+//                  for (int i = 0; i < days.length; i++) {
+//                    from_1[i] = from_1[0];
+//                    from_2[i] = from_2[0];
+//                    to_1[i] = to_1[0];
+//                    to_2[i] = to_2[0];
+//                  }
+//                }
+//              });
+//            });
+//          }
+//          to_2[position] = picker.format(context);
+//        }
+//      });
+//    }
+//  }
+
+  void getSlots() async {
     check.clear();
     from_1.clear();
     from_2.clear();
     to_1.clear();
     to_2.clear();
 
-/*
-
-    GettimeSlots gettimeSlots = await get_time_slots(user_token, url).catchError((error){
-      config.Config.showLongToast("Something went wrong!");
-      print(error);
-      setState(() {
-        progress = false;
-      });
-    });
-*/
+    var result =
+        await userBloc.getUserProfile(UserManager().getUserDetails().uid);
+    if (result is RequestSuccess) {
+      RequestSuccess requestSuccess = result;
+      loginPost = requestSuccess.response;
+      if (loginPost.success != null && loginPost.success) {
+        if (loginPost.user != null &&
+            loginPost.user.timeSlots != null &&
+            loginPost.user.timeSlots.isNotEmpty) {
+          for (int i = 0; i < loginPost.user.timeSlots.length; i++) {
+            from_1.add(
+                loginPost.user.timeSlots[i].slots[0].toString().split("-")[0]);
+            to_1.add(
+                loginPost.user.timeSlots[i].slots[0].toString().split("-")[1]);
+            check
+                .add(loginPost.user.timeSlots[i].closed?.toString() ?? "false");
+            from_2.add(
+                loginPost.user.timeSlots[i].slots[1].toString().split("-")[0]);
+            to_2.add(
+                loginPost.user.timeSlots[i].slots[1].toString().split("-")[1]);
+          }
+        } else {
+          for (int i = 0; i < 7; i++) {
+            if (i == 6) {
+              check.add("true");
+            } else
+              check.add("false");
+            from_1.add("09:00 AM");
+            from_2.add("03:00 PM");
+            to_1.add("01:00 PM");
+            to_2.add("08:00 PM");
+          }
+        }
+      }
+    }
+    if (result is RequestFailed) {
+      RequestFailed requestFailed = result;
+      failureCause = requestFailed.failureCause;
+      return;
+    }
 
     setState(() {
       progress = false;
-/*      if(gettimeSlots.success){
-
-
-        if(gettimeSlots.fields.length == 0){
-          for(int i =0; i< 7; i++){
-            check.add("false");
-            from_1.add("00:00");
-            from_2.add("00:00");
-            to_1.add("00:00");
-            to_2.add("00:00");
-          }
-        }else{
-
-          for(int i =0; i< gettimeSlots.fields.length; i++){
-            from_1.add(gettimeSlots.fields[i].slots[0].toString().split("-")[0]);
-            to_1.add(gettimeSlots.fields[i].slots[0].toString().split("-")[1]);
-            check.add(gettimeSlots.fields[i].closed);
-            from_2.add(gettimeSlots.fields[i].slots[1].toString().split("-")[0]);
-            to_2.add(gettimeSlots.fields[i].slots[1].toString().split("-")[1]);
-          }
-        }
-
-      }else{
-        config.Config.showInSnackBar(
-            _scaffoldKey, gettimeSlots.message, Colors.red);
-
-      }*/
     });
   }
 
-  void addslot() async {
-    setState(() {
-      progress = true;
-    });
-
+  void addSlot() async {
+    hasSubmitted = true;
+    timeslots_.clear();
     for (int i = 0; i < 7; i++) {
       timeslots_.add({
         "slots": [
@@ -169,48 +183,10 @@ class _AvailabilitySelectionScreenState
         "closed": check[i]
       });
     }
-
-    var body;
+    print(timeslots_);
     var data;
-    List doctors = new List();
-
-    if (url.contains("doctors")) {
-      List doctor_id = url.split("/");
-
-      body = {"doctorId": doctor_id[6], "timeSlots": timeslots_};
-
-      doctors.add(body);
-      data = {"doctors": doctors};
-    } else {
-      data = {"timeSlots": timeslots_};
-    }
-
-    print(data);
-
-    /* TimeSlotsPost timeSlotsPost = await set_time_slots(data, user_token).catchError((error){
-      config.Config.showLongToast("Something went wrong!");
-      progress = false;
-    });*/
-/*
-
-      setState(() {
-        progress = false;
-        if (timeSlotsPost.success) {
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (
-              BuildContext context,
-            ) =>
-                _popup_saved(context),
-          );
-
-        }else{
-          config.Config.showInSnackBar(_scaffoldKey, timeSlotsPost.message, Colors.red);
-        }
-
-      });
-*/
+    data = {"timeSlots": timeslots_};
+    userBloc.updateUserData(data);
   }
 
   @override
@@ -219,17 +195,17 @@ class _AvailabilitySelectionScreenState
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
 
-    final app_bar = AppBar(
-      backgroundColor: Colors.white,
-      brightness: Brightness.light,
-      centerTitle: true,
-      elevation: 0,
-      iconTheme: IconThemeData(color: Colors.black),
-      title: Text(
-        "My Availability",
-        style: TextStyle(color: Colors.black),
-      ),
-    );
+//    final app_bar = AppBar(
+//      backgroundColor: Colors.white,
+//      brightness: Brightness.light,
+//      centerTitle: true,
+//      elevation: 0,
+//      iconTheme: IconThemeData(color: Colors.black),
+//      title: Text(
+//        "My Availability",
+//        style: TextStyle(color: Colors.black),
+//      ),
+//    );
 
     final header = Container(
       margin: EdgeInsets.only(top: 20, bottom: 10),
@@ -265,7 +241,7 @@ class _AvailabilitySelectionScreenState
       ),
     );
 
-    final list_days = Expanded(
+    final dayList = Expanded(
       child: ListView.builder(
         itemBuilder: (context, index) {
           return Container(
@@ -296,7 +272,7 @@ class _AvailabilitySelectionScreenState
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: () {
-                            _selectdata("form1", index, from_1[index]);
+                            _openTimePicker("form1", index);
                           },
                           child: Container(
                             height: 25,
@@ -321,7 +297,7 @@ class _AvailabilitySelectionScreenState
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: () {
-                            _selectdata("to1", index, to_1[index]);
+                            _openTimePicker("to1", index);
                           },
                           child: Container(
                             height: 25,
@@ -353,7 +329,7 @@ class _AvailabilitySelectionScreenState
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: () {
-                            _selectdata("form2", index, from_2[index]);
+                            _openTimePicker("form2", index);
                           },
                           child: Container(
                             height: 25,
@@ -378,7 +354,7 @@ class _AvailabilitySelectionScreenState
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: () {
-                            _selectdata("to2", index, to_2[index]);
+                            _openTimePicker("to2", index);
                           },
                           child: Container(
                             height: 25,
@@ -441,29 +417,51 @@ class _AvailabilitySelectionScreenState
             ),
           );
         },
-        itemCount: 7,
+        itemCount: from_1?.length ?? 0,
       ),
     );
 
     final submit = Container(
       margin: EdgeInsets.only(bottom: 20),
-      child: InkWell(
-        borderRadius: BorderRadius.all(Radius.circular(5)),
-        onTap: addslot,
-        child: Container(
-          decoration: BoxDecoration(
+      child: StreamBuilder<Object>(
+          stream: userBloc.baseStream,
+          builder: (context, snapshot) {
+            if (snapshot.data is RequestInProgress && hasSubmitted) {
+              CustomWidgets().getProgressIndicator();
+            }
+            if (snapshot.data is RequestSuccess && hasSubmitted) {
+              Future.delayed(Duration(milliseconds: 20)).then((value) {
+                widget.showInSnackBar("Time slots updated Sucessfully",
+                    PlunesColors.BLACKCOLOR, _scaffoldKey);
+              });
+            }
+            if (snapshot.data is RequestFailed && hasSubmitted) {
+              RequestFailed requestFailed = snapshot.data;
+              Future.delayed(Duration(milliseconds: 20)).then((value) {
+                widget.showInSnackBar(
+                    requestFailed.failureCause ?? "Unable to Update Slots",
+                    PlunesColors.BLACKCOLOR,
+                    _scaffoldKey);
+              });
+            }
+            return InkWell(
               borderRadius: BorderRadius.all(Radius.circular(5)),
-              color: Color(0xff01d35a)),
-          alignment: Alignment.center,
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Text(
-              'Submit',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
-        ),
-      ),
+              onTap: addSlot,
+              child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    color: Color(0xff01d35a)),
+                alignment: Alignment.center,
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Text(
+                    'Submit',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+            );
+          }),
     );
 
     final loading = Expanded(
@@ -599,11 +597,19 @@ class _AvailabilitySelectionScreenState
 
     final form = Container(
         child: Padding(
-      padding: const EdgeInsets.only(left: 20.0, right: 20, top: 5, bottom: 10),
-      child: Column(
-        children: <Widget>[header, progress ? loading : list_days, submit],
-      ),
-    ));
+            padding: const EdgeInsets.only(
+                left: 20.0, right: 20, top: 5, bottom: 10),
+            child: failureCause == null
+                ? Column(
+                    children: <Widget>[
+                      header,
+                      progress ? loading : dayList,
+                      submit
+                    ],
+                  )
+                : Center(
+                    child: Text(failureCause ?? "No data available!"),
+                  )));
 
     return Scaffold(
         appBar: widget.getAppBar(context, plunesStrings.availability, true),
@@ -671,5 +677,121 @@ class _AvailabilitySelectionScreenState
         ),
       ),
     );
+  }
+
+  _openTimePicker(String check, int position) {
+    return showDialog(
+        builder: (context) {
+          return Container(
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 31,
+                right: AppConfig.horizontalBlockSize * 10,
+                left: AppConfig.horizontalBlockSize * 10,
+                bottom: AppConfig.verticalBlockSize * 2),
+            child: Material(
+              borderRadius: BorderRadius.circular(16),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Icon(Icons.close),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      PlunesStrings.setYourTime,
+                      style: TextStyle(fontSize: AppConfig.mediumFont),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 5,
+                    child: TimePickerSpinner(
+                      is24HourMode: false,
+                      time: initialTime,
+                      normalTextStyle: TextStyle(
+                          fontSize: 24, color: PlunesColors.BLACKCOLOR),
+                      highlightedTextStyle: TextStyle(
+                          fontSize: 24, color: PlunesColors.GREENCOLOR),
+                      spacing: AppConfig.horizontalBlockSize * 8,
+                      isShowSeconds: false,
+                      itemHeight: AppConfig.verticalBlockSize * 10,
+                      isForce2Digits: true,
+                      onTimeChange: (time) {
+                        if (time != null) {
+                          var selectedTime =
+                              DateUtil.getTimeWithAmAndPmFormat(time);
+                          if (selectedTime.split(':')[0].length == 1) {
+                            selectedTime = '0' + selectedTime;
+                          }
+                          setState(() {
+                            if (check == 'form1') {
+                              from_1[position] = selectedTime;
+                            } else if (check == 'form2') {
+                              from_2[position] = selectedTime;
+                            } else if (check == 'to1') {
+                              to_1[position] = selectedTime;
+                            } else if (check == 'to2') {
+                              if (position == 0) {
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (
+                                    BuildContext context,
+                                  ) =>
+                                      _confirmation(context),
+                                ).then((text) {
+                                  setState(() {
+                                    if (text == "Done") {
+                                      for (int i = 0; i < days.length; i++) {
+                                        from_1[i] = from_1[0];
+                                        from_2[i] = from_2[0];
+                                        to_1[i] = to_1[0];
+                                        to_2[i] = to_2[0];
+                                      }
+                                    }
+                                  });
+                                });
+                              }
+                              to_2[position] = selectedTime;
+                            }
+                          });
+                        }
+                      },
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 26,
+                        bottom: AppConfig.verticalBlockSize * 4,
+                        top: AppConfig.verticalBlockSize * 2.3,
+                        right: AppConfig.horizontalBlockSize * 26),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        return;
+                      },
+                      child: CustomWidgets().getRoundedButton(
+                          PlunesStrings.choose,
+                          AppConfig.horizontalBlockSize * 8,
+                          PlunesColors.GREENCOLOR,
+                          AppConfig.horizontalBlockSize * 3,
+                          AppConfig.verticalBlockSize * 1,
+                          PlunesColors.WHITECOLOR,
+                          hasBorder: false),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        barrierDismissible: true,
+        context: context);
   }
 }

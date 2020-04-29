@@ -11,6 +11,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
+import 'package:plunes/ui/afterLogin/AvailabilitySelectionScreen.dart';
 import 'package:plunes/ui/afterLogin/doc_hos_screen/hosptal_overview_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 
@@ -503,7 +504,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         getSharedPreferencesData();
         break;
       case 1:
-//        Navigator.popAndPushNamed(context, BusinessHours.tag);
+       Navigator.push(context, MaterialPageRoute(builder: (context)=> AvailabilitySelectionScreen()));
         break;
       case 2:
 //        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Appointments(screen: 0,),));
