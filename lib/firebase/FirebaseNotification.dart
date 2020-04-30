@@ -1,11 +1,15 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/models/Models.dart';
+import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/HomeScreen.dart';
+import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -20,9 +24,19 @@ class FirebaseNotification {
   String title = '', body = '';
   BuildContext _buildContext;
   GlobalKey<ScaffoldState> _scaffoldKeyNotification;
+  GlobalKey<NavigatorState> _navKey;
+  static const String homeScreenName = "HomeScreen";
+  static const String bookingScreen = "booking"; // for all
+  static const String plockerScreen = "plockr";
+  static const String solutionScreen = "solution";
+
+  // for doc/hos/lab
+  static const String insightScreen = "insight";
 
   /// call this method to configure fireBase messaging in the app for push notification
-  setUpFireBase(BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey) {
+  setUpFireBase(
+      BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey, var key) {
+    _navKey = key;
     _buildContext = context;
     _scaffoldKeyNotification = _scaffoldKey;
     _firebaseMessaging = FirebaseMessaging();
@@ -39,8 +53,10 @@ class FirebaseNotification {
     fireBaseCloudMessagingListeners();
   }
 
-  Future onSelectNotification(String screen) async {
-    handleRedirection(screen);
+  Future onSelectNotification(String payLoad) async {
+    print(json.decode(payLoad));
+    Map<String, dynamic> msg = json.decode(payLoad);
+    handleRedirection(msg);
   }
 
   /// display a dialog with the notification details, tap ok to go to another page
@@ -61,20 +77,44 @@ class FirebaseNotification {
     );
   }
 
-  void handleRedirection(String screen) {
-    /*  if(screen == "4" || screen == "5" || screen == "6" ){
-      Navigator.push(_buildContext, MaterialPageRoute(builder: (context) => BiddingActivity(screen: 1)));
-    }else if(screen == config.Config.solution_notification || screen ==config.Config.comment_notification || screen == config.Config.appreciate_comment || screen == config.Config.apreciate_solution){
-      Navigator.push(_buildContext, MaterialPageRoute(builder: (context) => HomeScreen(screen: "consult"),));
-    }else if(screen== "7"||screen== "10"){
-      Navigator.push(_buildContext,MaterialPageRoute(builder: (context) => AppointmentDetails(screen: 1),));
-    }else if(screen == "8" || screen== "9" ){
-      Navigator.push(_buildContext, MaterialPageRoute(builder: (context) => AppointmentDetails(screen: 0)));
-    }  else if (screen == "11") {
-      Navigator.push(_buildContext, MaterialPageRoute(builder: (context) => BiddingActivity(screen: 0),));
-    }else if(screen == ''){
-      Navigator.push(_buildContext, MaterialPageRoute(builder: (context) => BiddingActivity(screen: 2)));
-    }*/
+  void handleRedirection(Map<String, dynamic> payLoad) {
+    bool isHomeScreen = false;
+    Widget widget;
+    if (payLoad != null &&
+        payLoad.containsKey("data") &&
+        payLoad["data"]['screen'] != null &&
+        payLoad["data"]['screen'].toString().isNotEmpty) {
+      print(payLoad["data"]['screen']);
+      if (payLoad["data"]['screen'] == homeScreenName) {
+        isHomeScreen = true;
+        widget = HomeScreen(
+          screenNo: Constants.homeScreenNumber,
+        );
+      } else if (payLoad["data"]['screen'] == plockerScreen) {
+        isHomeScreen = true;
+        widget = HomeScreen(
+          screenNo: Constants.plockerScreenNumber,
+        );
+      } else if (payLoad["data"]['screen'] == bookingScreen) {
+        widget = AppointmentMainScreen();
+      } else if (payLoad["data"]['screen'] == insightScreen) {
+        isHomeScreen = true;
+        widget = HomeScreen(
+          screenNo: Constants.homeScreenNumber,
+        );
+      } else if (payLoad["data"]['screen'] == solutionScreen) {
+        widget = SolutionBiddingScreen();
+      }
+    }
+    if (widget != null) {
+      if (isHomeScreen) {
+        _navKey.currentState.pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => widget), (_) => false);
+      } else {
+        _navKey.currentState
+            .push(MaterialPageRoute(builder: (context) => widget));
+      }
+    }
   }
 
   fireBaseCloudMessagingListeners() {
@@ -88,7 +128,7 @@ class FirebaseNotification {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('==firebase==onMessage== $message');
-        _showNotificationWithDefaultSound(message['notification']['body']);
+        _showNotificationWithDefaultSound(message);
       },
       onResume: (Map<String, dynamic> message) async {
         print('==firebase==onResume== $message');
@@ -109,7 +149,7 @@ class FirebaseNotification {
     }
   }
 
-  Future _showNotificationWithDefaultSound(String msg) async {
+  Future _showNotificationWithDefaultSound(Map<String, dynamic> msg) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
         'your channel id', 'your channel name', 'your channel description',
         importance: Importance.Max, priority: Priority.High);
@@ -118,10 +158,10 @@ class FirebaseNotification {
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
       0,
-      'New Post',
-      msg,
+      msg['notification']['title'] ?? PlunesStrings.NA,
+      msg['notification']['body'] ?? PlunesStrings.NA,
       platformChannelSpecifics,
-      payload: 'Default_Sound',
+      payload: json.encode(msg) ?? PlunesStrings.NA,
     );
   }
 
@@ -134,105 +174,145 @@ class FirebaseNotification {
     });
   }
 
-  Future<Null> _filterPopUp(String body, String userID) async {
-    return showDialog<Null>(
-        context: _buildContext,
-        barrierDismissible: true, // user must tap button!
-        builder: (BuildContext context) {
-          return new Material(
-              type: MaterialType.transparency,
-              child: Container(
-                alignment: Alignment.center,
-                color: Colors.transparent,
-                margin: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 50.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-                      color: Colors.white,
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        title,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.0),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
-                      color: Colors.white,
-                      alignment: Alignment.topLeft,
-                      child: InkWell(
-                        onLongPress: () {
-                          Navigator.pop(context);
-                          Clipboard.setData(new ClipboardData(text: body));
-                          _scaffoldKeyNotification.currentState
-                              .showSnackBar(new SnackBar(
-                            content: new Text(
-                              "Copied to Clipboard",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            backgroundColor: Colors.black,
-                          ));
-                        },
-                        child: Text(
-                          body,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16.0),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(
-                          left: 20.0, right: 20.0, top: 20.0, bottom: 30.0),
-                      color: Colors.white,
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: new Container(
-                          padding:
-                              const EdgeInsets.only(left: 10.0, right: 10.0),
-                          margin: EdgeInsets.only(right: 10.0),
-                          height: 30.0,
-                          decoration: new BoxDecoration(
-                              shape: BoxShape.rectangle,
-                              borderRadius: BorderRadius.circular(5.0),
-                              color: Colors.black26),
-                          child: new Center(
-                              child: new Text(
-                            "DONE",
-                            textAlign: TextAlign.center,
-                            style: new TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.white,
-                              fontFamily: "openSans",
-                            ),
-                          )),
+  Future _handleNavigation(PostsData notificationModel) async {
+    bool isHomeScreen = false;
+    Widget widget;
+    print(notificationModel.notificationType);
+    if (notificationModel.notificationType == homeScreenName) {
+      isHomeScreen = true;
+      widget = HomeScreen(
+        screenNo: Constants.homeScreenNumber,
+      );
+    } else if (notificationModel.notificationType == plockerScreen) {
+      isHomeScreen = true;
+      widget = HomeScreen(
+        screenNo: Constants.plockerScreenNumber,
+      );
+    } else if (notificationModel.notificationType == bookingScreen) {
+      widget = AppointmentMainScreen();
+    } else if (notificationModel.notificationType == insightScreen) {
+      isHomeScreen = true;
+      widget = HomeScreen(
+        screenNo: Constants.homeScreenNumber,
+      );
+    } else if (notificationModel.notificationType == solutionScreen) {
+      widget = SolutionBiddingScreen();
+    }
 
-                          // Add box decoration
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ));
-        });
+    if (widget != null) {
+      if (isHomeScreen) {
+        _navKey.currentState.pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => widget), (_) => false);
+      } else {
+        _navKey.currentState
+            .push(MaterialPageRoute(builder: (context) => widget));
+      }
+    }
+
+//    return _navKey.currentState
+//        .push(MaterialPageRoute(builder: (context) => AppointmentMainScreen()));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKeyNotification,
-      body: Container(),
-    );
-  }
+//  Future<Null> _filterPopUp(String body, String userID) async {
+//    return
+//      showDialog<Null>(
+//        context: _navKey.currentContext,
+//        barrierDismissible: true, // user must tap button!
+//        builder: (BuildContext context) {
+//          return new Material(
+//              type: MaterialType.transparency,
+//              child: Container(
+//                alignment: Alignment.center,
+//                color: Colors.transparent,
+//                margin: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 50.0),
+//                child: Column(
+//                  mainAxisAlignment: MainAxisAlignment.center,
+//                  children: <Widget>[
+//                    Container(
+//                      padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
+//                      color: Colors.white,
+//                      alignment: Alignment.topLeft,
+//                      child: Text(
+//                        title,
+//                        textAlign: TextAlign.center,
+//                        style: TextStyle(
+//                            color: Colors.black,
+//                            fontWeight: FontWeight.bold,
+//                            fontSize: 16.0),
+//                      ),
+//                    ),
+//                    Container(
+//                      padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
+//                      color: Colors.white,
+//                      alignment: Alignment.topLeft,
+//                      child: InkWell(
+//                        onLongPress: () {
+//                          Navigator.pop(context);
+//                          Clipboard.setData(new ClipboardData(text: body));
+//                          _scaffoldKeyNotification.currentState
+//                              .showSnackBar(new SnackBar(
+//                            content: new Text(
+//                              "Copied to Clipboard",
+//                              style: TextStyle(color: Colors.white),
+//                            ),
+//                            backgroundColor: Colors.black,
+//                          ));
+//                        },
+//                        child: Text(
+//                          body,
+//                          textAlign: TextAlign.center,
+//                          style: TextStyle(
+//                              color: Colors.black,
+//                              fontWeight: FontWeight.normal,
+//                              fontSize: 16.0),
+//                        ),
+//                      ),
+//                    ),
+//                    Container(
+//                      padding: EdgeInsets.only(
+//                          left: 20.0, right: 20.0, top: 20.0, bottom: 30.0),
+//                      color: Colors.white,
+//                      child: GestureDetector(
+//                        onTap: () {
+//                          Navigator.pop(context);
+//                        },
+//                        child: new Container(
+//                          padding:
+//                              const EdgeInsets.only(left: 10.0, right: 10.0),
+//                          margin: EdgeInsets.only(right: 10.0),
+//                          height: 30.0,
+//                          decoration: new BoxDecoration(
+//                              shape: BoxShape.rectangle,
+//                              borderRadius: BorderRadius.circular(5.0),
+//                              color: Colors.black26),
+//                          child: new Center(
+//                              child: new Text(
+//                            "DONE",
+//                            textAlign: TextAlign.center,
+//                            style: new TextStyle(
+//                              fontSize: 15.0,
+//                              color: Colors.white,
+//                              fontFamily: "openSans",
+//                            ),
+//                          )),
+//
+//                          // Add box decoration
+//                        ),
+//                      ),
+//                    ),
+//                  ],
+//                ),
+//              ));
+//        });
+//  }
+
+//  @override
+//  Widget build(BuildContext context) {
+//    return Scaffold(
+//      key: _scaffoldKeyNotification,
+//      body: Container(),
+//    );
+//  }
 
   showLocalNotification(Map<String, dynamic> message) {
     if (Platform.isIOS) {
@@ -250,6 +330,10 @@ class FirebaseNotification {
           ? message["notification"]['body']
           : '';
     }
-    _filterPopUp(body, title);
+    PostsData _postData = PostsData.fromJsonForPush(message);
+    print('post data'+ _postData?.toString());
+    if (_postData != null && _postData.notificationType != null) {
+      _handleNavigation(_postData);
+    }
   }
 }

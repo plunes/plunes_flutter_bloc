@@ -42,11 +42,12 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<NavigatorState> _navKey = new GlobalKey<NavigatorState>();
 
   @override
   void initState() {
     super.initState();
-    FirebaseNotification().setUpFireBase(context, _scaffoldKey);
+    FirebaseNotification().setUpFireBase(context, _scaffoldKey, _navKey);
   }
 
   ///Below method having all the routes of the application.
@@ -56,6 +57,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       key: _scaffoldKey,
+      navigatorKey: _navKey,
       theme: ThemeData(
         fontFamily: fontFile.appDefaultFont,
         accentColor: Color(hexColorCode.defaultGreen),
@@ -101,8 +103,6 @@ class _MyAppState extends State<MyApp> {
         AppointmentMainScreen.tag: (context) => AppointmentMainScreen(),
 
         //AppointmentScreen.tag:(context) => AppointmentScreen(),
-
-
       },
       initialRoute: SplashScreen.tag,
     );

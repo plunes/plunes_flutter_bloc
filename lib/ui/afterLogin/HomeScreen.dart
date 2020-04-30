@@ -37,9 +37,9 @@ import 'appointment_screens/appointment_main_screen.dart';
 // ignore: must_be_immutable
 class HomeScreen extends BaseActivity {
   static const tag = '/homescreen';
-  final String screen;
+  final int screenNo;
 
-  HomeScreen({Key key, this.screen}) : super(key: key);
+  HomeScreen({Key key, this.screenNo}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -218,21 +218,37 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   void initialize() {
     preferences = Preferences();
     getSharedPreferencesData();
-
-    switch (widget.screen) {
-      case Constants.BIDS:
-        _selectedIndex = 0;
-        break;
-      case 'plockr':
-        _selectedIndex = 1;
-        break;
-      case 'notification':
-        _selectedIndex = 2;
-        break;
-      case 'profile':
-        _selectedIndex = 3;
-        break;
+    _userType = preferences.getPreferenceString(Constants.PREF_USER_TYPE);
+    if (_userType == Constants.user) {
+      switch (widget.screenNo) {
+        case Constants.homeScreenNumber:
+          _selectedIndex = 0;
+          break;
+        case Constants.plockerScreenNumber:
+          _selectedIndex = 1;
+          break;
+        case Constants.notificationScreenNumber:
+          _selectedIndex = 2;
+          break;
+        default:
+          _selectedIndex = 0;
+//      case 'profile':
+//        _selectedIndex = 3;
+//        break;
+      }
+    } else {
+      switch (widget.screenNo) {
+        case Constants.homeScreenNumber:
+          _selectedIndex = 0;
+          break;
+        case Constants.notificationScreenNumber:
+          _selectedIndex = 1;
+          break;
+        default:
+          _selectedIndex = 0;
+      }
     }
+
     bloc.preferenceFetcher.listen((data) {
       if (data != null) {
         _userName = data['name'] != null ? data['name'] : '';
@@ -504,7 +520,10 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         getSharedPreferencesData();
         break;
       case 1:
-       Navigator.push(context, MaterialPageRoute(builder: (context)=> AvailabilitySelectionScreen()));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AvailabilitySelectionScreen()));
         break;
       case 2:
 //        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Appointments(screen: 0,),));

@@ -292,7 +292,7 @@ class Bloc {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
-              builder: (context) => HomeScreen(screen: Constants.BIDS)),
+              builder: (context) => HomeScreen(screenNo: Constants.homeScreenNumber)),
           (_) => false);
   }
 

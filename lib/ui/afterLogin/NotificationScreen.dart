@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/models/Models.dart';
@@ -223,7 +224,7 @@ class _NotificationScreenState extends State<NotificationScreen>
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => HomeScreen(screen: "plocker")));
+                builder: (context) => HomeScreen(screenNo: Constants.plockerScreenNumber)));
       }
     }
   }

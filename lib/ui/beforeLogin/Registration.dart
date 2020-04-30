@@ -919,7 +919,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => HomeScreen(screen: Constants.BIDS)));
+                  builder: (context) => HomeScreen(screenNo: Constants.homeScreenNumber)));
         } else {
           widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
         }

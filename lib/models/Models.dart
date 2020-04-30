@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class CatalogueList {
   final List<ProcedureList> posts;
   final bool empty;
@@ -454,6 +456,22 @@ class PostsData {
       senderName:
           parsedJson['senderName'] != null ? parsedJson['senderName'] : '',
     );
+  }
+
+  factory PostsData.fromJsonForPush(Map<String, dynamic> parsedJson) {
+    if(Platform.isIOS){
+      return PostsData(
+
+      );
+    } else {
+      var data =  new PostsData(
+        notificationType: parsedJson['data']['screen'] != null
+            ? parsedJson['data']['screen']
+            : null,
+        id: parsedJson['data']['_id'] != null ? parsedJson['data']['_id'] : null,
+      );
+      return data;
+    }
   }
 }
 
