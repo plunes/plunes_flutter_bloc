@@ -468,7 +468,7 @@ class PostsData {
         notificationType: parsedJson['data']['screen'] != null
             ? parsedJson['data']['screen']
             : null,
-        id: parsedJson['data']['_id'] != null ? parsedJson['data']['_id'] : null,
+        id: parsedJson['data']['id'] != null ? parsedJson['data']['id'] : null,
       );
       return data;
     }

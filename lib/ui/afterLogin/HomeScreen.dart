@@ -256,18 +256,20 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     });
 
     bloc.deleteListenerFetcher.listen((data) {
-      setState(() {
-        if (data != null) {
-          from = plunesStrings.notification;
-          isSelected = data['isSelected'] != null ? data['isSelected'] : false;
-          selectedPositions = data['selectedItemList'] != null
-              ? data['selectedItemList']
-              : new List();
-        } else {
-          isSelected = false;
-          from = '';
-        }
-      });
+      if (mounted)
+        setState(() {
+          if (data != null) {
+            from = plunesStrings.notification;
+            isSelected =
+                data['isSelected'] != null ? data['isSelected'] : false;
+            selectedPositions = data['selectedItemList'] != null
+                ? data['selectedItemList']
+                : new List();
+          } else {
+            isSelected = false;
+            from = '';
+          }
+        });
     });
   }
 

@@ -11,6 +11,7 @@ import 'package:plunes/blocs/booking_blocs/appointment_bloc.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
+import 'package:plunes/models/doc_hos_models/common_models/actionable_insights_response_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -717,7 +718,7 @@ class CustomWidgets {
                         Text(
                           solutions[index].discount == null
                               ? ""
-                              : "${PlunesStrings.save} ${solutions[index].discount.toStringAsFixed(3)}%",
+                              : "${PlunesStrings.save} ${solutions[index].discount.toStringAsFixed(2)}%",
                           style: TextStyle(color: PlunesColors.GREENCOLOR),
                         )
                       ],
@@ -744,7 +745,7 @@ class CustomWidgets {
                     Expanded(child: Container()),
                     Text(solutions[index].distance == null
                         ? ""
-                        : "${solutions[index].distance.toStringAsFixed(3)} ${PlunesStrings.kmsAway}")
+                        : "${solutions[index].distance.toStringAsFixed(2)} ${PlunesStrings.kmsAway}")
                   ],
                 ),
           Padding(
@@ -911,8 +912,8 @@ class CustomWidgets {
     CatalogueData catalogueData,
   ) {
     return Container(
-        height: 475,
-        width: 300,
+        height: 360,
+        width: 400,
         //margin: EdgeInsets.all(),
         child: Column(
             // mainAxisAlignment: MainAxisAlignment.start,
@@ -925,7 +926,7 @@ class CustomWidgets {
                     style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 30),
+                    padding: const EdgeInsets.only(left: 80),
                     child: FlatButton(
                       child: Icon(Icons.close),
                       onPressed: () => {
@@ -944,8 +945,8 @@ class CustomWidgets {
                       children: <Widget>[
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 10),
-                          height: 350,
-                          width: 260,
+                          height: 260,
+                          width: 330,
                           child: SingleChildScrollView(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1018,14 +1019,14 @@ class CustomWidgets {
                   ],
                 ),
               ),
-              FlatButton.icon(
-                onPressed: () {},
-                label: Text(
-                  'Expand',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                ),
-                icon: Icon(Icons.expand_more),
-              )
+//              FlatButton.icon(
+//                onPressed: () {},
+//                label: Text(
+//                  'Expand',
+//                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+//                ),
+//                icon: Icon(Icons.expand_more),
+//              )
             ]));
   }
 
@@ -1219,7 +1220,8 @@ class CustomWidgets {
 
   // ignore: non_constant_identifier_names
   Widget UpdatePricePopUpForActionableInsight(
-      {actionableInsight, DocHosMainInsightBloc docHosMainInsightBloc}) {
+      {ActionableInsight actionableInsight,
+      DocHosMainInsightBloc docHosMainInsightBloc}) {
     var sliderVal = (num.parse(actionableInsight.userPrice).toDouble() / 2) +
         (((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2);
     String failureCause;
@@ -1372,7 +1374,9 @@ class CustomWidgets {
                                           docHosMainInsightBloc
                                               .getUpdateActionableInsightPrice(
                                                   sliderVal,
-                                                  actionableInsight.serviceId);
+                                                  actionableInsight.serviceId,
+                                                  actionableInsight
+                                                      .specialityId);
                                         },
                                       ),
                                       Text(
@@ -1410,7 +1414,8 @@ class CustomWidgets {
   Widget amountProgressBar(
     AppointmentModel appointmentModel,
   ) {
-    var sliderVal = appointmentModel.amountPaid.toDouble();
+    num val = appointmentModel.amountPaid + appointmentModel.amountPaidCredits;
+    double sliderVal = val.toDouble();
     return Container(
       child: Column(
         children: <Widget>[

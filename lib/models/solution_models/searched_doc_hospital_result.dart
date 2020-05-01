@@ -78,8 +78,8 @@ class DocHosSolution {
 }
 
 class Services {
-  List<int> price;
-  List<int> newPrice;
+  List<num> price;
+  List<num> newPrice;
   List<String> category;
   List<num> paymentOptions;
   List<TimeSlots> timeSlots;
@@ -126,8 +126,8 @@ class Services {
       this.paymentOptions});
 
   Services.fromJson(Map<String, dynamic> json) {
-    price = json['price'].cast<int>();
-    newPrice = json['newPrice'].cast<int>();
+    price = json['price'].cast<num>();
+    newPrice = json['newPrice'].cast<num>();
     category = json['category'].cast<String>();
     if (json['timeSlots'] != null) {
       timeSlots = new List<TimeSlots>();

@@ -81,13 +81,14 @@ class DocHosMainRepo {
     }
   }
 
- Future<RequestState> updateActionableInsightPrice(num price, String serviceId) async {
+ Future<RequestState> updateActionableInsightPrice(num price, String serviceId, String specialityId) async {
     var result = await DioRequester().requestMethod(
       url: Urls.UPDATE_ACTIONABLE_INSIGHT_PRICE_URL,
       requestType: HttpRequestMethods.HTTP_PATCH,
       postData: {
         "serviceId": serviceId,
-        "updatedPrice": price},
+        "specialityId": specialityId,
+        "newPrice": price},
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {

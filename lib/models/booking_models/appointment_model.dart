@@ -47,15 +47,16 @@ class AppointmentModel {
   String serviceName;
   bool rescheduled;
   Services service;
-  bool isOpened=false;
- // List<num> paymentOption;
+  bool isOpened = false;
+
+  // List<num> paymentOption;
   String paymentPercentage;
   num amountPaid;
   num amountDue;
+  num amountPaidCredits;
   String bookingId;
   String refundReason;
   String refundStatus;
-
 
 
   AppointmentModel({
@@ -76,9 +77,10 @@ class AppointmentModel {
     this.rescheduled,
     this.service,
     this.isOpened,
-   // this.paymentOption,
+    // this.paymentOption,
     this.paymentPercentage,
     this.amountPaid,
+    this.amountPaidCredits,
     this.amountDue,
     this.bookingId,
     this.refundReason,
@@ -106,9 +108,10 @@ class AppointmentModel {
     if (json['service'] != null) {
       service = new Services.fromJson(json['service']);
     }
-   // paymentOption = json['paymentOption'];
+    // paymentOption = json['paymentOption'];
     paymentPercentage = json['paymentPercentage'];
     amountPaid = json['amountPaid'];
+    amountPaidCredits = json['amountPaidCredits'];
     amountDue = json['amountDue'];
     bookingId = json['_id'];
     refundReason = json['refundReason'];
@@ -134,9 +137,10 @@ class AppointmentModel {
     data['serviceName'] = this.serviceName;
     data['rescheduled'] = this.rescheduled;
     data['services'] = this.service;
-   // data['paymentOption'] = this.paymentOption;
+    // data['paymentOption'] = this.paymentOption;
     data['paymentPercentage'] = this.paymentPercentage;
     data['amountPaid'] = this.amountPaid;
+    data['amountPaidCredits'] = this.amountPaidCredits;
     data['amountDue'] = this.amountDue;
     data['_id'] = this.bookingId;
     data['refundReason'] = this.refundReason;

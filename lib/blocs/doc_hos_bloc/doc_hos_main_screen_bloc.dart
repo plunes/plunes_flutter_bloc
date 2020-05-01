@@ -80,8 +80,8 @@ class DocHosMainInsightBloc extends BlocBase {
         .updateRealTimeIsightPrice(price, solutionId, serviceId));
   }
 
-  getUpdateActionableInsightPrice(num price, String serviceId) async {
+  getUpdateActionableInsightPrice(num price, String serviceId, String specialityId ) async {
     addStateInActionableUpdatePriceStream(
-        await DocHosMainRepo().updateActionableInsightPrice(price, serviceId));
+        await DocHosMainRepo().updateActionableInsightPrice(price, serviceId, specialityId));
   }
 }

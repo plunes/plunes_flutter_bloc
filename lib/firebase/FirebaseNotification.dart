@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -27,7 +29,7 @@ class FirebaseNotification {
   GlobalKey<NavigatorState> _navKey;
   static const String homeScreenName = "HomeScreen";
   static const String bookingScreen = "booking"; // for all
-  static const String plockerScreen = "plockr";
+  static const String plockrScreen = "plockr";
   static const String solutionScreen = "solution";
 
   // for doc/hos/lab
@@ -90,7 +92,7 @@ class FirebaseNotification {
         widget = HomeScreen(
           screenNo: Constants.homeScreenNumber,
         );
-      } else if (payLoad["data"]['screen'] == plockerScreen) {
+      } else if (payLoad["data"]['screen'] == plockrScreen) {
         isHomeScreen = true;
         widget = HomeScreen(
           screenNo: Constants.plockerScreenNumber,
@@ -103,7 +105,11 @@ class FirebaseNotification {
           screenNo: Constants.homeScreenNumber,
         );
       } else if (payLoad["data"]['screen'] == solutionScreen) {
-        widget = SolutionBiddingScreen();
+        if (payLoad["data"]['id'] != null && payLoad["data"]['id'].isNotEmpty) {
+          widget = BiddingLoading(
+            catalogueData: CatalogueData(serviceId: payLoad["data"]['id']),
+          );
+        }
       }
     }
     if (widget != null) {
@@ -183,7 +189,7 @@ class FirebaseNotification {
       widget = HomeScreen(
         screenNo: Constants.homeScreenNumber,
       );
-    } else if (notificationModel.notificationType == plockerScreen) {
+    } else if (notificationModel.notificationType == plockrScreen) {
       isHomeScreen = true;
       widget = HomeScreen(
         screenNo: Constants.plockerScreenNumber,
@@ -196,10 +202,15 @@ class FirebaseNotification {
         screenNo: Constants.homeScreenNumber,
       );
     } else if (notificationModel.notificationType == solutionScreen) {
-      widget = SolutionBiddingScreen();
+      if (notificationModel.id != null && notificationModel.id.isNotEmpty) {
+        widget = BiddingLoading(
+          catalogueData: CatalogueData(serviceId: notificationModel.id),
+        );
+      }
     }
 
     if (widget != null) {
+      await Future.delayed(Duration(seconds: 3));
       if (isHomeScreen) {
         _navKey.currentState.pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => widget), (_) => false);
@@ -331,7 +342,7 @@ class FirebaseNotification {
           : '';
     }
     PostsData _postData = PostsData.fromJsonForPush(message);
-    print('post data'+ _postData?.toString());
+    print('post data' + _postData?.toString());
     if (_postData != null && _postData.notificationType != null) {
       _handleNavigation(_postData);
     }

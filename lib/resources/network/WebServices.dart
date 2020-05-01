@@ -28,7 +28,7 @@ class WebServices {
   }
 
   Future<LoginPost> postLoginRequest(BuildContext context, phone, password) async {
-    var body = {'mobileNumber': phone,'password': password,'device_id' : Constants.DEVICE_TOKEN};
+    var body = {'mobileNumber': phone,'password': password,'deviceId' : Constants.DEVICE_TOKEN};
     dynamic postsList = await _apiCall.getAPIRequest(context, urls.login, '1', false, body: json.encode(body), method: Constants.POST);
     return LoginPost.fromJson(postsList);
   }
@@ -52,7 +52,7 @@ class WebServices {
   }
 
   Future<dynamic> postLogoutWebservice(BuildContext context, String token) async {
-    return  await _apiCall.getAPIRequest(context,context.widget.toString()  == 'SecuritySettings'? urls.logoutAll: urls.logout, '1', false, body: json.encode({}), method: Constants.POST, token: token);
+    return  await _apiCall.getAPIRequest(context,context.widget.toString()  == 'SecuritySettings'? urls.logoutAll: urls.logout, '1', false, body: json.encode({'deviceId' : Constants.DEVICE_TOKEN}), method: Constants.POST, token: token);
   }
 
   Future<dynamic> putUpdateProfileWebservice(BuildContext context,var body, String token) async {
