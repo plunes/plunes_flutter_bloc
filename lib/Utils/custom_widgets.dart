@@ -913,7 +913,7 @@ class CustomWidgets {
   ) {
     return Container(
         height: 360,
-        width: 400,
+        width: 350,
         //margin: EdgeInsets.all(),
         child: Column(
             // mainAxisAlignment: MainAxisAlignment.start,
@@ -946,7 +946,7 @@ class CustomWidgets {
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 10),
                           height: 260,
-                          width: 330,
+                          width: 320,
                           child: SingleChildScrollView(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
