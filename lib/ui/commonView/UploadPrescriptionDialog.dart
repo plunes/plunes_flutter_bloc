@@ -1,26 +1,32 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
-import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/plockr_blocs/plockr_bloc.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 
 import 'SelectSpecialization.dart';
 
+// ignore: must_be_immutable
 class UploadPrescriptionDialog extends BaseActivity {
   final String imageUrl;
 
-  UploadPrescriptionDialog({Key key, this.imageUrl}) : super(key: key);
+  UploadPrescriptionDialog({Key key, this.imageUrl})
+      : super(key: key);
 
   @override
   _UploadPrescriptionDialogState createState() =>
       _UploadPrescriptionDialogState();
 }
 
-class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
+class _UploadPrescriptionDialogState
+    extends BaseState<UploadPrescriptionDialog> {
   List<dynamic> _selectedItemId = List(), _selectedSpecializationData = List();
   final specializationController = TextEditingController();
   final reportNameController = new TextEditingController();
@@ -29,14 +35,17 @@ class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
   final reportsNameFocus = new FocusNode();
   var globalHeight, globalWidth;
   bool progress = false;
+  PlockrBloc _plockrBloc;
 
   @override
   void initState() {
+    _plockrBloc = PlockrBloc();
     super.initState();
   }
 
   @override
   void dispose() {
+    _plockrBloc.dispose();
     specializationController.dispose();
     super.dispose();
   }
@@ -46,7 +55,7 @@ class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
         context: context,
         builder: (BuildContext context) => SelectSpecialization(
             spec: CommonMethods.catalogueLists,
-            from: null,
+            from: "",
             selectedItemId: _selectedItemId,
             selectedItemData: _selectedSpecializationData)).then((val) {
       if (val != '' && val != null) {
@@ -102,14 +111,14 @@ class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
                 padding: EdgeInsets.only(left: 5, right: 5),
                 child: Column(
                   children: <Widget>[
-                    widget.getSpacer(0.0, 20.0),
-                    createTextField(
-                        specializationController,
-                        '${plunesStrings.chooseSpeciality}',
-                        TextInputType.text,
-                        TextCapitalization.words,
-                        true,
-                        plunesStrings.errorMsgEnterSpecialization),
+//                    widget.getSpacer(0.0, 20.0),
+//                    createTextField(
+//                        specializationController,
+//                        '${plunesStrings.chooseSpeciality}',
+//                        TextInputType.text,
+//                        TextCapitalization.words,
+//                        true,
+//                        plunesStrings.errorMsgEnterSpecialization),
                     widget.getSpacer(0.0, 20.0),
                     createTextField(
                         reportNameController,
@@ -119,8 +128,13 @@ class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
                         true,
                         ''),
                     widget.getSpacer(0.0, 20.0),
-                    createTextField(notesController, '${plunesStrings.addNotes}',
-                        TextInputType.text, TextCapitalization.words, true, ''),
+                    createTextField(
+                        notesController,
+                        '${plunesStrings.addNotes}',
+                        TextInputType.text,
+                        TextCapitalization.words,
+                        true,
+                        ''),
                     widget.getSpacer(0.0, 20.0),
                     getButton(),
                     widget.getSpacer(0.0, 10.0),
@@ -213,7 +227,7 @@ class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
                 ? SpinKitThreeBounce(
                     color: Color(hexColorCode.defaultGreen), size: 30.0)
                 : widget.getDefaultButton(
-                    plunesStrings.upload, globalWidth, 42, upload),
+                    plunesStrings.upload, globalWidth, 42, _upload),
           ))
         ],
       ),
@@ -224,7 +238,41 @@ class _UploadPrescriptionDialogState extends State<UploadPrescriptionDialog> {
     Navigator.pop(context);
   }
 
-  upload() {
-    Navigator.pop(context);
+  _requestFocus(FocusNode focusNode) {
+    FocusScope.of(context).requestFocus(focusNode);
+  }
+
+  _upload() async {
+    if (reportNameController.text.trim() == null ||
+        reportNameController.text.trim().isEmpty) {
+      _requestFocus(reportsNameFocus);
+      return;
+    }
+    Map<String, dynamic> fileData = {
+      "reportDisplayName": reportNameController.text.trim(),
+      "remarks": notesController.text.trim(),
+      "file": await MultipartFile.fromFile(
+        widget.imageUrl,
+      ),
+    };
+    if (widget.imageUrl != null && widget.imageUrl.isNotEmpty) {
+      String responseMessage = plunesStrings.somethingWentWrong;
+      progress = true;
+      _setState();
+      var result = await _plockrBloc.uploadFilesAndData(fileData);
+      if (result is RequestSuccess) {
+        responseMessage = PlunesStrings.uplaodSuccessMessage;
+      } else if (result is RequestFailed) {
+        progress = false;
+        responseMessage = result.failureCause;
+      }
+      Navigator.pop(context, responseMessage);
+    }
+  }
+
+  _setState() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

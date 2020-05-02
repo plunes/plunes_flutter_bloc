@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -262,14 +261,20 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   @override
   fetchImageCallBack(File _image) {
     if (_image != null) {
-      print("image==" + base64Encode(_image.readAsBytesSync()).toString());
+      // print("image==" + base64Encode(_image.readAsBytesSync()).toString());
       this._image = _image;
       showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) => UploadPrescriptionDialog(
-                imageUrl: _image.path.toString(),
-              ));
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) =>
+                  UploadPrescriptionDialog(imageUrl: _image.path.toString()))
+          .then((value) {
+        if (value != null &&
+            value.runtimeType is String &&
+            value.toString().trim().isNotEmpty) {
+          widget.showInSnackBar(value, PlunesColors.BLACKCOLOR, _scaffoldKey);
+        }
+      });
     }
   }
 

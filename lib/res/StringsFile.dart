@@ -65,7 +65,6 @@ class PlunesStrings {
       "Please make sure you book within a short time, keeping in mind it is valid for only 1 hour.";
   static const String chooseLocation = "Choose Location";
 
-
   ///Booking strings
   static const String whyPlunes = "Why Plunes?";
   static const String getDirection = "Get Direction";
@@ -84,15 +83,20 @@ class PlunesStrings {
   static const String visitAgain = "Visit Again";
   static const String appointmentScreenError = "Appointment Screen Error";
   static const String paymentStatus = "Payment Status";
-  static const String rescheduledSuccessMessage= "Appointment rescheduled sucessfully!";
-  static const String rescheduledFailedMessage= "Appointment rescheduled failed!";
-  static const String cancelSuccessMessage= "Appointment cancelled sucessfully!";
-  static const String cancelFailedMessage= "Appointment cancellation failed!";
-  static const String refundFailedMessage= "Refund Request has been failed! try agian Later.";
-  static const String emptyTextFieldWarning= "Please Enter the Refund Reason";
-  static const String thankYouMessage= "Thank You!";
-  static const String refundSuccessMessage= "Your Refund has been initiated, Amount will be creadited in 3-4 business days.";
-
+  static const String rescheduledSuccessMessage =
+      "Appointment rescheduled sucessfully!";
+  static const String rescheduledFailedMessage =
+      "Appointment rescheduled failed!";
+  static const String cancelSuccessMessage =
+      "Appointment cancelled sucessfully!";
+  static const String cancelFailedMessage = "Appointment cancellation failed!";
+  static const String refundFailedMessage =
+      "Refund Request has been failed! try agian Later.";
+  static const String emptyTextFieldWarning = "Please Enter the Refund Reason";
+  static const String thankYouMessage = "Thank You!";
+  static const String refundSuccessMessage =
+      "Your Refund has been initiated, Amount will be creadited in 3-4 business days.";
+  static String uplaodSuccessMessage = "Report uploaded successfully!";
 
   ///Catalogue View Screen
   static String youHaveNotAddedAnyServicesYet =
@@ -106,10 +110,10 @@ class PlunesStrings {
   static const String editVariance = "Variance";
 
   ///Insight main screen
-  static const String realTimeInsights =  'Real Time Insights';
+  static const String realTimeInsights = 'Real Time Insights';
   static const String noRealTimeInsights =
       "You don't have any real time insights yet";
-  static const String noBusinessDataFound ='No business data found';
+  static const String noBusinessDataFound = 'No business data found';
   static const String kindlyUpdateYourPrice = 'Kindly Update your price';
   static const String noActionableInsightAvailable =
       "No Actionable insights yet";
@@ -191,8 +195,7 @@ class PlunesStrings {
 
   get alternatePhoneNo => 'Alternate Phone No';
 
-
-  get EmailOrMobileNumber =>'Email id or Mobile Number';
+  get EmailOrMobileNumber => 'Email id or Mobile Number';
 
   get emailId => 'Email Id*';
 
@@ -334,7 +337,6 @@ class PlunesStrings {
   get reEnterPassword => 'Re-enter New Password';
 
   get changePassword => 'Change Password';
-
 
   get change => 'Change';
 
@@ -565,10 +567,9 @@ class PlunesStrings {
 //  static const String confirmYourBooking = "Confirm your Booking";
 //  static const String negotiating = "Negotiating. . .";
 
+  static const String prePayConfirmBooking =
+      "Make a payment of  300/- to confirm the booking";
 
-  static const String prePayConfirmBooking ="Make a payment of  300/- to confirm the booking";
-
-  String get invalidPhoneNumber => 'Valid phone number is required. Digit must be equals to 10';
-
-
+  String get invalidPhoneNumber =>
+      'Valid phone number is required. Digit must be equals to 10';
 }

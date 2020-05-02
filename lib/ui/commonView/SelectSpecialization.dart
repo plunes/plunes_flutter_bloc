@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/models/Models.dart';
 
 class SelectSpecialization extends StatefulWidget {
@@ -99,9 +100,146 @@ class SelectSpecializationState extends State<SelectSpecialization> {
         ],
       ),
     );
+   return AlertDialog(
+
+      content: Container(
+        color: Colors.white,
+        width: AppConfig.horizontalBlockSize*80,
+        height: AppConfig.verticalBlockSize*45,
+        child: Column(
+          children: <Widget>[
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+              Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: EdgeInsets.only(left: 30, right: 0, bottom: 10),
+                    child: Center(
+                        child: Text("Specialists",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold))),
+                  )),
+              Container(
+                margin: EdgeInsets.only(left: 10, right: 0, bottom: 10),
+                width: 25,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.black,
+                    size: 25,
+                  ),
+                ),
+              )
+            ]),
+            widget.from != null ? search : Container(),
+            show_err_msg
+                ? Text(
+              "could not select more than 5 specialists",
+              style: TextStyle(color: Colors.red, fontSize: 12),
+            )
+                : Text(""),
+            specialization_filter_lists.length == 0
+                ? Expanded(
+              child: Center(
+                child: Text(
+                  "No data",
+                  style: TextStyle(color: Colors.grey),
+                ),
+              ),
+            )
+                : Expanded(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, index) {
+                  int removePosition = _selectedItemId
+                      .indexOf(specialization_filter_lists[index].id);
+                  return FlatButton(
+                    onPressed: () {
+                      handleSelectionProcess(index, removePosition);
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                                child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          bottom: 8.0, top: 8.0),
+                                      child: Text(
+                                        specialization_filter_lists[index]
+                                            .speciality,
+                                        style: TextStyle(
+                                            color: _selectedItemId.indexOf(
+                                                specialization_filter_lists[
+                                                index]
+                                                    .id) >
+                                                -1
+                                                ? Color(0xff01d35a)
+                                                : Colors.black),
+                                      ),
+                                    ))),
+                            widget.from == Constants.hospital
+                                ? Container(
+                              width: 20,
+                              child: Checkbox(
+                                  value: _selectedItemId.indexOf(
+                                      specialization_filter_lists[
+                                      index]
+                                          .id) >
+                                      -1
+                                      ? true
+                                      : false,
+                                  onChanged: (val) {}),
+                            )
+                                : Container()
+                          ],
+                        ),
+                        Divider(
+                          height: 0.5,
+                          color: Colors.grey,
+                        )
+                      ],
+                    ),
+                  );
+                },
+                itemCount: specialization_filter_lists.length,
+              ),
+            ),
+          ],
+        ),
+      ),
+     actions: [
+       Container(
+         width: AppConfig.horizontalBlockSize*80,
+       //height: 200,
+         child: widget.from != null
+             ? CupertinoDialogAction(
+
+           textStyle: TextStyle(color: Color(0xff01d35a)),
+           isDefaultAction: true,
+           child: Text(widget.from == Constants.doctor ? 'Done' : 'Apply'),
+           onPressed: () {
+             Navigator.of(context).pop({
+               'SelectedId': _selectedItemId,
+               'SelectedData': _selectedData
+             });
+           },
+         )
+             : Container(),
+       )
+     ],
+    );
 
     return CupertinoAlertDialog(
       content: Container(
+        color: Colors.white,
         height: 400,
         child: Column(
           children: <Widget>[

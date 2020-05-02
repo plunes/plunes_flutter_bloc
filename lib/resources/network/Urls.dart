@@ -8,6 +8,8 @@ import 'package:plunes/Utils/Constants.dart';
 final urls = Urls();
 
 class Urls {
+
+
   get otpConfig => '&sender=Plunes&otp=' + Constants.OTP;
   static final int CONNECTION_TIMEOUT = 60000;
   static final int RECEIVE_TIMEOUT = 60000;
@@ -71,5 +73,6 @@ class Urls {
   static const String GET_CANCEL_AND_RESCHEDULE_URL ='booking/';
   static const String GET_REFUND_URL ='booking/refund';
   static const String GET_SPECIALITIES_URL = 'catalogue/getSpecialities';
+  static const GET_UPLOAD_PLOCKR_DATA_URL = 'report';
 
 }
