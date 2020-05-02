@@ -153,8 +153,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Future<RequestState> _negotiate() async {
-    var result = await _searchSolutionBloc
-        .getDocHosSolution(widget.catalogueData.serviceId);
+    var result =
+        await _searchSolutionBloc.getDocHosSolution(widget.catalogueData);
     if (_searchedDocResults != null &&
         _searchedDocResults.solution != null &&
         _searchedDocResults.solution.services != null &&
@@ -165,7 +165,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _searchedDocResults = result.response;
       if (_searchedDocResults.solution?.services == null ||
           _searchedDocResults.solution.services.isEmpty) {
-        _failureCause = PlunesStrings.oopsServiceNotAvailable;
+        if (widget.catalogueData.isFromNotification != null &&
+            widget.catalogueData.isFromNotification) {
+          _failureCause = PlunesStrings.solutionExpired;
+        } else {
+          _failureCause = PlunesStrings.oopsServiceNotAvailable;
+        }
       } else {
         _searchedDocResults.solution.services.forEach((docData) {
 //          print("docDataidis  ${docData.toString()}");
@@ -264,7 +269,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           Expanded(child: Container()),
                           Column(
                             children: <Widget>[
-                              Padding(padding: EdgeInsets.only(top:6),),
+                              Padding(
+                                padding: EdgeInsets.only(top: 6),
+                              ),
                               InkWell(
                                 onTap: () => _viewDetails(),
                                 child: CustomWidgets().getRoundedButton(
@@ -335,8 +342,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   _viewDetails() {
     showDialog(
       context: context,
-      builder: (BuildContext context) =>
-          CustomWidgets().buildViewMoreDialog(catalogueData: widget.catalogueData),
+      builder: (BuildContext context) => CustomWidgets()
+          .buildViewMoreDialog(catalogueData: widget.catalogueData),
     );
 //    print("view details");
   }

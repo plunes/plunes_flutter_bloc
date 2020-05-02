@@ -63,12 +63,27 @@ class SearchedSolutionRepo {
     }
   }
 
-  Future<RequestState> getDocHosSolution(final String serviceId) async {
+  Future<RequestState> getDocHosSolution(
+      final CatalogueData catalogueData) async {
     final double _lat = 28.4594965, _long = 77.0266383;
     User _user = UserManager().getUserDetails();
 //    print("userdetsils ${_user.toString()}");
     double lat;
     double long;
+    Map<String, dynamic> queryParams;
+    if (catalogueData.isFromNotification != null &&
+        catalogueData.isFromNotification) {
+      queryParams = {
+        "solutionId": catalogueData.solutionId,
+        "notification": catalogueData.isFromNotification,
+      };
+    } else {
+      queryParams = {
+        "serviceId": catalogueData.serviceId,
+        "latitude": lat ?? _lat,
+        "longitude": long ?? _long
+      };
+    }
     try {
       lat = double.parse(_user.latitude);
       long = double.parse(_user.longitude);
@@ -77,11 +92,7 @@ class SearchedSolutionRepo {
         requestType: HttpRequestMethods.HTTP_GET,
         url: Urls.GET_DOC_HOS_API,
         headerIncluded: true,
-        queryParameter: {
-          "serviceId": serviceId,
-          "latitude": lat ?? _lat,
-          "longitude": long ?? _long
-        });
+        queryParameter: queryParams);
     if (result.isRequestSucceed) {
       SearchedDocResults _searchedDocResult =
           SearchedDocResults.fromJson(result.response.data);

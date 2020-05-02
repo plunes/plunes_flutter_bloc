@@ -107,7 +107,8 @@ class FirebaseNotification {
       } else if (payLoad["data"]['screen'] == solutionScreen) {
         if (payLoad["data"]['id'] != null && payLoad["data"]['id'].isNotEmpty) {
           widget = BiddingLoading(
-            catalogueData: CatalogueData(serviceId: payLoad["data"]['id']),
+            catalogueData: CatalogueData(
+                solutionId: payLoad["data"]['id'], isFromNotification: true),
           );
         }
       }
@@ -204,7 +205,8 @@ class FirebaseNotification {
     } else if (notificationModel.notificationType == solutionScreen) {
       if (notificationModel.id != null && notificationModel.id.isNotEmpty) {
         widget = BiddingLoading(
-          catalogueData: CatalogueData(serviceId: notificationModel.id),
+          catalogueData: CatalogueData(
+              solutionId: notificationModel.id, isFromNotification: true),
         );
       }
     }

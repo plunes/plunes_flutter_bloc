@@ -11,6 +11,8 @@ class CatalogueData {
   String duration;
   int iV, createdAt;
   num maxDiscount;
+  bool isFromNotification;
+  String solutionId;
 
   CatalogueData(
       {this.service,
@@ -26,7 +28,9 @@ class CatalogueData {
       this.duration,
       this.createdAt,
       this.speciality,
-      this.maxDiscount});
+      this.maxDiscount,
+      this.isFromNotification,
+      this.solutionId});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];

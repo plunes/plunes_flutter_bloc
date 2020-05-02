@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:plunes/blocs/base_bloc.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/solution_repo/searched_solution_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
@@ -63,8 +64,8 @@ class SearchSolutionBloc extends BlocBase {
     super.dispose();
   }
 
-  Future<RequestState> getDocHosSolution(final String serviceId) async {
-    var result = await SearchedSolutionRepo().getDocHosSolution(serviceId);
+  Future<RequestState> getDocHosSolution(final CatalogueData catalogueData) async {
+    var result = await SearchedSolutionRepo().getDocHosSolution(catalogueData);
     addIntoDocHosStream(result);
     return result;
   }

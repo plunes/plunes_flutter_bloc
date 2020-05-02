@@ -697,14 +697,14 @@ class CustomWidgets {
                         RichText(
                             text: TextSpan(
                                 text:
-                                    "\u20B9${solutions[index].price[0] ?? PlunesStrings.NA} ",
+                                    "\u20B9${solutions[index].price[0]?.toStringAsFixed(2) ?? PlunesStrings.NA} ",
                                 style: TextStyle(
                                     color: PlunesColors.GREYCOLOR,
                                     decoration: TextDecoration.lineThrough),
                                 children: <TextSpan>[
                               TextSpan(
                                 text:
-                                    " \u20B9${solutions[index].newPrice[0] ?? PlunesStrings.NA}",
+                                    " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
                                     color: PlunesColors.BLACKCOLOR,
