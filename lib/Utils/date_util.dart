@@ -22,7 +22,7 @@ class DateUtil {
     }
   }
 
-  static String getDateFormat(DateTime date){
+  static String getDateFormat(DateTime date) {
     if (date == null) return PlunesStrings.NA;
     var _dateFormat = DateFormat('dd MMM yyyy');
     try {
@@ -32,7 +32,7 @@ class DateUtil {
     }
   }
 
-  static String getMonthYear(DateTime date){
+  static String getMonthYear(DateTime date) {
     if (date == null) return PlunesStrings.NA;
     var _dateFormat = DateFormat('MMM yy');
     try {
@@ -43,6 +43,9 @@ class DateUtil {
   }
 
   static String getDuration(int timeStamp) {
+    if (timeStamp == null || timeStamp == 0) {
+      return PlunesStrings.NA;
+    }
     var currTime = new DateTime.now().millisecondsSinceEpoch;
     int timeDiff = currTime.round() - timeStamp;
     Duration fastestMarathon = new Duration(milliseconds: timeDiff);
@@ -54,7 +57,9 @@ class DateUtil {
 //    print(timeDiff);
     if (days < 30) {
       s = days.toString() + " days ago";
-
+      if (days < 2) {
+        s = days.toString() + " day ago";
+      }
       if (hours < 24) {
         s = hours.toString() + "h ago";
 

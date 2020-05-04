@@ -22,6 +22,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
+import 'package:share/share.dart';
 
 import 'app_config.dart';
 
@@ -1617,5 +1618,9 @@ class CustomWidgets {
         ),
       ),
     );
+  }
+
+  void share(String shareableContent) {
+    Share.share(shareableContent);
   }
 }

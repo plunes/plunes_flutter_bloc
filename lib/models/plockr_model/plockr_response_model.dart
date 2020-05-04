@@ -39,6 +39,16 @@ class PlockrResponseModel {
 class UploadedReports {
   bool self;
   String sId;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is UploadedReports &&
+              runtimeType == other.runtimeType &&
+              sId == other.sId;
+
+  @override
+  int get hashCode => sId.hashCode;
   String userId;
   String uploader;
   String reportName;
@@ -51,6 +61,12 @@ class UploadedReports {
   String userAddress;
   String reportUrl;
   String reportThumbnail;
+  String reasonDiagnosis;
+  String medicines;
+  String test;
+  String consumptionDiet;
+  String avoidDiet;
+  String precautions;
 
   UploadedReports(
       {this.self,
@@ -66,7 +82,13 @@ class UploadedReports {
         this.userName,
         this.userAddress,
         this.reportUrl,
-        this.reportThumbnail});
+        this.reportThumbnail,
+      this.reasonDiagnosis,
+      this.medicines,
+      this.test,
+      this.consumptionDiet,
+      this.avoidDiet,
+      this.precautions});
 
   UploadedReports.fromJson(Map<String, dynamic> json) {
     self = json['self'];

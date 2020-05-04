@@ -74,5 +74,6 @@ class Urls {
   static const String GET_REFUND_URL ='booking/refund';
   static const String GET_SPECIALITIES_URL = 'catalogue/getSpecialities';
   static const GET_UPLOAD_PLOCKR_DATA_URL = 'report';
+  static const GET_SHARABLE_LINK_FILE_URL = 'report/getShareableLink/';
 
 }

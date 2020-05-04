@@ -118,7 +118,22 @@ class PlunesStrings {
   static const String noActionableInsightAvailable =
       "No Actionable insights yet";
 
-  static String solutionExpired = "Solution you looking for has been Expired!";
+  static const String solutionExpired =
+      "Solution you looking for has been Expired!";
+
+  static const String noReportAvailabelMessage =
+      "You don't have any reports yet";
+  static const String noMatchReport =
+      "No Match Found!";
+
+  static const String unableToOpen = "Unable to open the file!";
+
+  static const String dataNotFound = "Data is not found!";
+
+  static const String unableToDelete = "Unable to delele!";
+
+  static const String deleteSuccessfully = "Deleted Successfully!";
+
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

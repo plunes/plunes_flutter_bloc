@@ -1,16 +1,25 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/ImagePicker/ImagePickerHandler.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/plockr_blocs/plockr_bloc.dart';
+import 'package:plunes/models/plockr_model/plockr_response_model.dart';
+import 'package:plunes/models/plockr_model/plockr_shareable_report_model.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
+import 'package:plunes/ui/afterLogin/showPlockrFileDetails.dart';
 import 'package:plunes/ui/commonView/UploadPrescriptionDialog.dart';
 import 'package:share/share.dart';
 
@@ -28,28 +37,42 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     implements DialogCallBack {
   bool cross = false;
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  final searchController = new TextEditingController();
-  final Map<String, IconData> _data =
-      Map.fromIterables(['Share'], [Icons.filter_1]);
+  final _searchController = new TextEditingController();
   AnimationController _animationController;
   ImagePickerHandler imagePicker;
   var globalHeight, globalWidth;
   Preferences _preferences;
+  PlockrBloc _plockrBloc;
   bool progress = false;
-  String _userType = '';
+  PlockrResponseModel _plockrResponseModel;
+  String _userType = '', failureMessage;
   File _image;
-
+  bool _isSharing = false, _isDeleting = false;
+  String _selectedReportId;
   List<dynamic> reportsList = new List();
+  List<UploadedReports> _originalDataList, _searchedList;
 
   @override
   void initState() {
+    _plockrBloc = PlockrBloc();
+    _isSharing = false;
+    _originalDataList = [];
+    _searchedList = [];
+    _isDeleting = false;
+    _getPlockrData();
     super.initState();
     initialize();
+  }
+
+  _getPlockrData() {
+    _plockrBloc.getFilesAndData();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _searchController.dispose();
+    _plockrBloc.dispose();
     super.dispose();
   }
 
@@ -81,11 +104,25 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
 
   Widget getBodyView() {
     return Container(
-      child: Column(
+      child: Stack(
         children: <Widget>[
-          getUploadReportRow(),
-          getSearchRow(),
-          getListItemRowView()
+          Column(
+            children: <Widget>[
+              getUploadReportRow(),
+              getSearchRow(),
+              getListItemRowView()
+            ],
+          ),
+          _isDeleting
+              ? Container(
+                  color: Colors.transparent,
+                  child: GestureDetector(
+                    child: CustomWidgets().getProgressIndicator(),
+                    onTap: () {},
+                    onDoubleTap: () {},
+                  ),
+                )
+              : Container(),
         ],
       ),
     );
@@ -140,17 +177,11 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                     child: TextField(
                       cursorColor: Color(CommonMethods.getColorHexFromStr(
                           colorsFile.defaultGreen)),
-                      controller: searchController,
+                      controller: _searchController,
                       decoration: InputDecoration.collapsed(
                           hintText: plunesStrings.search),
                       onChanged: (text) {
-                        setState(() {
-                          if (text.length > 0) {
-                            cross = true;
-                          } else {
-                            cross = false;
-                          }
-                        });
+                        _fllterOriginalListItems(text);
                       },
                     ),
                   ),
@@ -160,10 +191,10 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                           ? InkWell(
                               child: Icon(Icons.close, color: Colors.grey),
                               onTap: () {
-                                setState(() {
-                                  cross = false;
-                                  searchController.text = '';
-                                });
+                                cross = false;
+                                _searchController.text = '';
+                                _searchedList = [];
+                                _setState();
                               },
                             )
                           : Icon(Icons.search, color: Colors.grey)),
@@ -178,84 +209,36 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   }
 
   Widget getListItemRowView() {
-    return Expanded(
-        child:
-            /*reportsList.length == 0? Center(
-        child: widget.createTextViews(stringsFile.noRecordsFound, 16, colorsFile.lightGrey1, TextAlign.center, FontWeight.normal),
-      ): */
-            ListView.builder(
-      shrinkWrap: true,
-      itemCount: 10 /*reportsList.length*/,
-      itemBuilder: (context, index) {
-        return Container(
-          padding: EdgeInsets.only(left: 10, right: 10, top: 0),
-          child: Column(
-            children: <Widget>[
-              InkWell(
-                onTap: () {
-                  /*      showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                   */ /*     ShowImageDetails(
-                            data: filter_personel,
-                            position: index
-                        ),*/ /*
-                  );*/
-                },
-                child: Container(
-//                  padding: const EdgeInsets.only(top:8.0,),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      getItemImageView(),
-                      Expanded(
-                          child: Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              'X-ray FH001111',
-                              maxLines: 3,
-                              style: TextStyle(
-                                  color: Color(0xff5D5D5D),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15),
-                            ),
-                            Text(
-                              '2 days ago',
-                              style: TextStyle(
-                                  fontSize: 12, color: Color(0xff5D5D5D)),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                                'Dr. Anita Joshi HOD, \n Gynecology 10yrs experience \n Fortis Hospital, Gurugram',
-                                style: TextStyle(
-                                    color: Color(0xff5D5D5D), fontSize: 13)),
-//                            Text(filter_personel[index].remarks, maxLines: 1, style: TextStyle(color: Color(0xff5D5D5D), fontSize: 13)),
-                          ],
-                        ),
-                      )),
-                      getMenuPopup(index),
-                    ],
-                  ),
-                ),
-              ),
-              index != 9
-                  ? Container(
-                      height: 0.3,
-                      color: Colors.grey,
-                      margin: EdgeInsets.only(top: 20, bottom: 20))
-                  : Container(margin: EdgeInsets.only(bottom: 20))
-            ],
-          ),
-        );
-      },
-    ));
+    return StreamBuilder<RequestState>(
+        stream: _plockrBloc.getPlockrFileStream,
+        builder: (context, snapshot) {
+          if (snapshot.data != null && snapshot.data is RequestInProgress) {
+            return CustomWidgets().getProgressIndicator();
+          }
+          if (snapshot.data != null && snapshot.data is RequestSuccess) {
+            RequestSuccess requestSuccess = snapshot.data;
+            _plockrResponseModel = requestSuccess.response;
+            _originalDataList = _plockrResponseModel.uploadedReports;
+            _plockrBloc.addStateInPlockerReportStream(null);
+          }
+          if (snapshot.data != null && snapshot.data is RequestFailed) {
+            RequestFailed requestFailed = snapshot.data;
+            failureMessage = requestFailed.failureCause;
+            _plockrBloc.addStateInPlockerReportStream(null);
+          }
+          List<UploadedReports> listToRendered = _originalDataList;
+          if (cross) {
+            listToRendered = _searchedList;
+          }
+          return (listToRendered == null || listToRendered.isEmpty)
+              ? Center(
+                  child: Text(cross
+                      ? PlunesStrings.noMatchReport
+                      : failureMessage ??
+                          PlunesStrings.noReportAvailabelMessage),
+                )
+              : Expanded(child: _renderedListItems(listToRendered));
+        });
   }
 
   @override
@@ -264,11 +247,12 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
       // print("image==" + base64Encode(_image.readAsBytesSync()).toString());
       this._image = _image;
       showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) =>
-                  UploadPrescriptionDialog(imageUrl: _image.path.toString()))
-          .then((value) {
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => UploadPrescriptionDialog(
+                imageUrl: _image.path.toString(),
+                plockrBloc: _plockrBloc,
+              )).then((value) {
         if (value != null &&
             value.runtimeType is String &&
             value.toString().trim().isNotEmpty) {
@@ -278,25 +262,25 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     }
   }
 
-  Widget getItemImageView() {
+  Widget getItemImageView(UploadedReports uploadedReports) {
     return Container(
-      width: 120,
-      height: 100.0,
+      width: AppConfig.horizontalBlockSize * 18,
+      height: AppConfig.verticalBlockSize * 13,
       decoration: BoxDecoration(
+        color: PlunesColors.GREENCOLOR,
         borderRadius: BorderRadius.all(
           Radius.circular(8.0),
         ),
       ),
-      child: Container(
-          decoration: BoxDecoration(
-        image: DecorationImage(image: AssetImage(plunesImages.pdfIcon1)),
-        borderRadius: BorderRadius.all(Radius.circular(8.0)),
-      )),
+      child: SizedBox.expand(
+          child: CustomWidgets().getImageFromUrl(
+              uploadedReports.reportThumbnail,
+              boxFit: BoxFit.fill)),
       alignment: Alignment.center,
     );
   }
 
-  Widget getMenuPopup(int index) {
+  Widget getMenuPopup(String reportId) {
     return Container(
       child: PopupMenuButton<String>(
         child: Container(
@@ -308,7 +292,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
         ),
         padding: EdgeInsets.zero,
         onSelected: (value) {
-          showMenuSelection(value, index);
+          showMenuSelection(value, reportId);
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
@@ -346,12 +330,13 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     );
   }
 
-  showMenuSelection(String value, int index) {
+  showMenuSelection(String value, String reportId) {
     if (value == 'Delete') {
+      _selectedReportId = reportId;
       CommonMethods.confirmationDialog(
           context, plunesStrings.deleteReportMsg, this);
     } else if (value == "Share") {
-      Share.share('www.google.com');
+      _getShareableLink(reportId);
     }
   }
 
@@ -360,7 +345,174 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     if (action != null && action == 'DONE') deleteReport();
   }
 
-  void deleteReport() {
-    print('Delete');
+  void deleteReport() async {
+    if (_selectedReportId == null || _selectedReportId.isEmpty) {
+      widget.showInSnackBar(
+          PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      return;
+    }
+    _isDeleting = true;
+    _setState();
+    var result = await _plockrBloc.deleteFileAndData(_selectedReportId);
+    _isDeleting = false;
+    if (result is RequestSuccess) {
+      if (_originalDataList.contains(UploadedReports(sId: _selectedReportId))) {
+        _originalDataList.remove(UploadedReports(sId: _selectedReportId));
+      }
+      if (cross != null &&
+          cross &&
+          _searchedList != null &&
+          _searchedList.isNotEmpty &&
+          _searchedList.contains(UploadedReports(sId: _selectedReportId))) {
+        _searchedList.remove(UploadedReports(sId: _selectedReportId));
+      }
+      widget.showInSnackBar(PlunesStrings.deleteSuccessfully,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
+    } else if (result is RequestFailed) {
+      widget.showInSnackBar(
+          PlunesStrings.unableToDelete, PlunesColors.BLACKCOLOR, _scaffoldKey);
+    }
+    _setState();
+  }
+
+  void _getShareableLink(String sId) async {
+    if (sId == null || sId.isEmpty) {
+      widget.showInSnackBar(
+          PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      return;
+    }
+    if (_isSharing) {
+      return;
+    }
+    _isSharing = true;
+    var result = await _plockrBloc.getSharebleLink(sId);
+    _isSharing = false;
+    if (result is RequestSuccess) {
+      ShareableReportModel shareableReportModel = result.response;
+      if (shareableReportModel != null &&
+          shareableReportModel.link != null &&
+          shareableReportModel.link.reportUrl != null &&
+          shareableReportModel.link.reportUrl.isNotEmpty) {
+        CustomWidgets()
+            .share("Report url :\n ${shareableReportModel.link.reportUrl}");
+      } else {
+        widget.showInSnackBar(
+            PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      }
+    } else if (result is RequestFailed) {
+      widget.showInSnackBar(
+          PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
+    }
+  }
+
+  _setState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  Widget _renderedListItems(List<UploadedReports> uploadedReports) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemCount: uploadedReports?.length ?? 0,
+      itemBuilder: (context, index) {
+        return Container(
+          padding: EdgeInsets.only(left: 10, right: 10, top: 0),
+          child: Column(
+            children: <Widget>[
+              InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        ShowImageDetails(uploadedReports[index]),
+                  );
+                },
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      getItemImageView(uploadedReports[index]),
+                      Expanded(
+                          child: Container(
+                        margin: EdgeInsets.only(left: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              uploadedReports[index].reportDisplayName ??
+                                  PlunesStrings.NA,
+                              // 'X-ray FH001111',
+                              maxLines: 3,
+                              style: TextStyle(
+                                  color: Color(0xff5D5D5D),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15),
+                            ),
+                            Text(
+                              DateUtil.getDuration(
+                                  uploadedReports[index].createdTime),
+                              //'2 days ago',
+                              style: TextStyle(
+                                  fontSize: 12, color: Color(0xff5D5D5D)),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                                uploadedReports[index].userName ??
+                                    PlunesStrings.NA,
+                                style: TextStyle(
+                                    color: Color(0xff5D5D5D), fontSize: 13)),
+                            Text(
+                                uploadedReports[index].remarks ??
+                                    PlunesStrings.NA,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    color: Color(0xff5D5D5D), fontSize: 13)),
+                          ],
+                        ),
+                      )),
+                      getMenuPopup(uploadedReports[index].sId),
+                    ],
+                  ),
+                ),
+              ),
+              index != uploadedReports.length ?? 0
+                  ? Container(
+                      height: 0.3,
+                      color: Colors.grey,
+                      margin: EdgeInsets.only(top: 20, bottom: 20))
+                  : Container(margin: EdgeInsets.only(bottom: 20))
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _fllterOriginalListItems(String text) {
+    if (_originalDataList != null &&
+        _originalDataList.isNotEmpty &&
+        text != null &&
+        text.trim().isNotEmpty) {
+      _searchedList = [];
+      _originalDataList.forEach((item) {
+        if (item.reportDisplayName
+            .toLowerCase()
+            .contains(text.trim().toLowerCase())) {
+          _searchedList.add(item);
+        }
+      });
+    }
+    if (text.trim().length > 0) {
+      cross = true;
+    } else {
+      _searchedList = [];
+      cross = false;
+    }
+    _setState();
   }
 }

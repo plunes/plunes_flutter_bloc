@@ -16,8 +16,9 @@ import 'SelectSpecialization.dart';
 // ignore: must_be_immutable
 class UploadPrescriptionDialog extends BaseActivity {
   final String imageUrl;
+  final PlockrBloc plockrBloc;
 
-  UploadPrescriptionDialog({Key key, this.imageUrl})
+  UploadPrescriptionDialog({Key key, this.imageUrl, this.plockrBloc})
       : super(key: key);
 
   @override
@@ -39,13 +40,12 @@ class _UploadPrescriptionDialogState
 
   @override
   void initState() {
-    _plockrBloc = PlockrBloc();
+    _plockrBloc = widget.plockrBloc;
     super.initState();
   }
 
   @override
   void dispose() {
-    _plockrBloc.dispose();
     specializationController.dispose();
     super.dispose();
   }
