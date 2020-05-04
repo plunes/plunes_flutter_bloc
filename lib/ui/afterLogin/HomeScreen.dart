@@ -111,8 +111,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                             ? plunesStrings.notifications
                             : '')
                 : (_selectedIndex == 1
-                    ? plunesStrings.notifications
-                    : _selectedIndex == 2 ? plunesStrings.profiles : ''),
+                    ? plunesStrings.plockr
+                    : _selectedIndex == 2 ? plunesStrings.notifications : ''),
             isSelected,
             selectedPositions,
             from,

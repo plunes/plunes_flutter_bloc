@@ -8,7 +8,6 @@ import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
-
 import 'HomeScreen.dart';
 /*
  * Created by  - Plunes Technologies.
@@ -18,6 +17,7 @@ import 'HomeScreen.dart';
  *
  */
 
+// ignore: must_be_immutable
 class NotificationScreen extends BaseActivity {
   static const tag = 'notificationscreen';
 
