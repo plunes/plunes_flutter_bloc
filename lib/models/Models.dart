@@ -459,12 +459,10 @@ class PostsData {
   }
 
   factory PostsData.fromJsonForPush(Map<String, dynamic> parsedJson) {
-    if(Platform.isIOS){
-      return PostsData(
-
-      );
+    if (Platform.isIOS) {
+      return PostsData();
     } else {
-      var data =  new PostsData(
+      var data = new PostsData(
         notificationType: parsedJson['data']['screen'] != null
             ? parsedJson['data']['screen']
             : null,
@@ -472,6 +470,11 @@ class PostsData {
       );
       return data;
     }
+  }
+
+  @override
+  String toString() {
+    return 'PostsData{senderImageUrl: $senderImageUrl, createdTime: $createdTime, notificationType: $notificationType, senderUserId: $senderUserId, id: $id, notification: $notification, senderName: $senderName}';
   }
 }
 
@@ -554,4 +557,3 @@ class SpecialityModel {
     return data;
   }
 }
-

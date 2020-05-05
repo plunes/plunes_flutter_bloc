@@ -5,9 +5,13 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
+import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'HomeScreen.dart';
 /*
  * Created by  - Plunes Technologies.
@@ -83,15 +87,15 @@ class _NotificationScreenState extends State<NotificationScreen>
     );
   }
 
-  Widget rowLayout(result) {
+  Widget rowLayout(PostsData result) {
     int removePosition = selectedPositions.indexOf(result.id.toString());
     return InkWell(
       onTap: () => addRemoveSelectedItem(result, removePosition),
-      onLongPress: () {
-        reset();
-        isSelected = true;
-        addRemoveSelectedItem(result, removePosition);
-      },
+//      onLongPress: () {
+//        reset();
+//        isSelected = true;
+//        addRemoveSelectedItem(result, removePosition);
+//      },
       child: Container(
         margin: EdgeInsets.all(5.0),
         child: Card(
@@ -195,38 +199,56 @@ class _NotificationScreenState extends State<NotificationScreen>
     );
   }
 
-  Future addRemoveSelectedItem(result, int removePosition) async {
-    if (isSelected) {
-      List<String> list = new List();
-      setState(() {
-        String pos = result.id.toString();
-        if (removePosition > -1) {
-          selectedPositions.remove(pos);
-        } else {
-          selectedPositions.add(pos);
-        }
-      });
-      if (selectedPositions.length == 0) reset();
-      list = selectedPositions;
-      var body = {};
-      body['selectedItemList'] = list;
-      body['isSelected'] = isSelected;
-      bloc.changeAppBar(context, body);
-    } else {
-      isSelected = false;
-      bloc.changeAppBar(context, null);
-      if (result.notificationType == 'solution' ||
-          result.notificationType == 'price') {
-//        Navigator.push(context,MaterialPageRoute(builder: (context) => BiddingActivity(screen: 0)));
-      } else if (result.notificationType == 'booking') {
-//        Navigator.push(context, MaterialPageRoute(builder: (context) => Appointments(screen: 0)));
-      } else if (result.notificationType == 'plockr') {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => HomeScreen(screenNo: Constants.plockerScreenNumber)));
-      }
+  Future addRemoveSelectedItem(PostsData result, int removePosition) async {
+//    if (isSelected) {
+//      List<String> list = new List();
+//      setState(() {
+//        String pos = result.id.toString();
+//        if (removePosition > -1) {
+//          selectedPositions.remove(pos);
+//        } else {
+//          selectedPositions.add(pos);
+//        }
+//      });
+//      if (selectedPositions.length == 0) reset();
+//      list = selectedPositions;
+//      var body = {};
+//      body['selectedItemList'] = list;
+//      body['isSelected'] = isSelected;
+//      bloc.changeAppBar(context, body);
+//    } else {
+//      isSelected = false;
+//      bloc.changeAppBar(context, null);
+    print("Type of Notifcation:" + result?.notificationType);
+    print("Type of result" + result?.toString());
+
+    if (result.notificationType == FirebaseNotification.solutionScreen) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BiddingLoading(
+                    catalogueData: CatalogueData(
+                        solutionId: result.id, isFromNotification: true),
+                  )));
+    } else if (result.notificationType == FirebaseNotification.bookingScreen) {
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => AppointmentMainScreen()));
+    } else if (result.notificationType == FirebaseNotification.insightScreen) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.homeScreenNumber)),
+          (_) => false);
+    } else if (result.notificationType == FirebaseNotification.plockrScreen) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.plockerScreenNumber)),
+          (_) => false);
     }
+    //  }
   }
 
   void reset() {
