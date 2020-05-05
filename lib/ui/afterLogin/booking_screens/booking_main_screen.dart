@@ -358,7 +358,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       //height: AppConfig.verticalBlockSize * 10,
       child: DatePicker(
         _currentDate,
-       // height: AppConfig.verticalBlockSize * 10,
+        height: AppConfig.verticalBlockSize * 10,
         daysCount: 100,
         initialSelectedDate: _currentDate,
         dateTextStyle: TextStyle(

@@ -335,7 +335,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       _setState();
     }
     UserBloc().isUserInServiceLocation(latitude, longitude).then((result) {
-      if (result.isRequestSucceed) {
+      if (result.isRequestSucceed!=null && result.isRequestSucceed) {
         if (result.response.data == null || !result.response.data) {
           widget.showInSnackBar(PlunesStrings.switchToGurLoc,
               PlunesColors.GREYCOLOR, scaffoldKey);

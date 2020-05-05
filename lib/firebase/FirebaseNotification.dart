@@ -64,6 +64,7 @@ class FirebaseNotification {
   /// display a dialog with the notification details, tap ok to go to another page
   Future onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
+    print("hello mujhe click kiya");
     showDialog(
       context: _buildContext,
       builder: (BuildContext context) => new CupertinoAlertDialog(

@@ -91,7 +91,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen> {
                 _appointmentResponse.bookings.isEmpty)
             ? Center(
                 child: Text(_appointmentFailureCause ??
-                    PlunesStrings.noActionableInsightAvailable),
+                    PlunesStrings.noAppointmentAvailable),
               )
             : _showItems();
       },
