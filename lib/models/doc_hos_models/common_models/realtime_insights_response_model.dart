@@ -33,7 +33,12 @@ class RealInsight {
   bool negotiating;
   int timeRemaining;
   num userPrice;
-  int createdTime;
+  int createdAt;
+
+  @override
+  String toString() {
+    return 'RealInsight{solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, serviceName: $serviceName, negotiating: $negotiating, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt}';
+  }
 
   RealInsight(
       {this.solutionId,
@@ -44,7 +49,7 @@ class RealInsight {
       this.negotiating,
       this.timeRemaining,
       this.userPrice,
-      this.createdTime});
+      this.createdAt});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
     solutionId = json['solutionId'];
@@ -55,7 +60,7 @@ class RealInsight {
     negotiating = json['negotiating'];
     timeRemaining = json['timeRemaining'];
     userPrice = json['userPrice'];
-    createdTime = json['createdTime'];
+    createdAt = json['createdAt'];
   }
 
   Map<String, dynamic> toJson() {
@@ -68,7 +73,7 @@ class RealInsight {
     data['negotiating'] = this.negotiating;
     data['timeRemaining'] = this.timeRemaining;
     data['userPrice'] = this.userPrice;
-    data['createdTime'] = this.createdTime;
+    data['createdAt'] = this.createdAt;
     return data;
   }
 }

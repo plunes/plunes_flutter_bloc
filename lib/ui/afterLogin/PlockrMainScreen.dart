@@ -243,6 +243,12 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
 
   @override
   fetchImageCallBack(File _image) {
+    if (cross) {
+      _searchedList = [];
+      _searchController.text = "";
+      cross = false;
+      _setState();
+    }
     if (_image != null) {
       // print("image==" + base64Encode(_image.readAsBytesSync()).toString());
       this._image = _image;
@@ -257,6 +263,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
             value.runtimeType is String &&
             value.toString().trim().isNotEmpty) {
           widget.showInSnackBar(value, PlunesColors.BLACKCOLOR, _scaffoldKey);
+          _getPlockrData();
         }
       });
     }

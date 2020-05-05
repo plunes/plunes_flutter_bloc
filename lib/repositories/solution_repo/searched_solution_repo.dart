@@ -23,7 +23,7 @@ class SearchedSolutionRepo {
       String searchedString, int index) async {
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
-        postData: {"expression": "den", "page": index},
+        postData: {"expression": searchedString, "page": index},
         url: Urls.SEARCH_SOLUTION_API);
     if (serverResponse.isRequestSucceed) {
       List<CatalogueData> _solutions = [];

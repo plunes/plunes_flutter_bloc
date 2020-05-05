@@ -61,10 +61,10 @@ class DateUtil {
         s = days.toString() + " day ago";
       }
       if (hours < 24) {
-        s = hours.toString() + "h ago";
+        s = hours.toString() + " h ago";
 
         if (minutes < 60) {
-          s = minutes.toString() + "m ago";
+          s = minutes.toString() + " m ago";
 
           if (seconds < 60) {
             if (seconds < 0) {
