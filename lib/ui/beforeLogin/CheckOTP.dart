@@ -5,6 +5,7 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -38,18 +39,28 @@ class _CheckOTPState extends BaseState<CheckOTP> {
   void _checkOTP(String pin, BuildContext context) async {
     var result = await UserBloc().getVerifyOtp(widget.phone, int.parse(pin));
     if (result is RequestSuccess) {
-      if (widget.from == plunesStrings.forgotPasswordTitle)
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ChangePassword(
-                    phone: widget.phone, from: plunesStrings.createPassword)));
-      else
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) => Registration(phone: widget.phone)));
-    } else if (result is RequestFailed) {
+      VerifyOtpResponse verifyOtpResponse = result.response;
+      if (verifyOtpResponse != null && verifyOtpResponse.success != null &&
+          verifyOtpResponse.success) {
+        if (widget.from == plunesStrings.forgotPasswordTitle)
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ChangePassword(
+                          phone: widget.phone,
+                          from: plunesStrings.createPassword)));
+        else
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Registration(phone: widget.phone)));
+      }
+    else {
+        widget.showInSnackBar(
+            PlunesStrings.invalidOtp, PlunesColors.BLACKCOLOR, scaffoldKey);
+      }
+  } else if (result is RequestFailed) {
       widget.showInSnackBar(
           result.failureCause, PlunesColors.BLACKCOLOR, scaffoldKey);
     }

@@ -187,17 +187,18 @@ class _HospitalOverviewScreenState
                       : ListView.builder(
                           padding: null,
                           itemBuilder: (context, itemIndex) {
-                            print("data is ${_realTimeInsightsResponse.data[itemIndex]}");
+                            print(
+                                "data is ${_realTimeInsightsResponse.data[itemIndex]}");
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 PatientServiceInfo(
-                                  imageUrl: 'https://i.imgur.com/BoN9kdC.png',
                                   patientName: _realTimeInsightsResponse
                                       .data[itemIndex].userName,
                                   serviceName: "is looking for " +
                                       "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
-                                  remainingTime: _realTimeInsightsResponse.data[itemIndex].createdAt,
+                                  remainingTime: _realTimeInsightsResponse
+                                      .data[itemIndex].createdAt,
                                 ),
                                 FlatButtonLinks(
                                     PlunesStrings.kindlyUpdateYourPrice,
@@ -532,7 +533,7 @@ class _HospitalOverviewScreenState
       ));
     }
     return Container(
-        width: AppConfig.horizontalBlockSize * 20,
+        width: AppConfig.horizontalBlockSize * 23,
         child: ListView.builder(
           itemBuilder: (context, itemIndex) {
             daysInput.add(daysCount.first);
@@ -661,7 +662,6 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     print(widget.remainingTime);
     _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
       _startTimer(_timer);
-
     });
 
     super.initState();
@@ -696,13 +696,9 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       children: <Widget>[
         CircleAvatar(
           child: Container(
-            height: AppConfig.horizontalBlockSize * 14,
-            width: AppConfig.horizontalBlockSize * 14,
-            child: ClipOval(
-              child: CustomWidgets()
-                  .getImageFromUrl(widget.imageUrl, boxFit: BoxFit.fill),
-            ),
-          ),
+              height: AppConfig.horizontalBlockSize * 14,
+              width: AppConfig.horizontalBlockSize * 14,
+              child: Image.asset(PlunesImages.inactiveProfileIcon)),
           radius: AppConfig.horizontalBlockSize * 7,
         ),
         Expanded(

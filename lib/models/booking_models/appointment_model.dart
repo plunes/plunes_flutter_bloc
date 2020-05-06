@@ -37,9 +37,11 @@ class AppointmentModel {
   String professionalAddress;
   String professionalMobileNumber;
   String professionalImageUrl;
-  double latitude;
-  double longitude;
-  double distance;
+  String userName;
+  String userAddress;
+  String userMobileNumber;
+  String userEmail;
+  UserLocation userLocation;
   String serviceId;
   String bookingStatus;
   String timeSlot;
@@ -48,7 +50,6 @@ class AppointmentModel {
   bool rescheduled;
   Services service;
   bool isOpened = false;
-
   // List<num> paymentOption;
   String paymentPercentage;
   num amountPaid;
@@ -57,6 +58,8 @@ class AppointmentModel {
   String bookingId;
   String refundReason;
   String refundStatus;
+  static const String confirmedStatus = "Confirmed";
+  static const String cancelledStatus = "Cancelled";
 
 
   AppointmentModel({
@@ -66,9 +69,11 @@ class AppointmentModel {
     this.professionalAddress,
     this.professionalMobileNumber,
     this.professionalImageUrl,
-    this.latitude,
-    this.longitude,
-    this.distance,
+    this.userName,
+    this.userAddress,
+    this.userMobileNumber,
+    this.userEmail,
+    this.userLocation,
     this.serviceId,
     this.bookingStatus,
     this.timeSlot,
@@ -96,9 +101,13 @@ class AppointmentModel {
     professionalAddress = json['professionalAddress'];
     professionalMobileNumber = json['professionalMobileNumber'];
     professionalImageUrl = json['professionalImageUrl '];
-    latitude = json['lattitude'];
-    longitude = json['longitude'];
-    distance = json['distance'];
+    userName = json['userName'];
+    userAddress = json['userAddress'];
+    userEmail = json['userEmail'];
+    userMobileNumber = json['userMobileNumber'];
+    userLocation = json['userLocation'] != null
+        ? new UserLocation.fromJson(json['userLocation'])
+        : null;
     serviceId = json['serviceId'];
     bookingStatus = json['bookingStatus'];
     timeSlot = json['timeSlot'];
@@ -127,9 +136,13 @@ class AppointmentModel {
     data['professionalAddress'] = this.professionalAddress;
     data['professionalMobileNumber'] = this.professionalMobileNumber;
     data['professionalImageUrl'] = this.professionalImageUrl;
-    data['lattitude'] = this.latitude;
-    data['longitude'] = this.longitude;
-    data['distance'] = this.distance;
+    data['userAddress'] = this.userAddress;
+    data['userName'] = this.userName;
+    data['userEmail'] = this.userEmail;
+    data['userMobileNumber'] = this.userMobileNumber;
+    if (this.userLocation != null) {
+      data['userLocation'] = this.userLocation.toJson();
+    }
     data['serviceId'] = this.serviceId;
     data['bookingStatus'] = this.bookingStatus;
     data['timeSlot'] = this.timeSlot;
@@ -148,5 +161,25 @@ class AppointmentModel {
     return data;
   }
 }
+
+class UserLocation {
+  double latitude;
+  double longitude;
+
+  UserLocation({this.latitude, this.longitude});
+
+  UserLocation.fromJson(Map<String, dynamic> json) {
+    latitude = json['latitude'];
+    longitude = json['longitude'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
+    return data;
+  }
+}
+
 
 

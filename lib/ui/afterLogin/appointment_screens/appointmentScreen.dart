@@ -121,22 +121,22 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               style: TextStyle(color: Colors.black54)),
                           Text(_getAmPmTime(),
                               style: TextStyle(color: Colors.black54)),
-                          Container(
-                            margin: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 2),
-                            child: RaisedButton(
-                              child: Text(
-                                PlunesStrings.visitAgain,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(
-                                    AppConfig.verticalBlockSize * 4),
-                              ),
-                              onPressed: () {},
-                              color: Colors.green,
-                            ),
-                          ),
+//                          Container(
+//                            margin: EdgeInsets.only(
+//                                top: AppConfig.verticalBlockSize * 2),
+//                            child: RaisedButton(
+//                              child: Text(
+//                                PlunesStrings.visitAgain,
+//                                style: TextStyle(color: Colors.white),
+//                              ),
+//                              shape: RoundedRectangleBorder(
+//                                borderRadius: new BorderRadius.circular(
+//                                    AppConfig.verticalBlockSize * 4),
+//                              ),
+//                              onPressed: () {},
+//                              color: Colors.green,
+//                            ),
+//                          ),
                         ],
                       ),
                     ),

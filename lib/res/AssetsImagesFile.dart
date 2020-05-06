@@ -15,6 +15,7 @@ class PlunesImages {
   static String procedureImage ='assets/images/procedure-avatar.png';
   static String testImage ='assets/images/test-avatar.png';
   static String  inactiveProfileIcon ='assets/images/Profile_Inactive-Icon.png';
+  static String bulbIconForTips = 'assets/images/bulb-icon.png';
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

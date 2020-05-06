@@ -138,13 +138,19 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     if (_latitude != null && _longitude != null) {
       preferences.setPreferencesString(Constants.LATITUDE, _latitude);
       preferences.setPreferencesString(Constants.LONGITUDE, _longitude);
-      final coordinates =
-          new Coordinates(double.parse(_latitude), double.parse(_longitude));
-      var addressControlleres =
-          await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var addr = addressControlleres.first;
-      String full_addressController = addr.addressLine;
-      locationController.text = full_addressController;
+      print('$_latitude  , $_longitude');
+
+    //  print('${double.parse(_latitude)} , ${double.parse(_longitude)}');
+      if (_latitude != null && _longitude != null) {
+        final coordinates =
+        new Coordinates(double.parse(_latitude), double.parse(_longitude));
+
+        var addressControlleres =
+        await Geocoder.local.findAddressesFromCoordinates(coordinates);
+        var addr = addressControlleres.first;
+        String full_addressController = addr.addressLine;
+        locationController.text = full_addressController;
+      }
     }
     setState(() {});
   }

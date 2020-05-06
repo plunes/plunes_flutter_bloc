@@ -134,7 +134,7 @@ class UserManager {
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {'mobileNumber': mobileNumber, "otp": otp});
     if (result.isRequestSucceed) {
-      verifyOTP _verifyOtp = verifyOTP.fromJson(result.response.data);
+      VerifyOtpResponse _verifyOtp = VerifyOtpResponse.fromJson(result.response.data);
       print(_verifyOtp);
       return RequestSuccess(response: _verifyOtp);
     } else {

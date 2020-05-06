@@ -494,12 +494,12 @@ class GetOtpModel {
   }
 }
 
-class verifyOTP {
+class VerifyOtpResponse {
   bool success;
 
-  verifyOTP({this.success});
+  VerifyOtpResponse({this.success});
 
-  verifyOTP.fromJson(Map<String, dynamic> json) {
+  VerifyOtpResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
   }
 

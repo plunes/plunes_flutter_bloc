@@ -138,6 +138,8 @@ class PlunesStrings {
 
   static const String noAppointmentAvailable = "You don't have appointment yet!";
 
+  static const String invalidOtp = "Invalid OTP";
+
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

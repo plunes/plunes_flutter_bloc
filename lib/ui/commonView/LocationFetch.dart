@@ -29,7 +29,7 @@ class _LocationFetchState extends State<LocationFetch> {
 
   GoogleMapController _mapController;
 
-  Map<MarkerId, Marker> marker = <MarkerId, Marker>{};
+  Set<Marker> marker = <Marker>{};
   var location = new loc.Location(), globalHeight, globalWidth;
   List _coordinateList = new List();
   String latitude = '0.0', longitude = '0.0', address = '';
@@ -55,6 +55,9 @@ class _LocationFetchState extends State<LocationFetch> {
       latitude = lat;
       longitude = lng;
       locationController.text = full_address;
+      if (lat != null && lng != null) {
+        _setMarker(double.parse(lat), double.parse(lng));
+      }
     }
     setState(() {});
   }
@@ -110,7 +113,7 @@ class _LocationFetchState extends State<LocationFetch> {
                             child: getGoogleMapView(),
                           ),
                           widget.getBlackBackButton(context),
-                          widget.getBlackLocationIcon(globalHeight / 2),
+                          // widget.getBlackLocationIcon(globalHeight / 2),
                         ],
                       ),
                     ),
@@ -210,7 +213,7 @@ class _LocationFetchState extends State<LocationFetch> {
       myLocationEnabled: true,
       compassEnabled: true,
       tiltGesturesEnabled: true,
-      markers: Set<Marker>.of(marker.values),
+      markers: marker,
       onCameraMoveStarted: () {
         print("Started to move");
       },
@@ -218,8 +221,9 @@ class _LocationFetchState extends State<LocationFetch> {
         if (_coordinateList.length != 0 && !_isSettingLocationFromPlacesApi) {
           _isAddFetch = true;
           Coordinates coordinates = _coordinateList[_coordinateList.length - 1];
-          latitude = coordinates.latitude.toString();
-          longitude = coordinates.longitude.toString();
+          _setMarker(coordinates?.latitude, coordinates?.longitude);
+          latitude = coordinates.latitude?.toString();
+          longitude = coordinates.longitude?.toString();
           var addresses = await Geocoder.local.findAddressesFromCoordinates(
               _coordinateList[_coordinateList.length - 1]);
           var addr = addresses.first;
@@ -250,20 +254,30 @@ class _LocationFetchState extends State<LocationFetch> {
       _isSettingLocationFromPlacesApi = true;
       double lat = detail.result.geometry.location.lat;
       double lng = detail.result.geometry.location.lng;
+      _setMarker(lat, lng);
       setState(() {
         _mapController.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(zoom: 15, target: LatLng(lat, lng)),
           ),
         );
-        latitude = lat.toString();
-        longitude = lng.toString();
+        latitude = lat?.toString();
+        longitude = lng?.toString();
         locationController.text = detail.result.formattedAddress;
       });
       Future.delayed(Duration(milliseconds: 1500)).then((value) {
         _coordinateList = [];
         _isSettingLocationFromPlacesApi = false;
       });
+    }
+  }
+
+  _setMarker(double lat, double lon) {
+    if (lat != null && lon != null) {
+      marker.add(Marker(
+          markerId: MarkerId("currentLocation"),
+          icon: BitmapDescriptor.defaultMarker,
+          position: LatLng(lat, lon)));
     }
   }
 }
