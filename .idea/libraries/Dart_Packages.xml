@@ -712,6 +712,13 @@
             </list>
           </value>
         </entry>
+        <entry key="sliding_up_panel">
+          <value>
+            <list>
+              <option value="$PROJECT_DIR$/../../flutter/.pub-cache/hosted/pub.dartlang.org/sliding_up_panel-1.0.2/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="source_map_stack_trace">
           <value>
             <list>
@@ -1003,6 +1010,7 @@
       <root url="file://$PROJECT_DIR$/../../flutter/.pub-cache/hosted/pub.dartlang.org/shelf_static-0.2.8/lib" />
       <root url="file://$PROJECT_DIR$/../../flutter/.pub-cache/hosted/pub.dartlang.org/shelf_web_socket-0.2.3/lib" />
       <root url="file://$PROJECT_DIR$/../../flutter/.pub-cache/hosted/pub.dartlang.org/shimmer-1.0.1/lib" />
+      <root url="file://$PROJECT_DIR$/../../flutter/.pub-cache/hosted/pub.dartlang.org/sliding_up_panel-1.0.2/lib" />
       <root url="file://$PROJECT_DIR$/../../flutter/.pub-cache/hosted/pub.dartlang.org/source_map_stack_trace-1.1.5/lib" />
       <root url="file://$PROJECT_DIR$/../../flutter/.pub-cache/hosted/pub.dartlang.org/source_maps-0.10.9/lib" />
       <root url="file://$PROJECT_DIR$/../../flutter/.pub-cache/hosted/pub.dartlang.org/source_span-1.5.5/lib" />

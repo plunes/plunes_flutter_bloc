@@ -84,7 +84,7 @@ class CustomWidgets {
               ),
               searchController.text.trim().isEmpty
                   ? Image.asset(
-                      "assets/images/search@3x.png",
+                      PlunesImages.searchIcon,
                       width: AppConfig.verticalBlockSize * 2.0,
                       height: AppConfig.verticalBlockSize * 2.0,
                     )
@@ -301,14 +301,14 @@ class CustomWidgets {
                   child: Container(
                       color: PlunesColors.WHITECOLOR,
                       padding: EdgeInsets.only(
-                          left: AppConfig.horizontalBlockSize * 24,
-                          top: AppConfig.verticalBlockSize * 1,
-                          right: AppConfig.horizontalBlockSize * 24),
+                          left: AppConfig.horizontalBlockSize * 32,
+                          top: AppConfig.verticalBlockSize * 2,
+                          right: AppConfig.horizontalBlockSize * 32),
                       child: getRoundedButton(
                           "Negotiate",
                           AppConfig.horizontalBlockSize * 8,
                           PlunesColors.GREENCOLOR,
-                          AppConfig.horizontalBlockSize * 4,
+                          AppConfig.horizontalBlockSize * 0,
                           AppConfig.verticalBlockSize * 2,
                           PlunesColors.WHITECOLOR)))
               : Container(),
@@ -482,7 +482,9 @@ class CustomWidgets {
       child: Center(
         child: Text(
           buttonName,
-          style: TextStyle(color: textColor ?? PlunesColors.BLACKCOLOR),
+          style: TextStyle(
+              color: textColor ?? PlunesColors.BLACKCOLOR,
+              fontFamily: 'ProximaNova'),
         ),
       ),
     );
@@ -913,122 +915,98 @@ class CustomWidgets {
     CatalogueData catalogueData,
   ) {
     return Container(
-        height: 360,
-        width: 350,
-        //margin: EdgeInsets.all(),
-        child: Column(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+        height: AppConfig.verticalBlockSize * 50,
+        width: double.infinity,
+        child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
+          Container(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: InkWell(
+                child: Icon(Icons.close),
+                onTap: () => Navigator.of(context).pop(),
+                onDoubleTap: () {},
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Text(
+              'Details',
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+            ),
+          ),
+          Container(
+            height: AppConfig.verticalBlockSize * 40,
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 7,
+                vertical: AppConfig.verticalBlockSize * 1),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Text(
-                    'Details',
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                    'Defination:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 80),
-                    child: FlatButton(
-                      child: Icon(Icons.close),
-                      onPressed: () => {
-                        Navigator.of(context).pop(),
-                      },
+                  Text(
+                    catalogueData.service,
+                    style: TextStyle(
+                      color: Colors.black38,
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.black45,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        'Duration',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(width: 5),
+                      Text(
+                        catalogueData.duration,
+                        style: TextStyle(
+                          color: Colors.black45,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Divider(
+                    color: Colors.black45,
+                  ),
+                  Row(children: <Widget>[
+                    Text(
+                      'Sittings:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(width: 5),
+                    Text(
+                      catalogueData.sitting,
+                      style: TextStyle(
+                        color: Colors.black38,
+                      ),
+                    ),
+                  ]),
+                  Divider(
+                    color: Colors.black45,
+                  ),
+                  Text(
+                    'Do\'s and Don\'t:',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    catalogueData.dnd,
+                    style: TextStyle(
+                      color: Colors.black38,
                     ),
                   ),
                 ],
               ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          height: 260,
-                          width: 320,
-                          child: SingleChildScrollView(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[
-                                Text(
-                                  'Defination:',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  catalogueData.service,
-                                  style: TextStyle(
-                                    color: Colors.black38,
-                                  ),
-                                ),
-                                Divider(
-                                  color: Colors.black45,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Text(
-                                      'Duration',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(width: 5),
-                                    Text(
-                                      catalogueData.duration,
-                                      style: TextStyle(
-                                        color: Colors.black45,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Divider(
-                                  color: Colors.black45,
-                                ),
-                                Row(children: <Widget>[
-                                  Text(
-                                    'Sittings:',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(width: 5),
-                                  Text(
-                                    catalogueData.sitting,
-                                    style: TextStyle(
-                                      color: Colors.black38,
-                                    ),
-                                  ),
-                                ]),
-                                Divider(
-                                  color: Colors.black45,
-                                ),
-                                Text(
-                                  'Do\'s and Don\'t:',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  catalogueData.dnd,
-                                  style: TextStyle(
-                                    color: Colors.black38,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-//              FlatButton.icon(
-//                onPressed: () {},
-//                label: Text(
-//                  'Expand',
-//                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-//                ),
-//                icon: Icon(Icons.expand_more),
-//              )
-            ]));
+            ),
+          ),
+        ]));
   }
 
   // ignore: non_constant_identifier_names

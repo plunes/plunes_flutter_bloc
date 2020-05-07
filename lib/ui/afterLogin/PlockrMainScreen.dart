@@ -164,12 +164,12 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
           elevation: 8,
           clipBehavior: Clip.antiAliasWithSaveLayer,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.0),
+            borderRadius: BorderRadius.circular(30.0),
           ),
           child: Container(
             height: 55,
             child: Container(
-              padding: EdgeInsets.only(left: 8.0),
+              padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 5),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -186,7 +186,8 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                     ),
                   ),
                   Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
+                      padding: EdgeInsets.only(
+                          right: AppConfig.horizontalBlockSize * 4),
                       child: cross
                           ? InkWell(
                               child: Icon(Icons.close, color: Colors.grey),
@@ -197,13 +198,17 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                                 _setState();
                               },
                             )
-                          : Icon(Icons.search, color: Colors.grey)),
+                          : Image.asset(
+                              PlunesImages.searchIcon,
+                              width: AppConfig.verticalBlockSize * 3.5,
+                              height: AppConfig.verticalBlockSize * 2.5,
+                            )),
                 ],
               ),
             ),
             decoration: BoxDecoration(
                 border: Border.all(width: 1, color: Color(0xff01d35a)),
-                borderRadius: BorderRadius.all(Radius.circular(12))),
+                borderRadius: BorderRadius.all(Radius.circular(30))),
           )),
     );
   }

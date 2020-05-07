@@ -16,12 +16,13 @@ class PlunesImages {
   static String testImage ='assets/images/test-avatar.png';
   static String  inactiveProfileIcon ='assets/images/Profile_Inactive-Icon.png';
   static String bulbIconForTips = 'assets/images/bulb-icon.png';
+  static String searchIcon = 'assets/images/search@3x.png';
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',
     'assets/images/sliders/search.png',
     'assets/images/sliders/solution.png',
-    'assets/images/sliders/near_you.png'
+    'assets/images/sliders/Procedures.png'
   ];
 
   get healthSolNearImageArray => [

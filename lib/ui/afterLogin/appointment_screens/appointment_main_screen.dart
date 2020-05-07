@@ -106,7 +106,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
                 child: Text(_appointmentFailureCause ??
                     PlunesStrings.noAppointmentAvailable),
               )
-            : (UserManager().getUserDetails().userType == Constants.generalUser)
+            : (UserManager().getUserDetails().userType == Constants.user)
                 ? _showUserAppointmentItems()
                 : _showDocHosAppointmentItem();
       },
@@ -185,7 +185,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   void _setDocHosSpecificData() {
     var today = DateTime.now();
 
-    if (UserManager().getUserDetails().userType != Constants.generalUser) {
+    if (UserManager().getUserDetails().userType != Constants.user) {
       if (_appointmentResponse != null &&
           _appointmentResponse.bookings != null &&
           _appointmentResponse.bookings.isNotEmpty) {

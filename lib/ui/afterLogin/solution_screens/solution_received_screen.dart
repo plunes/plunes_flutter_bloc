@@ -16,6 +16,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import '../../widgets/dialogPopScreen.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // ignore: must_be_immutable
 class SolutionReceivedScreen extends BaseActivity {
@@ -236,7 +237,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     markers: _markers,
                     myLocationButtonEnabled: false,
                     onMapCreated: (mapController) {
-                      _googleMapController.complete(mapController);
+                      if (!_googleMapController.isCompleted)
+                        _googleMapController.complete(mapController);
                     },
                     initialCameraPosition: CameraPosition(
                         target: LatLng(double.tryParse(_user.latitude) ?? lat,

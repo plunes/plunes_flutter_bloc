@@ -60,6 +60,7 @@ dependencies:
   flutter_rating_bar: ^3.0.1+1
   step_progress_indicator: ^0.2.1+4
   flutter_svg: ^0.17.4
+  sliding_up_panel: ^1.0.2
 
 
   #  flutter_facebook_login: ^3.0.0
@@ -161,7 +162,7 @@ flutter:
     - assets/images/sliders/bidding.png
     - assets/images/sliders/search.png
     - assets/images/sliders/solution.png
-    - assets/images/sliders/near_you.png
+    - assets/images/sliders/Procedures.png
     - assets/images/splash_final.jpg
     - assets/images/crossIcon.png
     - assets/images/whiteImage.png

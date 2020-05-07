@@ -207,12 +207,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 )
               ],
             ),
-            Container(
-              margin: EdgeInsets.only(
-                  right: (MediaQuery.of(context).size.width / 2) - 28),
-              child: getTagsView('assets/images/tellIcongrey2.png',
-                  'Free telephonic consultations'),
-            )
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: getTagsView('assets/images/tellIcongrey2.png',
+                      'Free telephonic consultations'),
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+              ],
+            ),
           ],
         ));
   }
@@ -293,7 +298,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                           PlunesStrings.getDirection,
                           style: TextStyle(
                               decoration: TextDecoration.underline,
-                              fontSize: AppConfig.mediumFont,
+                              fontSize: 16,
                               color: PlunesColors.GREENCOLOR),
                         ),
                       ),
@@ -729,7 +734,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           PlunesColors.BLACKCOLOR, scaffoldKey);
       return;
     }
-   print("timeSlot ${timeSlot.slots}");
+    print("timeSlot ${timeSlot.slots}");
     List<String> _firstSlotFromTimeHourMinute =
         timeSlot.slots[0].split("-")[0].split(" ")[0].split(":");
     List<String> _firstSlotToTimeHourMinute =
