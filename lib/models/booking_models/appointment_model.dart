@@ -4,10 +4,7 @@ class AppointmentResponseModel {
   bool success;
   List<AppointmentModel> bookings;
 
-  AppointmentResponseModel({
-    this.success,
-    this.bookings
-  });
+  AppointmentResponseModel({this.success, this.bookings});
 
   AppointmentResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -29,7 +26,6 @@ class AppointmentResponseModel {
   }
 }
 
-
 class AppointmentModel {
   String professionalId;
   String solutionServiceId;
@@ -50,17 +46,27 @@ class AppointmentModel {
   bool rescheduled;
   Services service;
   bool isOpened = false;
+
   // List<num> paymentOption;
   String paymentPercentage;
   num amountPaid;
   num amountDue;
   num amountPaidCredits;
   String bookingId;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AppointmentModel &&
+          runtimeType == other.runtimeType &&
+          bookingId == other.bookingId;
+
+  @override
+  int get hashCode => bookingId.hashCode;
   String refundReason;
   String refundStatus;
   static const String confirmedStatus = "Confirmed";
   static const String cancelledStatus = "Cancelled";
-
 
   AppointmentModel({
     this.professionalId,
@@ -91,7 +97,6 @@ class AppointmentModel {
     this.refundReason,
     this.refundStatus,
   });
-
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
     professionalId = json['professionalId'];
@@ -180,6 +185,3 @@ class UserLocation {
     return data;
   }
 }
-
-
-

@@ -21,9 +21,11 @@ class AppointmentDocHosScreen extends BaseActivity {
   int index;
   GlobalKey<ScaffoldState> globalKey;
   Function getAppointment;
+  String bookingId;
 
   AppointmentDocHosScreen(this.appointmentModel, this.index, this.bookingBloc,
-      this.globalKey, this.getAppointment);
+      this.globalKey, this.getAppointment,
+      {this.bookingId});
 
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();
@@ -47,18 +49,20 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
 
   Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
     return Container(
-      color: PlunesColors.WHITECOLOR,
+      color: (widget.bookingId != null &&
+              widget.bookingId == appointmentModel.bookingId)
+          ? PlunesColors.LIGHTGREENCOLOR
+          : PlunesColors.WHITECOLOR,
+
       // margin: EdgeInsets.only(top:AppConfig.verticalBlockSize*3),
       padding:
           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
       child: Column(
         children: <Widget>[
           Container(
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 //crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-
                   Expanded(
                     child: Container(
                       child: Column(
@@ -93,15 +97,23 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                     child: Container(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
-                       crossAxisAlignment: CrossAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           Text(_getMonthWithYear().toUpperCase(),
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 25)),
+                                fontWeight: FontWeight.bold,
+                                fontSize: AppConfig.mediumFont,
+                              )),
                           Text(_getFullDate(),
-                              style: TextStyle(color: Colors.black54)),
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: AppConfig.smallFont,
+                              )),
                           Text(_getAmPmTime(),
-                              style: TextStyle(color: Colors.black54)),
+                              style: TextStyle(
+                                color: Colors.black54,
+                                fontSize: AppConfig.smallFont,
+                              )),
                         ],
                       ),
                     ),
@@ -118,17 +130,17 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                 InkWell(
                   child: Text(appointmentModel.bookingStatus,
                       style: TextStyle(
-                          fontSize: AppConfig.mediumFont, color: Colors.green)),
+                          fontSize: AppConfig.smallFont, color: Colors.green)),
                   onTap: () {},
                   onDoubleTap: () {},
                 ),
                 InkWell(
                   child: Text(PlunesStrings.reschedule,
                       style: TextStyle(
-                          fontSize: AppConfig.mediumFont,
+                          fontSize: AppConfig.smallFont,
                           color: Colors.black54)),
-                  onTap: () {
-                    Navigator.push(
+                  onTap: ()  async {
+                   await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => BookingMainScreen(
@@ -137,6 +149,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                       appointmentModel.service.professionalId,
                                   timeSlots: appointmentModel.service.timeSlots,
                                 )));
+                   widget.getAppointment();
                   },
                   onDoubleTap: () {},
                 ),
@@ -168,6 +181,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             });
                             _bookingBloc.addStateInCancelProvider(null);
                           }
+                          widget.getAppointment();
                         }
                         if (snapshot.data != null &&
                             snapshot.data is RequestFailed) {
@@ -187,8 +201,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           }
                         }
                         return InkWell(
-                          onTap: () {
-                            print('hello on tap ${appointmentModel.bookingId}');
+                          onTap: (){
                             if (widget.appointmentModel != null) {
                               _bookingBloc.cancelAppointment(
                                   appointmentModel.bookingId, index);
@@ -197,8 +210,9 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           },
                           onDoubleTap: () {},
                           child: Text(plunesStrings.cancel,
-                              style:
-                                  TextStyle(fontSize: 17, color: Colors.red)),
+                              style: TextStyle(
+                                  fontSize: AppConfig.smallFont,
+                                  color: Colors.red)),
                         );
                       }),
                 ),
@@ -214,15 +228,16 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   child: Container(
                     child: Text(appointmentModel.serviceName,
                         style: TextStyle(
-                            fontSize: 18,
+                            fontSize: AppConfig.smallFont,
                             fontWeight: FontWeight.bold,
                             color: Colors.black54)),
                   ),
                 ),
                 Container(
                   child: Text(
-                      '\u20B9 ${appointmentModel.service.newPrice.first}',
-                    style: TextStyle(fontSize: 18 ,
+                    '\u20B9 ${appointmentModel.service.newPrice.first}',
+                    style: TextStyle(
+                        fontSize: AppConfig.smallFont,
                         fontWeight: FontWeight.bold,
                         color: Colors.black54),
                   ),
@@ -248,15 +263,18 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                 children: <Widget>[
                   Text(PlunesStrings.paymentStatus,
                       style: TextStyle(
-                          fontSize: AppConfig.largeFont,
+                          fontSize: AppConfig.mediumFont,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline)),
                   (widget.appointmentModel.isOpened != null &&
                           UserManager().getUserDetails().userType !=
                               Constants.user)
-                      ? Icon(widget.appointmentModel.isOpened
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down)
+                      ? Icon(
+                          widget.appointmentModel.isOpened
+                              ? Icons.keyboard_arrow_up
+                              : Icons.keyboard_arrow_down,
+                          size: AppConfig.horizontalBlockSize * 6,
+                        )
                       : Container()
                 ],
               ),
@@ -272,13 +290,14 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
           Container(
             height: AppConfig.verticalBlockSize * 5,
             child: FlatButton.icon(
-                    onPressed: (){
-                    },
-                    icon: Image.asset(PlunesImages.bulbIconForTips),
-                    label: Text(
-                      'Tips For More Conversions',
-                      style: TextStyle(color: PlunesColors.GREENCOLOR),
-                    )),
+                onPressed: () {},
+                icon: Image.asset(PlunesImages.bulbIconForTips),
+                label: Text(
+                  'Tips For More Conversions',
+                  style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                      color: PlunesColors.GREENCOLOR),
+                )),
           ),
           SizedBox(
             height: AppConfig.verticalBlockSize * 2,
@@ -352,20 +371,25 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
             child: CustomWidgets().amountProgressBar(appointmentModel),
           ),
           SizedBox(height: AppConfig.verticalBlockSize * 3),
-          (appointmentModel.amountDue == 0)? Text("Payments done by patient",  style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w500)):
-          Text('\u20B9 ${appointmentModel.amountDue}  remaining amount to be paid',
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.green,
-                  decoration: TextDecoration.underline)),
+          (appointmentModel.amountDue == 0)
+              ? Text("Payments done by patient",
+                  style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                      fontWeight: FontWeight.w500))
+              : Text(
+                  '\u20B9 ${appointmentModel.amountDue}  remaining amount to be paid',
+                  style: TextStyle(
+                      fontSize: AppConfig.smallFont + 2,
+                      color: Colors.green,
+                      decoration: TextDecoration.underline)),
           Container(
             margin: EdgeInsets.symmetric(
                 vertical: AppConfig.verticalBlockSize * 3,
                 horizontal: AppConfig.horizontalBlockSize * 3),
-            child: Text(
-                'Create Prescription',
-                style: TextStyle(fontSize: 16,color: PlunesColors.GREENCOLOR,
+            child: Text('Create Prescription',
+                style: TextStyle(
+                    fontSize: AppConfig.verySmallFont + 2,
+                    color: PlunesColors.GREENCOLOR,
                     decoration: TextDecoration.underline)),
           ),
         ],

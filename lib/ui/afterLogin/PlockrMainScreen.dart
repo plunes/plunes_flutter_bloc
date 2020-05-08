@@ -96,7 +96,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: PlunesColors.WHITECOLOR,
       key: _scaffoldKey,
       body: getBodyView(),
     );

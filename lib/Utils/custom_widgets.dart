@@ -20,6 +20,7 @@ import 'package:plunes/models/solution_models/test_and_procedure_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/res/FontFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:share/share.dart';
@@ -155,6 +156,8 @@ class CustomWidgets {
         _imageUrl = PlunesImages.procedureImage;
       } else if (solutionList[index].category == "Test") {
         _imageUrl = PlunesImages.testImage;
+      }else if (solutionList[index].category == "NA") {
+        _imageUrl = PlunesImages.consultationImage;
       }
 
       return Column(
@@ -217,13 +220,15 @@ class CustomWidgets {
                                     text: solutionList[index].service ??
                                         PlunesStrings.NA,
                                     style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w500),
+                                         fontSize: AppConfig.smallFont +1,
+                                       color: Colors.black,
+                                        //fontWeight: FontWeight.w500
+                                    ),
                                     children: [
                                   TextSpan(
                                       text:
                                           "(${solutionList[index].category ?? PlunesStrings.NA})",
-                                      style: TextStyle(color: Colors.green))
+                                      style: TextStyle( fontSize: AppConfig.smallFont,color: Colors.green))
                                 ])),
                             Padding(
                                 padding: EdgeInsets.only(
@@ -234,14 +239,14 @@ class CustomWidgets {
                                         solutionList[index].createdAt == 0)
                                     ? Container()
                                     : Text(DateUtil.getDuration(
-                                        solutionList[index].createdAt))
+                                        solutionList[index].createdAt), style: TextStyle(fontSize: AppConfig.smallFont))
                                 : RichText(
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     text: TextSpan(
                                       text: solutionList[index].details ??
                                           PlunesStrings.NA,
-                                      style: TextStyle(color: Colors.black),
+                                      style: TextStyle(fontSize: AppConfig.verySmallFont,color: Colors.black),
 //<<<<<<< HEAD
 ////                                        children: [
 ////                                        TextSpan(
@@ -259,6 +264,7 @@ class CustomWidgets {
                                         text: "view more",
                                         recognizer: onViewMoreTap,
                                         style: TextStyle(
+                                            fontSize: AppConfig.verySmallFont,
                                             color: PlunesColors.GREENCOLOR,
                                             decoration:
                                                 TextDecoration.underline)),
@@ -271,7 +277,8 @@ class CustomWidgets {
                                         top: AppConfig.verticalBlockSize * 1),
                                     child: Text(
                                       "You have missed ${solutionList[index].maxDiscount.toStringAsFixed(0)}% on your ${solutionList[index].service ?? PlunesStrings.NA} Previously",
-                                      style: TextStyle(color: Colors.black),
+                                      style: TextStyle( fontSize: AppConfig.smallFont,
+                                          color: Colors.black),
                                     ))
                                 : Container()
                           ],
@@ -483,8 +490,9 @@ class CustomWidgets {
         child: Text(
           buttonName,
           style: TextStyle(
+             fontSize: AppConfig.smallFont,
               color: textColor ?? PlunesColors.BLACKCOLOR,
-              fontFamily: 'ProximaNova'),
+              ),
         ),
       ),
     );
@@ -702,6 +710,7 @@ class CustomWidgets {
                                 text:
                                     "\u20B9${solutions[index].price[0]?.toStringAsFixed(2) ?? PlunesStrings.NA} ",
                                 style: TextStyle(
+                                    fontSize: AppConfig.smallFont,
                                     color: PlunesColors.GREYCOLOR,
                                     decoration: TextDecoration.lineThrough),
                                 children: <TextSpan>[
@@ -722,7 +731,7 @@ class CustomWidgets {
                           solutions[index].discount == null
                               ? ""
                               : "${PlunesStrings.save} ${solutions[index].discount.toStringAsFixed(2)}%",
-                          style: TextStyle(color: PlunesColors.GREENCOLOR),
+                          style: TextStyle(fontSize: AppConfig.verySmallFont, color: PlunesColors.GREENCOLOR),
                         )
                       ],
                     ),
@@ -748,7 +757,7 @@ class CustomWidgets {
                     Expanded(child: Container()),
                     Text(solutions[index].distance == null
                         ? ""
-                        : "${solutions[index].distance.toStringAsFixed(2)} ${PlunesStrings.kmsAway}")
+                        : "${solutions[index].distance.toStringAsFixed(2)} ${PlunesStrings.kmsAway}",style: TextStyle(fontSize: AppConfig.verySmallFont) )
                   ],
                 ),
           Padding(
@@ -933,7 +942,7 @@ class CustomWidgets {
             alignment: Alignment.center,
             child: Text(
               'Details',
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: AppConfig.mediumFont),
             ),
           ),
           Container(
@@ -947,12 +956,13 @@ class CustomWidgets {
                 children: <Widget>[
                   Text(
                     'Defination:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: AppConfig.smallFont,fontWeight: FontWeight.bold),
                   ),
                   Text(
                     catalogueData.service,
                     style: TextStyle(
                       color: Colors.black38,
+                        fontSize: AppConfig.smallFont
                     ),
                   ),
                   Divider(
@@ -962,13 +972,14 @@ class CustomWidgets {
                     children: <Widget>[
                       Text(
                         'Duration',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: AppConfig.smallFont,fontWeight: FontWeight.bold),
                       ),
                       SizedBox(width: 5),
                       Text(
                         catalogueData.duration,
                         style: TextStyle(
                           color: Colors.black45,
+                            fontSize: AppConfig.smallFont
                         ),
                       ),
                     ],
@@ -979,13 +990,14 @@ class CustomWidgets {
                   Row(children: <Widget>[
                     Text(
                       'Sittings:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: AppConfig.smallFont,fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 5),
                     Text(
                       catalogueData.sitting,
                       style: TextStyle(
                         color: Colors.black38,
+                          fontSize: AppConfig.smallFont
                       ),
                     ),
                   ]),
@@ -994,11 +1006,12 @@ class CustomWidgets {
                   ),
                   Text(
                     'Do\'s and Don\'t:',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: AppConfig.smallFont,fontWeight: FontWeight.bold),
                   ),
                   Text(
                     catalogueData.dnd,
                     style: TextStyle(
+                      fontSize: AppConfig.smallFont,
                       color: Colors.black38,
                     ),
                   ),
@@ -1412,12 +1425,12 @@ class CustomWidgets {
               children: <Widget>[
                 Text(
                   ' \u20B9 ${(0.0.floor() / 2)?.toStringAsFixed(1)}',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: AppConfig.smallFont, fontWeight: FontWeight.bold),
                 ),
                 Expanded(child: Container()),
                 Text(
                   ' \u20B9 ${appointmentModel.service.newPrice.first.toDouble()?.toStringAsFixed(1)}',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: AppConfig.smallFont, fontWeight: FontWeight.bold),
                 ),
               ],
             ),

@@ -3,11 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
@@ -56,7 +59,7 @@ class _NotificationScreenState extends State<NotificationScreen>
     globalWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         key: _scaffoldKey,
-        backgroundColor: Colors.white,
+        backgroundColor: PlunesColors.WHITECOLOR,
         body: Container(
           child: StreamBuilder(
             stream: bloc.notificationApiFetcherList,
@@ -65,7 +68,8 @@ class _NotificationScreenState extends State<NotificationScreen>
               if (snapshot.hasData) {
                 if (items.posts.length == 0)
                   return Center(
-                    child: Text(plunesStrings.noRecordsFound),
+                    child: Text(plunesStrings.noRecordsFound,
+                        style: TextStyle(fontSize: AppConfig.smallFont)),
                   );
                 else
                   return buildList(snapshot);
@@ -118,20 +122,22 @@ class _NotificationScreenState extends State<NotificationScreen>
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(5.0))),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.only(bottom: 0, right: 10),
                     child: result.senderImageUrl != '' &&
                             !result.senderImageUrl.contains("default")
                         ? CircleAvatar(
-                            radius: 20,
+                            radius: AppConfig.horizontalBlockSize * 4,
                             backgroundImage:
                                 NetworkImage(result.senderImageUrl),
                           )
                         : Container(
-                            height: 40,
-                            width: 40,
+//                            height: AppConfig.verticalBlockSize*4,
+//                            width: AppConfig.horizontalBlockSize*8,
+                            padding: EdgeInsets.all(
+                                AppConfig.horizontalBlockSize * 1.6),
                             alignment: Alignment.center,
                             child: Text(
                                 (result.senderName != ''
@@ -141,11 +147,11 @@ class _NotificationScreenState extends State<NotificationScreen>
                                     .toUpperCase(),
                                 style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 18,
+                                    fontSize: AppConfig.smallFont,
                                     fontWeight: FontWeight.normal)),
                             decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                  AppConfig.horizontalBlockSize * 5)),
                               gradient: new LinearGradient(
                                   colors: [
                                     Color(0xffababab),
@@ -165,18 +171,20 @@ class _NotificationScreenState extends State<NotificationScreen>
                           result.senderName,
                           style: TextStyle(
                               color: Colors.black,
-                              fontSize: 16,
+                              fontSize: AppConfig.smallFont,
                               fontWeight: FontWeight.w500),
                         ),
                         SizedBox(
                           height: 5,
                         ),
                         Container(
-                          width: 200,
+                          width: AppConfig.horizontalBlockSize * 70,
                           child: Text(
                             result.notification,
                             maxLines: null,
-                            style: TextStyle(color: Colors.grey, fontSize: 12),
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: AppConfig.verySmallFont),
                           ),
                         )
                       ],
@@ -187,7 +195,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                     alignment: Alignment.topRight,
                     child: Text(
                       CommonMethods.getDuration(result.createdTime),
-                      style: TextStyle(fontSize: 13),
+                      style: TextStyle(fontSize: AppConfig.verySmallFont - 2),
                     ),
                   )
                 ],
@@ -222,7 +230,8 @@ class _NotificationScreenState extends State<NotificationScreen>
     print("Type of Notifcation:" + result?.notificationType);
     print("Type of result" + result?.toString());
 
-    if (result.notificationType == FirebaseNotification.solutionScreen) {
+    if (result.notificationType == FirebaseNotification.solutionScreen &&
+        UserManager().getUserDetails().userType == Constants.user) {
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -231,9 +240,16 @@ class _NotificationScreenState extends State<NotificationScreen>
                         solutionId: result.id, isFromNotification: true),
                   )));
     } else if (result.notificationType == FirebaseNotification.bookingScreen) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => AppointmentMainScreen()));
-    } else if (result.notificationType == FirebaseNotification.insightScreen) {
+      print("notification id is ${result.notificationId}");
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AppointmentMainScreen(
+                    bookingId: result.notificationId,
+                  )));
+    } else if ((result.notificationType == FirebaseNotification.insightScreen ||
+            result.notificationType == FirebaseNotification.solutionScreen) &&
+        UserManager().getUserDetails().userType != Constants.user) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

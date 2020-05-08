@@ -295,7 +295,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                         builder: (context, snapShot) {
                                           return Text(DateUtil.getDuration(
                                                   _solutionReceivedTime) ??
-                                              PlunesStrings.NA);
+                                              PlunesStrings.NA, style: TextStyle(fontSize: AppConfig.verySmallFont),);
                                         },
                                         stream: _streamForTimer.stream,
                                       ),
@@ -387,7 +387,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                   children: <Widget>[
                                     Text("Hold on",
                                         style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: AppConfig.smallFont,
                                             fontWeight: FontWeight.bold,
                                             color: Colors.white)),
                                   ],
@@ -397,8 +397,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             Container(
                               child: Text(
                                 "We are negotiating the best fee for you."
-                                " It may take sometime, we'll update you.",
-                                style: TextStyle(
+                                "It may take sometime, we'll update you.",
+                                style: TextStyle(fontSize: AppConfig.smallFont,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500),
                               ),

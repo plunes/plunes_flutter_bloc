@@ -171,8 +171,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                             _prevSearchedSolution.topSearches)
                                         ? PlunesStrings.topSearches
                                         : PlunesStrings.previousActivities,
-                                    style:
-                                        TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                    style: TextStyle(
+                                        fontSize: AppConfig.smallFont,
+                                        fontWeight: FontWeight.w600),
                                   ),
                                   (_prevSearchedSolution.topSearches != null &&
                                           _prevSearchedSolution.topSearches)
@@ -180,7 +181,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                       : Icon(
                                           Icons.chevron_right,
                                           color: PlunesColors.GREENCOLOR,
-                                          size:35,
+                                          size: 35,
                                         )
                                 ],
                               ),
@@ -335,7 +336,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       _setState();
     }
     UserBloc().isUserInServiceLocation(latitude, longitude).then((result) {
-      if (result.isRequestSucceed!=null && result.isRequestSucceed) {
+      if (result.isRequestSucceed != null && result.isRequestSucceed) {
         if (result.response.data == null || !result.response.data) {
           widget.showInSnackBar(PlunesStrings.switchToGurLoc,
               PlunesColors.GREYCOLOR, scaffoldKey);

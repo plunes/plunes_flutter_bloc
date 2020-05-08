@@ -428,6 +428,8 @@ class PostsData {
   final String id;
   final String notification;
   final String senderName;
+  final String notificationId;
+  final String notificationScreen;
 
   PostsData(
       {this.senderImageUrl,
@@ -436,7 +438,9 @@ class PostsData {
       this.senderUserId,
       this.id,
       this.notification,
-      this.senderName});
+      this.senderName,
+      this.notificationId,
+      this.notificationScreen});
 
   factory PostsData.fromJson(Map<String, dynamic> parsedJson) {
     return new PostsData(
@@ -455,6 +459,12 @@ class PostsData {
           parsedJson['notification'] != null ? parsedJson['notification'] : '',
       senderName:
           parsedJson['senderName'] != null ? parsedJson['senderName'] : '',
+      notificationId: parsedJson['notificationId'] != null
+          ? parsedJson['notificationId']
+          : '',
+      notificationScreen: parsedJson['notificationScreen'] != null
+          ? parsedJson['notificationScreen']
+          : '',
     );
   }
 

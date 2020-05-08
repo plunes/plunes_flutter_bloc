@@ -67,7 +67,7 @@ class DialogWidgets {
               alignment: Alignment.center,
               child: Text(
                 'Profile',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+                style: TextStyle(fontWeight: FontWeight.w500, fontSize: AppConfig.mediumFont),
               ),
             ),
 
@@ -75,7 +75,7 @@ class DialogWidgets {
               padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
               margin: EdgeInsets.symmetric(
                   horizontal: AppConfig.horizontalBlockSize * 1),
-              height: AppConfig.verticalBlockSize * 30,
+              height: AppConfig.verticalBlockSize * 32,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -102,21 +102,21 @@ class DialogWidgets {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(solutions.name ?? PlunesStrings.NA,
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: AppConfig.smallFont)),
                             Text(
                               catalogueData.category ?? PlunesStrings.NA,
-                              style: TextStyle(color: Colors.black45),
+                              style: TextStyle(color: Colors.black45, fontSize: AppConfig.smallFont),
                             ),
                             Text(
                               solutions.address ?? PlunesStrings.NA,
-                              style: TextStyle(color: Colors.black45),
+                              style: TextStyle(color: Colors.black45, fontSize: AppConfig.smallFont),
                             )
                           ],
                         )),
                       ],
                     ),
                     Divider(color: Colors.black54),
-                    Text('Available Slots'),
+                    Text('Available Slots' , style: TextStyle(fontSize: AppConfig.smallFont),),
                     Container(
                         padding: const EdgeInsets.only(top: 20),
                         height: AppConfig.verticalBlockSize * 16,
@@ -176,9 +176,12 @@ class DialogWidgets {
                                 ],
                               ),
                             );
+
                           },
                           scrollDirection: Axis.horizontal,
-                        )),
+                          itemCount: _slots.length??0,
+                        )
+                    ),
                   ],
                 ),
               ),

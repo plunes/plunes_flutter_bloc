@@ -224,26 +224,26 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   Widget getTagsView(String image, String text) {
     return Container(
-      height: 50,
+      height: AppConfig.verticalBlockSize*7,
       width: MediaQuery.of(context).size.width / 2,
-      margin: EdgeInsets.only(top: 10),
+      margin: EdgeInsets.only(top: AppConfig.verticalBlockSize*1),
       padding: EdgeInsets.all(10),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-                margin: EdgeInsets.only(right: 10),
+                margin: EdgeInsets.only(right: AppConfig.verticalBlockSize*1),
                 child: Image.asset(
                   image,
-                  height: 21,
-                  width: 21,
+                  height: AppConfig.verticalBlockSize*2.1,
+                  width: AppConfig.verticalBlockSize*2.1,
                   color: PlunesColors.BLACKCOLOR,
                 )),
             Expanded(
               child: Text(
                 text,
-                style: TextStyle(fontSize: 12, color: PlunesColors.BLACKCOLOR),
+                style: TextStyle(fontSize: AppConfig.verySmallFont, color: PlunesColors.BLACKCOLOR),
               ),
             )
           ]),
@@ -298,7 +298,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                           PlunesStrings.getDirection,
                           style: TextStyle(
                               decoration: TextDecoration.underline,
-                              fontSize: 16,
+                              fontSize: AppConfig.smallFont,
                               color: PlunesColors.GREENCOLOR),
                         ),
                       ),
@@ -324,7 +324,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                     ),
                     children: <TextSpan>[
                       new TextSpan(
-                          text: '${PlunesStrings.addressInSmall} -',
+                          text: '${PlunesStrings.addressInSmall} - ',
                           style: TextStyle(
                               color: PlunesColors.GREYCOLOR,
                               fontSize: AppConfig.mediumFont)),
@@ -363,7 +363,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       //height: AppConfig.verticalBlockSize * 10,
       child: DatePicker(
         _currentDate,
-        height: AppConfig.verticalBlockSize * 10,
+        width: AppConfig.horizontalBlockSize*12,
+        height: AppConfig.verticalBlockSize * 12,
         daysCount: 100,
         initialSelectedDate: _currentDate,
         dateTextStyle: TextStyle(
@@ -521,7 +522,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               ? Center(
                   child: Text(
                     "Make a payment of  ${_calcPriceToShow()}/- to confirm the booking",
-                    style: TextStyle(fontSize: 14),
+                    style: TextStyle(fontSize: AppConfig.verySmallFont),
                   ),
                 )
               : Container(),
@@ -601,7 +602,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 PlunesStrings.tcApply,
-                style: TextStyle(decoration: TextDecoration.underline),
+                style: TextStyle(decoration: TextDecoration.underline, fontSize: AppConfig.verySmallFont),
               ),
             ),
           ),

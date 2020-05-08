@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
-import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
 import 'package:plunes/models/Models.dart';
@@ -134,7 +133,7 @@ class _HospitalOverviewScreenState
                   child: Text(
                     PlunesStrings.realTimeInsights,
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: AppConfig.mediumFont,
                       fontWeight: FontWeight.bold,
                       decoration: TextDecoration.underline,
                     ),
@@ -248,7 +247,7 @@ class _HospitalOverviewScreenState
                 title: Text(
                   'Total Business',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: AppConfig.mediumFont,
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.underline,
                   ),
@@ -257,7 +256,9 @@ class _HospitalOverviewScreenState
                 //Text('drop down here'),
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 10,
+                    vertical: AppConfig.verticalBlockSize * 1.5),
                 child: StreamBuilder<RequestState>(
                   builder: (context, snapShot) {
                     if (snapShot.data is RequestInProgress) {
@@ -292,13 +293,15 @@ class _HospitalOverviewScreenState
                                       '\u20B9 ${_totalBusinessEarnedResponse.businessGained.toString()}',
                                       style: TextStyle(
                                         color: Colors.green,
-                                        fontSize: 25,
+                                        fontSize: AppConfig.largeFont,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
                                       'Business Earned',
-                                      style: TextStyle(color: Colors.black54),
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: AppConfig.verySmallFont),
                                     )
                                   ],
                                 ),
@@ -311,13 +314,15 @@ class _HospitalOverviewScreenState
                                       '\u20B9 ${_totalBusinessEarnedResponse.businessLost.toString()}',
                                       style: TextStyle(
                                         color: Colors.yellow,
-                                        fontSize: 25,
+                                        fontSize: AppConfig.largeFont,
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                     Text(
                                       'Business Lost',
-                                      style: TextStyle(color: Colors.black54),
+                                      style: TextStyle(
+                                          color: Colors.black54,
+                                          fontSize: AppConfig.verySmallFont),
                                     ),
                                   ],
                                 )
@@ -332,7 +337,10 @@ class _HospitalOverviewScreenState
               Container(
                   margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: Text(
-                      'Please take action real time Insights to increase your business')),
+                      'Please take action real time Insights to increase your business',
+                      style: TextStyle(
+                          color: Colors.black54,
+                          fontSize: AppConfig.verySmallFont))),
             ],
           ),
         ),
@@ -359,7 +367,7 @@ class _HospitalOverviewScreenState
                 title: Text(
                   'Actionable Insights',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: AppConfig.mediumFont,
                     fontWeight: FontWeight.bold,
                     decoration: TextDecoration.underline,
                   ),
@@ -412,7 +420,7 @@ class _HospitalOverviewScreenState
                                         text: TextSpan(
                                             text: "Your price for ",
                                             style: TextStyle(
-                                                fontSize: 15,
+                                                fontSize: AppConfig.smallFont,
                                                 color: Colors.black54,
                                                 fontWeight: FontWeight.w500),
                                             children: <TextSpan>[
@@ -420,7 +428,9 @@ class _HospitalOverviewScreenState
                                                   text:
                                                       "${_actionableInsightResponse?.data[itemIndex]?.serviceName?.toUpperCase() ?? _getNaString()}",
                                                   style: TextStyle(
-                                                      fontSize: 15,
+                                                      fontSize: AppConfig
+                                                              .verySmallFont +
+                                                          1,
                                                       color: PlunesColors
                                                           .BLACKCOLOR,
                                                       fontWeight:
@@ -428,7 +438,9 @@ class _HospitalOverviewScreenState
                                               TextSpan(
                                                 text: " is ",
                                                 style: TextStyle(
-                                                    fontSize: 15,
+                                                    fontSize: AppConfig
+                                                            .verySmallFont +
+                                                        1,
                                                     color: Colors.black54,
                                                     fontWeight:
                                                         FontWeight.w500),
@@ -437,7 +449,9 @@ class _HospitalOverviewScreenState
                                                   text:
                                                       "${_actionableInsightResponse?.data[itemIndex]?.percent?.toStringAsFixed(0) ?? _getNaString()}%",
                                                   style: TextStyle(
-                                                      fontSize: 15,
+                                                      fontSize: AppConfig
+                                                              .verySmallFont +
+                                                          1,
                                                       color: PlunesColors
                                                           .BLACKCOLOR,
                                                       fontWeight:
@@ -446,7 +460,9 @@ class _HospitalOverviewScreenState
                                                 text:
                                                     " higher than the booked price.",
                                                 style: TextStyle(
-                                                    fontSize: 15,
+                                                    fontSize: AppConfig
+                                                            .verySmallFont +
+                                                        1,
                                                     color: Colors.black54,
                                                     fontWeight:
                                                         FontWeight.w500),
@@ -455,7 +471,7 @@ class _HospitalOverviewScreenState
                                       )),
                                   FlatButtonLinks(
                                       'Update here',
-                                      15,
+                                      AppConfig.verySmallFont + 1,
                                       null,
                                       0,
                                       true,
@@ -624,7 +640,7 @@ class FlatButtonLinks extends StatelessWidget {
           child: Text(
             linkName,
             style: TextStyle(
-              fontSize: fontSize,
+              fontSize: AppConfig.smallFont,
               color: Colors.green,
               decoration:
                   isUnderline ? TextDecoration.underline : TextDecoration.none,
@@ -641,6 +657,7 @@ class PatientServiceInfo extends StatefulWidget {
   final String imageUrl;
   final int remainingTime;
 
+
   PatientServiceInfo(
       {this.patientName, this.serviceName, this.imageUrl, this.remainingTime});
 
@@ -650,7 +667,8 @@ class PatientServiceInfo extends StatefulWidget {
 
 class _PatientServiceInfoState extends State<PatientServiceInfo> {
   Timer _timer;
-
+  int _secondVal=60, _secFixVal = 60;
+  int _countDownValue = 10, _prevMinValue;
   @override
   void dispose() {
     _timer?.cancel();
@@ -685,7 +703,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                     .difference(DateTime.fromMillisecondsSinceEpoch(
                         widget.remainingTime))
                     .inMinutes >
-                40) ??
+              _countDownValue) ??
         true;
   }
 
@@ -711,7 +729,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                   Text(
                     widget.patientName,
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: AppConfig.smallFont + 2,
                       color: Colors.black87,
                       fontWeight: FontWeight.w600,
                     ),
@@ -719,7 +737,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                   Text(
                     widget.serviceName,
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: AppConfig.verySmallFont + 1,
                     ),
                   ),
                 ],
@@ -734,11 +752,28 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   }
 
   Widget _getTimeWidget() {
-    String timeValue = DateUtil.getDuration(widget.remainingTime);
-    List list = timeValue.split(" ");
-    String firstVal = PlunesStrings.NA;
-    if (list != null && list.length >= 2) {
-      firstVal = list[0];
+    String timeValue = PlunesStrings.NA;
+
+    if (widget.remainingTime != null && widget.remainingTime != 0) {
+      var duration = DateTime.now().difference(
+          DateTime.fromMillisecondsSinceEpoch(widget.remainingTime));
+      if (duration != null && duration.inMinutes != null) {
+        int val = _countDownValue - duration.inMinutes;
+        if(_prevMinValue== null ){
+          _prevMinValue = val;
+        }
+        if(_prevMinValue!=val){
+          _prevMinValue = val;
+          _secondVal = _secFixVal;
+        }
+        _secondVal--;
+        timeValue = val.toString();
+        if(_secondVal!=null ){
+          timeValue = timeValue +':' + _secondVal.toString();
+
+        }
+
+      }
     }
     return !isShowWidget()
         ? Column(
@@ -753,15 +788,16 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                     borderRadius: BorderRadius.circular(8.0)),
                 child: Center(
                   child: Text(
-                    firstVal,
+                    timeValue,
                     style: TextStyle(
-                        color: PlunesColors.GREENCOLOR, fontSize: 16.0),
+                        color: PlunesColors.GREENCOLOR,
+                        fontSize: AppConfig.verySmallFont + 2),
                   ),
                 ),
               ),
               Text(
                 'Min',
-                style: TextStyle(fontSize: 14.0),
+                style: TextStyle(fontSize: AppConfig.verySmallFont),
               )
             ],
           )

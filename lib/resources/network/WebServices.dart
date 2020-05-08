@@ -43,6 +43,7 @@ class WebServices {
   }
   Future<AllNotificationsPost> postNotificationResult(BuildContext context, token) async {
     dynamic result= await _apiCall.getAPIRequest(context, urls.notification, '', false, token: token);
+    print(result.toString());
     return AllNotificationsPost.fromJson(result);
   }
 

@@ -99,7 +99,7 @@ class FirebaseNotification {
           screenNo: Constants.plockerScreenNumber,
         );
       } else if (payLoad["data"]['screen'] == bookingScreen) {
-        widget = AppointmentMainScreen();
+        widget = AppointmentMainScreen(bookingId: payLoad['data']['id']);
       } else if (payLoad["data"]['screen'] == insightScreen) {
         isHomeScreen = true;
         widget = HomeScreen(
@@ -197,7 +197,9 @@ class FirebaseNotification {
         screenNo: Constants.plockerScreenNumber,
       );
     } else if (notificationModel.notificationType == bookingScreen) {
-      widget = AppointmentMainScreen();
+      widget = AppointmentMainScreen(
+        bookingId: notificationModel.id,
+      );
     } else if (notificationModel.notificationType == insightScreen) {
       isHomeScreen = true;
       widget = HomeScreen(
