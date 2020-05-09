@@ -161,7 +161,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   onTap: () {},
                   onDoubleTap: () {},
                 ),
-                InkWell(
+                (appointmentModel.bookingStatus!= AppointmentModel.cancelledStatus)? InkWell(
                   child: Text(PlunesStrings.reschedule,
                       style: TextStyle(
                           fontSize: AppConfig.smallFont,
@@ -178,7 +178,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                 )));
                   },
                   onDoubleTap: () {},
-                ),
+                ):alreadyCancelAppointment(PlunesStrings.reschedule),
                 Container(
                   child: StreamBuilder<Object>(
                       stream: _bookingBloc.cancelAppointmentStream,
@@ -225,7 +225,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             _bookingBloc.addStateInCancelProvider(null);
                           }
                         }
-                        return InkWell(
+                        return  (appointmentModel.bookingStatus!= AppointmentModel.cancelledStatus)? InkWell(
                           onTap: () {
                             print('hello on tap ${appointmentModel.bookingId}');
                             if (widget.appointmentModel != null) {
@@ -239,7 +239,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               style: TextStyle(
                                   fontSize: AppConfig.smallFont,
                                   color: Colors.red)),
-                        );
+                        ): alreadyCancelAppointment(plunesStrings.cancel);
                       }),
                 ),
               ],
@@ -464,6 +464,22 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget alreadyCancelAppointment(String btnName) {
+    return InkWell(
+        child: Text(btnName,
+            style: TextStyle(
+                fontSize: AppConfig.smallFont,
+                color: Colors.black54)),
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) =>
+                  CustomWidgets().getCancelMessagePopup(context));
+        },
+        onDoubleTap: () {}
     );
   }
 }

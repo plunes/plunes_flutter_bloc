@@ -17,6 +17,8 @@ class PlunesImages {
   static String  inactiveProfileIcon ='assets/images/Profile_Inactive-Icon.png';
   static String bulbIconForTips = 'assets/images/bulb-icon.png';
   static String searchIcon = 'assets/images/search@3x.png';
+  static String userProfileIcon = 'assets/images/userprofileIcon.png';
+
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

@@ -332,8 +332,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   Widget getDrawerView() {
     return Container(
       margin: EdgeInsets.only(
-          top: AppConfig.verticalBlockSize * 5,
-          bottom: AppConfig.verticalBlockSize * 10),
+          top: AppConfig.verticalBlockSize * 3,
+          bottom: AppConfig.verticalBlockSize * 6),
       child: Drawer(
         child: Container(
           color: Colors.white,

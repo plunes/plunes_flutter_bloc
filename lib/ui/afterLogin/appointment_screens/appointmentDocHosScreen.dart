@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/date_util.dart';
@@ -134,25 +135,30 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   onTap: () {},
                   onDoubleTap: () {},
                 ),
-                InkWell(
-                  child: Text(PlunesStrings.reschedule,
-                      style: TextStyle(
-                          fontSize: AppConfig.smallFont,
-                          color: Colors.black54)),
-                  onTap: ()  async {
-                   await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BookingMainScreen(
-                                  appointmentModel: widget.appointmentModel,
-                                  profId:
-                                      appointmentModel.service.professionalId,
-                                  timeSlots: appointmentModel.service.timeSlots,
-                                )));
-                   widget.getAppointment();
-                  },
-                  onDoubleTap: () {},
-                ),
+                (appointmentModel.bookingStatus !=
+                        AppointmentModel.cancelledStatus)
+                    ? InkWell(
+                        child: Text(PlunesStrings.reschedule,
+                            style: TextStyle(
+                                fontSize: AppConfig.smallFont,
+                                color: Colors.black54)),
+                        onTap: () async {
+                          await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BookingMainScreen(
+                                        appointmentModel:
+                                            widget.appointmentModel,
+                                        profId: appointmentModel
+                                            .service.professionalId,
+                                        timeSlots:
+                                            appointmentModel.service.timeSlots,
+                                      )));
+                          widget.getAppointment();
+                        },
+                        onDoubleTap: () {},
+                      )
+                    : alreadyCancelAppointment(PlunesStrings.reschedule),
                 Container(
                   child: StreamBuilder<Object>(
                       stream: _bookingBloc.cancelAppointmentStream,
@@ -200,20 +206,23 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             _bookingBloc.addStateInCancelProvider(null);
                           }
                         }
-                        return InkWell(
-                          onTap: (){
-                            if (widget.appointmentModel != null) {
-                              _bookingBloc.cancelAppointment(
-                                  appointmentModel.bookingId, index);
-                            }
-                            return;
-                          },
-                          onDoubleTap: () {},
-                          child: Text(plunesStrings.cancel,
-                              style: TextStyle(
-                                  fontSize: AppConfig.smallFont,
-                                  color: Colors.red)),
-                        );
+                        return (appointmentModel.bookingStatus !=
+                                AppointmentModel.cancelledStatus)
+                            ? InkWell(
+                                onTap: () {
+                                  if (widget.appointmentModel != null) {
+                                    _bookingBloc.cancelAppointment(
+                                        appointmentModel.bookingId, index);
+                                  }
+                                  return;
+                                },
+                                onDoubleTap: () {},
+                                child: Text(plunesStrings.cancel,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.smallFont,
+                                        color: Colors.red)),
+                              )
+                            : alreadyCancelAppointment(plunesStrings.cancel);
                       }),
                 ),
               ],
@@ -290,7 +299,12 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
           Container(
             height: AppConfig.verticalBlockSize * 5,
             child: FlatButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) =>
+                          CustomWidgets().getTipsConversionsPopup(context));
+                },
                 icon: Image.asset(PlunesImages.bulbIconForTips),
                 label: Text(
                   'Tips For More Conversions',
@@ -365,7 +379,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        // mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
             child: CustomWidgets().amountProgressBar(appointmentModel),
@@ -373,20 +388,41 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
           SizedBox(height: AppConfig.verticalBlockSize * 3),
           (appointmentModel.amountDue == 0)
               ? Text("Payments done by patient",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: AppConfig.smallFont,
                       fontWeight: FontWeight.w500))
               : Text(
                   '\u20B9 ${appointmentModel.amountDue}  remaining amount to be paid',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: AppConfig.smallFont + 2,
                       color: Colors.green,
                       decoration: TextDecoration.underline)),
+          SizedBox(
+            height: AppConfig.verticalBlockSize * 5,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                'Booking Id : ${appointmentModel.referenceId}',
+                textAlign: TextAlign.left,
+                style: TextStyle(fontSize: AppConfig.smallFont - 3),
+              ),
+              SizedBox(
+                height: AppConfig.verticalBlockSize * 1,
+              ),
+              Text('Category : ${appointmentModel.service.category.first}',
+                  style: TextStyle(fontSize: AppConfig.smallFont - 3)),
+            ],
+          ),
           Container(
             margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 3,
+                vertical: AppConfig.verticalBlockSize * 5,
                 horizontal: AppConfig.horizontalBlockSize * 3),
             child: Text('Create Prescription',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: AppConfig.verySmallFont + 2,
                     color: PlunesColors.GREENCOLOR,
@@ -395,5 +431,19 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
         ],
       ),
     );
+  }
+
+  Widget alreadyCancelAppointment(String btnName) {
+    return InkWell(
+        child: Text(btnName,
+            style: TextStyle(
+                fontSize: AppConfig.smallFont, color: Colors.black54)),
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) =>
+                  CustomWidgets().getCancelMessagePopup(context));
+        },
+        onDoubleTap: () {});
   }
 }

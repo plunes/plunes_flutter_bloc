@@ -156,7 +156,7 @@ class CustomWidgets {
         _imageUrl = PlunesImages.procedureImage;
       } else if (solutionList[index].category == "Test") {
         _imageUrl = PlunesImages.testImage;
-      }else if (solutionList[index].category == "NA") {
+      } else if (solutionList[index].category == "NA") {
         _imageUrl = PlunesImages.consultationImage;
       }
 
@@ -220,15 +220,17 @@ class CustomWidgets {
                                     text: solutionList[index].service ??
                                         PlunesStrings.NA,
                                     style: TextStyle(
-                                         fontSize: AppConfig.smallFont +1,
-                                       color: Colors.black,
-                                        //fontWeight: FontWeight.w500
+                                      fontSize: AppConfig.smallFont + 1,
+                                      color: Colors.black,
+                                      //fontWeight: FontWeight.w500
                                     ),
                                     children: [
                                   TextSpan(
                                       text:
                                           "(${solutionList[index].category ?? PlunesStrings.NA})",
-                                      style: TextStyle( fontSize: AppConfig.smallFont,color: Colors.green))
+                                      style: TextStyle(
+                                          fontSize: AppConfig.smallFont,
+                                          color: Colors.green))
                                 ])),
                             Padding(
                                 padding: EdgeInsets.only(
@@ -238,15 +240,20 @@ class CustomWidgets {
                                 ? (solutionList[index].createdAt == null ||
                                         solutionList[index].createdAt == 0)
                                     ? Container()
-                                    : Text(DateUtil.getDuration(
-                                        solutionList[index].createdAt), style: TextStyle(fontSize: AppConfig.smallFont))
+                                    : Text(
+                                        DateUtil.getDuration(
+                                            solutionList[index].createdAt),
+                                        style: TextStyle(
+                                            fontSize: AppConfig.smallFont))
                                 : RichText(
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     text: TextSpan(
                                       text: solutionList[index].details ??
                                           PlunesStrings.NA,
-                                      style: TextStyle(fontSize: AppConfig.verySmallFont,color: Colors.black),
+                                      style: TextStyle(
+                                          fontSize: AppConfig.verySmallFont,
+                                          color: Colors.black),
 //<<<<<<< HEAD
 ////                                        children: [
 ////                                        TextSpan(
@@ -277,7 +284,8 @@ class CustomWidgets {
                                         top: AppConfig.verticalBlockSize * 1),
                                     child: Text(
                                       "You have missed ${solutionList[index].maxDiscount.toStringAsFixed(0)}% on your ${solutionList[index].service ?? PlunesStrings.NA} Previously",
-                                      style: TextStyle( fontSize: AppConfig.smallFont,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.smallFont,
                                           color: Colors.black),
                                     ))
                                 : Container()
@@ -490,9 +498,9 @@ class CustomWidgets {
         child: Text(
           buttonName,
           style: TextStyle(
-             fontSize: AppConfig.smallFont,
-              color: textColor ?? PlunesColors.BLACKCOLOR,
-              ),
+            fontSize: AppConfig.smallFont,
+            color: textColor ?? PlunesColors.BLACKCOLOR,
+          ),
         ),
       ),
     );
@@ -731,7 +739,9 @@ class CustomWidgets {
                           solutions[index].discount == null
                               ? ""
                               : "${PlunesStrings.save} ${solutions[index].discount.toStringAsFixed(2)}%",
-                          style: TextStyle(fontSize: AppConfig.verySmallFont, color: PlunesColors.GREENCOLOR),
+                          style: TextStyle(
+                              fontSize: AppConfig.verySmallFont,
+                              color: PlunesColors.GREENCOLOR),
                         )
                       ],
                     ),
@@ -755,9 +765,11 @@ class CustomWidgets {
                         child: _showRatingBar(
                             solutions[index].rating?.toDouble() ?? 3.0)),
                     Expanded(child: Container()),
-                    Text(solutions[index].distance == null
-                        ? ""
-                        : "${solutions[index].distance.toStringAsFixed(2)} ${PlunesStrings.kmsAway}",style: TextStyle(fontSize: AppConfig.verySmallFont) )
+                    Text(
+                        solutions[index].distance == null
+                            ? ""
+                            : "${solutions[index].distance.toStringAsFixed(2)} ${PlunesStrings.kmsAway}",
+                        style: TextStyle(fontSize: AppConfig.verySmallFont))
                   ],
                 ),
           Padding(
@@ -942,7 +954,8 @@ class CustomWidgets {
             alignment: Alignment.center,
             child: Text(
               'Details',
-              style: TextStyle(fontWeight: FontWeight.w500, fontSize: AppConfig.mediumFont),
+              style: TextStyle(
+                  fontWeight: FontWeight.w500, fontSize: AppConfig.mediumFont),
             ),
           ),
           Container(
@@ -955,15 +968,15 @@ class CustomWidgets {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   Text(
-                    'Defination:',
-                    style: TextStyle(fontSize: AppConfig.smallFont,fontWeight: FontWeight.bold),
+                    'Definition:',
+                    style: TextStyle(
+                        fontSize: AppConfig.smallFont,
+                        fontWeight: FontWeight.bold),
                   ),
                   Text(
                     catalogueData.service,
                     style: TextStyle(
-                      color: Colors.black38,
-                        fontSize: AppConfig.smallFont
-                    ),
+                        color: Colors.black38, fontSize: AppConfig.smallFont),
                   ),
                   Divider(
                     color: Colors.black45,
@@ -972,15 +985,16 @@ class CustomWidgets {
                     children: <Widget>[
                       Text(
                         'Duration',
-                        style: TextStyle(fontSize: AppConfig.smallFont,fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: AppConfig.smallFont,
+                            fontWeight: FontWeight.bold),
                       ),
                       SizedBox(width: 5),
                       Text(
                         catalogueData.duration,
                         style: TextStyle(
-                          color: Colors.black45,
-                            fontSize: AppConfig.smallFont
-                        ),
+                            color: Colors.black45,
+                            fontSize: AppConfig.smallFont),
                       ),
                     ],
                   ),
@@ -990,15 +1004,15 @@ class CustomWidgets {
                   Row(children: <Widget>[
                     Text(
                       'Sittings:',
-                      style: TextStyle(fontSize: AppConfig.smallFont,fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: AppConfig.smallFont,
+                          fontWeight: FontWeight.bold),
                     ),
                     SizedBox(width: 5),
                     Text(
                       catalogueData.sitting,
                       style: TextStyle(
-                        color: Colors.black38,
-                          fontSize: AppConfig.smallFont
-                      ),
+                          color: Colors.black38, fontSize: AppConfig.smallFont),
                     ),
                   ]),
                   Divider(
@@ -1006,7 +1020,9 @@ class CustomWidgets {
                   ),
                   Text(
                     'Do\'s and Don\'t:',
-                    style: TextStyle(fontSize: AppConfig.smallFont,fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: AppConfig.smallFont,
+                        fontWeight: FontWeight.bold),
                   ),
                   Text(
                     catalogueData.dnd,
@@ -1425,12 +1441,16 @@ class CustomWidgets {
               children: <Widget>[
                 Text(
                   ' \u20B9 ${(0.0.floor() / 2)?.toStringAsFixed(1)}',
-                  style: TextStyle(fontSize: AppConfig.smallFont, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                      fontWeight: FontWeight.bold),
                 ),
                 Expanded(child: Container()),
                 Text(
                   ' \u20B9 ${appointmentModel.service.newPrice.first.toDouble()?.toStringAsFixed(1)}',
-                  style: TextStyle(fontSize: AppConfig.smallFont, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                      fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -1614,4 +1634,82 @@ class CustomWidgets {
   void share(String shareableContent) {
     Share.share(shareableContent);
   }
+
+  Widget getCancelMessagePopup(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 8,
+          vertical: AppConfig.verticalBlockSize * 40),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Column(children: <Widget>[
+          InkWell(
+            onTap: () {
+              Navigator.pop(context);
+              return;
+            },
+            onDoubleTap: () {},
+            child: Container(
+              alignment: Alignment.bottomRight,
+              padding: EdgeInsets.all(12),
+              child: Icon(
+                Icons.close,
+                color: PlunesColors.GREYCOLOR,
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 6,
+                vertical: AppConfig.verticalBlockSize * 2),
+            child: Text(
+              "Sorry! your appointment has been cancelled.",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: AppConfig.smallFont,),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
+
+  Widget getTipsConversionsPopup(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 8,
+          vertical: AppConfig.verticalBlockSize * 40),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Column(children: <Widget>[
+          InkWell(
+            onTap: () {
+              Navigator.pop(context);
+              return;
+            },
+            onDoubleTap: () {},
+            child: Container(
+              alignment: Alignment.bottomRight,
+              padding: EdgeInsets.all(12),
+              child: Icon(
+                Icons.close,
+                color: PlunesColors.GREYCOLOR,
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 6,
+                vertical: AppConfig.verticalBlockSize * 2),
+            child: Text(
+              "Tips for more Conversions",
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: AppConfig.mediumFont, fontWeight: FontWeight.bold),
+            ),
+          ),
+
+        ]),
+      ),
+    );
+  }
+
 }
