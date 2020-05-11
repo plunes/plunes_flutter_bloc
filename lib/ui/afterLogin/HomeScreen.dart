@@ -140,9 +140,9 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: <BottomNavigationBarItem>[
-        bottomNavigationBarItem(plunesStrings.home, plunesImages.homeNonActive,
-            plunesImages.homeActive),
-        bottomNavigationBarItem(plunesStrings.notification,
+        bottomNavigationBarItemForDoctor(plunesStrings.home,
+            plunesImages.homeNonActive, plunesImages.homeActive),
+        bottomNavigationBarItemForDoctor(plunesStrings.notification,
             plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
 //        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
 //            plunesImages.profileActiveIcon)
@@ -161,16 +161,31 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: <BottomNavigationBarItem>[
-        bottomNavigationBarItem(plunesStrings.home, plunesImages.homeNonActive,
-            plunesImages.homeActive),
+        bottomNavigationBarItemForDoctor(plunesStrings.home,
+            plunesImages.homeNonActive, plunesImages.homeActive),
 //        bottomNavigationBarItem(plunesStrings.plockr,
 //            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
-        bottomNavigationBarItem(plunesStrings.notification,
+        bottomNavigationBarItemForDoctor(plunesStrings.notification,
             plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
 //        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
 //            plunesImages.profileActiveIcon)
       ],
     );
+  }
+
+  BottomNavigationBarItem bottomNavigationBarItemForDoctor(
+      String title, String icon, String activeIcon) {
+    return BottomNavigationBarItem(
+        icon: (_showBadge && title == plunesStrings.notification)
+            ? badgeIconWidget(icon, 32, 32)
+            : (title == plunesStrings.notification)
+                ? widget.getAssetIconWidget(icon, 32, 32, BoxFit.contain)
+                : widget.getAssetIconWidget(icon, 32, 26, BoxFit.contain),
+        activeIcon: (title == plunesStrings.notification)
+            ? widget.getAssetIconWidget(activeIcon, 32, 32, BoxFit.contain)
+            : widget.getAssetIconWidget(activeIcon, 32, 26, BoxFit.contain),
+        title: widget.createTextWithoutColor(
+            title, 11.0, TextAlign.center, FontWeight.normal));
   }
 
   Widget getBottomNavigationViewForGeneralUser() {
@@ -198,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       String title, String icon, String activeIcon) {
     return BottomNavigationBarItem(
         icon: (_showBadge && title == plunesStrings.notification)
-            ? badgeIconWidget(icon)
+            ? badgeIconWidget(icon, 32, 32)
             : widget.getAssetIconWidget(icon, 32, 32, BoxFit.contain),
         activeIcon:
             widget.getAssetIconWidget(activeIcon, 32, 32, BoxFit.contain),
@@ -307,10 +322,10 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     });
   }
 
-  Widget badgeIconWidget(String icon) {
+  Widget badgeIconWidget(String icon, double height, double width) {
     return Stack(
       children: <Widget>[
-        widget.getAssetIconWidget(icon, 32, 32, BoxFit.contain),
+        widget.getAssetIconWidget(icon, height, width, BoxFit.contain),
         Positioned(
           right: 0,
           child: Container(

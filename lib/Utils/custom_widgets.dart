@@ -969,7 +969,7 @@ class CustomWidgets {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    catalogueData.service,
+                    catalogueData.details,
                     style: TextStyle(
                         color: Colors.black38, fontSize: AppConfig.smallFont),
                   ),

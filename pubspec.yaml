@@ -158,6 +158,8 @@ flutter:
     - assets/images/catalogue/edit.png
     - assets/images/catalogue/uploadPlus.png
     - assets/images/catalogue/view-sample.png
+    - assets/images/bottom_tabs/notification_active-icon.png
+    - assets/images/bottom_tabs/notification_inactive-icon.png
 
     - assets/images/sliders/bidding.png
     - assets/images/sliders/search.png

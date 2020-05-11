@@ -453,6 +453,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   fontSize: AppConfig.smallFont,
                   color: Colors.green,
                   decoration: TextDecoration.underline)),
+          SizedBox(height: AppConfig.verticalBlockSize * 2),
+          InkWell(
+            onTap: (){},
+            onDoubleTap: () {},
+            child: Text('Pay Now', style: TextStyle(
+                fontSize: AppConfig.smallFont,
+                color: Colors.green,
+                decoration: TextDecoration.underline)),
+          ),
           Container(
             margin: EdgeInsets.symmetric(
                 vertical: AppConfig.verticalBlockSize * 3,
