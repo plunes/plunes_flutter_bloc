@@ -3,6 +3,7 @@ import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
+import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class BookingRepo {
@@ -74,6 +75,28 @@ class BookingRepo {
         url: Urls.GET_REFUND_URL);
     if (result.isRequestSucceed) {
       return RequestSuccess(response: result.isRequestSucceed);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> confirmAppointment(String bookingId, int index) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_GET,
+        headerIncluded: true,
+        url: Urls.GET_CONFIRM_APPOINTMENT_URL,
+        queryParameter: {
+          "bookingId" :bookingId,
+        }
+     );
+    if (result.isRequestSucceed) {
+      if (result.response.data["success"] != null &&
+          result.response.data["success"]){
+        return RequestSuccess(response: result.isRequestSucceed);
+      }
+    else {
+      return RequestFailed(failureCause: PlunesStrings.appointmentFailedMessage);
+    }
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

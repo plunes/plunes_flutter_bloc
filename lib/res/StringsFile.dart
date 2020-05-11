@@ -131,6 +131,7 @@ class PlunesStrings {
   static const String dataNotFound = "Data is not found!";
 
   static const String unableToDelete = "Unable to delele!";
+  static const String appointmentFailedMessage = "Confirmation request failed";
 
   static const String deleteSuccessfully = "Deleted Successfully!";
 

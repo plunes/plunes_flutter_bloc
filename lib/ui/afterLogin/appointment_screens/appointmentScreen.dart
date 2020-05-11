@@ -18,11 +18,12 @@ class AppointmentScreen extends BaseActivity {
   final AppointmentModel appointmentModel;
   final BookingBloc bookingBloc;
   int index;
+  String bookingId;
   GlobalKey<ScaffoldState> globalKey;
   Function getAppointment;
 
   AppointmentScreen(this.appointmentModel, this.index, this.bookingBloc,
-      this.globalKey, this.getAppointment);
+      this.globalKey, this.getAppointment, {this.bookingId});
 
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();
@@ -46,7 +47,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 
   Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
     return Container(
-      color: PlunesColors.WHITECOLOR,
+      color: (widget.bookingId != null &&
+    widget.bookingId == appointmentModel.bookingId)
+        ? PlunesColors.LIGHTGREENCOLOR :PlunesColors.WHITECOLOR,
       padding:
           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
       child: Column(

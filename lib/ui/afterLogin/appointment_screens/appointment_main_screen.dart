@@ -28,26 +28,31 @@ class AppointmentMainScreen extends BaseActivity {
 }
 
 class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   AppointmentBloc _appointmentBloc;
   BookingBloc _bookingBloc;
   AppointmentResponseModel _appointmentResponse;
-  TabController _tabController;
-  ScrollController _scrollController;
+  TabController _tabDocHosController, _tabUserController;
+  ScrollController _scrollDocHosController, _scrollUserController;
   String _appointmentFailureCause;
   int index, _appointmentIndex;
   bool _isDisplay;
   List<AppointmentModel> _upComingAppointments;
-  List<AppointmentModel> _confirmedAppointments;
+  List<AppointmentModel> _confirmedDocHosAppointments;
   List<AppointmentModel> _cancelledAppointments;
+  List<AppointmentModel> _confirmedUserAppointments;
 
   @override
   void initState() {
     _upComingAppointments = [];
-    _confirmedAppointments = [];
+    _confirmedDocHosAppointments = [];
     _cancelledAppointments = [];
-    _scrollController = ScrollController();
-    _tabController = TabController(initialIndex: 0, length: 3, vsync: this);
+    _confirmedUserAppointments = [];
+    _scrollUserController = ScrollController();
+    _scrollDocHosController = ScrollController();
+    _tabDocHosController =
+        TabController(initialIndex: 0, length: 3, vsync: this);
+    _tabUserController = TabController(initialIndex: 0, length: 2, vsync: this);
     _appointmentBloc = AppointmentBloc();
     _bookingBloc = BookingBloc();
     _isDisplay = false;
@@ -101,9 +106,12 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
             _appointmentFailureCause = PlunesStrings.noAppointmentAvailable;
           }
           _upComingAppointments = [];
-          _confirmedAppointments = [];
+          _confirmedDocHosAppointments = [];
           _cancelledAppointments = [];
+          _confirmedUserAppointments = [];
           _setDocHosSpecificData();
+          _setUserSpecificData();
+          //  _scrollUserAppointment();
           _appointmentBloc.addStateInAppointmentStream(null);
         }
         if (snapShot.data is RequestFailed) {
@@ -126,15 +134,57 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     );
   }
 
+//  Widget _showUserAppointmentItems() {
+//    return ListView.builder(
+//      controller: _scrollUserController,
+//      itemBuilder: (context, index) {
+//        return AppointmentScreen(
+//          _appointmentResponse.bookings[index],
+//          index,
+//          _bookingBloc,
+//          scaffoldKey,
+//          () => _getAppointmentDetails(),
+//          bookingId: _isDisplay ? null : widget.bookingId,
+//        );
+//      },
+//      itemCount: _appointmentResponse?.bookings?.length ?? 0,
+//    );
+//  }
+
   Widget _showUserAppointmentItems() {
-    return ListView.builder(
-      itemBuilder: (context, index) {
-        return AppointmentScreen(_appointmentResponse.bookings[index], index,
-            _bookingBloc, scaffoldKey, () => _getAppointmentDetails());
-//        return CustomWidgets().getAppointmentList(_appointmentResponse, index,
-//            () => onTap(_appointmentResponse.bookings[index]));
-      },
-      itemCount: _appointmentResponse?.bookings?.length ?? 0,
+    return Column(
+      children: <Widget>[
+        TabBar(
+          controller: _tabUserController,
+          indicatorColor: PlunesColors.GREENCOLOR,
+          indicatorWeight: 3.0,
+          tabs: <Widget>[
+            Tab(
+                child: Text("Confirmed",
+                    style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                    ))),
+            Tab(
+                child: Text("Cancelled",
+                    style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                    ))),
+          ],
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabUserController,
+            children: <Widget>[
+              _confirmedUserAppointments.isEmpty
+                  ? _emptyAppointmentView()
+                  : _renderAppointmentUserList(_confirmedUserAppointments),
+              _cancelledAppointments.isEmpty
+                  ? _emptyAppointmentView()
+                  : _renderAppointmentUserList(_cancelledAppointments)
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -142,7 +192,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     return Column(
       children: <Widget>[
         TabBar(
-          controller: _tabController,
+          controller: _tabDocHosController,
           indicatorColor: PlunesColors.GREENCOLOR,
           indicatorWeight: 3.0,
           tabs: <Widget>[
@@ -165,14 +215,14 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
         ),
         Expanded(
           child: TabBarView(
-            controller: _tabController,
+            controller: _tabDocHosController,
             children: <Widget>[
               _upComingAppointments.isEmpty
                   ? _emptyAppointmentView()
                   : _renderAppointmentDocHosList(_upComingAppointments),
-              _confirmedAppointments.isEmpty
+              _confirmedDocHosAppointments.isEmpty
                   ? _emptyAppointmentView()
-                  : _renderAppointmentDocHosList(_confirmedAppointments),
+                  : _renderAppointmentDocHosList(_confirmedDocHosAppointments),
               _cancelledAppointments.isEmpty
                   ? _emptyAppointmentView()
                   : _renderAppointmentDocHosList(_cancelledAppointments)
@@ -194,9 +244,31 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     );
   }
 
+  _renderAppointmentUserList(List<AppointmentModel> appointmentList) {
+    return ListView.builder(
+      controller: _scrollUserController,
+      itemBuilder: (context, index) {
+        return Container(
+          padding: (index == 0)
+              ? EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)
+              : null,
+          child: AppointmentScreen(
+            appointmentList[index],
+            index,
+            _bookingBloc,
+            scaffoldKey,
+            () => _getAppointmentDetails(),
+            bookingId: _isDisplay ? null : widget.bookingId,
+          ),
+        );
+      },
+      itemCount: appointmentList?.length ?? 0,
+    );
+  }
+
   Widget _renderAppointmentDocHosList(List<AppointmentModel> appointmentList) {
     return ListView.builder(
-      controller: _scrollController,
+      controller: _scrollDocHosController,
       itemBuilder: (context, index) {
         return Container(
           padding: (index == 0)
@@ -216,8 +288,21 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     );
   }
 
-  void _setDocHosSpecificData() {
+  void _setUserSpecificData() {
+    if (UserManager().getUserDetails().userType == Constants.user) {
+      if (_appointmentResponse != null &&
+          _appointmentResponse.bookings != null &&
+          _appointmentResponse.bookings.isNotEmpty) {
+        _appointmentResponse.bookings.forEach((data) {
+          _setConfirmedUserAppointmentList(data);
+          _setCancelledAppointmentList(data);
+        });
+      }
+      _changeTabAfterDelayForUser();
+    }
+  }
 
+  void _setDocHosSpecificData() {
     var today = DateTime.now();
 
     if (UserManager().getUserDetails().userType != Constants.user) {
@@ -225,8 +310,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
           _appointmentResponse.bookings != null &&
           _appointmentResponse.bookings.isNotEmpty) {
         _appointmentResponse.bookings.forEach((data) {
-          _setUpcomingAppointmentList(today, data);
-          _setConfirmedAppointmentList(data);
+          _setUpcomingAppointmentList(data);
+          _setConfirmedDocHosAppointmentList(data);
           _setCancelledAppointmentList(data);
         });
       }
@@ -245,25 +330,35 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     }
   }
 
-  void _setUpcomingAppointmentList(
-      DateTime now, AppointmentModel appointmentModel) {
+  void _setUpcomingAppointmentList(AppointmentModel appointmentModel) {
     if (appointmentModel.appointmentTime != null &&
-        appointmentModel.appointmentTime.isNotEmpty) {
-      if (DateUtil.getDateFormat(now) ==
-          DateUtil.getDateFormat(DateTime.fromMillisecondsSinceEpoch(
-              int.parse(appointmentModel.appointmentTime)))) {
-        // _setTabIndex(0, appointmentModel.bookingId);
-        // _upComingAppointments.add(appointmentModel);
-      }
+        appointmentModel.appointmentTime.isNotEmpty &&
+        appointmentModel.doctorConfirmation == false &&
+        appointmentModel.bookingStatus == AppointmentModel.confirmedStatus) {
+//      if (DateUtil.getDateFormat(now) ==
+//          DateUtil.getDateFormat(DateTime.fromMillisecondsSinceEpoch(
+//              int.parse(appointmentModel.appointmentTime)))){
+      _setTabIndex(0, appointmentModel.bookingId);
+      _upComingAppointments.add(appointmentModel);
     }
   }
 
-  void _setConfirmedAppointmentList(AppointmentModel appointmentModel) {
+  void _setConfirmedDocHosAppointmentList(AppointmentModel appointmentModel) {
+    if (appointmentModel.bookingStatus != null &&
+        appointmentModel.bookingStatus.isNotEmpty &&
+        appointmentModel.bookingStatus == AppointmentModel.confirmedStatus &&
+        appointmentModel.doctorConfirmation == true) {
+      _setTabIndex(1, appointmentModel.bookingId);
+      _confirmedDocHosAppointments.add(appointmentModel);
+    }
+  }
+
+  void _setConfirmedUserAppointmentList(AppointmentModel appointmentModel) {
     if (appointmentModel.bookingStatus != null &&
         appointmentModel.bookingStatus.isNotEmpty &&
         appointmentModel.bookingStatus == AppointmentModel.confirmedStatus) {
-      _setTabIndex(1, appointmentModel.bookingId);
-      _confirmedAppointments.add(appointmentModel);
+      _setTabIndex(0, appointmentModel.bookingId);
+      _confirmedUserAppointments.add(appointmentModel);
     }
   }
 
@@ -271,8 +366,22 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     if (appointmentModel.bookingStatus != null &&
         appointmentModel.bookingStatus.isNotEmpty &&
         appointmentModel.bookingStatus == AppointmentModel.cancelledStatus) {
-      _setTabIndex(2, appointmentModel.bookingId);
+      if (UserManager().getUserDetails().userType == Constants.user) {
+        _setTabIndex(1, appointmentModel.bookingId);
+      } else if (UserManager().getUserDetails().userType != Constants.user) {
+        _setTabIndex(2, appointmentModel.bookingId);
+      }
       _cancelledAppointments.add(appointmentModel);
+    }
+  }
+
+  void _changeTabAfterDelayForUser() async {
+    print("called me $index");
+    if (index != null) {
+      Future.delayed(Duration(milliseconds: 700)).then((value) {
+        _tabUserController.animateTo(index);
+        _scrollUserAppointment();
+      });
     }
   }
 
@@ -280,11 +389,27 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     print("called me $index");
     if (index != null) {
       Future.delayed(Duration(milliseconds: 700)).then((value) {
-        _tabController.animateTo(index);
+        _tabDocHosController.animateTo(index);
         print("called me twice $index");
         _scrollToAppointment();
       });
     }
+  }
+
+  void _scrollUserAppointment() {
+    Future.delayed(Duration(milliseconds: 700)).then((value) {
+      AppointmentModel appointmentModel =
+          AppointmentModel(bookingId: widget.bookingId);
+      _appointmentIndex =
+          _appointmentResponse.bookings?.indexOf(appointmentModel);
+      if (_appointmentIndex != null && _appointmentIndex >= 0) {
+        _scrollUserController.animateTo(
+            _appointmentIndex.toDouble() * AppConfig.verticalBlockSize * 48,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.ease);
+        _removeBookingId();
+      }
+    });
   }
 
   void _scrollToAppointment() {
@@ -293,11 +418,12 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
           AppointmentModel(bookingId: widget.bookingId);
       _appointmentIndex = _upComingAppointments?.indexOf(appointmentModel);
       if (_appointmentIndex == null || _appointmentIndex < 0)
-        _appointmentIndex = _confirmedAppointments?.indexOf(appointmentModel);
+        _appointmentIndex =
+            _confirmedDocHosAppointments?.indexOf(appointmentModel);
       if (_appointmentIndex == null || _appointmentIndex < 0)
         _appointmentIndex = _cancelledAppointments?.indexOf(appointmentModel);
       if (_appointmentIndex != null && _appointmentIndex >= 0) {
-        _scrollController.animateTo(
+        _scrollDocHosController.animateTo(
             _appointmentIndex.toDouble() * AppConfig.verticalBlockSize * 48,
             duration: Duration(milliseconds: 500),
             curve: Curves.ease);

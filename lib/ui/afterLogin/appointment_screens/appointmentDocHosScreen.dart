@@ -128,13 +128,18 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                InkWell(
-                  child: Text(appointmentModel.bookingStatus,
-                      style: TextStyle(
-                          fontSize: AppConfig.smallFont, color: Colors.green)),
-                  onTap: () {},
-                  onDoubleTap: () {},
-                ),
+                (appointmentModel.doctorConfirmation == false &&
+                        appointmentModel.bookingStatus ==
+                            AppointmentModel.confirmedStatus)
+                    ? confirmAppointment("Click to Confirm")
+                    : InkWell(
+                        child: Text(appointmentModel.bookingStatus,
+                            style: TextStyle(
+                                fontSize: AppConfig.smallFont,
+                                color: Colors.green)),
+                        onTap: () {},
+                        onDoubleTap: () {},
+                      ),
                 (appointmentModel.bookingStatus !=
                         AppointmentModel.cancelledStatus)
                     ? InkWell(
@@ -433,6 +438,19 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
     );
   }
 
+  Widget confirmAppointment(String btnName) {
+    return InkWell(
+        child: Text(btnName,
+            style: TextStyle(
+                fontSize: AppConfig.smallFont, color: Colors.black54)),
+        onTap: () {
+          showDialog(
+              context: context,
+              builder: (BuildContext context) =>
+                  CustomWidgets().getDocHosConfirmAppointmentPopUp(context));
+        },
+        onDoubleTap: () {});
+  }
   Widget alreadyCancelAppointment(String btnName) {
     return InkWell(
         child: Text(btnName,

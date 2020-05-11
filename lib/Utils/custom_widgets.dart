@@ -7,24 +7,19 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
-import 'package:plunes/blocs/booking_blocs/appointment_bloc.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/actionable_insights_response_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
-import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/models/solution_models/test_and_procedure_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
-import 'package:plunes/res/FontFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:share/share.dart';
-
 import 'app_config.dart';
 
 ///This class holds all the common widgets.
@@ -1665,7 +1660,9 @@ class CustomWidgets {
             child: Text(
               "Sorry! your appointment has been cancelled.",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: AppConfig.smallFont,),
+              style: TextStyle(
+                fontSize: AppConfig.smallFont,
+              ),
             ),
           ),
         ]),
@@ -1677,7 +1674,7 @@ class CustomWidgets {
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: AppConfig.horizontalBlockSize * 8,
-          vertical: AppConfig.verticalBlockSize * 40),
+          vertical: AppConfig.verticalBlockSize * 20),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Column(children: <Widget>[
@@ -1693,6 +1690,7 @@ class CustomWidgets {
               child: Icon(
                 Icons.close,
                 color: PlunesColors.GREYCOLOR,
+                size: 30,
               ),
             ),
           ),
@@ -1703,13 +1701,122 @@ class CustomWidgets {
             child: Text(
               "Tips for more Conversions",
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: AppConfig.mediumFont, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: AppConfig.mediumFont, fontWeight: FontWeight.bold),
             ),
           ),
-
+          Container(
+            height: AppConfig.verticalBlockSize * 40,
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 5,
+                vertical: AppConfig.verticalBlockSize * 2),
+            alignment: Alignment.center,
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  iconWithText("Call up the Patients"),
+                  iconWithText("Make Them Comfortable"),
+                  iconWithText(
+                      "Please respect the time of patients as they care about it most"),
+                  iconWithText("Introduce proper communication with Patients"),
+                ],
+              ),
+            ),
+          ),
         ]),
       ),
     );
   }
 
+  Widget iconWithText(String textMsg) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Image.asset(
+          PlunesImages.bulbIconForTips,
+          width: 40,
+        ),
+        SizedBox(
+          width: AppConfig.horizontalBlockSize * 3,
+        ),
+        Expanded(
+            child: Text(
+          textMsg,
+          style: TextStyle(fontSize: AppConfig.smallFont),
+        )),
+        SizedBox(
+          height: AppConfig.verticalBlockSize * 10,
+        ),
+      ],
+    );
+  }
+
+  Widget getDocHosConfirmAppointmentPopUp(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 8,
+          vertical: AppConfig.verticalBlockSize * 33),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Column(children: <Widget>[
+          InkWell(
+            onTap: () {
+              Navigator.pop(context);
+              return;
+            },
+            onDoubleTap: () {},
+            child: Container(
+              alignment: Alignment.bottomRight,
+              padding: EdgeInsets.all(12),
+              child: Icon(
+                Icons.close,
+                color: PlunesColors.GREYCOLOR,
+                size: 35,
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize*2),
+            child: Text("Confirm Appointmen for Patient ?",textAlign: TextAlign.center,
+                style: TextStyle(fontSize: AppConfig.mediumFont)),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize*4, bottom: AppConfig.verticalBlockSize*2),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                InkWell(
+                  onTap: () {},
+                  onDoubleTap: () {},
+                  child: getRoundedButton(
+                      "Yes",
+                      AppConfig.horizontalBlockSize * 5,
+                      PlunesColors.GREENCOLOR,
+                      AppConfig.horizontalBlockSize * 10,
+                      AppConfig.verticalBlockSize * 1,
+                      PlunesColors.WHITECOLOR),
+                ),
+                SizedBox(
+                  width: AppConfig.horizontalBlockSize * 10,
+                ),
+                InkWell(
+                  onTap: () {},
+                  onDoubleTap: () {},
+                  child: getRoundedButton(
+                      "No",
+                      AppConfig.horizontalBlockSize * 5,
+                      PlunesColors.WHITECOLOR,
+                      AppConfig.horizontalBlockSize * 10,
+                      AppConfig.verticalBlockSize * 1,
+                      PlunesColors.BLACKCOLOR,    hasBorder:true,),
+                )
+              ],
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
 }
