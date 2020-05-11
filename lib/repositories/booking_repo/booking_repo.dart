@@ -80,7 +80,7 @@ class BookingRepo {
     }
   }
 
-  Future<RequestState> confirmAppointment(String bookingId, int index) async {
+  Future<RequestState> confirmAppointment(String bookingId) async {
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true,

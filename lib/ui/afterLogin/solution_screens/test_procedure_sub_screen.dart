@@ -290,11 +290,11 @@ class _TestProcedureSubScreenState
                 )));
   }
 
-  _onViewMoreTap(int solution) {
+  _onViewMoreTap(CatalogueData catalogueData) {
     showDialog(
       context: context,
       builder: (BuildContext context) => CustomWidgets().buildViewMoreDialog(
-        catalogueData: CatalogueData(),
+        catalogueData: catalogueData,
       ),
     );
   }
@@ -367,7 +367,7 @@ class _TestProcedureSubScreenState
     return ListView.builder(
       itemBuilder: (context, index) {
         TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
-          ..onTap = () => _onViewMoreTap(index);
+          ..onTap = () => _onViewMoreTap(catalogueList[index]);
         return CustomWidgets().getSolutionRow(catalogueList, index,
             onButtonTap: () => _onSolutionItemTap(catalogueList[index]),
             onViewMoreTap: tapRecognizer);

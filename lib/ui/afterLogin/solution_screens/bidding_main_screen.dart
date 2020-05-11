@@ -19,6 +19,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import './previous_activity_screen.dart';
 
@@ -314,7 +315,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => BiddingLoading(
+            builder: (context) =>SolutionReceivedScreen(
                   catalogueData: catalogueData,
                 )));
     _getPreviousSolutions();

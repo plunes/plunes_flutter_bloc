@@ -141,6 +141,8 @@ class PlunesStrings {
 
   static const String invalidOtp = "Invalid OTP";
 
+  static const String  confirmFailedMessage = 'booking confirmation failed';
+
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

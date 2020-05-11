@@ -131,7 +131,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                 (appointmentModel.doctorConfirmation == false &&
                         appointmentModel.bookingStatus ==
                             AppointmentModel.confirmedStatus)
-                    ? confirmAppointment("Click to Confirm")
+                    ? confirmAppointment(
+                        "Click to Confirm", _bookingBloc, appointmentModel)
                     : InkWell(
                         child: Text(appointmentModel.bookingStatus,
                             style: TextStyle(
@@ -438,19 +439,29 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
     );
   }
 
-  Widget confirmAppointment(String btnName) {
+  Widget confirmAppointment(String btnName, BookingBloc bookingBloc,
+      AppointmentModel appointmentModel) {
     return InkWell(
         child: Text(btnName,
             style: TextStyle(
                 fontSize: AppConfig.smallFont, color: Colors.black54)),
         onTap: () {
           showDialog(
-              context: context,
-              builder: (BuildContext context) =>
-                  CustomWidgets().getDocHosConfirmAppointmentPopUp(context));
+                  context: context,
+                  builder: (BuildContext context) => CustomWidgets()
+                      .getDocHosConfirmAppointmentPopUp(
+                          context, bookingBloc, appointmentModel))
+              .then((value) async {
+            if (value != null && value is String && value == "No") {
+              await _bookingBloc.cancelAppointment(
+                  appointmentModel.bookingId, index);
+            }
+          });
+          widget.getAppointment();
         },
         onDoubleTap: () {});
   }
+
   Widget alreadyCancelAppointment(String btnName) {
     return InkWell(
         child: Text(btnName,

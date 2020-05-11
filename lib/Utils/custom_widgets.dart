@@ -905,18 +905,6 @@ class CustomWidgets {
     CatalogueData catalogueData,
   }) {
     return StatefulBuilder(builder: (context, newState) {
-      if (catalogueData.service == null) {
-        catalogueData.service = 'NA';
-      }
-      if (catalogueData.dnd == null) {
-        catalogueData.dnd = 'NA';
-      }
-      if (catalogueData.sitting == null) {
-        catalogueData.sitting = 'NA';
-      }
-      if (catalogueData.duration == null) {
-        catalogueData.duration = 'NA';
-      }
       return Dialog(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -969,7 +957,7 @@ class CustomWidgets {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    catalogueData.details,
+                    catalogueData.details ?? PlunesStrings.NA,
                     style: TextStyle(
                         color: Colors.black38, fontSize: AppConfig.smallFont),
                   ),
@@ -986,7 +974,7 @@ class CustomWidgets {
                       ),
                       SizedBox(width: 5),
                       Text(
-                        catalogueData.duration,
+                        catalogueData.duration ?? PlunesStrings.NA,
                         style: TextStyle(
                             color: Colors.black45,
                             fontSize: AppConfig.smallFont),
@@ -1005,7 +993,7 @@ class CustomWidgets {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      catalogueData.sitting,
+                      catalogueData.sitting ?? PlunesStrings.NA,
                       style: TextStyle(
                           color: Colors.black38, fontSize: AppConfig.smallFont),
                     ),
@@ -1020,7 +1008,7 @@ class CustomWidgets {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    catalogueData.dnd,
+                    catalogueData.dnd ?? PlunesStrings.NA,
                     style: TextStyle(
                       fontSize: AppConfig.smallFont,
                       color: Colors.black38,
@@ -1752,70 +1740,121 @@ class CustomWidgets {
     );
   }
 
-  Widget getDocHosConfirmAppointmentPopUp(BuildContext context) {
+  Widget getDocHosConfirmAppointmentPopUp(BuildContext context,
+      BookingBloc bookingBloc, AppointmentModel appointmentModel) {
+    bool isSuccess = false;
+    String failureMessage;
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: AppConfig.horizontalBlockSize * 8,
           vertical: AppConfig.verticalBlockSize * 33),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Column(children: <Widget>[
-          InkWell(
-            onTap: () {
-              Navigator.pop(context);
-              return;
-            },
-            onDoubleTap: () {},
-            child: Container(
-              alignment: Alignment.bottomRight,
-              padding: EdgeInsets.all(12),
-              child: Icon(
-                Icons.close,
-                color: PlunesColors.GREYCOLOR,
-                size: 35,
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize*2),
-            child: Text("Confirm Appointmen for Patient ?",textAlign: TextAlign.center,
-                style: TextStyle(fontSize: AppConfig.mediumFont)),
-          ),
-          Container(
-            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize*4, bottom: AppConfig.verticalBlockSize*2),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
+        child: StreamBuilder<Object>(
+            stream: bookingBloc.confirmAppointmentByDocHosStream,
+            builder: (context, snapshot) {
+              if (snapshot.data != null && snapshot.data is RequestInProgress) {
+                return CustomWidgets().getProgressIndicator();
+              }
+              if (snapshot.data != null && snapshot.data is RequestSuccess) {
+                isSuccess = true;
+              }
+              if (snapshot.data != null && snapshot.data is RequestFailed) {
+                RequestFailed requestFailed = snapshot.data;
+                failureMessage = requestFailed.failureCause ??
+                    PlunesStrings.confirmFailedMessage;
+                bookingBloc.addStateInConfirmProvider(null);
+              }
+              return Column(children: <Widget>[
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.pop(context);
+                    return;
+                  },
                   onDoubleTap: () {},
-                  child: getRoundedButton(
-                      "Yes",
-                      AppConfig.horizontalBlockSize * 5,
-                      PlunesColors.GREENCOLOR,
-                      AppConfig.horizontalBlockSize * 10,
-                      AppConfig.verticalBlockSize * 1,
-                      PlunesColors.WHITECOLOR),
+                  child: Container(
+                    alignment: Alignment.bottomRight,
+                    padding: EdgeInsets.all(12),
+                    child: Icon(
+                      Icons.close,
+                      color: PlunesColors.GREYCOLOR,
+                      size: 35,
+                    ),
+                  ),
                 ),
-                SizedBox(
-                  width: AppConfig.horizontalBlockSize * 10,
+                isSuccess
+                    ? Container(
+                        margin: EdgeInsets.symmetric(
+                            vertical: AppConfig.verticalBlockSize * 2),
+                        child: Text("Appointment successfully confirmed by you",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: AppConfig.mediumFont)),
+                      )
+                    : Container(
+                        margin: EdgeInsets.symmetric(
+                            vertical: AppConfig.verticalBlockSize * 2),
+                        child: Text("Confirm Appointmen for Patient ?",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: AppConfig.mediumFont)),
+                      ),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 4,
+                      bottom: AppConfig.verticalBlockSize * 2),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      InkWell(
+                        onTap: () {
+                          if (appointmentModel != null) {
+                            bookingBloc.confirmAppointmentByDocHos(
+                                appointmentModel.bookingId);
+                          }
+                        },
+                        onDoubleTap: () {},
+                        child: getRoundedButton(
+                            "Yes",
+                            AppConfig.horizontalBlockSize * 5,
+                            PlunesColors.GREENCOLOR,
+                            AppConfig.horizontalBlockSize * 10,
+                            AppConfig.verticalBlockSize * 1,
+                            PlunesColors.WHITECOLOR),
+                      ),
+                      failureMessage == null || failureMessage.isEmpty
+                          ? Container()
+                          : Container(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1),
+                              child: Text(
+                                failureMessage,
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                      SizedBox(
+                        width: AppConfig.horizontalBlockSize * 10,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.pop(context, "No");
+                          return;
+                        },
+                        onDoubleTap: () {},
+                        child: getRoundedButton(
+                          "No",
+                          AppConfig.horizontalBlockSize * 5,
+                          PlunesColors.WHITECOLOR,
+                          AppConfig.horizontalBlockSize * 10,
+                          AppConfig.verticalBlockSize * 1,
+                          PlunesColors.BLACKCOLOR,
+                          hasBorder: true,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-                InkWell(
-                  onTap: () {},
-                  onDoubleTap: () {},
-                  child: getRoundedButton(
-                      "No",
-                      AppConfig.horizontalBlockSize * 5,
-                      PlunesColors.WHITECOLOR,
-                      AppConfig.horizontalBlockSize * 10,
-                      AppConfig.verticalBlockSize * 1,
-                      PlunesColors.BLACKCOLOR,    hasBorder:true,),
-                )
-              ],
-            ),
-          ),
-        ]),
+              ]);
+            }),
       ),
     );
   }

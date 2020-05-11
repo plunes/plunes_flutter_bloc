@@ -42,23 +42,22 @@ class BookingBloc extends BlocBase {
   }
 
   Future cancelAppointment(String bookingId, int index) async {
-    print('index is $index');
-    addStateInCancelProvider(RequestInProgress(requestCode:index ));
+    addStateInCancelProvider(RequestInProgress(requestCode: index));
     var result = await BookingRepo().cancelAppointment(bookingId, index);
     addStateInCancelProvider(result);
     return result;
   }
 
- Future refundAppointment(String bookingId, String reason) async{
+  Future refundAppointment(String bookingId, String reason) async {
     addStateInRefundProvider(RequestInProgress());
     var result = await BookingRepo().refundAppointment(bookingId, reason);
     addStateInRefundProvider(result);
     return result;
   }
 
-  Future confirmAppointmentByDocHos(String bookingId, int index) async {
-    addStateInConfirmProvider(RequestInProgress(requestCode: index));
-    var result = await BookingRepo().confirmAppointment(bookingId, index);
+  Future confirmAppointmentByDocHos(String bookingId) async {
+    addStateInConfirmProvider(RequestInProgress());
+    var result = await BookingRepo().confirmAppointment(bookingId);
     addStateInConfirmProvider(result);
     return result;
   }
@@ -68,6 +67,7 @@ class BookingBloc extends BlocBase {
     _rescheduleAppointmentProvider?.close();
     _cancelAppointmentProvider?.close();
     _refundAppointmentProvider?.close();
+    _confirmAppointmentByDocHosProvider?.close();
     super.dispose();
   }
 
@@ -79,11 +79,11 @@ class BookingBloc extends BlocBase {
     addStateInGenericStream(_cancelAppointmentProvider, state);
   }
 
-  void addStateInRefundProvider(RequestState state){
+  void addStateInRefundProvider(RequestState state) {
     addStateInGenericStream(_refundAppointmentProvider, state);
   }
 
   void addStateInConfirmProvider(RequestState state) {
-    addStateInGenericStream(_confirmAppointmentByDocHosProvider,state);
+    addStateInGenericStream(_confirmAppointmentByDocHosProvider, state);
   }
 }
