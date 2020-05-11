@@ -62,6 +62,7 @@
 **/ios/Flutter/app.zip
 **/ios/Flutter/flutter_assets/
 **/ios/ServiceDefinitions.json
+**/ios/Flutter/Flutter.framework/Flutter
 **/ios/Runner/GeneratedPluginRegistrant.*
 
 # Exceptions to above rules.
