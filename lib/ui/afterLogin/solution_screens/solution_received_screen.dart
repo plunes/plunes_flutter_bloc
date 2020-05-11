@@ -108,9 +108,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         ));
   }
 
-  Widget _showContent() {
+  Widget _showContent(ScrollController sc) {
     return ListView.builder(
         shrinkWrap: true,
+        controller: sc,
         itemBuilder: (context, index) {
           return CustomWidgets().getDocOrHospitalDetailWidget(
               _searchedDocResults.solution?.services ?? [],
@@ -213,7 +214,152 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Widget _showBody() {
-    return Container(
+    return SlidingUpPanel(
+      body: Container(
+        color: PlunesColors.WHITECOLOR,
+        padding: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
+        child: Stack(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 3,
+                      vertical: AppConfig.verticalBlockSize * 1),
+                  child: CustomWidgets().searchBar(
+                      searchController: _searchController,
+                      hintText: PlunesStrings.chooseLocation,
+                      focusNode: _focusNode,
+                      searchBarHeight: 5.5),
+                ),
+                Expanded(
+                  child: GoogleMap(
+                      padding: EdgeInsets.all(0.0),
+                      myLocationEnabled: false,
+                      markers: _markers,
+                      myLocationButtonEnabled: false,
+                      onMapCreated: (mapController) {
+                        if (!_googleMapController.isCompleted)
+                          _googleMapController.complete(mapController);
+                      },
+                      initialCameraPosition: CameraPosition(
+                          target: LatLng(double.tryParse(_user.latitude) ?? lat,
+                              double.tryParse(_user.longitude) ?? long),
+                          zoom: 7.0)),
+                  flex: 3,
+                ),
+                Expanded(
+                  child: Container(),
+                  flex: 3,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      maxHeight: AppConfig.verticalBlockSize * 70,
+      minHeight: AppConfig.verticalBlockSize * 38,
+      collapsed:
+          (_timer != null && _timer.isActive) ? holdOnPopUp : Container(),
+      panelBuilder: (sc) {
+        return Column(
+          children: <Widget>[
+            Card(
+              elevation: 0.0,
+              margin: EdgeInsets.all(0.0),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 4,
+                        vertical: AppConfig.verticalBlockSize * 2),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: Text(
+                            widget.catalogueData.service ?? PlunesStrings.NA,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        Expanded(child: Container()),
+                        Column(
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.only(top: 6),
+                            ),
+                            InkWell(
+                              onTap: () => _viewDetails(),
+                              child: CustomWidgets().getRoundedButton(
+                                  PlunesStrings.viewDetails,
+                                  AppConfig.horizontalBlockSize * 8,
+                                  PlunesColors.GREENCOLOR,
+                                  AppConfig.horizontalBlockSize * 3,
+                                  AppConfig.verticalBlockSize * 1,
+                                  PlunesColors.WHITECOLOR),
+                            ),
+                            Container(
+                              alignment: Alignment.topRight,
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1),
+                              child: _solutionReceivedTime == null ||
+                                      _solutionReceivedTime == 0
+                                  ? Container()
+                                  : StreamBuilder(
+                                      builder: (context, snapShot) {
+                                        return Text(
+                                          DateUtil.getDuration(
+                                                  _solutionReceivedTime) ??
+                                              PlunesStrings.NA,
+                                          style: TextStyle(
+                                              fontSize:
+                                                  AppConfig.verySmallFont),
+                                        );
+                                      },
+                                      stream: _streamForTimer.stream,
+                                    ),
+                            )
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              color: PlunesColors.WHITECOLOR,
+            ),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 4,
+                    vertical: AppConfig.verticalBlockSize * 2),
+                child: StreamBuilder<RequestState>(
+                  builder: (context, snapShot) {
+                    if (snapShot.data is RequestSuccess) {
+                      RequestSuccess _successObject = snapShot.data;
+                      _searchedDocResults = _successObject.response;
+                      _searchSolutionBloc.addIntoDocHosStream(null);
+                      _checkShouldTimerRun();
+                    } else if (snapShot.data is RequestFailed) {
+                      RequestFailed _failedObject = snapShot.data;
+                      _failureCause = _failedObject.failureCause;
+                      _searchSolutionBloc.addIntoDocHosStream(null);
+                      _cancelNegotiationTimer();
+                    }
+                    return _showContent(sc);
+                  },
+                  stream: _searchSolutionBloc.getDocHosStream(),
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    Container(
       color: PlunesColors.WHITECOLOR,
       padding: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
       child: Stack(
@@ -293,9 +439,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                     ? Container()
                                     : StreamBuilder(
                                         builder: (context, snapShot) {
-                                          return Text(DateUtil.getDuration(
-                                                  _solutionReceivedTime) ??
-                                              PlunesStrings.NA, style: TextStyle(fontSize: AppConfig.verySmallFont),);
+                                          return Text(
+                                            DateUtil.getDuration(
+                                                    _solutionReceivedTime) ??
+                                                PlunesStrings.NA,
+                                            style: TextStyle(
+                                                fontSize:
+                                                    AppConfig.verySmallFont),
+                                          );
                                         },
                                         stream: _streamForTimer.stream,
                                       ),
@@ -323,7 +474,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                               _searchSolutionBloc.addIntoDocHosStream(null);
                               _cancelNegotiationTimer();
                             }
-                            return _showContent();
+//                            return _showContent();
                           },
                           stream: _searchSolutionBloc.getDocHosStream(),
                         ),
@@ -347,7 +498,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       builder: (BuildContext context) => CustomWidgets()
           .buildViewMoreDialog(catalogueData: widget.catalogueData),
     );
-//    print("view details");
   }
 
   final holdOnPopUp = Container(
@@ -398,7 +548,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                               child: Text(
                                 "We are negotiating the best fee for you."
                                 "It may take sometime, we'll update you.",
-                                style: TextStyle(fontSize: AppConfig.smallFont,
+                                style: TextStyle(
+                                    fontSize: AppConfig.smallFont,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w500),
                               ),

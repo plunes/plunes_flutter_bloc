@@ -224,6 +224,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
             RequestSuccess requestSuccess = snapshot.data;
             _plockrResponseModel = requestSuccess.response;
             _originalDataList = _plockrResponseModel.uploadedReports;
+            _originalDataList.addAll(_plockrResponseModel.sharedReports);
             _plockrBloc.addStateInPlockerReportStream(null);
           }
           if (snapshot.data != null && snapshot.data is RequestFailed) {

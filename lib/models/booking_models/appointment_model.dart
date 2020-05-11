@@ -54,6 +54,7 @@ class AppointmentModel {
   num amountPaidCredits;
   String bookingId;
   String referenceId;
+  bool doctorConfirmation;
 
   @override
   bool operator ==(Object other) =>
@@ -98,6 +99,7 @@ class AppointmentModel {
     this.refundReason,
     this.refundStatus,
     this.referenceId,
+    this.doctorConfirmation,
   });
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
@@ -133,6 +135,7 @@ class AppointmentModel {
     refundReason = json['refundReason'];
     refundStatus = json['refundStatus'];
     referenceId = json['referenceId'];
+    doctorConfirmation = json['doctorConfirmation'];
   }
 
   Map<String, dynamic> toJson() {
@@ -167,6 +170,7 @@ class AppointmentModel {
     data['refundReason'] = this.refundReason;
     data['refundStatus'] = this.refundStatus;
     data['referenceId'] = this.referenceId;
+    data['doctorConfirmation'] = this.doctorConfirmation;
     return data;
   }
 }
