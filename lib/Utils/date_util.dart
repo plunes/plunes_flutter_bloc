@@ -34,7 +34,7 @@ class DateUtil {
 
   static String getMonthYear(DateTime date) {
     if (date == null) return PlunesStrings.NA;
-    var _dateFormat = DateFormat('MMM yy');
+    var _dateFormat = DateFormat('MMM yyyy');
     try {
       return _dateFormat.format(date);
     } catch (e) {

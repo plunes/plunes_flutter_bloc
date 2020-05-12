@@ -363,8 +363,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       //height: AppConfig.verticalBlockSize * 10,
       child: DatePicker(
         _currentDate,
-        width: AppConfig.horizontalBlockSize*12,
-        height: AppConfig.verticalBlockSize * 12,
+        width: AppConfig.horizontalBlockSize*13,
+        height: AppConfig.verticalBlockSize * 14,
         daysCount: 100,
         initialSelectedDate: _currentDate,
         dateTextStyle: TextStyle(
@@ -448,7 +448,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 height: 0.5,
                 color: PlunesColors.GREYCOLOR,
               ),
-              Text(PlunesStrings.availableCash),
+              Text(PlunesStrings.availableCash, style: TextStyle(fontSize: AppConfig.smallFont),),
+              SizedBox(height: AppConfig.verticalBlockSize*1,),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -461,7 +462,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   ),
                   Text(
                     _userProfileInfo.user.credits,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: AppConfig.smallFont, ),
                   ),
                 ],
               ),
@@ -485,7 +486,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       Padding(
                         padding: EdgeInsets.only(
                             left: AppConfig.horizontalBlockSize * 2),
-                        child: Text("Apply Cash  "),
+                        child: Text("Apply Cash  ", style: TextStyle(fontSize: AppConfig.smallFont),),
                       )
                     ],
                   ),

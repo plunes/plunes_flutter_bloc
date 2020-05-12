@@ -120,7 +120,6 @@ class UserManager {
         queryParameter: {'mobileNumber': mobileNumber});
     if (result.isRequestSucceed) {
       GetOtpModel _getOtp = GetOtpModel.fromJson(result.response.data);
-      print(_getOtp);
       return RequestSuccess(response: _getOtp);
     } else {
       return RequestFailed(response: result.failureCause);

@@ -48,7 +48,7 @@ class AppointmentModel {
   bool isOpened = false;
 
   // List<num> paymentOption;
-  String paymentPercentage;
+  String paymentPercent;
   num amountPaid;
   num amountDue;
   num amountPaidCredits;
@@ -67,6 +67,8 @@ class AppointmentModel {
   int get hashCode => bookingId.hashCode;
   String refundReason;
   String refundStatus;
+  bool visitAgain;
+  String serviceType;
   static const String confirmedStatus = "Confirmed";
   static const String cancelledStatus = "Cancelled";
 
@@ -91,7 +93,7 @@ class AppointmentModel {
     this.service,
     this.isOpened,
     // this.paymentOption,
-    this.paymentPercentage,
+    this.paymentPercent,
     this.amountPaid,
     this.amountPaidCredits,
     this.amountDue,
@@ -100,6 +102,8 @@ class AppointmentModel {
     this.refundStatus,
     this.referenceId,
     this.doctorConfirmation,
+    this.visitAgain,
+    this.serviceType,
   });
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
@@ -127,7 +131,7 @@ class AppointmentModel {
       service = new Services.fromJson(json['service']);
     }
     // paymentOption = json['paymentOption'];
-    paymentPercentage = json['paymentPercentage'];
+    paymentPercent = json['paymentPercent'];
     amountPaid = json['amountPaid'];
     amountPaidCredits = json['amountPaidCredits'];
     amountDue = json['amountDue'];
@@ -136,6 +140,8 @@ class AppointmentModel {
     refundStatus = json['refundStatus'];
     referenceId = json['referenceId'];
     doctorConfirmation = json['doctorConfirmation'];
+    visitAgain = json['visitAgain'];
+    serviceType = json['serviceType'];
   }
 
   Map<String, dynamic> toJson() {
@@ -162,7 +168,7 @@ class AppointmentModel {
     data['rescheduled'] = this.rescheduled;
     data['services'] = this.service;
     // data['paymentOption'] = this.paymentOption;
-    data['paymentPercentage'] = this.paymentPercentage;
+    data['paymentPercent'] = this.paymentPercent;
     data['amountPaid'] = this.amountPaid;
     data['amountPaidCredits'] = this.amountPaidCredits;
     data['amountDue'] = this.amountDue;
@@ -171,6 +177,8 @@ class AppointmentModel {
     data['refundStatus'] = this.refundStatus;
     data['referenceId'] = this.referenceId;
     data['doctorConfirmation'] = this.doctorConfirmation;
+    data['visitAgain'] = this.visitAgain;
+    data['serviceType'] = this.serviceType;
     return data;
   }
 }

@@ -231,7 +231,7 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
     return InkWell(
       onTap: () {
         if (controller == dobController)
-          CommonMethods.selectDate(context).then((value) {
+          CommonMethods.selectHoloTypeDate(context).then((value) {
             dobController.text = value;
           });
         else if (controller == locationController)

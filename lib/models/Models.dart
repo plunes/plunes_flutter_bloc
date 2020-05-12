@@ -128,6 +128,7 @@ class User {
       gender,
       birthDate,
       referralCode,
+      userReferralCode,
       coverImageUrl,
       mobileNumber,
       latitude,
@@ -174,7 +175,8 @@ class User {
       this.about,
       this.speciality,
       this.prescriptionLogoUrl,
-      this.credits});
+      this.credits,
+      this.userReferralCode});
 
   factory User.fromJson(Map<String, dynamic> json) {
     List<TimeSlotsData> _timeSlots = [];
@@ -194,7 +196,7 @@ class User {
       verifiedUser: json['verifiedUser'] != null ? json['verifiedUser'] : false,
       userType: json['userType'] != null ? json['userType'] : '',
       address: json['address'] != null ? json['address'] : '',
-      referralCode: json['referralCode'] != null ? json['referralCode'] : '',
+      referralCode: json['userReferralCode'] != null ? json['userReferralCode'] : null,
       coverImageUrl: json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
       specialities: json['specialities'] != null
           ? List<ProcedureList>.from(
@@ -235,6 +237,7 @@ class User {
       credits:
           json['credits'].toString() != null ? json['credits'].toString() : '0',
       speciality: json['specialityName'],
+      userReferralCode: json['userReferralCode'],
       timeSlots: _timeSlots,
     );
   }

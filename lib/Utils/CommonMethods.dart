@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:intro_slider/intro_slider.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -17,6 +18,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 
 /*
  * Created by - Plunes Technologies .
@@ -232,6 +234,22 @@ class CommonMethods {
         : '';
   }
 
+  static Future<String> selectHoloTypeDate(BuildContext context) async {
+    var now = new DateTime.now();
+    DateTime twelveYearsBack = now.subtract(new Duration(days: 0));
+    final DateTime picked =
+        await DatePicker.showSimpleDatePicker(context,
+          initialDate:  twelveYearsBack,
+          firstDate: new DateTime(1900),
+          lastDate: twelveYearsBack,
+          dateFormat: "dd MMMM yyyy",
+          locale: DateTimePickerLocale.en_us,
+          looping: true,
+        );
+    return picked!=null?  DateFormat('dd MMM yyyy').format(DateTime.parse(picked.toString()))
+    : '';
+  }
+
   ///Below method is used for open default Time Picker Dialog.
   static Future<String> selectTime(BuildContext context, String time) async {
     TimeOfDay _startTime = TimeOfDay(
@@ -379,15 +397,16 @@ class CommonMethods {
             child: Opacity(
               opacity: a1.value,
               child: AlertDialog(
+                shape: RoundedRectangleBorder(borderRadius:BorderRadius.circular(AppConfig.horizontalBlockSize*3)),
                 contentPadding: EdgeInsets.zero,
                 content: Container(
-                    margin: EdgeInsets.fromLTRB(25, 10, 10, 0),
-                    child: Text(action)),
+                    margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize*6, horizontal: AppConfig.horizontalBlockSize*15),
+                    child: Text(action, style: TextStyle(fontSize:AppConfig.mediumFont),)),
                 actions: <Widget>[
                   new FlatButton(
                     child: new Text(
                       "No",
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(fontSize:AppConfig.mediumFont,color: Colors.grey),
                     ),
                     onPressed: () {
                       Navigator.pop(
@@ -396,9 +415,10 @@ class CommonMethods {
                     },
                   ),
                   new FlatButton(
+                    padding: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*4),
                     child: new Text(
                       "Yes",
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(fontSize:AppConfig.mediumFont,color: Colors.black),
                     ),
                     onPressed: () {
                       Navigator.pop(context);

@@ -423,17 +423,17 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   style: TextStyle(fontSize: AppConfig.smallFont - 3)),
             ],
           ),
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 5,
-                horizontal: AppConfig.horizontalBlockSize * 3),
-            child: Text('Create Prescription',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: AppConfig.verySmallFont + 2,
-                    color: PlunesColors.GREENCOLOR,
-                    decoration: TextDecoration.underline)),
-          ),
+//          Container(
+//            margin: EdgeInsets.symmetric(
+//                vertical: AppConfig.verticalBlockSize * 5,
+//                horizontal: AppConfig.horizontalBlockSize * 3),
+//            child: Text('Create Prescription',
+//                textAlign: TextAlign.center,
+//                style: TextStyle(
+//                    fontSize: AppConfig.verySmallFont + 2,
+//                    color: PlunesColors.GREENCOLOR,
+//                    decoration: TextDecoration.underline)),
+//          ),
         ],
       ),
     );
@@ -444,7 +444,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
     return InkWell(
         child: Text(btnName,
             style: TextStyle(
-                fontSize: AppConfig.smallFont, color: Colors.black54)),
+                fontSize: AppConfig.smallFont, color: Colors.blue, fontWeight: FontWeight.bold)),
         onTap: () {
           showDialog(
                   context: context,

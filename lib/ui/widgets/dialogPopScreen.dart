@@ -72,10 +72,10 @@ class DialogWidgets {
             ),
 
             Container(
-              padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+              padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
               margin: EdgeInsets.symmetric(
                   horizontal: AppConfig.horizontalBlockSize * 1),
-              height: AppConfig.verticalBlockSize * 32,
+              height: AppConfig.verticalBlockSize * 30,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,

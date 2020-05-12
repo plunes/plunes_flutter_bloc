@@ -552,9 +552,14 @@ class CustomWidgets {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 CircleAvatar(
+                  backgroundColor: PlunesColors.WHITECOLOR,
                   child: ClipOval(
+                    child: SizedBox.expand(
                       child: getImageFromUrl(
-                          "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg")),
+                        "https://specialities.s3.ap-south-1.amazonaws.com/${testAndProcedures[index].sId}.png",
+                      ),
+                    ),
+                  ),
                   radius: AppConfig.horizontalBlockSize * 7,
                 ),
                 Padding(
@@ -942,7 +947,7 @@ class CustomWidgets {
             ),
           ),
           Container(
-            height: AppConfig.verticalBlockSize * 40,
+            height: AppConfig.verticalBlockSize * 35,
             margin: EdgeInsets.symmetric(
                 horizontal: AppConfig.horizontalBlockSize * 7,
                 vertical: AppConfig.verticalBlockSize * 1),
@@ -1073,7 +1078,7 @@ class CustomWidgets {
                                 children: <Widget>[
                                   Text(
                                     'Update Price in your Catalogue for maximum Bookings',
-                                    style: TextStyle(fontSize: 20),
+                                    style: TextStyle(fontSize: AppConfig.largeFont),
                                     textAlign: TextAlign.center,
                                   ),
                                   Column(
@@ -1083,7 +1088,7 @@ class CustomWidgets {
                                         realInsight?.serviceName ??
                                             PlunesStrings.NA,
                                         style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: AppConfig.mediumFont,
                                             color: Colors.black54),
                                       ),
                                       SizedBox(height: 20),
@@ -1108,14 +1113,14 @@ class CustomWidgets {
                                             Text(
                                               ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(1)}',
                                               style: TextStyle(
-                                                  fontSize: 20,
+                                                  fontSize: AppConfig.mediumFont,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Expanded(child: Container()),
                                             Text(
                                               ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(1)}',
                                               style: TextStyle(
-                                                  fontSize: 20,
+                                                  fontSize: AppConfig.mediumFont,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           ],
@@ -1131,21 +1136,21 @@ class CustomWidgets {
                                         child: Text(
                                           ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
                                           style: TextStyle(
-                                              fontSize: 20,
+                                              fontSize:AppConfig.largeFont,
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),
                                       Text(
                                         'Chances of Booking increases by',
                                         style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: AppConfig.mediumFont,
                                         ),
                                       ),
                                       SizedBox(height: 10),
                                       Text(
                                         '20 to 25%',
                                         style: TextStyle(
-                                            fontSize: 18,
+                                            fontSize: AppConfig.mediumFont,
                                             fontWeight: FontWeight.bold),
                                       ),
                                       SizedBox(height: 20),
@@ -1153,7 +1158,7 @@ class CustomWidgets {
                                         child: Text(
                                           'Apply here',
                                           style: TextStyle(
-                                              fontSize: 20,
+                                              fontSize: AppConfig.largeFont,
                                               color: Colors.green,
                                               decoration:
                                                   TextDecoration.underline,
@@ -1778,81 +1783,85 @@ class CustomWidgets {
                     child: Icon(
                       Icons.close,
                       color: PlunesColors.GREYCOLOR,
-                      size: 35,
+                      size: AppConfig.extraLargeFont,
                     ),
                   ),
                 ),
                 isSuccess
                     ? Container(
                         margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 2),
-                        child: Text("Appointment successfully confirmed by you",
+                            vertical: AppConfig.verticalBlockSize * 2,
+                            horizontal: AppConfig.horizontalBlockSize * 4),
+                        child: Text(
+                            "Appointment has been successfully Confirmed.",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: AppConfig.mediumFont)),
                       )
                     : Container(
                         margin: EdgeInsets.symmetric(
                             vertical: AppConfig.verticalBlockSize * 2),
-                        child: Text("Confirm Appointmen for Patient ?",
+                        child: Text("Confirm Appointment for Patient?",
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: AppConfig.mediumFont)),
                       ),
-                Container(
-                  margin: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 4,
-                      bottom: AppConfig.verticalBlockSize * 2),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      InkWell(
-                        onTap: () {
-                          if (appointmentModel != null) {
-                            bookingBloc.confirmAppointmentByDocHos(
-                                appointmentModel.bookingId);
-                          }
-                        },
-                        onDoubleTap: () {},
-                        child: getRoundedButton(
-                            "Yes",
-                            AppConfig.horizontalBlockSize * 5,
-                            PlunesColors.GREENCOLOR,
-                            AppConfig.horizontalBlockSize * 10,
-                            AppConfig.verticalBlockSize * 1,
-                            PlunesColors.WHITECOLOR),
-                      ),
-                      failureMessage == null || failureMessage.isEmpty
-                          ? Container()
-                          : Container(
-                              padding: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 1),
-                              child: Text(
-                                failureMessage,
-                                style: TextStyle(color: Colors.red),
-                              ),
+                isSuccess
+                    ? Container()
+                    : Container(
+                        margin: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 4,
+                            bottom: AppConfig.verticalBlockSize * 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            InkWell(
+                              onTap: () {
+                                if (appointmentModel != null) {
+                                  bookingBloc.confirmAppointmentByDocHos(
+                                      appointmentModel.bookingId);
+                                }
+                              },
+                              onDoubleTap: () {},
+                              child: getRoundedButton(
+                                  "Yes",
+                                  AppConfig.horizontalBlockSize * 5,
+                                  PlunesColors.GREENCOLOR,
+                                  AppConfig.horizontalBlockSize * 10,
+                                  AppConfig.verticalBlockSize * 1,
+                                  PlunesColors.WHITECOLOR),
                             ),
-                      SizedBox(
-                        width: AppConfig.horizontalBlockSize * 10,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context, "No");
-                          return;
-                        },
-                        onDoubleTap: () {},
-                        child: getRoundedButton(
-                          "No",
-                          AppConfig.horizontalBlockSize * 5,
-                          PlunesColors.WHITECOLOR,
-                          AppConfig.horizontalBlockSize * 10,
-                          AppConfig.verticalBlockSize * 1,
-                          PlunesColors.BLACKCOLOR,
-                          hasBorder: true,
+                            failureMessage == null || failureMessage.isEmpty
+                                ? Container()
+                                : Container(
+                                    padding: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 1),
+                                    child: Text(
+                                      failureMessage,
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                  ),
+                            SizedBox(
+                              width: AppConfig.horizontalBlockSize * 10,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Navigator.pop(context, "No");
+                                return;
+                              },
+                              onDoubleTap: () {},
+                              child: getRoundedButton(
+                                "No",
+                                AppConfig.horizontalBlockSize * 5,
+                                PlunesColors.WHITECOLOR,
+                                AppConfig.horizontalBlockSize * 10,
+                                AppConfig.verticalBlockSize * 1,
+                                PlunesColors.BLACKCOLOR,
+                                hasBorder: true,
+                              ),
+                            )
+                          ],
                         ),
-                      )
-                    ],
-                  ),
-                ),
+                      ),
               ]);
             }),
       ),

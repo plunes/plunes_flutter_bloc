@@ -238,7 +238,7 @@ class _EditProfileState extends State<EditProfileScreen>
     return InkWell(
       onTap: () {
         if (controller == dobController)
-          CommonMethods.selectDate(context).then((value) {
+          CommonMethods.selectHoloTypeDate(context).then((value) {
             dobController.text = value;
           });
         else if (controller == locationController)

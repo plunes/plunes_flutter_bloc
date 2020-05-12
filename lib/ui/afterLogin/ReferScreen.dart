@@ -4,6 +4,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -105,7 +106,7 @@ class _ReferScreenState extends State<ReferScreen> {
                 child: Row(
                   children: <Widget>[
                     widget.createTextViews(
-                        _referralCode,
+                      _referralCode,
                         15,
                         colorsFile.lightGrey5,
                         TextAlign.start,

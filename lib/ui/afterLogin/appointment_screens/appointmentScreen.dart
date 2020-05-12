@@ -128,22 +128,23 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               style: TextStyle(
                                   fontSize: AppConfig.smallFont,
                                   color: Colors.black54)),
-//                          Container(
-//                            margin: EdgeInsets.only(
-//                                top: AppConfig.verticalBlockSize * 2),
-//                            child: RaisedButton(
-//                              child: Text(
-//                                PlunesStrings.visitAgain,
-//                                style: TextStyle(color: Colors.white),
-//                              ),
-//                              shape: RoundedRectangleBorder(
-//                                borderRadius: new BorderRadius.circular(
-//                                    AppConfig.verticalBlockSize * 4),
-//                              ),
-//                              onPressed: () {},
-//                              color: Colors.green,
-//                            ),
-//                          ),
+                          (appointmentModel.serviceType == 'Procedure' && appointmentModel.paymentPercent=='20') ?Container(
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 2),
+                            child: RaisedButton(
+                              child: Text(
+                                PlunesStrings.visitAgain,
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(
+                                    AppConfig.verticalBlockSize * 4),
+                              ),
+                              onPressed: () {},
+                              color: Colors.green,
+                            ),
+                          )
+                              : Container(),
                         ],
                       ),
                     ),
@@ -157,13 +158,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                InkWell(
+                ((appointmentModel.doctorConfirmation!=null && appointmentModel.doctorConfirmation)||appointmentModel.bookingStatus==AppointmentModel.cancelledStatus)? InkWell(
                   child: Text(appointmentModel.bookingStatus,
                       style: TextStyle(
                           fontSize: AppConfig.smallFont, color: Colors.green)),
                   onTap: () {},
                   onDoubleTap: () {},
-                ),
+                ): Text('Pending for confirmation',
+                    style: TextStyle(
+                        fontSize: AppConfig.smallFont, color: Colors.blue)),
                 (appointmentModel.bookingStatus!= AppointmentModel.cancelledStatus)? InkWell(
                   child: Text(PlunesStrings.reschedule,
                       style: TextStyle(
@@ -332,17 +335,17 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           Container(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                InkWell(
-                  onTap: () {},
-                  onDoubleTap: () {},
-                  child: Text(PlunesStrings.requestInvoice,
-                      style: TextStyle(
-                          fontSize: AppConfig.smallFont,
-                          color: Colors.black54,
-                          decoration: TextDecoration.underline)),
-                ),
+//                InkWell(
+//                  onTap: () {},
+//                  onDoubleTap: () {},
+//                  child: Text(PlunesStrings.requestInvoice,
+//                      style: TextStyle(
+//                          fontSize: AppConfig.smallFont,
+//                          color: Colors.black54,
+//                          decoration: TextDecoration.underline)),
+//                ),
                 (appointmentModel.refundStatus != null &&
                         appointmentModel.refundStatus == "Not Requested")
                     ? InkWell(
