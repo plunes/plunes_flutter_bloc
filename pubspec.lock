@@ -417,6 +417,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1+1"
+  permission:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: "565fc45490c2325fb1cc0155319bfe68b07f3de1"
+      url: "https://github.com/plunes/permission.git"
+    source: git
+    version: "0.1.1"
   petitparser:
     dependency: transitive
     description:

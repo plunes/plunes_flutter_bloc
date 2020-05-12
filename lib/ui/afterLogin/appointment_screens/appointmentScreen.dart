@@ -23,7 +23,8 @@ class AppointmentScreen extends BaseActivity {
   Function getAppointment;
 
   AppointmentScreen(this.appointmentModel, this.index, this.bookingBloc,
-      this.globalKey, this.getAppointment, {this.bookingId});
+      this.globalKey, this.getAppointment,
+      {this.bookingId});
 
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();

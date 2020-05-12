@@ -137,11 +137,15 @@ class PlunesStrings {
 
   static const String priceUpdateSuccessMessage = "Price updated successfully!";
 
-  static const String noAppointmentAvailable = "You don't have appointment yet!";
+  static const String noAppointmentAvailable =
+      "You don't have appointment yet!";
 
   static const String invalidOtp = "Invalid OTP";
 
   static const String  confirmFailedMessage = 'booking confirmation failed';
+
+  static const String pleaseSelectALocation = "Please select a location.";
+
 
 
   get healthSolInfoArray => [

@@ -461,7 +461,6 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
         },
         onDoubleTap: () {});
   }
-
   Widget alreadyCancelAppointment(String btnName) {
     return InkWell(
         child: Text(btnName,

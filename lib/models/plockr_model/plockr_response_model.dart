@@ -14,7 +14,7 @@ class PlockrResponseModel {
       });
     }
     if (json['sharedReports'] != null) {
-      sharedReports = new List<Null>();
+      sharedReports = new List<UploadedReports>();
       json['sharedReports'].forEach((v) {
         sharedReports.add(new UploadedReports.fromJson(v));
       });
@@ -43,9 +43,9 @@ class UploadedReports {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is UploadedReports &&
-              runtimeType == other.runtimeType &&
-              sId == other.sId;
+      other is UploadedReports &&
+          runtimeType == other.runtimeType &&
+          sId == other.sId;
 
   @override
   int get hashCode => sId.hashCode;
@@ -54,7 +54,8 @@ class UploadedReports {
   String reportName;
   String reportDisplayName;
   String remarks;
- // List<UploadedReports> accessList;
+
+  // List<UploadedReports> accessList;
   int createdTime;
   int iV;
   String userName;
@@ -70,19 +71,19 @@ class UploadedReports {
 
   UploadedReports(
       {this.self,
-        this.sId,
-        this.userId,
-        this.uploader,
-        this.reportName,
-        this.reportDisplayName,
-        this.remarks,
+      this.sId,
+      this.userId,
+      this.uploader,
+      this.reportName,
+      this.reportDisplayName,
+      this.remarks,
       //  this.accessList,
-        this.createdTime,
-        this.iV,
-        this.userName,
-        this.userAddress,
-        this.reportUrl,
-        this.reportThumbnail,
+      this.createdTime,
+      this.iV,
+      this.userName,
+      this.userAddress,
+      this.reportUrl,
+      this.reportThumbnail,
       this.reasonDiagnosis,
       this.medicines,
       this.test,
@@ -103,7 +104,7 @@ class UploadedReports {
 //      json['accessList'].forEach((v) {
 //        accessList.add(new UploadedReports.fromJson(v));
 //      });
-  //}
+    //}
     createdTime = json['createdTime'];
     iV = json['__v'];
     userName = json['userName'];

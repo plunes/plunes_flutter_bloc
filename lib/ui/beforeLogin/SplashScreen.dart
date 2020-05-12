@@ -60,25 +60,25 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
 //  }
 
   startTime() async {
-    try {
-      await Preferences().instantiatePreferences();
-      preferences = new Preferences();
-      var getLocation = await location.getLocation().catchError((e) {
-        AppLog.printError("Location denied splash $e");
-      });
-      var _latitude = getLocation?.latitude?.toString();
-      var _longitude = getLocation?.longitude?.toString();
-
-      if (_latitude != null && _longitude != null) {
-        preferences.setPreferencesString(Constants.LATITUDE, _latitude);
-        preferences.setPreferencesString(Constants.LONGITUDE, _longitude);
-      }
-      await Future.delayed(Duration(seconds: 2));
-      _userBloc.getSpeciality();
-      navigationPage();
-    } catch(err){
-       print("error is "+ err);
-    }
+//    try {
+    await Preferences().instantiatePreferences();
+    preferences = new Preferences();
+//      var getLocation = await location.getLocation().catchError((e) {
+//        AppLog.printError("Location denied splash $e");
+//      });
+//      var _latitude = getLocation?.latitude?.toString();
+//      var _longitude = getLocation?.longitude?.toString();
+//
+//      if (_latitude != null && _longitude != null) {
+//        preferences.setPreferencesString(Constants.LATITUDE, _latitude);
+//        preferences.setPreferencesString(Constants.LONGITUDE, _longitude);
+//      }
+    await Future.delayed(Duration(seconds: 2));
+    _userBloc.getSpeciality();
+    navigationPage();
+//    } catch(err){
+//       print("error is "+ err);
+//    }
   }
 
   navigationPage() {

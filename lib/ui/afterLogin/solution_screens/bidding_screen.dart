@@ -84,18 +84,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                 child:CustomWidgets().searchBar(
                 hintText: plunesStrings.searchHint,
                 hasFocus: true,
-                searchController: _searchController)
-//=======
-//            return Hero(
-//              tag: "my_tag",
-//              transitionOnUserGestures: true,
-//              child: CustomWidgets().searchBar(
-//                  hintText: plunesStrings.searchHint,
-//                  hasFocus: false,
-//                  focusNode: _focusNode,
-//                  searchController: _searchController),
-//>>>>>>> userflowcorrection
-            );
+                searchController: _searchController));
           },
           stream: _streamController.stream,
         ),

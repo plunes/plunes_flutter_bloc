@@ -1407,10 +1407,8 @@ class CustomWidgets {
     });
   }
 
-  Widget amountProgressBar(
-    AppointmentModel appointmentModel,
-  ) {
-    num val = appointmentModel.amountPaid + appointmentModel.amountPaidCredits;
+  Widget amountProgressBar(AppointmentModel appointmentModel) {
+    num val = appointmentModel.amountPaid + appointmentModel?.amountPaidCredits;
     double sliderVal = val.toDouble();
     return Container(
       child: Column(
@@ -1864,6 +1862,33 @@ class CustomWidgets {
                       ),
               ]);
             }),
+      ),
+    );
+  }
+
+  Widget showLocationPermissionPopUp(BuildContext context) {
+    return AlertDialog(
+      content: Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text("Allow Plunes to access your location."),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                FlatButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("No")),
+                FlatButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text(
+                      "Yes",
+                      style: TextStyle(color: PlunesColors.GREENCOLOR),
+                    )),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

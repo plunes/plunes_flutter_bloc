@@ -106,7 +106,7 @@ class _ReferScreenState extends State<ReferScreen> {
                 child: Row(
                   children: <Widget>[
                     widget.createTextViews(
-                      _referralCode,
+                        _referralCode,
                         15,
                         colorsFile.lightGrey5,
                         TextAlign.start,

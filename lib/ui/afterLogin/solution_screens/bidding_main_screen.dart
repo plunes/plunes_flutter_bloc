@@ -33,16 +33,18 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   TextEditingController _textEditingController;
   FocusNode _focusNode;
   bool _progressEnabled;
-  bool _canGoAhead;
+  bool _canGoAhead, _hasLatLong;
   String _failureCause;
   PrevMissSolutionBloc _prevMissSolutionBloc;
   PrevSearchedSolution _prevSearchedSolution;
   Timer _timer;
   StreamController _controller;
+  BuildContext _context;
 
   @override
   void initState() {
     _progressEnabled = false;
+    _hasLatLong = false;
     _canGoAhead = false;
     _prevMissSolutionBloc = PrevMissSolutionBloc();
     _textEditingController = TextEditingController();
@@ -87,7 +89,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      body: _getWidgetBody(),
+      body: Builder(builder: (context) {
+        _context = context;
+        return _getWidgetBody();
+      }),
     );
   }
 
@@ -124,7 +129,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                   ],
                 ),
               ),
-              _canGoAhead ? Container() : holdOnPopUp,
+              _canGoAhead ? Container() : _getNoLocationView(),
               _getBottomView(),
             ],
           ),
@@ -213,9 +218,14 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 
   _getCurrentLocation() async {
-    var latLong = await LocationUtil().getCurrentLatLong();
+    var latLong = await LocationUtil().getCurrentLatLong(_context);
     if (latLong != null) {
-      print("latlong are ${latLong.toString()}");
+      _checkUserLocation(
+          latLong?.latitude?.toString(), latLong?.longitude?.toString());
+      _hasLatLong = true;
+    } else {
+      _hasLatLong = false;
+      _setState();
     }
   }
 
@@ -251,6 +261,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                         child: Material(
                           child: InkWell(
                             onTap: () async {
+                              if (!_hasLatLong) {
+                                widget.showInSnackBar(
+                                    PlunesStrings.pleaseSelectALocation,
+                                    PlunesColors.GREYCOLOR,
+                                    scaffoldKey);
+                                return;
+                              }
                               await Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -312,6 +329,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   _onViewMoreTap(int index) {}
 
   _onSolutionItemTap(CatalogueData catalogueData) async {
+    if (!_hasLatLong) {
+      widget.showInSnackBar(PlunesStrings.pleaseSelectALocation,
+          PlunesColors.GREYCOLOR, scaffoldKey);
+      return;
+    }
     await Navigator.push(
         context,
         MaterialPageRoute(
@@ -321,10 +343,20 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     _getPreviousSolutions();
   }
 
-  _getUserDetails() {
+  _getUserDetails() async {
     _canGoAhead = UserManager().getIsUserInServiceLocation();
     var user = UserManager().getUserDetails();
-    _checkUserLocation(user?.latitude, user?.longitude);
+    if (user?.latitude != null && user?.longitude != null) {
+      _hasLatLong = true;
+      if (_canGoAhead) {
+        return;
+      } else {
+        _checkUserLocation(user?.latitude, user?.latitude);
+      }
+    } else {
+      await Future.delayed(Duration(milliseconds: 400));
+      _getCurrentLocation();
+    }
   }
 
   void _setState() {
@@ -355,50 +387,92 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     });
   }
 
-  final holdOnPopUp = Container(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Container(
-          child: Container(
-            color: Color(0xff99000000),
-//            decoration: BoxDecoration(
-//                borderRadius: BorderRadius.all(Radius.circular(10)),
-//                color: Color(0xff99000000)),
-            padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 5),
-            child: Stack(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.location_off,
-                      color: PlunesColors.GREENCOLOR,
-                      size: AppConfig.verticalBlockSize * 4,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: Container(
-                        child: Text(
-                          PlunesStrings.weAreNotAvailableInYourArea,
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: AppConfig.mediumFont),
+  Widget _getNoLocationView() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Container(
+            child: Container(
+              color: Color(0xff99000000),
+              padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 5),
+              child: Stack(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      _hasLatLong
+                          ? Icon(
+                        Icons.location_off,
+                        color: PlunesColors.GREENCOLOR,
+                        size: AppConfig.verticalBlockSize * 4,
+                      )
+                          : Container(),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Text(
+                            _hasLatLong
+                                ? PlunesStrings.weAreNotAvailableInYourArea
+                                : PlunesStrings.pleaseSelectLocation,
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: AppConfig.mediumFont),
+                          ),
                         ),
                       ),
-                    )
-                  ],
-                ),
-              ],
+                      _hasLatLong
+                          ? Container()
+                          : InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .push(PageRouteBuilder(
+                                opaque: false,
+                                pageBuilder:
+                                    (BuildContext context, _, __) =>
+                                    LocationFetch()))
+                                .then((val) {
+                              if (val != null) {
+                                var addressControllerList = new List();
+                                addressControllerList =
+                                    val.toString().split(":");
+                                String addr = addressControllerList[0] +
+                                    ' ' +
+                                    addressControllerList[1] +
+                                    ' ' +
+                                    addressControllerList[2];
+                                print("addr is $addr");
+                                var _latitude = addressControllerList[3];
+                                var _longitude = addressControllerList[4];
+                                print("_latitude $_latitude");
+                                print("_longitude $_longitude");
+                                _checkUserLocation(_latitude, _longitude);
+                              }
+                            });
+                          },
+                          child: Container(
+                            color: PlunesColors.LIGHTGREYCOLOR,
+                            padding: EdgeInsets.all(6.0),
+                            height: AppConfig.verticalBlockSize * 7,
+                            width: AppConfig.horizontalBlockSize * 12,
+                            child: Image.asset(
+                              PlunesImages.userLandingGoogleIcon,
+                              color: PlunesColors.GREENCOLOR,
+                            ),
+                          ))
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        )
-      ],
-    ),
-  );
+          )
+        ],
+      ),
+    );
+  }
 
   void _getPreviousSolutions() async {
     var requestState = await _prevMissSolutionBloc.getPreviousSolutions();

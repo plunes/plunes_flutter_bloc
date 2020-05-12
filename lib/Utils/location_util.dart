@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:location_permissions/location_permissions.dart';
+import 'package:permission/permission.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 
 class LocationUtil {
   static LocationUtil _instance;
@@ -17,14 +20,30 @@ class LocationUtil {
     return _instance;
   }
 
-  Future<LatLng> getCurrentLatLong() async {
+  Future<LatLng> getCurrentLatLong(BuildContext context) async {
     try {
       LocationData _currentLocation = await _location.getLocation();
-      print("asdsds");
       return LatLng(_currentLocation.latitude, _currentLocation.longitude);
     } catch (e) {
-      print("exception in $e");
+      if (e is PlatformException) {
+        var result = await _openPermissionPopUp(context);
+        if (result != null && result) {
+          openSettings();
+        }
+      }
       return null;
     }
+  }
+
+  Future _openPermissionPopUp(BuildContext context) async {
+    return await showDialog(
+            context: context,
+            child: CustomWidgets().showLocationPermissionPopUp(context),
+            barrierDismissible: true) ??
+        false;
+  }
+
+  void openSettings() async {
+    await Permission.openSettings();
   }
 }
