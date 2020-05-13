@@ -1997,7 +1997,7 @@ class CustomWidgets {
                 .toUpperCase(),
             style: TextStyle(
                 color: Colors.white,
-                fontSize: AppConfig.extraLargeFont,
+                fontSize: AppConfig.extraLargeFont-4,
                 fontWeight: FontWeight.bold)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(

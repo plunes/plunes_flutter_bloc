@@ -38,7 +38,9 @@ class PlunesStrings {
   static const String serviceNotAvailable =
       "Currently this service is not available";
   static const String weAreGettingBestSolution =
-      "WE ARE GETTING THE BEST SOLUTIONS FOR YOU";
+      'WE ARE GETTING THE BEST SOLUTIONS FOR YOU';
+  static const String weAreNegotiatingBestSolution =
+      'WE ARE NEGOTIATING THE BEST SOLUTIONS FOR YOU';
   static const String receiving = "Receiving...";
   static const String checkAvailability = "Check Availability";
   static const String bookIn = "Book in";

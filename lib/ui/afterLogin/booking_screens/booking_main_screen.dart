@@ -516,7 +516,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   _getPayNowWidget() {
     return Padding(
-      padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+      padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
       child: Column(
         children: <Widget>[
           widget.appointmentModel == null

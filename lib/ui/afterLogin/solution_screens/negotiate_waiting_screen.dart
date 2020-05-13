@@ -104,103 +104,99 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
     return Scaffold(
       backgroundColor: PlunesColors.WHITECOLOR,
       body: Container(
-        child: ListView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            SizedBox(
+              height: AppConfig.verticalBlockSize * 7,
+            ),
             Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                SizedBox(
-                  height: AppConfig.verticalBlockSize * 7,
-                ),
-                Stack(
-                  children: <Widget>[
-                    Container(
-                      height: 150,
-                      width: 150,
-                      margin: EdgeInsets.only(top: 20, bottom: 10),
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: <Widget>[
-                          Container(
-                            height: 160,
-                            width: 160,
-                            decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                    colors: [Colors.white, Color(0xfffafafa)],
-                                    begin: FractionalOffset.topCenter,
-                                    end: FractionalOffset.bottomCenter,
-                                    stops: [0.0, 1.0],
-                                    tileMode: TileMode.clamp),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(75),
-                                ),
-                                border: Border.all(
-                                    color: Color(0xfffafafa), width: 2)),
-                          ),
-                          Align(
-                            child: AnimatedContainer(
-                              duration: Duration(seconds: 1),
+                Container(
+                  height: AppConfig.verticalBlockSize*20,
+                  width: AppConfig.verticalBlockSize*20,
+                  margin: EdgeInsets.only(top:AppConfig.verticalBlockSize*2, bottom: AppConfig.verticalBlockSize*1),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: <Widget>[
+                      Container(
+                        height: AppConfig.verticalBlockSize*30,
+                        width: AppConfig.verticalBlockSize*30,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                colors: [Colors.white, Color(0xfffafafa)],
+                                begin: FractionalOffset.topCenter,
+                                end: FractionalOffset.bottomCenter,
+                                stops: [0.0, 1.0],
+                                tileMode: TileMode.clamp),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(AppConfig.verticalBlockSize*30),
+                            ),
+                            border: Border.all(
+                                color: Color(0xfffafafa), width: 2)),
+                      ),
+                      Align(
+                        child: AnimatedContainer(
+                          duration: Duration(seconds: 1),
+                          height: 70,
+                          width: 70,
+                          margin: EdgeInsets.only(top: _movingUnit),
+                          child: Center(
+                            child: Image.asset(
+                              plunesImages.bidActiveIcon,
                               height: 70,
                               width: 70,
-                              margin: EdgeInsets.only(top: _movingUnit),
-                              child: Center(
-                                child: Image.asset(
-                                  plunesImages.bidActiveIcon,
-                                  height: 70,
-                                  width: 70,
-                                ),
-                              ),
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: AppConfig.verticalBlockSize * 7,
-                ),
-                Center(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 9),
-                    child: Text(
-                      PlunesStrings.weAreGettingBestSolution,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: AppConfig.largeFont,
-                          fontWeight: FontWeight.w500),
-                    ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  height: 170,
-                ),
-                Center(
-                  child: Text(
-                    PlunesStrings.receiving,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                  ),
-                ),
-                Container(
-                  height: 3,
-                  margin:
-                      EdgeInsets.only(left: 30, right: 30, top: 10, bottom: 10),
-                  child: LinearProgressIndicator(
-                    value: _bidProgress,
-                    backgroundColor: Color(0xffDCDCDC),
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      Color(0xff01d35a),
-                    ),
-                  ),
-                ),
-                Padding(
-                    padding:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3)),
-                holdOnPopUp
               ],
-            )
+            ),
+            SizedBox(
+              height: AppConfig.verticalBlockSize * 7,
+            ),
+            Center(
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 9),
+                child: Text(
+                  PlunesStrings.weAreNegotiatingBestSolution,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: AppConfig.largeFont,
+                      fontWeight: FontWeight.w500),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: AppConfig.verticalBlockSize*25,
+            ),
+            Center(
+              child: Text(
+                PlunesStrings.receiving,
+                style: TextStyle(fontSize:AppConfig.smallFont, fontWeight: FontWeight.w500),
+              ),
+            ),
+            Container(
+              height: AppConfig.horizontalBlockSize*1,
+              margin:
+                  EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize*0.2,horizontal: AppConfig.horizontalBlockSize*5),
+              child: LinearProgressIndicator(
+                value: _bidProgress,
+                backgroundColor: Color(0xffDCDCDC),
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  Color(0xff01d35a),
+                ),
+              ),
+            ),
+            Padding(
+                padding:
+                    EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)),
+            holdOnPopUp
           ],
         ),
       ),
@@ -229,7 +225,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                       size: 50,
                     ),
                     SizedBox(
-                      width: 10,
+                      width: AppConfig.horizontalBlockSize*2,
                     ),
                     Expanded(
                       child: Container(
