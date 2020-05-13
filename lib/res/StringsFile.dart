@@ -123,8 +123,7 @@ class PlunesStrings {
 
   static const String noReportAvailabelMessage =
       "You don't have any reports yet";
-  static const String noMatchReport =
-      "No Match Found!";
+  static const String noMatchReport = "No Match Found!";
 
   static const String unableToOpen = "Unable to open the file!";
 
@@ -146,7 +145,9 @@ class PlunesStrings {
 
   static const String pleaseSelectALocation = "Please select a location.";
 
+  static const String pay = "Pay";
 
+  static const String paymentDone = "Payment Done!";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

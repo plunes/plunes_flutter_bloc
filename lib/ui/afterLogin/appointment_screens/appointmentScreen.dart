@@ -1,7 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/log.dart';
+import 'package:plunes/Utils/payment_web_view.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -443,6 +445,21 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   }
 
   _getData(AppointmentModel appointmentModel) {
+    bool isPaymentCompleted = false;
+    if (appointmentModel.paymentStatus != null &&
+        appointmentModel.paymentStatus.isNotEmpty) {
+      for (int index = 0;
+          index < appointmentModel.paymentStatus.length;
+          index++) {
+        if (appointmentModel.paymentStatus[index].status != null &&
+            appointmentModel.paymentStatus[index].status) {
+          isPaymentCompleted = true;
+        } else {
+          isPaymentCompleted = false;
+          break;
+        }
+      }
+    }
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
       child: Column(
@@ -452,20 +469,37 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
             child: CustomWidgets().amountProgressBar(appointmentModel),
           ),
           SizedBox(height: AppConfig.verticalBlockSize * 3),
-          Text('\u20B9 ${appointmentModel?.amountDue??0}',
-              style: TextStyle(
-                  fontSize: AppConfig.smallFont,
-                  color: Colors.green,
-                  decoration: TextDecoration.underline)),
-          SizedBox(height: AppConfig.verticalBlockSize * 2),
-          InkWell(
-            onTap: (){},
-            onDoubleTap: () {},
-            child: Text('Pay Now', style: TextStyle(
-                fontSize: AppConfig.smallFont,
-                color: Colors.green,
-                decoration: TextDecoration.underline)),
-          ),
+          (appointmentModel.bookingStatus != null &&
+                  appointmentModel.bookingStatus ==
+                      AppointmentModel.cancelledStatus)
+              ? Text(AppointmentModel.cancelledStatus)
+              : isPaymentCompleted
+                  ? Text(PlunesStrings.paymentDone)
+                  : RichText(
+                      text: TextSpan(
+                          text: '${PlunesStrings.pay}',
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              color: Colors.black,
+                              decoration: TextDecoration.underline),
+                          children: appointmentModel.paymentStatus
+                                  .where((element) => !(element.status))
+                                  .map((paymentObj) {
+                                TapGestureRecognizer tapRecognizer =
+                                    TapGestureRecognizer()
+                                      ..onTap =
+                                          () => _openPaymentOption(paymentObj);
+                                return TextSpan(
+                                    text:
+                                        '      \u20B9${paymentObj.amount ?? 0}',
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont,
+                                        color: Colors.green,
+                                        decoration: TextDecoration.none),
+                                    recognizer: tapRecognizer);
+                              }).toList() ??
+                              []),
+                    ),
           Container(
             margin: EdgeInsets.symmetric(
                 vertical: AppConfig.verticalBlockSize * 3,
@@ -495,7 +529,34 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               builder: (BuildContext context) =>
                   CustomWidgets().getCancelMessagePopup(context));
         },
-        onDoubleTap: () {}
-    );
+        onDoubleTap: () {});
+  }
+
+  _openPaymentOption(PaymentStatus paymentObj) {
+    return
+    Navigator.of(context)
+        .push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) =>
+                PaymentWebView(id: widget.appointmentModel.bookingId)))
+        .then((val) {
+      if (val.toString().contains("success")) {
+        widget.showInSnackBar(
+            "Payment Failed", PlunesColors.BLACKCOLOR, scaffoldKey);
+//        showDialog(
+//            context: context,
+//            builder: (
+//                BuildContext context,
+//                ) =>
+//                PaymentSuccess(
+//                    bookingId: _initPaymentResponse.referenceId));
+      } else if (val.toString().contains("fail")) {
+        widget.showInSnackBar(
+            "Payment Failed", PlunesColors.BLACKCOLOR, scaffoldKey);
+      } else if (val.toString().contains("cancel")) {
+        widget.showInSnackBar(
+            "Payment Cancelled", PlunesColors.BLACKCOLOR, scaffoldKey);
+      }
+    });
   }
 }

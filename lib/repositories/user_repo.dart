@@ -64,7 +64,26 @@ class UserManager {
         birthDate: preferences.getPreferenceString(Constants.PREF_DOB),
         coverImageUrl:
             preferences.getPreferenceString(Constants.PREF_USER_BANNER_IMAGE),
-        credits: preferences.getPreferenceString(Constants.PREF_CREDITS));
+        credits: preferences.getPreferenceString(Constants.PREF_CREDITS),
+        notificationEnabled:
+            preferences.getPreferenceBoolean(Constants.NOTIFICATION_ENABLED));
+  }
+
+  String getDeviceToken() {
+    return Preferences().getPreferenceString(Constants.FIREBASE_TOKEN);
+  }
+
+  setDeviceToken(String token) {
+    return Preferences().setPreferencesString(Constants.FIREBASE_TOKEN, token);
+  }
+
+  bool getNotificationStatus() {
+    return Preferences().getPreferenceBoolean(Constants.NOTIFICATION_ENABLED);
+  }
+
+  setNotificationStatus(bool isOn) {
+    return Preferences()
+        .setPreferencesBoolean(Constants.NOTIFICATION_ENABLED, isOn);
   }
 
   Future<RequestOutput> isUserInServiceLocation(
@@ -183,6 +202,39 @@ class UserManager {
       return RequestSuccess(response: specialityList);
     } else {
       return RequestFailed(response: result.failureCause);
+    }
+  }
+
+  Future<RequestState> saveUpdateFirebaseToken(String token) async {
+    String savedToken = getDeviceToken();
+    if (savedToken == null || savedToken.isEmpty) {
+      return RequestFailed();
+    }
+    var result = await DioRequester().requestMethod(
+        url: Urls.UPDATE_TOKEN,
+        headerIncluded: true,
+        postData: {"newToken": token, "oldToken": savedToken},
+        requestType: HttpRequestMethods.HTTP_POST);
+    print("${result.failureCause} token updated ${result.isRequestSucceed}");
+    if (result.isRequestSucceed) {
+      setDeviceToken(token);
+      return RequestSuccess();
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> turnOnOffNotification(bool isOn) async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.NOTIFICATION_SWITCH,
+        queryParameter: {"deviceId": getDeviceToken(), "op": isOn},
+        requestType: HttpRequestMethods.HTTP_GET,
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      setNotificationStatus(isOn);
+      return RequestSuccess();
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
     }
   }
 }

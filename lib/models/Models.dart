@@ -144,7 +144,7 @@ class User {
   List<TimeSlotsData> timeSlots = [];
   List<DoctorsData> doctorsData = [];
   List<AchievementsData> achievements = [];
-  bool verifiedUser;
+  bool verifiedUser, notificationEnabled;
 
   User(
       {this.uid,
@@ -176,7 +176,8 @@ class User {
       this.speciality,
       this.prescriptionLogoUrl,
       this.credits,
-      this.userReferralCode});
+      this.userReferralCode,
+      this.notificationEnabled});
 
   factory User.fromJson(Map<String, dynamic> json) {
     List<TimeSlotsData> _timeSlots = [];

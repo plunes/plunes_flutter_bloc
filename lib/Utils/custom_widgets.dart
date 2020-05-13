@@ -1430,42 +1430,114 @@ class CustomWidgets {
   }
 
   Widget amountProgressBar(AppointmentModel appointmentModel) {
-    num val = appointmentModel.amountPaid + appointmentModel?.amountPaidCredits;
-    double sliderVal = val.toDouble();
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Slider(
-              value: sliderVal,
-              min: (0.0) ?? 0,
-              max: appointmentModel.service.newPrice.first.toDouble(),
-              divisions: 100,
-              activeColor: Colors.green,
-              onChanged: (newValue) {
-                sliderVal = newValue;
-              }),
-          Container(
-            child: Row(
+    return (appointmentModel.paymentStatus == null ||
+            appointmentModel.paymentStatus.isEmpty)
+        ? Container()
+        : Container(
+            child: Column(
               children: <Widget>[
-                Text(
-                  ' \u20B9 ${(0.0.floor() / 2)?.toStringAsFixed(1)}',
-                  style: TextStyle(
-                      fontSize: AppConfig.smallFont,
-                      fontWeight: FontWeight.bold),
-                ),
-                Expanded(child: Container()),
-                Text(
-                  ' \u20B9 ${appointmentModel.service.newPrice.first.toDouble()?.toStringAsFixed(1)}',
-                  style: TextStyle(
-                      fontSize: AppConfig.smallFont,
-                      fontWeight: FontWeight.bold),
+                Container(
+                  width: double.infinity,
+                  height: AppConfig.verticalBlockSize * 15,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              index == 0
+                                  ? Container()
+                                  : Container(
+                                      height: 1.5,
+                                      width: (appointmentModel
+                                                  .paymentStatus.length ==
+                                              2)
+                                          ? AppConfig.horizontalBlockSize * 50
+                                          : AppConfig.horizontalBlockSize * 15,
+                                      color: PlunesColors.LIGHTGREYCOLOR,
+                                    ),
+                              (appointmentModel.paymentStatus[index].status)
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                          color: PlunesColors.GREENCOLOR,
+                                          shape: BoxShape.circle),
+                                      height: AppConfig.verticalBlockSize * 8,
+                                      width: AppConfig.horizontalBlockSize * 18,
+                                      child: Center(
+                                          child: Icon(
+                                        Icons.check,
+                                        color: PlunesColors.WHITECOLOR,
+                                      )),
+                                    )
+                                  : Container(
+                                      decoration: BoxDecoration(
+                                          color: PlunesColors.WHITECOLOR,
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                              width: AppConfig
+                                                      .horizontalBlockSize *
+                                                  0.5,
+                                              color:
+                                                  PlunesColors.LIGHTGREYCOLOR)),
+                                      height: AppConfig.verticalBlockSize * 8,
+                                      width: AppConfig.horizontalBlockSize * 18,
+                                      child: Center(
+                                        child: Text(
+                                          appointmentModel
+                                                  .paymentStatus[index].title ??
+                                              PlunesStrings.NA,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.clip,
+                                        ),
+                                      ),
+                                    )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              index == 0
+                                  ? Container()
+                                  : Container(
+                                      width: (appointmentModel
+                                                  .paymentStatus.length ==
+                                              2)
+                                          ? AppConfig.horizontalBlockSize * 50
+                                          : AppConfig.horizontalBlockSize * 15,
+                                      color: PlunesColors.LIGHTGREYCOLOR,
+                                    ),
+                              Container(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 2.5),
+                                child: Center(
+                                    child: Text(
+                                  (appointmentModel.paymentStatus.length == 3 &&
+                                          index == 0)
+                                      ? appointmentModel
+                                          .paymentStatus[index].title
+                                      : ' \u20B9 ${appointmentModel.paymentStatus[index].amount?.toStringAsFixed(1)}',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.smallFont,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                              )
+                            ],
+                          ),
+                        ],
+                      );
+                    },
+                    itemCount: appointmentModel.paymentStatus?.length ?? 0,
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 
   refundPopup(BookingBloc bookingBloc, AppointmentModel appointmentModel) {

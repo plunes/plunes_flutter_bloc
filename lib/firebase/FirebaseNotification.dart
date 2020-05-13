@@ -5,8 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
@@ -128,9 +130,14 @@ class FirebaseNotification {
   fireBaseCloudMessagingListeners() {
     if (Platform.isIOS) iOSPermission();
     _firebaseMessaging.getToken().then((token) {
-      if (Constants.DEVICE_TOKEN.length < 5) updateToken(token);
+      saveToken(token);
       Constants.DEVICE_TOKEN = token;
       print('Firebase Token: $token');
+    });
+    _updateToken("randomtoken");
+    _firebaseMessaging.onTokenRefresh.listen((token) {
+      Constants.DEVICE_TOKEN = token;
+//      _updateToken(token);
     });
     _firebaseMessaging.subscribeToTopic("Testing");
     _firebaseMessaging.configure(
@@ -149,10 +156,11 @@ class FirebaseNotification {
     );
   }
 
-  Future updateToken(String token) async {
+  Future saveToken(String token) async {
     if (token != null) {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString(Constants.DEVICE_TOKEN, token);
+      Future.delayed(Duration(seconds: 20)).then((value) {
+        UserManager().setDeviceToken(token);
+      });
       print("Push Messaging token: $token");
     }
   }
@@ -351,5 +359,11 @@ class FirebaseNotification {
     if (_postData != null && _postData.notificationType != null) {
       _handleNavigation(_postData);
     }
+  }
+
+  void _updateToken(String token) async {
+    await Future.delayed(Duration(seconds: 20));
+    print("called");
+//    UserBloc().saveUpdateFirebaseToken("thisistoken");
   }
 }

@@ -42,4 +42,11 @@ class UserBloc extends BlocBase {
     return result;
   }
 
+  Future<RequestState> saveUpdateFirebaseToken(String token) {
+    return UserManager().saveUpdateFirebaseToken(token);
+  }
+
+  Future<RequestState> turnOnOffNotification(final bool isOn) {
+    return UserManager().turnOnOffNotification(isOn);
+  }
 }

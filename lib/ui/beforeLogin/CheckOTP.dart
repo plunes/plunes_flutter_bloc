@@ -41,7 +41,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
     if (result is RequestSuccess) {
       VerifyOtpResponse verifyOtpResponse = result.response;
       if (verifyOtpResponse != null && verifyOtpResponse.success != null &&
-         !verifyOtpResponse.success) {
+          verifyOtpResponse.success) {
         if (widget.from == plunesStrings.forgotPasswordTitle)
           Navigator.pushReplacement(
               context,

@@ -55,6 +55,7 @@ class AppointmentModel {
   String bookingId;
   String referenceId;
   bool doctorConfirmation;
+  List<PaymentStatus> paymentStatus;
 
   @override
   bool operator ==(Object other) =>
@@ -104,6 +105,7 @@ class AppointmentModel {
     this.doctorConfirmation,
     this.visitAgain,
     this.serviceType,
+    this.paymentStatus,
   });
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
@@ -140,6 +142,15 @@ class AppointmentModel {
     refundStatus = json['refundStatus'];
     referenceId = json['referenceId'];
     doctorConfirmation = json['doctorConfirmation'];
+    if (json['paymentProgress'] != null) {
+      Iterable _items = json['paymentProgress'];
+      paymentStatus = [];
+      if (_items != null && _items.isNotEmpty) {
+        paymentStatus = _items
+            .map((data) => PaymentStatus.fromJson(data))
+            .toList(growable: true);
+      }
+    }
     visitAgain = json['visitAgain'];
     serviceType = json['serviceType'];
   }
@@ -198,6 +209,28 @@ class UserLocation {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['latitude'] = this.latitude;
     data['longitude'] = this.longitude;
+    return data;
+  }
+}
+
+class PaymentStatus {
+  String title;
+  num amount;
+  bool status;
+
+  PaymentStatus({this.title, this.amount, this.status});
+
+  PaymentStatus.fromJson(Map<String, dynamic> json) {
+    title = json['title'];
+    amount = json['amount'];
+    status = json['status'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['title'] = this.title;
+    data['amount'] = this.amount;
+    data['status'] = this.status;
     return data;
   }
 }

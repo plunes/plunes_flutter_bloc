@@ -58,6 +58,8 @@ class Constants {
   static const String SUCCESS = 'success';
   static const String MESSAGE = 'message';
   static const String IS_IN_SERVICE_LOCATION = "IS_IN_SERVICE_LOCATION";
+  static const String FIREBASE_TOKEN = "FIREBASE_TOKEN";
+  static const String NOTIFICATION_ENABLED = "NOTIFICATION_ENABLED";
 
   static const List<dynamic> PREF_SPECIALITIES = [];
 }

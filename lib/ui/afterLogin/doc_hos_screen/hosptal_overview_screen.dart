@@ -659,6 +659,7 @@ class PatientServiceInfo extends StatefulWidget {
   final String imageUrl;
   final int remainingTime;
 
+
   PatientServiceInfo(
       {this.patientName, this.serviceName, this.imageUrl, this.remainingTime});
 
@@ -715,9 +716,10 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         CircleAvatar(
+          backgroundColor: Color.fromRGBO(255, 232, 232, 1),
           child: Container(
-              height: AppConfig.horizontalBlockSize * 9,
-              width: AppConfig.horizontalBlockSize * 10,
+              height: AppConfig.horizontalBlockSize * 8,
+              width: AppConfig.horizontalBlockSize * 9,
               child: Image.asset(PlunesImages.userProfileIcon)),
           radius: AppConfig.horizontalBlockSize * 7,
         ),

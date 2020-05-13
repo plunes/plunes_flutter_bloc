@@ -3,7 +3,9 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -24,7 +26,7 @@ class AccountSettings extends BaseActivity {
   _AccountSettingsState createState() => _AccountSettingsState();
 }
 
-class _AccountSettingsState extends State<AccountSettings> {
+class _AccountSettingsState extends BaseState<AccountSettings> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight,
       globalWidth,
@@ -40,18 +42,21 @@ class _AccountSettingsState extends State<AccountSettings> {
       _practising,
       _experience,
       _introduction;
-  var isSwitched = true;
+  bool _isNotificationEnabled = true;
 
   Preferences preferences;
+  UserBloc _userBloc;
 
   @override
   void initState() {
     super.initState();
+    _userBloc = UserBloc();
     initialize();
   }
 
   @override
   void dispose() {
+    _userBloc?.dispose();
     super.dispose();
   }
 
@@ -124,12 +129,8 @@ class _AccountSettingsState extends State<AccountSettings> {
                     TextAlign.start, FontWeight.normal)),
             pos == 0
                 ? Switch(
-                    value: isSwitched,
-                    onChanged: (value) {
-                      setState(() {
-                        isSwitched = value;
-                      });
-                    },
+                    value: _isNotificationEnabled,
+                    onChanged: (value) => _switchNotification(value),
                     activeTrackColor: Colors.lightGreenAccent,
                     activeColor: Color(hexColorCode.defaultTransGreen),
                   )
@@ -153,6 +154,7 @@ class _AccountSettingsState extends State<AccountSettings> {
     _experience = user.experience;
     _introduction = user.about;
     _userDOB = user.birthDate;
+    _isNotificationEnabled = user.notificationEnabled;
     _setState();
 
 //    _userType = preferences.getPreferenceString(Constants.PREF_USER_TYPE);
@@ -175,6 +177,21 @@ class _AccountSettingsState extends State<AccountSettings> {
   _setState() {
     if (mounted) {
       setState(() {});
+    }
+  }
+
+  _switchNotification(bool changedValue) async {
+    _isNotificationEnabled = changedValue;
+    _setState();
+    var result =
+        await _userBloc.turnOnOffNotification(_isNotificationEnabled ?? true);
+    if (result is RequestFailed) {
+      _isNotificationEnabled = !_isNotificationEnabled;
+      _setState();
+      Future.delayed(Duration(milliseconds: 200)).then((value) {
+        widget.showInSnackBar(
+            result.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      });
     }
   }
 }
