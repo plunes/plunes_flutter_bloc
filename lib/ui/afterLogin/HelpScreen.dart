@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -15,10 +21,11 @@ class HelpScreen extends BaseActivity {
   _HelpScreenState createState() => _HelpScreenState();
 }
 
-class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
+class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _descriptionController = new TextEditingController();
   var globalHeight, globalWidth, title = '';
+  DocHosMainInsightBloc  _docHosMainInsightBloc;
 
   bool booking = false,
       isOnlineSolution = false,
@@ -26,10 +33,19 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
       isPopupShowing = false;
 
   @override
+  void initState() {
+    _docHosMainInsightBloc = DocHosMainInsightBloc();
+    super.initState();
+  }
+  @override
   void dispose() {
     bloc.disposeHelpApiStream();
+    _docHosMainInsightBloc?.dispose();
     super.dispose();
   }
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -41,15 +57,21 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
         appBar: widget.getAppBar(context, plunesStrings.help, true),
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        body: Stack(
-          children: <Widget>[
-            getBodyView(),
-            isPopupShowing
-                ? CommonMethods.messageSubmitDialog(
-                    context, title, _descriptionController, this)
-                : Container()
-          ],
-        ));
+        body: Container(
+//            width: double.infinity,
+//            padding: EdgeInsets.symmetric(
+//                vertical: AppConfig.verticalBlockSize * 1.5),
+            child: (UserManager().getUserDetails().userType != Constants.user)
+                ? getBodyDocHosView()
+                : Stack(
+                    children: <Widget>[
+                      getBodyUserView(),
+                      isPopupShowing
+                          ? CommonMethods.messageSubmitDialog(
+                              context, title, _descriptionController, this)
+                          : Container()
+                    ],
+                  )));
   }
 
   Widget getHelpContentRow(bool isIcon, String image, String _title,
@@ -89,7 +111,135 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
     );
   }
 
-  Widget getBodyView() {
+  getBodyDocHosView() {
+    TextEditingController textEditingController = TextEditingController();
+    bool isSuccess = false;
+    String failureMessage;
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 7,
+          vertical: AppConfig.verticalBlockSize * 5),
+      child: StreamBuilder<RequestState>(
+          stream: _docHosMainInsightBloc.helpQueryDocHosStream,
+          builder: (BuildContext context, snapshot) {
+            if (snapshot.data != null && snapshot.data is RequestInProgress) {
+              return CustomWidgets().getProgressIndicator();
+            }
+            if (snapshot.data != null && snapshot.data is RequestSuccess) {
+              isSuccess = true;
+            }
+            if (snapshot.data != null && snapshot.data is RequestFailed) {
+              RequestFailed requestFailed = snapshot.data;
+              failureMessage = requestFailed.failureCause ??
+                  PlunesStrings.helpQueryFailedMessage;
+             _docHosMainInsightBloc.addStateInHelpQueryStream(null);
+            }
+            return isSuccess
+                ? Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 6,
+                  vertical: AppConfig.verticalBlockSize * 2),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(PlunesStrings.thankYouMessage,
+                      style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.w600,
+                          color: PlunesColors.BLACKCOLOR)),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: AppConfig.horizontalBlockSize * 6),
+                  ),
+                  Text(PlunesStrings.helpQuerySuccessMessage,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.extraLargeFont,
+                          fontWeight: FontWeight.w600,
+                          color: PlunesColors.GREYCOLOR)),
+                ],
+              ),
+            ):Column(
+              children: <Widget>[
+                Container(
+                    alignment: Alignment.topLeft,
+                    padding:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
+                    child: Text('Enter your Query',
+                        textAlign: TextAlign.start,
+                        style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                        ))),
+                SizedBox(
+                  height: AppConfig.verticalBlockSize * 6,
+                ),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TextField(
+                        controller: textEditingController,
+                        keyboardType: TextInputType.text,
+                        maxLines: 2,
+                        autofocus: true,
+                      ),
+                    )
+                  ],
+                ),
+                Container(
+                  padding: EdgeInsets.only(
+                    top: AppConfig.verticalBlockSize * 4,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      if (textEditingController.text.trim().isNotEmpty) {
+                   _docHosMainInsightBloc.helpDocHosQuery(
+                       textEditingController.text.trim());
+                      } else if (textEditingController.text.trim().isEmpty) {
+                        failureMessage = PlunesStrings.emptyTextFieldWarning;
+                        _docHosMainInsightBloc.addStateInHelpQueryStream(null);
+                      }
+                    },
+                    onDoubleTap: () {},
+                    child: CustomWidgets().getRoundedButton(
+                        plunesStrings.submit,
+                        AppConfig.horizontalBlockSize * 6,
+                        PlunesColors.GREENCOLOR,
+                        AppConfig.horizontalBlockSize * 1,
+                        AppConfig.verticalBlockSize * 1,
+                        PlunesColors.WHITECOLOR),
+                  ),
+                ),
+                failureMessage == null || failureMessage.isEmpty
+                    ? Container()
+                    : Container(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 1),
+                        child: Text(
+                          failureMessage,
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 4),
+                  child: Text('OR',
+                      style: TextStyle(
+                        fontSize: AppConfig.mediumFont,
+                      )),
+                ),
+                Text('Call at: 7701805081',
+                    style: TextStyle(
+                      fontSize: AppConfig.mediumFont,
+                    )),
+              ],
+            );
+          }),
+    );
+  }
+
+  Widget getBodyUserView() {
     return ListView(
       children: <Widget>[
         Container(
@@ -110,8 +260,8 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
                     color: Color(
                         CommonMethods.getColorHexFromStr(colorsFile.grey)),
                     child: Column(children: <Widget>[
-                      getHelpContentRow(false, null, plunesStrings.bookingFailure,
-                          14, FontWeight.normal),
+                      getHelpContentRow(false, null,
+                          plunesStrings.bookingFailure, 14, FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
                       getHelpContentRow(
                           false,
@@ -158,8 +308,8 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
                       getHelpContentRow(false, null,
                           plunesStrings.notHappyWithRes, 14, FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
-                      getHelpContentRow(false, null, plunesStrings.paymentIssues,
-                          14, FontWeight.normal),
+                      getHelpContentRow(false, null,
+                          plunesStrings.paymentIssues, 14, FontWeight.normal),
                     ])))
           ],
         ),
@@ -189,11 +339,15 @@ class _HelpScreenState extends State<HelpScreen> implements DialogCallBack {
                           14,
                           FontWeight.normal),
                       widget.getDividerRow(context, 0, 0, 0),
-                      getHelpContentRow(false, null, plunesStrings.bookingFailure,
-                          14, FontWeight.normal),
-                      widget.getDividerRow(context, 0, 0, 0),
                       getHelpContentRow(false, null,
-                          plunesStrings.wantEditFeedBack, 14, FontWeight.normal),
+                          plunesStrings.bookingFailure, 14, FontWeight.normal),
+                      widget.getDividerRow(context, 0, 0, 0),
+                      getHelpContentRow(
+                          false,
+                          null,
+                          plunesStrings.wantEditFeedBack,
+                          14,
+                          FontWeight.normal),
                     ])))
           ],
         ),

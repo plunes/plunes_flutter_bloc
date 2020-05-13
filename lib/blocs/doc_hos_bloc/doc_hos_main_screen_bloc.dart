@@ -29,6 +29,12 @@ class DocHosMainInsightBloc extends BlocBase {
   Observable<RequestState> get businessDataStream =>
       _businessDataProvider.stream;
 
+  // ignore: close_sinks
+  final _helpQueryDocHosProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get helpQueryDocHosStream =>
+      _helpQueryDocHosProvider.stream;
+
   addStateInRealTimeInsightStream(RequestState state) {
     super.addStateInGenericStream(_realTimeProvider, state);
   }
@@ -49,6 +55,10 @@ class DocHosMainInsightBloc extends BlocBase {
     super.addStateInGenericStream(_actionablePriceUpdateProvider, state);
   }
 
+  addStateInHelpQueryStream(RequestState state) {
+    super.addStateInGenericStream(_helpQueryDocHosProvider, state);
+  }
+
   @override
   void dispose() {
     _realTimeProvider?.close();
@@ -56,6 +66,7 @@ class DocHosMainInsightBloc extends BlocBase {
     _realTimePriceUpdateProvider?.close();
     _businessDataProvider?.close();
     _actionablePriceUpdateProvider.close();
+    _helpQueryDocHosProvider.close();
     super.dispose();
   }
 
@@ -83,5 +94,12 @@ class DocHosMainInsightBloc extends BlocBase {
   getUpdateActionableInsightPrice(num price, String serviceId, String specialityId ) async {
     addStateInActionableUpdatePriceStream(
         await DocHosMainRepo().updateActionableInsightPrice(price, serviceId, specialityId));
+  }
+
+  Future helpDocHosQuery(String query) async {
+    addStateInHelpQueryStream(RequestInProgress());
+    var result = await DocHosMainRepo().helpQuery(query);
+    addStateInHelpQueryStream(result);
+    return result;
   }
 }

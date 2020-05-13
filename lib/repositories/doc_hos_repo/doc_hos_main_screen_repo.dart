@@ -97,4 +97,19 @@ class DocHosMainRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+ Future<RequestState> helpQuery(String query) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_PUT,
+        headerIncluded: true,
+        postData: {
+          "query":query,
+        },
+        url: Urls.GET_HELP_QUERY_URL);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: result.isRequestSucceed);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }
