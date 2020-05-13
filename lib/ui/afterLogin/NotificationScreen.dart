@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
@@ -84,6 +85,7 @@ class _NotificationScreenState extends State<NotificationScreen>
 
   Widget buildList(AsyncSnapshot<AllNotificationsPost> snapshot) {
     return ListView.builder(
+      padding: EdgeInsets.only(top:AppConfig.verticalBlockSize*2),
       itemCount: snapshot.data.posts.length,
       itemBuilder: (context, index) {
         return rowLayout(snapshot.data.posts[index]);
@@ -101,107 +103,100 @@ class _NotificationScreenState extends State<NotificationScreen>
 //        addRemoveSelectedItem(result, removePosition);
 //      },
       child: Container(
-        margin: EdgeInsets.all(5.0),
-        child: Card(
-          elevation: 2,
-          semanticContainer: true,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.all(Radius.circular(5.0))),
-            child: Container(
-              margin: EdgeInsets.only(
-                  left: selectedPositions.indexOf(result.id.toString()) > -1
-                      ? 5.0
-                      : 0.0),
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5.0))),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(bottom: 0, right: 10),
-                    child: result.senderImageUrl != '' &&
-                            !result.senderImageUrl.contains("default")
-                        ? CircleAvatar(
-                            radius: AppConfig.horizontalBlockSize * 4,
-                            backgroundImage:
-                                NetworkImage(result.senderImageUrl),
-                          )
-                        : Container(
-//                            height: AppConfig.verticalBlockSize*4,
-//                            width: AppConfig.horizontalBlockSize*8,
-                            padding: EdgeInsets.all(
-                                AppConfig.horizontalBlockSize * 1.6),
-                            alignment: Alignment.center,
-                            child: Text(
-                                (result.senderName != ''
-                                        ? CommonMethods.getInitialName(
-                                            result.senderName)
-                                        : '')
-                                    .toUpperCase(),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: AppConfig.smallFont,
-                                    fontWeight: FontWeight.normal)),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                  AppConfig.horizontalBlockSize * 5)),
-                              gradient: new LinearGradient(
-                                  colors: [
-                                    Color(0xffababab),
-                                    Color(0xff686868)
-                                  ],
-                                  begin: FractionalOffset.topCenter,
-                                  end: FractionalOffset.bottomCenter,
-                                  stops: [0.0, 1.0],
-                                  tileMode: TileMode.clamp),
-                            )),
-                  ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          result.senderName,
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: AppConfig.smallFont,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Container(
-                          width: AppConfig.horizontalBlockSize * 70,
-                          child: Text(
-                            result.notification,
-                            maxLines: null,
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: AppConfig.verySmallFont),
-                          ),
+        margin: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*3,),
+        child: Column(
+          children: <Widget>[
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(bottom: 0, right: 10),
+                  child: result.senderImageUrl != '' &&
+                          !result.senderImageUrl.contains("default")
+                      ? CircleAvatar(
+                          radius: AppConfig.horizontalBlockSize * 5,
+                          backgroundImage:
+                              NetworkImage(result.senderImageUrl),
                         )
-                      ],
-                    ),
+                      : CustomWidgets().getProfileIconWithName(result.senderName ,14, 14),
+
+//              Container(
+////                            height: AppConfig.verticalBlockSize*4,
+////                            width: AppConfig.horizontalBlockSize*8,
+//                      padding: EdgeInsets.all(
+//                          AppConfig.horizontalBlockSize * 1.6),
+//                      alignment: Alignment.center,
+//                      child: Text(
+//                          (result.senderName != ''
+//                                  ? CommonMethods.getInitialName(
+//                                      result.senderName)
+//                                  : '')
+//                              .toUpperCase(),
+//                          style: TextStyle(
+//                              color: Colors.white,
+//                              fontSize: AppConfig.smallFont,
+//                              fontWeight: FontWeight.normal)),
+//                      decoration: BoxDecoration(
+//                        borderRadius: BorderRadius.all(Radius.circular(
+//                            AppConfig.horizontalBlockSize * 5)),
+//                        gradient: new LinearGradient(
+//                            colors: [
+//                              Color(0xffababab),
+//                              Color(0xff686868)
+//                            ],
+//                            begin: FractionalOffset.topCenter,
+//                            end: FractionalOffset.bottomCenter,
+//                            stops: [0.0, 1.0],
+//                            tileMode: TileMode.clamp),
+//                      )),
+    ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        result.senderName,
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: AppConfig.smallFont,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        width: AppConfig.horizontalBlockSize * 65,
+                        child: Text(
+                          result.notification,
+                          maxLines: null,
+                          style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: AppConfig.smallFont),
+                        ),
+                      )
+                    ],
                   ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 20),
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      CommonMethods.getDuration(result.createdTime),
-                      style: TextStyle(fontSize: AppConfig.verySmallFont - 2),
-                    ),
-                  )
-                ],
-              ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  alignment: Alignment.topRight,
+                  child: Text(
+                    CommonMethods.getDuration(result.createdTime),
+                    style: TextStyle(fontSize: AppConfig.verySmallFont - 2),
+                  ),
+                )
+              ],
             ),
-          ),
+           CustomWidgets().getSeparatorLine(),
+//            Padding(
+//              padding: EdgeInsets.only(top:AppConfig.verticalBlockSize*2),
+//            ),
+//            Container(
+//              width: double.infinity,
+//              height: 0.5,
+//              color: PlunesColors.GREYCOLOR,
+//            )
+          ],
         ),
       ),
     );

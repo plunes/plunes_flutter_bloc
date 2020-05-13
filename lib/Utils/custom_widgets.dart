@@ -20,6 +20,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:share/share.dart';
+import 'CommonMethods.dart';
 import 'app_config.dart';
 
 ///This class holds all the common widgets.
@@ -178,28 +179,28 @@ class CustomWidgets {
               color: solutionList[index].isSelected ?? false
                   ? PlunesColors.LIGHTGREENCOLOR
                   : PlunesColors.WHITECOLOR,
-              padding: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 2.5,
-                  horizontal: AppConfig.horizontalBlockSize * 3),
+              padding: (index == 0)
+                  ? EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 1.5,
+                      bottom: AppConfig.verticalBlockSize * 2.5,
+                      right: AppConfig.horizontalBlockSize * 3,
+                      left: AppConfig.horizontalBlockSize * 3)
+                  : EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 2.5,
+                      horizontal: AppConfig.horizontalBlockSize * 3),
               child: Column(
                 children: <Widget>[
                   Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      CircleAvatar(
-                        child: Container(
-                          color: PlunesColors.WHITECOLOR,
-                          height: AppConfig.horizontalBlockSize * 14,
-                          width: AppConfig.horizontalBlockSize * 14,
-                          child: ClipOval(
-                            child: Image.asset(
-                              _imageUrl,
-                            ),
-//                              child: getImageFromUrl(
-//                                  "https://plunes.co/v4/data/5e6cda3106e6765a2d08ce24_1584192397080.jpg"
-//                              )
-                          ),
+                      Container(
+                        color: PlunesColors.WHITECOLOR,
+                        height: AppConfig.horizontalBlockSize * 14,
+                        width: AppConfig.horizontalBlockSize * 14,
+                        child: Image.asset(
+                          _imageUrl,
+                          fit: BoxFit.contain,
                         ),
-                        radius: AppConfig.horizontalBlockSize * 7,
                       ),
                       Padding(
                           padding: EdgeInsets.only(
@@ -239,7 +240,8 @@ class CustomWidgets {
                                         DateUtil.getDuration(
                                             solutionList[index].createdAt),
                                         style: TextStyle(
-                                            fontSize: AppConfig.smallFont))
+                                            fontSize: AppConfig.smallFont,
+                                            color: PlunesColors.GREYCOLOR))
                                 : RichText(
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -551,17 +553,25 @@ class CustomWidgets {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                CircleAvatar(
-                  backgroundColor: PlunesColors.WHITECOLOR,
-                  child: ClipOval(
-                    child: SizedBox.expand(
-                      child: getImageFromUrl(
-                        "https://specialities.s3.ap-south-1.amazonaws.com/${testAndProcedures[index].sId}.png",
-                      ),
-                    ),
-                  ),
-                  radius: AppConfig.horizontalBlockSize * 7,
+                Container(
+                  color: PlunesColors.WHITECOLOR,
+                  height: AppConfig.horizontalBlockSize * 14,
+                  width: AppConfig.horizontalBlockSize * 14,
+                  child: getImageFromUrl(
+                      "https://specialities.s3.ap-south-1.amazonaws.com/${testAndProcedures[index].sId}.png",
+                      boxFit: BoxFit.contain),
                 ),
+//                CircleAvatar(
+//                  backgroundColor: PlunesColors.WHITECOLOR,
+//                  child: ClipOval(
+//                    child: SizedBox.expand(
+//                      child: getImageFromUrl(
+//                        "https://specialities.s3.ap-south-1.amazonaws.com/${testAndProcedures[index].sId}.png",
+//                      ),
+//                    ),
+//                  ),
+//                  radius: AppConfig.horizontalBlockSize * 7,
+//                ),
                 Padding(
                     padding: EdgeInsets.only(
                         left: AppConfig.horizontalBlockSize * 2)),
@@ -664,21 +674,29 @@ class CustomWidgets {
       child: Column(
         children: <Widget>[
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              CircleAvatar(
-                child: Container(
-                  height: AppConfig.horizontalBlockSize * 14,
-                  width: AppConfig.horizontalBlockSize * 14,
-                  child: ClipOval(
-                      child: getImageFromUrl(solutions[index].imageUrl,
-                          boxFit: BoxFit.fill)),
-                ),
-                radius: AppConfig.horizontalBlockSize * 7,
-              ),
+              (solutions[index].imageUrl != null &&
+                      solutions[index].imageUrl.isNotEmpty)
+                  ? CircleAvatar(
+                      child: Container(
+                        height: AppConfig.horizontalBlockSize * 14,
+                        width: AppConfig.horizontalBlockSize * 14,
+                        child: ClipOval(
+                            child: getImageFromUrl(solutions[index].imageUrl,
+                                boxFit: BoxFit.fill)),
+                      ),
+                      radius: AppConfig.horizontalBlockSize * 7,
+                    )
+                  : getProfileIconWithName(
+                      solutions[index].name,
+                      14,
+                      14,
+                    ),
               Padding(
                   padding:
-                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2)),
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3)),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -726,7 +744,7 @@ class CustomWidgets {
                                 text:
                                     " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
                                 style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
+                                    fontSize: AppConfig.smallFont,
                                     color: PlunesColors.BLACKCOLOR,
                                     fontWeight: FontWeight.bold,
                                     decoration: TextDecoration.none),
@@ -755,9 +773,10 @@ class CustomWidgets {
           solutions[index].negotiating
               ? Container()
               : Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  // crossAxisAlignment: CrossAxisAlignment.,
                   children: <Widget>[
-                    Container(width: AppConfig.horizontalBlockSize * 14),
+                    Container(width: AppConfig.horizontalBlockSize * 11),
                     Padding(
                         padding: EdgeInsets.only(
                             left: AppConfig.horizontalBlockSize * 1.5)),
@@ -1078,7 +1097,8 @@ class CustomWidgets {
                                 children: <Widget>[
                                   Text(
                                     'Update Price in your Catalogue for maximum Bookings',
-                                    style: TextStyle(fontSize: AppConfig.largeFont),
+                                    style: TextStyle(
+                                        fontSize: AppConfig.largeFont),
                                     textAlign: TextAlign.center,
                                   ),
                                   Column(
@@ -1113,14 +1133,16 @@ class CustomWidgets {
                                             Text(
                                               ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(1)}',
                                               style: TextStyle(
-                                                  fontSize: AppConfig.mediumFont,
+                                                  fontSize:
+                                                      AppConfig.mediumFont,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Expanded(child: Container()),
                                             Text(
                                               ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(1)}',
                                               style: TextStyle(
-                                                  fontSize: AppConfig.mediumFont,
+                                                  fontSize:
+                                                      AppConfig.mediumFont,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           ],
@@ -1136,7 +1158,7 @@ class CustomWidgets {
                                         child: Text(
                                           ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
                                           style: TextStyle(
-                                              fontSize:AppConfig.largeFont,
+                                              fontSize: AppConfig.largeFont,
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),
@@ -1891,5 +1913,29 @@ class CustomWidgets {
         ),
       ),
     );
+  }
+
+  Widget getProfileIconWithName(String name, double height, double width) {
+    return Container(
+        height: AppConfig.horizontalBlockSize * height,
+        width: AppConfig.horizontalBlockSize * width,
+        alignment: Alignment.center,
+        child: Text(
+            (name != '' ? CommonMethods.getInitialName(name) : '')
+                .toUpperCase(),
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: AppConfig.extraLargeFont,
+                fontWeight: FontWeight.bold)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(
+              Radius.circular(AppConfig.horizontalBlockSize * 7)),
+          gradient: new LinearGradient(
+              colors: [Color(0xffababab), Color(0xff686868)],
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp),
+        ));
   }
 }

@@ -67,7 +67,9 @@ class DialogWidgets {
               alignment: Alignment.center,
               child: Text(
                 'Profile',
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: AppConfig.mediumFont),
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: AppConfig.mediumFont),
               ),
             ),
 
@@ -81,42 +83,69 @@ class DialogWidgets {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        CircleAvatar(
-                          child: Container(
-                            height: AppConfig.horizontalBlockSize * 14,
-                            width: AppConfig.horizontalBlockSize * 14,
-                            child: ClipOval(
-                                child: CustomWidgets().getImageFromUrl(
-                                    solutions.imageUrl,
-                                    boxFit: BoxFit.fill)),
-                          ),
-                          radius: AppConfig.horizontalBlockSize * 7,
-                        ),
+                        (solutions.imageUrl != null &&
+                                solutions.imageUrl.isNotEmpty)
+                            ? CircleAvatar(
+                                child: Container(
+                                  height: AppConfig.horizontalBlockSize * 14,
+                                  width: AppConfig.horizontalBlockSize * 14,
+                                  child: ClipOval(
+                                      child: CustomWidgets().getImageFromUrl(
+                                          solutions.imageUrl,
+                                          boxFit: BoxFit.fill)),
+                                ),
+                                radius: AppConfig.horizontalBlockSize * 7,
+                              )
+                            : CustomWidgets().getProfileIconWithName(
+                                solutions.name ?? PlunesStrings.NA, 14, 14),
                         Padding(
                             padding: EdgeInsets.only(
-                                left: AppConfig.horizontalBlockSize * 2)),
+                                left: AppConfig.horizontalBlockSize * 4)),
                         Expanded(
                             child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(solutions.name ?? PlunesStrings.NA,
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: AppConfig.smallFont)),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: AppConfig.smallFont)),
                             Text(
                               catalogueData.category ?? PlunesStrings.NA,
-                              style: TextStyle(color: Colors.black45, fontSize: AppConfig.smallFont),
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: AppConfig.smallFont),
                             ),
-                            Text(
-                              solutions.address ?? PlunesStrings.NA,
-                              style: TextStyle(color: Colors.black45, fontSize: AppConfig.smallFont),
-                            )
+                            SizedBox(
+                              height: AppConfig.verticalBlockSize * 1,
+                            ),
+                            RichText(
+                                text: TextSpan(
+                                    text: "Address ",
+                                    style: TextStyle(
+                                      fontSize: AppConfig.smallFont,
+                                      color: Colors.black45,
+                                      //fontWeight: FontWeight.w500
+                                    ),
+                                    children: [
+                                  TextSpan(
+                                      text:
+                                          solutions.address ?? PlunesStrings.NA,
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: AppConfig.smallFont))
+                                ])),
                           ],
                         )),
                       ],
                     ),
                     Divider(color: Colors.black54),
-                    Text('Available Slots' , style: TextStyle(fontSize: AppConfig.smallFont),),
+                    Text(
+                      'Available Slots',
+                      style: TextStyle(fontSize: AppConfig.smallFont),
+                    ),
                     Container(
                         padding: const EdgeInsets.only(top: 20),
                         height: AppConfig.verticalBlockSize * 16,
@@ -176,12 +205,10 @@ class DialogWidgets {
                                 ],
                               ),
                             );
-
                           },
                           scrollDirection: Axis.horizontal,
-                          itemCount: _slots.length??0,
-                        )
-                    ),
+                          itemCount: _slots.length ?? 0,
+                        )),
                   ],
                 ),
               ),

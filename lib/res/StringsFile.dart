@@ -41,7 +41,7 @@ class PlunesStrings {
       "WE ARE GETTING THE BEST SOLUTIONS FOR YOU";
   static const String receiving = "Receiving...";
   static const String checkAvailability = "Check Availability";
-  static const String bookIn = "Book in ";
+  static const String bookIn = "Book in";
   static const String homeCollectionAvailable = "Home Collection Available";
   static const String oopsServiceNotAvailable =
       "Oops, seems like we are not providing services in your area, kindly search in gurgaon location.";

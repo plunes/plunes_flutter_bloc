@@ -33,7 +33,7 @@ class _HospitalOverviewScreenState
       _businessFailurecause,
       selectedDay;
   int days = 1;
-  List<String> daysCount = ['today', 'week', 'month', 'year'];
+  List<String> daysCount = ['Today', 'Week', 'Month', 'Year'];
   List<String> daysInput;
 
   // String
@@ -230,11 +230,12 @@ class _HospitalOverviewScreenState
 
   Widget _getTotalBusinessWidget() {
     return Container(
-      margin: EdgeInsets.only(top: 5),
+      margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.5),
       width: double.infinity,
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding:
+              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -354,7 +355,8 @@ class _HospitalOverviewScreenState
       width: double.infinity,
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding:
+              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -362,7 +364,7 @@ class _HospitalOverviewScreenState
                 leading: Image.asset(
                   PlunesImages.actionableInsightIcon,
                   width: AppConfig.horizontalBlockSize * 10,
-                  height: AppConfig.horizontalBlockSize * 10,
+                  height: AppConfig.horizontalBlockSize * 8,
                 ),
                 title: Text(
                   'Actionable Insights',
@@ -657,7 +659,6 @@ class PatientServiceInfo extends StatefulWidget {
   final String imageUrl;
   final int remainingTime;
 
-
   PatientServiceInfo(
       {this.patientName, this.serviceName, this.imageUrl, this.remainingTime});
 
@@ -667,8 +668,9 @@ class PatientServiceInfo extends StatefulWidget {
 
 class _PatientServiceInfoState extends State<PatientServiceInfo> {
   Timer _timer;
-  int _secondVal=60, _secFixVal = 60;
-  int _countDownValue = 10, _prevMinValue;
+  int _secondVal = 60, _secFixVal = 60;
+  int _countDownValue = 9, _prevMinValue;
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -703,7 +705,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                     .difference(DateTime.fromMillisecondsSinceEpoch(
                         widget.remainingTime))
                     .inMinutes >
-              _countDownValue) ??
+                _countDownValue) ??
         true;
   }
 
@@ -714,9 +716,9 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       children: <Widget>[
         CircleAvatar(
           child: Container(
-              height: AppConfig.horizontalBlockSize * 14,
-              width: AppConfig.horizontalBlockSize * 14,
-              child: Image.asset(PlunesImages.inactiveProfileIcon)),
+              height: AppConfig.horizontalBlockSize * 9,
+              width: AppConfig.horizontalBlockSize * 10,
+              child: Image.asset(PlunesImages.userProfileIcon)),
           radius: AppConfig.horizontalBlockSize * 7,
         ),
         Expanded(
@@ -759,20 +761,18 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
           DateTime.fromMillisecondsSinceEpoch(widget.remainingTime));
       if (duration != null && duration.inMinutes != null) {
         int val = _countDownValue - duration.inMinutes;
-        if(_prevMinValue== null ){
+        if (_prevMinValue == null) {
           _prevMinValue = val;
         }
-        if(_prevMinValue!=val){
+        if (_prevMinValue != val) {
           _prevMinValue = val;
           _secondVal = _secFixVal;
         }
         _secondVal--;
         timeValue = val.toString();
-        if(_secondVal!=null ){
-          timeValue = timeValue +':' + _secondVal.toString();
-
+        if (_secondVal != null) {
+          timeValue = timeValue + ':' + _secondVal.toString();
         }
-
       }
     }
     return !isShowWidget()
@@ -801,7 +801,31 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
               )
             ],
           )
-        : Container();
+        : Column(
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(
+                    vertical: AppConfig.verticalBlockSize * 0.5),
+                decoration: BoxDecoration(
+                    shape: BoxShape.rectangle,
+                    border:
+                        Border.all(color: PlunesColors.GREYCOLOR, width: 0.5),
+                    borderRadius: BorderRadius.circular(8.0)),
+                child: Center(
+                  child: Text(
+                    "00:00",
+                    style: TextStyle(
+                        color: PlunesColors.GREENCOLOR,
+                        fontSize: AppConfig.verySmallFont + 2),
+                  ),
+                ),
+              ),
+              Text(
+                'Min',
+                style: TextStyle(fontSize: AppConfig.verySmallFont),
+              )
+            ],
+          );
   }
 
   void _setState() {

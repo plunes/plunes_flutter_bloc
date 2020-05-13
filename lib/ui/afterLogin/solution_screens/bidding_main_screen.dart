@@ -144,7 +144,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
             _prevSearchedSolution.data.isEmpty)
         ? Container()
         : Expanded(
-            flex: 5,
+            flex: 7,
             child: StreamBuilder<Object>(
                 stream: _controller.stream,
                 builder: (context, snapshot) {
@@ -167,7 +167,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                             child: Container(
                               width: double.infinity,
                               padding: EdgeInsets.symmetric(
-                                  vertical: AppConfig.verticalBlockSize * 2),
+                                  vertical: AppConfig.verticalBlockSize * 1.5),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[

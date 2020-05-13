@@ -41,9 +41,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Previous Activities'),
-      ),
+      appBar: widget.getAppBar(context, 'Previous Activities', true),
       body: _getWidgetBody(),
     );
   }
@@ -76,7 +74,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                   ? Expanded(
                       child: Center(
                       child: Container(
-                        child: Text("You don't have any missed negotiations"),
+                        child: Text("You don't have any missed negotiations", style: TextStyle(fontSize: AppConfig.smallFont),),
                       ),
                     ))
                   : Expanded(
@@ -86,10 +84,29 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                           TapGestureRecognizer tapRecognizer =
                               TapGestureRecognizer()
                                 ..onTap = () => _onViewMoreTap(index);
-                          return CustomWidgets().getSolutionRow(
-                              missedSolutions, index,
-                              onButtonTap: () => _onSolutionItemTap(index),
-                              onViewMoreTap: tapRecognizer);
+                          return Stack(
+                            children: <Widget>[
+                              CustomWidgets().getSolutionRow(
+                                  missedSolutions, index,
+                                  onButtonTap: () => _onSolutionItemTap(index),
+                                  onViewMoreTap: tapRecognizer),
+                              Positioned.fill(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                          begin: FractionalOffset.topCenter,
+                                          end: FractionalOffset.bottomCenter,
+                                          colors: [
+                                            Colors.white10,
+                                            Colors.white70 // I don't know what Color this will be, so I can't use this
+                                          ]
+                                      )
+                                  ),
+                                  width: double.infinity,
+                                ),
+                              ),
+                            ],
+                          );
                         },
                         itemCount: missedSolutions.length,
                       ),
@@ -115,7 +132,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                     ? Expanded(
                         child: Center(
                         child: Container(
-                          child: Text("You don't have any previous activities"),
+                          child: Text("You don't have any previous activities", style: TextStyle(fontSize: AppConfig.smallFont),),
                         ),
                       ))
                     : Expanded(
@@ -139,7 +156,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                     child: Text(
                       'Missed Negotiations',
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                          TextStyle(fontSize: AppConfig.mediumFont+2, fontWeight: FontWeight.w500),
                     ))
               ],
             )));
@@ -169,7 +186,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>SolutionReceivedScreen(
+            builder: (context) => SolutionReceivedScreen(
                   catalogueData: _prevSolutions[index],
                 )));
   }
@@ -181,6 +198,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
 Widget _reminderView() {
   return Card(
+    color: Colors.white70,
     margin: EdgeInsets.all(15),
     child: Padding(
       padding: EdgeInsets.all(15),
@@ -191,7 +209,7 @@ Widget _reminderView() {
             child: Text(
                 'Please Make Sure You book within a short time, keeping in mind it is valid only for 1 hour',
                 style: TextStyle(
-                  fontSize: 17,
+                  fontSize: AppConfig.smallFont,
                 )),
           ),
         ],
@@ -199,53 +217,3 @@ Widget _reminderView() {
     ),
   );
 }
-
-//class RowBlock extends StatelessWidget {
-//  final String name;
-//  final String btnName;
-//  final bool isShow;
-//
-//  RowBlock(this.name, this.btnName, this.isShow);
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Container(
-//      margin: EdgeInsets.symmetric(horizontal: 20.0),
-//      height: 100,
-//      decoration: BoxDecoration(
-//        border: Border(bottom: BorderSide(color: Colors.black)),
-//      ),
-//      child: Row(
-//        children: <Widget>[
-//          Container(
-//              width: 50.0,
-//              height: 50.0,
-//              margin: EdgeInsets.all(10),
-//              decoration: new BoxDecoration(
-//                  shape: BoxShape.circle,
-//                  image: new DecorationImage(
-//                      fit: BoxFit.fill,
-//                      image: new NetworkImage(
-//                          "https://i.imgur.com/BoN9kdC.png")))),
-//          Flexible(
-//            child:
-//                // 'Dentist Consultation and X-ray (Single Film)'
-//                Text(name),
-//          ),
-//          FlatButton(
-//            child: Text(btnName),
-//            onPressed: () {
-//              showDialog(
-//                context: context,
-//                builder: (BuildContext context) => DialogWidgets().buildAboutDialog(
-//                    dialogTitle: '',
-//                    dialogMsg:
-//                        'Now you can have a multiple telephonic consltaoipn & one free vist'),
-//              );
-//            },
-//            textColor: Theme.of(context).primaryColor,
-//          ),
-//        ],
-//      ),
-//    );
-//  }
