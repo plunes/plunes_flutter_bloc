@@ -8,19 +8,22 @@ class PlunesImages {
   static String userLandingImage = 'assets/images/user_landing_map.png';
   static String userLandingGoogleIcon =
       'assets/images/locationIconUserLandingScreen.png';
-  static String actionableInsightIcon = 'assets/images/actinable-insights-icon.png';
+  static String actionableInsightIcon =
+      'assets/images/actinable-insights-icon.png';
   static String realTimeInsightIcon = 'assets/images/realtime-insight-icon.png';
   static String totalBusinessIcon = 'assets/images/totalBusiness-icon.png';
   static String consultationImage = 'assets/images/consultation-avatar.png';
-  static String procedureImage ='assets/images/procedure-avatar.png';
-  static String testImage ='assets/images/test-avatar.png';
-  static String  inactiveProfileIcon ='assets/images/Profile_Inactive-Icon.png';
+  static String procedureImage = 'assets/images/procedure-avatar.png';
+  static String testImage = 'assets/images/test-avatar.png';
+  static String inactiveProfileIcon = 'assets/images/Profile_Inactive-Icon.png';
   static String bulbIconForTips = 'assets/images/bulb-icon.png';
   static String searchIcon = 'assets/images/search@3x.png';
   static String userProfileIcon = 'assets/images/userprofileIcon.png';
-  static String notificationActive =  'assets/images/bottom_tabs/notification_active-icon.png';
-  static String notificationInActive = 'assets/images/bottom_tabs/notification_inactive-icon.png';
-
+  static String notificationActive =
+      'assets/images/bottom_tabs/notification_active-icon.png';
+  static String notificationInActive =
+      'assets/images/bottom_tabs/notification_inactive-icon.png';
+  static String noAppointmentImage = "assets/images/no_appointment.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

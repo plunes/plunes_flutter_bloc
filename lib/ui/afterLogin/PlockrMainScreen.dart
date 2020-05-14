@@ -10,6 +10,7 @@ import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/log.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/plockr_blocs/plockr_bloc.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
@@ -265,11 +266,13 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                 imageUrl: _image.path.toString(),
                 plockrBloc: _plockrBloc,
               )).then((value) {
-        if (value != null &&
-            value.runtimeType is String &&
-            value.toString().trim().isNotEmpty) {
-          widget.showInSnackBar(value, PlunesColors.BLACKCOLOR, _scaffoldKey);
-          _getPlockrData();
+        if (value != null && value.toString().trim().isNotEmpty) {
+          try {
+            widget.showInSnackBar(value, PlunesColors.BLACKCOLOR, _scaffoldKey);
+            _getPlockrData();
+          } catch (e) {
+            AppLog.printError("PlockrMainScreen Error ${e.toString()}");
+          }
         }
       });
     }

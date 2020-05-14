@@ -196,7 +196,11 @@ class _LoginState extends State<Login> implements DialogCallBack {
                   });
                 },
                 child: _passwordVisible
-                    ? Image.asset("assets/images/eye-with-a-diagonal-line3x.png", width:24, height: 24,)
+                    ? Image.asset(
+                        "assets/images/eye-with-a-diagonal-line3x.png",
+                        width: 24,
+                        height: 24,
+                      )
                     : Icon(Icons.visibility),
               )),
         ),
@@ -293,8 +297,9 @@ class _LoginState extends State<Login> implements DialogCallBack {
       userLoginRequest();
   }
 
-  userLoginRequest() {
+  userLoginRequest() async {
     progress = true;
+    _setState();
     bloc.loginRequest(
         context, this, phoneController.text, passwordController.text);
     bloc.loginData.listen((data) async {
@@ -303,10 +308,19 @@ class _LoginState extends State<Login> implements DialogCallBack {
         await bloc.saveDataInPreferences(data, context, plunesStrings.login);
         widget.showInSnackBar(
             plunesStrings.success, Colors.green, _scaffoldKey);
-      } else
+      } else {
+        _setState();
+        await Future.delayed(Duration(milliseconds: 100));
         widget.showInSnackBar(
             plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
+      }
     });
+  }
+
+  _setState() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override

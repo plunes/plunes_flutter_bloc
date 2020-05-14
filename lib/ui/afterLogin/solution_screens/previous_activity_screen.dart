@@ -74,7 +74,10 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                   ? Expanded(
                       child: Center(
                       child: Container(
-                        child: Text("You don't have any missed negotiations", style: TextStyle(fontSize: AppConfig.smallFont),),
+                        child: Text(
+                          "You don't have any missed negotiations",
+                          style: TextStyle(fontSize: AppConfig.smallFont),
+                        ),
                       ),
                     ))
                   : Expanded(
@@ -97,11 +100,10 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                           begin: FractionalOffset.topCenter,
                                           end: FractionalOffset.bottomCenter,
                                           colors: [
-                                            Colors.white10,
-                                            Colors.white70 // I don't know what Color this will be, so I can't use this
-                                          ]
-                                      )
-                                  ),
+                                        Colors.white10,
+                                        Colors.white70
+                                        // I don't know what Color this will be, so I can't use this
+                                      ])),
                                   width: double.infinity,
                                 ),
                               ),
@@ -132,7 +134,10 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                     ? Expanded(
                         child: Center(
                         child: Container(
-                          child: Text("You don't have any previous activities", style: TextStyle(fontSize: AppConfig.smallFont),),
+                          child: Text(
+                            "You don't have any previous activities",
+                            style: TextStyle(fontSize: AppConfig.smallFont),
+                          ),
                         ),
                       ))
                     : Expanded(
@@ -155,8 +160,9 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                         vertical: AppConfig.verticalBlockSize * 2),
                     child: Text(
                       'Missed Negotiations',
-                      style:
-                          TextStyle(fontSize: AppConfig.mediumFont+2, fontWeight: FontWeight.w500),
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont + 2,
+                          fontWeight: FontWeight.w500),
                     ))
               ],
             )));
@@ -183,6 +189,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   _onViewMoreTap(int index) {}
 
   _onSolutionItemTap(int index) {
+    _prevSolutions[index].isFromNotification = true;
     Navigator.push(
         context,
         MaterialPageRoute(

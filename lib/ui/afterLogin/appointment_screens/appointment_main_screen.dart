@@ -7,6 +7,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
@@ -121,10 +122,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
         }
         return (_appointmentResponse == null ||
                 _appointmentResponse.bookings.isEmpty)
-            ? Center(
-                child: Text(_appointmentFailureCause ??
-                    PlunesStrings.noAppointmentAvailable),
-              )
+            ? _emptyAppointmentView(_appointmentFailureCause ??
+                PlunesStrings.noAppointmentAvailable)
             : (UserManager().getUserDetails().userType == Constants.user)
                 ? _showUserAppointmentItems()
                 : _showDocHosAppointmentItem();
@@ -176,10 +175,10 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
             controller: _tabUserController,
             children: <Widget>[
               _confirmedUserAppointments.isEmpty
-                  ? _emptyAppointmentView()
+                  ? _emptyAppointmentView(PlunesStrings.noConfirmedAppointments)
                   : _renderAppointmentUserList(_confirmedUserAppointments),
               _cancelledAppointments.isEmpty
-                  ? _emptyAppointmentView()
+                  ? _emptyAppointmentView(PlunesStrings.noCancelledAppointments)
                   : _renderAppointmentUserList(_cancelledAppointments)
             ],
           ),
@@ -218,13 +217,13 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
             controller: _tabDocHosController,
             children: <Widget>[
               _upComingAppointments.isEmpty
-                  ? _emptyAppointmentView()
+                  ? _emptyAppointmentView(PlunesStrings.noNewAppointments)
                   : _renderAppointmentDocHosList(_upComingAppointments),
               _confirmedDocHosAppointments.isEmpty
-                  ? _emptyAppointmentView()
+                  ? _emptyAppointmentView(PlunesStrings.noConfirmedAppointments)
                   : _renderAppointmentDocHosList(_confirmedDocHosAppointments),
               _cancelledAppointments.isEmpty
-                  ? _emptyAppointmentView()
+                  ? _emptyAppointmentView(PlunesStrings.noCancelledAppointments)
                   : _renderAppointmentDocHosList(_cancelledAppointments)
             ],
           ),
@@ -233,13 +232,24 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     );
   }
 
-  Widget _emptyAppointmentView() {
+  Widget _emptyAppointmentView(String message) {
     return Container(
-      child: Center(
-        child: Text(
-          PlunesStrings.noAppointmentAvailable,
-          style: TextStyle(fontSize: AppConfig.smallFont),
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset(
+            PlunesImages.noAppointmentImage,
+            width: AppConfig.horizontalBlockSize * 20,
+            height: AppConfig.verticalBlockSize * 8,
+          ),
+          Container(
+            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+            child: Text(
+              message,
+              style: TextStyle(fontSize: AppConfig.smallFont),
+            ),
+          ),
+        ],
       ),
     );
   }

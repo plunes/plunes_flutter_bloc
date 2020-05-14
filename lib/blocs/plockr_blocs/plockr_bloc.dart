@@ -34,7 +34,7 @@ class PlockrBloc extends BlocBase {
     super.dispose();
   }
 
-  uploadFilesAndData(
+  Future<RequestState> uploadFilesAndData(
     Map<String, dynamic> postData,
   ) async {
     // addStateInGenericStream(_uploadStreamProvider,RequestInProgress());

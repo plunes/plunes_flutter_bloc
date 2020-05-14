@@ -197,7 +197,8 @@ class User {
       verifiedUser: json['verifiedUser'] != null ? json['verifiedUser'] : false,
       userType: json['userType'] != null ? json['userType'] : '',
       address: json['address'] != null ? json['address'] : '',
-      referralCode: json['userReferralCode'] != null ? json['userReferralCode'] : null,
+      referralCode:
+          json['userReferralCode'] != null ? json['userReferralCode'] : null,
       coverImageUrl: json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
       specialities: json['specialities'] != null
           ? List<ProcedureList>.from(
@@ -415,11 +416,14 @@ class AllNotificationsPost {
   AllNotificationsPost({this.success, this.message, this.posts});
 
   factory AllNotificationsPost.fromJson(Map<String, dynamic> json) {
+    print("json ${json.toString()}");
     return AllNotificationsPost(
       success: json['success'] != null ? json['success'] : false,
       message: json['message'] != null ? json['message'] : '',
-      posts: List<PostsData>.from(
-          json['notifications'].map((i) => PostsData.fromJson(i))),
+      posts: json['notifications'] != null
+          ? List<PostsData>.from(
+              json['notifications'].map((i) => PostsData.fromJson(i)))
+          : <PostsData>[],
     );
   }
 }

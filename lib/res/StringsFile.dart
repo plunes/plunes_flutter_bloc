@@ -140,10 +140,13 @@ class PlunesStrings {
 
   static const String noAppointmentAvailable =
       "You don't have appointment yet!";
+  static const String noConfirmedAppointments = "No Confirmed appointments";
+  static const String noCancelledAppointments = "No Cancelled appointments";
+  static const String noNewAppointments = "No New appointments";
 
   static const String invalidOtp = "Invalid OTP";
 
-  static const String  confirmFailedMessage = 'booking confirmation failed';
+  static const String confirmFailedMessage = 'booking confirmation failed';
 
   static const String pleaseSelectALocation = "Please select a location.";
 
@@ -151,9 +154,12 @@ class PlunesStrings {
 
   static const String paymentDone = "Payment Done!";
 
-  static const String helpQueryFailedMessage ="Query has been failed! Try Again";
+  static const String helpQueryFailedMessage =
+      "Query submission has been failed! Try Again";
+  static const String emptyQueryFieldMessage = "Please Enter your query";
 
-  static String helpQuerySuccessMessage="Thanks for contacting us! We will be in touch with you shortly";
+  static String helpQuerySuccessMessage =
+      "Thanks for contacting us! We will be in touch with you shortly.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

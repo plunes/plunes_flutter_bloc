@@ -66,7 +66,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               widget.getAppBar(context, PlunesStrings.solutionSearched, true),
           body: Builder(builder: (context) {
             return Container(
-              padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize*3),
+              padding: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3),
               width: double.infinity,
               child: _showBody(),
             );
@@ -80,11 +81,12 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         StreamBuilder(
           builder: (context, snapShot) {
             return Container(
-                margin: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*2),
-                child:CustomWidgets().searchBar(
-                hintText: plunesStrings.searchHint,
-                hasFocus: true,
-                searchController: _searchController));
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 2),
+                child: CustomWidgets().searchBar(
+                    hintText: plunesStrings.searchHint,
+                    hasFocus: true,
+                    searchController: _searchController));
           },
           stream: _streamController.stream,
         ),
@@ -211,7 +213,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   _onSearch() {
     _streamController.add(null);
     if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () {
+    _debounce = Timer(const Duration(seconds: 2), () {
       if (_searchController != null &&
           _searchController.text != null &&
           _searchController.text.trim().isNotEmpty) {

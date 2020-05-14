@@ -288,13 +288,15 @@ class Bloc {
     if (_preferenceFetcher != null && !_preferenceFetcher.isClosed) {
       _preferenceFetcher.sink.add(data);
     }
-    if (_from != null)
+    if (_from != null) {
+      preferences.setPreferencesBoolean(Constants.NOTIFICATION_ENABLED, true);
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
               builder: (context) =>
                   HomeScreen(screenNo: Constants.homeScreenNumber)),
           (_) => false);
+    }
   }
 
   ///Below method is for saving data in the preferences

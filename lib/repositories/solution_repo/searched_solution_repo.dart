@@ -1,3 +1,4 @@
+import 'package:plunes/Utils/log.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -67,9 +68,23 @@ class SearchedSolutionRepo {
       final CatalogueData catalogueData) async {
     final double _lat = 28.4594965, _long = 77.0266383;
     User _user = UserManager().getUserDetails();
-//    print("userdetsils ${_user.toString()}");
+    print("userdetsils ${_user.toString()}");
     double lat;
     double long;
+    try {
+      if (_user.latitude != null && _user.latitude.isNotEmpty) {
+        lat = double.tryParse(_user.latitude);
+      } else {
+        lat = 0.0;
+      }
+      if (_user.latitude != null && _user.latitude.isNotEmpty) {
+        long = double.tryParse(_user.longitude);
+      } else {
+        long = 0.0;
+      }
+    } catch (e) {
+      AppLog.printError("SearchedSolutionRepo Error in parsing double ");
+    }
     Map<String, dynamic> queryParams;
     if (catalogueData.isFromNotification != null &&
         catalogueData.isFromNotification) {
@@ -80,14 +95,10 @@ class SearchedSolutionRepo {
     } else {
       queryParams = {
         "serviceId": catalogueData.serviceId,
-        "latitude": lat ?? _lat,
-        "longitude": long ?? _long
+        "latitude": lat,
+        "longitude": long
       };
     }
-    try {
-      lat = double.parse(_user.latitude);
-      long = double.parse(_user.longitude);
-    } catch (e) {}
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         url: Urls.GET_DOC_HOS_API,

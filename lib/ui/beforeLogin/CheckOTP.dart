@@ -37,30 +37,34 @@ class _CheckOTPState extends BaseState<CheckOTP> {
   CountdownTimer countDownTimer;
 
   void _checkOTP(String pin, BuildContext context) async {
-    var result = await UserBloc().getVerifyOtp(widget.phone, int.parse(pin));
+    if (pin == null || pin.isEmpty || pin.length != 4) {
+      widget.showInSnackBar(
+          PlunesStrings.invalidOtp, PlunesColors.BLACKCOLOR, scaffoldKey);
+      return;
+    }
+    var result = await UserBloc().getVerifyOtp(widget.phone, pin);
     if (result is RequestSuccess) {
       VerifyOtpResponse verifyOtpResponse = result.response;
-      if (verifyOtpResponse != null && verifyOtpResponse.success != null &&
+      if (verifyOtpResponse != null &&
+          verifyOtpResponse.success != null &&
           verifyOtpResponse.success) {
         if (widget.from == plunesStrings.forgotPasswordTitle)
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      ChangePassword(
-                          phone: widget.phone,
-                          from: plunesStrings.createPassword)));
+                  builder: (context) => ChangePassword(
+                      phone: widget.phone,
+                      from: plunesStrings.createPassword)));
         else
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => Registration(phone: widget.phone)));
-      }
-    else {
+      } else {
         widget.showInSnackBar(
             PlunesStrings.invalidOtp, PlunesColors.BLACKCOLOR, scaffoldKey);
       }
-  } else if (result is RequestFailed) {
+    } else if (result is RequestFailed) {
       widget.showInSnackBar(
           result.failureCause, PlunesColors.BLACKCOLOR, scaffoldKey);
     }
@@ -146,7 +150,6 @@ class _CheckOTPState extends BaseState<CheckOTP> {
           ),
           Container(
             alignment: Alignment.center,
-
             child: Padding(
               padding: const EdgeInsets.only(
                   left: 60.0, right: 20, top: 70, bottom: 80),
@@ -161,6 +164,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
                     fontSize: 22,
                   ),
                   onSubmit: (String pin) => _checkOTP(pin, context),
+                  keyboardType: TextInputType.phone,
                   inputDecoration: InputDecoration(
                     counterText: "",
                     contentPadding: EdgeInsets.only(top: 10, bottom: 10),

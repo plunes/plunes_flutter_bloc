@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geocoder/geocoder.dart';
@@ -6,6 +8,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as loc;
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -32,9 +35,12 @@ class _LocationFetchState extends State<LocationFetch> {
   Set<Marker> marker = <Marker>{};
   var location = new loc.Location(), globalHeight, globalWidth;
   List _coordinateList = new List();
-  String latitude = '0.0', longitude = '0.0', address = '';
+  final double lat = 28.4594965, long = 77.0266383;
+  String latitude = '28.4594965', longitude = '77.0266383', address = '';
   bool _isAddFetch = false, _isSettingLocationFromPlacesApi = false;
   Preferences _preferences;
+  Completer<GoogleMapController> _completer = Completer();
+  BuildContext _context;
 
   @override
   void initState() {
@@ -46,17 +52,33 @@ class _LocationFetchState extends State<LocationFetch> {
     _preferences = new Preferences();
     String lat = _preferences.getPreferenceString(Constants.LATITUDE);
     String lng = _preferences.getPreferenceString(Constants.LONGITUDE);
+    if (lat == null || lng == null || lat.isEmpty || lng.isEmpty) {
+      await Future.delayed(Duration(milliseconds: 400));
+      var loc = await LocationUtil().getCurrentLatLong(_context);
+      if (loc != null) {
+        _setLocation(loc.latitude.toString(), loc.longitude.toString());
+      } else {
+        getLocation();
+      }
+    } else {
+      _setLocation(lat, lng);
+    }
+  }
+
+  _setLocation(String lat, String lng) async {
     if (lat != null && lat.isNotEmpty && lng != null && lng.isNotEmpty) {
+      latitude = lat;
+      longitude = lng;
+      print("lat $latitude long $longitude");
       final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
       var addresses =
           await Geocoder.local.findAddressesFromCoordinates(coordinates);
       var addr = addresses?.first;
       String full_address = addr?.addressLine;
-      latitude = lat;
-      longitude = lng;
       locationController.text = full_address;
       if (lat != null && lng != null) {
         _setMarker(double.parse(lat), double.parse(lng));
+        _animateCamera();
       }
     }
     setState(() {});
@@ -77,16 +99,6 @@ class _LocationFetchState extends State<LocationFetch> {
         latitude +
         ":" +
         longitude);
-
-//    if (houseController.text == '' && landMarkController.text == '') {
-//      Navigator.of(context).pop(address);
-//    } else if (houseController.text != '' && landMarkController.text == '') {
-//      Navigator.of(context).pop(home + address);
-//    } else if (houseController.text == '' && landMarkController.text != '') {
-//      Navigator.of(context).pop(land + address);
-//    } else {
-//      Navigator.of(context).pop(home + land + address);
-//    }
   }
 
   @override
@@ -95,8 +107,9 @@ class _LocationFetchState extends State<LocationFetch> {
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      body: GestureDetector(
+    return Scaffold(body: Builder(builder: (context) {
+      _context = context;
+      return GestureDetector(
           onTap: () => CommonMethods.hideSoftKeyboard(),
           child: Container(
             child: Stack(
@@ -109,6 +122,8 @@ class _LocationFetchState extends State<LocationFetch> {
                       child: Stack(
                         children: <Widget>[
                           Container(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.of(context).padding.top),
                             height: globalHeight / 2,
                             child: getGoogleMapView(),
                           ),
@@ -122,8 +137,8 @@ class _LocationFetchState extends State<LocationFetch> {
                 getBottomView()
               ],
             ),
-          )),
-    );
+          ));
+    }));
   }
 
   Widget getBottomView() {
@@ -218,20 +233,31 @@ class _LocationFetchState extends State<LocationFetch> {
         print("Started to move");
       },
       onCameraIdle: () async {
-        if (_coordinateList.length != 0 && !_isSettingLocationFromPlacesApi) {
-          _isAddFetch = true;
-          Coordinates coordinates = _coordinateList[_coordinateList.length - 1];
-          _setMarker(coordinates?.latitude, coordinates?.longitude);
-          latitude = coordinates.latitude?.toString();
-          longitude = coordinates.longitude?.toString();
-          var addresses = await Geocoder.local.findAddressesFromCoordinates(
-              _coordinateList[_coordinateList.length - 1]);
-          var addr = addresses.first;
-          String full_address = addr.addressLine;
-          locationController.text = full_address;
-          _isAddFetch = false;
-          setState(() {});
+        if (!_completer.isCompleted) {
+          return;
         }
+        try {
+          if (_coordinateList.length != 0 && !_isSettingLocationFromPlacesApi) {
+            _isAddFetch = true;
+            Coordinates coordinates =
+                _coordinateList[_coordinateList.length - 1];
+            _setMarker(coordinates?.latitude, coordinates?.longitude);
+            latitude = coordinates.latitude?.toString();
+            longitude = coordinates.longitude?.toString();
+            if (latitude == '0.0' && longitude == '0.0') {
+              return;
+            }
+            print(
+                "${_coordinateList[_coordinateList.length - 1]}lat is $latitude long is $longitude");
+            var addresses = await Geocoder.local.findAddressesFromCoordinates(
+                _coordinateList[_coordinateList.length - 1]);
+            var addr = addresses.first;
+            String full_address = addr.addressLine;
+            locationController.text = full_address;
+            _isAddFetch = false;
+            setState(() {});
+          }
+        } catch (e) {}
       },
       onCameraMove: ((_p) async {
         _coordinateList
@@ -242,7 +268,10 @@ class _LocationFetchState extends State<LocationFetch> {
         zoom: 15.0,
       ),
       onMapCreated: (GoogleMapController controller) {
-        _mapController = controller;
+        if (!_completer.isCompleted) {
+          _mapController = controller;
+          _completer.complete(_mapController);
+        }
       },
     );
   }
@@ -255,14 +284,10 @@ class _LocationFetchState extends State<LocationFetch> {
       double lat = detail.result.geometry.location.lat;
       double lng = detail.result.geometry.location.lng;
       _setMarker(lat, lng);
+      latitude = lat?.toString();
+      longitude = lng?.toString();
       setState(() {
-        _mapController.animateCamera(
-          CameraUpdate.newCameraPosition(
-            CameraPosition(zoom: 15, target: LatLng(lat, lng)),
-          ),
-        );
-        latitude = lat?.toString();
-        longitude = lng?.toString();
+        _animateCamera();
         locationController.text = detail.result.formattedAddress;
       });
       Future.delayed(Duration(milliseconds: 1500)).then((value) {
@@ -276,8 +301,24 @@ class _LocationFetchState extends State<LocationFetch> {
     if (lat != null && lon != null) {
       marker.add(Marker(
           markerId: MarkerId("currentLocation"),
-          icon: BitmapDescriptor.defaultMarker,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
           position: LatLng(lat, lon)));
+    }
+  }
+
+  void _animateCamera() {
+    if (latitude != null &&
+        latitude.isNotEmpty &&
+        longitude != null &&
+        longitude.isNotEmpty &&
+        _completer.isCompleted) {
+      _mapController.animateCamera(
+        CameraUpdate.newCameraPosition(
+          CameraPosition(
+              zoom: 12,
+              target: LatLng(double.parse(latitude), double.parse(longitude))),
+        ),
+      );
     }
   }
 }

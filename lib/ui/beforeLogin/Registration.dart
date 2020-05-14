@@ -7,6 +7,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
@@ -95,7 +96,8 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
   UserBloc _userBloc;
   String _failureCause;
   bool _isProcessing;
-  Preferences preferences;
+  Preferences _preferenceObj;
+  BuildContext _context;
 
   @override
   void initState() {
@@ -125,34 +127,21 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
   }
 
   void getLocation() async {
-    preferences = new Preferences();
-
-    if (_latitude == null && _longitude == null) {
-      _latitude = preferences.getPreferenceString(Constants.LATITUDE);
-      _longitude = preferences.getPreferenceString(Constants.LONGITUDE);
-    } else {
-      var getLocation = await location.getLocation();
-      _latitude = getLocation?.latitude?.toString();
-      _longitude = getLocation?.longitude?.toString();
-    }
-    if (_latitude != null && _longitude != null) {
-      preferences.setPreferencesString(Constants.LATITUDE, _latitude);
-      preferences.setPreferencesString(Constants.LONGITUDE, _longitude);
-      print('$_latitude  , $_longitude');
-
-    //  print('${double.parse(_latitude)} , ${double.parse(_longitude)}');
-      if (_latitude != null && _longitude != null) {
-        final coordinates =
-        new Coordinates(double.parse(_latitude), double.parse(_longitude));
-
-        var addressControlleres =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
-        var addr = addressControlleres.first;
-        String full_addressController = addr.addressLine;
-        locationController.text = full_addressController;
+    _preferenceObj = new Preferences();
+    _latitude = _preferenceObj.getPreferenceString(Constants.LATITUDE);
+    _longitude = _preferenceObj.getPreferenceString(Constants.LONGITUDE);
+    if (_latitude == null ||
+        _longitude == null ||
+        _latitude.isEmpty ||
+        _longitude.isEmpty) {
+      await Future.delayed(Duration(milliseconds: 400));
+      var latLong = await LocationUtil().getCurrentLatLong(_context);
+      if (latLong != null) {
+        _latitude = latLong.latitude.toString();
+        _longitude = latLong.longitude.toString();
       }
     }
-    setState(() {});
+    _setLocationData();
   }
 
   @override
@@ -160,18 +149,20 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     CommonMethods.globalContext = context;
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
         key: _scaffoldKey,
         appBar: widget.getAppBar(context, plunesStrings.signUp, true),
         backgroundColor: Colors.white,
-        body: GestureDetector(
-            onTap: () => CommonMethods.hideSoftKeyboard(),
-            child: _isProcessing
-                ? CustomWidgets().getProgressIndicator()
-                : _failureCause == null
-                    ? bodyView()
-                    : CustomWidgets().errorWidget(_failureCause)));
+        body: Builder(builder: (context) {
+          _context = context;
+          return GestureDetector(
+              onTap: () => CommonMethods.hideSoftKeyboard(),
+              child: _isProcessing
+                  ? CustomWidgets().getProgressIndicator()
+                  : _failureCause == null
+                      ? bodyView()
+                      : CustomWidgets().errorWidget(_failureCause));
+        }));
   }
 
   Widget bodyView() {
@@ -920,12 +911,6 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         if (data.success) {
           await bloc.saveDataInPreferences(
               data, context, plunesStrings.registration);
-          widget.showInSnackBar(
-              plunesStrings.success, Colors.green, _scaffoldKey);
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => HomeScreen(screenNo: Constants.homeScreenNumber)));
         } else {
           widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
         }
@@ -1356,5 +1341,25 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  Future _setLocationData() async {
+    if (_latitude != null &&
+        _longitude != null &&
+        _latitude.isNotEmpty &&
+        _longitude.isNotEmpty) {
+      _preferenceObj.setPreferencesString(Constants.LATITUDE, _latitude);
+      _preferenceObj.setPreferencesString(Constants.LONGITUDE, _longitude);
+      print('$_latitude  , $_longitude');
+      print('$_latitude , $_longitude');
+      final coordinates =
+          new Coordinates(double.parse(_latitude), double.parse(_longitude));
+      var addressControlleres =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      var addr = addressControlleres.first;
+      String fullAddressController = addr.addressLine;
+      locationController.text = fullAddressController;
+    }
+    _setState();
   }
 }

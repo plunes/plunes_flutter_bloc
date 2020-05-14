@@ -51,8 +51,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
     return Container(
       color: (widget.bookingId != null &&
-    widget.bookingId == appointmentModel.bookingId)
-        ? PlunesColors.LIGHTGREENCOLOR :PlunesColors.WHITECOLOR,
+              widget.bookingId == appointmentModel.bookingId)
+          ? PlunesColors.LIGHTGREENCOLOR
+          : PlunesColors.WHITECOLOR,
       padding:
           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
       child: Column(
@@ -131,22 +132,24 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               style: TextStyle(
                                   fontSize: AppConfig.smallFont,
                                   color: Colors.black54)),
-                          (appointmentModel.serviceType == 'Procedure' && appointmentModel.paymentPercent=='20') ?Container(
-                            margin: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 2),
-                            child: RaisedButton(
-                              child: Text(
-                                PlunesStrings.visitAgain,
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(
-                                    AppConfig.verticalBlockSize * 4),
-                              ),
-                              onPressed: () {},
-                              color: Colors.green,
-                            ),
-                          )
+                          (appointmentModel.serviceType == 'Procedure' &&
+                                  appointmentModel.paymentPercent == '20')
+                              ? Container(
+                                  margin: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 2),
+                                  child: RaisedButton(
+                                    child: Text(
+                                      PlunesStrings.visitAgain,
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: new BorderRadius.circular(
+                                          AppConfig.verticalBlockSize * 4),
+                                    ),
+                                    onPressed: () {},
+                                    color: Colors.green,
+                                  ),
+                                )
                               : Container(),
                         ],
                       ),
@@ -161,33 +164,44 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                ((appointmentModel.doctorConfirmation!=null && appointmentModel.doctorConfirmation)||appointmentModel.bookingStatus==AppointmentModel.cancelledStatus)? InkWell(
+//                ((appointmentModel.doctorConfirmation != null &&
+//                            appointmentModel.doctorConfirmation) ||
+//                        appointmentModel.bookingStatus ==
+//                            AppointmentModel.cancelledStatus)
+//                    ?
+                InkWell(
                   child: Text(appointmentModel.bookingStatus,
                       style: TextStyle(
                           fontSize: AppConfig.smallFont, color: Colors.green)),
                   onTap: () {},
                   onDoubleTap: () {},
-                ): Text('Pending for confirmation',
-                    style: TextStyle(
-                        fontSize: AppConfig.smallFont, color: Colors.blue)),
-                (appointmentModel.bookingStatus!= AppointmentModel.cancelledStatus)? InkWell(
-                  child: Text(PlunesStrings.reschedule,
-                      style: TextStyle(
-                          fontSize: AppConfig.smallFont,
-                          color: Colors.black54)),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BookingMainScreen(
-                                  appointmentModel: widget.appointmentModel,
-                                  profId:
-                                      appointmentModel.service.professionalId,
-                                  timeSlots: appointmentModel.service.timeSlots,
-                                )));
-                  },
-                  onDoubleTap: () {},
-                ):alreadyCancelAppointment(PlunesStrings.reschedule),
+                ),
+//                    : Text('Pending for confirmation',
+//                        style: TextStyle(
+//                            fontSize: AppConfig.smallFont, color: Colors.blue)),
+                (appointmentModel.bookingStatus !=
+                        AppointmentModel.cancelledStatus)
+                    ? InkWell(
+                        child: Text(PlunesStrings.reschedule,
+                            style: TextStyle(
+                                fontSize: AppConfig.smallFont,
+                                color: Colors.black54)),
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BookingMainScreen(
+                                        appointmentModel:
+                                            widget.appointmentModel,
+                                        profId: appointmentModel
+                                            .service.professionalId,
+                                        timeSlots:
+                                            appointmentModel.service.timeSlots,
+                                      )));
+                        },
+                        onDoubleTap: () {},
+                      )
+                    : alreadyCancelAppointment(PlunesStrings.reschedule),
                 Container(
                   child: StreamBuilder<Object>(
                       stream: _bookingBloc.cancelAppointmentStream,
@@ -234,21 +248,23 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             _bookingBloc.addStateInCancelProvider(null);
                           }
                         }
-                        return  (appointmentModel.bookingStatus!= AppointmentModel.cancelledStatus)? InkWell(
-                          onTap: () {
-                            print('hello on tap ${appointmentModel.bookingId}');
-                            if (widget.appointmentModel != null) {
-                              _bookingBloc.cancelAppointment(
-                                  appointmentModel.bookingId, index);
-                            }
-                            return;
-                          },
-                          onDoubleTap: () {},
-                          child: Text(plunesStrings.cancel,
-                              style: TextStyle(
-                                  fontSize: AppConfig.smallFont,
-                                  color: Colors.red)),
-                        ): alreadyCancelAppointment(plunesStrings.cancel);
+                        return (appointmentModel.bookingStatus !=
+                                AppointmentModel.cancelledStatus)
+                            ? InkWell(
+                                onTap: () {
+                                  if (widget.appointmentModel != null) {
+                                    _bookingBloc.cancelAppointment(
+                                        appointmentModel.bookingId, index);
+                                  }
+                                  return;
+                                },
+                                onDoubleTap: () {},
+                                child: Text(plunesStrings.cancel,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.smallFont,
+                                        color: Colors.red)),
+                              )
+                            : alreadyCancelAppointment(plunesStrings.cancel);
                       }),
                 ),
               ],
@@ -505,7 +521,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                 vertical: AppConfig.verticalBlockSize * 3,
                 horizontal: AppConfig.horizontalBlockSize * 3),
             child: Text(
-                'Please make sure that you pay through app for ${appointmentModel?.service?.discount??0}% discount to be valid',
+                'Please make sure that you pay through app for ${appointmentModel?.service?.discount ?? 0}% discount to be valid',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: AppConfig.verySmallFont,
@@ -521,8 +537,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
     return InkWell(
         child: Text(btnName,
             style: TextStyle(
-                fontSize: AppConfig.smallFont,
-                color: Colors.black54)),
+                fontSize: AppConfig.smallFont, color: Colors.black54)),
         onTap: () {
           showDialog(
               context: context,
@@ -533,8 +548,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   }
 
   _openPaymentOption(PaymentStatus paymentObj) {
-    return
-    Navigator.of(context)
+    return Navigator.of(context)
         .push(PageRouteBuilder(
             opaque: false,
             pageBuilder: (BuildContext context, _, __) =>

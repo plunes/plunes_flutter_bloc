@@ -25,7 +25,8 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _descriptionController = new TextEditingController();
   var globalHeight, globalWidth, title = '';
-  DocHosMainInsightBloc  _docHosMainInsightBloc;
+  DocHosMainInsightBloc _docHosMainInsightBloc;
+  TextEditingController _docHosQueryController;
 
   bool booking = false,
       isOnlineSolution = false,
@@ -34,18 +35,17 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
 
   @override
   void initState() {
+    _docHosQueryController = TextEditingController();
     _docHosMainInsightBloc = DocHosMainInsightBloc();
     super.initState();
   }
+
   @override
   void dispose() {
     bloc.disposeHelpApiStream();
     _docHosMainInsightBloc?.dispose();
     super.dispose();
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -111,131 +111,143 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
     );
   }
 
-  getBodyDocHosView() {
-    TextEditingController textEditingController = TextEditingController();
+  Widget getBodyDocHosView() {
     bool isSuccess = false;
     String failureMessage;
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 7,
-          vertical: AppConfig.verticalBlockSize * 5),
-      child: StreamBuilder<RequestState>(
-          stream: _docHosMainInsightBloc.helpQueryDocHosStream,
-          builder: (BuildContext context, snapshot) {
-            if (snapshot.data != null && snapshot.data is RequestInProgress) {
-              return CustomWidgets().getProgressIndicator();
-            }
-            if (snapshot.data != null && snapshot.data is RequestSuccess) {
-              isSuccess = true;
-            }
-            if (snapshot.data != null && snapshot.data is RequestFailed) {
-              RequestFailed requestFailed = snapshot.data;
-              failureMessage = requestFailed.failureCause ??
-                  PlunesStrings.helpQueryFailedMessage;
-             _docHosMainInsightBloc.addStateInHelpQueryStream(null);
-            }
-            return isSuccess
-                ? Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 6,
-                  vertical: AppConfig.verticalBlockSize * 2),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text(PlunesStrings.thankYouMessage,
-                      style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.w600,
-                          color: PlunesColors.BLACKCOLOR)),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: AppConfig.horizontalBlockSize * 6),
-                  ),
-                  Text(PlunesStrings.helpQuerySuccessMessage,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: AppConfig.extraLargeFont,
-                          fontWeight: FontWeight.w600,
-                          color: PlunesColors.GREYCOLOR)),
-                ],
-              ),
-            ):Column(
-              children: <Widget>[
-                Container(
-                    alignment: Alignment.topLeft,
-                    padding:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
-                    child: Text('Enter your Query',
-                        textAlign: TextAlign.start,
-                        style: TextStyle(
-                          fontSize: AppConfig.mediumFont,
-                        ))),
-                SizedBox(
-                  height: AppConfig.verticalBlockSize * 6,
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TextField(
-                        controller: textEditingController,
-                        keyboardType: TextInputType.text,
-                        maxLines: 2,
-                        autofocus: true,
+    return SingleChildScrollView(
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 7,
+            vertical: AppConfig.verticalBlockSize * 5),
+        child: StreamBuilder<RequestState>(
+            stream: _docHosMainInsightBloc.helpQueryDocHosStream,
+            builder: (BuildContext context, snapshot) {
+              if (snapshot.data != null && snapshot.data is RequestInProgress) {
+                return Container(
+                  child: CustomWidgets().getProgressIndicator(),
+                  height: AppConfig.verticalBlockSize * 70,
+                  width: double.infinity,
+                );
+              }
+              if (snapshot.data != null && snapshot.data is RequestSuccess) {
+                isSuccess = true;
+              }
+              if (snapshot.data != null && snapshot.data is RequestFailed) {
+                RequestFailed requestFailed = snapshot.data;
+                failureMessage = requestFailed.failureCause ??
+                    PlunesStrings.helpQueryFailedMessage;
+                _docHosMainInsightBloc.addStateInHelpQueryStream(null);
+              }
+              return isSuccess
+                  ? Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 6,
+                          vertical: AppConfig.verticalBlockSize * 2),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(PlunesStrings.thankYouMessage,
+                              style: TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.w600,
+                                  color: PlunesColors.BLACKCOLOR)),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: AppConfig.horizontalBlockSize * 6),
+                          ),
+                          Text(PlunesStrings.helpQuerySuccessMessage,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: AppConfig.extraLargeFont,
+                                  fontWeight: FontWeight.w600,
+                                  color: PlunesColors.GREYCOLOR)),
+                        ],
                       ),
                     )
-                  ],
-                ),
-                Container(
-                  padding: EdgeInsets.only(
-                    top: AppConfig.verticalBlockSize * 4,
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      if (textEditingController.text.trim().isNotEmpty) {
-                   _docHosMainInsightBloc.helpDocHosQuery(
-                       textEditingController.text.trim());
-                      } else if (textEditingController.text.trim().isEmpty) {
-                        failureMessage = PlunesStrings.emptyTextFieldWarning;
-                        _docHosMainInsightBloc.addStateInHelpQueryStream(null);
-                      }
-                    },
-                    onDoubleTap: () {},
-                    child: CustomWidgets().getRoundedButton(
-                        plunesStrings.submit,
-                        AppConfig.horizontalBlockSize * 6,
-                        PlunesColors.GREENCOLOR,
-                        AppConfig.horizontalBlockSize * 1,
-                        AppConfig.verticalBlockSize * 1,
-                        PlunesColors.WHITECOLOR),
-                  ),
-                ),
-                failureMessage == null || failureMessage.isEmpty
-                    ? Container()
-                    : Container(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 1),
-                        child: Text(
-                          failureMessage,
-                          style: TextStyle(color: Colors.red),
+                  : Column(
+                      children: <Widget>[
+                        Container(
+                            alignment: Alignment.topLeft,
+                            padding: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 4),
+                            child: Text('Enter your Query',
+                                textAlign: TextAlign.start,
+                                style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                ))),
+                        SizedBox(
+                          height: AppConfig.verticalBlockSize * 6,
                         ),
-                      ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 4),
-                  child: Text('OR',
-                      style: TextStyle(
-                        fontSize: AppConfig.mediumFont,
-                      )),
-                ),
-                Text('Call at: 7701805081',
-                    style: TextStyle(
-                      fontSize: AppConfig.mediumFont,
-                    )),
-              ],
-            );
-          }),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: TextField(
+                                controller: _docHosQueryController,
+                                keyboardType: TextInputType.text,
+                                maxLines: 2,
+                                autofocus: true,
+                              ),
+                            )
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 4,
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              if (_docHosQueryController.text
+                                  .trim()
+                                  .isNotEmpty) {
+                                _docHosMainInsightBloc.helpDocHosQuery(
+                                    _docHosQueryController.text.trim());
+                              } else if (_docHosQueryController.text
+                                  .trim()
+                                  .isEmpty) {
+                                failureMessage =
+                                    PlunesStrings.emptyQueryFieldMessage;
+                                _docHosMainInsightBloc
+                                    .addStateInHelpQueryStream(null);
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: CustomWidgets().getRoundedButton(
+                                plunesStrings.submit,
+                                AppConfig.horizontalBlockSize * 6,
+                                PlunesColors.GREENCOLOR,
+                                AppConfig.horizontalBlockSize * 1,
+                                AppConfig.verticalBlockSize * 1.5,
+                                PlunesColors.WHITECOLOR),
+                          ),
+                        ),
+                        failureMessage == null || failureMessage.isEmpty
+                            ? Container()
+                            : Container(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 1),
+                                child: Text(
+                                  failureMessage,
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 4),
+                          child: Text('OR',
+                              style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                              )),
+                        ),
+                        Text('Call at: 7701805081',
+                            style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                            )),
+                      ],
+                    );
+            }),
+      ),
     );
   }
 

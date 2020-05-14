@@ -145,7 +145,7 @@ class UserManager {
     }
   }
 
-  Future<RequestState> getVerifyOtp(String mobileNumber, int otp) async {
+  Future<RequestState> getVerifyOtp(String mobileNumber, var otp) async {
     var result = await DioRequester().requestMethod(
         url: Urls.VERIFY_OTP_URL,
         headerIncluded: false,

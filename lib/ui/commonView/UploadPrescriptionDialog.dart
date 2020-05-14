@@ -261,12 +261,11 @@ class _UploadPrescriptionDialogState
       _setState();
       var result = await _plockrBloc.uploadFilesAndData(fileData);
       if (result is RequestSuccess) {
-        responseMessage = PlunesStrings.uplaodSuccessMessage;
+        Navigator.pop(context, PlunesStrings.uplaodSuccessMessage);
       } else if (result is RequestFailed) {
         progress = false;
-        responseMessage = result.failureCause;
+        Navigator.pop(context, result.failureCause ?? responseMessage);
       }
-      Navigator.pop(context, responseMessage);
     }
   }
 

@@ -1716,41 +1716,53 @@ class CustomWidgets {
   }
 
   Widget getCancelMessagePopup(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 8,
-          vertical: AppConfig.verticalBlockSize * 40),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Column(children: <Widget>[
-          InkWell(
-            onTap: () {
-              Navigator.pop(context);
-              return;
-            },
-            onDoubleTap: () {},
-            child: Container(
-              alignment: Alignment.bottomRight,
-              padding: EdgeInsets.all(12),
-              child: Icon(
-                Icons.close,
-                color: PlunesColors.GREYCOLOR,
-              ),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 6,
-                vertical: AppConfig.verticalBlockSize * 2),
-            child: Text(
-              "Sorry! your appointment has been cancelled.",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: AppConfig.smallFont,
-              ),
-            ),
-          ),
-        ]),
+    return AlertDialog(
+      backgroundColor: null,
+      contentPadding: EdgeInsets.all(0.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      content: Container(
+        child: Card(
+          elevation: 0.0,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  alignment: Alignment.bottomRight,
+                  padding: EdgeInsets.all(12),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pop(context);
+                      return;
+                    },
+                    onDoubleTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.close,
+                        color: PlunesColors.GREYCOLOR,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 6,
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  child: Text(
+                    "Sorry! your appointment has been cancelled.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                    ),
+                  ),
+                ),
+                Container(
+                    alignment: Alignment.bottomRight,
+                    padding: EdgeInsets.all(20),
+                    child: Container()),
+              ]),
+        ),
       ),
     );
   }
@@ -1997,7 +2009,7 @@ class CustomWidgets {
                 .toUpperCase(),
             style: TextStyle(
                 color: Colors.white,
-                fontSize: AppConfig.extraLargeFont-4,
+                fontSize: AppConfig.extraLargeFont - 4,
                 fontWeight: FontWeight.bold)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(

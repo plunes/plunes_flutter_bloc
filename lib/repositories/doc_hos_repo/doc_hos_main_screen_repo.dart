@@ -57,21 +57,23 @@ class DocHosMainRepo {
     );
     if (result.isRequestSucceed) {
       TotalBusinessEarnedModel _totalBusinessEarndAndLossResponse =
-      TotalBusinessEarnedModel.fromJson(result.response.data);
+          TotalBusinessEarnedModel.fromJson(result.response.data);
       return RequestSuccess(response: _totalBusinessEarndAndLossResponse);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> updateRealTimeIsightPrice(num price, String solutionId, String serviceId) async {
+  Future<RequestState> updateRealTimeIsightPrice(
+      num price, String solutionId, String serviceId) async {
     var result = await DioRequester().requestMethod(
       url: Urls.UPDATE_REALTIME_INSIGHT_PRICE_URL,
       requestType: HttpRequestMethods.HTTP_PUT,
       postData: {
-        "solutionId":solutionId,
+        "solutionId": solutionId,
         "serviceId": serviceId,
-        "updatedPrice": price},
+        "updatedPrice": price
+      },
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {
@@ -81,14 +83,16 @@ class DocHosMainRepo {
     }
   }
 
- Future<RequestState> updateActionableInsightPrice(num price, String serviceId, String specialityId) async {
+  Future<RequestState> updateActionableInsightPrice(
+      num price, String serviceId, String specialityId) async {
     var result = await DioRequester().requestMethod(
       url: Urls.UPDATE_ACTIONABLE_INSIGHT_PRICE_URL,
       requestType: HttpRequestMethods.HTTP_PATCH,
       postData: {
         "serviceId": serviceId,
         "specialityId": specialityId,
-        "newPrice": price},
+        "newPrice": price
+      },
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {
@@ -98,14 +102,12 @@ class DocHosMainRepo {
     }
   }
 
- Future<RequestState> helpQuery(String query) async {
+  Future<RequestState> helpQuery(String query) async {
     var result = await DioRequester().requestMethod(
-        requestType: HttpRequestMethods.HTTP_PUT,
+        requestType: HttpRequestMethods.HTTP_POST,
         headerIncluded: true,
-        postData: {
-          "query":query,
-        },
-        url: Urls.GET_HELP_QUERY_URL);
+        postData: {"enquiry": query},
+        url: Urls.HELP_QUERY_URL_FOR_DOC_HOS);
     if (result.isRequestSucceed) {
       return RequestSuccess(response: result.isRequestSucceed);
     } else {

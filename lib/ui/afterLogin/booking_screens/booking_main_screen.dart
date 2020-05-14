@@ -224,26 +224,28 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   Widget getTagsView(String image, String text) {
     return Container(
-      height: AppConfig.verticalBlockSize*7,
+      height: AppConfig.verticalBlockSize * 7,
       width: MediaQuery.of(context).size.width / 2,
-      margin: EdgeInsets.only(top: AppConfig.verticalBlockSize*1),
+      margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
       padding: EdgeInsets.all(10),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-                margin: EdgeInsets.only(right: AppConfig.verticalBlockSize*1),
+                margin: EdgeInsets.only(right: AppConfig.verticalBlockSize * 1),
                 child: Image.asset(
                   image,
-                  height: AppConfig.verticalBlockSize*2.1,
-                  width: AppConfig.verticalBlockSize*2.1,
+                  height: AppConfig.verticalBlockSize * 2.1,
+                  width: AppConfig.verticalBlockSize * 2.1,
                   color: PlunesColors.BLACKCOLOR,
                 )),
             Expanded(
               child: Text(
                 text,
-                style: TextStyle(fontSize: AppConfig.verySmallFont, color: PlunesColors.BLACKCOLOR),
+                style: TextStyle(
+                    fontSize: AppConfig.verySmallFont,
+                    color: PlunesColors.BLACKCOLOR),
               ),
             )
           ]),
@@ -363,7 +365,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       //height: AppConfig.verticalBlockSize * 10,
       child: DatePicker(
         _currentDate,
-        width: AppConfig.horizontalBlockSize*13,
+        width: AppConfig.horizontalBlockSize * 13,
         height: AppConfig.verticalBlockSize * 14,
         daysCount: 100,
         initialSelectedDate: _currentDate,
@@ -448,8 +450,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 height: 0.5,
                 color: PlunesColors.GREYCOLOR,
               ),
-              Text(PlunesStrings.availableCash, style: TextStyle(fontSize: AppConfig.smallFont),),
-              SizedBox(height: AppConfig.verticalBlockSize*1,),
+              Text(
+                PlunesStrings.availableCash,
+                style: TextStyle(fontSize: AppConfig.smallFont),
+              ),
+              SizedBox(
+                height: AppConfig.verticalBlockSize * 1,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -462,7 +469,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   ),
                   Text(
                     _userProfileInfo.user.credits,
-                    style: TextStyle(fontWeight: FontWeight.bold,fontSize: AppConfig.smallFont, ),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: AppConfig.smallFont,
+                    ),
                   ),
                 ],
               ),
@@ -486,7 +496,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       Padding(
                         padding: EdgeInsets.only(
                             left: AppConfig.horizontalBlockSize * 2),
-                        child: Text("Apply Cash  ", style: TextStyle(fontSize: AppConfig.smallFont),),
+                        child: Text(
+                          "Apply Cash  ",
+                          style: TextStyle(fontSize: AppConfig.smallFont),
+                        ),
                       )
                     ],
                   ),
@@ -603,7 +616,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 PlunesStrings.tcApply,
-                style: TextStyle(decoration: TextDecoration.underline, fontSize: AppConfig.verySmallFont),
+                style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    fontSize: AppConfig.verySmallFont),
               ),
             ),
           ),
@@ -892,10 +907,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     print("initiate payment ${_initPayment.initiatePaymentToJson()}");
     RequestState _requestState = await _bookingBloc.initPayment(_initPayment);
     if (_requestState is RequestSuccess) {
-      print("_requestState success");
       InitPaymentResponse _initPaymentResponse = _requestState.response;
-      print("response is ${_initPaymentResponse.toString()}");
-
       if (_initPaymentResponse.success) {
         if (_initPaymentResponse.status.contains("Confirmed")) {
           showDialog(
