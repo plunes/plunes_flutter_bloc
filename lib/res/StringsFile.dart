@@ -160,6 +160,7 @@ class PlunesStrings {
 
   static String helpQuerySuccessMessage =
       "Thanks for contacting us! We will be in touch with you shortly.";
+  static String emailIdText = "Email_Id";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

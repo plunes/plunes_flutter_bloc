@@ -127,7 +127,7 @@ class UserManager {
       if (shouldSaveInfo) {}
       return RequestSuccess(response: _loginPost);
     } else {
-      return RequestFailed(response: result.failureCause);
+      return RequestFailed(failureCause: result.failureCause);
     }
   }
 
@@ -152,7 +152,8 @@ class UserManager {
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {'mobileNumber': mobileNumber, "otp": otp});
     if (result.isRequestSucceed) {
-      VerifyOtpResponse _verifyOtp = VerifyOtpResponse.fromJson(result.response.data);
+      VerifyOtpResponse _verifyOtp =
+          VerifyOtpResponse.fromJson(result.response.data);
       print(_verifyOtp);
       return RequestSuccess(response: _verifyOtp);
     } else {

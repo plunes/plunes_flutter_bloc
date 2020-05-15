@@ -781,7 +781,7 @@ class CustomWidgets {
                         padding: EdgeInsets.only(
                             left: AppConfig.horizontalBlockSize * 1.5)),
                     Flexible(
-                        child: _showRatingBar(
+                        child: showRatingBar(
                             solutions[index].rating?.toDouble() ?? 3.0)),
                     Expanded(child: Container()),
                     Text(
@@ -892,7 +892,7 @@ class CustomWidgets {
     );
   }
 
-  Widget _showRatingBar(num rating) {
+  Widget showRatingBar(num rating) {
     return RatingBar(
       initialRating: rating,
       ignoreGestures: true,
@@ -2021,5 +2021,42 @@ class CustomWidgets {
               stops: [0.0, 1.0],
               tileMode: TileMode.clamp),
         ));
+  }
+
+  Widget getBackImageView(String name) {
+    return Container(
+        height: 60,
+        width: 60,
+        alignment: Alignment.center,
+        child: createTextViews(
+            (name != null && name != '')
+                ? CommonMethods.getInitialName(name).toUpperCase()
+                : '',
+            22,
+            colorsFile.white,
+            TextAlign.center,
+            FontWeight.normal),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+          gradient: LinearGradient(
+              colors: [Color(0xffababab), Color(0xff686868)],
+              begin: FractionalOffset.topCenter,
+              end: FractionalOffset.bottomCenter,
+              stops: [0.0, 1.0],
+              tileMode: TileMode.clamp),
+        ));
+  }
+
+  Widget createTextViews(String label, double fontSize, String colorCode,
+      TextAlign textAlign, FontWeight fontWeight) {
+    return Text(label,
+        textAlign: textAlign,
+        style: TextStyle(
+            fontSize: fontSize,
+            decoration: label == plunesStrings.solutionNearYouMsg
+                ? TextDecoration.underline
+                : TextDecoration.none,
+            color: Color(CommonMethods.getColorHexFromStr(colorCode)),
+            fontWeight: fontWeight));
   }
 }
