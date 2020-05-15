@@ -329,11 +329,14 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   _onViewMoreTap(int index) {}
 
   _onSolutionItemTap(CatalogueData catalogueData) async {
-//    if (!_hasLatLong) {
-//      widget.showInSnackBar(PlunesStrings.pleaseSelectALocation,
-//          PlunesColors.GREYCOLOR, scaffoldKey);
-//      return;
-//    }
+    if ((!_hasLatLong) &&
+        (_prevSearchedSolution != null &&
+            _prevSearchedSolution.topSearches != null &&
+            _prevSearchedSolution.topSearches)) {
+      widget.showInSnackBar(PlunesStrings.pleaseSelectALocation,
+          PlunesColors.GREYCOLOR, scaffoldKey);
+      return;
+    }
     catalogueData.isFromNotification = true;
     await Navigator.push(
         context,

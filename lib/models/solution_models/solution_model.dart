@@ -32,7 +32,7 @@ class CatalogueData {
       this.isFromNotification,
       this.solutionId});
 
-  CatalogueData.fromJson(Map<String, dynamic> json, {bool isFromPrev}) {
+  CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
     specialityId = json['specialityId'];
     serviceId = json['serviceId'];
@@ -45,7 +45,7 @@ class CatalogueData {
 //    sitting = json['sitting'];
 //    duration = json['duration'];
     maxDiscount = json['maxDiscount'];
-    solutionId = isFromPrev != null ? json['_id'] : null;
+    solutionId = json['_id'];
     iV = json['__v'];
   }
 

@@ -14,7 +14,7 @@ class PrevSearchedSolution {
       print(json['data'].toString());
       data = new List<CatalogueData>();
       json['data'].forEach((v) {
-        data.add(CatalogueData.fromJson(v, isFromPrev: true));
+        data.add(CatalogueData.fromJson(v));
       });
     }
   }
