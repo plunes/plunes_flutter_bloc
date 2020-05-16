@@ -4,8 +4,17 @@ import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_handler.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 class UserBloc extends BlocBase {
+  final _specialityStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get specialityStream =>
+      _specialityStreamProvider.stream;
+  final _serviceStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get serviceStream => _serviceStreamProvider.stream;
+
   Future<RequestOutput> isUserInServiceLocation(var latitude, var longitude) {
     return UserManager().isUserInServiceLocation(latitude, longitude);
   }
@@ -48,5 +57,35 @@ class UserBloc extends BlocBase {
 
   Future<RequestState> turnOnOffNotification(final bool isOn) {
     return UserManager().turnOnOffNotification(isOn);
+  }
+
+  Future<RequestState> getUserSpecificSpecialities(String userId) async {
+    var result = await UserManager().getUserSpecificSpecialities(userId);
+    addStateInSpecialityStream(result);
+    return result;
+  }
+
+  Future<RequestState> getSpecialityRelatedService(
+      String userId, String specialityId) async {
+    addStateInServiceStream(RequestInProgress());
+    var result =
+        await UserManager().getSpecialityRelatedService(userId, specialityId);
+    addStateInServiceStream(result);
+    return result;
+  }
+
+  @override
+  void dispose() {
+    _specialityStreamProvider?.close();
+    _serviceStreamProvider?.close();
+    super.dispose();
+  }
+
+  void addStateInSpecialityStream(RequestState state) {
+    addStateInGenericStream(_specialityStreamProvider, state);
+  }
+
+  void addStateInServiceStream(RequestState state) {
+    addStateInGenericStream(_serviceStreamProvider, state);
   }
 }

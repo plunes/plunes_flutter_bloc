@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
@@ -23,6 +24,8 @@ import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:plunes/resources/network/Urls.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 
 // ignore: must_be_immutable
 class BookingMainScreen extends BaseActivity {
@@ -260,16 +263,33 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        CircleAvatar(
-          child: Container(
-            height: AppConfig.horizontalBlockSize * 11,
-            width: AppConfig.horizontalBlockSize * 11,
-            child: ClipOval(
-                child: CustomWidgets().getImageFromUrl(
-                    _docProfileInfo.user?.imageUrl,
-                    boxFit: BoxFit.fill)),
+        InkWell(
+          onTap: () {
+            if (_docProfileInfo.user.userType != null &&
+                _docProfileInfo.user.uid != null) {
+              Widget route;
+              if (_docProfileInfo.user.userType.toLowerCase() ==
+                  Constants.doctor.toString().toLowerCase()) {
+                route = DocProfile(userId: _docProfileInfo.user.uid);
+              } else {
+                route = HospitalProfile(userID: _docProfileInfo.user.uid);
+              }
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => route));
+            }
+          },
+          onDoubleTap: () {},
+          child: CircleAvatar(
+            child: Container(
+              height: AppConfig.horizontalBlockSize * 11,
+              width: AppConfig.horizontalBlockSize * 11,
+              child: ClipOval(
+                  child: CustomWidgets().getImageFromUrl(
+                      _docProfileInfo.user?.imageUrl,
+                      boxFit: BoxFit.fill)),
+            ),
+            radius: AppConfig.horizontalBlockSize * 5.5,
           ),
-          radius: AppConfig.horizontalBlockSize * 5.5,
         ),
         Expanded(
             child: Padding(

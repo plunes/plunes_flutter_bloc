@@ -35,6 +35,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   SearchSolutionBloc _searchSolutionBloc;
   SearchedDocResults _searchedDocResults;
   DocHosSolution _solution;
+  BuildContext _buildContext;
 
   bool _isFetchingInitialData;
   String _failureCause;
@@ -93,6 +94,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
           appBar:
               widget.getAppBar(context, PlunesStrings.solutionSearched, true),
           body: Builder(builder: (context) {
+            _buildContext = context;
             return _isFetchingInitialData
                 ? CustomWidgets().getProgressIndicator()
                 : _searchedDocResults == null ||
@@ -119,7 +121,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               () => _checkAvailability(index),
               () => _onBookingTap(
                   _searchedDocResults.solution.services[index], index),
-              widget.catalogueData);
+              widget.catalogueData,
+              _buildContext);
         },
         itemCount: _searchedDocResults.solution == null
             ? 0
@@ -134,7 +137,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         context: context,
         builder: (BuildContext context) => DialogWidgets().buildProfileDialog(
             catalogueData: widget.catalogueData,
-            solutions: _searchedDocResults.solution.services[selectedIndex]));
+            solutions: _searchedDocResults.solution.services[selectedIndex],
+            context: _buildContext));
   }
 
   _onBookingTap(Services service, int index) {

@@ -13,7 +13,6 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import '../../../Utils/custom_widgets.dart';
 
 // ignore: must_be_immutable
@@ -81,18 +80,14 @@ class _HospitalOverviewScreenState
               Container(
                 // margin: EdgeInsets.only(top: 5, left: 5, right: 5),
                 width: double.infinity,
-                child: InkWell(
-                  onTap: () => Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => DocProfile())),
-                  child: Card(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Text(
-                        _user?.name ?? _getNaString(),
-                        style: TextStyle(
-                            fontSize: AppConfig.smallFont,
-                            fontWeight: FontWeight.w500),
-                      ),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Text(
+                      _user?.name ?? _getNaString(),
+                      style: TextStyle(
+                          fontSize: AppConfig.smallFont,
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                 ),

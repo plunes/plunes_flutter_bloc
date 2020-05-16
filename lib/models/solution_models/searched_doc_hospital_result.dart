@@ -89,6 +89,7 @@ class Services {
     return 'Services{price: $price, newPrice: $newPrice, category: $category, paymentOptions: $paymentOptions, timeSlots: $timeSlots, sId: $sId, professionalId: $professionalId, name: $name, imageUrl: $imageUrl, discount: $discount, latitude: $latitude, longitude: $longitude, distance: $distance, homeCollection: $homeCollection, recommendation: $recommendation, bookIn: $bookIn, rating: $rating, negotiating: $negotiating}';
   }
 
+  String userType;
   String sId;
   String professionalId;
   String name;
@@ -113,6 +114,7 @@ class Services {
       this.professionalId,
       this.name,
       this.imageUrl,
+      this.userType,
       this.address,
       this.discount,
       this.latitude,
@@ -149,6 +151,7 @@ class Services {
     bookIn = json['bookIn'];
     rating = json['rating'];
     negotiating = json['negotiating'];
+    userType = json['userType'];
     if (json['paymentOptions'] != null && json['paymentOptions'].isNotEmpty) {
       paymentOptions = json['paymentOptions'].cast<num>();
     }
@@ -207,4 +210,3 @@ class TimeSlots {
     return data;
   }
 }
-

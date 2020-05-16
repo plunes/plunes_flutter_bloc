@@ -80,4 +80,8 @@ class Urls {
   static const String UPDATE_TOKEN = "user/notificationTokenRefresh";
   static const String NOTIFICATION_SWITCH = "user/notificationSwitch";
   static const String HELP_QUERY_URL_FOR_DOC_HOS = "user/enquiry";
+  static const String GET_USER_SPECIFIC_SPECIALITY =
+      "user/getProfessionalSpecialities";
+  static const String GET_SPECIALITY_RELATED_SERVICE =
+      "user/getProfessionalServices?";
 }

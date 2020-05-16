@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/actionable_insights_response_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
@@ -19,6 +21,8 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:share/share.dart';
 import 'CommonMethods.dart';
 import 'app_config.dart';
@@ -668,7 +672,8 @@ class CustomWidgets {
       int index,
       Function checkAvailability,
       Function onBookingTap,
-      CatalogueData catalogueData) {
+      CatalogueData catalogueData,
+      BuildContext context) {
     return Container(
       padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
       child: Column(
@@ -677,23 +682,42 @@ class CustomWidgets {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              (solutions[index].imageUrl != null &&
-                      solutions[index].imageUrl.isNotEmpty)
-                  ? CircleAvatar(
-                      child: Container(
-                        height: AppConfig.horizontalBlockSize * 14,
-                        width: AppConfig.horizontalBlockSize * 14,
-                        child: ClipOval(
-                            child: getImageFromUrl(solutions[index].imageUrl,
-                                boxFit: BoxFit.fill)),
+              InkWell(
+                onTap: () {
+                  if (solutions[index].userType != null &&
+                      solutions[index].professionalId != null) {
+                    Widget route;
+                    if (solutions[index].userType.toLowerCase() ==
+                        Constants.doctor.toString().toLowerCase()) {
+                      route =
+                          DocProfile(userId: solutions[index].professionalId);
+                    } else {
+                      route = HospitalProfile(
+                          userID: solutions[index].professionalId);
+                    }
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => route));
+                  }
+                },
+                onDoubleTap: () {},
+                child: (solutions[index].imageUrl != null &&
+                        solutions[index].imageUrl.isNotEmpty)
+                    ? CircleAvatar(
+                        child: Container(
+                          height: AppConfig.horizontalBlockSize * 14,
+                          width: AppConfig.horizontalBlockSize * 14,
+                          child: ClipOval(
+                              child: getImageFromUrl(solutions[index].imageUrl,
+                                  boxFit: BoxFit.fill)),
+                        ),
+                        radius: AppConfig.horizontalBlockSize * 7,
+                      )
+                    : getProfileIconWithName(
+                        solutions[index].name,
+                        14,
+                        14,
                       ),
-                      radius: AppConfig.horizontalBlockSize * 7,
-                    )
-                  : getProfileIconWithName(
-                      solutions[index].name,
-                      14,
-                      14,
-                    ),
+              ),
               Padding(
                   padding:
                       EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3)),
@@ -948,12 +972,12 @@ class CustomWidgets {
         child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
           Container(
             alignment: Alignment.topRight,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: InkWell(
+            child: InkWell(
+              onTap: () => Navigator.of(context).pop(),
+              onDoubleTap: () {},
+              child: Padding(
+                padding: const EdgeInsets.all(10),
                 child: Icon(Icons.close),
-                onTap: () => Navigator.of(context).pop(),
-                onDoubleTap: () {},
               ),
             ),
           ),
@@ -2058,5 +2082,121 @@ class CustomWidgets {
                 : TextDecoration.none,
             color: Color(CommonMethods.getColorHexFromStr(colorCode)),
             fontWeight: fontWeight));
+  }
+
+  showDoctorList(List<DoctorsData> doctorsData, BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
+      child: Container(
+        height: AppConfig.verticalBlockSize * 80,
+        width: double.infinity,
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.topRight,
+              child: InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                onDoubleTap: () {},
+                child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Icon(Icons.close),
+                ),
+              ),
+            ),
+            Expanded(
+                child: Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 7,
+                  vertical: AppConfig.verticalBlockSize * 2),
+              child: ListView.builder(
+                itemBuilder: (context, itemIndex) {
+                  return Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: AppConfig.verticalBlockSize * 1.5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            (doctorsData[itemIndex].imageUrl == null ||
+                                    doctorsData[itemIndex].imageUrl.isEmpty)
+                                ? CustomWidgets().getBackImageView(
+                                    doctorsData[itemIndex].name ??
+                                        PlunesStrings.NA)
+                                : CircleAvatar(
+                                    child: Container(
+                                      height: 60,
+                                      width: 60,
+                                      child: ClipOval(
+                                          child: getImageFromUrl(
+                                              doctorsData[itemIndex].imageUrl,
+                                              boxFit: BoxFit.fill)),
+                                    ),
+                                    radius: 30,
+                                  ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  width: AppConfig.horizontalBlockSize * 40,
+                                  padding: EdgeInsets.symmetric(vertical: 0.2),
+                                  child: Text(
+                                    doctorsData[itemIndex].name ??
+                                        PlunesStrings.NA,
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: PlunesColors.BLACKCOLOR,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 0.2),
+                                  width: AppConfig.horizontalBlockSize * 40,
+                                  child: Text(
+                                    doctorsData[itemIndex].designation ??
+                                        PlunesStrings.NA,
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: PlunesColors.GREYCOLOR,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.symmetric(vertical: 0.2),
+                                  child: Text(
+                                    doctorsData[itemIndex].experience == null
+                                        ? PlunesStrings.NA
+                                        : "Expr ${doctorsData[itemIndex].experience} years",
+                                    textAlign: TextAlign.start,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: PlunesColors.GREYCOLOR,
+                                        fontSize: 15),
+                                  ),
+                                  width: AppConfig.horizontalBlockSize * 40,
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                      Divider(height: 0.5, color: PlunesColors.LIGHTGREYCOLOR)
+                    ],
+                  );
+                },
+                itemCount: doctorsData?.length ?? 0,
+              ),
+            ))
+          ],
+        ),
+      ),
+    );
   }
 }

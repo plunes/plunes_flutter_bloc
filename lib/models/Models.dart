@@ -379,15 +379,17 @@ class ServicesData {
 class AchievementsData {
   final String title;
   final String imageUrl;
-  final String id;
+  final String achievement;
 
-  AchievementsData({this.title, this.imageUrl, this.id});
+  AchievementsData({this.title, this.imageUrl, this.achievement});
 
   factory AchievementsData.fromJson(Map<String, dynamic> parsedJson) {
     return new AchievementsData(
       title: parsedJson['title'] != null ? parsedJson['title'] : '',
       imageUrl: parsedJson['imageUrl'] != null ? parsedJson['imageUrl'] : '',
-      id: parsedJson['_id'] != null ? parsedJson['_id'].toString() : '',
+      achievement: parsedJson['achievement'] != null
+          ? parsedJson['achievement'].toString()
+          : '',
     );
   }
 }
@@ -528,14 +530,14 @@ class VerifyOtpResponse {
   }
 }
 
-class SignUpSpecialityModel {
+class SpecialityOuterModel {
   bool success;
   List<SpecialityModel> data;
   String msg;
 
-  SignUpSpecialityModel({this.success, this.data, this.msg});
+  SpecialityOuterModel({this.success, this.data, this.msg});
 
-  SignUpSpecialityModel.fromJson(Map<String, dynamic> json) {
+  SpecialityOuterModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
       data = new List<SpecialityModel>();

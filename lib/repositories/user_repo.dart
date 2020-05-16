@@ -3,6 +3,7 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_handler.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -191,8 +192,8 @@ class UserManager {
     );
     if (result.isRequestSucceed) {
       List<SpecialityModel> specialityList = new List();
-      SignUpSpecialityModel signUpSpecialityModel =
-          SignUpSpecialityModel.fromJson(result.response.data);
+      SpecialityOuterModel signUpSpecialityModel =
+          SpecialityOuterModel.fromJson(result.response.data);
       if (signUpSpecialityModel != null &&
           signUpSpecialityModel.data != null &&
           signUpSpecialityModel.data.isNotEmpty) {
@@ -234,6 +235,51 @@ class UserManager {
     if (result.isRequestSucceed) {
       setNotificationStatus(isOn);
       return RequestSuccess();
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getUserSpecificSpecialities(String userId) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_GET,
+        url: Urls.GET_USER_SPECIFIC_SPECIALITY,
+        headerIncluded: true,
+        queryParameter: {"professionalId": userId});
+    if (result.isRequestSucceed) {
+      List<SpecialityModel> specialityList = new List();
+      SpecialityOuterModel signUpSpecialityModel =
+          SpecialityOuterModel.fromJson(result.response.data);
+      if (signUpSpecialityModel != null &&
+          signUpSpecialityModel.data != null &&
+          signUpSpecialityModel.data.isNotEmpty) {
+        specialityList = signUpSpecialityModel.data;
+      }
+      return RequestSuccess(response: specialityList);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getSpecialityRelatedService(
+      String userId, String specialityId) async {
+    var result = await DioRequester().requestMethod(
+        queryParameter: {
+          "professionalId": userId,
+          "specialityId": specialityId
+        },
+        requestType: HttpRequestMethods.HTTP_GET,
+        headerIncluded: true,
+        url: Urls.GET_SPECIALITY_RELATED_SERVICE);
+    if (result.isRequestSucceed) {
+      List<CatalogueData> _serviceList = [];
+      if (result.response.data['data'] != null) {
+        print(result.response.data['data'].toString());
+        result.response.data['data'].forEach((v) {
+          _serviceList.add(CatalogueData.fromJson(v));
+        });
+      }
+      return RequestSuccess(response: _serviceList);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

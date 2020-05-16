@@ -35,9 +35,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     _catalogues = [];
     _endReached = false;
     _focusNode = FocusNode();
-    Future.delayed(Duration(milliseconds: 450)).then((v) {
-      if (mounted) FocusScope.of(context).requestFocus(_focusNode);
-    });
+//    Future.delayed(Duration(milliseconds: 450)).then((v) {
+//      if (mounted) FocusScope.of(context).requestFocus(_focusNode);
+//    });
     _searchSolutionBloc = SearchSolutionBloc();
     _streamController = StreamController();
     _searchController = TextEditingController()..addListener(_onSearch);
@@ -213,7 +213,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   _onSearch() {
     _streamController.add(null);
     if (_debounce?.isActive ?? false) _debounce.cancel();
-    _debounce = Timer(const Duration(seconds: 2), () {
+    _debounce = Timer(const Duration(milliseconds: 500), () {
       if (_searchController != null &&
           _searchController.text != null &&
           _searchController.text.trim().isNotEmpty) {

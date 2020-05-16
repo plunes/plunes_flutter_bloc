@@ -158,9 +158,16 @@ class PlunesStrings {
       "Query submission has been failed! Try Again";
   static const String emptyQueryFieldMessage = "Please Enter your query";
 
-  static String helpQuerySuccessMessage =
+  static const String helpQuerySuccessMessage =
       "Thanks for contacting us! We will be in touch with you shortly.";
-  static String emailIdText = "Email_Id";
+
+  ///Doc_hos profile
+  static const String emailIdText = "Email_Id";
+  static const String viewOnMap = "View on map";
+  static const String serviceList = "Service List";
+  static const String seeMoreDoctors = "See more Doctor's";
+  static const String unableToLoadServices = "Unable to load Services";
+  static const String knowMore = "Know More";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

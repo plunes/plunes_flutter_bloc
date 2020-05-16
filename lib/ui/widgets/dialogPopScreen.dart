@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:intl/intl.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -9,6 +10,8 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 
 class DialogWidgets {
   static DialogWidgets _instance;
@@ -22,10 +25,8 @@ class DialogWidgets {
     return _instance;
   }
 
-  Widget buildProfileDialog({
-    Services solutions,
-    CatalogueData catalogueData,
-  }) {
+  Widget buildProfileDialog(
+      {Services solutions, CatalogueData catalogueData, BuildContext context}) {
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
         shape:
@@ -85,21 +86,42 @@ class DialogWidgets {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        (solutions.imageUrl != null &&
-                                solutions.imageUrl.isNotEmpty)
-                            ? CircleAvatar(
-                                child: Container(
-                                  height: AppConfig.horizontalBlockSize * 14,
-                                  width: AppConfig.horizontalBlockSize * 14,
-                                  child: ClipOval(
-                                      child: CustomWidgets().getImageFromUrl(
-                                          solutions.imageUrl,
-                                          boxFit: BoxFit.fill)),
-                                ),
-                                radius: AppConfig.horizontalBlockSize * 7,
-                              )
-                            : CustomWidgets().getProfileIconWithName(
-                                solutions.name ?? PlunesStrings.NA, 14, 14),
+                        InkWell(
+                          onTap: () {
+                            if (solutions.userType != null &&
+                                solutions.professionalId != null) {
+                              Widget route;
+                              if (solutions.userType.toLowerCase() ==
+                                  Constants.doctor.toString().toLowerCase()) {
+                                route = DocProfile(
+                                    userId: solutions.professionalId);
+                              } else {
+                                route = HospitalProfile(
+                                    userID: solutions.professionalId);
+                              }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => route));
+                            }
+                          },
+                          onDoubleTap: () {},
+                          child: (solutions.imageUrl != null &&
+                                  solutions.imageUrl.isNotEmpty)
+                              ? CircleAvatar(
+                                  child: Container(
+                                    height: AppConfig.horizontalBlockSize * 14,
+                                    width: AppConfig.horizontalBlockSize * 14,
+                                    child: ClipOval(
+                                        child: CustomWidgets().getImageFromUrl(
+                                            solutions.imageUrl,
+                                            boxFit: BoxFit.fill)),
+                                  ),
+                                  radius: AppConfig.horizontalBlockSize * 7,
+                                )
+                              : CustomWidgets().getProfileIconWithName(
+                                  solutions.name ?? PlunesStrings.NA, 14, 14),
+                        ),
                         Padding(
                             padding: EdgeInsets.only(
                                 left: AppConfig.horizontalBlockSize * 4)),

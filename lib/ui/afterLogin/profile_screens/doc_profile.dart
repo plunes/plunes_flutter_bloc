@@ -34,6 +34,12 @@ class _DocProfileState extends BaseState<DocProfile> {
   }
 
   @override
+  void dispose() {
+    _userBloc?.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: widget.getAppBar(context, plunesStrings.profile, true),
@@ -130,20 +136,22 @@ class _DocProfileState extends BaseState<DocProfile> {
       children: <Widget>[
         CustomWidgets()
             .getBackImageView(_profileResponse.user?.name ?? _getEmptyString()),
-        Padding(
-          padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                _profileResponse.user?.name ?? _getEmptyString(),
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-              ),
-              Text(
-                "Doctor" ?? _getEmptyString(),
-                style: TextStyle(fontSize: 16),
-              )
-            ],
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 5),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  _profileResponse.user?.name ?? _getEmptyString(),
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+                ),
+                Text(
+                  "Doctor" ?? _getEmptyString(),
+                  style: TextStyle(fontSize: 16),
+                )
+              ],
+            ),
           ),
         )
       ],
@@ -226,6 +234,6 @@ class _DocProfileState extends BaseState<DocProfile> {
   }
 
   void _getUserDetails() {
-    _userBloc.getUserProfile("5de421b96a2be815b9e220c6");
+    _userBloc.getUserProfile(widget.userId);
   }
 }
