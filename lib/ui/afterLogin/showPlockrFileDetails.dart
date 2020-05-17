@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/plockr_web_view.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -66,15 +67,28 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
             InkWell(
                 onTap: () async {
                   String url = uploadedReport.reportUrl;
+
                   if (url == null || url.isEmpty) {
                     widget.showInSnackBar(PlunesStrings.unableToOpen,
                         PlunesColors.BLACKCOLOR, scaffoldKey);
                     return;
                   }
-                  if (await canLaunch(url)) {
-                    await launch(url);
+                  if (uploadedReport.fileType != null &&
+                      uploadedReport.fileType == UploadedReports.dicomFile) {
+                    String plockrUrl =
+                        "https://www.plunes.com/dicom_viewer?fileId=$url";
+                    print(plockrUrl);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PlockrWebViewContainer(plockrUrl)));
                   } else {
-                    throw 'Could not launch $url';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      throw 'Could not launch $url';
+                    }
                   }
                 },
                 //onTap: () {},

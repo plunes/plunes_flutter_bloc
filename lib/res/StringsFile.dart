@@ -99,6 +99,7 @@ class PlunesStrings {
   static const String refundSuccessMessage =
       "Your Refund has been initiated, Amount will be creadited in 3-4 business days.";
   static String uplaodSuccessMessage = "Report uploaded successfully!";
+  static String plockrViewer = 'PLUNES PLOCKER VIEWER';
 
   ///Catalogue View Screen
   static String youHaveNotAddedAnyServicesYet =
@@ -168,6 +169,8 @@ class PlunesStrings {
   static const String seeMoreDoctors = "See more Doctor's";
   static const String unableToLoadServices = "Unable to load Services";
   static const String knowMore = "Know More";
+
+
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

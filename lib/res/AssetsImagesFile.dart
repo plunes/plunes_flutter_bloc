@@ -14,6 +14,7 @@ class PlunesImages {
   static String totalBusinessIcon = 'assets/images/totalBusiness-icon.png';
   static String consultationImage = 'assets/images/consultation-avatar.png';
   static String procedureImage = 'assets/images/procedure-avatar.png';
+  static String basicImage = 'assets/images/Basic-icon.png';
   static String testImage = 'assets/images/test-avatar.png';
   static String inactiveProfileIcon = 'assets/images/Profile_Inactive-Icon.png';
   static String bulbIconForTips = 'assets/images/bulb-icon.png';

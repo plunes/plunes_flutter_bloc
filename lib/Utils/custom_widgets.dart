@@ -156,8 +156,8 @@ class CustomWidgets {
         _imageUrl = PlunesImages.procedureImage;
       } else if (solutionList[index].category == "Test") {
         _imageUrl = PlunesImages.testImage;
-      } else if (solutionList[index].category == "NA") {
-        _imageUrl = PlunesImages.consultationImage;
+      } else if (solutionList[index].category == "Basic" || solutionList[index].category == PlunesStrings.NA) {
+        _imageUrl = PlunesImages.basicImage;
       }
 
       return Column(

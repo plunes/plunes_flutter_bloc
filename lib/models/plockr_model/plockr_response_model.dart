@@ -62,12 +62,16 @@ class UploadedReports {
   String userAddress;
   String reportUrl;
   String reportThumbnail;
+  String fileType;
   String reasonDiagnosis;
   String medicines;
   String test;
   String consumptionDiet;
   String avoidDiet;
   String precautions;
+  static const String dicomFile = ".dcm";
+  static const String jpgFile = '.jpg';
+  static const String pdfFile = '.pdf';
 
   UploadedReports(
       {this.self,
@@ -84,6 +88,7 @@ class UploadedReports {
       this.userAddress,
       this.reportUrl,
       this.reportThumbnail,
+        this.fileType,
       this.reasonDiagnosis,
       this.medicines,
       this.test,
@@ -110,6 +115,7 @@ class UploadedReports {
     userName = json['userName'];
     userAddress = json['userAddress'];
     reportUrl = json['reportUrl'];
+    fileType = json['fileType'];
     reportThumbnail = json['reportThumbnail'];
   }
 
@@ -131,6 +137,7 @@ class UploadedReports {
     data['userAddress'] = this.userAddress;
     data['reportUrl'] = this.reportUrl;
     data['reportThumbnail'] = this.reportThumbnail;
+    data['fileType'] = this.fileType;
     return data;
   }
 }
