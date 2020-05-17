@@ -42,3 +42,18 @@ class InitPayment {
     return body;
   }
 }
+
+class BookingInstallment {
+  String bookingId, paymentPercent;
+  bool creditsUsed;
+
+  BookingInstallment({this.bookingId, this.creditsUsed, this.paymentPercent});
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      "bookingId": this.bookingId,
+      "paymentPercent": this.paymentPercent,
+      "creditsUsed": this.creditsUsed
+    };
+  }
+}

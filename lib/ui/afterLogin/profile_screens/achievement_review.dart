@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/res/ColorsFile.dart';
 
 // ignore: must_be_immutable
 class AchievementAndReview extends BaseActivity {
+  User user;
+
+  AchievementAndReview(user);
+
   @override
   _AchievementAndReviewState createState() => _AchievementAndReviewState();
 }
@@ -13,9 +18,11 @@ class AchievementAndReview extends BaseActivity {
 class _AchievementAndReviewState extends BaseState<AchievementAndReview>
     with TickerProviderStateMixin {
   TabController _tabController;
+  User _user;
 
   @override
   void initState() {
+    _user = widget.user;
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     super.initState();
   }
@@ -23,25 +30,32 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppConfig.verticalBlockSize * 50,
-      color: PlunesColors.LIGHTGREENCOLOR,
-      child: Column(
-        children: <Widget>[
-          TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(child: Text("Achievement Book")),
-              Tab(child: Text("Reviews"))
-            ],
-            indicatorColor: PlunesColors.GREENCOLOR,
-          ),
-          Expanded(
-              child: TabBarView(
-            children: [_getAchievementListView(), _getReviewsListView()],
-            controller: _tabController,
-          ))
-        ],
-      ),
+        height: AppConfig.verticalBlockSize * 50,
+        color: PlunesColors.LIGHTGREENCOLOR,
+        child: Column(
+          children: <Widget>[
+            TabBar(
+              controller: _tabController,
+              tabs: [
+                Tab(child: Text("Achievement Book")),
+                Tab(child: Text("Reviews"))
+              ],
+              indicatorColor: PlunesColors.GREENCOLOR,
+            ),
+            Expanded(
+                child: TabBarView(
+                    children: [
+                (_user == null ||
+                _user.achievements == null ||
+                    _user.achievements.isEmpty)
+                    ? _getEmptyView("No achievements found")
+                    : _getAchievementListView(),
+            _getReviewsListView()
+          ],
+          controller: _tabController,
+        ))],
+    )
+    ,
     );
   }
 
@@ -76,7 +90,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
     return Card(
       elevation: 1.0,
       margin:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 1),
+      EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 1),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
               Radius.circular(AppConfig.horizontalBlockSize * 5))),
@@ -132,20 +146,20 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
               x == null
                   ? CustomWidgets().getBackImageView("sd dd")
                   : CircleAvatar(
-                      child: Container(
-                        height: 60,
-                        width: 60,
-                        child: ClipOval(
-                            child: CustomWidgets().getImageFromUrl(
-                                "https://image.shutterstock.com/z/stock-photo-bright-spring-view-of-the-cameo-island-picturesque-morning-scene-on-the-port-sostis-zakinthos-1048185397.jpg",
-                                boxFit: BoxFit.fill)),
-                      ),
-                      radius: 30,
-                    ),
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  child: ClipOval(
+                      child: CustomWidgets().getImageFromUrl(
+                          "https://image.shutterstock.com/z/stock-photo-bright-spring-view-of-the-cameo-island-picturesque-morning-scene-on-the-port-sostis-zakinthos-1048185397.jpg",
+                          boxFit: BoxFit.fill)),
+                ),
+                radius: 30,
+              ),
               Expanded(
                 child: Padding(
                   padding:
-                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
+                  EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -164,7 +178,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
               Expanded(
                 child: Padding(
                   padding:
-                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
+                  EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
                   child: Text("10 m Ago"),
                 ),
                 flex: 3,
@@ -194,6 +208,16 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
             color: PlunesColors.GREYCOLOR,
           )
         ],
+      ),
+    );
+  }
+
+  Widget _getEmptyView(String message) {
+    return Container(
+      height: AppConfig.verticalBlockSize * 15,
+      width: double.infinity,
+      child: Center(
+        child: Text(message),
       ),
     );
   }

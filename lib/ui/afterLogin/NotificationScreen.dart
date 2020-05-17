@@ -225,7 +225,7 @@ class _NotificationScreenState extends State<NotificationScreen>
     print("Type of Notifcation:" + result?.notificationType);
     print("Type of result" + result?.toString());
 
-    if (result.notificationType == FirebaseNotification.solutionScreen &&
+    if (result.notificationType == "solution update" &&
         UserManager().getUserDetails().userType == Constants.user) {
       Navigator.push(
           context,

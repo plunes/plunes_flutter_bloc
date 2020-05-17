@@ -54,16 +54,38 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     super.dispose();
   }
 
+  _unFocus() {
+    FocusScope.of(context).requestFocus(FocusNode());
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        bottom: false,
-        top: false,
+      bottom: false,
+      top: false,
+      child: WillPopScope(
+        onWillPop: () async {
+          _unFocus();
+          return true;
+        },
         child: Scaffold(
           key: scaffoldKey,
           backgroundColor: PlunesColors.WHITECOLOR,
-          appBar:
-              widget.getAppBar(context, PlunesStrings.solutionSearched, true),
+          appBar: AppBar(
+              automaticallyImplyLeading: true,
+              backgroundColor: Colors.white,
+              brightness: Brightness.light,
+              iconTheme: IconThemeData(color: Colors.black),
+              centerTitle: true,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  _unFocus();
+                  Navigator.pop(context, false);
+                },
+              ),
+              title: widget.createTextViews(PlunesStrings.solutionSearched, 18,
+                  colorsFile.black, TextAlign.center, FontWeight.w500)),
           body: Builder(builder: (context) {
             return Container(
               padding: EdgeInsets.symmetric(
@@ -72,7 +94,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               child: _showBody(),
             );
           }),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _showBody() {

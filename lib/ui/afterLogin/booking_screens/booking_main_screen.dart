@@ -963,7 +963,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             _initPaymentResponse.message, Colors.red, scaffoldKey);
       }
     } else if (_requestState is RequestFailed) {
-      print("requestFailed ${_requestState.failureCause}");
+      widget.showInSnackBar(
+          _requestState.failureCause, PlunesColors.BLACKCOLOR, scaffoldKey);
     }
   }
 

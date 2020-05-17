@@ -726,9 +726,6 @@ class _AvailabilitySelectionScreenState
                         if (time != null) {
                           var selectedTime =
                               DateUtil.getTimeWithAmAndPmFormat(time);
-                          if (selectedTime.split(':')[0].length == 1) {
-                            selectedTime = '0' + selectedTime;
-                          }
                           setState(() {
                             if (check == 'form1') {
                               from_1[position] = selectedTime;

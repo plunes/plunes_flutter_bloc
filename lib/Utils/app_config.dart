@@ -34,6 +34,10 @@ class AppConfig {
     _setTextSizes();
   }
 
+  static MediaQueryData getMediaQuery() {
+    return _mediaQueryData;
+  }
+
   ///This method used to set different text size
   static void _setTextSizes() {
     verySmallFont = horizontalBlockSize * 3.0;

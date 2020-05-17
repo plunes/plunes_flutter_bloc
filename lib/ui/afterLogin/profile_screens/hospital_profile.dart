@@ -90,9 +90,14 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             Container(
               height: AppConfig.verticalBlockSize * 22,
               width: double.infinity,
-              child: (_profileResponse.user.coverImageUrl == null ||
+              child: (_profileResponse.user.coverImageUrl != null ||
                       _profileResponse.user.coverImageUrl.isEmpty)
-                  ? null
+                  ? Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 5,
+                          horizontal: AppConfig.horizontalBlockSize * 20),
+                      child: Image.asset(PlunesImages.hospitalImage),
+                    )
                   : SizedBox.expand(
                       child: CustomWidgets().getImageFromUrl(
                           _profileResponse.user.coverImageUrl,
@@ -292,10 +297,21 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   }
 
   Widget _getSpecializationWidget() {
-    if (_specialitySelectedId == null) {
-      _specialitySelectedId = specialityList[0].id;
-      _getServiceRelatedToSpeciality(_specialitySelectedId);
-    }
+    List<DropdownMenuItem<String>> itemList = [];
+    specialityList.forEach((item) {
+      if (item.id != null && item.id.isNotEmpty) {
+        if (_specialitySelectedId == null) {
+          _specialitySelectedId = item.id;
+          _getServiceRelatedToSpeciality(_specialitySelectedId);
+        }
+        itemList.add(DropdownMenuItem(
+            value: item.id,
+            child: Text(
+              item.speciality ?? _getEmptyString(),
+              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+            )));
+      }
+    });
     Widget dropDown = DropdownButton<String>(
       isDense: true,
       onChanged: (itemId) {
@@ -304,42 +320,38 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
         _getServiceRelatedToSpeciality(_specialitySelectedId);
       },
       value: _specialitySelectedId,
-      items: specialityList
-          .map((item) => DropdownMenuItem(
-              value: item.id,
-              child: Text(
-                item.speciality ?? _getEmptyString(),
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
-              )))
-          .toList(growable: true),
+      items: itemList,
       isExpanded: true,
       elevation: 0,
     );
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Padding(
-          padding:
-              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.8),
-          child: Text(
-            plunesStrings.specialization,
-            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
-          ),
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(
-              horizontal: AppConfig.horizontalBlockSize * 5,
-              vertical: AppConfig.verticalBlockSize * 2),
-          child: DropdownButtonHideUnderline(child: dropDown),
-          decoration: ShapeDecoration(
-            shape: RoundedRectangleBorder(
-              side: BorderSide(width: 1.0, style: BorderStyle.solid),
-              borderRadius: BorderRadius.all(Radius.circular(5.0)),
-            ),
-          ),
-        ),
-      ],
-    );
+    return itemList == null || itemList.isEmpty
+        ? Container()
+        : Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    vertical: AppConfig.verticalBlockSize * 1.8),
+                child: Text(
+                  plunesStrings.specialization,
+                  style:
+                      TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 5,
+                    vertical: AppConfig.verticalBlockSize * 2),
+                child: DropdownButtonHideUnderline(child: dropDown),
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(width: 1.0, style: BorderStyle.solid),
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                  ),
+                ),
+              ),
+            ],
+          );
   }
 
   void _getUserDetails() {
@@ -506,7 +518,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   }
 
   Widget _getBottomView() {
-    return AchievementAndReview();
+    return AchievementAndReview(_profileResponse.user);
   }
 
   void _getDirections() {

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -240,10 +241,19 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                                 fontSize: AppConfig.mediumFont,
                               )),
                         ),
-                        Text('Call at: 7701805081',
-                            style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                            )),
+                        InkWell(
+                          onTap: () {
+                            LauncherUtil.launchUrl("tel://7701805081");
+                            return;
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(5.0),
+                            child: Text('Call at: 7701805081',
+                                style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                )),
+                          ),
+                        ),
                       ],
                     );
             }),

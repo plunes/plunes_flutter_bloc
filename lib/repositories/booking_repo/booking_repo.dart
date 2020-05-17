@@ -33,8 +33,9 @@ class BookingRepo {
     }
   }
 
-  Future<RequestState> rescheduleAppointment(String bookingId, String appointmentTime, String selectedTimeSlot) async {
-    String url=Urls.GET_CANCEL_AND_RESCHEDULE_URL+"/$bookingId/reschedule";
+  Future<RequestState> rescheduleAppointment(
+      String bookingId, String appointmentTime, String selectedTimeSlot) async {
+    String url = Urls.GET_CANCEL_AND_RESCHEDULE_URL + "/$bookingId/reschedule";
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true,
@@ -50,28 +51,27 @@ class BookingRepo {
     }
   }
 
-
   Future<RequestState> cancelAppointment(String bookingId, int index) async {
-    String url=Urls.GET_CANCEL_AND_RESCHEDULE_URL+"/$bookingId/cancel";
+    String url = Urls.GET_CANCEL_AND_RESCHEDULE_URL + "/$bookingId/cancel";
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true,
         url: url);
     if (result.isRequestSucceed) {
-      return RequestSuccess(response: result.isRequestSucceed, requestCode: index);
+      return RequestSuccess(
+          response: result.isRequestSucceed, requestCode: index);
     } else {
-      return RequestFailed(failureCause: result.failureCause, requestCode: index);
+      return RequestFailed(
+          failureCause: result.failureCause, requestCode: index);
     }
   }
 
-  Future<RequestState> refundAppointment(String bookingId, String reason)async {
+  Future<RequestState> refundAppointment(
+      String bookingId, String reason) async {
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true,
-        postData: {
-          "bookingId":bookingId,
-          "reason":reason
-        },
+        postData: {"bookingId": bookingId, "reason": reason},
         url: Urls.GET_REFUND_URL);
     if (result.isRequestSucceed) {
       return RequestSuccess(response: result.isRequestSucceed);
@@ -86,17 +86,31 @@ class BookingRepo {
         headerIncluded: true,
         url: Urls.GET_CONFIRM_APPOINTMENT_URL,
         queryParameter: {
-          "bookingId" :bookingId,
-        }
-     );
+          "bookingId": bookingId,
+        });
     if (result.isRequestSucceed) {
       if (result.response.data["success"] != null &&
-          result.response.data["success"]){
+          result.response.data["success"]) {
         return RequestSuccess(response: result.isRequestSucceed);
+      } else {
+        return RequestFailed(
+            failureCause: PlunesStrings.appointmentFailedMessage);
       }
-    else {
-      return RequestFailed(failureCause: PlunesStrings.appointmentFailedMessage);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
     }
+  }
+
+  Future<RequestState> payInstallment(Map<String, dynamic> payload) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        headerIncluded: true,
+        postData: payload,
+        url: Urls.BOOKING_URL);
+    if (result.isRequestSucceed) {
+      InitPaymentResponse _initPaymentResponse =
+          InitPaymentResponse.fromJson(result.response.data);
+      return RequestSuccess(response: _initPaymentResponse);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

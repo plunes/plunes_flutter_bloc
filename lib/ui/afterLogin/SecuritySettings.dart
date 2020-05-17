@@ -50,9 +50,9 @@ class _SecuritySettingsState extends State<SecuritySettings>
           getSettingRow(
               plunesImages.changePassIcon, plunesStrings.changePassword, 0),
           widget.getDividerRow(context, 0, 0, 0),
-          getSettingRow(
-              plunesImages.logoutIcon2, plunesStrings.logoutFromAllDevices, 1),
-          widget.getDividerRow(context, 0, 0, 0),
+//          getSettingRow(
+//              plunesImages.logoutIcon2, plunesStrings.logoutFromAllDevices, 1),
+//          widget.getDividerRow(context, 0, 0, 0),
         ],
       ),
     );

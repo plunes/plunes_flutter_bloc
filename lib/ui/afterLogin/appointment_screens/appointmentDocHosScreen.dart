@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/log.dart';
@@ -70,25 +71,41 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Text(
-                            appointmentModel.userName,
+                            appointmentModel.userName ?? PlunesStrings.NA,
                             style: TextStyle(
                                 fontSize: AppConfig.mediumFont,
                                 fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 5),
                           Text(
-                            appointmentModel.userAddress,
+                            appointmentModel.userAddress ?? PlunesStrings.NA,
                             overflow: TextOverflow.visible,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
                                 color: Colors.black54),
                           ),
                           SizedBox(height: 5),
-                          Text(
-                            appointmentModel.userMobileNumber,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                fontWeight: FontWeight.bold),
+                          InkWell(
+                            onTap: () {
+                              if (appointmentModel.userMobileNumber != null &&
+                                  appointmentModel
+                                      .userMobileNumber.isNotEmpty) {
+                                LauncherUtil.launchUrl(
+                                    "tel://${appointmentModel.userMobileNumber}");
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  right: 5.0, top: 5.0, bottom: 5.0),
+                              child: Text(
+                                appointmentModel.userMobileNumber ??
+                                    PlunesStrings.NA,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -444,7 +461,9 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
     return InkWell(
         child: Text(btnName,
             style: TextStyle(
-                fontSize: AppConfig.smallFont, color: Colors.blue, fontWeight: FontWeight.bold)),
+                fontSize: AppConfig.smallFont,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold)),
         onTap: () {
           showDialog(
                   context: context,
@@ -461,6 +480,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
         },
         onDoubleTap: () {});
   }
+
   Widget alreadyCancelAppointment(String btnName) {
     return InkWell(
         child: Text(btnName,

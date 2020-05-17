@@ -230,7 +230,7 @@ class _DocProfileState extends BaseState<DocProfile> {
   }
 
   Widget _getBottomView() {
-    return AchievementAndReview();
+    return AchievementAndReview(_profileResponse.user);
   }
 
   void _getUserDetails() {

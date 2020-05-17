@@ -1074,6 +1074,7 @@ class CustomWidgets {
       {RealInsight realInsight, DocHosMainInsightBloc docHosMainInsightBloc}) {
     var sliderVal = (realInsight.userPrice.toDouble() / 2) +
         (((realInsight.userPrice.toDouble() / 2)) / 2);
+    num chancesPercent = 50;
     String failureCause;
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
@@ -1087,7 +1088,6 @@ class CustomWidgets {
                     return CustomWidgets().getProgressIndicator();
                   }
                   if (snapShot.data is RequestSuccess) {
-                    print('success req');
                     Future.delayed(Duration(milliseconds: 200)).then((value) {
                       Navigator.pop(context, true);
                     });
@@ -1095,7 +1095,6 @@ class CustomWidgets {
                   if (snapShot.data is RequestFailed) {
                     RequestFailed requestFailed = snapShot.data;
                     failureCause = requestFailed.failureCause;
-                    print('failure req');
                   }
                   return SingleChildScrollView(
                     reverse: true,
@@ -1137,20 +1136,33 @@ class CustomWidgets {
                                       ),
                                       SizedBox(height: 20),
                                       Slider(
-                                          value: sliderVal,
-                                          min: (realInsight.userPrice.floor() /
-                                                  2) ??
-                                              0,
-                                          max: realInsight.userPrice
-                                              .floor()
-                                              .toDouble(),
-                                          divisions: 10,
-                                          activeColor: Colors.green,
-                                          onChanged: (newValue) {
-                                            newState(() {
-                                              sliderVal = newValue;
-                                            });
-                                          }),
+                                        value: sliderVal,
+                                        min: (realInsight.userPrice.floor() /
+                                                2) ??
+                                            0,
+                                        max: realInsight.userPrice
+                                            .floor()
+                                            .toDouble(),
+                                        divisions: 10,
+                                        activeColor: Colors.green,
+                                        onChanged: (newValue) {
+                                          newState(() {
+                                            try {
+                                              var val = (newValue * 100) /
+                                                  realInsight.userPrice
+                                                      .floor()
+                                                      .toDouble();
+                                              chancesPercent =
+                                                  (100 - ((val - 50) * 2))
+                                                      .toInt();
+                                              print("newValue $chancesPercent");
+                                            } catch (e) {
+                                              chancesPercent = 50;
+                                            }
+                                            sliderVal = newValue;
+                                          });
+                                        },
+                                      ),
                                       Container(
                                         child: Row(
                                           children: <Widget>[
@@ -1186,19 +1198,26 @@ class CustomWidgets {
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      Text(
-                                        'Chances of Booking increases by',
-                                        style: TextStyle(
-                                          fontSize: AppConfig.mediumFont,
-                                        ),
-                                      ),
+                                      chancesPercent != null
+                                          ? Text(
+                                              'Chances of Booking increases by',
+                                              style: TextStyle(
+                                                fontSize: AppConfig.mediumFont,
+                                              ),
+                                            )
+                                          : Container(),
                                       SizedBox(height: 10),
-                                      Text(
-                                        '20 to 25%',
-                                        style: TextStyle(
-                                            fontSize: AppConfig.mediumFont,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                      chancesPercent != null
+                                          ? Text(
+                                              chancesPercent == 0
+                                                  ? '0%'
+                                                  : '${chancesPercent - 5} to $chancesPercent%',
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      AppConfig.mediumFont,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          : Container(),
                                       SizedBox(height: 20),
                                       FlatButton(
                                         child: Text(
@@ -1266,6 +1285,7 @@ class CustomWidgets {
       DocHosMainInsightBloc docHosMainInsightBloc}) {
     var sliderVal = (num.parse(actionableInsight.userPrice).toDouble() / 2) +
         (((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2);
+    num chancesPercent = 50;
     String failureCause;
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
@@ -1342,6 +1362,18 @@ class CustomWidgets {
                                           activeColor: Colors.green,
                                           onChanged: (newValue) {
                                             newState(() {
+                                              try {
+                                                var val = (newValue * 100) /
+                                                    num.parse(actionableInsight
+                                                            .userPrice)
+                                                        .floor()
+                                                        .toDouble();
+                                                chancesPercent =
+                                                    (100 - ((val - 50) * 2))
+                                                        .toInt();
+                                              } catch (e) {
+                                                chancesPercent = 50;
+                                              }
                                               sliderVal = newValue;
                                             });
                                           }),
@@ -1378,19 +1410,25 @@ class CustomWidgets {
                                               fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      Text(
-                                        'Chances of Booking increases by',
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                        ),
-                                      ),
+                                      chancesPercent != null
+                                          ? Text(
+                                              'Chances of Booking increases by',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                              ),
+                                            )
+                                          : Container(),
                                       SizedBox(height: 10),
-                                      Text(
-                                        '20 to 25%',
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                      chancesPercent != null
+                                          ? Text(
+                                              chancesPercent == 0
+                                                  ? '0%'
+                                                  : '${chancesPercent - 5} to $chancesPercent%',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          : Container(),
                                       SizedBox(height: 20),
                                       FlatButton(
                                         child: Text(
@@ -1467,6 +1505,8 @@ class CustomWidgets {
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
+                      print(
+                          "appointmentModel.paymentStatus[index] ${appointmentModel.paymentStatus[index].toString()}");
                       return Column(
                         children: <Widget>[
                           Row(
@@ -1482,7 +1522,7 @@ class CustomWidgets {
                                               2)
                                           ? AppConfig.horizontalBlockSize * 50
                                           : AppConfig.horizontalBlockSize * 15,
-                                      color: PlunesColors.LIGHTGREYCOLOR,
+                                      color: PlunesColors.GREENCOLOR,
                                     ),
                               (appointmentModel.paymentStatus[index].status)
                                   ? Container(
@@ -1544,7 +1584,7 @@ class CustomWidgets {
                                           index == 0)
                                       ? appointmentModel
                                           .paymentStatus[index].title
-                                      : ' \u20B9 ${appointmentModel.paymentStatus[index].amount?.toStringAsFixed(1)}',
+                                      : ' \u20B9 ${appointmentModel.paymentStatus[index].amount}',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: AppConfig.smallFont,
@@ -1568,168 +1608,171 @@ class CustomWidgets {
     TextEditingController textEditingController = TextEditingController();
     bool isSuccess = false;
     String failureMessage;
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 8,
-          vertical: AppConfig.verticalBlockSize * 21),
-      child: Card(
-        child: StreamBuilder<RequestState>(
-          stream: bookingBloc.refundAppointmentStream,
-          builder: (BuildContext context, snapshot) {
-            if (snapshot.data != null && snapshot.data is RequestInProgress) {
-              return CustomWidgets().getProgressIndicator();
-            }
-            if (snapshot.data != null && snapshot.data is RequestSuccess) {
-              isSuccess = true;
-            }
-            if (snapshot.data != null && snapshot.data is RequestFailed) {
-              RequestFailed requestFailed = snapshot.data;
-              failureMessage = requestFailed.failureCause ??
-                  PlunesStrings.refundFailedMessage;
-              bookingBloc.addStateInRefundProvider(null);
-            }
-            return SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      return;
-                    },
-                    onDoubleTap: () {},
-                    child: Container(
-                      alignment: Alignment.bottomRight,
-                      padding: EdgeInsets.all(12),
-                      child: Icon(
-                        Icons.close,
-                        color: PlunesColors.GREYCOLOR,
+    return AnimatedContainer(
+      padding: AppConfig.getMediaQuery().viewInsets,
+      duration: const Duration(milliseconds: 300),
+      child: Dialog(
+        child: Card(
+          elevation: 0.0,
+          child: StreamBuilder<RequestState>(
+            stream: bookingBloc.refundAppointmentStream,
+            builder: (BuildContext context, snapshot) {
+              if (snapshot.data != null && snapshot.data is RequestInProgress) {
+                return CustomWidgets().getProgressIndicator();
+              }
+              if (snapshot.data != null && snapshot.data is RequestSuccess) {
+                isSuccess = true;
+              }
+              if (snapshot.data != null && snapshot.data is RequestFailed) {
+                RequestFailed requestFailed = snapshot.data;
+                failureMessage = requestFailed.failureCause ??
+                    PlunesStrings.refundFailedMessage;
+                bookingBloc.addStateInRefundProvider(null);
+              }
+              return SingleChildScrollView(
+                reverse: true,
+                child: Column(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context);
+                        return;
+                      },
+                      onDoubleTap: () {},
+                      child: Container(
+                        alignment: Alignment.bottomRight,
+                        padding: EdgeInsets.all(12),
+                        child: Icon(
+                          Icons.close,
+                          color: PlunesColors.GREYCOLOR,
+                        ),
                       ),
                     ),
-                  ),
-                  isSuccess
-                      ? Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppConfig.horizontalBlockSize * 6,
-                              vertical: AppConfig.verticalBlockSize * 2),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(PlunesStrings.thankYouMessage,
-                                  style: TextStyle(
-                                      fontSize: 36,
-                                      fontWeight: FontWeight.w600,
-                                      color: PlunesColors.BLACKCOLOR)),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.horizontalBlockSize * 6),
-                              ),
-                              Text(PlunesStrings.refundSuccessMessage,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: AppConfig.extraLargeFont,
-                                      fontWeight: FontWeight.w600,
-                                      color: PlunesColors.GREYCOLOR)),
-                            ],
-                          ),
-                        )
-                      : Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppConfig.horizontalBlockSize * 6),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Text(PlunesStrings.refund,
-                                  style: TextStyle(
-                                      fontSize: AppConfig.extraLargeFont,
-                                      fontWeight: FontWeight.w600,
-                                      color: PlunesColors.GREYCOLOR)),
-                              Container(
+                    isSuccess
+                        ? Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 6,
+                                vertical: AppConfig.verticalBlockSize * 2),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(PlunesStrings.thankYouMessage,
+                                    style: TextStyle(
+                                        fontSize: 36,
+                                        fontWeight: FontWeight.w600,
+                                        color: PlunesColors.BLACKCOLOR)),
+                                Padding(
                                   padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 4),
-                                  child: Text(
-                                      'Kindly Share the reason for your refund',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.largeFont,
-                                          fontWeight: FontWeight.w600,
-                                          color: PlunesColors.GREYCOLOR))),
-                              Container(
-                                  alignment: Alignment.topLeft,
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 4),
-                                  child: Text('Write here',
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.mediumFont,
-                                          fontWeight: FontWeight.w600,
-                                          color: PlunesColors.GREYCOLOR))),
-                              Row(
-                                children: <Widget>[
-                                  Expanded(
-                                    child: TextField(
-                                      controller: textEditingController,
-                                      keyboardType: TextInputType.text,
-                                      maxLines: 1,
-                                      autofocus: true,
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 6,
+                                      top: AppConfig.horizontalBlockSize * 6),
                                 ),
-                                margin: EdgeInsets.symmetric(
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 20),
-                                child: InkWell(
-                                  onTap: () {
-                                    if (appointmentModel != null &&
-                                        textEditingController.text
-                                            .trim()
-                                            .isNotEmpty) {
-                                      bookingBloc.refundAppointment(
-                                          appointmentModel.bookingId,
-                                          textEditingController.text.trim());
-                                    } else if (textEditingController.text
-                                        .trim()
-                                        .isEmpty) {
-                                      print("hello");
-                                      failureMessage =
-                                          PlunesStrings.emptyTextFieldWarning;
-                                      bookingBloc
-                                          .addStateInRefundProvider(null);
-                                    }
-                                  },
-                                  onDoubleTap: () {},
-                                  child: CustomWidgets().getRoundedButton(
-                                      plunesStrings.submit,
-                                      AppConfig.horizontalBlockSize * 6,
-                                      PlunesColors.GREENCOLOR,
-                                      AppConfig.horizontalBlockSize * 1,
-                                      AppConfig.verticalBlockSize * 1,
-                                      PlunesColors.WHITECOLOR),
-                                ),
-                              ),
-                              failureMessage == null || failureMessage.isEmpty
-                                  ? Container()
-                                  : Container(
-                                      padding: EdgeInsets.only(
-                                          top: AppConfig.verticalBlockSize * 1),
-                                      child: Text(
-                                        failureMessage,
-                                        style: TextStyle(color: Colors.red),
+                                Text(PlunesStrings.refundSuccessMessage,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.extraLargeFont,
+                                        fontWeight: FontWeight.w600,
+                                        color: PlunesColors.GREYCOLOR)),
+                              ],
+                            ),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 6),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(PlunesStrings.refund,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.extraLargeFont,
+                                        fontWeight: FontWeight.w600,
+                                        color: PlunesColors.GREYCOLOR)),
+                                Container(
+                                    padding: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 4),
+                                    child: Text(
+                                        'Kindly Share the reason for your refund',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: AppConfig.largeFont,
+                                            fontWeight: FontWeight.w600,
+                                            color: PlunesColors.GREYCOLOR))),
+                                Container(
+                                    alignment: Alignment.topLeft,
+                                    padding: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 4),
+                                    child: Text('Write here',
+                                        textAlign: TextAlign.start,
+                                        style: TextStyle(
+                                            fontSize: AppConfig.mediumFont,
+                                            fontWeight: FontWeight.w600,
+                                            color: PlunesColors.GREYCOLOR))),
+                                Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: TextField(
+                                        controller: textEditingController,
+                                        keyboardType: TextInputType.text,
+                                        maxLines: 1,
+                                        autofocus: true,
                                       ),
-                                    ),
-                            ],
+                                    )
+                                  ],
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 6,
+                                  ),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 20),
+                                  child: InkWell(
+                                    onTap: () {
+                                      if (appointmentModel != null &&
+                                          textEditingController.text
+                                              .trim()
+                                              .isNotEmpty) {
+                                        bookingBloc.refundAppointment(
+                                            appointmentModel.bookingId,
+                                            textEditingController.text.trim());
+                                      } else if (textEditingController.text
+                                          .trim()
+                                          .isEmpty) {
+                                        failureMessage =
+                                            PlunesStrings.emptyTextFieldWarning;
+                                        bookingBloc
+                                            .addStateInRefundProvider(null);
+                                      }
+                                    },
+                                    onDoubleTap: () {},
+                                    child: CustomWidgets().getRoundedButton(
+                                        plunesStrings.submit,
+                                        AppConfig.horizontalBlockSize * 6,
+                                        PlunesColors.GREENCOLOR,
+                                        AppConfig.horizontalBlockSize * 1,
+                                        AppConfig.verticalBlockSize * 1,
+                                        PlunesColors.WHITECOLOR),
+                                  ),
+                                ),
+                                failureMessage == null || failureMessage.isEmpty
+                                    ? Container()
+                                    : Container(
+                                        padding: EdgeInsets.only(
+                                            top: AppConfig.verticalBlockSize *
+                                                1),
+                                        child: Text(
+                                          failureMessage,
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                      ),
+                              ],
+                            ),
                           ),
-                        ),
-                ],
-              ),
-            );
-          },
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -1795,23 +1838,22 @@ class CustomWidgets {
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: AppConfig.horizontalBlockSize * 8,
-          vertical: AppConfig.verticalBlockSize * 20),
+          vertical: AppConfig.verticalBlockSize * 15),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Column(children: <Widget>[
-          InkWell(
-            onTap: () {
-              Navigator.pop(context);
-              return;
-            },
-            onDoubleTap: () {},
-            child: Container(
-              alignment: Alignment.bottomRight,
-              padding: EdgeInsets.all(12),
-              child: Icon(
-                Icons.close,
-                color: PlunesColors.GREYCOLOR,
-                size: 30,
+          Container(
+            alignment: Alignment.bottomRight,
+            child: InkWell(
+              onTap: () => Navigator.pop(context),
+              onDoubleTap: () {},
+              child: Container(
+                padding: EdgeInsets.all(12),
+                child: Icon(
+                  Icons.close,
+                  color: PlunesColors.GREYCOLOR,
+                  size: 30,
+                ),
               ),
             ),
           ),

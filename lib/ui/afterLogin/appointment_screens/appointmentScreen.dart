@@ -1,10 +1,13 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/Utils/payment_web_view.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/models/booking_models/init_payment_model.dart';
+import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -59,8 +62,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
       child: Column(
         children: <Widget>[
           Container(
-//            padding: EdgeInsets.symmetric(
-//                horizontal: AppConfig.horizontalBlockSize * 3),
             child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -71,25 +72,44 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Text(
-                            appointmentModel.professionalName,
+                            appointmentModel.professionalName ??
+                                PlunesStrings.NA,
                             style: TextStyle(
                                 fontSize: AppConfig.mediumFont,
                                 fontWeight: FontWeight.bold),
                           ),
                           SizedBox(height: 5),
                           Text(
-                            appointmentModel.professionalAddress,
+                            appointmentModel.professionalAddress ??
+                                PlunesStrings.NA,
                             overflow: TextOverflow.visible,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
                                 color: Colors.black54),
                           ),
                           SizedBox(height: 5),
-                          Text(
-                            appointmentModel.professionalMobileNumber,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                fontWeight: FontWeight.bold),
+                          InkWell(
+                            onTap: () {
+                              if (appointmentModel.professionalMobileNumber !=
+                                      null &&
+                                  appointmentModel
+                                      .professionalMobileNumber.isNotEmpty) {
+                                LauncherUtil.launchUrl(
+                                    "tel://${appointmentModel.professionalMobileNumber}");
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  right: 5.0, top: 5.0, bottom: 5.0),
+                              child: Text(
+                                appointmentModel.professionalMobileNumber ??
+                                    PlunesStrings.NA,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -108,7 +128,19 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               width: AppConfig.verticalBlockSize * 5,
                               height: AppConfig.verticalBlockSize * 5,
                             ),
-                            onPressed: () {}),
+                            onPressed: () {
+                              (appointmentModel?.lat == null ||
+                                      appointmentModel.lat.isEmpty ||
+                                      appointmentModel?.long == null ||
+                                      appointmentModel.long.isEmpty)
+                                  ? widget.showInSnackBar(
+                                      PlunesStrings.locationNotAvailable,
+                                      PlunesColors.BLACKCOLOR,
+                                      widget.globalKey)
+                                  : LauncherUtil.openMap(
+                                      double.tryParse(appointmentModel.lat),
+                                      double.tryParse(appointmentModel.long));
+                            }),
                       ),
                     ),
                   ),
@@ -227,6 +259,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   PlunesStrings.cancelSuccessMessage,
                                   PlunesColors.BLACKCOLOR,
                                   widget.globalKey);
+                              widget.getAppointment();
                             });
                             _bookingBloc.addStateInCancelProvider(null);
                           }
@@ -366,7 +399,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 //                          decoration: TextDecoration.underline)),
 //                ),
                 (appointmentModel.refundStatus != null &&
-                        appointmentModel.refundStatus == "Not Requested")
+                        appointmentModel.refundStatus ==
+                            AppointmentModel.notRequested)
                     ? InkWell(
                         onTap: () {
                           showDialog(
@@ -456,10 +490,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
     if (mounted) setState(() {});
   }
 
-  _showErrorMessage(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
-  }
-
   _getData(AppointmentModel appointmentModel) {
     bool isPaymentCompleted = false;
     if (appointmentModel.paymentStatus != null &&
@@ -547,30 +577,52 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
         onDoubleTap: () {});
   }
 
-  _openPaymentOption(PaymentStatus paymentObj) {
-    return Navigator.of(context)
-        .push(PageRouteBuilder(
-            opaque: false,
-            pageBuilder: (BuildContext context, _, __) =>
-                PaymentWebView(id: widget.appointmentModel.bookingId)))
-        .then((val) {
-      if (val.toString().contains("success")) {
-        widget.showInSnackBar(
-            "Payment Failed", PlunesColors.BLACKCOLOR, scaffoldKey);
-//        showDialog(
-//            context: context,
-//            builder: (
-//                BuildContext context,
-//                ) =>
-//                PaymentSuccess(
-//                    bookingId: _initPaymentResponse.referenceId));
-      } else if (val.toString().contains("fail")) {
-        widget.showInSnackBar(
-            "Payment Failed", PlunesColors.BLACKCOLOR, scaffoldKey);
-      } else if (val.toString().contains("cancel")) {
-        widget.showInSnackBar(
-            "Payment Cancelled", PlunesColors.BLACKCOLOR, scaffoldKey);
+  _openPaymentOption(PaymentStatus paymentObj) async {
+    var result = await _bookingBloc.payInstallment(BookingInstallment(
+            bookingId: widget.appointmentModel.bookingId,
+            creditsUsed: true,
+            paymentPercent: paymentObj.title.replaceAll("%", ""))
+        .toJson());
+    if (result is RequestSuccess) {
+      print("payment success");
+      InitPaymentResponse _initPaymentResponse = result.response;
+      if (_initPaymentResponse.success) {
+        if (_initPaymentResponse.status.contains("Confirmed")) {
+          showDialog(
+                  context: context,
+                  builder: (BuildContext context) => PaymentSuccess(
+                      bookingId: _initPaymentResponse.referenceId))
+              .then((value) => widget.getAppointment());
+        } else {
+          Navigator.of(context)
+              .push(PageRouteBuilder(
+                  opaque: false,
+                  pageBuilder: (BuildContext context, _, __) =>
+                      PaymentWebView(id: widget.appointmentModel.bookingId)))
+              .then((val) {
+            if (val.toString().contains("success")) {
+              showDialog(
+                      context: context,
+                      builder: (
+                        BuildContext context,
+                      ) =>
+                          PaymentSuccess(
+                              bookingId: _initPaymentResponse.referenceId))
+                  .then((value) => widget.getAppointment());
+            } else if (val.toString().contains("fail")) {
+              widget.showInSnackBar(
+                  "Payment Failed", PlunesColors.BLACKCOLOR, widget.globalKey);
+            } else if (val.toString().contains("cancel")) {
+              widget.showInSnackBar("Payment Cancelled",
+                  PlunesColors.BLACKCOLOR, widget.globalKey);
+            }
+          });
+        }
       }
-    });
+    } else if (result is RequestFailed) {
+      print("payment failed");
+      widget.showInSnackBar(
+          result.failureCause, PlunesColors.BLACKCOLOR, widget.globalKey);
+    }
   }
 }

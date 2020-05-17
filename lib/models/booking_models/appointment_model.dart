@@ -46,6 +46,7 @@ class AppointmentModel {
   bool rescheduled;
   Services service;
   bool isOpened = false;
+  String lat, long;
 
   // List<num> paymentOption;
   String paymentPercent;
@@ -72,43 +73,46 @@ class AppointmentModel {
   String serviceType;
   static const String confirmedStatus = "Confirmed";
   static const String cancelledStatus = "Cancelled";
+  static const String notRequested = "Not Requested";
 
-  AppointmentModel({
-    this.professionalId,
-    this.solutionServiceId,
-    this.professionalName,
-    this.professionalAddress,
-    this.professionalMobileNumber,
-    this.professionalImageUrl,
-    this.userName,
-    this.userAddress,
-    this.userMobileNumber,
-    this.userEmail,
-    this.userLocation,
-    this.serviceId,
-    this.bookingStatus,
-    this.timeSlot,
-    this.appointmentTime,
-    this.serviceName,
-    this.rescheduled,
-    this.service,
-    this.isOpened,
-    // this.paymentOption,
-    this.paymentPercent,
-    this.amountPaid,
-    this.amountPaidCredits,
-    this.amountDue,
-    this.bookingId,
-    this.refundReason,
-    this.refundStatus,
-    this.referenceId,
-    this.doctorConfirmation,
-    this.visitAgain,
-    this.serviceType,
-    this.paymentStatus,
-  });
+  AppointmentModel(
+      {this.professionalId,
+      this.solutionServiceId,
+      this.professionalName,
+      this.professionalAddress,
+      this.professionalMobileNumber,
+      this.professionalImageUrl,
+      this.userName,
+      this.userAddress,
+      this.userMobileNumber,
+      this.userEmail,
+      this.userLocation,
+      this.serviceId,
+      this.bookingStatus,
+      this.timeSlot,
+      this.appointmentTime,
+      this.serviceName,
+      this.rescheduled,
+      this.service,
+      this.isOpened,
+      // this.paymentOption,
+      this.paymentPercent,
+      this.amountPaid,
+      this.amountPaidCredits,
+      this.amountDue,
+      this.bookingId,
+      this.refundReason,
+      this.refundStatus,
+      this.referenceId,
+      this.doctorConfirmation,
+      this.visitAgain,
+      this.serviceType,
+      this.paymentStatus,
+      this.long,
+      this.lat});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
+    print("${json['location']['coordinates']}json ${json["location"]}");
     professionalId = json['professionalId'];
     solutionServiceId = json['solutionServiceId'];
     serviceId = json['serviceId'];
@@ -153,6 +157,12 @@ class AppointmentModel {
     }
     visitAgain = json['visitAgain'];
     serviceType = json['serviceType'];
+    if (json['location'] != null &&
+        json['location']['coordinates'] != null &&
+        json['location']['coordinates'].length == 2) {
+      lat = json['location']['coordinates'][1]?.toString();
+      long = json['location']['coordinates'][0]?.toString();
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -215,7 +225,13 @@ class UserLocation {
 
 class PaymentStatus {
   String title;
-  num amount;
+  String amount;
+
+  @override
+  String toString() {
+    return 'PaymentStatus{title: $title, amount: $amount, status: $status}';
+  }
+
   bool status;
 
   PaymentStatus({this.title, this.amount, this.status});
