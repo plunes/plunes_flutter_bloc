@@ -99,6 +99,7 @@ class PlunesStrings {
   static const String refundSuccessMessage =
       "Your Refund has been initiated, Amount will be creadited in 3-4 business days.";
   static String uplaodSuccessMessage = "Report uploaded successfully!";
+  static String plockrViewer = 'PLUNES PLOCKER VIEWER';
 
   ///Catalogue View Screen
   static String youHaveNotAddedAnyServicesYet =

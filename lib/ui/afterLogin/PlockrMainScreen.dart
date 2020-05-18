@@ -224,8 +224,14 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
           if (snapshot.data != null && snapshot.data is RequestSuccess) {
             RequestSuccess requestSuccess = snapshot.data;
             _plockrResponseModel = requestSuccess.response;
-            _originalDataList = _plockrResponseModel.uploadedReports;
-            _originalDataList.addAll(_plockrResponseModel.sharedReports);
+            if (_plockrResponseModel.uploadedReports != null &&
+                _plockrResponseModel.uploadedReports.isNotEmpty) {
+              _originalDataList = _plockrResponseModel.uploadedReports;
+            }
+            if (_plockrResponseModel.sharedReports != null &&
+                _plockrResponseModel.sharedReports.isNotEmpty) {
+              _originalDataList.addAll(_plockrResponseModel.sharedReports);
+            }
             _plockrBloc.addStateInPlockerReportStream(null);
           }
           if (snapshot.data != null && snapshot.data is RequestFailed) {

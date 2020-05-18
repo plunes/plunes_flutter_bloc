@@ -165,7 +165,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   fontSize: AppConfig.smallFont,
                                   color: Colors.black54)),
                           (appointmentModel.serviceType == 'Procedure' &&
-                                  appointmentModel.paymentPercent == '20')
+                                  appointmentModel.paymentPercent == '20' &&
+                                  appointmentModel.bookingStatus !=
+                                      AppointmentModel
+                                          .cancelledStatus) //&& appointmentModel.bookingStatus !=)
                               ? Container(
                                   margin: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 2),
@@ -178,7 +181,20 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                       borderRadius: new BorderRadius.circular(
                                           AppConfig.verticalBlockSize * 4),
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BookingMainScreen(
+                                                    appointmentModel:
+                                                        widget.appointmentModel,
+                                                    profId: appointmentModel
+                                                        .service.professionalId,
+                                                    timeSlots: appointmentModel
+                                                        .service.timeSlots,
+                                                  )));
+                                    },
                                     color: Colors.green,
                                   ),
                                 )

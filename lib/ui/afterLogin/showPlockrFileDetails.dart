@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/plockr_web_view.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -36,6 +37,7 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       body: Container(
         margin: EdgeInsets.all(20),
         child: ListView(
@@ -71,10 +73,23 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
                         PlunesColors.BLACKCOLOR, scaffoldKey);
                     return;
                   }
-                  if (await canLaunch(url)) {
-                    await launch(url);
+                  if (uploadedReport.fileType != null &&
+                      uploadedReport.fileType == UploadedReports.dicomFile) {
+                    String plockrUrl =
+                        "https://www.plunes.com/dicom_viewer?fileId=$url";
+                    print(plockrUrl);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                PlockrWebViewContainer(plockrUrl)));
                   } else {
-                    throw 'Could not launch $url';
+                    if (await canLaunch(url)) {
+                      await launch(url);
+                    } else {
+                      widget.showInSnackBar(PlunesStrings.unableToOpen,
+                          PlunesColors.BLACKCOLOR, scaffoldKey);
+                    }
                   }
                 },
                 //onTap: () {},

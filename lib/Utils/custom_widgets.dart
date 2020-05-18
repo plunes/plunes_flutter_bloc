@@ -156,8 +156,9 @@ class CustomWidgets {
         _imageUrl = PlunesImages.procedureImage;
       } else if (solutionList[index].category == "Test") {
         _imageUrl = PlunesImages.testImage;
-      } else if (solutionList[index].category == "NA") {
-        _imageUrl = PlunesImages.consultationImage;
+      } else if (solutionList[index].category == "Basic" ||
+          solutionList[index].category == PlunesStrings.NA) {
+        _imageUrl = PlunesImages.basicImage;
       }
 
       return Column(
@@ -726,12 +727,30 @@ class CustomWidgets {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      solutions[index].name ?? PlunesStrings.NA,
-                      style: TextStyle(
-                          fontSize: AppConfig.mediumFont,
-                          color: PlunesColors.BLACKCOLOR,
-                          fontWeight: FontWeight.bold),
+                    InkWell(
+                      onTap: () {
+                        if (solutions[index].userType != null &&
+                            solutions[index].professionalId != null) {
+                          Widget route;
+                          if (solutions[index].userType.toLowerCase() ==
+                              Constants.doctor.toString().toLowerCase()) {
+                            route = DocProfile(
+                                userId: solutions[index].professionalId);
+                          } else {
+                            route = HospitalProfile(
+                                userID: solutions[index].professionalId);
+                          }
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => route));
+                        }
+                      },
+                      child: Text(
+                        solutions[index].name ?? PlunesStrings.NA,
+                        style: TextStyle(
+                            fontSize: AppConfig.mediumFont,
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                     Padding(
                         padding: EdgeInsets.only(

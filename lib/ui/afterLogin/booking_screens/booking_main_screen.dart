@@ -264,20 +264,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         InkWell(
-          onTap: () {
-            if (_docProfileInfo.user.userType != null &&
-                _docProfileInfo.user.uid != null) {
-              Widget route;
-              if (_docProfileInfo.user.userType.toLowerCase() ==
-                  Constants.doctor.toString().toLowerCase()) {
-                route = DocProfile(userId: _docProfileInfo.user.uid);
-              } else {
-                route = HospitalProfile(userID: _docProfileInfo.user.uid);
-              }
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => route));
-            }
-          },
+          onTap: () => _goToProfilePage(),
           onDoubleTap: () {},
           child: CircleAvatar(
             child: Container(
@@ -301,12 +288,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 children: <Widget>[
                   Expanded(
                     flex: 5,
-                    child: Text(
-                      _docProfileInfo.user?.name ?? PlunesStrings.NA,
-                      style: TextStyle(
-                          fontSize: AppConfig.mediumFont,
-                          fontWeight: FontWeight.bold,
-                          color: PlunesColors.BLACKCOLOR),
+                    child: InkWell(
+                      onTap: () => _goToProfilePage(),
+                      onDoubleTap: () {},
+                      child: Text(
+                        _docProfileInfo.user?.name ?? PlunesStrings.NA,
+                        style: TextStyle(
+                            fontSize: AppConfig.mediumFont,
+                            fontWeight: FontWeight.bold,
+                            color: PlunesColors.BLACKCOLOR),
+                      ),
                     ),
                   ),
                   Expanded(
@@ -385,8 +376,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       //height: AppConfig.verticalBlockSize * 10,
       child: DatePicker(
         _currentDate,
-        width: AppConfig.horizontalBlockSize * 13,
-        height: AppConfig.verticalBlockSize * 14,
+        width: AppConfig.horizontalBlockSize * 19,
+        height: AppConfig.verticalBlockSize * 15,
         daysCount: 100,
         initialSelectedDate: _currentDate,
         dateTextStyle: TextStyle(
@@ -969,7 +960,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   _doPaymentRelatedQueries() async {
-    print("price${widget.price}");
     if (widget.appointmentModel != null) {
       _bookingBloc.rescheduleAppointment(
           widget.appointmentModel.bookingId,
@@ -1010,6 +1000,20 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       return finalPrice == null
           ? PlunesStrings.NA
           : "${finalPrice.floorToDouble().toInt()}";
+    }
+  }
+
+  _goToProfilePage() {
+    if (_docProfileInfo.user.userType != null &&
+        _docProfileInfo.user.uid != null) {
+      Widget route;
+      if (_docProfileInfo.user.userType.toLowerCase() ==
+          Constants.doctor.toString().toLowerCase()) {
+        route = DocProfile(userId: _docProfileInfo.user.uid);
+      } else {
+        route = HospitalProfile(userID: _docProfileInfo.user.uid);
+      }
+      Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
   }
 }

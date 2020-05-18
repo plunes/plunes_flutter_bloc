@@ -337,7 +337,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
           PlunesColors.GREYCOLOR, scaffoldKey);
       return;
     }
-    catalogueData.isFromNotification = true;
+    if (_prevSearchedSolution.topSearches == null ||
+        !(_prevSearchedSolution.topSearches)) {
+      catalogueData.isFromNotification = true;
+    }
     await Navigator.push(
         context,
         MaterialPageRoute(

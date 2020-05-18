@@ -226,16 +226,20 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
           children: <Widget>[
             Column(
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 3,
-                      vertical: AppConfig.verticalBlockSize * 1),
-                  child: CustomWidgets().searchBar(
-                      searchController: _searchController,
-                      hintText: PlunesStrings.chooseLocation,
-                      focusNode: _focusNode,
-                      searchBarHeight: 5.5),
-                ),
+                (widget.catalogueData != null &&
+                        widget.catalogueData.isFromNotification != null &&
+                        widget.catalogueData.isFromNotification)
+                    ? Container()
+                    : Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 3,
+                            vertical: AppConfig.verticalBlockSize * 1),
+                        child: CustomWidgets().searchBar(
+                            searchController: _searchController,
+                            hintText: PlunesStrings.chooseLocation,
+                            focusNode: _focusNode,
+                            searchBarHeight: 5.5),
+                      ),
                 Expanded(
                   child: GoogleMap(
                       padding: EdgeInsets.all(0.0),

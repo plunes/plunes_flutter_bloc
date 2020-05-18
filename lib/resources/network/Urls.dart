@@ -44,6 +44,8 @@ class Urls {
 
   get aboutUs => 'https://plunes-html.s3.amazonaws.com/resources/about-us.html';
 
+  get plockrBaseUrl => "https://www.plunes.com/dicom_viewer?fileId=";
+
   get help => baseUrl + "enquiry/help";
 
   get notification => baseUrl + "notification/0";

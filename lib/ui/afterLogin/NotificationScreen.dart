@@ -16,6 +16,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'HomeScreen.dart';
 /*
  * Created by  - Plunes Technologies.
@@ -85,7 +86,7 @@ class _NotificationScreenState extends State<NotificationScreen>
 
   Widget buildList(AsyncSnapshot<AllNotificationsPost> snapshot) {
     return ListView.builder(
-      padding: EdgeInsets.only(top:AppConfig.verticalBlockSize*2),
+      padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
       itemCount: snapshot.data.posts.length,
       itemBuilder: (context, index) {
         return rowLayout(snapshot.data.posts[index]);
@@ -103,7 +104,9 @@ class _NotificationScreenState extends State<NotificationScreen>
 //        addRemoveSelectedItem(result, removePosition);
 //      },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*3,),
+        margin: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 3,
+        ),
         child: Column(
           children: <Widget>[
             Row(
@@ -115,10 +118,10 @@ class _NotificationScreenState extends State<NotificationScreen>
                           !result.senderImageUrl.contains("default")
                       ? CircleAvatar(
                           radius: AppConfig.horizontalBlockSize * 5,
-                          backgroundImage:
-                              NetworkImage(result.senderImageUrl),
+                          backgroundImage: NetworkImage(result.senderImageUrl),
                         )
-                      : CustomWidgets().getProfileIconWithName(result.senderName ,14, 14),
+                      : CustomWidgets()
+                          .getProfileIconWithName(result.senderName, 14, 14),
 
 //              Container(
 ////                            height: AppConfig.verticalBlockSize*4,
@@ -149,7 +152,7 @@ class _NotificationScreenState extends State<NotificationScreen>
 //                            stops: [0.0, 1.0],
 //                            tileMode: TileMode.clamp),
 //                      )),
-    ),
+                ),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -187,7 +190,7 @@ class _NotificationScreenState extends State<NotificationScreen>
                 )
               ],
             ),
-           CustomWidgets().getSeparatorLine(),
+            CustomWidgets().getSeparatorLine(),
 //            Padding(
 //              padding: EdgeInsets.only(top:AppConfig.verticalBlockSize*2),
 //            ),
@@ -225,16 +228,18 @@ class _NotificationScreenState extends State<NotificationScreen>
     print("Type of Notifcation:" + result?.notificationType);
     print("Type of result" + result?.toString());
 
-    if (result.notificationType == "solution update" &&
+    if (result.notificationScreen == FirebaseNotification.solutionScreen &&
         UserManager().getUserDetails().userType == Constants.user) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => BiddingLoading(
+              builder: (context) => SolutionReceivedScreen(
                     catalogueData: CatalogueData(
-                        solutionId: result.id, isFromNotification: true),
+                        solutionId: result.notificationId,
+                        isFromNotification: true),
                   )));
-    } else if (result.notificationType == FirebaseNotification.bookingScreen) {
+    } else if (result.notificationScreen ==
+        FirebaseNotification.bookingScreen) {
       print("notification id is ${result.notificationId}");
       Navigator.push(
           context,
@@ -242,8 +247,9 @@ class _NotificationScreenState extends State<NotificationScreen>
               builder: (context) => AppointmentMainScreen(
                     bookingId: result.notificationId,
                   )));
-    } else if ((result.notificationType == FirebaseNotification.insightScreen ||
-            result.notificationType == FirebaseNotification.solutionScreen) &&
+    } else if ((result.notificationScreen ==
+                FirebaseNotification.insightScreen ||
+            result.notificationScreen == FirebaseNotification.solutionScreen) &&
         UserManager().getUserDetails().userType != Constants.user) {
       Navigator.pushAndRemoveUntil(
           context,
@@ -251,7 +257,7 @@ class _NotificationScreenState extends State<NotificationScreen>
               builder: (context) =>
                   HomeScreen(screenNo: Constants.homeScreenNumber)),
           (_) => false);
-    } else if (result.notificationType == FirebaseNotification.plockrScreen) {
+    } else if (result.notificationScreen == FirebaseNotification.plockrScreen) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

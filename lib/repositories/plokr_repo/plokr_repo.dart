@@ -48,8 +48,10 @@ class PlockrRepo {
       PlockrResponseModel plockrResponseModel =
           PlockrResponseModel.fromJson(result.response.data);
       print(plockrResponseModel.uploadedReports);
-      if (plockrResponseModel.uploadedReports == null ||
-          plockrResponseModel.uploadedReports.isEmpty) {
+      if ((plockrResponseModel.uploadedReports == null ||
+              plockrResponseModel.uploadedReports.isEmpty) &&
+          (plockrResponseModel.sharedReports == null ||
+              plockrResponseModel.sharedReports.isEmpty)) {
         return RequestFailed(
             failureCause: PlunesStrings.noReportAvailabelMessage);
       }
