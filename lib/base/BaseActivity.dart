@@ -308,7 +308,8 @@ class BaseActivity extends StatefulWidget {
         ));
   }
 
-  Widget getAppBar(BuildContext context, String title, bool isIosBackButton) {
+  Widget getAppBar(BuildContext context, String title, bool isIosBackButton,
+      {Function func}) {
     return AppBar(
         automaticallyImplyLeading: isIosBackButton,
         backgroundColor: Colors.white,
@@ -318,7 +319,13 @@ class BaseActivity extends StatefulWidget {
         leading: isIosBackButton
             ? IconButton(
                 icon: Icon(Icons.arrow_back_ios),
-                onPressed: () => Navigator.pop(context, false),
+                onPressed: () {
+                  if (func != null) {
+                    func();
+                  }
+                  Navigator.pop(context, false);
+                  return;
+                },
               )
             : Container(),
         title: createTextViews(

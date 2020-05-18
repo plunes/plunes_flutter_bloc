@@ -17,6 +17,8 @@ import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 
 // ignore: must_be_immutable
 class AppointmentScreen extends BaseActivity {
@@ -71,21 +73,29 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          Text(
-                            appointmentModel.professionalName ??
-                                PlunesStrings.NA,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                fontWeight: FontWeight.bold),
+                          InkWell(
+                            onTap: () => _openProfile(),
+                            onDoubleTap: () {},
+                            child: Text(
+                              appointmentModel.professionalName ??
+                                  PlunesStrings.NA,
+                              style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                           SizedBox(height: 5),
-                          Text(
-                            appointmentModel.professionalAddress ??
-                                PlunesStrings.NA,
-                            overflow: TextOverflow.visible,
-                            style: TextStyle(
-                                fontSize: AppConfig.smallFont,
-                                color: Colors.black54),
+                          InkWell(
+                            onTap: () => _openProfile(),
+                            onDoubleTap: () {},
+                            child: Text(
+                              appointmentModel.professionalAddress ??
+                                  PlunesStrings.NA,
+                              overflow: TextOverflow.visible,
+                              style: TextStyle(
+                                  fontSize: AppConfig.smallFont,
+                                  color: Colors.black54),
+                            ),
                           ),
                           SizedBox(height: 5),
                           InkWell(
@@ -107,7 +117,11 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                     PlunesStrings.NA,
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                    decorationStyle: TextDecorationStyle.solid,
+                                    decorationThickness: 2.0,
+                                    decorationColor: PlunesColors.BLACKCOLOR),
                               ),
                             ),
                           ),
@@ -164,41 +178,41 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               style: TextStyle(
                                   fontSize: AppConfig.smallFont,
                                   color: Colors.black54)),
-                          (appointmentModel.serviceType == 'Procedure' &&
-                                  appointmentModel.paymentPercent == '20' &&
-                                  appointmentModel.bookingStatus !=
-                                      AppointmentModel
-                                          .cancelledStatus) //&& appointmentModel.bookingStatus !=)
-                              ? Container(
-                                  margin: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 2),
-                                  child: RaisedButton(
-                                    child: Text(
-                                      PlunesStrings.visitAgain,
-                                      style: TextStyle(color: Colors.white),
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: new BorderRadius.circular(
-                                          AppConfig.verticalBlockSize * 4),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  BookingMainScreen(
-                                                    appointmentModel:
-                                                        widget.appointmentModel,
-                                                    profId: appointmentModel
-                                                        .service.professionalId,
-                                                    timeSlots: appointmentModel
-                                                        .service.timeSlots,
-                                                  )));
-                                    },
-                                    color: Colors.green,
-                                  ),
-                                )
-                              : Container(),
+//                          (appointmentModel.serviceType == 'Procedure' &&
+//                                  appointmentModel.paymentPercent == '20' &&
+//                                  appointmentModel.bookingStatus !=
+//                                      AppointmentModel
+//                                          .cancelledStatus) //&& appointmentModel.bookingStatus !=)
+//                              ? Container(
+//                                  margin: EdgeInsets.only(
+//                                      top: AppConfig.verticalBlockSize * 2),
+//                                  child: RaisedButton(
+//                                    child: Text(
+//                                      PlunesStrings.visitAgain,
+//                                      style: TextStyle(color: Colors.white),
+//                                    ),
+//                                    shape: RoundedRectangleBorder(
+//                                      borderRadius: new BorderRadius.circular(
+//                                          AppConfig.verticalBlockSize * 4),
+//                                    ),
+//                                    onPressed: () {
+//                                      Navigator.push(
+//                                          context,
+//                                          MaterialPageRoute(
+//                                              builder: (context) =>
+//                                                  BookingMainScreen(
+//                                                    appointmentModel:
+//                                                        widget.appointmentModel,
+//                                                    profId: appointmentModel
+//                                                        .service.professionalId,
+//                                                    timeSlots: appointmentModel
+//                                                        .service.timeSlots,
+//                                                  )));
+//                                    },
+//                                    color: Colors.green,
+//                                  ),
+//                                )
+//                              : Container(),
                         ],
                       ),
                     ),
@@ -639,6 +653,24 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
       print("payment failed");
       widget.showInSnackBar(
           result.failureCause, PlunesColors.BLACKCOLOR, widget.globalKey);
+    }
+  }
+
+  _openProfile() {
+    if (widget.appointmentModel != null &&
+        widget.appointmentModel.serviceProviderType != null &&
+        widget.appointmentModel.serviceProviderType.isNotEmpty) {
+      Widget _widget;
+      if (widget.appointmentModel.serviceProviderType == Constants.doctor) {
+        _widget = DocProfile(userId: widget.appointmentModel.professionalId);
+      } else {
+        _widget =
+            HospitalProfile(userID: widget.appointmentModel.professionalId);
+      }
+      if (_widget != null) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => _widget));
+      }
     }
   }
 }

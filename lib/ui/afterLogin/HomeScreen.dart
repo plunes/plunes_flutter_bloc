@@ -13,19 +13,18 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/AvailabilitySelectionScreen.dart';
 import 'package:plunes/ui/afterLogin/doc_hos_screen/hosptal_overview_screen.dart';
+import 'package:plunes/ui/afterLogin/fill_coupon.dart';
+import 'package:plunes/ui/afterLogin/payment/manage_payment.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 
 import 'AboutUs.dart';
-import 'Coupons.dart';
 import 'EditProfileScreen.dart';
 import 'HealthSoulutionNear.dart';
 import 'HelpScreen.dart';
 import 'NotificationScreen.dart';
 import 'PlockrMainScreen.dart';
-import 'ProfileScreen.dart';
 import 'ReferScreen.dart';
 import 'SettingsScreen.dart';
-import 'appointment_screens/appointmentScreen.dart';
 import 'appointment_screens/appointment_main_screen.dart';
 
 /*
@@ -552,7 +551,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         getSharedPreferencesData();
         break;
       case 4:
-//        Navigator.popAndPushNamed(context, ManagePayments.tag);
+        Navigator.popAndPushNamed(context, ManagePayments.tag);
         break;
       case 5:
         Navigator.popAndPushNamed(context, HelpScreen.tag);
@@ -564,7 +563,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         Navigator.popAndPushNamed(context, ReferScreen.tag);
         break;
       case 8:
-        Navigator.popAndPushNamed(context, Coupons.tag);
+        Navigator.popAndPushNamed(context, FillCoupon.tag);
         break;
       case 9:
         closeDrawer();

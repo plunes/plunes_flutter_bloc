@@ -134,8 +134,22 @@ class _DocProfileState extends BaseState<DocProfile> {
   Widget _getNameAndImageView() {
     return Row(
       children: <Widget>[
-        CustomWidgets()
-            .getBackImageView(_profileResponse.user?.name ?? _getEmptyString()),
+        (_profileResponse.user != null &&
+                _profileResponse.user.imageUrl != null &&
+                _profileResponse.user.imageUrl.isNotEmpty)
+            ? CircleAvatar(
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  child: ClipOval(
+                      child: CustomWidgets().getImageFromUrl(
+                          _profileResponse.user.imageUrl,
+                          boxFit: BoxFit.fill)),
+                ),
+                radius: 30,
+              )
+            : CustomWidgets().getBackImageView(
+                _profileResponse.user?.name ?? _getEmptyString()),
         Expanded(
           child: Padding(
             padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 5),

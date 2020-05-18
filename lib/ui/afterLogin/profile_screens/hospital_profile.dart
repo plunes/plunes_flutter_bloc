@@ -200,8 +200,22 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   Widget _getNameAndImageView() {
     return Row(
       children: <Widget>[
-        CustomWidgets()
-            .getBackImageView(_profileResponse.user?.name ?? _getEmptyString()),
+        (_profileResponse.user != null &&
+                _profileResponse.user.imageUrl != null &&
+                _profileResponse.user.imageUrl.isNotEmpty)
+            ? CircleAvatar(
+                child: Container(
+                  height: 60,
+                  width: 60,
+                  child: ClipOval(
+                      child: CustomWidgets().getImageFromUrl(
+                          _profileResponse.user.imageUrl,
+                          boxFit: BoxFit.fill)),
+                ),
+                radius: 30,
+              )
+            : CustomWidgets().getBackImageView(
+                _profileResponse.user?.name ?? _getEmptyString()),
         Expanded(
           child: Padding(
             padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 5),
@@ -297,9 +311,12 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   }
 
   Widget _getSpecializationWidget() {
+    if (specialityList == null || specialityList.isEmpty) {
+      return Container();
+    }
     List<DropdownMenuItem<String>> itemList = [];
-    specialityList.forEach((item) {
-      if (item.id != null && item.id.isNotEmpty) {
+    specialityList.toSet().forEach((item) {
+      if (item != null && item.id != null && item.id.isNotEmpty) {
         if (_specialitySelectedId == null) {
           _specialitySelectedId = item.id;
           _getServiceRelatedToSpeciality(_specialitySelectedId);
@@ -312,18 +329,21 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             )));
       }
     });
-    Widget dropDown = DropdownButton<String>(
-      isDense: true,
-      onChanged: (itemId) {
-        _specialitySelectedId = itemId;
-        _userBloc.addStateInSpecialityStream(null);
-        _getServiceRelatedToSpeciality(_specialitySelectedId);
-      },
-      value: _specialitySelectedId,
-      items: itemList,
-      isExpanded: true,
-      elevation: 0,
-    );
+    Widget dropDown;
+    if (itemList != null && itemList.isNotEmpty) {
+      dropDown = DropdownButton<String>(
+        isDense: true,
+        onChanged: (itemId) {
+          _specialitySelectedId = itemId;
+          _userBloc.addStateInSpecialityStream(null);
+          _getServiceRelatedToSpeciality(_specialitySelectedId);
+        },
+        value: _specialitySelectedId,
+        items: itemList,
+        isExpanded: true,
+        elevation: 0,
+      );
+    }
     return itemList == null || itemList.isEmpty
         ? Container()
         : Column(

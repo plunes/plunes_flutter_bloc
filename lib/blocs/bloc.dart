@@ -208,8 +208,12 @@ class Bloc {
       if (isConnected) {
         CommonMethods.getPreferenceValues(Constants.ACCESS_TOKEN)
             .then((dynamic _token) async {
-          notificationApiFetcher.sink
-              .add(await _repository.fetchNotificationResult(context, _token));
+          var result =
+              await _repository.fetchNotificationResult(context, _token);
+          if (notificationApiFetcher != null &&
+              !(notificationApiFetcher.isClosed)) {
+            notificationApiFetcher.sink.add(result);
+          }
         });
       } else
         CommonMethods.commonDialog(context, callBack,

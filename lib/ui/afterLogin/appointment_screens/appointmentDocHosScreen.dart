@@ -103,7 +103,11 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                     PlunesStrings.NA,
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                    decorationStyle: TextDecorationStyle.solid,
+                                    decorationThickness: 2.0,
+                                    decorationColor: PlunesColors.BLACKCOLOR),
                               ),
                             ),
                           ),

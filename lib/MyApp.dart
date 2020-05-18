@@ -8,6 +8,8 @@ import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
 import 'package:plunes/ui/afterLogin/HelpScreen.dart';
 import 'package:plunes/ui/afterLogin/SettingsScreen.dart';
+import 'package:plunes/ui/afterLogin/fill_coupon.dart';
+import 'package:plunes/ui/afterLogin/payment/manage_payment.dart';
 import 'package:plunes/ui/beforeLogin/EnterPhoneScreen.dart';
 import 'package:plunes/ui/beforeLogin/GuidedTour.dart';
 import 'package:plunes/ui/beforeLogin/Registration.dart';
@@ -59,8 +61,8 @@ class _MyAppState extends State<MyApp> {
       key: _scaffoldKey,
       navigatorKey: _navKey,
       theme: ThemeData(
-       fontFamily: fontFile.appDefaultFont,
-       // textTheme: TextTheme(body1:  TextStyle(fontSize: 18)),
+        fontFamily: fontFile.appDefaultFont,
+        // textTheme: TextTheme(body1:  TextStyle(fontSize: 18)),
         accentColor: Color(hexColorCode.defaultGreen),
         highlightColor:
             Color(CommonMethods.getColorHexFromStr(colorsFile.lightGreen)),
@@ -97,12 +99,12 @@ class _MyAppState extends State<MyApp> {
         HomeScreen.tag: (context) => HomeScreen(),
         HelpScreen.tag: (context) => HelpScreen(),
         ReferScreen.tag: (context) => ReferScreen(),
-        Coupons.tag: (context) => Coupons(),
+        Coupons.tag: (context) => FillCoupon(),
         CheckOTP.tag: (context) => CheckOTP(),
         AboutUs.tag: (context) => AboutUs(),
         Login.tag: (context) => Login(),
         AppointmentMainScreen.tag: (context) => AppointmentMainScreen(),
-
+        ManagePayments.tag: (context) => ManagePayments()
         //AppointmentScreen.tag:(context) => AppointmentScreen(),
       },
       initialRoute: SplashScreen.tag,

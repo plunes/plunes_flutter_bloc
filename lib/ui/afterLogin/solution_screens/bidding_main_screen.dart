@@ -2,14 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
-import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
@@ -18,7 +16,6 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import './previous_activity_screen.dart';
@@ -231,8 +228,6 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   Widget _getSearchWidget() {
     return Container(
-//      decoration: BoxDecoration(
-//          shape: BoxShape.rectangle, color: PlunesColors.WHITECOLOR),
       padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
       margin:
           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
@@ -361,7 +356,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       if (_canGoAhead) {
         return;
       } else {
-        _checkUserLocation(user?.latitude, user?.latitude);
+        _checkUserLocation(user?.latitude, user?.longitude);
       }
     } else {
       await Future.delayed(Duration(milliseconds: 400));

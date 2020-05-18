@@ -266,17 +266,22 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         InkWell(
           onTap: () => _goToProfilePage(),
           onDoubleTap: () {},
-          child: CircleAvatar(
-            child: Container(
-              height: AppConfig.horizontalBlockSize * 11,
-              width: AppConfig.horizontalBlockSize * 11,
-              child: ClipOval(
-                  child: CustomWidgets().getImageFromUrl(
-                      _docProfileInfo.user?.imageUrl,
-                      boxFit: BoxFit.fill)),
-            ),
-            radius: AppConfig.horizontalBlockSize * 5.5,
-          ),
+          child: (_docProfileInfo.user != null &&
+                  _docProfileInfo.user.imageUrl != null &&
+                  _docProfileInfo.user.imageUrl.isNotEmpty)
+              ? CircleAvatar(
+                  child: Container(
+                    height: 60,
+                    width: 60,
+                    child: ClipOval(
+                        child: CustomWidgets().getImageFromUrl(
+                            _docProfileInfo.user?.imageUrl,
+                            boxFit: BoxFit.fill)),
+                  ),
+                  radius: 30,
+                )
+              : CustomWidgets().getBackImageView(
+                  _docProfileInfo.user?.name ?? PlunesStrings.NA),
         ),
         Expanded(
             child: Padding(

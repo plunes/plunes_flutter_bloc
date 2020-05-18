@@ -57,6 +57,7 @@ class AppointmentModel {
   String referenceId;
   bool doctorConfirmation;
   List<PaymentStatus> paymentStatus;
+  String serviceProviderType;
 
   @override
   bool operator ==(Object other) =>
@@ -109,7 +110,8 @@ class AppointmentModel {
       this.serviceType,
       this.paymentStatus,
       this.long,
-      this.lat});
+      this.lat,
+      this.serviceProviderType});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
     print("${json['location']['coordinates']}json ${json["location"]}");
@@ -163,6 +165,7 @@ class AppointmentModel {
       lat = json['location']['coordinates'][1]?.toString();
       long = json['location']['coordinates'][0]?.toString();
     }
+    serviceProviderType = json['serviceProviderType'];
   }
 
   Map<String, dynamic> toJson() {

@@ -79,6 +79,8 @@ class WebServices {
 
   Future<dynamic> postLogoutWebservice(
       BuildContext context, String token) async {
+    var deviceToken = UserManager().getDeviceToken();
+    print("deviceToken $deviceToken");
     return await _apiCall.getAPIRequest(
         context,
         context.widget.toString() == 'SecuritySettings'
@@ -86,7 +88,7 @@ class WebServices {
             : urls.logout,
         '1',
         false,
-        body: json.encode({'deviceId': UserManager().getDeviceToken()}),
+        body: json.encode({'deviceId': deviceToken}),
         method: Constants.POST,
         token: token);
   }
