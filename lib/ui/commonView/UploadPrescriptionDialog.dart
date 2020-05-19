@@ -77,13 +77,15 @@ class _UploadPrescriptionDialogState
                 Photo(assetName: widget.imageUrl, title: '', caption: ''));
           },
           child: Card(
-              elevation: 5,
-              semanticContainer: true,
-              clipBehavior: Clip.antiAliasWithSaveLayer,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: widget.getAssetImageWidget(widget.imageUrl)),
+            elevation: 5,
+            semanticContainer: true,
+            clipBehavior: Clip.antiAliasWithSaveLayer,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Image.file(File(widget.imageUrl)),
+            //child: widget.getAssetImageWidget(widget.imageUrl)
+          ),
         ));
   }
 
