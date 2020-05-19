@@ -129,9 +129,7 @@ class FirebaseNotification {
   fireBaseCloudMessagingListeners() {
     if (Platform.isIOS) iOSPermission();
     _firebaseMessaging.getToken().then((token) {
-      saveToken(token);
       Constants.DEVICE_TOKEN = token;
-      print('Firebase Token: $token');
     });
     _updateToken("randomtoken");
     _firebaseMessaging.onTokenRefresh.listen((token) {
@@ -153,15 +151,6 @@ class FirebaseNotification {
         showLocalNotification(message);
       },
     );
-  }
-
-  Future saveToken(String token) async {
-    if (token != null) {
-      Future.delayed(Duration(seconds: 20)).then((value) {
-        UserManager().setDeviceToken(token);
-      });
-      print("Push Messaging token: $token");
-    }
   }
 
   Future _showNotificationWithDefaultSound(Map<String, dynamic> msg) async {

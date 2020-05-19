@@ -65,10 +65,11 @@ class DioRequester {
           options: options, onSendProgress: (int sent, int total) {
         AppLog.debugLog("${sent / total * 100} total sent");
       });
-//      AppLog.printLog("Response occurred");
+      AppLog.printLog("Response occurred ${response.data.toString()}");
       return ResponseStatusCodeHandler()
           .checkRequestResponseStatusCode(response);
     } catch (e) {
+      AppLog.printLog("Response occurred ${e}");
       AppLog.printError(_debug + ' ${e.toString()}');
       if (e is TimeoutException) {
         response = RequestOutput(
@@ -113,18 +114,17 @@ class DioRequester {
         break;
       case DioErrorType.RESPONSE:
         try {
-//          HttpErrorModel httpErrorModel =
-//              HttpErrorModel.fromJson(e.response.data);
+          HttpErrorModel httpErrorModel =
+              HttpErrorModel.fromJson(e.response.data);
 //          if (httpErrorModel.statusCode == HttpResponseCode.UNAUTHORIZED) {
 //            SessionExpirationEvent().getSessionEventBus().fire(RequestFailed(
 //                requestCode: httpErrorModel.statusCode,
 //                failureCause: httpErrorModel.message));
 //            // return null;
 //          }
-//          AppLog.printError(
-//              "${e.response.statusCode} response ${httpErrorModel.message}");
-          errorDescription =
+          errorDescription = httpErrorModel.error ??
               plunesStrings.somethingWentWrong + " - ${e.response.statusCode}";
+          AppLog.printError("$errorDescription");
         } catch (error) {
           errorDescription =
               plunesStrings.somethingWentWrong + " - ${e.response.statusCode}";
@@ -133,6 +133,7 @@ class DioRequester {
       case DioErrorType.SEND_TIMEOUT:
         break;
     }
+    print("hello ${e.response.toString()}");
     return RequestOutput(
         isRequestSucceed: false,
         failureCause: errorDescription,

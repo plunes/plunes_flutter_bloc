@@ -592,7 +592,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     _userType = preferences.getPreferenceString(Constants.PREF_USER_TYPE);
     _userName = preferences.getPreferenceString(Constants.PREF_USERNAME);
     _imageUrl = preferences.getPreferenceString(Constants.PREF_USER_IMAGE);
-    print("_userType is $_userType");
+//    print("_userType is $_userType");
     _setState();
   }
 

@@ -58,7 +58,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
 
   Widget getBodyView() {
     return Container(
-      margin: EdgeInsets.only(left: 25, right: 25, bottom: 50),
+      margin: EdgeInsets.only(left: 25, right: 25, bottom: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[

@@ -8,6 +8,12 @@ class CatalogueData {
   String specialityId;
   String serviceId;
   String sitting;
+
+  @override
+  String toString() {
+    return 'CatalogueData{service: $service, details: $details, dnd: $dnd, category: $category, isSelected: $isSelected, isActive: $isActive, speciality: $speciality, specialityId: $specialityId, serviceId: $serviceId, sitting: $sitting, duration: $duration, iV: $iV, createdAt: $createdAt, maxDiscount: $maxDiscount, isFromNotification: $isFromNotification, solutionId: $solutionId}';
+  }
+
   String duration;
   int iV, createdAt;
   num maxDiscount;

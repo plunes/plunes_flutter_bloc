@@ -90,8 +90,9 @@ class DocHosMainRepo {
       requestType: HttpRequestMethods.HTTP_PATCH,
       postData: {
         "serviceId": serviceId,
-        "specialityId": specialityId,
-        "newPrice": price
+        "services": [
+          {"specialityId": specialityId, "newPrice": price}
+        ]
       },
       headerIncluded: true,
     );

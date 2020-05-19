@@ -29,15 +29,15 @@ class RealInsight {
   String serviceId;
   String userName;
   String profName;
-  String serviceName;
-  bool negotiating;
+  String serviceName, expirationMessage;
+  bool negotiating, expired;
   int timeRemaining;
   num userPrice;
   int createdAt;
 
   @override
   String toString() {
-    return 'RealInsight{solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, serviceName: $serviceName, negotiating: $negotiating, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt}';
+    return 'RealInsight{expirationMessage: $expirationMessage,expired: $expired, solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, serviceName: $serviceName, negotiating: $negotiating, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt}';
   }
 
   RealInsight(
@@ -48,6 +48,8 @@ class RealInsight {
       this.serviceName,
       this.negotiating,
       this.timeRemaining,
+      this.expired,
+      this.expirationMessage,
       this.userPrice,
       this.createdAt});
 
@@ -61,6 +63,8 @@ class RealInsight {
     timeRemaining = json['timeRemaining'];
     userPrice = json['userPrice'];
     createdAt = json['createdAt'];
+    expired = json['expired'];
+    expirationMessage = json['expirationMessage'];
   }
 
   Map<String, dynamic> toJson() {

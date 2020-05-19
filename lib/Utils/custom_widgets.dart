@@ -89,11 +89,6 @@ class CustomWidgets {
                       width: AppConfig.verticalBlockSize * 2.0,
                       height: AppConfig.verticalBlockSize * 2.0,
                     )
-//              Icon(
-//                      Icons.search,
-//                      size: AppConfig.verticalBlockSize * 2.8,
-//                      color: PlunesColors.GREYCOLOR,
-//                    )
                   : InkWell(
                       onTap: () {
                         searchController.text = "";
@@ -149,7 +144,7 @@ class CustomWidgets {
   Widget getSolutionRow(List<CatalogueData> solutionList, int index,
       {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
     return StatefulBuilder(builder: (context, newState) {
-      String _imageUrl = '';
+      String _imageUrl;
       if (solutionList[index].category == "Consultation") {
         _imageUrl = PlunesImages.consultationImage;
       } else if (solutionList[index].category == "Procedure") {
@@ -157,7 +152,11 @@ class CustomWidgets {
       } else if (solutionList[index].category == "Test") {
         _imageUrl = PlunesImages.testImage;
       } else if (solutionList[index].category == "Basic" ||
+          solutionList[index].category == null ||
           solutionList[index].category == PlunesStrings.NA) {
+        _imageUrl = PlunesImages.basicImage;
+      }
+      if (_imageUrl == null) {
         _imageUrl = PlunesImages.basicImage;
       }
 
@@ -756,7 +755,7 @@ class CustomWidgets {
                         padding: EdgeInsets.only(
                             top: AppConfig.horizontalBlockSize * 1)),
                     Text(
-                      catalogueData.category ?? PlunesStrings.NA,
+                      catalogueData?.category ?? PlunesStrings.NA,
                       style: TextStyle(
                         fontSize: AppConfig.mediumFont,
                         color: PlunesColors.GREYCOLOR,
@@ -1024,7 +1023,7 @@ class CustomWidgets {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    catalogueData.details ?? PlunesStrings.NA,
+                    catalogueData?.details ?? PlunesStrings.NA,
                     style: TextStyle(
                         color: Colors.black38, fontSize: AppConfig.smallFont),
                   ),
@@ -1041,7 +1040,7 @@ class CustomWidgets {
                       ),
                       SizedBox(width: 5),
                       Text(
-                        catalogueData.duration ?? PlunesStrings.NA,
+                        catalogueData?.duration ?? PlunesStrings.NA,
                         style: TextStyle(
                             color: Colors.black45,
                             fontSize: AppConfig.smallFont),
@@ -1060,7 +1059,7 @@ class CustomWidgets {
                     ),
                     SizedBox(width: 5),
                     Text(
-                      catalogueData.sitting ?? PlunesStrings.NA,
+                      catalogueData?.sitting ?? PlunesStrings.NA,
                       style: TextStyle(
                           color: Colors.black38, fontSize: AppConfig.smallFont),
                     ),
@@ -1075,7 +1074,7 @@ class CustomWidgets {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    catalogueData.dnd ?? PlunesStrings.NA,
+                    catalogueData?.dnd ?? PlunesStrings.NA,
                     style: TextStyle(
                       fontSize: AppConfig.smallFont,
                       color: Colors.black38,
@@ -1104,7 +1103,13 @@ class CustomWidgets {
                 stream: docHosMainInsightBloc.realTimePriceUpdateStream,
                 builder: (context, snapShot) {
                   if (snapShot.data is RequestInProgress) {
-                    return CustomWidgets().getProgressIndicator();
+                    return Container(
+                        height: AppConfig.verticalBlockSize * 60,
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 5.5,
+                            right: AppConfig.horizontalBlockSize * 5.5,
+                            top: AppConfig.verticalBlockSize * 5),
+                        child: CustomWidgets().getProgressIndicator());
                   }
                   if (snapShot.data is RequestSuccess) {
                     Future.delayed(Duration(milliseconds: 200)).then((value) {
@@ -1115,24 +1120,23 @@ class CustomWidgets {
                     RequestFailed requestFailed = snapShot.data;
                     failureCause = requestFailed.failureCause;
                   }
-                  return SingleChildScrollView(
-                    reverse: true,
-                    child: Container(
-                      margin: EdgeInsets.only(top: 5),
-                      child: Stack(
-                        children: <Widget>[
-                          Text(
-                            '',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            height: AppConfig.verticalBlockSize * 60,
-                            margin: EdgeInsets.only(
-                                left: AppConfig.horizontalBlockSize * 5.5,
-                                right: AppConfig.horizontalBlockSize * 5.5,
-                                top: AppConfig.verticalBlockSize * 5),
+                  return Container(
+                    margin: EdgeInsets.only(top: 5),
+                    child: Stack(
+                      children: <Widget>[
+                        Text(
+                          '',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        Container(
+                          height: AppConfig.verticalBlockSize * 60,
+                          margin: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 5.5,
+                              right: AppConfig.horizontalBlockSize * 5.5,
+                              top: AppConfig.verticalBlockSize * 5),
+                          child: SingleChildScrollView(
                             child: Center(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1174,7 +1178,6 @@ class CustomWidgets {
                                               chancesPercent =
                                                   (100 - ((val - 50) * 2))
                                                       .toInt();
-                                              print("newValue $chancesPercent");
                                             } catch (e) {
                                               chancesPercent = 50;
                                             }
@@ -1230,7 +1233,7 @@ class CustomWidgets {
                                           ? Text(
                                               chancesPercent == 0
                                                   ? '0%'
-                                                  : '${chancesPercent - 5} to $chancesPercent%',
+                                                  : '${chancesPercent - 5}% to $chancesPercent%',
                                               style: TextStyle(
                                                   fontSize:
                                                       AppConfig.mediumFont,
@@ -1279,17 +1282,17 @@ class CustomWidgets {
                               ),
                             ),
                           ),
-                          Positioned(
-                            right: 0.0,
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: IconButton(
-                                  icon: Icon(Icons.close),
-                                  onPressed: () => Navigator.of(context).pop()),
-                            ),
+                        ),
+                        Positioned(
+                          right: 0.0,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () => Navigator.of(context).pop()),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 }),
@@ -1302,6 +1305,7 @@ class CustomWidgets {
   Widget UpdatePricePopUpForActionableInsight(
       {ActionableInsight actionableInsight,
       DocHosMainInsightBloc docHosMainInsightBloc}) {
+    print("actionable ${actionableInsight}");
     var sliderVal = (num.parse(actionableInsight.userPrice).toDouble() / 2) +
         (((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2);
     num chancesPercent = 50;
@@ -1315,10 +1319,15 @@ class CustomWidgets {
                 stream: docHosMainInsightBloc.actionablePriceUpdateStream,
                 builder: (context, snapShot) {
                   if (snapShot.data is RequestInProgress) {
-                    return CustomWidgets().getProgressIndicator();
+                    return Container(
+                        height: AppConfig.verticalBlockSize * 60,
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 5.5,
+                            right: AppConfig.horizontalBlockSize * 5.5,
+                            top: AppConfig.verticalBlockSize * 5),
+                        child: CustomWidgets().getProgressIndicator());
                   }
                   if (snapShot.data is RequestSuccess) {
-                    print('success req');
                     Future.delayed(Duration(milliseconds: 200)).then((value) {
                       Navigator.pop(context, true);
                     });
@@ -1326,26 +1335,24 @@ class CustomWidgets {
                   if (snapShot.data is RequestFailed) {
                     RequestFailed requestFailed = snapShot.data;
                     failureCause = requestFailed.failureCause;
-                    print('failure req');
                   }
-                  return SingleChildScrollView(
-                    reverse: true,
-                    child: Container(
-                      margin: EdgeInsets.only(top: 5),
-                      child: Stack(
-                        children: <Widget>[
-                          Text(
-                            '',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
-                          ),
-                          Container(
-                            height: AppConfig.verticalBlockSize * 60,
-                            margin: EdgeInsets.only(
-                                left: AppConfig.horizontalBlockSize * 5.5,
-                                right: AppConfig.horizontalBlockSize * 5.5,
-                                top: AppConfig.verticalBlockSize * 5),
+                  return Container(
+                    margin: EdgeInsets.only(top: 5),
+                    child: Stack(
+                      children: <Widget>[
+                        Text(
+                          '',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        Container(
+                          height: AppConfig.verticalBlockSize * 60,
+                          margin: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 5.5,
+                              right: AppConfig.horizontalBlockSize * 5.5,
+                              top: AppConfig.verticalBlockSize * 5),
+                          child: SingleChildScrollView(
                             child: Center(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -1442,7 +1449,7 @@ class CustomWidgets {
                                           ? Text(
                                               chancesPercent == 0
                                                   ? '0%'
-                                                  : '${chancesPercent - 5} to $chancesPercent%',
+                                                  : '${chancesPercent - 5}% to $chancesPercent%',
                                               style: TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold),
@@ -1468,9 +1475,6 @@ class CustomWidgets {
                                             return;
                                           }
                                           docHosMainInsightBloc
-                                              .updateRealTimeInsightPriceStream(
-                                                  RequestInProgress());
-                                          docHosMainInsightBloc
                                               .getUpdateActionableInsightPrice(
                                                   sliderVal,
                                                   actionableInsight.serviceId,
@@ -1491,17 +1495,17 @@ class CustomWidgets {
                               ),
                             ),
                           ),
-                          Positioned(
-                            right: 0.0,
-                            child: Align(
-                              alignment: Alignment.topRight,
-                              child: IconButton(
-                                  icon: Icon(Icons.close),
-                                  onPressed: () => Navigator.of(context).pop()),
-                            ),
+                        ),
+                        Positioned(
+                          right: 0.0,
+                          child: Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () => Navigator.of(context).pop()),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   );
                 }),

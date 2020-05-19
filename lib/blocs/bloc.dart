@@ -6,6 +6,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/resources/repository.dart';
@@ -294,6 +295,7 @@ class Bloc {
     }
     if (_from != null) {
       preferences.setPreferencesBoolean(Constants.NOTIFICATION_ENABLED, true);
+      UserManager().setDeviceToken(Constants.DEVICE_TOKEN);
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

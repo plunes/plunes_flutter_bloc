@@ -379,8 +379,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     UserBloc().isUserInServiceLocation(latitude, longitude).then((result) {
       if (result.isRequestSucceed != null && result.isRequestSucceed) {
         if (result.response.data == null || !result.response.data) {
-          widget.showInSnackBar(PlunesStrings.switchToGurLoc,
-              PlunesColors.GREYCOLOR, scaffoldKey);
+          if (mounted) {
+            widget?.showInSnackBar(PlunesStrings.switchToGurLoc,
+                PlunesColors.GREYCOLOR, scaffoldKey);
+          }
           _canGoAhead = UserManager().getIsUserInServiceLocation();
         } else {
           _canGoAhead = true;

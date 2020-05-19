@@ -26,6 +26,7 @@ class PlunesImages {
       'assets/images/bottom_tabs/notification_inactive-icon.png';
   static String noAppointmentImage = "assets/images/no_appointment.png";
   static String hospitalImage = "assets/images/hospitalImage.png";
+  static String bookingLostEmoji = "assets/images/bookingLostEmoji.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

@@ -632,3 +632,22 @@ class SpecialityModel {
     return data;
   }
 }
+
+class HttpErrorModel {
+  int statusCode;
+  String error;
+
+  HttpErrorModel({this.statusCode, this.error});
+
+  HttpErrorModel.fromJson(Map<String, dynamic> json) {
+    statusCode = json['statusCode'];
+    error = json['error'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['statusCode'] = this.statusCode;
+    data['error'] = this.error;
+    return data;
+  }
+}

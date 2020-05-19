@@ -1,14 +1,21 @@
+import 'package:plunes/models/solution_models/solution_model.dart';
+
 class SearchedDocResults {
   bool success;
   DocHosSolution solution;
+  CatalogueData catalogueData;
 
-  SearchedDocResults({this.success, this.solution});
+  SearchedDocResults({this.success, this.solution, this.catalogueData});
 
   SearchedDocResults.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     solution = json['solution'] != null
         ? new DocHosSolution.fromJson(json['solution'])
         : null;
+    catalogueData = json['service'] != null
+        ? CatalogueData.fromJson(json['service'])
+        : null;
+    print("catalogueData.toString() ${catalogueData.toString()}");
   }
 
   Map<String, dynamic> toJson() {

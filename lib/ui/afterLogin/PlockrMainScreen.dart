@@ -42,12 +42,10 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   AnimationController _animationController;
   ImagePickerHandler imagePicker;
   var globalHeight, globalWidth;
-  Preferences _preferences;
   PlockrBloc _plockrBloc;
   bool progress = false;
   PlockrResponseModel _plockrResponseModel;
-  String _userType = '', failureMessage;
-  File _image;
+  String failureMessage;
   bool _isSharing = false, _isDeleting = false;
   String _selectedReportId;
   List<dynamic> reportsList = new List();
@@ -78,8 +76,6 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
   }
 
   initialize() {
-    _preferences = Preferences();
-    _userType = _preferences.getPreferenceString(Constants.PREF_USER_TYPE);
     initializeForImageFetching();
   }
 
@@ -182,7 +178,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                       decoration: InputDecoration.collapsed(
                           hintText: plunesStrings.search),
                       onChanged: (text) {
-                        _fllterOriginalListItems(text);
+                        _filterOriginalListItems(text);
                       },
                     ),
                   ),
@@ -264,7 +260,6 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     }
     if (_image != null) {
       // print("image==" + base64Encode(_image.readAsBytesSync()).toString());
-      this._image = _image;
       showDialog(
           context: context,
           barrierDismissible: false,
@@ -515,7 +510,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     );
   }
 
-  void _fllterOriginalListItems(String text) {
+  void _filterOriginalListItems(String text) {
     if (_originalDataList != null &&
         _originalDataList.isNotEmpty &&
         text != null &&

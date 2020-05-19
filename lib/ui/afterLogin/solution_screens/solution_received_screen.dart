@@ -121,7 +121,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               () => _checkAvailability(index),
               () => _onBookingTap(
                   _searchedDocResults.solution.services[index], index),
-              widget.catalogueData,
+              _searchedDocResults.catalogueData,
               _buildContext);
         },
         itemCount: _searchedDocResults.solution == null
@@ -136,7 +136,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     showDialog(
         context: context,
         builder: (BuildContext context) => DialogWidgets().buildProfileDialog(
-            catalogueData: widget.catalogueData,
+            catalogueData: _searchedDocResults.catalogueData,
             solutions: _searchedDocResults.solution.services[selectedIndex],
             context: _buildContext));
   }
@@ -286,7 +286,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         Expanded(
                           flex: 2,
                           child: Text(
-                            widget.catalogueData.service ?? PlunesStrings.NA,
+                            widget.catalogueData.service ??
+                                _searchedDocResults?.catalogueData?.service ??
+                                PlunesStrings.NA,
                             style: TextStyle(
                                 fontSize: AppConfig.mediumFont,
                                 color: PlunesColors.BLACKCOLOR,
@@ -367,145 +369,144 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         );
       },
     );
-    Container(
-      color: PlunesColors.WHITECOLOR,
-      padding: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
-      child: Stack(
-        children: <Widget>[
-          Column(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 3,
-                    vertical: AppConfig.verticalBlockSize * 1),
-                child: CustomWidgets().searchBar(
-                    searchController: _searchController,
-                    hintText: PlunesStrings.chooseLocation,
-                    focusNode: _focusNode,
-                    searchBarHeight: 5.5),
-              ),
-              Expanded(
-                child: GoogleMap(
-                    padding: EdgeInsets.all(0.0),
-                    myLocationEnabled: true,
-                    markers: _markers,
-                    myLocationButtonEnabled: false,
-                    onMapCreated: (mapController) {
-                      if (!_googleMapController.isCompleted)
-                        _googleMapController.complete(mapController);
-                    },
-                    initialCameraPosition: CameraPosition(
-                        target: LatLng(double.tryParse(_user.latitude) ?? lat,
-                            double.tryParse(_user.longitude) ?? long),
-                        zoom: 10.0)),
-                flex: 1,
-              ),
-              Expanded(
-                  child: Card(
-                elevation: 0.0,
-                margin: EdgeInsets.all(0.0),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 4,
-                          vertical: AppConfig.verticalBlockSize * 2),
-                      child: Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              widget.catalogueData.service ?? PlunesStrings.NA,
-                              style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          Expanded(child: Container()),
-                          Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(top: 6),
-                              ),
-                              InkWell(
-                                onTap: () => _viewDetails(),
-                                child: CustomWidgets().getRoundedButton(
-                                    PlunesStrings.viewDetails,
-                                    AppConfig.horizontalBlockSize * 8,
-                                    PlunesColors.GREENCOLOR,
-                                    AppConfig.horizontalBlockSize * 3,
-                                    AppConfig.verticalBlockSize * 1,
-                                    PlunesColors.WHITECOLOR),
-                              ),
-                              Container(
-                                alignment: Alignment.topRight,
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 1),
-                                child: _solutionReceivedTime == null ||
-                                        _solutionReceivedTime == 0
-                                    ? Container()
-                                    : StreamBuilder(
-                                        builder: (context, snapShot) {
-                                          return Text(
-                                            DateUtil.getDuration(
-                                                    _solutionReceivedTime) ??
-                                                PlunesStrings.NA,
-                                            style: TextStyle(
-                                                fontSize:
-                                                    AppConfig.verySmallFont),
-                                          );
-                                        },
-                                        stream: _streamForTimer.stream,
-                                      ),
-                              )
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: AppConfig.horizontalBlockSize * 4,
-                            vertical: AppConfig.verticalBlockSize * 2),
-                        child: StreamBuilder<RequestState>(
-                          builder: (context, snapShot) {
-                            if (snapShot.data is RequestSuccess) {
-                              RequestSuccess _successObject = snapShot.data;
-                              _searchedDocResults = _successObject.response;
-                              _searchSolutionBloc.addIntoDocHosStream(null);
-                              _checkShouldTimerRun();
-                            } else if (snapShot.data is RequestFailed) {
-                              RequestFailed _failedObject = snapShot.data;
-                              _failureCause = _failedObject.failureCause;
-                              _searchSolutionBloc.addIntoDocHosStream(null);
-                              _cancelNegotiationTimer();
-                            }
-//                            return _showContent();
-                          },
-                          stream: _searchSolutionBloc.getDocHosStream(),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                color: PlunesColors.WHITECOLOR,
-              ))
-            ],
-          ),
-          (_timer != null && _timer.isActive) ? holdOnPopUp : Container()
-        ],
-      ),
-    );
+//    Container(
+//      color: PlunesColors.WHITECOLOR,
+//      padding: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
+//      child: Stack(
+//        children: <Widget>[
+//          Column(
+//            children: <Widget>[
+//              Container(
+//                margin: EdgeInsets.symmetric(
+//                    horizontal: AppConfig.horizontalBlockSize * 3,
+//                    vertical: AppConfig.verticalBlockSize * 1),
+//                child: CustomWidgets().searchBar(
+//                    searchController: _searchController,
+//                    hintText: PlunesStrings.chooseLocation,
+//                    focusNode: _focusNode,
+//                    searchBarHeight: 5.5),
+//              ),
+//              Expanded(
+//                child: GoogleMap(
+//                    padding: EdgeInsets.all(0.0),
+//                    myLocationEnabled: true,
+//                    markers: _markers,
+//                    myLocationButtonEnabled: false,
+//                    onMapCreated: (mapController) {
+//                      if (!_googleMapController.isCompleted)
+//                        _googleMapController.complete(mapController);
+//                    },
+//                    initialCameraPosition: CameraPosition(
+//                        target: LatLng(double.tryParse(_user.latitude) ?? lat,
+//                            double.tryParse(_user.longitude) ?? long),
+//                        zoom: 10.0)),
+//                flex: 1,
+//              ),
+//              Expanded(
+//                  child: Card(
+//                elevation: 0.0,
+//                margin: EdgeInsets.all(0.0),
+//                child: Column(
+//                  children: <Widget>[
+//                    Container(
+//                      margin: EdgeInsets.symmetric(
+//                          horizontal: AppConfig.horizontalBlockSize * 4,
+//                          vertical: AppConfig.verticalBlockSize * 2),
+//                      child: Row(
+//                        children: <Widget>[
+//                          Expanded(
+//                            flex: 2,
+//                            child: Text(
+//                              widget.catalogueData.service ?? PlunesStrings.NA,
+//                              style: TextStyle(
+//                                  fontSize: AppConfig.mediumFont,
+//                                  color: PlunesColors.BLACKCOLOR,
+//                                  fontWeight: FontWeight.bold),
+//                            ),
+//                          ),
+//                          Expanded(child: Container()),
+//                          Column(
+//                            children: <Widget>[
+//                              Padding(
+//                                padding: EdgeInsets.only(top: 6),
+//                              ),
+//                              InkWell(
+//                                onTap: () => _viewDetails(),
+//                                child: CustomWidgets().getRoundedButton(
+//                                    PlunesStrings.viewDetails,
+//                                    AppConfig.horizontalBlockSize * 8,
+//                                    PlunesColors.GREENCOLOR,
+//                                    AppConfig.horizontalBlockSize * 3,
+//                                    AppConfig.verticalBlockSize * 1,
+//                                    PlunesColors.WHITECOLOR),
+//                              ),
+//                              Container(
+//                                alignment: Alignment.topRight,
+//                                padding: EdgeInsets.only(
+//                                    top: AppConfig.verticalBlockSize * 1),
+//                                child: _solutionReceivedTime == null ||
+//                                        _solutionReceivedTime == 0
+//                                    ? Container()
+//                                    : StreamBuilder(
+//                                        builder: (context, snapShot) {
+//                                          return Text(
+//                                            DateUtil.getDuration(
+//                                                    _solutionReceivedTime) ??
+//                                                PlunesStrings.NA,
+//                                            style: TextStyle(
+//                                                fontSize:
+//                                                    AppConfig.verySmallFont),
+//                                          );
+//                                        },
+//                                        stream: _streamForTimer.stream,
+//                                      ),
+//                              )
+//                            ],
+//                          )
+//                        ],
+//                      ),
+//                    ),
+//                    Expanded(
+//                      child: Container(
+//                        margin: EdgeInsets.symmetric(
+//                            horizontal: AppConfig.horizontalBlockSize * 4,
+//                            vertical: AppConfig.verticalBlockSize * 2),
+//                        child: StreamBuilder<RequestState>(
+//                          builder: (context, snapShot) {
+//                            if (snapShot.data is RequestSuccess) {
+//                              RequestSuccess _successObject = snapShot.data;
+//                              _searchedDocResults = _successObject.response;
+//                              _searchSolutionBloc.addIntoDocHosStream(null);
+//                              _checkShouldTimerRun();
+//                            } else if (snapShot.data is RequestFailed) {
+//                              RequestFailed _failedObject = snapShot.data;
+//                              _failureCause = _failedObject.failureCause;
+//                              _searchSolutionBloc.addIntoDocHosStream(null);
+//                              _cancelNegotiationTimer();
+//                            }
+////                            return _showContent();
+//                          },
+//                          stream: _searchSolutionBloc.getDocHosStream(),
+//                        ),
+//                      ),
+//                    ),
+//                  ],
+//                ),
+//                color: PlunesColors.WHITECOLOR,
+//              ))
+//            ],
+//          ),
+//          (_timer != null && _timer.isActive) ? holdOnPopUp : Container()
+//        ],
+//      ),
+//    );
   }
 
   _viewDetails() {
     showDialog(
-      context: context,
-      builder: (BuildContext context) => CustomWidgets()
-          .buildViewMoreDialog(catalogueData: widget.catalogueData),
-    );
+        context: context,
+        builder: (BuildContext context) => CustomWidgets().buildViewMoreDialog(
+            catalogueData: _searchedDocResults?.catalogueData));
   }
 
   final holdOnPopUp = Container(

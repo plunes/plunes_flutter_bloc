@@ -135,7 +135,7 @@ class DialogWidgets {
                                     fontWeight: FontWeight.bold,
                                     fontSize: AppConfig.smallFont)),
                             Text(
-                              catalogueData.category ?? PlunesStrings.NA,
+                              catalogueData?.category ?? PlunesStrings.NA,
                               style: TextStyle(
                                   color: Colors.black87,
                                   fontSize: AppConfig.smallFont),
@@ -325,7 +325,7 @@ class DialogWidgets {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  catalogueData.service,
+                                  catalogueData?.service??PlunesStrings.NA,
                                   style: TextStyle(
                                     color: Colors.black38,
                                   ),
@@ -342,7 +342,7 @@ class DialogWidgets {
                                     ),
                                     SizedBox(width: 5),
                                     Text(
-                                      catalogueData.duration,
+                                      catalogueData?.duration??PlunesStrings.NA,
                                       style: TextStyle(
                                         color: Colors.black45,
                                       ),
@@ -360,7 +360,7 @@ class DialogWidgets {
                                   ),
                                   SizedBox(width: 5),
                                   Text(
-                                    catalogueData.sitting,
+                                    catalogueData?.sitting??PlunesStrings.NA,
                                     style: TextStyle(
                                       color: Colors.black38,
                                     ),
@@ -374,7 +374,7 @@ class DialogWidgets {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  catalogueData.dnd,
+                                  catalogueData?.dnd??PlunesStrings.NA,
                                   style: TextStyle(
                                     color: Colors.black38,
                                   ),

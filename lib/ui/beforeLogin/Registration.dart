@@ -882,7 +882,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       body['userType'] =
           _userType == Constants.generalUser ? 'User' : _userType;
       body['address'] = locationController.text;
-      body['deviceIds'] = Constants.DEVICE_TOKEN;
+      body['deviceId'] = Constants.DEVICE_TOKEN;
       if (_userType != Constants.hospital &&
           _userType != Constants.labDiagnosticCenter) {
         body['birthDate'] = dobController.text;
@@ -903,7 +903,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           body['doctors'] = _doctorsList;
         }
       }
-      print("body" + body.toString());
+//      print("body" + body.toString());
       progress = true;
       bloc.registrationRequest(context, this, body);
       bloc.registrationResult.listen((data) async {

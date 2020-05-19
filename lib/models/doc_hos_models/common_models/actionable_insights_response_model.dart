@@ -30,6 +30,12 @@ class ActionableInsight {
   String bookingPrice;
   String userPriceVariance;
   String specialityId;
+
+  @override
+  String toString() {
+    return 'ActionableInsight{serviceName: $serviceName, percent: $percent, bookingPrice: $bookingPrice, userPriceVariance: $userPriceVariance, specialityId: $specialityId, serviceId: $serviceId, userPrice: $userPrice}';
+  }
+
   String serviceId;
   String userPrice;
 

@@ -33,10 +33,8 @@ class _HospitalOverviewScreenState
       _businessFailurecause,
       selectedDay;
   int days = 1;
-  List<String> daysCount = ['Today', 'Week', 'Month', 'Year'];
-  List<String> daysInput;
-
-  // String
+  List<String> _daysCount = ['Today', 'Week', 'Month', 'Year'];
+  List<String> _daysInput;
 
   @override
   void initState() {
@@ -45,7 +43,7 @@ class _HospitalOverviewScreenState
     _getRealTimeInsights();
     _getActionableInsights();
     _getTotalBusinessData(days);
-    daysInput = [];
+    _daysInput = [];
     super.initState();
   }
 
@@ -186,8 +184,6 @@ class _HospitalOverviewScreenState
                       : ListView.builder(
                           padding: null,
                           itemBuilder: (context, itemIndex) {
-                            print(
-                                "data is ${_realTimeInsightsResponse.data[itemIndex]}");
                             return Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -198,16 +194,60 @@ class _HospitalOverviewScreenState
                                       "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
                                   remainingTime: _realTimeInsightsResponse
                                       .data[itemIndex].createdAt,
+                                  getRealTimeInsights: () =>
+                                      _getRealTimeInsights(),
                                 ),
-                                FlatButtonLinks(
-                                    PlunesStrings.kindlyUpdateYourPrice,
-                                    15,
-                                    null,
-                                    AppConfig.horizontalBlockSize * 12,
-                                    true,
-                                    () => _openRealTimeInsightPriceUpdateWidget(
+                                (_realTimeInsightsResponse.data[itemIndex] !=
+                                            null &&
                                         _realTimeInsightsResponse
-                                            .data[itemIndex])),
+                                                .data[itemIndex].expired !=
+                                            null &&
+                                        _realTimeInsightsResponse
+                                            .data[itemIndex].expired)
+                                    ? Container(
+                                        margin: EdgeInsets.only(
+                                            left:
+                                                (AppConfig.horizontalBlockSize *
+                                                        12) +
+                                                    15,
+                                            top: AppConfig.verticalBlockSize *
+                                                2),
+                                        child: Row(
+                                          children: <Widget>[
+                                            Flexible(
+                                              child: Text(
+                                                "${_realTimeInsightsResponse.data[itemIndex].expirationMessage ?? PlunesStrings.NA}" +
+                                                    " ",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors
+                                                        .deepOrangeAccent),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            Image.asset(
+                                              PlunesImages.bookingLostEmoji,
+                                              height:
+                                                  AppConfig.verticalBlockSize *
+                                                      2.6,
+                                              width: AppConfig
+                                                      .horizontalBlockSize *
+                                                  8,
+                                            )
+                                          ],
+                                        ),
+                                      )
+                                    : FlatButtonLinks(
+                                        PlunesStrings.kindlyUpdateYourPrice,
+                                        15,
+                                        null,
+                                        AppConfig.horizontalBlockSize * 12,
+                                        true,
+                                        () =>
+                                            _openRealTimeInsightPriceUpdateWidget(
+                                                _realTimeInsightsResponse
+                                                    .data[itemIndex])),
                                 Divider(),
                               ],
                             );
@@ -291,7 +331,7 @@ class _HospitalOverviewScreenState
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      '\u20B9 ${_totalBusinessEarnedResponse.businessGained.toString()}',
+                                      '\u20B9 ${_totalBusinessEarnedResponse.businessGained?.toStringAsFixed(2) ?? PlunesStrings.NA}',
                                       style: TextStyle(
                                         color: Colors.green,
                                         fontSize: AppConfig.largeFont,
@@ -312,7 +352,7 @@ class _HospitalOverviewScreenState
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      '\u20B9 ${_totalBusinessEarnedResponse.businessLost.toString()}',
+                                      '\u20B9 ${_totalBusinessEarnedResponse.businessLost?.toStringAsFixed(2) ?? PlunesStrings.NA}',
                                       style: TextStyle(
                                         color: Colors.yellow,
                                         fontSize: AppConfig.largeFont,
@@ -534,7 +574,7 @@ class _HospitalOverviewScreenState
 
   Widget _selectDayDropDown() {
     List<DropdownMenuItem<String>> _varianceDropDownItems = new List();
-    for (String daysCount in daysCount) {
+    for (String daysCount in _daysCount) {
       _varianceDropDownItems.add(new DropdownMenuItem(
         value: daysCount,
         child: Padding(
@@ -554,28 +594,25 @@ class _HospitalOverviewScreenState
         width: AppConfig.horizontalBlockSize * 23,
         child: ListView.builder(
           itemBuilder: (context, itemIndex) {
-            daysInput.add(daysCount.first);
+            _daysInput.add(_daysCount.first);
             return Column(
               children: <Widget>[
                 DropdownButtonFormField(
                   items: _varianceDropDownItems,
                   onChanged: (value) {
-                    daysInput[itemIndex] = value;
-                    print(
-                      'valuee ${value}',
-                    );
-                    if (value == 'today') {
+                    _daysInput[itemIndex] = value;
+                    if (value == _daysCount[0]) {
                       _getTotalBusinessData(1);
-                    } else if (value == 'week') {
+                    } else if (value == _daysCount[1]) {
                       _getTotalBusinessData(7);
-                    } else if (value == 'month') {
+                    } else if (value == _daysCount[2]) {
                       _getTotalBusinessData(30);
                     } else {
                       _getTotalBusinessData(365);
                     }
                     _setState();
                   },
-                  value: daysInput[itemIndex],
+                  value: _daysInput[itemIndex],
                   decoration: InputDecoration.collapsed(
                       hintText: "", border: InputBorder.none),
                 ),
@@ -658,9 +695,14 @@ class PatientServiceInfo extends StatefulWidget {
   final String serviceName;
   final String imageUrl;
   final int remainingTime;
+  final Function getRealTimeInsights;
 
   PatientServiceInfo(
-      {this.patientName, this.serviceName, this.imageUrl, this.remainingTime});
+      {this.patientName,
+      this.serviceName,
+      this.imageUrl,
+      this.remainingTime,
+      this.getRealTimeInsights});
 
   @override
   _PatientServiceInfoState createState() => _PatientServiceInfoState();
@@ -673,17 +715,20 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
 
   @override
   void dispose() {
-    _timer?.cancel();
+    if (_timer != null && _timer.isActive) {
+      _timer?.cancel();
+    }
     super.dispose();
   }
 
   @override
   void initState() {
     print(widget.remainingTime);
-    _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
-      _startTimer(_timer);
-    });
-
+    if (!isShowWidget()) {
+      _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
+        _startTimer(_timer);
+      });
+    }
     super.initState();
   }
 
@@ -693,12 +738,12 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     } else {
       if (timer != null && timer.isActive) {
         timer?.cancel();
+        widget.getRealTimeInsights();
       }
     }
   }
 
   bool isShowWidget() {
-    print(widget.remainingTime);
     return (widget.remainingTime == null ||
             widget.remainingTime == 0 ||
             DateTime.now()

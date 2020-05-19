@@ -75,6 +75,7 @@ class UserManager {
   }
 
   setDeviceToken(String token) {
+    print("setPreferencesString $token");
     return Preferences().setPreferencesString(Constants.FIREBASE_TOKEN, token);
   }
 
