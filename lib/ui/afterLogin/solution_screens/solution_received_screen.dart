@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
@@ -12,9 +13,12 @@ import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart'
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import '../../widgets/dialogPopScreen.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -47,9 +51,25 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   final double lat = 28.4594965, long = 77.0266383;
   User _user;
   Set<Marker> _markers = {};
+  BitmapDescriptor _docIcon, _hospitalIcon, _labIcon;
 
   @override
   void initState() {
+    BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(48, 48)), PlunesImages.doctorMapImage)
+        .then((onValue) {
+      _docIcon = onValue;
+    });
+    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+            PlunesImages.hospitalMapImage)
+        .then((onValue) {
+      _hospitalIcon = onValue;
+    });
+    BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(48, 48)), PlunesImages.labMapImage)
+        .then((onValue) {
+      _labIcon = onValue;
+    });
     _focusNode = FocusNode()
       ..addListener(() {
         if (_focusNode.hasFocus) {
@@ -181,13 +201,30 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         _searchedDocResults.solution.services.forEach((docData) {
           _markers.add(Marker(
               markerId: MarkerId(docData.sId),
-              icon: BitmapDescriptor.defaultMarker,
+              icon: docData.userType == Constants.doctor
+                  ? _docIcon
+                  : docData.userType == Constants.hospital
+                      ? _hospitalIcon
+                      : _labIcon,
               position:
                   LatLng(docData.latitude ?? lat, docData.longitude ?? long),
               infoWindow: InfoWindow(
                   title: docData.name,
-                  snippet:
-                      "\n${docData.distance?.toStringAsFixed(3)} kms away")));
+                  snippet: "${docData.distance?.toStringAsFixed(0)} km away",
+                  onTap: () {
+                    if (docData.userType != null &&
+                        docData.professionalId != null) {
+                      Widget route;
+                      if (docData.userType.toLowerCase() ==
+                          Constants.doctor.toString().toLowerCase()) {
+                        route = DocProfile(userId: docData.professionalId);
+                      } else {
+                        route = HospitalProfile(userID: docData.professionalId);
+                      }
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => route));
+                    }
+                  })));
         });
         _checkShouldTimerRun();
       }

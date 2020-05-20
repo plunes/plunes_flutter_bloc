@@ -27,6 +27,10 @@ class PlunesImages {
   static String noAppointmentImage = "assets/images/no_appointment.png";
   static String hospitalImage = "assets/images/hospitalImage.png";
   static String bookingLostEmoji = "assets/images/bookingLostEmoji.png";
+  static String doctorMapImage = "assets/images/solution/doctorMapImage.png";
+  static String hospitalMapImage =
+      "assets/images/solution/hospitalMapImage.png";
+  static String labMapImage = "assets/images/solution/labMapImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

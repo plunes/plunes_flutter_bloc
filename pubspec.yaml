@@ -269,6 +269,8 @@ flutter:
     - assets/images/no_appointment.png
     - assets/images/hospitalImage.png
     - assets/images/bookingLostEmoji.png
+    - assets/images/solution/doctorMapImage.png
+    - assets/images/solution/hospitalMapImage.png
 
 
 

@@ -144,22 +144,6 @@ class CustomWidgets {
   Widget getSolutionRow(List<CatalogueData> solutionList, int index,
       {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
     return StatefulBuilder(builder: (context, newState) {
-      String _imageUrl;
-      if (solutionList[index].category == "Consultation") {
-        _imageUrl = PlunesImages.consultationImage;
-      } else if (solutionList[index].category == "Procedure") {
-        _imageUrl = PlunesImages.procedureImage;
-      } else if (solutionList[index].category == "Test") {
-        _imageUrl = PlunesImages.testImage;
-      } else if (solutionList[index].category == "Basic" ||
-          solutionList[index].category == null ||
-          solutionList[index].category == PlunesStrings.NA) {
-        _imageUrl = PlunesImages.basicImage;
-      }
-      if (_imageUrl == null) {
-        _imageUrl = PlunesImages.basicImage;
-      }
-
       return Column(
         children: <Widget>[
           InkWell(
@@ -201,10 +185,14 @@ class CustomWidgets {
                         color: PlunesColors.WHITECOLOR,
                         height: AppConfig.horizontalBlockSize * 14,
                         width: AppConfig.horizontalBlockSize * 14,
-                        child: Image.asset(
-                          _imageUrl,
-                          fit: BoxFit.contain,
-                        ),
+                        child: (solutionList[index] == null ||
+                                solutionList[index].speciality == null ||
+                                solutionList[index].speciality.isEmpty)
+                            ? Image.asset(PlunesImages.basicImage,
+                                fit: BoxFit.contain)
+                            : getImageFromUrl(
+                                "https://specialities.s3.ap-south-1.amazonaws.com/${solutionList[index].speciality}.png",
+                                boxFit: BoxFit.contain),
                       ),
                       Padding(
                           padding: EdgeInsets.only(
@@ -548,9 +536,6 @@ class CustomWidgets {
       onTap: onButtonTap,
       child: Container(
         width: double.infinity,
-//        padding: EdgeInsets.only(
-//          top: AppConfig.verticalBlockSize * 1.5,
-//        ),
         child: Column(
           children: <Widget>[
             Row(
@@ -565,17 +550,6 @@ class CustomWidgets {
                       "https://specialities.s3.ap-south-1.amazonaws.com/${testAndProcedures[index].sId}.png",
                       boxFit: BoxFit.contain),
                 ),
-//                CircleAvatar(
-//                  backgroundColor: PlunesColors.WHITECOLOR,
-//                  child: ClipOval(
-//                    child: SizedBox.expand(
-//                      child: getImageFromUrl(
-//                        "https://specialities.s3.ap-south-1.amazonaws.com/${testAndProcedures[index].sId}.png",
-//                      ),
-//                    ),
-//                  ),
-//                  radius: AppConfig.horizontalBlockSize * 7,
-//                ),
                 Padding(
                     padding: EdgeInsets.only(
                         left: AppConfig.horizontalBlockSize * 2)),
