@@ -111,8 +111,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         bottom: false,
         child: Scaffold(
           key: scaffoldKey,
-          appBar:
-              widget.getAppBar(context, PlunesStrings.solutionSearched, true),
+          appBar: widget.getAppBar(
+              context, PlunesStrings.negotiatedSolutions, true),
           body: Builder(builder: (context) {
             _buildContext = context;
             return _isFetchingInitialData
@@ -142,7 +142,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               () => _onBookingTap(
                   _searchedDocResults.solution.services[index], index),
               _searchedDocResults.catalogueData,
-              _buildContext);
+              _buildContext,
+              () =>
+                  _viewProfile(_searchedDocResults.solution?.services[index]));
         },
         itemCount: _searchedDocResults.solution == null
             ? 0
@@ -211,20 +213,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               infoWindow: InfoWindow(
                   title: docData.name,
                   snippet: "${docData.distance?.toStringAsFixed(0)} km away",
-                  onTap: () {
-                    if (docData.userType != null &&
-                        docData.professionalId != null) {
-                      Widget route;
-                      if (docData.userType.toLowerCase() ==
-                          Constants.doctor.toString().toLowerCase()) {
-                        route = DocProfile(userId: docData.professionalId);
-                      } else {
-                        route = HospitalProfile(userID: docData.professionalId);
-                      }
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => route));
-                    }
-                  })));
+                  onTap: () => _viewProfile(docData))));
         });
         _checkShouldTimerRun();
       }
@@ -655,6 +644,19 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       if (_timer != null && _timer.isActive) {
         _cancelNegotiationTimer();
       }
+    }
+  }
+
+  _viewProfile(Services service) {
+    if (service.userType != null && service.professionalId != null) {
+      Widget route;
+      if (service.userType.toLowerCase() ==
+          Constants.doctor.toString().toLowerCase()) {
+        route = DocProfile(userId: service.professionalId);
+      } else {
+        route = HospitalProfile(userID: service.professionalId);
+      }
+      Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
   }
 }

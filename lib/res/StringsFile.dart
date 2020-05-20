@@ -24,6 +24,8 @@ class PlunesStrings {
   /////
   ///Solution strings
   static const String solutionSearched = "Solution Searched";
+  static const String negotiatedSolutions = "Negotiated Prices";
+  static const String validForOneHour = "Valid for 1 hour only";
   static const String consultations = "Consultations";
   static const String tests = "Tests";
   static const String procedures = "Procedures";
@@ -43,7 +45,7 @@ class PlunesStrings {
       'WE ARE NEGOTIATING THE BEST SOLUTIONS FOR YOU';
   static const String receiving = "Receiving...";
   static const String checkAvailability = "Check Availability";
-  static const String bookIn = "Book in";
+  static const String bookIn = "Lock in";
   static const String homeCollectionAvailable = "Home Collection Available";
   static const String oopsServiceNotAvailable =
       "Oops, seems like we are not providing services in your area, kindly search in gurgaon location.";
@@ -99,7 +101,7 @@ class PlunesStrings {
   static const String refundSuccessMessage =
       "Your Refund has been initiated, Amount will be creadited in 3-4 business days.";
   static String uplaodSuccessMessage = "Report uploaded successfully!";
-  static String plockrViewer = 'PLUNES PLOCKER VIEWER';
+  static String plockrViewer = 'PLUNES PLOCKR VIEWER';
 
   ///Catalogue View Screen
   static String youHaveNotAddedAnyServicesYet =
@@ -416,8 +418,6 @@ class PlunesStrings {
   get enquiry => 'ENQUIRY';
 
   get plockr => 'PLOCKR';
-
-  get plocker => 'Plockr';
 
   get solution => 'SOLUTION';
 

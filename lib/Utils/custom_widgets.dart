@@ -148,15 +148,19 @@ class CustomWidgets {
         children: <Widget>[
           InkWell(
             onTap: () {
-              if (solutionList[index].isActive != null &&
-                  !(solutionList[index].isActive)) {
-                return;
-              } else if (solutionList[index].createdAt != null &&
+//              if (solutionList[index].isActive != null &&
+//                  !(solutionList[index].isActive)) {
+//                return;
+//              }
+              if (solutionList[index].createdAt != null &&
                   solutionList[index].createdAt != 0) {
                 var difference = DateTime.fromMillisecondsSinceEpoch(
                         solutionList[index].createdAt)
                     .difference(DateTime.now());
-                if (difference.inHours >= 1) return;
+                if (difference.inHours == 0) {
+                  onButtonTap();
+                  return;
+                }
               }
               newState(() {
                 solutionList[index].isSelected =
@@ -243,14 +247,6 @@ class CustomWidgets {
                                       style: TextStyle(
                                           fontSize: AppConfig.verySmallFont,
                                           color: Colors.black),
-//<<<<<<< HEAD
-////                                        children: [
-////                                        TextSpan(
-////                                            text: "(view more)",
-////                                            recognizer: onViewMoreTap,
-////                                            style: TextStyle(
-////                                                color: PlunesColors.GREENCOLOR))
-////                                      ]
                                     )),
                             (solutionList[index].details == null ||
                                     solutionList[index].details.isEmpty)
@@ -647,7 +643,8 @@ class CustomWidgets {
       Function checkAvailability,
       Function onBookingTap,
       CatalogueData catalogueData,
-      BuildContext context) {
+      BuildContext context,
+      Function viewProfile) {
     return Container(
       padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
       child: Column(
@@ -657,22 +654,7 @@ class CustomWidgets {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               InkWell(
-                onTap: () {
-                  if (solutions[index].userType != null &&
-                      solutions[index].professionalId != null) {
-                    Widget route;
-                    if (solutions[index].userType.toLowerCase() ==
-                        Constants.doctor.toString().toLowerCase()) {
-                      route =
-                          DocProfile(userId: solutions[index].professionalId);
-                    } else {
-                      route = HospitalProfile(
-                          userID: solutions[index].professionalId);
-                    }
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => route));
-                  }
-                },
+                onTap: () => viewProfile(),
                 onDoubleTap: () {},
                 child: (solutions[index].imageUrl != null &&
                         solutions[index].imageUrl.isNotEmpty)
@@ -696,46 +678,32 @@ class CustomWidgets {
                   padding:
                       EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3)),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        if (solutions[index].userType != null &&
-                            solutions[index].professionalId != null) {
-                          Widget route;
-                          if (solutions[index].userType.toLowerCase() ==
-                              Constants.doctor.toString().toLowerCase()) {
-                            route = DocProfile(
-                                userId: solutions[index].professionalId);
-                          } else {
-                            route = HospitalProfile(
-                                userID: solutions[index].professionalId);
-                          }
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => route));
-                        }
-                      },
-                      child: Text(
+                child: InkWell(
+                  onTap: () => viewProfile(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
                         solutions[index].name ?? PlunesStrings.NA,
                         style: TextStyle(
                             fontSize: AppConfig.mediumFont,
                             color: PlunesColors.BLACKCOLOR,
                             fontWeight: FontWeight.bold),
                       ),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.horizontalBlockSize * 1)),
-                    Text(
-                      catalogueData?.category ?? PlunesStrings.NA,
-                      style: TextStyle(
-                        fontSize: AppConfig.mediumFont,
-                        color: PlunesColors.GREYCOLOR,
-                      ),
-                    )
-                  ],
+                      Padding(
+                          padding: EdgeInsets.only(
+                              top: AppConfig.horizontalBlockSize * 1)),
+                      Text(
+                        PlunesStrings.validForOneHour,
+                        //catalogueData?.category ?? PlunesStrings.NA,
+                        style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.GREYCOLOR,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Padding(
@@ -769,14 +737,17 @@ class CustomWidgets {
                         Padding(
                             padding: EdgeInsets.only(
                                 top: AppConfig.horizontalBlockSize * 1)),
-                        Text(
-                          solutions[index].discount == null
-                              ? ""
-                              : "${PlunesStrings.save} ${solutions[index].discount.toStringAsFixed(2)}%",
-                          style: TextStyle(
-                              fontSize: AppConfig.verySmallFont,
-                              color: PlunesColors.GREENCOLOR),
-                        )
+                        (solutions[index].price[0] ==
+                                solutions[index].newPrice[0])
+                            ? Container()
+                            : Text(
+                                solutions[index].discount == null
+                                    ? ""
+                                    : "${PlunesStrings.save} ${solutions[index].discount.toStringAsFixed(2)}%",
+                                style: TextStyle(
+                                    fontSize: AppConfig.verySmallFont,
+                                    color: PlunesColors.GREENCOLOR),
+                              )
                       ],
                     ),
             ],
@@ -848,17 +819,16 @@ class CustomWidgets {
                         padding: EdgeInsets.only(
                             left: AppConfig.horizontalBlockSize * 2)),
                     InkWell(
-                      onTap: onBookingTap,
-                      child: getRoundedButton(
-                          solutions[index].bookIn == null
-                              ? PlunesStrings.book
-                              : "${PlunesStrings.bookIn} ${solutions[index].bookIn}",
-                          AppConfig.horizontalBlockSize * 8,
-                          PlunesColors.GREENCOLOR,
-                          AppConfig.horizontalBlockSize * 3,
-                          AppConfig.verticalBlockSize * 1,
-                          PlunesColors.WHITECOLOR),
-                    ),
+                        onTap: onBookingTap,
+                        child: getRoundedButton(
+                            solutions[index].bookIn == null
+                                ? PlunesStrings.book
+                                : "${PlunesStrings.bookIn} ${solutions[index].bookIn}",
+                            AppConfig.horizontalBlockSize * 8,
+                            PlunesColors.GREENCOLOR,
+                            AppConfig.horizontalBlockSize * 3,
+                            AppConfig.verticalBlockSize * 1,
+                            PlunesColors.WHITECOLOR)),
                   ],
                 ),
           index == solutions.length - 1 ? Container() : getSeparatorLine()

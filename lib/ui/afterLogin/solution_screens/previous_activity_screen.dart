@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
-import '../../../Utils/app_config.dart';
-import '../../../base/BaseActivity.dart';
 import 'package:flutter/gestures.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -53,13 +51,13 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
           child: _getPreviousView(),
         ),
         Container(
-          child: _getMissedNagotiationView(),
+          child: _getMissedNegotiationView(),
         ),
       ],
     );
   }
 
-  _getMissedNagotiationView() {
+  _getMissedNegotiationView() {
     return Expanded(child: StreamBuilder<Object>(builder: (context, snapshot) {
       return Card(
           margin: EdgeInsets.all(0.0),
@@ -93,24 +91,24 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                   missedSolutions, index,
                                   onButtonTap: () => _onSolutionItemTap(index),
                                   onViewMoreTap: tapRecognizer),
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          begin: FractionalOffset.topCenter,
-                                          end: FractionalOffset.bottomCenter,
-                                          colors: [
-                                        Colors.white10,
-                                        Colors.white70
-                                        // I don't know what Color this will be, so I can't use this
-                                      ])),
-                                  width: double.infinity,
-                                ),
-                              ),
+//                              Positioned.fill(
+//                                child: Container(
+//                                  decoration: BoxDecoration(
+//                                      gradient: LinearGradient(
+//                                          begin: FractionalOffset.topCenter,
+//                                          end: FractionalOffset.bottomCenter,
+//                                          colors: [
+//                                        Colors.white10,
+//                                        Colors.white70
+//                                        // I don't know what Color this will be, so I can't use this
+//                                      ])),
+//                                  width: double.infinity,
+//                                ),
+//                              ),
                             ],
                           );
                         },
-                        itemCount: missedSolutions.length,
+                        itemCount: missedSolutions?.length ?? 0,
                       ),
                     ),
               _reminderView(),
@@ -152,7 +150,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                 onButtonTap: () => _onSolutionItemTap(index),
                                 onViewMoreTap: tapRecognizer);
                           },
-                          itemCount: _prevSolutions.length,
+                          itemCount: _prevSolutions?.length ?? 0,
                         ),
                       ),
                 Container(
@@ -175,7 +173,9 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     }
     if (_prevSearchedSolution != null &&
         _prevSearchedSolution.data != null &&
-        _prevSearchedSolution.data.isNotEmpty)
+        _prevSearchedSolution.data.isNotEmpty) {
+      _prevSolutions = [];
+      missedSolutions = [];
       _prevSearchedSolution.data.forEach((solution) {
         if (solution.isActive == false) {
           missedSolutions.add(solution);
@@ -183,19 +183,34 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
           _prevSolutions.add(solution);
         }
       });
+    }
     _setState();
   }
 
   _onViewMoreTap(int index) {}
 
-  _onSolutionItemTap(int index) {
+  _onSolutionItemTap(int index) async {
     _prevSolutions[index].isFromNotification = true;
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SolutionReceivedScreen(
-                  catalogueData: _prevSolutions[index],
-                )));
+    if (_prevSolutions[index].createdAt != null &&
+        _prevSolutions[index].createdAt != 0 &&
+        DateTime.fromMillisecondsSinceEpoch(_prevSolutions[index].createdAt)
+                .difference(DateTime.now())
+                .inHours ==
+            0) {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => SolutionReceivedScreen(
+                  catalogueData: _prevSolutions[index])));
+    } else {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BiddingLoading(
+                    catalogueData: _prevSolutions[index],
+                  )));
+    }
+    _getPreviousSolutions();
   }
 
   void _setState() {

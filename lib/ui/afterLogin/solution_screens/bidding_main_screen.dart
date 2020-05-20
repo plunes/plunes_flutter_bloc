@@ -16,6 +16,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import './previous_activity_screen.dart';
@@ -176,7 +177,19 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                         : PlunesStrings.previousActivities,
                                     style: TextStyle(
                                         fontSize: AppConfig.smallFont,
-                                        fontWeight: FontWeight.w600),
+                                        fontWeight: FontWeight.w600,
+                                        decoration: (_prevSearchedSolution
+                                                        .topSearches !=
+                                                    null &&
+                                                _prevSearchedSolution
+                                                    .topSearches)
+                                            ? TextDecoration.none
+                                            : TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.solid,
+                                        decorationThickness: 5,
+                                        decorationColor:
+                                            PlunesColors.GREENCOLOR),
                                   ),
                                   (_prevSearchedSolution.topSearches != null &&
                                           _prevSearchedSolution.topSearches)
@@ -336,12 +349,24 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         !(_prevSearchedSolution.topSearches)) {
       catalogueData.isFromNotification = true;
     }
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => SolutionReceivedScreen(
-                  catalogueData: catalogueData,
-                )));
+    if (catalogueData.createdAt != null &&
+        catalogueData.createdAt != 0 &&
+        DateTime.fromMillisecondsSinceEpoch(catalogueData.createdAt)
+                .difference(DateTime.now())
+                .inHours ==
+            0) {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  SolutionReceivedScreen(catalogueData: catalogueData)));
+    } else {
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  BiddingLoading(catalogueData: catalogueData)));
+    }
     _getPreviousSolutions();
   }
 
