@@ -15,7 +15,6 @@ class SearchedDocResults {
     catalogueData = json['service'] != null
         ? CatalogueData.fromJson(json['service'])
         : null;
-    print("catalogueData.toString() ${catalogueData.toString()}");
   }
 
   Map<String, dynamic> toJson() {

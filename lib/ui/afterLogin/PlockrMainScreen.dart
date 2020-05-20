@@ -290,9 +290,11 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
         ),
       ),
       child: SizedBox.expand(
-          child: CustomWidgets().getImageFromUrl(
-              uploadedReports.reportThumbnail,
-              boxFit: BoxFit.fill)),
+          child: Container(
+        color: Colors.black87,
+        child: CustomWidgets().getImageFromUrl(uploadedReports.reportThumbnail,
+            boxFit: BoxFit.cover),
+      )),
       alignment: Alignment.center,
     );
   }
@@ -479,12 +481,12 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                               height: 10,
                             ),
                             Text(
-                                uploadedReports[index].userName ??
+                                uploadedReports[index]?.userName ??
                                     PlunesStrings.NA,
                                 style: TextStyle(
                                     color: Color(0xff5D5D5D), fontSize: 13)),
                             Text(
-                                uploadedReports[index].remarks ??
+                                uploadedReports[index]?.remarks ??
                                     PlunesStrings.NA,
                                 maxLines: 1,
                                 style: TextStyle(
@@ -492,7 +494,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                           ],
                         ),
                       )),
-                      getMenuPopup(uploadedReports[index].sId),
+                      getMenuPopup(uploadedReports[index]?.sId),
                     ],
                   ),
                 ),

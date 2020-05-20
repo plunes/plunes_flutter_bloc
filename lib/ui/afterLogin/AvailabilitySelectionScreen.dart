@@ -27,7 +27,7 @@ class AvailabilitySelectionScreen extends BaseActivity {
 }
 
 class _AvailabilitySelectionScreenState
-    extends State<AvailabilitySelectionScreen> {
+    extends BaseState<AvailabilitySelectionScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
   UserBloc userBloc;
@@ -54,6 +54,7 @@ class _AvailabilitySelectionScreenState
     'Saturday',
     'Sunday'
   ];
+  DateTime from1, from2, to1, to2, temporaryTimeObj;
 
   @override
   void initState() {
@@ -64,66 +65,12 @@ class _AvailabilitySelectionScreenState
     super.initState();
   }
 
-//  Future<Null> _selectdata(String check, int position, String time) async {
-//    TimeOfDay _startTime = TimeOfDay(
-//        hour: int.parse(time.split(":")[0]),
-//        minute: int.parse(time.split(":")[1].substring(0, 2)));
-//    final TimeOfDay picker = await showTimePicker(
-//      context: context,
-//      initialTime: _startTime,
-//      builder: (BuildContext context, Widget child) {
-//        return MediaQuery(
-//          data: MediaQuery.of(context).copyWith(
-//            alwaysUse24HourFormat: false,
-//          ),
-//          child: child,
-//        );
-//      },
-//    );
-//
-//    if (picker != null) {
-//      setState(() {
-//        if (check == 'form1') {
-//          from_1[position] = picker.format(context);
-//        } else if (check == 'form2') {
-//          from_2[position] = picker.format(context);
-//        } else if (check == 'to1') {
-//          to_1[position] = picker.format(context);
-//        } else if (check == 'to2') {
-//          if (position == 0) {
-//            showDialog(
-//              context: context,
-//              barrierDismissible: true,
-//              builder: (
-//                BuildContext context,
-//              ) =>
-//                  _confirmation(context),
-//            ).then((text) {
-//              setState(() {
-//                if (text == "Done") {
-//                  for (int i = 0; i < days.length; i++) {
-//                    from_1[i] = from_1[0];
-//                    from_2[i] = from_2[0];
-//                    to_1[i] = to_1[0];
-//                    to_2[i] = to_2[0];
-//                  }
-//                }
-//              });
-//            });
-//          }
-//          to_2[position] = picker.format(context);
-//        }
-//      });
-//    }
-//  }
-
   void getSlots() async {
     check.clear();
     from_1.clear();
     from_2.clear();
     to_1.clear();
     to_2.clear();
-
     var result =
         await userBloc.getUserProfile(UserManager().getUserDetails().uid);
     if (result is RequestSuccess) {
@@ -151,10 +98,10 @@ class _AvailabilitySelectionScreenState
               check.add("true");
             } else
               check.add("false");
-            from_1.add("09:00 AM");
-            from_2.add("03:00 PM");
-            to_1.add("01:00 PM");
-            to_2.add("08:00 PM");
+            from_1.add("9:00 AM");
+            from_2.add("3:00 PM");
+            to_1.add("1:00 PM");
+            to_2.add("8:00 PM");
           }
         }
       }
@@ -162,15 +109,24 @@ class _AvailabilitySelectionScreenState
     if (result is RequestFailed) {
       RequestFailed requestFailed = result;
       failureCause = requestFailed.failureCause;
-      return;
     }
-
-    setState(() {
-      progress = false;
-    });
+    progress = false;
+    _setState();
   }
 
   void addSlot() async {
+    if (from_1 == null ||
+        from_1.length != 7 ||
+        to_1 == null ||
+        to_1.length != 7 ||
+        from_2 == null ||
+        from_2.length != 7 ||
+        to_2 == null ||
+        to_2.length != 7) {
+      widget.showInSnackBar(
+          "Empty slots found", PlunesColors.BLACKCOLOR, _scaffoldKey);
+      return;
+    }
     hasSubmitted = true;
     timeslots_.clear();
     for (int i = 0; i < 7; i++) {
@@ -194,19 +150,6 @@ class _AvailabilitySelectionScreenState
     CommonMethods.globalContext = context;
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
-
-//    final app_bar = AppBar(
-//      backgroundColor: Colors.white,
-//      brightness: Brightness.light,
-//      centerTitle: true,
-//      elevation: 0,
-//      iconTheme: IconThemeData(color: Colors.black),
-//      title: Text(
-//        "My Availability",
-//        style: TextStyle(color: Colors.black),
-//      ),
-//    );
-
     final header = Container(
       margin: EdgeInsets.only(top: 20, bottom: 10),
       child: Row(
@@ -297,7 +240,7 @@ class _AvailabilitySelectionScreenState
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: () {
-                            _openTimePicker("to1", index);
+//                            _openTimePicker("to1", index);
                           },
                           child: Container(
                             height: 25,
@@ -329,7 +272,7 @@ class _AvailabilitySelectionScreenState
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: () {
-                            _openTimePicker("form2", index);
+//                            _openTimePicker("form2", index);
                           },
                           child: Container(
                             height: 25,
@@ -354,7 +297,7 @@ class _AvailabilitySelectionScreenState
                         InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: () {
-                            _openTimePicker("to2", index);
+//                            _openTimePicker("to2", index);
                           },
                           child: Container(
                             height: 25,
@@ -423,7 +366,7 @@ class _AvailabilitySelectionScreenState
 
     final submit = Container(
       margin: EdgeInsets.only(bottom: 20),
-      child: StreamBuilder<Object>(
+      child: StreamBuilder<RequestState>(
           stream: userBloc.baseStream,
           builder: (context, snapshot) {
             if (snapshot.data is RequestInProgress && hasSubmitted) {
@@ -433,6 +376,9 @@ class _AvailabilitySelectionScreenState
               Future.delayed(Duration(milliseconds: 20)).then((value) {
                 widget.showInSnackBar("Time slots updated Sucessfully",
                     PlunesColors.BLACKCOLOR, _scaffoldKey);
+                Future.delayed(Duration(seconds: 1)).then((value) {
+                  Navigator.pop(context);
+                });
               });
             }
             if (snapshot.data is RequestFailed && hasSubmitted) {
@@ -443,6 +389,7 @@ class _AvailabilitySelectionScreenState
                     PlunesColors.BLACKCOLOR,
                     _scaffoldKey);
               });
+              userBloc.addIntoStream(null);
             }
             return InkWell(
               borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -684,10 +631,10 @@ class _AvailabilitySelectionScreenState
         builder: (context) {
           return Container(
             margin: EdgeInsets.only(
-                top: AppConfig.verticalBlockSize * 31,
+                top: AppConfig.verticalBlockSize * 20,
                 right: AppConfig.horizontalBlockSize * 10,
                 left: AppConfig.horizontalBlockSize * 10,
-                bottom: AppConfig.verticalBlockSize * 2),
+                bottom: AppConfig.verticalBlockSize * 20),
             child: Material(
               borderRadius: BorderRadius.circular(16),
               child: Column(
@@ -705,62 +652,27 @@ class _AvailabilitySelectionScreenState
                   Container(
                     alignment: Alignment.center,
                     child: Text(
-                      PlunesStrings.setYourTime,
+                      PlunesStrings.setYourTime + " ($check)",
                       style: TextStyle(fontSize: AppConfig.mediumFont),
                     ),
                   ),
                   Expanded(
                     flex: 5,
                     child: TimePickerSpinner(
-                      is24HourMode: false,
-                      time: initialTime,
-                      normalTextStyle: TextStyle(
-                          fontSize: 24, color: PlunesColors.BLACKCOLOR),
-                      highlightedTextStyle: TextStyle(
-                          fontSize: 24, color: PlunesColors.GREENCOLOR),
-                      spacing: AppConfig.horizontalBlockSize * 8,
-                      isShowSeconds: false,
-                      itemHeight: AppConfig.verticalBlockSize * 10,
-                      isForce2Digits: true,
-                      onTimeChange: (time) {
-                        if (time != null) {
-                          var selectedTime =
-                              DateUtil.getTimeWithAmAndPmFormat(time);
-                          setState(() {
-                            if (check == 'form1') {
-                              from_1[position] = selectedTime;
-                            } else if (check == 'form2') {
-                              from_2[position] = selectedTime;
-                            } else if (check == 'to1') {
-                              to_1[position] = selectedTime;
-                            } else if (check == 'to2') {
-                              if (position == 0) {
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: true,
-                                  builder: (
-                                    BuildContext context,
-                                  ) =>
-                                      _confirmation(context),
-                                ).then((text) {
-                                  setState(() {
-                                    if (text == "Done") {
-                                      for (int i = 0; i < days.length; i++) {
-                                        from_1[i] = from_1[0];
-                                        from_2[i] = from_2[0];
-                                        to_1[i] = to_1[0];
-                                        to_2[i] = to_2[0];
-                                      }
-                                    }
-                                  });
-                                });
-                              }
-                              to_2[position] = selectedTime;
-                            }
-                          });
-                        }
-                      },
-                    ),
+                        is24HourMode: false,
+                        time: initialTime,
+                        normalTextStyle: TextStyle(
+                            fontSize: 24, color: PlunesColors.BLACKCOLOR),
+                        highlightedTextStyle: TextStyle(
+                            fontSize: 24, color: PlunesColors.GREENCOLOR),
+                        spacing: AppConfig.horizontalBlockSize * 8,
+                        isShowSeconds: false,
+                        itemHeight: AppConfig.verticalBlockSize * 10,
+                        isForce2Digits: true,
+                        onTimeChange: (time) {
+                          temporaryTimeObj = time;
+                          return;
+                        }),
                   ),
                   Container(
                     padding: EdgeInsets.only(
@@ -771,6 +683,7 @@ class _AvailabilitySelectionScreenState
                     child: InkWell(
                       onTap: () {
                         Navigator.pop(context);
+                        _setTimeInBoxes(temporaryTimeObj, position, check);
                         return;
                       },
                       child: CustomWidgets().getRoundedButton(
@@ -790,5 +703,84 @@ class _AvailabilitySelectionScreenState
         },
         barrierDismissible: true,
         context: context);
+  }
+
+  void _setState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  _setTimeInBoxes(DateTime time, int position, String check) async {
+    if (time != null) {
+      if (check == 'form1') {
+        from1 = time;
+        _openTimePicker("to1", position);
+        return;
+      } else if (check == 'to1') {
+        if (from1.isBefore(time)) {
+          to1 = time;
+          _openTimePicker("form2", position);
+          return;
+        } else {
+          from1 = null;
+          to1 = null;
+          _showSnackBar("Please select valid time");
+          return;
+        }
+      } else if (check == 'form2') {
+        if (to1.isBefore(time)) {
+          from2 = time;
+          _openTimePicker("to2", position);
+          return;
+        } else {
+          from1 = null;
+          to1 = null;
+          from2 = null;
+          _showSnackBar("Please select valid time");
+          return;
+        }
+      } else if (check == 'to2') {
+        if (from2.isBefore(time)) {
+          to2 = time;
+        } else {
+          from1 = null;
+          to1 = null;
+          from2 = null;
+          to2 = time;
+          _showSnackBar("Please select valid time");
+          return;
+        }
+        from_1[position] = DateUtil.getTimeWithAmAndPmFormat(from1);
+        to_1[position] = DateUtil.getTimeWithAmAndPmFormat(to1);
+        from_2[position] = DateUtil.getTimeWithAmAndPmFormat(from2);
+        to_2[position] = DateUtil.getTimeWithAmAndPmFormat(to2);
+        if (position == 0) {
+          var result = await showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (
+              BuildContext context,
+            ) =>
+                _confirmation(context),
+          );
+          if (result != null &&
+              result.toString().isNotEmpty &&
+              result == "Done") {
+            for (int i = 0; i < days.length; i++) {
+              from_1[i] = from_1[0];
+              from_2[i] = from_2[0];
+              to_1[i] = to_1[0];
+              to_2[i] = to_2[0];
+            }
+          }
+        }
+      }
+      _setState();
+    }
+  }
+
+  void _showSnackBar(String message) {
+    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, _scaffoldKey);
   }
 }

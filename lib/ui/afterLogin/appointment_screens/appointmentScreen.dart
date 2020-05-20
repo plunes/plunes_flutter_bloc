@@ -621,7 +621,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           showDialog(
                   context: context,
                   builder: (BuildContext context) => PaymentSuccess(
-                      bookingId: _initPaymentResponse.referenceId))
+                      referenceID: _initPaymentResponse.referenceId))
               .then((value) => widget.getAppointment());
         } else {
           Navigator.of(context)
@@ -637,7 +637,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                         BuildContext context,
                       ) =>
                           PaymentSuccess(
-                              bookingId: _initPaymentResponse.referenceId))
+                              referenceID: _initPaymentResponse.referenceId))
                   .then((value) => widget.getAppointment());
             } else if (val.toString().contains("fail")) {
               widget.showInSnackBar(

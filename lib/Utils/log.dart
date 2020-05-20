@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class AppLog {
   static printLog(var msg) {
-   debugPrint("Log : $msg");
+//   debugPrint("Log : $msg");
   }
 
   static debugLog(var msg) {
@@ -10,6 +10,6 @@ class AppLog {
   }
 
   static printError(var msg) {
-    print("ERROR Log : $msg");
+//    print("ERROR Log : $msg");
   }
 }

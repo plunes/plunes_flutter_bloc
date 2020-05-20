@@ -23,6 +23,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:plunes/resources/network/Urls.dart';
+import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
@@ -767,7 +768,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           PlunesColors.BLACKCOLOR, scaffoldKey);
       return;
     }
-    print("timeSlot ${timeSlot.slots}");
+//    print("timeSlot ${timeSlot.slots}");
     List<String> _firstSlotFromTimeHourMinute =
         timeSlot.slots[0].split("-")[0].split(" ")[0].split(":");
     List<String> _firstSlotToTimeHourMinute =
@@ -858,7 +859,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         _appointmentTime = appointmentTime;
         isValidEntryFilled = true;
       } else {
-        print("failed case 1");
+//        print("failed case 1");
       }
     } else if (_tempSelectedDateTime.day != _dateNow.day &&
         _selectedTime.hour >= fromDuration.hour &&
@@ -867,8 +868,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       isValidEntryFilled = true;
       //success
     } else {
-      print(
-          "${_selectedTime.hour}failed ${fromDuration.hour}case2${toDuration.hour}");
+//      print(
+//          "${_selectedTime.hour}failed ${fromDuration.hour}case2${toDuration.hour}");
     }
     return isValidEntryFilled;
   }
@@ -898,7 +899,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   ///payment methods
   _initPayment(PaymentSelector paymentSelector) async {
-    print(paymentSelector.toString());
+//    print(paymentSelector.toString());
     print(DateUtil.getTimeWithAmAndPmFormat(_selectedDate));
     InitPayment _initPayment = InitPayment(
         appointmentTime:
@@ -928,8 +929,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         if (_initPaymentResponse.status.contains("Confirmed")) {
           showDialog(
               context: context,
-              builder: (BuildContext context) =>
-                  PaymentSuccess(bookingId: _initPaymentResponse.referenceId));
+              builder: (BuildContext context) => PaymentSuccess(
+                  referenceID: _initPaymentResponse.referenceId));
         } else {
           Navigator.of(context)
               .push(PageRouteBuilder(
@@ -944,6 +945,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                     BuildContext context,
                   ) =>
                       PaymentSuccess(
+                          referenceID: _initPaymentResponse.referenceId,
                           bookingId: _initPaymentResponse.referenceId));
             } else if (val.toString().contains("fail")) {
               widget.showInSnackBar(
@@ -1024,12 +1026,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 }
 
 class PaymentSuccess extends StatefulWidget {
+  final String referenceID;
   final String bookingId;
 
-  PaymentSuccess({Key key, this.bookingId}) : super(key: key);
+  PaymentSuccess({Key key, this.referenceID, this.bookingId}) : super(key: key);
 
   @override
-  _PaymentSuccessState createState() => _PaymentSuccessState(bookingId);
+  _PaymentSuccessState createState() => _PaymentSuccessState(referenceID);
 }
 
 class _PaymentSuccessState extends State<PaymentSuccess> {
@@ -1073,13 +1076,13 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
             child: new Text("OK"),
             onPressed: () {
               Navigator.pop(context);
-//              Navigator.push(
-//                  context,
-//                  MaterialPageRoute(
-//                    builder: (context) => Appointments(
-//                      screen: 1,
-//                    ),
-//                  ));
+              if (widget.bookingId != null && widget.bookingId.isNotEmpty) {
+                Navigator.pop(context);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => AppointmentMainScreen()));
+              }
             },
           ),
         ]);

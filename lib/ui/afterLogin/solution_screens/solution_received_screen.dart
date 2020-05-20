@@ -179,7 +179,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         }
       } else {
         _searchedDocResults.solution.services.forEach((docData) {
-//          print("docDataidis  ${docData.toString()}");
           _markers.add(Marker(
               markerId: MarkerId(docData.sId),
               icon: BitmapDescriptor.defaultMarker,
@@ -190,7 +189,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   snippet:
                       "\n${docData.distance?.toStringAsFixed(3)} kms away")));
         });
-//        print("docDataidis  ${_markers.length}");
         _checkShouldTimerRun();
       }
     } else if (result is RequestFailed) {
@@ -253,7 +251,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       initialCameraPosition: CameraPosition(
                           target: LatLng(double.tryParse(_user.latitude) ?? lat,
                               double.tryParse(_user.longitude) ?? long),
-                          zoom: 7.0)),
+                          zoom: 11.2)),
                   flex: 3,
                 ),
                 Expanded(

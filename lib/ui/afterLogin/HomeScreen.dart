@@ -536,14 +536,13 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         getSharedPreferencesData();
         break;
       case 1:
+        Navigator.pop(context);
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => AvailabilitySelectionScreen()));
         break;
       case 2:
-//        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Appointments(screen: 0,),));
-        // Navigator.popAndPushNamed(context, AppointmentScreen.tag);
         Navigator.popAndPushNamed(context, AppointmentMainScreen.tag);
         break;
       case 3:
