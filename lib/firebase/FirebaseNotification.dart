@@ -129,6 +129,7 @@ class FirebaseNotification {
   fireBaseCloudMessagingListeners() {
     if (Platform.isIOS) iOSPermission();
     _firebaseMessaging.getToken().then((token) {
+      print("token: $token");
       Constants.DEVICE_TOKEN = token;
     });
     _updateToken("randomtoken");

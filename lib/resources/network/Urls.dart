@@ -38,7 +38,7 @@ class Urls {
 
   get signUp => baseUrl + 'user/register';
 
-  get changePassword => baseUrl + 'user/update_password';
+  get changePassword => baseUrl + 'user/updatePassword';
 
   get terms => 'https://plunes-html.s3.amazonaws.com/resources/tnc.html';
 
@@ -62,6 +62,7 @@ class Urls {
       'https://devapi.plunes.com/payment'; //'https://plunes.co/payment';
   static const String PREV_SOLUTION_URL = "solution/search";
   static const String GENERATE_OTP_URL = "user/generateOtp";
+  static const String FORGOT_PASSWORD_URL = "user/forgotPassword";
   static const String VERIFY_OTP_URL = "user/verifyOtp";
   static const String CATALOGUE_SERVICE_URL = "user/getServices";
   static const String GET_REALTIME_INSIGHTS_URL = "analytics/solutionSearch";
@@ -86,4 +87,6 @@ class Urls {
       "user/getProfessionalSpecialities";
   static const String GET_SPECIALITY_RELATED_SERVICE =
       "user/getProfessionalServices?";
+  static const String RESET_PASSWORD_URL = "user/updatePassword";
+  static const String CHANGE_PASSWORD_URL = "user/changePassword";
 }

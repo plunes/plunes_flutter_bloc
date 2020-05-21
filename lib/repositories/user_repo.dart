@@ -133,12 +133,16 @@ class UserManager {
     }
   }
 
-  Future<RequestState> getGenerateOtp(String mobileNumber) async {
+  Future<RequestState> getGenerateOtp(String mobileNumber,
+      {bool iFromForgotPassword = false}) async {
+    String key = iFromForgotPassword ? 'userId' : 'mobileNumber';
     var result = await DioRequester().requestMethod(
-        url: Urls.GENERATE_OTP_URL,
+        url: iFromForgotPassword
+            ? Urls.FORGOT_PASSWORD_URL
+            : Urls.GENERATE_OTP_URL,
         headerIncluded: false,
         requestType: HttpRequestMethods.HTTP_GET,
-        queryParameter: {'mobileNumber': mobileNumber});
+        queryParameter: {key: mobileNumber});
     if (result.isRequestSucceed) {
       GetOtpModel _getOtp = GetOtpModel.fromJson(result.response.data);
       return RequestSuccess(response: _getOtp);
@@ -147,12 +151,19 @@ class UserManager {
     }
   }
 
-  Future<RequestState> getVerifyOtp(String mobileNumber, var otp) async {
+  Future<RequestState> getVerifyOtp(String mobileNumber, var otp,
+      {bool iFromForgotPassword = false}) async {
+    var queryParam;
+    if (iFromForgotPassword) {
+      queryParam = {'mobileNumber': mobileNumber, "otp": otp, "reset": true};
+    } else {
+      queryParam = {'mobileNumber': mobileNumber, "otp": otp};
+    }
     var result = await DioRequester().requestMethod(
         url: Urls.VERIFY_OTP_URL,
         headerIncluded: false,
         requestType: HttpRequestMethods.HTTP_GET,
-        queryParameter: {'mobileNumber': mobileNumber, "otp": otp});
+        queryParameter: queryParam);
     if (result.isRequestSucceed) {
       VerifyOtpResponse _verifyOtp =
           VerifyOtpResponse.fromJson(result.response.data);
@@ -281,6 +292,34 @@ class UserManager {
         });
       }
       return RequestSuccess(response: _serviceList);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> resetPassword(
+      String phoneNumber, String otp, String password) async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.RESET_PASSWORD_URL,
+        postData: {"userId": phoneNumber, "otp": otp, "password": password},
+        requestType: HttpRequestMethods.HTTP_PUT,
+        headerIncluded: false);
+    if (result.isRequestSucceed) {
+      return RequestSuccess();
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> changePassword(
+      String oldPassword, String newPassword) async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.CHANGE_PASSWORD_URL,
+        postData: {"oldPassword": oldPassword, "newPassword": newPassword},
+        requestType: HttpRequestMethods.HTTP_PATCH,
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      return RequestSuccess();
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

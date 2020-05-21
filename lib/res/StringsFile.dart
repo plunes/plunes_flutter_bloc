@@ -168,7 +168,7 @@ class PlunesStrings {
   static const String emailIdText = "Email_Id";
   static const String viewOnMap = "View on map";
   static const String serviceList = "Service List";
-  static const String seeMoreDoctors = "See more Doctor's";
+  static const String seeMoreDoctors = "See more Doctors";
   static const String unableToLoadServices = "Unable to load Services";
   static const String knowMore = "Know More";
 
@@ -216,7 +216,7 @@ class PlunesStrings {
 
   get enterANewEra => 'Enter a new Era of \n Healthcare';
 
-  get enterEmailOrPhone => 'Please enter your Email id or Mobile Number';
+  get enterEmailOrPhone => 'Please enter your Mobile Number';
 
   get phoneNumber => 'Phone Number';
 
@@ -253,7 +253,7 @@ class PlunesStrings {
 
   get alternatePhoneNo => 'Alternate Phone No';
 
-  get EmailOrMobileNumber => 'Email id or Mobile Number';
+  get MobileNumber => 'Mobile Number';
 
   get emailId => 'Email Id*';
 

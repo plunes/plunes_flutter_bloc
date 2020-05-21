@@ -49,10 +49,10 @@ class WebServices {
 
   Future<dynamic> postChangePassword(
       BuildContext context, phone, password) async {
-    var body = {'mobileNumber': phone, 'password': password};
+    var body = {'userId': phone, 'password': password};
     return await _apiCall.getAPIRequest(
         context, urls.changePassword, '1', false,
-        body: json.encode(body), method: Constants.PUT);
+        body: json.encode(body), method: Constants.POST);
   }
 
   Future<dynamic> postHelpResult(BuildContext context, details, token) async {

@@ -42,7 +42,8 @@ class _CheckOTPState extends BaseState<CheckOTP> {
           PlunesStrings.invalidOtp, PlunesColors.BLACKCOLOR, scaffoldKey);
       return;
     }
-    var result = await UserBloc().getVerifyOtp(widget.phone, pin);
+    var result = await UserBloc().getVerifyOtp(widget.phone, pin,
+        iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle);
     if (result is RequestSuccess) {
       VerifyOtpResponse verifyOtpResponse = result.response;
       if (verifyOtpResponse != null &&
@@ -54,12 +55,14 @@ class _CheckOTPState extends BaseState<CheckOTP> {
               MaterialPageRoute(
                   builder: (context) => ChangePassword(
                       phone: widget.phone,
-                      from: plunesStrings.createPassword)));
-        else
+                      from: plunesStrings.createPassword,
+                      otp: pin)));
+        else {
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                   builder: (context) => Registration(phone: widget.phone)));
+        }
       } else {
         widget.showInSnackBar(
             PlunesStrings.invalidOtp, PlunesColors.BLACKCOLOR, scaffoldKey);
@@ -70,25 +73,9 @@ class _CheckOTPState extends BaseState<CheckOTP> {
     }
   }
 
-  void send_otp() async {
-    /* var rng = new Random();
-    var code = rng.nextInt(9000) + 1000;
-    print(code);
-    Config.OTP = code.toString();
-
-    String url = "https://control.msg91.com/api/sendotp.php" +
-        "?authkey=" +
-        config.Config.otp_auth_key +
-        "&mobile=91" +
-        widget.phone +
-        "&sender=" +
-        config.Config.sender_id +
-        "&otp=" +
-        code.toString();
-    startTimer();
-    Post p = await sendotp(url);
-    print("data getting ## =====" + p.type);*/
-    var requestState = await UserBloc().getGenerateOtp(widget.phone);
+  void sendOtp() async {
+    var requestState = await UserBloc().getGenerateOtp(widget.phone,
+        iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle);
     if (requestState is RequestSuccess) {
       _start = 30;
       _current = 30;
@@ -137,7 +124,6 @@ class _CheckOTPState extends BaseState<CheckOTP> {
   @override
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
-
     final form = Container(
       alignment: Alignment.center,
       child: Column(
@@ -235,7 +221,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
                 child: Container(
                     alignment: FractionalOffset.center,
                     child: InkWell(
-                        onTap: send_otp,
+                        onTap: sendOtp,
                         child: widget.createTextViews(
                             plunesStrings.resendCode,
                             16,

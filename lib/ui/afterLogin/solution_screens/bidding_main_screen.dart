@@ -414,8 +414,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         }
       } else {
         _failureCause = result.failureCause;
-        widget.showInSnackBar(
-            _failureCause, PlunesColors.GREYCOLOR, scaffoldKey);
+        if (mounted)
+          widget.showInSnackBar(
+              _failureCause, PlunesColors.GREYCOLOR, scaffoldKey);
       }
       _progressEnabled = false;
       _setState();

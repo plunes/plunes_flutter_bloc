@@ -695,8 +695,7 @@ class CustomWidgets {
                           padding: EdgeInsets.only(
                               top: AppConfig.horizontalBlockSize * 1)),
                       Text(
-                        PlunesStrings.validForOneHour,
-                        //catalogueData?.category ?? PlunesStrings.NA,
+                        "expr here",
                         style: TextStyle(
                           fontSize: AppConfig.mediumFont,
                           color: PlunesColors.GREYCOLOR,
@@ -794,16 +793,15 @@ class CustomWidgets {
                   ),
                 )
               : Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-//              Expanded(
-//                  flex: 2,
-//                  child: buttonWithImageAhead(
-//                      textColor: PlunesColors.GREENCOLOR,
-//                      buttonText: PlunesStrings.homeCollectionAvailable,
-//                      backgroundColor: PlunesColors.LIGHTGREYCOLOR,
-//                      verticalPadding: AppConfig.verticalBlockSize * 1,
-//                      horizontalPadding: AppConfig.horizontalBlockSize * 3)),
+                    Text(
+                      "expr here",
+                      style: TextStyle(
+                        fontSize: AppConfig.mediumFont,
+                        color: PlunesColors.GREYCOLOR,
+                      ),
+                    ),
+                    Expanded(child: Container()),
                     InkWell(
                       onTap: checkAvailability,
                       child: getRoundedButton(
@@ -831,6 +829,17 @@ class CustomWidgets {
                             PlunesColors.WHITECOLOR)),
                   ],
                 ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              buttonWithImageAhead(
+                  textColor: PlunesColors.GREENCOLOR,
+                  buttonText: PlunesStrings.homeCollectionAvailable,
+                  backgroundColor: PlunesColors.LIGHTGREYCOLOR,
+                  verticalPadding: AppConfig.verticalBlockSize * 1,
+                  horizontalPadding: AppConfig.horizontalBlockSize * 3),
+            ],
+          ),
           index == solutions.length - 1 ? Container() : getSeparatorLine()
         ],
       ),

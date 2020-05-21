@@ -89,7 +89,8 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                             children: <Widget>[
                               CustomWidgets().getSolutionRow(
                                   missedSolutions, index,
-                                  onButtonTap: () => _onSolutionItemTap(index),
+                                  onButtonTap: () => _onSolutionItemTap(
+                                      missedSolutions[index]),
                                   onViewMoreTap: tapRecognizer),
 //                              Positioned.fill(
 //                                child: Container(
@@ -147,7 +148,8 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                   ..onTap = () => _onViewMoreTap(index);
                             return CustomWidgets().getSolutionRow(
                                 _prevSolutions, index,
-                                onButtonTap: () => _onSolutionItemTap(index),
+                                onButtonTap: () =>
+                                    _onSolutionItemTap(_prevSolutions[index]),
                                 onViewMoreTap: tapRecognizer);
                           },
                           itemCount: _prevSolutions?.length ?? 0,
@@ -189,25 +191,25 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
   _onViewMoreTap(int index) {}
 
-  _onSolutionItemTap(int index) async {
-    _prevSolutions[index].isFromNotification = true;
-    if (_prevSolutions[index].createdAt != null &&
-        _prevSolutions[index].createdAt != 0 &&
-        DateTime.fromMillisecondsSinceEpoch(_prevSolutions[index].createdAt)
+  _onSolutionItemTap(CatalogueData catalogueData) async {
+    catalogueData.isFromNotification = true;
+    if (catalogueData.createdAt != null &&
+        catalogueData.createdAt != 0 &&
+        DateTime.fromMillisecondsSinceEpoch(catalogueData.createdAt)
                 .difference(DateTime.now())
                 .inHours ==
             0) {
       await Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => SolutionReceivedScreen(
-                  catalogueData: _prevSolutions[index])));
+              builder: (context) =>
+                  SolutionReceivedScreen(catalogueData: catalogueData)));
     } else {
       await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => BiddingLoading(
-                    catalogueData: _prevSolutions[index],
+                    catalogueData: catalogueData,
                   )));
     }
     _getPreviousSolutions();

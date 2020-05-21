@@ -378,7 +378,7 @@ class _HospitalOverviewScreenState
               Container(
                   margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: Text(
-                      'Please take action real time Insights to increase your business',
+                      'Please take action on real time insights to increase your business',
                       style: TextStyle(
                           color: Colors.black54,
                           fontSize: AppConfig.verySmallFont))),

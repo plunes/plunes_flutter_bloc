@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -17,6 +20,7 @@ import 'CheckOTP.dart';
  * Description - ForgetPassword class is for create the new password using Phone or mobile Number.
  */
 
+// ignore: must_be_immutable
 class ForgetPassword extends BaseActivity {
   static const tag = '/forget_password';
 
@@ -24,16 +28,24 @@ class ForgetPassword extends BaseActivity {
   _ForgetPasswordState createState() => _ForgetPasswordState();
 }
 
-class _ForgetPasswordState extends State<ForgetPassword>
+class _ForgetPasswordState extends BaseState<ForgetPassword>
     implements DialogCallBack {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final phoneNumberController = new TextEditingController();
   bool progress = false, isValidNumber = true;
   var globalHeight, globalWidth;
+  UserBloc _userBloc;
+
+  @override
+  void initState() {
+    _userBloc = UserBloc();
+    super.initState();
+  }
 
   @override
   void dispose() {
     bloc.dispose();
+    _userBloc?.dispose();
     phoneNumberController.dispose();
     super.dispose();
   }
@@ -49,9 +61,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
         appBar:
             widget.getAppBar(context, plunesStrings.forgotPasswordTitle, false),
         body: GestureDetector(
-          onTap: () {
-            CommonMethods.hideSoftKeyboard();
-          },
+          onTap: () => CommonMethods.hideSoftKeyboard(),
           child: getBodyView(),
         ));
   }
@@ -68,7 +78,7 @@ class _ForgetPasswordState extends State<ForgetPassword>
           widget.getSpacer(0.0, 30.0),
           createTextField(
               phoneNumberController,
-              plunesStrings.EmailOrMobileNumber,
+              plunesStrings.MobileNumber,
               TextInputType.number,
               TextCapitalization.none,
               isValidNumber,
@@ -80,7 +90,8 @@ class _ForgetPasswordState extends State<ForgetPassword>
               : widget.getDefaultButton(
                   plunesStrings.ok, globalWidth, 42, submitForOTP),
           widget.getSpacer(0.0, 30.0),
-          widget.getBorderButton(plunesStrings.cancel, globalWidth, onBackPressed)
+          widget.getBorderButton(
+              plunesStrings.cancel, globalWidth, onBackPressed)
         ],
       ),
     );
@@ -100,6 +111,9 @@ class _ForgetPasswordState extends State<ForgetPassword>
             maxLines: 1,
             textCapitalization: textCapitalization,
             keyboardType: inputType,
+            inputFormatters: <TextInputFormatter>[
+              WhitelistingTextInputFormatter.digitsOnly
+            ],
             onChanged: (text) {
               setState(() {
                 if (controller == phoneNumberController) {
@@ -157,26 +171,21 @@ class _ForgetPasswordState extends State<ForgetPassword>
 
   getUserExistenceData(data) async {
     progress = false;
-    Constants.OTP = CommonMethods.getRandomOTP();
     if (data['success'] != null && data['success']) {
-      bloc.sendOTP(
-          context,
-          this,
-          (urls.sendOTPUrl +
-              phoneNumberController.text.trim() +
-              urls.otpConfig));
-      bloc.userOTP.listen((data) {
-        if (data['type'] != null && data['type'] == 'success') {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CheckOTP(
-                      phone: phoneNumberController.text,
-                      from: plunesStrings.forgotPasswordTitle)));
-        }
-      }, onDone: () {
-        bloc.dispose();
-      });
+      var requestState = await _userBloc.getGenerateOtp(
+          phoneNumberController.text.trim(),
+          iFromForgotPassword: true);
+      if (requestState is RequestSuccess) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CheckOTP(
+                    phone: phoneNumberController.text,
+                    from: plunesStrings.forgotPasswordTitle)));
+      } else if (requestState is RequestFailed) {
+        widget.showInSnackBar(
+            requestState.failureCause, Colors.red, _scaffoldKey);
+      }
     } else if (!data['success']) {
       widget.showInSnackBar(
           plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);

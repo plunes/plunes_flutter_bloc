@@ -27,14 +27,18 @@ class UserBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> getGenerateOtp(String mobileNumber) async {
-    var result = await UserManager().getGenerateOtp(mobileNumber);
+  Future<RequestState> getGenerateOtp(String mobileNumber,
+      {bool iFromForgotPassword = false}) async {
+    var result = await UserManager()
+        .getGenerateOtp(mobileNumber, iFromForgotPassword: iFromForgotPassword);
     super.addIntoStream(result);
     return result;
   }
 
-  Future<RequestState> getVerifyOtp(String mobileNumber, var otp) async {
-    var result = await UserManager().getVerifyOtp(mobileNumber, otp);
+  Future<RequestState> getVerifyOtp(String mobileNumber, var otp,
+      {bool iFromForgotPassword = false}) async {
+    var result = await UserManager().getVerifyOtp(mobileNumber, otp,
+        iFromForgotPassword: iFromForgotPassword);
     super.addIntoStream(result);
     return result;
   }
@@ -87,5 +91,15 @@ class UserBloc extends BlocBase {
 
   void addStateInServiceStream(RequestState state) {
     addStateInGenericStream(_serviceStreamProvider, state);
+  }
+
+  Future<RequestState> resetPassword(
+      String phoneNumber, String otp, String password) async {
+    return UserManager().resetPassword(phoneNumber, otp, password);
+  }
+
+  Future<RequestState> changePassword(
+      String oldPassword, String newPassword) async {
+    return UserManager().changePassword(oldPassword, newPassword);
   }
 }

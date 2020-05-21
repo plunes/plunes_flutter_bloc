@@ -4,8 +4,9 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -18,12 +19,13 @@ import 'Login.dart';
  * Description - ChangePassword class is used for Create/Change the password.
  */
 
+// ignore: must_be_immutable
 class ChangePassword extends BaseActivity {
   static const tag = '/changePassword';
 
-  String phone, from;
+  String phone, from, otp;
 
-  ChangePassword({Key key, this.phone, this.from}) : super(key: key);
+  ChangePassword({Key key, this.phone, this.from, this.otp}) : super(key: key);
 
   @override
   _ChangePasswordState createState() => _ChangePasswordState();
@@ -43,15 +45,17 @@ class _ChangePasswordState extends State<ChangePassword>
       _isValidNewPassword = true;
   var globalHeight, globalWidth;
   bool progress = false;
+  UserBloc _userBloc;
 
   @override
   void dispose() {
+    _userBloc.dispose();
     super.dispose();
-    bloc.dispose();
   }
 
   @override
   void initState() {
+    _userBloc = UserBloc();
     getSharedPreferenceData();
     super.initState();
   }
@@ -78,73 +82,72 @@ class _ChangePasswordState extends State<ChangePassword>
 
   Widget getBodyView() {
     return Container(
-     // alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize*12),
-      margin: EdgeInsets.only(left: 25, right: 25),
-    child:Column(
-    children: <Widget>[
-     Expanded(
-
-      child: ListView(
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        children: <Widget>[
-          widget.getSpacer(
-              0.0, widget.from == plunesStrings.createPassword ? 100 : 80.0),
-          widget.createTextViews(
-              widget.from == plunesStrings.createPassword
-                  ? plunesStrings.createPasswordMsg
-                  : plunesStrings.changePasswordMsg,
-              25,
-              colorsFile.darkBrown,
-              TextAlign.start,
-              FontWeight.normal),
-          widget.getSpacer(0.0, 30.0),
-          widget.from != plunesStrings.createPassword
-              ? createTextField(
-                  oldPasswordController,
-                  plunesStrings.currentPassword,
-                  TextInputType.text,
-                  TextCapitalization.none,
-                  _isValidOldPassword,
-                  plunesStrings.errorMsgPassword)
-              : Container(),
-          widget.getSpacer(
-              0.0, widget.from != plunesStrings.createPassword ? 20.0 : 0.0),
-          createTextField(
-              passwordController,
-              plunesStrings.newPassword,
-              TextInputType.text,
-              TextCapitalization.none,
-              _isValidPassword,
-              plunesStrings.errorMsgPassword),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(
-              newPasswordController,
-              plunesStrings.reEnterPassword,
-              TextInputType.text,
-              TextCapitalization.none,
-              _isValidNewPassword,
-              plunesStrings.errorMsgPassword),
-          widget.getSpacer(0.0, 30.0),
-          progress
-              ? SpinKitThreeBounce(
-                  color: Color(hexColorCode.defaultGreen), size: 30.0)
-              : widget.getDefaultButton(
+        padding:
+            EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 12),
+        margin: EdgeInsets.only(left: 25, right: 25),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                shrinkWrap: true,
+                children: <Widget>[
+                  widget.getSpacer(0.0,
+                      widget.from == plunesStrings.createPassword ? 100 : 80.0),
+                  widget.createTextViews(
+                      widget.from == plunesStrings.createPassword
+                          ? plunesStrings.createPasswordMsg
+                          : plunesStrings.changePasswordMsg,
+                      25,
+                      colorsFile.darkBrown,
+                      TextAlign.start,
+                      FontWeight.normal),
+                  widget.getSpacer(0.0, 30.0),
                   widget.from != plunesStrings.createPassword
-                      ? plunesStrings.reset
-                      : plunesStrings.create,
-                  globalWidth,
-                  42,
-                  changePassword),
-          widget.getSpacer(0.0, 20.0),
-          widget.getBorderButton(plunesStrings.cancel, globalWidth, onBackPressed)
-        ],
-       ),
-      ),
-    ],
-    )
-    );
+                      ? createTextField(
+                          oldPasswordController,
+                          plunesStrings.currentPassword,
+                          TextInputType.text,
+                          TextCapitalization.none,
+                          _isValidOldPassword,
+                          plunesStrings.errorMsgPassword)
+                      : Container(),
+                  widget.getSpacer(0.0,
+                      widget.from != plunesStrings.createPassword ? 20.0 : 0.0),
+                  createTextField(
+                      passwordController,
+                      plunesStrings.newPassword,
+                      TextInputType.text,
+                      TextCapitalization.none,
+                      _isValidPassword,
+                      plunesStrings.errorMsgPassword),
+                  widget.getSpacer(0.0, 20.0),
+                  createTextField(
+                      newPasswordController,
+                      plunesStrings.reEnterPassword,
+                      TextInputType.text,
+                      TextCapitalization.none,
+                      _isValidNewPassword,
+                      plunesStrings.errorMsgPassword),
+                  widget.getSpacer(0.0, 30.0),
+                  progress
+                      ? SpinKitThreeBounce(
+                          color: Color(hexColorCode.defaultGreen), size: 30.0)
+                      : widget.getDefaultButton(
+                          widget.from != plunesStrings.createPassword
+                              ? plunesStrings.reset
+                              : plunesStrings.create,
+                          globalWidth,
+                          42,
+                          changePassword),
+                  widget.getSpacer(0.0, 20.0),
+                  widget.getBorderButton(
+                      plunesStrings.cancel, globalWidth, onBackPressed)
+                ],
+              ),
+            ),
+          ],
+        ));
   }
 
   Widget createTextField(
@@ -243,26 +246,27 @@ class _ChangePasswordState extends State<ChangePassword>
         widget.showInSnackBar(
             plunesStrings.passwordMismatchError, Colors.red, _scaffoldKey);
       else {
-        progress = true;
-        bloc.changePassword(
-            context, this, widget.phone, passwordController.text);
-        bloc.changePasswordResult.listen((result) {
-          delay(result);
-        }, onDone: () {
-          bloc.dispose();
-        });
+        if (widget.from == plunesStrings.createPassword) {
+          _resetPassword();
+        } else {
+          _changePassword();
+        }
       }
     }
   }
 
-  Future delay(result) async {
+  Future delay(RequestState result) async {
     progress = false;
-    if (result['success'] != null && result['success']) {
+    if (result is RequestSuccess) {
       widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
-      if (widget.from == plunesStrings.createPassword)
-        await Future.delayed(new Duration(milliseconds: 2000), () {
-          Navigator.pushNamed(context, Login.tag);
-        });
+      await Future.delayed(new Duration(milliseconds: 2000));
+      if (widget.from == plunesStrings.createPassword) {
+        Navigator.pushNamed(context, Login.tag);
+      } else {
+        Navigator.pop(context);
+      }
+    } else if (result is RequestFailed) {
+      widget.showInSnackBar(result.failureCause, Colors.red, _scaffoldKey);
     } else
       widget.showInSnackBar(
           plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
@@ -273,5 +277,17 @@ class _ChangePasswordState extends State<ChangePassword>
     if (widget.phone == null)
       widget.phone =
           preferences.getPreferenceString(Constants.PREF_USER_PHONE_NUMBER);
+  }
+
+  void _resetPassword() async {
+    var result = await _userBloc.resetPassword(
+        widget.phone?.trim(), widget.otp, passwordController.text.trim());
+    delay(result);
+  }
+
+  void _changePassword() async {
+    var result = await _userBloc.changePassword(
+        oldPasswordController.text.trim(), passwordController.text.trim());
+    delay(result);
   }
 }
