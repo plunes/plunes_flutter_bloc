@@ -29,6 +29,7 @@ class PlunesStrings {
   static const String consultations = "Consultations";
   static const String tests = "Tests";
   static const String procedures = "Procedures";
+  static const String yrExp = "Years Experience";
   static const String NA = "NA";
   static const String negotiateForBestPrice =
       "Negotiate for the best price solution near you";
@@ -44,7 +45,7 @@ class PlunesStrings {
   static const String weAreNegotiatingBestSolution =
       'WE ARE NEGOTIATING THE BEST SOLUTIONS FOR YOU';
   static const String receiving = "Receiving...";
-  static const String checkAvailability = "Check Availability";
+  static const String checkAvailability = "Availability";
   static const String bookIn = "Lock in";
   static const String homeCollectionAvailable = "Home Collection Available";
   static const String oopsServiceNotAvailable =
@@ -99,7 +100,7 @@ class PlunesStrings {
   static const String emptyTextFieldWarning = "Please Enter the Refund Reason";
   static const String thankYouMessage = "Thank You!";
   static const String refundSuccessMessage =
-      "Your Refund has been initiated, Amount will be creadited in 3-4 business days.";
+      "Your Refund has been initiated, Amount will be credited in 3-4 business days.";
   static String uplaodSuccessMessage = "Report uploaded successfully!";
   static String plockrViewer = 'PLUNES PLOCKR VIEWER';
 
@@ -115,7 +116,7 @@ class PlunesStrings {
   static const String editVariance = "Variance";
 
   ///Insight main screen
-  static const String realTimeInsights = 'Real Time Insights';
+  static const String realTimeInsights = 'Real Time Prediction';
   static const String noRealTimeInsights =
       "You don't have any real time insights yet";
   static const String noBusinessDataFound = 'No business data found';
@@ -169,7 +170,7 @@ class PlunesStrings {
   static const String viewOnMap = "View on map";
   static const String serviceList = "Service List";
   static const String seeMoreDoctors = "See more Doctors";
-  static const String unableToLoadServices = "Unable to load Services";
+  static const String unableToLoadServices = "No Services available";
   static const String knowMore = "Know More";
 
   ///Coupon
@@ -177,6 +178,10 @@ class PlunesStrings {
 
   ///Bank details
   static const String bankDetails = "Bank Details";
+
+  static const String reductionInPrice = "Reduction in Price";
+
+  static const String queryCantBeEmpty = "Please fill your description";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

@@ -238,9 +238,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   onTap: () {},
                   onDoubleTap: () {},
                 ),
-//                    : Text('Pending for confirmation',
-//                        style: TextStyle(
-//                            fontSize: AppConfig.smallFont, color: Colors.blue)),
                 (appointmentModel.bookingStatus !=
                         AppointmentModel.cancelledStatus)
                     ? InkWell(
@@ -248,8 +245,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
                                 color: Colors.black54)),
-                        onTap: () {
-                          Navigator.push(
+                        onTap: () async {
+                          if (appointmentModel != null &&
+                              appointmentModel.appointmentTime != null &&
+                              DateTime.fromMillisecondsSinceEpoch(int.parse(
+                                      appointmentModel.appointmentTime))
+                                  .isBefore(DateTime.now())) {
+                            return;
+                          }
+                          await Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => BookingMainScreen(
@@ -260,6 +264,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                         timeSlots:
                                             appointmentModel.service.timeSlots,
                                       )));
+                          widget.getAppointment();
                         },
                         onDoubleTap: () {},
                       )
@@ -315,6 +320,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                 AppointmentModel.cancelledStatus)
                             ? InkWell(
                                 onTap: () {
+                                  if (appointmentModel != null &&
+                                      appointmentModel.appointmentTime !=
+                                          null &&
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                              int.parse(appointmentModel
+                                                  .appointmentTime))
+                                          .isBefore(DateTime.now())) {
+                                    return;
+                                  }
                                   if (widget.appointmentModel != null) {
                                     _bookingBloc.cancelAppointment(
                                         appointmentModel.bookingId, index);
@@ -361,15 +375,19 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                           width: AppConfig.horizontalBlockSize * 1,
                         ),
                         Text(
-                          '\u20B9 ${appointmentModel.service.newPrice.first}',
+                          '\u20B9 ${appointmentModel?.service?.newPrice?.first}',
                           style: TextStyle(
                             fontSize: AppConfig.smallFont,
                           ),
                         ),
                       ],
                     ),
-                    Text('${appointmentModel.service.discount}%',
-                        style: TextStyle(color: Colors.green))
+                    (appointmentModel.service == null ||
+                            appointmentModel.service.discount == null ||
+                            appointmentModel.service.discount == 0)
+                        ? Container()
+                        : Text('${appointmentModel?.service?.discount}%',
+                            style: TextStyle(color: Colors.green))
                   ],
                 ),
               ],
@@ -433,6 +451,13 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             AppointmentModel.notRequested)
                     ? InkWell(
                         onTap: () {
+                          if (appointmentModel != null &&
+                              appointmentModel.appointmentTime != null &&
+                              DateTime.fromMillisecondsSinceEpoch(int.parse(
+                                      appointmentModel.appointmentTime))
+                                  .isBefore(DateTime.now())) {
+                            return;
+                          }
                           showDialog(
                               context: context,
                               builder: (context) => CustomWidgets().refundPopup(
@@ -576,18 +601,22 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               }).toList() ??
                               []),
                     ),
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 3,
-                horizontal: AppConfig.horizontalBlockSize * 3),
-            child: Text(
-                'Please make sure that you pay through app for ${appointmentModel?.service?.discount ?? 0}% discount to be valid',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: AppConfig.verySmallFont,
-                  color: Colors.black87,
-                )),
-          ),
+          (appointmentModel.service == null ||
+                  appointmentModel.service.discount == null ||
+                  appointmentModel.service.discount == 0)
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 3,
+                      horizontal: AppConfig.horizontalBlockSize * 3),
+                  child: Text(
+                      'Please make sure that you pay through app for ${appointmentModel?.service?.discount ?? 0}% discount to be valid',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: AppConfig.verySmallFont,
+                        color: Colors.black87,
+                      )),
+                ),
         ],
       ),
     );

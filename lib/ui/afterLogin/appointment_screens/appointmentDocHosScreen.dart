@@ -55,15 +55,13 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
               widget.bookingId == appointmentModel.bookingId)
           ? PlunesColors.LIGHTGREENCOLOR
           : PlunesColors.WHITECOLOR,
-
-      // margin: EdgeInsets.only(top:AppConfig.verticalBlockSize*3),
       padding:
           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
       child: Column(
         children: <Widget>[
           Container(
-            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //crossAxisAlignment: CrossAxisAlignment.center,
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Expanded(
                     child: Container(
@@ -155,7 +153,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                     ? confirmAppointment(
                         "Click to Confirm", _bookingBloc, appointmentModel)
                     : InkWell(
-                        child: Text(appointmentModel.bookingStatus,
+                        child: Text(
+                            appointmentModel?.bookingStatus ?? PlunesStrings.NA,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
                                 color: Colors.green)),
@@ -170,6 +169,13 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                 fontSize: AppConfig.smallFont,
                                 color: Colors.black54)),
                         onTap: () async {
+                          if (appointmentModel != null &&
+                              appointmentModel.appointmentTime != null &&
+                              DateTime.fromMillisecondsSinceEpoch(int.parse(
+                                      appointmentModel.appointmentTime))
+                                  .isBefore(DateTime.now())) {
+                            return;
+                          }
                           await Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -237,6 +243,15 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                 AppointmentModel.cancelledStatus)
                             ? InkWell(
                                 onTap: () {
+                                  if (appointmentModel != null &&
+                                      appointmentModel.appointmentTime !=
+                                          null &&
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                              int.parse(appointmentModel
+                                                  .appointmentTime))
+                                          .isBefore(DateTime.now())) {
+                                    return;
+                                  }
                                   if (widget.appointmentModel != null) {
                                     _bookingBloc.cancelAppointment(
                                         appointmentModel.bookingId, index);
@@ -469,6 +484,13 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                 color: Colors.blue,
                 fontWeight: FontWeight.bold)),
         onTap: () {
+          if (appointmentModel != null &&
+              appointmentModel.appointmentTime != null &&
+              DateTime.fromMillisecondsSinceEpoch(
+                      int.parse(appointmentModel.appointmentTime))
+                  .isBefore(DateTime.now())) {
+            return;
+          }
           showDialog(
                   context: context,
                   builder: (BuildContext context) => CustomWidgets()

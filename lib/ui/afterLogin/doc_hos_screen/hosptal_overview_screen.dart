@@ -124,8 +124,6 @@ class _HospitalOverviewScreenState
                         right: AppConfig.horizontalBlockSize * 3),
                     child: Image.asset(
                       PlunesImages.realTimeInsightIcon,
-//                      width: AppConfig.horizontalBlockSize*7,
-//                      height:AppConfig.horizontalBlockSize*7,
                     )),
                 Expanded(
                   child: Text(
@@ -816,8 +814,15 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
         }
         _secondVal--;
         timeValue = val.toString();
+        if (timeValue != null && timeValue.length == 1) {
+          timeValue = "0$timeValue";
+        }
         if (_secondVal != null) {
-          timeValue = timeValue + ':' + _secondVal.toString();
+          var _sec = _secondVal.toString();
+          if (_sec.length == 1) {
+            _sec = "0$_sec";
+          }
+          timeValue = timeValue + ':' + _sec;
         }
       }
     }

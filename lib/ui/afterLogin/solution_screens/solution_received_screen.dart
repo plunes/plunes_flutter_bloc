@@ -44,7 +44,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   bool _isFetchingInitialData;
   String _failureCause;
   int _solutionReceivedTime = 0;
-  bool _shouldStartTimer;
+  bool _shouldStartTimer, _isCrossClicked;
   StreamController _streamForTimer;
   TextEditingController _searchController;
   FocusNode _focusNode;
@@ -60,6 +60,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 //        .then((onValue) {
 //      _docIcon = onValue;
 //    });
+    _isCrossClicked = false;
     BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
             PlunesImages.hospitalMapImage)
         .then((onValue) {
@@ -131,27 +132,36 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Widget _showContent(ScrollController sc) {
-    return ListView.builder(
-        shrinkWrap: true,
+    return Theme(
+      data: ThemeData(
+        highlightColor: PlunesColors.GREYCOLOR, //Does not work
+      ),
+      child: Scrollbar(
+        isAlwaysShown: true,
         controller: sc,
-        itemBuilder: (context, index) {
-          return CustomWidgets().getDocOrHospitalDetailWidget(
-              _searchedDocResults.solution?.services ?? [],
-              index,
-              () => _checkAvailability(index),
-              () => _onBookingTap(
-                  _searchedDocResults.solution.services[index], index),
-              _searchedDocResults.catalogueData,
-              _buildContext,
-              () =>
-                  _viewProfile(_searchedDocResults.solution?.services[index]));
-        },
-        itemCount: _searchedDocResults.solution == null
-            ? 0
-            : _searchedDocResults.solution.services == null ||
-                    _searchedDocResults.solution.services.isEmpty
+        child: ListView.builder(
+            shrinkWrap: true,
+            controller: sc,
+            itemBuilder: (context, index) {
+              return CustomWidgets().getDocOrHospitalDetailWidget(
+                  _searchedDocResults.solution?.services ?? [],
+                  index,
+                  () => _checkAvailability(index),
+                  () => _onBookingTap(
+                      _searchedDocResults.solution.services[index], index),
+                  _searchedDocResults.catalogueData,
+                  _buildContext,
+                  () => _viewProfile(
+                      _searchedDocResults.solution?.services[index]));
+            },
+            itemCount: _searchedDocResults.solution == null
                 ? 0
-                : _searchedDocResults.solution.services.length);
+                : _searchedDocResults.solution.services == null ||
+                        _searchedDocResults.solution.services.isEmpty
+                    ? 0
+                    : _searchedDocResults.solution.services.length),
+      ),
+    );
   }
 
   _checkAvailability(int selectedIndex) {
@@ -290,8 +300,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       ),
       maxHeight: AppConfig.verticalBlockSize * 70,
       minHeight: AppConfig.verticalBlockSize * 38,
-      collapsed:
-          (_timer != null && _timer.isActive) ? holdOnPopUp : Container(),
+      collapsed: (_timer != null && _timer.isActive && !(_isCrossClicked))
+          ? _getHoldOnPopup()
+          : Container(),
       panelBuilder: (sc) {
         return Column(
           children: <Widget>[
@@ -398,73 +409,86 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             catalogueData: _searchedDocResults?.catalogueData));
   }
 
-  final holdOnPopUp = Container(
-    margin: EdgeInsets.all(10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Container(
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: Color(0xff99000000)),
-            padding: EdgeInsets.all(10),
-            child: Stack(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    SpinKitCircle(
-                      color: Color(0xff01d35a),
-                      size: 50.0,
-                      // controller: AnimationController(duration: const Duration(milliseconds: 1200)),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Expanded(
-                      child: Container(
-                        child: Column(
-                          children: <Widget>[
-                            Row(
-                              children: <Widget>[
-                                Expanded(
-                                    child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Text("Hold on",
-                                        style: TextStyle(
-                                            fontSize: AppConfig.smallFont,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white)),
-                                  ],
-                                )),
-                              ],
-                            ),
-                            Container(
-                              child: Text(
-                                "We are negotiating the best fee for you."
-                                "It may take sometime, we'll update you.",
-                                style: TextStyle(
-                                    fontSize: AppConfig.smallFont,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ],
-                        ),
+  Widget _getHoldOnPopup() {
+    return Container(
+      margin: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Container(
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Color(0xff99000000)),
+              padding: EdgeInsets.all(10),
+              child: Stack(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      SpinKitCircle(
+                        color: Color(0xff01d35a),
+                        size: 50.0,
+                        // controller: AnimationController(duration: const Duration(milliseconds: 1200)),
                       ),
-                    )
-                  ],
-                ),
-              ],
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  Expanded(
+                                      child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text("Hold on",
+                                          style: TextStyle(
+                                              fontSize: AppConfig.smallFont,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white)),
+                                      Expanded(child: Container()),
+                                      InkWell(
+                                          onTap: () {
+                                            _isCrossClicked = true;
+                                            _setState();
+                                          },
+                                          child: Icon(
+                                            Icons.clear,
+                                            color: PlunesColors.WHITECOLOR,
+                                          ))
+                                    ],
+                                  )),
+                                ],
+                              ),
+                              Container(
+                                child: Text(
+                                  "We are negotiating the best fee for you."
+                                  "It may take upto 10 mins, we'll update you.",
+                                  style: TextStyle(
+                                      fontSize: AppConfig.smallFont,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        )
-      ],
-    ),
-  );
+          )
+        ],
+      ),
+    );
+  }
 
   void _fetchResultAndStartTimer() async {
     await _negotiate();

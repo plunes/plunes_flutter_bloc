@@ -59,9 +59,6 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         body: Container(
-//            width: double.infinity,
-//            padding: EdgeInsets.symmetric(
-//                vertical: AppConfig.verticalBlockSize * 1.5),
             child: (UserManager().getUserDetails().userType != Constants.user)
                 ? getBodyDocHosView()
                 : Stack(
@@ -241,23 +238,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                                 fontSize: AppConfig.mediumFont,
                               )),
                         ),
-                        InkWell(
-                          onTap: () {
-                            LauncherUtil.launchUrl("tel://7701805081");
-                            return;
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Text('Call at: 7701805081',
-                                style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline,
-                                    decorationStyle: TextDecorationStyle.solid,
-                                    decorationThickness: 2.0,
-                                    decorationColor: PlunesColors.BLACKCOLOR)),
-                          ),
-                        ),
+                        _callWidget()
                       ],
                     );
             }),
@@ -378,6 +359,16 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
           ],
         ),
         widget.getDividerRow(context, 0, 0, 0),
+        Container(
+          alignment: Alignment.topCenter,
+          padding:
+              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 4),
+          child: Text('OR',
+              style: TextStyle(
+                fontSize: AppConfig.mediumFont,
+              )),
+        ),
+        Container(child: _callWidget(), alignment: Alignment.topCenter)
       ],
     );
   }
@@ -445,25 +436,24 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   }
 
   submit() async {
-    bloc.fetchHelpResult(
-        context, this, '$title : ${_descriptionController.text}');
-    bloc.helpApiFetcher.listen((_result) {
-      delay(_result);
-    });
-  }
-
-  Future delay(result) async {
-    if (result['success'] != null && result['success']) {
-      isPopupShowing = false;
-      CommonMethods.commonDialog(
-          context, this, plunesStrings.success, plunesStrings.successfullySent);
-    } else
+    if (_descriptionController.text.trim().isEmpty) {
+      widget.showInSnackBar(PlunesStrings.queryCantBeEmpty,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      return;
+    }
+    isPopupShowing = false;
+    _setState();
+    var result = await _docHosMainInsightBloc
+        .helpDocHosQuery("$title : ${_descriptionController.text.trim()}");
+    if (result is RequestSuccess && mounted) {
       widget.showInSnackBar(
-          result['message'] != null
-              ? result['message']
-              : plunesStrings.somethingWentWrong,
-          Colors.red,
+          plunesStrings.success, PlunesColors.BLACKCOLOR, _scaffoldKey);
+    } else if (result is RequestFailed && mounted) {
+      widget.showInSnackBar(
+          result.failureCause ?? plunesStrings.somethingWentWrong,
+          PlunesColors.BLACKCOLOR,
           _scaffoldKey);
+    }
   }
 
   @override
@@ -475,5 +465,29 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
       });
     } else
       submit();
+  }
+
+  Widget _callWidget() {
+    return InkWell(
+      onTap: () {
+        LauncherUtil.launchUrl("tel://7701805081");
+        return;
+      },
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: Text('Call at: 7701805081',
+            style: TextStyle(
+                fontSize: AppConfig.mediumFont,
+                fontWeight: FontWeight.bold,
+                decoration: TextDecoration.underline,
+                decorationStyle: TextDecorationStyle.solid,
+                decorationThickness: 2.0,
+                decorationColor: PlunesColors.BLACKCOLOR)),
+      ),
+    );
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
   }
 }

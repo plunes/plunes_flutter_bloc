@@ -361,6 +361,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               builder: (context) =>
                   SolutionReceivedScreen(catalogueData: catalogueData)));
     } else {
+      catalogueData.isFromNotification = false;
       await Navigator.push(
           context,
           MaterialPageRoute(

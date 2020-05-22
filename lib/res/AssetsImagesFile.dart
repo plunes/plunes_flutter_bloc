@@ -31,6 +31,8 @@ class PlunesImages {
   static String hospitalMapImage =
       "assets/images/solution/hospitalMapImage.png";
   static String labMapImage = "assets/images/solution/labMapImage.png";
+  static String homeCollectionImage =
+      "assets/images/solution/homeCollectionImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

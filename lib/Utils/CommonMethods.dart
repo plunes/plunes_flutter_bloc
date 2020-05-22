@@ -302,7 +302,6 @@ class CommonMethods {
             onPressed: () {
               if (title == plunesStrings.success) {
                 Navigator.pop(context);
-//                  callBack.dialogCallBackFunction('CANCEL');
               } else {
                 Navigator.pop(context);
                 callBack.dialogCallBackFunction('DONE');

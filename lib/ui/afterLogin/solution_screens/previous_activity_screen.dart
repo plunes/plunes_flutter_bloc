@@ -205,6 +205,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
               builder: (context) =>
                   SolutionReceivedScreen(catalogueData: catalogueData)));
     } else {
+      catalogueData.isFromNotification = false;
       await Navigator.push(
           context,
           MaterialPageRoute(
