@@ -7,25 +7,24 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// ignore: must_be_immutable
 class ShowImageDetails extends BaseActivity {
   final UploadedReports uploadedReport;
+  final String webViewUrl;
 
-  ShowImageDetails(this.uploadedReport);
+  ShowImageDetails(this.uploadedReport, this.webViewUrl);
 
   @override
   _ShowImageDetailsState createState() =>
-      _ShowImageDetailsState(uploadedReport);
+      _ShowImageDetailsState(uploadedReport, webViewUrl);
 }
 
 class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
   final UploadedReports uploadedReport;
+  final String webViewUrl;
 
-  _ShowImageDetailsState(this.uploadedReport);
+  _ShowImageDetailsState(this.uploadedReport, this.webViewUrl);
 
-  final Map<String, IconData> _data =
-      Map.fromIterables(['Share'], [Icons.filter_1]);
-
-  //// Other Details
   bool reasons = false;
   bool consumption = false;
   bool avoid = false;
@@ -76,8 +75,11 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
                   if (uploadedReport.fileType != null &&
                       uploadedReport.fileType == UploadedReports.dicomFile) {
                     String plockrUrl =
-                        "https://www.plunes.com/dicom_viewer?fileId=$url";
-                    print(plockrUrl);
+                        "https://plockr.plunes.com/dicom_viewer?fieldId=$url";
+                    if (webViewUrl != null && webViewUrl.isNotEmpty) {
+                      plockrUrl = "$webViewUrl$url";
+                    }
+                    print("webview url" + plockrUrl);
                     Navigator.push(
                         context,
                         MaterialPageRoute(

@@ -299,7 +299,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     );
   }
 
-  Widget getMenuPopup(String reportId) {
+  Widget getMenuPopup(String reportId, String fileType) {
     return Container(
       child: PopupMenuButton<String>(
         child: Container(
@@ -311,7 +311,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
         ),
         padding: EdgeInsets.zero,
         onSelected: (value) {
-          showMenuSelection(value, reportId);
+          showMenuSelection(value, reportId, fileType);
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
           PopupMenuItem<String>(
@@ -349,13 +349,13 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     );
   }
 
-  showMenuSelection(String value, String reportId) {
+  showMenuSelection(String value, String reportId, String fileType) {
     if (value == 'Delete') {
       _selectedReportId = reportId;
       CommonMethods.confirmationDialog(
           context, plunesStrings.deleteReportMsg, this);
     } else if (value == "Share") {
-      _getShareableLink(reportId);
+      _getShareableLink(reportId, fileType);
     }
   }
 
@@ -394,7 +394,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     _setState();
   }
 
-  void _getShareableLink(String sId) async {
+  void _getShareableLink(String sId, String fileType) async {
     if (sId == null || sId.isEmpty) {
       widget.showInSnackBar(
           PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
@@ -412,8 +412,15 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
           shareableReportModel.link != null &&
           shareableReportModel.link.reportUrl != null &&
           shareableReportModel.link.reportUrl.isNotEmpty) {
-        CustomWidgets()
-            .share("Report url :\n ${shareableReportModel.link.reportUrl}");
+        if (fileType != null &&
+            fileType.isNotEmpty &&
+            fileType == UploadedReports.dicomFile) {
+          CustomWidgets().share(
+              "Report url :\n ${_plockrResponseModel.webviewUrl}${shareableReportModel.link.reportUrl}");
+        } else {
+          CustomWidgets()
+              .share("Report url :\n ${shareableReportModel.link.reportUrl}");
+        }
       } else {
         widget.showInSnackBar(
             PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
@@ -443,8 +450,9 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (BuildContext context) =>
-                        ShowImageDetails(uploadedReports[index]),
+                    builder: (BuildContext context) => ShowImageDetails(
+                        uploadedReports[index],
+                        _plockrResponseModel.webviewUrl),
                   );
                 },
                 child: Container(
@@ -463,7 +471,6 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                             Text(
                               uploadedReports[index].reportDisplayName ??
                                   PlunesStrings.NA,
-                              // 'X-ray FH001111',
                               maxLines: 3,
                               style: TextStyle(
                                   color: Color(0xff5D5D5D),
@@ -494,7 +501,8 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                           ],
                         ),
                       )),
-                      getMenuPopup(uploadedReports[index]?.sId),
+                      getMenuPopup(uploadedReports[index]?.sId,
+                          uploadedReports[index]?.fileType),
                     ],
                   ),
                 ),

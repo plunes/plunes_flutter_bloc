@@ -2,8 +2,13 @@ class PlockrResponseModel {
   bool success;
   List<UploadedReports> uploadedReports;
   List<UploadedReports> sharedReports;
+  String webviewUrl;
 
-  PlockrResponseModel({this.success, this.uploadedReports, this.sharedReports});
+  PlockrResponseModel(
+      {this.success,
+      this.uploadedReports,
+      this.sharedReports,
+      this.webviewUrl});
 
   PlockrResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -19,6 +24,7 @@ class PlockrResponseModel {
         sharedReports.add(new UploadedReports.fromJson(v));
       });
     }
+    webviewUrl = json['webviewUrl'];
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +38,7 @@ class PlockrResponseModel {
       data['sharedReports'] =
           this.sharedReports.map((v) => v.toJson()).toList();
     }
+    data['webviewUrl'] = this.webviewUrl;
     return data;
   }
 }
