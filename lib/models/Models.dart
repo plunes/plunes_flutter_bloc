@@ -460,11 +460,13 @@ class AllNotificationsPost {
   final bool success;
   final String message;
   List<PostsData> posts = [];
+  int unreadCount;
 
-  AllNotificationsPost({this.success, this.message, this.posts});
+  AllNotificationsPost(
+      {this.success, this.message, this.posts, this.unreadCount});
 
   factory AllNotificationsPost.fromJson(Map<String, dynamic> json) {
-    print("json ${json.toString()}");
+//    print("json ${json.toString()}");
     return AllNotificationsPost(
       success: json['success'] != null ? json['success'] : false,
       message: json['message'] != null ? json['message'] : '',
@@ -472,6 +474,7 @@ class AllNotificationsPost {
           ? List<PostsData>.from(
           json['notifications'].map((i) => PostsData.fromJson(i)))
           : <PostsData>[],
+      unreadCount: json['count'],
     );
   }
 }

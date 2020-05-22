@@ -33,6 +33,8 @@ class PlunesImages {
   static String labMapImage = "assets/images/solution/labMapImage.png";
   static String homeCollectionImage =
       "assets/images/solution/homeCollectionImage.png";
+  static String notificationUnreadImage =
+      "assets/images/bottom_tabs/unreadNotificationIcon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

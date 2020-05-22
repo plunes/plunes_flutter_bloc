@@ -6,6 +6,8 @@ import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -80,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   void initState() {
     super.initState();
     initialize();
+    _getNotifications();
   }
 
   @override
@@ -121,11 +124,16 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         drawer: getDrawerView(),
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()),
-        bottomNavigationBar: _userType == Constants.user
-            ? getBottomNavigationViewForGeneralUser()
-            : _userType == Constants.doctor
-                ? getBottomNavigationViewForDoctor()
-                : getBottomNavigationHospitalView());
+        bottomNavigationBar: StreamBuilder(
+          builder: (context, snapshot) {
+            return _userType == Constants.user
+                ? getBottomNavigationViewForGeneralUser()
+                : _userType == Constants.doctor
+                    ? getBottomNavigationViewForDoctor()
+                    : getBottomNavigationHospitalView();
+          },
+          stream: FirebaseNotification().notificationStream,
+        ));
   }
 
   Widget getBottomNavigationHospitalView() {
@@ -141,8 +149,13 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       items: <BottomNavigationBarItem>[
         bottomNavigationBarItemForDoctor(plunesStrings.home,
             plunesImages.homeNonActive, plunesImages.homeActive),
-        bottomNavigationBarItemForDoctor(plunesStrings.notification,
-            plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
+        bottomNavigationBarItemForDoctor(
+            plunesStrings.notification,
+            (FirebaseNotification().getNotificationCount() != null &&
+                    FirebaseNotification().getNotificationCount() != 0)
+                ? PlunesImages.notificationUnreadImage
+                : plunesImages.notificationIcon,
+            plunesImages.notificationActiveIcon),
 //        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
 //            plunesImages.profileActiveIcon)
       ],
@@ -164,8 +177,13 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             plunesImages.homeNonActive, plunesImages.homeActive),
 //        bottomNavigationBarItem(plunesStrings.plockr,
 //            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
-        bottomNavigationBarItemForDoctor(plunesStrings.notification,
-            plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
+        bottomNavigationBarItemForDoctor(
+            plunesStrings.notification,
+            (FirebaseNotification().getNotificationCount() != null &&
+                    FirebaseNotification().getNotificationCount() != 0)
+                ? PlunesImages.notificationUnreadImage
+                : plunesImages.notificationIcon,
+            plunesImages.notificationActiveIcon),
 //        bottomNavigationBarItem(plunesStrings.profile, plunesImages.profileIcon,
 //            plunesImages.profileActiveIcon)
       ],
@@ -202,8 +220,13 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             plunesImages.bidActiveIcon),
         bottomNavigationBarItem(plunesStrings.plockr,
             plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
-        bottomNavigationBarItem(plunesStrings.notification,
-            plunesImages.notificationIcon, plunesImages.notificationActiveIcon),
+        bottomNavigationBarItem(
+            plunesStrings.notification,
+            (FirebaseNotification().getNotificationCount() != null &&
+                    FirebaseNotification().getNotificationCount() != 0)
+                ? PlunesImages.notificationUnreadImage
+                : plunesImages.notificationIcon,
+            plunesImages.notificationActiveIcon),
       ],
     );
   }
@@ -599,5 +622,10 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void _getNotifications() async {
+    await Future.delayed(Duration(milliseconds: 400));
+    NotificationBloc().getNotifications();
   }
 }

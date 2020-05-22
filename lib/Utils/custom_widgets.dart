@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
@@ -2219,7 +2218,8 @@ class CustomWidgets {
             fontWeight: fontWeight));
   }
 
-  showDoctorList(List<DoctorsData> doctorsData, BuildContext context) {
+  showDoctorList(List<DoctorsData> doctorsData, BuildContext context,
+      String hospitalName) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
@@ -2246,84 +2246,96 @@ class CustomWidgets {
                   vertical: AppConfig.verticalBlockSize * 2),
               child: ListView.builder(
                 itemBuilder: (context, itemIndex) {
-                  return Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 1.5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            (doctorsData[itemIndex].imageUrl == null ||
-                                    doctorsData[itemIndex].imageUrl.isEmpty)
-                                ? CustomWidgets().getBackImageView(
-                                    doctorsData[itemIndex].name ??
-                                        PlunesStrings.NA)
-                                : CircleAvatar(
-                                    child: Container(
-                                      height: 60,
-                                      width: 60,
-                                      child: ClipOval(
-                                          child: getImageFromUrl(
-                                              doctorsData[itemIndex].imageUrl,
-                                              boxFit: BoxFit.fill)),
+                  return InkWell(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (_) => showDocPopup(
+                              doctorsData[itemIndex], context, hospitalName));
+                    },
+                    onDoubleTap: () {},
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 1.5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              (doctorsData[itemIndex].imageUrl == null ||
+                                      doctorsData[itemIndex].imageUrl.isEmpty)
+                                  ? CustomWidgets().getBackImageView(
+                                      doctorsData[itemIndex].name ??
+                                          PlunesStrings.NA)
+                                  : CircleAvatar(
+                                      child: Container(
+                                        height: 60,
+                                        width: 60,
+                                        child: ClipOval(
+                                            child: getImageFromUrl(
+                                                doctorsData[itemIndex].imageUrl,
+                                                boxFit: BoxFit.fill)),
+                                      ),
+                                      radius: 30,
                                     ),
-                                    radius: 30,
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    width: AppConfig.horizontalBlockSize * 40,
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 0.2),
+                                    child: Text(
+                                      doctorsData[itemIndex].name ??
+                                          PlunesStrings.NA,
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color: PlunesColors.BLACKCOLOR,
+                                          fontSize: 15),
+                                    ),
                                   ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Container(
-                                  width: AppConfig.horizontalBlockSize * 40,
-                                  padding: EdgeInsets.symmetric(vertical: 0.2),
-                                  child: Text(
-                                    doctorsData[itemIndex].name ??
-                                        PlunesStrings.NA,
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        color: PlunesColors.BLACKCOLOR,
-                                        fontSize: 15),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 0.2),
+                                    width: AppConfig.horizontalBlockSize * 40,
+                                    child: Text(
+                                      doctorsData[itemIndex].designation ??
+                                          PlunesStrings.NA,
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color: PlunesColors.GREYCOLOR,
+                                          fontSize: 15),
+                                    ),
                                   ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: 0.2),
-                                  width: AppConfig.horizontalBlockSize * 40,
-                                  child: Text(
-                                    doctorsData[itemIndex].designation ??
-                                        PlunesStrings.NA,
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        color: PlunesColors.GREYCOLOR,
-                                        fontSize: 15),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 0.2),
+                                    child: Text(
+                                      doctorsData[itemIndex].experience == null
+                                          ? PlunesStrings.NA
+                                          : "Expr ${doctorsData[itemIndex].experience} years",
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color: PlunesColors.GREYCOLOR,
+                                          fontSize: 15),
+                                    ),
+                                    width: AppConfig.horizontalBlockSize * 40,
                                   ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: 0.2),
-                                  child: Text(
-                                    doctorsData[itemIndex].experience == null
-                                        ? PlunesStrings.NA
-                                        : "Expr ${doctorsData[itemIndex].experience} years",
-                                    textAlign: TextAlign.start,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                        color: PlunesColors.GREYCOLOR,
-                                        fontSize: 15),
-                                  ),
-                                  width: AppConfig.horizontalBlockSize * 40,
-                                ),
-                              ],
-                            )
-                          ],
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      Divider(height: 0.5, color: PlunesColors.LIGHTGREYCOLOR)
-                    ],
+                        Divider(height: 0.5, color: PlunesColors.LIGHTGREYCOLOR)
+                      ],
+                    ),
                   );
                 },
                 itemCount: doctorsData?.length ?? 0,
@@ -2331,6 +2343,168 @@ class CustomWidgets {
             ))
           ],
         ),
+      ),
+    );
+  }
+
+  Widget showDocPopup(
+      DoctorsData doctorsData, BuildContext context, String hospitalName) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
+      child: Container(
+        height: AppConfig.verticalBlockSize * 50,
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.topRight,
+              child: InkWell(
+                onTap: () => Navigator.of(context).pop(),
+                onDoubleTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Icon(Icons.close),
+                ),
+              ),
+            ),
+            Container(
+                width: double.infinity,
+                height: AppConfig.verticalBlockSize * 39,
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 4.5),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          (doctorsData != null &&
+                                  doctorsData.imageUrl != null &&
+                                  doctorsData.imageUrl.isNotEmpty)
+                              ? CircleAvatar(
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    child: ClipOval(
+                                        child: CustomWidgets().getImageFromUrl(
+                                            doctorsData.imageUrl,
+                                            boxFit: BoxFit.fill)),
+                                  ),
+                                  radius: 30,
+                                )
+                              : CustomWidgets().getBackImageView(
+                                  doctorsData?.name ?? _getEmptyString()),
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 5),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    doctorsData?.name ?? _getEmptyString(),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    "Doctor" ?? _getEmptyString(),
+                                    style: TextStyle(fontSize: 16),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 3),
+                        child: getProfileInfoView(
+                            22,
+                            22,
+                            plunesImages.expertiseIcon,
+                            plunesStrings.areaExpertise,
+                            doctorsData?.department ?? _getEmptyString()),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 3),
+                        child: getProfileInfoView(
+                            22,
+                            22,
+                            plunesImages.clockIcon,
+                            plunesStrings.expOfPractice,
+                            doctorsData?.experience ?? _getEmptyString()),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 3),
+                        child: getProfileInfoView(
+                            22,
+                            22,
+                            plunesImages.practisingIcon,
+                            plunesStrings.practising,
+                            hospitalName ?? _getEmptyString()),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 3),
+                        child: getProfileInfoView(
+                            22,
+                            22,
+                            plunesImages.eduIcon,
+                            plunesStrings.qualification,
+                            doctorsData?.education ?? _getEmptyString()),
+                      )
+                    ],
+                  ),
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getEmptyString() {
+    return PlunesStrings.NA;
+  }
+
+  Widget getProfileInfoView(
+      double height, double width, String icon, String title, String value) {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              width: width,
+              height: height,
+              child: Image.asset(icon,
+                  fit: BoxFit.contain, height: height, width: width)),
+          Padding(
+              padding:
+                  EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3)),
+          Expanded(
+            child: RichText(
+                maxLines: 3,
+                text: TextSpan(
+                    text: "${title ?? _getEmptyString()}:",
+                    style: TextStyle(
+                        color: PlunesColors.GREYCOLOR,
+                        fontSize: 14,
+                        fontWeight: FontWeight.normal),
+                    children: <InlineSpan>[
+                      TextSpan(
+                        text: value ?? _getEmptyString(),
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontSize: 15,
+                            fontWeight: FontWeight.normal),
+                      )
+                    ])),
+          ),
+        ],
       ),
     );
   }

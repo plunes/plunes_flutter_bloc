@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -14,6 +15,7 @@ import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /*
@@ -23,6 +25,17 @@ import 'package:shared_preferences/shared_preferences.dart';
  */
 
 class FirebaseNotification {
+  static FirebaseNotification _firebaseNotification;
+
+  FirebaseNotification._init();
+
+  factory FirebaseNotification() {
+    if (_firebaseNotification == null) {
+      _firebaseNotification = FirebaseNotification._init();
+    }
+    return _firebaseNotification;
+  }
+
   FirebaseMessaging _firebaseMessaging;
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
   String title = '', body = '';
@@ -33,9 +46,34 @@ class FirebaseNotification {
   static const String bookingScreen = "booking"; // for all
   static const String plockrScreen = "plockr";
   static const String solutionScreen = "solution";
+  int _notificationCount = 0, _plockrCount = 0;
+
+  int getPlockrCount() {
+    return _plockrCount;
+  }
+
+  int getNotificationCount() {
+    return _notificationCount;
+  }
+
+  void setPlockrCount(int count) {
+    _plockrCount = count;
+  }
+
+  void setNotificationCount(int count) {
+    _notificationCount = count;
+    print("setNotificationCount $count");
+    _notificationListener?.add(count);
+    if (count != null && count == 0) {
+      NotificationBloc().setUnreadCountToZero();
+    }
+  }
+
+  Observable<int> get notificationStream => _notificationListener.stream;
 
   // for doc/hos/lab
   static const String insightScreen = "insight";
+  var _notificationListener = PublishSubject<int>();
 
   /// call this method to configure fireBase messaging in the app for push notification
   setUpFireBase(
@@ -141,6 +179,7 @@ class FirebaseNotification {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('==firebase==onMessage== $message');
+        setNotificationCount(1);
         _showNotificationWithDefaultSound(message);
       },
       onResume: (Map<String, dynamic> message) async {
@@ -354,5 +393,9 @@ class FirebaseNotification {
     await Future.delayed(Duration(seconds: 20));
     print("called");
 //    UserBloc().saveUpdateFirebaseToken("thisistoken");
+  }
+
+  close() {
+    _notificationListener?.close();
   }
 }

@@ -89,4 +89,6 @@ class Urls {
       "user/getProfessionalServices?";
   static const String RESET_PASSWORD_URL = "user/updatePassword";
   static const String CHANGE_PASSWORD_URL = "user/changePassword";
+  static const String SET_NOTIFICATION_COUNT_ZERO = "notification";
+  static const String GET_NOTIFICATIONS_URL = "notification/0";
 }

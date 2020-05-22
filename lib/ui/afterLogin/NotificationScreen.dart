@@ -44,6 +44,14 @@ class _NotificationScreenState extends State<NotificationScreen>
 
   @override
   void initState() {
+    FirebaseNotification().setNotificationCount(0);
+    FirebaseNotification().notificationStream.listen((event) {
+      if (FirebaseNotification().getNotificationCount() != null &&
+          FirebaseNotification().getNotificationCount() != 0 &&
+          mounted) {
+        initialize();
+      }
+    });
     super.initState();
     initialize();
   }
@@ -51,6 +59,10 @@ class _NotificationScreenState extends State<NotificationScreen>
   @override
   void dispose() {
     super.dispose();
+    if (FirebaseNotification().getNotificationCount() != null &&
+        FirebaseNotification().getNotificationCount() != 0) {
+      FirebaseNotification().setNotificationCount(0);
+    }
     bloc.disposeNotificationApiStream();
   }
 
@@ -280,14 +292,14 @@ class _NotificationScreenState extends State<NotificationScreen>
 
   void initialize() {
     bloc.fetchNotificationData(context, this);
-    bloc.deleteListenerFetcher.listen((data) {
-      if (data == null)
-        reset();
-      else if (data != null && data['isYes'] != null && data['isYes']) {
-        CommonMethods.confirmationDialog(
-            context, plunesStrings.deleteNotificationMsg, this);
-      }
-    });
+//    bloc.deleteListenerFetcher.listen((data) {
+//      if (data == null)
+//        reset();
+//      else if (data != null && data['isYes'] != null && data['isYes']) {
+//        CommonMethods.confirmationDialog(
+//            context, plunesStrings.deleteNotificationMsg, this);
+//      }
+//    });
   }
 
   @override

@@ -408,99 +408,106 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                         ? 5
                         : _profileResponse.user.doctorsData.length,
                     itemBuilder: (context, itemIndex) {
-                      return Container(
+                      return InkWell(
+                        onTap: () => _openDocDetails(
+                            _profileResponse.user.doctorsData[itemIndex]),
+                        child: Container(
 //              height: AppConfig.verticalBlockSize * 30,
 //              width: AppConfig.horizontalBlockSize * 60,
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 0.5,
-                            horizontal: AppConfig.horizontalBlockSize * 0.5),
-                        padding: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 0.5),
-                        decoration: BoxDecoration(
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 0.5,
+                              horizontal: AppConfig.horizontalBlockSize * 0.5),
+                          padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 0.5),
+                          decoration: BoxDecoration(
 //                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                            color: Color(0xffababab)
+                              color: Color(0xffababab)
 //                gradient: new LinearGradient(
 //                    colors: [, Color(0xffababab)],
 //                    begin: FractionalOffset.topCenter,
 //                    end: FractionalOffset.bottomCenter,
 //                    stops: [0.0, 1.0],
 //                    tileMode: TileMode.clamp),
-                            ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            (_profileResponse.user.doctorsData[itemIndex]
-                                            .imageUrl ==
-                                        null ||
-                                    _profileResponse.user.doctorsData[itemIndex]
-                                        .imageUrl.isEmpty)
-                                ? CustomWidgets().getBackImageView(
-                                    _profileResponse
-                                            .user.doctorsData[itemIndex].name ??
-                                        _getEmptyString())
-                                : CircleAvatar(
-                                    child: Container(
-                                      height: 60,
-                                      width: 60,
-                                      child: ClipOval(
-                                          child: CustomWidgets()
-                                              .getImageFromUrl(
-                                                  _profileResponse
-                                                      .user
-                                                      .doctorsData[itemIndex]
-                                                      .imageUrl,
-                                                  boxFit: BoxFit.fill)),
+                              ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              (_profileResponse.user.doctorsData[itemIndex]
+                                              .imageUrl ==
+                                          null ||
+                                      _profileResponse
+                                          .user
+                                          .doctorsData[itemIndex]
+                                          .imageUrl
+                                          .isEmpty)
+                                  ? CustomWidgets().getBackImageView(
+                                      _profileResponse.user
+                                              .doctorsData[itemIndex].name ??
+                                          _getEmptyString())
+                                  : CircleAvatar(
+                                      child: Container(
+                                        height: 60,
+                                        width: 60,
+                                        child: ClipOval(
+                                            child: CustomWidgets()
+                                                .getImageFromUrl(
+                                                    _profileResponse
+                                                        .user
+                                                        .doctorsData[itemIndex]
+                                                        .imageUrl,
+                                                    boxFit: BoxFit.fill)),
+                                      ),
+                                      radius: 30,
                                     ),
-                                    radius: 30,
-                                  ),
-                            Expanded(
-                                child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      AppConfig.horizontalBlockSize * 0.8),
-                              child: Text(
-                                _profileResponse
-                                        .user.doctorsData[itemIndex].name ??
-                                    _getEmptyString(),
-                                maxLines: 1,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: PlunesColors.WHITECOLOR,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 16),
-                              ),
-                            )),
-                            Expanded(
-                                child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      AppConfig.horizontalBlockSize * 0.8),
-                              child: Text(
-                                _profileResponse.user.doctorsData[itemIndex]
-                                        .designation ??
-                                    _getEmptyString(),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                style: TextStyle(
-                                    color: PlunesColors.WHITECOLOR,
-                                    fontSize: 15),
-                              ),
-                            )),
-                            Expanded(
-                                child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      AppConfig.horizontalBlockSize * 0.8),
-                              child: Text(
-                                _getExpr(itemIndex) ?? _getEmptyString(),
-                                textAlign: TextAlign.center,
-                                maxLines: 1,
-                                style: TextStyle(
-                                    color: PlunesColors.WHITECOLOR,
-                                    fontSize: 15),
-                              ),
-                            )),
-                          ],
+                              Expanded(
+                                  child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 0.8),
+                                child: Text(
+                                  _profileResponse
+                                          .user.doctorsData[itemIndex].name ??
+                                      _getEmptyString(),
+                                  maxLines: 1,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: PlunesColors.WHITECOLOR,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16),
+                                ),
+                              )),
+                              Expanded(
+                                  child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 0.8),
+                                child: Text(
+                                  _profileResponse.user.doctorsData[itemIndex]
+                                          .designation ??
+                                      _getEmptyString(),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      color: PlunesColors.WHITECOLOR,
+                                      fontSize: 15),
+                                ),
+                              )),
+                              Expanded(
+                                  child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 0.8),
+                                child: Text(
+                                  _getExpr(itemIndex) ?? _getEmptyString(),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      color: PlunesColors.WHITECOLOR,
+                                      fontSize: 15),
+                                ),
+                              )),
+                            ],
+                          ),
                         ),
                       );
                     }),
@@ -514,7 +521,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                             context: context,
                             builder: (context) => CustomWidgets()
                                 .showDoctorList(
-                                    _profileResponse.user.doctorsData, context),
+                                    _profileResponse.user.doctorsData, context,_profileResponse?.user?.name),
                             barrierDismissible: true);
                       },
                       child: Container(
@@ -634,5 +641,11 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   void _getServiceRelatedToSpeciality(String specialityId) {
     _catalogueList = [];
     _userBloc..getSpecialityRelatedService(widget.userID, specialityId);
+  }
+
+  _openDocDetails(DoctorsData doctorsData) {
+    showDialog(
+        context: context,
+        builder: (_) => CustomWidgets().showDocPopup(doctorsData, context,_profileResponse?.user?.name));
   }
 }

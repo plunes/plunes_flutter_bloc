@@ -272,6 +272,7 @@ flutter:
     - assets/images/solution/doctorMapImage.png
     - assets/images/solution/hospitalMapImage.png
     - assets/images/solution/homeCollectionImage.png
+    - assets/images/bottom_tabs/unreadNotificationIcon.png
 
 
 
