@@ -1126,11 +1126,21 @@ class CustomWidgets {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
-                                  Text(
-                                    'Update your best price for maximum bookings',
-                                    style: TextStyle(
-                                        fontSize: AppConfig.largeFont),
-                                    textAlign: TextAlign.center,
+                                  Text(PlunesStrings.realTimePrediction,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          decoration: TextDecoration.underline,
+                                          fontWeight: FontWeight.w600),
+                                      textAlign: TextAlign.center),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 0.8),
+                                    child: Text(
+                                      'Update your best price for maximum bookings',
+                                      style: TextStyle(
+                                          fontSize: AppConfig.largeFont),
+                                      textAlign: TextAlign.center,
+                                    ),
                                   ),
                                   Column(
                                     children: <Widget>[

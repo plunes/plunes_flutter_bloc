@@ -417,7 +417,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
   }
 
   _showErrorMessage(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, widget.globalKey);
   }
 
   _getPaymentData(AppointmentModel appointmentModel) {
@@ -504,8 +504,9 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
             if (value != null && value is String && value == "No") {
               await _bookingBloc.cancelAppointment(
                   appointmentModel.bookingId, index);
+            } else {
+              widget.getAppointment();
             }
-            widget.getAppointment();
           });
         },
         onDoubleTap: () {});

@@ -195,7 +195,7 @@ class _HospitalOverviewScreenState
                                   getRealTimeInsights: () =>
                                       _getRealTimeInsights(),
                                 ),
-                                (_realTimeInsightsResponse.data[itemIndex] !=
+                                (_realTimeInsightsResponse.data[itemIndex] ==
                                             null &&
                                         _realTimeInsightsResponse
                                                 .data[itemIndex].expired !=

@@ -116,7 +116,8 @@ class PlunesStrings {
   static const String editVariance = "Variance";
 
   ///Insight main screen
-  static const String realTimeInsights = 'Real Time Prediction';
+  static const String realTimeInsights = 'Real Time Insights';
+  static const String realTimePrediction = 'Real Time Prediction';
   static const String noRealTimeInsights =
       "You don't have any real time insights yet";
   static const String noBusinessDataFound = 'No business data found';
