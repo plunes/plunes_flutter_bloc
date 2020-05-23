@@ -51,7 +51,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   final double lat = 28.4594965, long = 77.0266383;
   User _user;
   Set<Marker> _markers = {};
-  BitmapDescriptor _hospitalIcon, _labIcon;
+//  BitmapDescriptor _hospitalIcon, _labIcon;
 
   @override
   void initState() {
@@ -61,16 +61,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 //      _docIcon = onValue;
 //    });
     _isCrossClicked = false;
-    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
-            PlunesImages.hospitalMapImage)
-        .then((onValue) {
-      _hospitalIcon = onValue;
-    });
-    BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(48, 48)), PlunesImages.labMapImage)
-        .then((onValue) {
-      _labIcon = onValue;
-    });
+//    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+//            PlunesImages.hospitalMapImage)
+//        .then((onValue) {
+//      _hospitalIcon = onValue;
+//    });
+//    BitmapDescriptor.fromAssetImage(
+//            ImageConfiguration(size: Size(48, 48)), PlunesImages.labMapImage)
+//        .then((onValue) {
+//      _labIcon = onValue;
+//    });
     _focusNode = FocusNode()
       ..addListener(() {
         if (_focusNode.hasFocus) {
@@ -132,36 +132,27 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Widget _showContent(ScrollController sc) {
-    return Theme(
-      data: ThemeData(
-        highlightColor: PlunesColors.GREYCOLOR, //Does not work
-      ),
-      child: Scrollbar(
-        isAlwaysShown: true,
+    return ListView.builder(
+        shrinkWrap: true,
         controller: sc,
-        child: ListView.builder(
-            shrinkWrap: true,
-            controller: sc,
-            itemBuilder: (context, index) {
-              return CustomWidgets().getDocOrHospitalDetailWidget(
-                  _searchedDocResults.solution?.services ?? [],
-                  index,
-                  () => _checkAvailability(index),
-                  () => _onBookingTap(
-                      _searchedDocResults.solution.services[index], index),
-                  _searchedDocResults.catalogueData,
-                  _buildContext,
-                  () => _viewProfile(
-                      _searchedDocResults.solution?.services[index]));
-            },
-            itemCount: _searchedDocResults.solution == null
+        itemBuilder: (context, index) {
+          return CustomWidgets().getDocOrHospitalDetailWidget(
+              _searchedDocResults.solution?.services ?? [],
+              index,
+              () => _checkAvailability(index),
+              () => _onBookingTap(
+                  _searchedDocResults.solution.services[index], index),
+              _searchedDocResults.catalogueData,
+              _buildContext,
+              () =>
+                  _viewProfile(_searchedDocResults.solution?.services[index]));
+        },
+        itemCount: _searchedDocResults.solution == null
+            ? 0
+            : _searchedDocResults.solution.services == null ||
+                    _searchedDocResults.solution.services.isEmpty
                 ? 0
-                : _searchedDocResults.solution.services == null ||
-                        _searchedDocResults.solution.services.isEmpty
-                    ? 0
-                    : _searchedDocResults.solution.services.length),
-      ),
-    );
+                : _searchedDocResults.solution.services.length);
   }
 
   _checkAvailability(int selectedIndex) {
@@ -213,10 +204,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         _searchedDocResults.solution.services.forEach((docData) {
           _markers.add(Marker(
               markerId: MarkerId(docData.sId),
-              icon: (docData.userType == Constants.doctor ||
-                      docData.userType == Constants.hospital)
-                  ? _hospitalIcon
-                  : _labIcon,
+              icon: BitmapDescriptor.defaultMarker,
               position:
                   LatLng(docData.latitude ?? lat, docData.longitude ?? long),
               infoWindow: InfoWindow(

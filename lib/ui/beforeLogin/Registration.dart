@@ -27,6 +27,7 @@ import 'package:plunes/ui/commonView/SelectSpecialization.dart';
 
 typedef PasswordCallback = void Function(bool flag);
 
+// ignore: must_be_immutable
 class Registration extends BaseActivity {
   static const tag = "/registration";
   final String phone;

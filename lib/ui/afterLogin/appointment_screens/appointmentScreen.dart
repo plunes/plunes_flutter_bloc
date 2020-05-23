@@ -251,6 +251,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               DateTime.fromMillisecondsSinceEpoch(int.parse(
                                       appointmentModel.appointmentTime))
                                   .isBefore(DateTime.now())) {
+                            _showSnackBar(PlunesStrings.unableToReschedule);
                             return;
                           }
                           await Navigator.push(
@@ -327,6 +328,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                               int.parse(appointmentModel
                                                   .appointmentTime))
                                           .isBefore(DateTime.now())) {
+                                    _showSnackBar(PlunesStrings.unableToCancel);
                                     return;
                                   }
                                   if (widget.appointmentModel != null) {
@@ -456,6 +458,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               DateTime.fromMillisecondsSinceEpoch(int.parse(
                                       appointmentModel.appointmentTime))
                                   .isBefore(DateTime.now())) {
+                            _showSnackBar(PlunesStrings.unableToRefund);
                             return;
                           }
                           showDialog(
@@ -701,5 +704,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
             context, MaterialPageRoute(builder: (context) => _widget));
       }
     }
+  }
+
+  _showSnackBar(String message) {
+    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, widget.globalKey);
   }
 }

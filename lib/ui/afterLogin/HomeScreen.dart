@@ -381,8 +381,6 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                   child: ListView(
                     children: <Widget>[
                       Container(
-                        //padding: EdgeInsets.only(top: 10),
-                        // height: 100,
                         child: InkWell(
                           onTap: () => navigatePage(0),
                           child: Row(
@@ -400,9 +398,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                                           radius: 35,
                                         )
                                       : Container(),
-                                  backgroundImage:
-                                      AssetImage('assets/default_img.png'),
-                                  backgroundColor: Colors.transparent,
+                                  backgroundColor: PlunesColors.LIGHTGREYCOLOR,
                                   radius: 35,
                                 ),
                               ),

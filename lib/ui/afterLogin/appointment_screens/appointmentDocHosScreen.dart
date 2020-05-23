@@ -174,6 +174,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                               DateTime.fromMillisecondsSinceEpoch(int.parse(
                                       appointmentModel.appointmentTime))
                                   .isBefore(DateTime.now())) {
+                            _showErrorMessage(PlunesStrings.unableToReschedule);
                             return;
                           }
                           await Navigator.push(
@@ -250,6 +251,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                               int.parse(appointmentModel
                                                   .appointmentTime))
                                           .isBefore(DateTime.now())) {
+                                    _showErrorMessage(
+                                        PlunesStrings.unableToCancel);
                                     return;
                                   }
                                   if (widget.appointmentModel != null) {
@@ -489,6 +492,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
               DateTime.fromMillisecondsSinceEpoch(
                       int.parse(appointmentModel.appointmentTime))
                   .isBefore(DateTime.now())) {
+            _showErrorMessage(PlunesStrings.unableToConfirm);
             return;
           }
           showDialog(
@@ -501,8 +505,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
               await _bookingBloc.cancelAppointment(
                   appointmentModel.bookingId, index);
             }
+            widget.getAppointment();
           });
-          widget.getAppointment();
         },
         onDoubleTap: () {});
   }

@@ -35,6 +35,7 @@ class PlunesImages {
       "assets/images/solution/homeCollectionImage.png";
   static String notificationUnreadImage =
       "assets/images/bottom_tabs/unreadNotificationIcon.png";
+  static String defaultImage = "assets/images/defaultImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

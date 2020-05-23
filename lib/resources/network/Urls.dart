@@ -16,7 +16,8 @@ class Urls {
   ///'Plunes is the sender id'
   get sendOTPUrl =>
       'https://control.msg91.com/api/sendotp.php?authkey=278069AIdfPwGj5ce79990&mobile=91';
-  static String googleApiKey = 'AIzaSyAXz9PuBzPhMjAdUZmlyFdst6J8v6Vx1IU';
+  static String googleApiKey =
+      'AIzaSyDyYZw2NoD2oTmJp0U3hLmHOnvVMlbgtPs'; //'AIzaSyAXz9PuBzPhMjAdUZmlyFdst6J8v6Vx1IU';
 
 //  static const String baseUrl = 'https://plunes.co/v4/'; // production server
   static const String baseUrl =

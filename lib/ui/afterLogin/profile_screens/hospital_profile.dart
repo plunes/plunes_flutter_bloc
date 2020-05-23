@@ -521,7 +521,9 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                             context: context,
                             builder: (context) => CustomWidgets()
                                 .showDoctorList(
-                                    _profileResponse.user.doctorsData, context,_profileResponse?.user?.name),
+                                    _profileResponse.user.doctorsData,
+                                    context,
+                                    _profileResponse?.user?.name),
                             barrierDismissible: true);
                       },
                       child: Container(
@@ -560,7 +562,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   }
 
   String _getExpr(int itemIndex) {
-    return _profileResponse.user.doctorsData[itemIndex].experience == null
+    return _profileResponse.user.doctorsData[itemIndex].experience == null ||
+            _profileResponse.user.doctorsData[itemIndex].experience == "0"
         ? null
         : "Expr ${_profileResponse.user.doctorsData[itemIndex].experience} years";
   }
@@ -646,6 +649,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   _openDocDetails(DoctorsData doctorsData) {
     showDialog(
         context: context,
-        builder: (_) => CustomWidgets().showDocPopup(doctorsData, context,_profileResponse?.user?.name));
+        builder: (_) => CustomWidgets()
+            .showDocPopup(doctorsData, context, _profileResponse?.user?.name));
   }
 }

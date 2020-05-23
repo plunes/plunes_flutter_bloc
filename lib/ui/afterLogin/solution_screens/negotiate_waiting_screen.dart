@@ -61,9 +61,6 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 //                  print("addr is $addr");
                   var _latitude = addressControllerList[3];
                   var _longitude = addressControllerList[4];
-//                  print("_latitude $_latitude");
-//                  print("_longitude $_longitude");
-//                  _checkUserLocation(_latitude, _longitude);
                   UserBloc().isUserInServiceLocation(_latitude, _longitude);
                   Navigator.pop(context);
                   Navigator.push(

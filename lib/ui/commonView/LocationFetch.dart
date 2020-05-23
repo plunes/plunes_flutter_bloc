@@ -183,10 +183,18 @@ class _LocationFetchState extends State<LocationFetch> {
       String errorMsg) {
     return InkWell(
       onTap: () async {
-        if (controller == locationController) {
-          Prediction p = await PlacesAutocomplete.show(
-              context: context, apiKey: Urls.googleApiKey);
-          displayPrediction(p);
+        try {
+          if (controller == locationController) {
+            Prediction p = await PlacesAutocomplete.show(
+                context: context,
+                apiKey: Urls.googleApiKey,
+                onError: (error) {
+                  print("error ${error.errorMessage}");
+                });
+            displayPrediction(p);
+          }
+        } catch (e) {
+//          print(e);
         }
       },
       child: Container(
@@ -277,24 +285,35 @@ class _LocationFetchState extends State<LocationFetch> {
   }
 
   Future<Null> displayPrediction(Prediction p) async {
-    if (p != null) {
-      PlacesDetailsResponse detail =
-          await _places.getDetailsByPlaceId(p.placeId);
-      _isSettingLocationFromPlacesApi = true;
-      double lat = detail.result.geometry.location.lat;
-      double lng = detail.result.geometry.location.lng;
-      _setMarker(lat, lng);
-      latitude = lat?.toString();
-      longitude = lng?.toString();
-      setState(() {
-        _animateCamera();
-        locationController.text = detail.result.formattedAddress;
-      });
-      Future.delayed(Duration(milliseconds: 1500)).then((value) {
-        _coordinateList = [];
-        _isSettingLocationFromPlacesApi = false;
-      });
-    }
+    try {
+      if (p != null) {
+//      PlacesDetailsResponse detail =
+//          await _places.getDetailsByPlaceId(p.placeId);
+        final query = p.description;
+        var addresses = await Geocoder.local.findAddressesFromQuery(query);
+        var first = addresses.first;
+        print("${first.addressLine} : ${first.coordinates}");
+        if (first == null ||
+            first.addressLine == null ||
+            first.coordinates == null) {
+          return;
+        }
+        _isSettingLocationFromPlacesApi = true;
+        double lat = first.coordinates.latitude;
+        double lng = first.coordinates.longitude;
+        _setMarker(lat, lng);
+        latitude = lat?.toString();
+        longitude = lng?.toString();
+        setState(() {
+          _animateCamera();
+          locationController.text = first.addressLine;
+        });
+        Future.delayed(Duration(milliseconds: 1500)).then((value) {
+          _coordinateList = [];
+          _isSettingLocationFromPlacesApi = false;
+        });
+      }
+    } catch (e) {}
   }
 
   _setMarker(double lat, double lon) {

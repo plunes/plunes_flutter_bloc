@@ -20,8 +20,6 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:share/share.dart';
 import 'CommonMethods.dart';
 import 'app_config.dart';
@@ -454,8 +452,10 @@ class CustomWidgets {
     return CachedNetworkImage(
       imageUrl: imageUrl ?? PlunesStrings.NA,
       fit: boxFit,
-      errorWidget: (_, str, sds) => Icon(Icons.account_circle),
-      placeholder: (_, sds) => Icon(Icons.all_inclusive),
+      errorWidget: (_, str, sds) =>
+          Image.asset(PlunesImages.defaultImage, fit: boxFit),
+      placeholder: (_, sds) =>
+          Image.asset(PlunesImages.defaultImage, fit: boxFit),
     );
   }
 
@@ -692,7 +692,7 @@ class CustomWidgets {
                       ),
                       (solutions[index] != null &&
                               solutions[index].experience != null &&
-                              solutions[index].experience >= 0)
+                              solutions[index].experience > 0)
                           ? Padding(
                               padding: EdgeInsets.only(
                                   top: AppConfig.horizontalBlockSize * 1),
@@ -1067,7 +1067,11 @@ class CustomWidgets {
       {RealInsight realInsight, DocHosMainInsightBloc docHosMainInsightBloc}) {
     var sliderVal = (realInsight.userPrice.toDouble() / 2) +
         (((realInsight.userPrice.toDouble() / 2)) / 2);
-    num chancesPercent = 50, reductionInPrice = 50;
+    num chancesPercent = 50,
+        reductionInPrice =
+            ((((realInsight.userPrice.toDouble() / 2)) / 2) * 100) /
+                realInsight.userPrice.toDouble();
+    ;
     if (sliderVal == 0) {
       chancesPercent = 0;
       reductionInPrice = 0;
@@ -1116,192 +1120,178 @@ class CustomWidgets {
                               left: AppConfig.horizontalBlockSize * 5.5,
                               right: AppConfig.horizontalBlockSize * 5.5,
                               top: AppConfig.verticalBlockSize * 5),
-                          child: Theme(
-                            data: ThemeData(
-                              highlightColor:
-                                  PlunesColors.GREYCOLOR, //Does not work
-                            ),
-                            child: Scrollbar(
-                              isAlwaysShown: true,
-                              controller: _scrollController,
-                              child: SingleChildScrollView(
-                                controller: _scrollController,
-                                child: Center(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
+                          child: SingleChildScrollView(
+                            controller: _scrollController,
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: <Widget>[
+                                  Text(
+                                    'Update your best price for maximum bookings',
+                                    style: TextStyle(
+                                        fontSize: AppConfig.largeFont),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Column(
                                     children: <Widget>[
+                                      SizedBox(height: 10),
                                       Text(
-                                        'Update your best price for maximum bookings',
+                                        realInsight?.serviceName ??
+                                            PlunesStrings.NA,
                                         style: TextStyle(
-                                            fontSize: AppConfig.largeFont),
-                                        textAlign: TextAlign.center,
+                                            fontSize: AppConfig.mediumFont,
+                                            color: Colors.black54),
                                       ),
-                                      Column(
+                                      SizedBox(height: 20),
+                                      Container(
+                                          child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: <Widget>[
-                                          SizedBox(height: 10),
                                           Text(
-                                            realInsight?.serviceName ??
-                                                PlunesStrings.NA,
+                                            "${reductionInPrice?.toStringAsFixed(1)}% ",
                                             style: TextStyle(
+                                                color: PlunesColors.BLACKCOLOR,
                                                 fontSize: AppConfig.mediumFont,
-                                                color: Colors.black54),
+                                                fontWeight: FontWeight.w600),
                                           ),
-                                          SizedBox(height: 20),
-                                          Container(
-                                              child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: <Widget>[
-                                              Text(
-                                                "$chancesPercent% ",
-                                                style: TextStyle(
-                                                    color:
-                                                        PlunesColors.BLACKCOLOR,
-                                                    fontSize:
-                                                        AppConfig.mediumFont,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                              Text(
-                                                PlunesStrings.reductionInPrice,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize:
-                                                        AppConfig.smallFont),
-                                              )
-                                            ],
-                                          )),
-                                          Slider(
-                                            value: sliderVal,
-                                            min:
-                                                (realInsight.userPrice.floor() /
-                                                        2) ??
-                                                    0,
-                                            max: realInsight.userPrice
-                                                .floor()
-                                                .toDouble(),
-                                            divisions: 10,
-                                            activeColor: Colors.green,
-                                            onChanged: (newValue) {
-                                              newState(() {
-                                                try {
-                                                  var val = (newValue * 100) /
+//                                          Text(
+//                                            PlunesStrings.reductionInPrice,
+//                                            style: TextStyle(
+//                                                color: Colors.black54,
+//                                                fontSize: AppConfig.smallFont),
+//                                          )
+                                        ],
+                                      )),
+                                      Slider(
+                                        value: sliderVal,
+                                        min: (realInsight.userPrice.floor() /
+                                                2) ??
+                                            0,
+                                        max: realInsight.userPrice
+                                            .floor()
+                                            .toDouble(),
+                                        divisions: 10,
+                                        activeColor: Colors.green,
+                                        onChanged: (newValue) {
+                                          newState(() {
+                                            try {
+                                              var val = (newValue * 100) /
+                                                  realInsight.userPrice
+                                                      .floor()
+                                                      .toDouble();
+                                              reductionInPrice =
+                                                  ((newValue) * 100) /
                                                       realInsight.userPrice
-                                                          .floor()
                                                           .toDouble();
-                                                  chancesPercent =
-                                                      (100 - ((val - 50) * 2))
-                                                          .toInt();
-                                                } catch (e) {
-                                                  chancesPercent = 50;
-                                                  reductionInPrice = 50;
-                                                }
-                                                sliderVal = newValue;
-                                              });
-                                            },
-                                          ),
-                                          Container(
-                                            child: Row(
-                                              children: <Widget>[
-                                                Text(
-                                                  ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(1)}',
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          AppConfig.mediumFont,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Expanded(child: Container()),
-                                                Text(
-                                                  ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(1)}',
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          AppConfig.mediumFont,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                top: AppConfig
-                                                        .verticalBlockSize *
-                                                    3,
-                                                bottom: AppConfig
-                                                        .verticalBlockSize *
-                                                    3),
-                                            child: Text(
-                                              ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
+                                              reductionInPrice =
+                                                  100 - reductionInPrice;
+
+                                              chancesPercent =
+                                                  (100 - ((val - 50) * 2))
+                                                      .toInt();
+                                            } catch (e) {
+                                              chancesPercent = 50;
+                                              reductionInPrice = 50;
+                                            }
+                                            sliderVal = newValue;
+                                          });
+                                        },
+                                      ),
+                                      Container(
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(
+                                              ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(1)}',
                                               style: TextStyle(
-                                                  fontSize: AppConfig.largeFont,
+                                                  fontSize:
+                                                      AppConfig.mediumFont,
                                                   fontWeight: FontWeight.bold),
                                             ),
-                                          ),
-                                          chancesPercent != null
-                                              ? Text(
-                                                  'Chances of Booking increases by',
-                                                  style: TextStyle(
-                                                    fontSize:
-                                                        AppConfig.mediumFont,
-                                                  ),
-                                                )
-                                              : Container(),
-                                          SizedBox(height: 10),
-                                          chancesPercent != null
-                                              ? Text(
-                                                  chancesPercent == 0
-                                                      ? '0%'
-                                                      : '${chancesPercent - 5}% to $chancesPercent%',
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          AppConfig.mediumFont,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              : Container(),
-                                          SizedBox(height: 20),
-                                          FlatButton(
-                                            child: Text(
-                                              'Apply here',
+                                            Expanded(child: Container()),
+                                            Text(
+                                              ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(1)}',
                                               style: TextStyle(
-                                                  fontSize: AppConfig.largeFont,
-                                                  color: Colors.green,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                  fontWeight: FontWeight.w400),
+                                                  fontSize:
+                                                      AppConfig.mediumFont,
+                                                  fontWeight: FontWeight.bold),
                                             ),
-                                            onPressed: () {
-                                              if (sliderVal == null ||
-                                                  sliderVal == 0) {
-                                                failureCause =
-                                                    'price must not be 0';
-                                                newState(() {});
-                                                return;
-                                              }
-                                              docHosMainInsightBloc
-                                                  .updateRealTimeInsightPriceStream(
-                                                      RequestInProgress());
-                                              docHosMainInsightBloc
-                                                  .getUpdateRealTimeInsightPrice(
-                                                      sliderVal,
-                                                      realInsight.solutionId,
-                                                      realInsight.serviceId);
-                                            },
-                                          ),
-                                          Text(
-                                            failureCause ?? "",
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                color: Colors.red,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                            top:
+                                                AppConfig.verticalBlockSize * 3,
+                                            bottom:
+                                                AppConfig.verticalBlockSize *
+                                                    3),
+                                        child: Text(
+                                          ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                              fontSize: AppConfig.largeFont,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      chancesPercent != null
+                                          ? Text(
+                                              'Chances of Booking increases by',
+                                              style: TextStyle(
+                                                fontSize: AppConfig.mediumFont,
+                                              ),
+                                            )
+                                          : Container(),
+                                      SizedBox(height: 10),
+                                      chancesPercent != null
+                                          ? Text(
+                                              chancesPercent == 0
+                                                  ? '0%'
+                                                  : '${chancesPercent - 5}% to $chancesPercent%',
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      AppConfig.mediumFont,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          : Container(),
+                                      SizedBox(height: 20),
+                                      FlatButton(
+                                        child: Text(
+                                          'Apply here',
+                                          style: TextStyle(
+                                              fontSize: AppConfig.largeFont,
+                                              color: Colors.green,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        onPressed: () {
+                                          if (sliderVal == null ||
+                                              sliderVal == 0) {
+                                            failureCause =
+                                                'price must not be 0';
+                                            newState(() {});
+                                            return;
+                                          }
+                                          docHosMainInsightBloc
+                                              .updateRealTimeInsightPriceStream(
+                                                  RequestInProgress());
+                                          docHosMainInsightBloc
+                                              .getUpdateRealTimeInsightPrice(
+                                                  sliderVal,
+                                                  realInsight.solutionId,
+                                                  realInsight.serviceId);
+                                        },
+                                      ),
+                                      Text(
+                                        failureCause ?? "",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
-                                ),
+                                ],
                               ),
                             ),
                           ),
@@ -1331,6 +1321,14 @@ class CustomWidgets {
     var sliderVal = (num.parse(actionableInsight.userPrice).toDouble() / 2) +
         (((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2);
     num chancesPercent = 50;
+    num reductionInPrice =
+        ((((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2) *
+                100) /
+            num.parse(actionableInsight.userPrice).toDouble();
+    if (sliderVal == 0) {
+      chancesPercent = 0;
+      reductionInPrice = 0;
+    }
     ScrollController _scrollController = ScrollController();
     String failureCause;
     return StatefulBuilder(builder: (context, newState) {
@@ -1375,188 +1373,175 @@ class CustomWidgets {
                               left: AppConfig.horizontalBlockSize * 5.5,
                               right: AppConfig.horizontalBlockSize * 5.5,
                               top: AppConfig.verticalBlockSize * 5),
-                          child: Theme(
-                            data: ThemeData(
-                              highlightColor:
-                                  PlunesColors.GREYCOLOR, //Does not work
-                            ),
-                            child: Scrollbar(
-                              isAlwaysShown: true,
-                              controller: _scrollController,
-                              child: SingleChildScrollView(
-                                controller: _scrollController,
-                                child: Center(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
+                          child: SingleChildScrollView(
+                            controller: _scrollController,
+                            child: Center(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: <Widget>[
+                                  Text(
+                                    'Update Price in your Catalogue for maximum Bookings',
+                                    style: TextStyle(fontSize: 20),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  Column(
                                     children: <Widget>[
+                                      SizedBox(height: 10),
                                       Text(
-                                        'Update Price in your Catalogue for maximum Bookings',
-                                        style: TextStyle(fontSize: 20),
-                                        textAlign: TextAlign.center,
+                                        actionableInsight?.serviceName ??
+                                            PlunesStrings.NA,
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: Colors.black54),
                                       ),
-                                      Column(
+                                      SizedBox(height: 20),
+                                      Container(
+                                          child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: <Widget>[
-                                          SizedBox(height: 10),
                                           Text(
-                                            actionableInsight?.serviceName ??
-                                                PlunesStrings.NA,
+                                            "${reductionInPrice?.toStringAsFixed(1)}% ",
                                             style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black54),
+                                                color: PlunesColors.BLACKCOLOR,
+                                                fontSize: AppConfig.mediumFont,
+                                                fontWeight: FontWeight.w600),
                                           ),
-                                          SizedBox(height: 20),
-                                          Container(
-                                              child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: <Widget>[
-                                              Text(
-                                                "$chancesPercent% ",
-                                                style: TextStyle(
-                                                    color:
-                                                        PlunesColors.BLACKCOLOR,
-                                                    fontSize:
-                                                        AppConfig.mediumFont,
-                                                    fontWeight:
-                                                        FontWeight.w600),
-                                              ),
-                                              Text(
-                                                PlunesStrings.reductionInPrice,
-                                                style: TextStyle(
-                                                    color: Colors.black54,
-                                                    fontSize:
-                                                        AppConfig.smallFont),
-                                              )
-                                            ],
-                                          )),
-                                          Slider(
-                                              value: sliderVal,
-                                              min: (num.parse(actionableInsight
-                                                              .userPrice)
-                                                          .floor() /
-                                                      2) ??
-                                                  0,
-                                              max: num.parse(actionableInsight
-                                                      .userPrice)
-                                                  .floor()
-                                                  .toDouble(),
-                                              divisions: 10,
-                                              activeColor: Colors.green,
-                                              onChanged: (newValue) {
-                                                newState(() {
-                                                  try {
-                                                    var val = (newValue * 100) /
-                                                        num.parse(
-                                                                actionableInsight
-                                                                    .userPrice)
-                                                            .floor()
-                                                            .toDouble();
-                                                    chancesPercent =
-                                                        (100 - ((val - 50) * 2))
-                                                            .toInt();
-                                                  } catch (e) {
-                                                    chancesPercent = 50;
-                                                  }
-                                                  sliderVal = newValue;
-                                                });
-                                              }),
-                                          Container(
-                                            child: Row(
-                                              children: <Widget>[
-                                                Text(
-                                                  ' \u20B9 ${(num.parse(actionableInsight.userPrice).floor() / 2)?.toStringAsFixed(1)}',
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Expanded(child: Container()),
-                                                Text(
-                                                  ' \u20B9 ${num.parse(actionableInsight.userPrice)?.toStringAsFixed(1)}',
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                top: AppConfig
-                                                        .verticalBlockSize *
-                                                    3,
-                                                bottom: AppConfig
-                                                        .verticalBlockSize *
-                                                    3),
-                                            child: Text(
-                                              ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
+//                                          Text(
+//                                            PlunesStrings.reductionInPrice,
+//                                            style: TextStyle(
+//                                                color: Colors.black54,
+//                                                fontSize: AppConfig.smallFont),
+//                                          )
+                                        ],
+                                      )),
+                                      Slider(
+                                          value: sliderVal,
+                                          min: (num.parse(actionableInsight
+                                                          .userPrice)
+                                                      .floor() /
+                                                  2) ??
+                                              0,
+                                          max: num.parse(
+                                                  actionableInsight.userPrice)
+                                              .floor()
+                                              .toDouble(),
+                                          divisions: 10,
+                                          activeColor: Colors.green,
+                                          onChanged: (newValue) {
+                                            newState(() {
+                                              try {
+                                                var val = (newValue * 100) /
+                                                    num.parse(actionableInsight
+                                                            .userPrice)
+                                                        .floor()
+                                                        .toDouble();
+                                                chancesPercent =
+                                                    (100 - ((val - 50) * 2))
+                                                        .toInt();
+
+                                                reductionInPrice = ((newValue) *
+                                                        100) /
+                                                    num.parse(actionableInsight
+                                                            .userPrice)
+                                                        .toDouble();
+                                                reductionInPrice =
+                                                    100 - (reductionInPrice);
+                                              } catch (e) {
+                                                chancesPercent = 50;
+                                              }
+                                              sliderVal = newValue;
+                                            });
+                                          }),
+                                      Container(
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(
+                                              ' \u20B9 ${(num.parse(actionableInsight.userPrice).floor() / 2)?.toStringAsFixed(1)}',
                                               style: TextStyle(
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold),
                                             ),
-                                          ),
-                                          chancesPercent != null
-                                              ? Text(
-                                                  'Chances of Booking increases by',
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                  ),
-                                                )
-                                              : Container(),
-                                          SizedBox(height: 10),
-                                          chancesPercent != null
-                                              ? Text(
-                                                  chancesPercent == 0
-                                                      ? '0%'
-                                                      : '${chancesPercent - 5}% to $chancesPercent%',
-                                                  style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              : Container(),
-                                          SizedBox(height: 20),
-                                          FlatButton(
-                                            child: Text(
-                                              'Apply here',
+                                            Expanded(child: Container()),
+                                            Text(
+                                              ' \u20B9 ${num.parse(actionableInsight.userPrice)?.toStringAsFixed(1)}',
                                               style: TextStyle(
                                                   fontSize: 20,
-                                                  color: Colors.green,
-                                                  decoration:
-                                                      TextDecoration.underline,
-                                                  fontWeight: FontWeight.w400),
+                                                  fontWeight: FontWeight.bold),
                                             ),
-                                            onPressed: () {
-                                              if (sliderVal == null ||
-                                                  sliderVal == 0) {
-                                                failureCause =
-                                                    'price must not be 0';
-                                                newState(() {});
-                                                return;
-                                              }
-                                              docHosMainInsightBloc
-                                                  .getUpdateActionableInsightPrice(
-                                                      sliderVal,
-                                                      actionableInsight
-                                                          .serviceId,
-                                                      actionableInsight
-                                                          .specialityId);
-                                            },
-                                          ),
-                                          Text(
-                                            failureCause ?? "",
-                                            style: TextStyle(
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                            top:
+                                                AppConfig.verticalBlockSize * 3,
+                                            bottom:
+                                                AppConfig.verticalBlockSize *
+                                                    3),
+                                        child: Text(
+                                          ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      chancesPercent != null
+                                          ? Text(
+                                              'Chances of Booking increases by',
+                                              style: TextStyle(
                                                 fontSize: 18,
-                                                color: Colors.red,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ],
+                                              ),
+                                            )
+                                          : Container(),
+                                      SizedBox(height: 10),
+                                      chancesPercent != null
+                                          ? Text(
+                                              chancesPercent == 0
+                                                  ? '0%'
+                                                  : '${chancesPercent - 5}% to $chancesPercent%',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold),
+                                            )
+                                          : Container(),
+                                      SizedBox(height: 20),
+                                      FlatButton(
+                                        child: Text(
+                                          'Apply here',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.green,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              fontWeight: FontWeight.w400),
+                                        ),
+                                        onPressed: () {
+                                          if (sliderVal == null ||
+                                              sliderVal == 0) {
+                                            failureCause =
+                                                'price must not be 0';
+                                            newState(() {});
+                                            return;
+                                          }
+                                          docHosMainInsightBloc
+                                              .getUpdateActionableInsightPrice(
+                                                  sliderVal,
+                                                  actionableInsight.serviceId,
+                                                  actionableInsight
+                                                      .specialityId);
+                                        },
+                                      ),
+                                      Text(
+                                        failureCause ?? "",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.red,
+                                            fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
-                                ),
+                                ],
                               ),
                             ),
                           ),
@@ -2316,7 +2301,11 @@ class CustomWidgets {
                                     padding:
                                         EdgeInsets.symmetric(vertical: 0.2),
                                     child: Text(
-                                      doctorsData[itemIndex].experience == null
+                                      doctorsData[itemIndex].experience ==
+                                                  null ||
+                                              doctorsData[itemIndex]
+                                                      .experience ==
+                                                  "0"
                                           ? PlunesStrings.NA
                                           : "Expr ${doctorsData[itemIndex].experience} years",
                                       textAlign: TextAlign.start,
@@ -2435,7 +2424,10 @@ class CustomWidgets {
                             22,
                             plunesImages.clockIcon,
                             plunesStrings.expOfPractice,
-                            doctorsData?.experience ?? _getEmptyString()),
+                            (doctorsData.experience == null ||
+                                    doctorsData?.experience == "0")
+                                ? _getEmptyString()
+                                : doctorsData.experience),
                       ),
                       Padding(
                         padding: EdgeInsets.only(

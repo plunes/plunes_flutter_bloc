@@ -67,8 +67,8 @@ class PlunesStrings {
   static const String pleaseSelectValidSlot =
       "Please select a valid appointment time";
   static const String pleaseMakeSureText =
-      "Please make sure you book within a short time, keeping in mind it is valid for only 1 hour.";
-  static const String chooseLocation = "Choose Location";
+      "Please make sure you book within a short time, keeping in mind price is valid for only one hour.";
+  static const String chooseLocation = "Choose another location";
 
   ///Booking strings
   static const String whyPlunes = "Why Plunes?";
@@ -182,6 +182,12 @@ class PlunesStrings {
   static const String reductionInPrice = "Reduction in Price";
 
   static const String queryCantBeEmpty = "Please fill your description";
+  static const String unableToCancel =
+      "Appointment time is over, unable to cancel.";
+  static String unableToReschedule =
+      "Appointment time is over, unable to reschedule";
+  static String unableToConfirm = "Appointment time is over, unable to confirm";
+  static String unableToRefund = "Appointment time is over, unable to refund";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
@@ -374,7 +380,7 @@ class PlunesStrings {
 
   get dontHaveAccount => 'Don\'t have an account? ';
 
-  get somethingWentWrong => 'Somehting went wrong!';
+  get somethingWentWrong => "Sorry, We could not find what You're looking for";
 
   get success => 'Success';
 

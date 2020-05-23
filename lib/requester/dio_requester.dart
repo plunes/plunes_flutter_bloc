@@ -133,7 +133,6 @@ class DioRequester {
       case DioErrorType.SEND_TIMEOUT:
         break;
     }
-    print("hello ${e.response.toString()}");
     return RequestOutput(
         isRequestSucceed: false,
         failureCause: errorDescription,

@@ -98,8 +98,16 @@ class _DocProfileState extends BaseState<DocProfile> {
           ),
           Padding(
             padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
-            child: getProfileInfoView(22, 22, plunesImages.clockIcon,
-                plunesStrings.expOfPractice, _profileResponse.user?.experience),
+            child: getProfileInfoView(
+                22,
+                22,
+                plunesImages.clockIcon,
+                plunesStrings.expOfPractice,
+                (_profileResponse.user == null ||
+                        _profileResponse.user.experience == null ||
+                        _profileResponse.user.experience == "0")
+                    ? _getEmptyString()
+                    : _profileResponse.user.experience),
           ),
           Padding(
             padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
