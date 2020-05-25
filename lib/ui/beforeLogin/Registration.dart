@@ -15,7 +15,6 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
-import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:plunes/ui/commonView/SelectSpecialization.dart';
 
@@ -894,7 +893,6 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           _userType == Constants.labDiagnosticCenter) {
         body['registrationNumber'] = professionRegController.text;
         body["specialities"] = specialistId;
-
         if (_userType == Constants.doctor) {
           body['experience'] = experienceController.text;
         }
@@ -948,7 +946,8 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     } else if (isDoctor && professionRegController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterProfRegNo;
       return false;
-    } else if (isDoctor && specializationController.text.trim().isEmpty) {
+    } else if ((isDoctor || isLab || _isHospital) &&
+        specializationController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
     } else if (isDoctor && experienceController.text.trim().isEmpty) {

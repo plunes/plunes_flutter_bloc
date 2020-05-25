@@ -111,9 +111,11 @@ class Bloc {
       if (isConnected) {
         loginResponseFetcher.sink
             .add(await _repository.fetchLoginData(context, phone, password));
-      } else
+      } else {
+        loginResponseFetcher.sink.add(null);
         CommonMethods.commonDialog(context, callBack,
             PlunesStrings.noInternetMsg, PlunesStrings.cantConnectInternet);
+      }
     });
   }
 

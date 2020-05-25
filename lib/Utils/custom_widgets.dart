@@ -1067,7 +1067,7 @@ class CustomWidgets {
       {RealInsight realInsight, DocHosMainInsightBloc docHosMainInsightBloc}) {
     var sliderVal = (realInsight.userPrice.toDouble() / 2) +
         (((realInsight.userPrice.toDouble() / 2)) / 2);
-    num chancesPercent = 50,
+    num chancesPercent = 25,
         reductionInPrice =
             ((((realInsight.userPrice.toDouble() / 2)) / 2) * 100) /
                 realInsight.userPrice.toDouble();
@@ -1198,8 +1198,9 @@ class CustomWidgets {
                                                   100 - reductionInPrice;
 
                                               chancesPercent =
-                                                  (100 - ((val - 50) * 2))
-                                                      .toInt();
+                                                  (100 - val)?.toInt();
+//                                                      ((val - 50) * 2))
+//                                                      .toInt();
                                             } catch (e) {
                                               chancesPercent = 50;
                                               reductionInPrice = 50;
@@ -1330,7 +1331,7 @@ class CustomWidgets {
       DocHosMainInsightBloc docHosMainInsightBloc}) {
     var sliderVal = (num.parse(actionableInsight.userPrice).toDouble() / 2) +
         (((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2);
-    num chancesPercent = 50;
+    num chancesPercent = 25;
     num reductionInPrice =
         ((((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2) *
                 100) /
@@ -1447,8 +1448,9 @@ class CustomWidgets {
                                                         .floor()
                                                         .toDouble();
                                                 chancesPercent =
-                                                    (100 - ((val - 50) * 2))
-                                                        .toInt();
+                                                    (100 - val)?.toInt();
+//                                                        ((val - 50) * 2))
+//                                                        .toInt();
 
                                                 reductionInPrice = ((newValue) *
                                                         100) /

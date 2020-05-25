@@ -288,11 +288,11 @@ class _LoginState extends State<Login> implements DialogCallBack {
 
   submitLogin() {
     if (!isValidNumber || phoneController.text.isEmpty)
-      widget.showInSnackBar(
-          plunesStrings.enterValidNumber, Colors.red, _scaffoldKey);
+      widget.showInSnackBar(plunesStrings.enterValidNumber,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
     else if (!isValidPassword || passwordController.text.isEmpty)
-      widget.showInSnackBar(
-          plunesStrings.errorMsgPassword, Colors.red, _scaffoldKey);
+      widget.showInSnackBar(plunesStrings.errorMsgPassword,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
     else
       userLoginRequest();
   }
@@ -304,15 +304,15 @@ class _LoginState extends State<Login> implements DialogCallBack {
         context, this, phoneController.text, passwordController.text);
     bloc.loginData.listen((data) async {
       progress = false;
+      _setState();
       if (data.success) {
         await bloc.saveDataInPreferences(data, context, plunesStrings.login);
         widget.showInSnackBar(
-            plunesStrings.success, Colors.green, _scaffoldKey);
+            plunesStrings.success, PlunesColors.GREENCOLOR, _scaffoldKey);
       } else {
-        _setState();
         await Future.delayed(Duration(milliseconds: 100));
         widget.showInSnackBar(
-            plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
+            "Invalid credentials", PlunesColors.BLACKCOLOR, _scaffoldKey);
       }
     });
   }
