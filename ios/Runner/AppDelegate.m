@@ -9,7 +9,7 @@
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    [GMSServices provideAPIKey:@"AIzaSyAXz9PuBzPhMjAdUZmlyFdst6J8v6Vx1IU"];
+    [GMSServices provideAPIKey:@"AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc"];
     [GeneratedPluginRegistrant registerWithRegistry:self];
     
     [self registerForRemoteNotifications];//--------- for unusernoticenter notification

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -15,7 +16,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
-GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Urls.googleApiKey);
+//GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: Urls.googleApiKey);
 
 // ignore: must_be_immutable
 class LocationFetch extends BaseActivity {
@@ -187,7 +188,9 @@ class _LocationFetchState extends State<LocationFetch> {
           if (controller == locationController) {
             Prediction p = await PlacesAutocomplete.show(
                 context: context,
-                apiKey: Urls.googleApiKey,
+                apiKey: Platform.isAndroid
+                    ? Urls.googleApiAndroidKey
+                    : Urls.googleApiIosKey,
                 onError: (error) {
                   print("error ${error.errorMessage}");
                 });
