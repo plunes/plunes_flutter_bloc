@@ -27,6 +27,7 @@ import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
 
 // ignore: must_be_immutable
 class BookingMainScreen extends BaseActivity {
@@ -654,82 +655,91 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   _openTimePicker() {
-    return showDialog(
-        builder: (context) {
-          return Container(
-            margin: EdgeInsets.only(
-                top: AppConfig.verticalBlockSize * 31,
-                right: AppConfig.horizontalBlockSize * 10,
-                left: AppConfig.horizontalBlockSize * 10,
-                bottom: AppConfig.verticalBlockSize * 2),
-            child: Material(
-              borderRadius: BorderRadius.circular(16),
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    alignment: Alignment.topRight,
-                    child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Icon(Icons.close),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      PlunesStrings.setYourTime,
-                      style: TextStyle(fontSize: AppConfig.mediumFont),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: TimePickerSpinner(
-                      is24HourMode: false,
-                      time: _selectedDate,
-                      normalTextStyle: TextStyle(
-                          fontSize: 24, color: PlunesColors.BLACKCOLOR),
-                      highlightedTextStyle: TextStyle(
-                          fontSize: 24, color: PlunesColors.GREENCOLOR),
-                      spacing: AppConfig.horizontalBlockSize * 8,
-                      isShowSeconds: false,
-                      itemHeight: AppConfig.verticalBlockSize * 10,
-                      isForce2Digits: true,
-                      onTimeChange: (time) {
-                        _tempSelectedDateTime = time;
-                      },
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(
-                        left: AppConfig.horizontalBlockSize * 26,
-                        bottom: AppConfig.verticalBlockSize * 4,
-                        top: AppConfig.verticalBlockSize * 2.3,
-                        right: AppConfig.horizontalBlockSize * 26),
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.pop(context);
-                        _timeChooseCallBack();
-                        return;
-                      },
-                      child: CustomWidgets().getRoundedButton(
-                          PlunesStrings.choose,
-                          AppConfig.horizontalBlockSize * 8,
-                          PlunesColors.GREENCOLOR,
-                          AppConfig.horizontalBlockSize * 3,
-                          AppConfig.verticalBlockSize * 1,
-                          PlunesColors.WHITECOLOR,
-                          hasBorder: false),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-        barrierDismissible: true,
-        context: context);
+    latest.DatePicker.showTime12hPicker(context, currentTime: _selectedDate,
+        onConfirm: (date) {
+      if (date == null) {
+        return;
+      }
+      print("hello $date");
+      _tempSelectedDateTime = date;
+      _timeChooseCallBack();
+    });
+//    return showDialog(
+//        builder: (context) {
+//          return Container(
+//            margin: EdgeInsets.only(
+//                top: AppConfig.verticalBlockSize * 31,
+//                right: AppConfig.horizontalBlockSize * 10,
+//                left: AppConfig.horizontalBlockSize * 10,
+//                bottom: AppConfig.verticalBlockSize * 2),
+//            child: Material(
+//              borderRadius: BorderRadius.circular(16),
+//              child: Column(
+//                children: <Widget>[
+//                  Container(
+//                    alignment: Alignment.topRight,
+//                    child: InkWell(
+//                      onTap: () => Navigator.pop(context),
+//                      child: Container(
+//                        padding: const EdgeInsets.all(15.0),
+//                        child: Icon(Icons.close),
+//                      ),
+//                    ),
+//                  ),
+//                  Container(
+//                    alignment: Alignment.center,
+//                    child: Text(
+//                      PlunesStrings.setYourTime,
+//                      style: TextStyle(fontSize: AppConfig.mediumFont),
+//                    ),
+//                  ),
+//                  Expanded(
+//                    flex: 5,
+//                    child: TimePickerSpinner(
+//                      is24HourMode: false,
+//                      time: _selectedDate,
+//                      normalTextStyle: TextStyle(
+//                          fontSize: 24, color: PlunesColors.BLACKCOLOR),
+//                      highlightedTextStyle: TextStyle(
+//                          fontSize: 24, color: PlunesColors.GREENCOLOR),
+//                      spacing: AppConfig.horizontalBlockSize * 8,
+//                      isShowSeconds: false,
+//                      itemHeight: AppConfig.verticalBlockSize * 10,
+//                      isForce2Digits: true,
+//                      onTimeChange: (time) {
+//                        _tempSelectedDateTime = time;
+//                      },
+//                    ),
+//                  ),
+//                  Container(
+//                    padding: EdgeInsets.only(
+//                        left: AppConfig.horizontalBlockSize * 26,
+//                        bottom: AppConfig.verticalBlockSize * 4,
+//                        top: AppConfig.verticalBlockSize * 2.3,
+//                        right: AppConfig.horizontalBlockSize * 26),
+//                    child: InkWell(
+//                      onTap: () {
+//                        Navigator.pop(context);
+//                        _timeChooseCallBack();
+//                        return;
+//                      },
+//                      child: CustomWidgets().getRoundedButton(
+//                          PlunesStrings.choose,
+//                          AppConfig.horizontalBlockSize * 8,
+//                          PlunesColors.GREENCOLOR,
+//                          AppConfig.horizontalBlockSize * 3,
+//                          AppConfig.verticalBlockSize * 1,
+//                          PlunesColors.WHITECOLOR,
+//                          hasBorder: false),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//            ),
+//          );
+//        },
+//        barrierDismissible: true,
+//        context: context);
   }
 
   _timeChooseCallBack() {

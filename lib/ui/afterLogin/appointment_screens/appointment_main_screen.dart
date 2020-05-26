@@ -413,7 +413,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
       _appointmentIndex =
           _appointmentResponse.bookings?.indexOf(appointmentModel);
       if (_appointmentIndex != null && _appointmentIndex >= 0) {
-        _scrollUserController.animateTo(
+        _scrollUserController?.animateTo(
             _appointmentIndex.toDouble() * AppConfig.verticalBlockSize * 48,
             duration: Duration(milliseconds: 500),
             curve: Curves.ease);

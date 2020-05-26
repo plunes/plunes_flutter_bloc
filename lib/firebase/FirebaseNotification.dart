@@ -62,7 +62,6 @@ class FirebaseNotification {
 
   void setNotificationCount(int count) {
     _notificationCount = count;
-    print("setNotificationCount $count");
     _notificationListener?.add(count);
     if (count != null && count == 0) {
       NotificationBloc().setUnreadCountToZero();
@@ -196,7 +195,9 @@ class FirebaseNotification {
   Future _showNotificationWithDefaultSound(Map<String, dynamic> msg) async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
         'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.Max, priority: Priority.High);
+        importance: Importance.Max,
+        priority: Priority.High,
+        styleInformation: BigTextStyleInformation(''));
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     var platformChannelSpecifics = new NotificationDetails(
         androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
