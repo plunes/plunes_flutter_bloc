@@ -66,10 +66,14 @@ class _LocationFetchState extends State<LocationFetch> {
     }
   }
 
-  _setLocation(String lat, String lng) async {
+  _setLocation(final String lat, final String lng) async {
+
+    print(lat == null);
+    print("lat $lat long $lng");
     if (lat != null && lat.isNotEmpty && lng != null && lng.isNotEmpty) {
       latitude = lat;
       longitude = lng;
+      print("lat $lat long $lng");
       print("lat $latitude long $longitude");
       final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
       var addresses =
@@ -275,7 +279,8 @@ class _LocationFetchState extends State<LocationFetch> {
             .add(Coordinates(_p.target.latitude, _p.target.longitude));
       }),
       initialCameraPosition: CameraPosition(
-        target: LatLng(double.parse(latitude), double.parse(longitude)),
+        target: LatLng(double.parse(latitude ?? "28.4594965"),
+            double.parse(longitude ?? "77.0266383")),
         zoom: 15.0,
       ),
       onMapCreated: (GoogleMapController controller) {
