@@ -309,11 +309,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                               addressControllerList[1] +
                               ' ' +
                               addressControllerList[2];
-                          print("addr is $addr");
+//                          print("addr is $addr");
                           var _latitude = addressControllerList[3];
                           var _longitude = addressControllerList[4];
-                          print("_latitude $_latitude");
-                          print("_longitude $_longitude");
+//                          print("_latitude $_latitude");
+//                          print("_longitude $_longitude");
                           _checkUserLocation(_latitude, _longitude);
                         }
                       });
@@ -481,11 +481,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                         addressControllerList[1] +
                                         ' ' +
                                         addressControllerList[2];
-                                    print("addr is $addr");
+//                                    print("addr is $addr");
                                     var _latitude = addressControllerList[3];
                                     var _longitude = addressControllerList[4];
-                                    print("_latitude $_latitude");
-                                    print("_longitude $_longitude");
+//                                    print("_latitude $_latitude");
+//                                    print("_longitude $_longitude");
                                     _checkUserLocation(_latitude, _longitude);
                                   }
                                 });

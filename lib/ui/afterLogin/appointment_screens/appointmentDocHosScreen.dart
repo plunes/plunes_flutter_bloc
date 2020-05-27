@@ -199,9 +199,9 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.data != null &&
                             snapshot.data is RequestInProgress) {
-                          print(snapshot.data);
+//                          print(snapshot.data);
                           RequestInProgress req = snapshot.data;
-                          print(req.requestCode);
+//                          print(req.requestCode);
                           if (req.requestCode != null &&
                               req.requestCode == index) {
                             return CustomWidgets().getProgressIndicator();

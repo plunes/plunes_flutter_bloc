@@ -95,7 +95,7 @@ class FirebaseNotification {
   }
 
   Future onSelectNotification(String payLoad) async {
-    print(json.decode(payLoad));
+//    print(json.decode(payLoad));
     Map<String, dynamic> msg = json.decode(payLoad);
     handleRedirection(msg);
   }
@@ -125,7 +125,7 @@ class FirebaseNotification {
         payLoad.containsKey("data") &&
         payLoad["data"]['screen'] != null &&
         payLoad["data"]['screen'].toString().isNotEmpty) {
-      print(payLoad["data"]['screen']);
+//      print(payLoad["data"]['screen']);
       if (payLoad["data"]['screen'] == homeScreenName) {
         isHomeScreen = true;
         widget = HomeScreen(
@@ -166,27 +166,27 @@ class FirebaseNotification {
   fireBaseCloudMessagingListeners() {
     if (Platform.isIOS) iOSPermission();
     _firebaseMessaging.getToken().then((token) {
-      print("token: $token");
+//      print("token: $token");
       Constants.DEVICE_TOKEN = token;
     });
-    _updateToken("randomtoken");
+//    _updateToken("randomtoken");
     _firebaseMessaging.onTokenRefresh.listen((token) {
       Constants.DEVICE_TOKEN = token;
 //      _updateToken(token);
     });
-    _firebaseMessaging.subscribeToTopic("Testing");
+//    _firebaseMessaging.subscribeToTopic("Testing");
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        print('==firebase==onMessage== $message');
+//        print('==firebase==onMessage== $message');
         setNotificationCount(1);
         _showNotificationWithDefaultSound(message);
       },
       onResume: (Map<String, dynamic> message) async {
-        print('==firebase==onResume== $message');
+//        print('==firebase==onResume== $message');
         showLocalNotification(message);
       },
       onLaunch: (Map<String, dynamic> message) async {
-        print('==firebase==onLaunch== $message');
+//        print('==firebase==onLaunch== $message');
         showLocalNotification(message);
       },
     );
@@ -215,14 +215,14 @@ class FirebaseNotification {
         IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered
         .listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
+//      print("Settings registered: $settings");
     });
   }
 
   Future _handleNavigation(PostsData notificationModel) async {
     bool isHomeScreen = false;
     Widget widget;
-    print(notificationModel.notificationType);
+//    print(notificationModel.notificationType);
     if (notificationModel.notificationType == homeScreenName) {
       isHomeScreen = true;
       widget = HomeScreen(
@@ -384,14 +384,14 @@ class FirebaseNotification {
           : '';
     }
     PostsData _postData = PostsData.fromJsonForPush(message);
-    print('post data' + _postData?.toString());
+//    print('post data' + _postData?.toString());
     if (_postData != null && _postData.notificationType != null) {
       _handleNavigation(_postData);
     }
   }
 
   void _updateToken(String token) async {
-    await Future.delayed(Duration(seconds: 20));
+//    await Future.delayed(Duration(seconds: 20));
 //    print("called");
 //    UserBloc().saveUpdateFirebaseToken("thisistoken");
   }

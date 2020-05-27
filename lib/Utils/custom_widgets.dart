@@ -925,7 +925,7 @@ class CustomWidgets {
       ),
       unratedColor: PlunesColors.GREYCOLOR,
       onRatingUpdate: (rating) {
-        print(rating);
+//        print(rating);
       },
     );
   }
@@ -959,6 +959,7 @@ class CustomWidgets {
     BuildContext context,
     CatalogueData catalogueData,
   ) {
+    String replaceFrom = "\\n";
     return Container(
         height: AppConfig.verticalBlockSize * 50,
         width: double.infinity,
@@ -1049,7 +1050,8 @@ class CustomWidgets {
                         fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    catalogueData?.dnd ?? PlunesStrings.NA,
+                    catalogueData?.dnd?.replaceAll(replaceFrom, "") ??
+                        PlunesStrings.NA,
                     style: TextStyle(
                       fontSize: AppConfig.smallFont,
                       color: Colors.black38,
@@ -1590,8 +1592,8 @@ class CustomWidgets {
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (BuildContext context, int index) {
-                      print(
-                          "appointmentModel.paymentStatus[index] ${appointmentModel.paymentStatus[index].toString()}");
+//                      print(
+//                          "appointmentModel.paymentStatus[index] ${appointmentModel.paymentStatus[index].toString()}");
                       return Column(
                         children: <Widget>[
                           Row(

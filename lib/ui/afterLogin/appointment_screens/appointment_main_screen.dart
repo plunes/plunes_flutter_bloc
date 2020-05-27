@@ -330,12 +330,12 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   _setTabIndex(int selectedIndex, String bookingId) {
-    print("booking ${widget.bookingId}, $bookingId, $selectedIndex, $index");
+//    print("booking ${widget.bookingId}, $bookingId, $selectedIndex, $index");
     if (widget.bookingId != null &&
         widget.bookingId.isNotEmpty &&
         widget.bookingId == bookingId &&
         !_isDisplay) {
-      print("matched");
+//      print("matched");
       index = selectedIndex;
     }
   }
@@ -386,7 +386,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   void _changeTabAfterDelayForUser() async {
-    print("called me $index");
+//    print("called me $index");
     if (index != null) {
       Future.delayed(Duration(milliseconds: 700)).then((value) {
         _tabUserController.animateTo(index);
@@ -396,11 +396,11 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   void _changeTabAfterDelay() async {
-    print("called me $index");
+//    print("called me $index");
     if (index != null) {
       Future.delayed(Duration(milliseconds: 700)).then((value) {
         _tabDocHosController.animateTo(index);
-        print("called me twice $index");
+//        print("called me twice $index");
         _scrollToAppointment();
       });
     }
@@ -439,8 +439,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
             curve: Curves.ease);
         _removeBookingId();
       }
-      print(
-          "scrolll me twice $_appointmentIndex, booking id: ${appointmentModel.bookingId}");
+//      print(
+//          "scrolll me twice $_appointmentIndex, booking id: ${appointmentModel.bookingId}");
     });
   }
 

@@ -21,9 +21,10 @@ class Urls {
   static const String googleApiIosKey =
       'AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc';
 
-//  static const String baseUrl = 'https://plunes.co/v4/'; // production server
   static const String baseUrl =
-      'https://devapi.plunes.com/v5/'; // staging server
+      'https://api.plunes.com/v5/'; // production server
+//  static const String baseUrl =
+//      'https://devapi.plunes.com/v5/'; // staging server
 
   get catalogue => baseUrl + 'catalogue';
 

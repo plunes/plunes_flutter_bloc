@@ -394,7 +394,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         selectionColor: PlunesColors.GREENCOLOR,
         onDateChange: (DateTime selectedDateTime) {
           _selectedDate = selectedDateTime;
-          print("selected date is ${selectedDateTime.toString()}");
+//          print("selected date is ${selectedDateTime.toString()}");
           _openTimePicker();
         },
       ),
@@ -909,7 +909,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   ///payment methods
   _initPayment(PaymentSelector paymentSelector) async {
 //    print(paymentSelector.toString());
-    print(DateUtil.getTimeWithAmAndPmFormat(_selectedDate));
+//    print(DateUtil.getTimeWithAmAndPmFormat(_selectedDate));
     InitPayment _initPayment = InitPayment(
         appointmentTime:
             _selectedDate.toUtc().millisecondsSinceEpoch.toString(),
@@ -930,7 +930,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         bookIn: !(paymentSelector.isInPercent)
             ? paymentSelector.paymentUnit
             : null);
-    print("initiate payment ${_initPayment.initiatePaymentToJson()}");
+//    print("initiate payment ${_initPayment.initiatePaymentToJson()}");
     RequestState _requestState = await _bookingBloc.initPayment(_initPayment);
     if (_requestState is RequestSuccess) {
       InitPaymentResponse _initPaymentResponse = _requestState.response;
@@ -995,7 +995,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               services: widget.service,
             )).then((returnedValue) {
       if (returnedValue != null) {
-        print("selected payment percenatge $returnedValue");
+//        print("selected payment percenatge $returnedValue");
         _initPayment(returnedValue);
       }
     });
