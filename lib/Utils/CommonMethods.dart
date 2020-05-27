@@ -242,7 +242,7 @@ class CommonMethods {
       initialDate: twelveYearsBack,
       firstDate: new DateTime(1900),
       lastDate: twelveYearsBack,
-      dateFormat: "dd MMMM yyyy",
+      dateFormat: "dd MMM yyyy",
       locale: DateTimePickerLocale.en_us,
       looping: true,
     );

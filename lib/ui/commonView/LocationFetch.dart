@@ -53,7 +53,12 @@ class _LocationFetchState extends State<LocationFetch> {
     _preferences = new Preferences();
     String lat = _preferences.getPreferenceString(Constants.LATITUDE);
     String lng = _preferences.getPreferenceString(Constants.LONGITUDE);
-    if (lat == null || lng == null || lat.isEmpty || lng.isEmpty) {
+    if (lat == null ||
+        lng == null ||
+        lat.isEmpty ||
+        lng.isEmpty ||
+        lat == "0.0" ||
+        lng == "0.0") {
       await Future.delayed(Duration(milliseconds: 400));
       var loc = await LocationUtil().getCurrentLatLong(_context);
       if (loc != null) {
@@ -67,14 +72,11 @@ class _LocationFetchState extends State<LocationFetch> {
   }
 
   _setLocation(final String lat, final String lng) async {
-
-    print(lat == null);
-    print("lat $lat long $lng");
     if (lat != null && lat.isNotEmpty && lng != null && lng.isNotEmpty) {
       latitude = lat;
       longitude = lng;
-      print("lat $lat long $lng");
-      print("lat $latitude long $longitude");
+//      print("lat $lat long $lng");
+//      print("lat $latitude long $longitude");
       final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
       var addresses =
           await Geocoder.local.findAddressesFromCoordinates(coordinates);
@@ -94,7 +96,7 @@ class _LocationFetchState extends State<LocationFetch> {
     await _preferences.setPreferencesString(Constants.LONGITUDE, longitude);
     String home = houseController.text;
     String land = landMarkController.text;
-    print(home + "," + land + "," + address + "," + latitude + "," + longitude);
+//    print(home + "," + land + "," + address + "," + latitude + "," + longitude);
     Navigator.of(context).pop(home +
         ":" +
         land +
@@ -196,7 +198,7 @@ class _LocationFetchState extends State<LocationFetch> {
                     ? Urls.googleApiAndroidKey
                     : Urls.googleApiIosKey,
                 onError: (error) {
-                  print("error ${error.errorMessage}");
+//                  print("error ${error.errorMessage}");
                 });
             displayPrediction(p);
           }
@@ -233,7 +235,7 @@ class _LocationFetchState extends State<LocationFetch> {
   Widget getGoogleMapView() {
     return GoogleMap(
       onTap: (LatLng latlng) {
-        print(latlng.latitude.toString() + "," + latlng.longitude.toString());
+//        print(latlng.latitude.toString() + "," + latlng.longitude.toString());
       },
       mapType: MapType.normal,
       myLocationButtonEnabled: true,
@@ -245,7 +247,7 @@ class _LocationFetchState extends State<LocationFetch> {
       tiltGesturesEnabled: true,
       markers: marker,
       onCameraMoveStarted: () {
-        print("Started to move");
+//        print("Started to move");
       },
       onCameraIdle: () async {
         if (!_completer.isCompleted) {
@@ -262,8 +264,8 @@ class _LocationFetchState extends State<LocationFetch> {
             if (latitude == '0.0' && longitude == '0.0') {
               return;
             }
-            print(
-                "${_coordinateList[_coordinateList.length - 1]}lat is $latitude long is $longitude");
+//            print(
+//                "${_coordinateList[_coordinateList.length - 1]}lat is $latitude long is $longitude");
             var addresses = await Geocoder.local.findAddressesFromCoordinates(
                 _coordinateList[_coordinateList.length - 1]);
             var addr = addresses.first;
@@ -300,7 +302,7 @@ class _LocationFetchState extends State<LocationFetch> {
         final query = p.description;
         var addresses = await Geocoder.local.findAddressesFromQuery(query);
         var first = addresses.first;
-        print("${first.addressLine} : ${first.coordinates}");
+//        print("${first.addressLine} : ${first.coordinates}");
         if (first == null ||
             first.addressLine == null ||
             first.coordinates == null) {

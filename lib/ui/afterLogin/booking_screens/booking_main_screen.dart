@@ -660,7 +660,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       if (date == null) {
         return;
       }
-      print("hello $date");
       _tempSelectedDateTime = date;
       _timeChooseCallBack();
     });

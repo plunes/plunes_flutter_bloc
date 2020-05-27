@@ -16,10 +16,10 @@ class Urls {
   ///'Plunes is the sender id'
   get sendOTPUrl =>
       'https://control.msg91.com/api/sendotp.php?authkey=278069AIdfPwGj5ce79990&mobile=91';
-  static const  String googleApiAndroidKey =
+  static const String googleApiAndroidKey =
       'AIzaSyDyYZw2NoD2oTmJp0U3hLmHOnvVMlbgtPs'; //'AIzaSyAXz9PuBzPhMjAdUZmlyFdst6J8v6Vx1IU';
-  static const String googleApiIosKey = 'AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc';
-
+  static const String googleApiIosKey =
+      'AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc';
 
 //  static const String baseUrl = 'https://plunes.co/v4/'; // production server
   static const String baseUrl =
@@ -94,4 +94,5 @@ class Urls {
   static const String CHANGE_PASSWORD_URL = "user/changePassword";
   static const String SET_NOTIFICATION_COUNT_ZERO = "notification";
   static const String GET_NOTIFICATIONS_URL = "notification/0";
+  static const String GET_HELPLINE_NUMBER_URL = "user/contactSupport";
 }

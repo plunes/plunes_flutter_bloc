@@ -102,4 +102,8 @@ class UserBloc extends BlocBase {
       String oldPassword, String newPassword) async {
     return UserManager().changePassword(oldPassword, newPassword);
   }
+
+  Future<RequestState> getHelplineNumber() {
+    return UserManager().getHelplineNumber();
+  }
 }

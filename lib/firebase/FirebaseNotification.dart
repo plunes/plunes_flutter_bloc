@@ -392,7 +392,7 @@ class FirebaseNotification {
 
   void _updateToken(String token) async {
     await Future.delayed(Duration(seconds: 20));
-    print("called");
+//    print("called");
 //    UserBloc().saveUpdateFirebaseToken("thisistoken");
   }
 

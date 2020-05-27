@@ -324,4 +324,17 @@ class UserManager {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  Future<RequestState> getHelplineNumber() async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.GET_HELPLINE_NUMBER_URL,
+        requestType: HttpRequestMethods.HTTP_GET);
+    if (result.isRequestSucceed) {
+      HelpLineNumberModel _helpNumberModel =
+          HelpLineNumberModel.fromJson(result.response.data);
+      return RequestSuccess(response: _helpNumberModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

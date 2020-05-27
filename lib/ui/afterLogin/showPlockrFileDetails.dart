@@ -3,6 +3,7 @@ import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/plockr_web_view.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -225,7 +226,11 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: NetworkImage(uploadedReport.reportThumbnail)),
+                        image: (uploadedReport.fileType != null &&
+                                uploadedReport.fileType ==
+                                    UploadedReports.dicomFile)
+                            ? ExactAssetImage(PlunesImages.defaultImage)
+                            : NetworkImage(uploadedReport.reportThumbnail)),
                   ),
                   child: Stack(
                     children: <Widget>[

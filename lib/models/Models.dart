@@ -262,16 +262,22 @@ class User {
             ? json['qualification']
             : '',
         imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
-        latitude: json['geoLocation'] != null
-            ? (json['geoLocation']['latitude'].toString() != null
+        latitude: (json['geoLocation'] != null &&
+            json['geoLocation']['latitude'] != null &&
+            json['geoLocation']['latitude']
+                .toString()
+                .trim()
+                .isNotEmpty)
             ? json['geoLocation']['latitude'].toString()
-            : '')
-            : '',
-        longitude: json['geoLocation'] != null
-            ? (json['geoLocation']['longitude'].toString() != null
+            : "0.0",
+        longitude: (json['geoLocation'] != null &&
+            json['geoLocation']['longitude'] != null &&
+            json['geoLocation']['longitude']
+                .toString()
+                .trim()
+                .isNotEmpty)
             ? json['geoLocation']['longitude'].toString()
-            : '')
-            : '',
+            : "0.0",
         prescriptionLogoUrl: json['prescription'] != null
             ? (json['prescription']['logoUrl'] != null
             ? json['prescription']['logoUrl']
@@ -654,3 +660,26 @@ class HttpErrorModel {
     return data;
   }
 }
+
+class HelpLineNumberModel {
+  bool success;
+  String number;
+  String msg;
+
+  HelpLineNumberModel({this.success, this.number, this.msg});
+
+  HelpLineNumberModel.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    number = json['data'];
+    msg = json['msg'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    data['data'] = this.number;
+    data['msg'] = this.msg;
+    return data;
+  }
+}
+

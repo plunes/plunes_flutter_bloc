@@ -8,6 +8,8 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -28,6 +30,9 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   var globalHeight, globalWidth, title = '';
   DocHosMainInsightBloc _docHosMainInsightBloc;
   TextEditingController _docHosQueryController;
+  UserBloc _userBloc;
+  HelpLineNumberModel _helpLineNumberModel;
+  final String _helpNumber = "7701805081";
 
   bool booking = false,
       isOnlineSolution = false,
@@ -36,8 +41,10 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
 
   @override
   void initState() {
+    _userBloc = UserBloc();
     _docHosQueryController = TextEditingController();
     _docHosMainInsightBloc = DocHosMainInsightBloc();
+    _getHelpLineNumber();
     super.initState();
   }
 
@@ -45,6 +52,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   void dispose() {
     bloc.disposeHelpApiStream();
     _docHosMainInsightBloc?.dispose();
+    _userBloc?.dispose();
     super.dispose();
   }
 
@@ -470,12 +478,18 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   Widget _callWidget() {
     return InkWell(
       onTap: () {
-        LauncherUtil.launchUrl("tel://7701805081");
+        String num = _helpNumber;
+        if (_helpLineNumberModel != null &&
+            _helpLineNumberModel.number != null &&
+            _helpLineNumberModel.number.isNotEmpty) {
+          num = _helpLineNumberModel.number;
+        }
+        LauncherUtil.launchUrl("tel://$num");
         return;
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),
-        child: Text('Call at: 7701805081',
+        child: Text('Call at: ${_helpLineNumberModel?.number ?? _helpNumber}',
             style: TextStyle(
                 fontSize: AppConfig.mediumFont,
                 fontWeight: FontWeight.bold,
@@ -489,5 +503,13 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
 
   void _setState() {
     if (mounted) setState(() {});
+  }
+
+  void _getHelpLineNumber() async {
+    var result = await _userBloc.getHelplineNumber();
+    if (result is RequestSuccess) {
+      _helpLineNumberModel = result.response;
+    }
+    _setState();
   }
 }
