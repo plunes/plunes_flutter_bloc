@@ -62,8 +62,8 @@ class Urls {
   static const String CHECK_LOCATION_API = "user/checkLocation";
   static const String GET_DOC_HOS_API = "solution";
   static const String BOOKING_URL = 'booking';
-  static const String PAYMENT_WEB_VIEW_URL =
-      'https://devapi.plunes.com/payment'; //'https://plunes.co/payment';
+  static const String PAYMENT_WEB_VIEW_URL = "https://api.plunes.com";
+//      'https://devapi.plunes.com/payment'; //'https://plunes.co/payment';
   static const String PREV_SOLUTION_URL = "solution/search";
   static const String GENERATE_OTP_URL = "user/generateOtp";
   static const String FORGOT_PASSWORD_URL = "user/forgotPassword";
