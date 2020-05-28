@@ -51,6 +51,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   final double lat = 28.4594965, long = 77.0266383;
   User _user;
   Set<Marker> _markers = {};
+
 //  BitmapDescriptor _hospitalIcon, _labIcon;
 
   @override
@@ -229,7 +230,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 2), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       _negotiate();
       _tenMinutesInSeconds = _tenMinutesInSeconds - 2;
       if (_tenMinutesInSeconds <= 0) {

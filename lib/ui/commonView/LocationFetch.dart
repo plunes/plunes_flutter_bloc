@@ -198,7 +198,7 @@ class _LocationFetchState extends State<LocationFetch> {
                     ? Urls.googleApiAndroidKey
                     : Urls.googleApiIosKey,
                 onError: (error) {
-//                  print("error ${error.errorMessage}");
+                  print("error ${error.errorMessage}");
                 });
             displayPrediction(p);
           }
