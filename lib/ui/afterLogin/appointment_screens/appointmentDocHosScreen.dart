@@ -501,12 +501,12 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                       .getDocHosConfirmAppointmentPopUp(
                           context, bookingBloc, appointmentModel))
               .then((value) async {
-            if (value != null && value is String && value == "No") {
-              await _bookingBloc.cancelAppointment(
-                  appointmentModel.bookingId, index);
-            } else {
-              widget.getAppointment();
-            }
+//            if (value != null && value is String && value == "No") {
+//              await _bookingBloc.cancelAppointment(
+//                  appointmentModel.bookingId, index);
+//            } else {
+            widget.getAppointment();
+//            }
           });
         },
         onDoubleTap: () {});

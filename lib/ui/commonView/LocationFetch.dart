@@ -196,7 +196,7 @@ class _LocationFetchState extends State<LocationFetch> {
                 context: context,
                 apiKey: Urls.googleApiKey,
                 onError: (error) {
-                  print("error ${error.errorMessage}");
+//                  print("error ${error.errorMessage}");
                 });
             displayPrediction(p);
           }

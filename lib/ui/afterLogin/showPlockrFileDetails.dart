@@ -80,7 +80,7 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
                     if (webViewUrl != null && webViewUrl.isNotEmpty) {
                       plockrUrl = "$webViewUrl$url";
                     }
-                    print("webview url" + plockrUrl);
+//                    print("webview url" + plockrUrl);
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -226,11 +226,13 @@ class _ShowImageDetailsState extends BaseState<ShowImageDetails> {
                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                     image: DecorationImage(
                         fit: BoxFit.cover,
-                        image: (uploadedReport.fileType != null &&
-                                uploadedReport.fileType ==
-                                    UploadedReports.dicomFile)
-                            ? ExactAssetImage(PlunesImages.defaultImage)
-                            : NetworkImage(uploadedReport.reportThumbnail)),
+                        image:
+//                        (uploadedReport.fileType != null &&
+//                                uploadedReport.fileType ==
+//                                    UploadedReports.dicomFile)
+//                            ? ExactAssetImage(PlunesImages.defaultImage)
+//                            :
+                            NetworkImage(uploadedReport.reportThumbnail)),
                   ),
                   child: Stack(
                     children: <Widget>[
