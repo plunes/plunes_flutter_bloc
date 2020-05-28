@@ -194,9 +194,7 @@ class _LocationFetchState extends State<LocationFetch> {
           if (controller == locationController) {
             Prediction p = await PlacesAutocomplete.show(
                 context: context,
-                apiKey: Platform.isAndroid
-                    ? Urls.googleApiAndroidKey
-                    : Urls.googleApiIosKey,
+                apiKey: Urls.googleApiKey,
                 onError: (error) {
                   print("error ${error.errorMessage}");
                 });
