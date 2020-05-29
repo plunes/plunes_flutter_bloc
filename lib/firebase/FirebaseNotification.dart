@@ -11,7 +11,6 @@ import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
-import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
@@ -410,22 +409,43 @@ class FirebaseNotification {
   }
 
   void _notifyListeners(Map<String, dynamic> payLoad) {
-    String screenName;
-    if (payLoad != null &&
-        payLoad.containsKey("data") &&
-        payLoad["data"]['screen'] != null &&
-        payLoad["data"]['screen'].toString().isNotEmpty) {
-      if (payLoad["data"]['screen'] == plockrScreen) {
-        screenName = plockrScreen;
-      } else if (payLoad["data"]['screen'] == bookingScreen) {
-        screenName = bookingScreen;
-      } else if (payLoad["data"]['screen'] == insightScreen) {
-        screenName = insightScreen;
+    if (Platform.isIOS) {
+      String screenName;
+      if (payLoad != null &&
+          payLoad.containsKey("screen") &&
+          payLoad['screen'] != null &&
+          payLoad['screen'].toString().isNotEmpty) {
+        if (payLoad['screen'] == plockrScreen) {
+          screenName = plockrScreen;
+        } else if (payLoad['screen'] == bookingScreen) {
+          screenName = bookingScreen;
+        } else if (payLoad['screen'] == insightScreen) {
+          screenName = insightScreen;
+        }
+        if (screenName != null && screenName.isNotEmpty) {
+          EventProvider()
+              .getSessionEventBus()
+              .fire(ScreenRefresher(screenName: screenName));
+        }
       }
-      if (screenName != null && screenName.isNotEmpty) {
-        EventProvider()
-            .getSessionEventBus()
-            .fire(ScreenRefresher(screenName: screenName));
+    } else {
+      String screenName;
+      if (payLoad != null &&
+          payLoad.containsKey("data") &&
+          payLoad["data"]['screen'] != null &&
+          payLoad["data"]['screen'].toString().isNotEmpty) {
+        if (payLoad["data"]['screen'] == plockrScreen) {
+          screenName = plockrScreen;
+        } else if (payLoad["data"]['screen'] == bookingScreen) {
+          screenName = bookingScreen;
+        } else if (payLoad["data"]['screen'] == insightScreen) {
+          screenName = insightScreen;
+        }
+        if (screenName != null && screenName.isNotEmpty) {
+          EventProvider()
+              .getSessionEventBus()
+              .fire(ScreenRefresher(screenName: screenName));
+        }
       }
     }
   }
