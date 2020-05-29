@@ -507,7 +507,7 @@ abstract class BaseState<T extends BaseActivity> extends State<T>
 
     ///Event bus to handle unauthorized user
     _loginSubscription =
-        SessionExpirationEvent().getSessionEventBus().on().listen((data) {
+        EventProvider().getSessionEventBus().on<RequestState>().listen((data) {
       if (data is RequestFailed) {
         RequestFailed requestFailed = data;
         if (requestFailed.requestCode == HttpResponseCode.UNAUTHORIZED) {

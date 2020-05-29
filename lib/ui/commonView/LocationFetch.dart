@@ -88,7 +88,7 @@ class _LocationFetchState extends State<LocationFetch> {
         _animateCamera();
       }
     }
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   saveLatLang() async {
@@ -270,7 +270,7 @@ class _LocationFetchState extends State<LocationFetch> {
             String full_address = addr.addressLine;
             locationController.text = full_address;
             _isAddFetch = false;
-            setState(() {});
+            if (mounted) setState(() {});
           }
         } catch (e) {}
       },
@@ -312,10 +312,11 @@ class _LocationFetchState extends State<LocationFetch> {
         _setMarker(lat, lng);
         latitude = lat?.toString();
         longitude = lng?.toString();
-        setState(() {
-          _animateCamera();
-          locationController.text = first.addressLine;
-        });
+        if (mounted)
+          setState(() {
+            _animateCamera();
+            locationController.text = first.addressLine;
+          });
         Future.delayed(Duration(milliseconds: 1500)).then((value) {
           _coordinateList = [];
           _isSettingLocationFromPlacesApi = false;

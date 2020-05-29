@@ -133,12 +133,14 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     if (_latitude == null ||
         _longitude == null ||
         _latitude.isEmpty ||
-        _longitude.isEmpty) {
+        _longitude.isEmpty ||
+        _latitude == "0.0" ||
+        _longitude == "0.0") {
       await Future.delayed(Duration(milliseconds: 400));
       var latLong = await LocationUtil().getCurrentLatLong(_context);
       if (latLong != null) {
-        _latitude = latLong.latitude.toString();
-        _longitude = latLong.longitude.toString();
+        _latitude = latLong.latitude?.toString();
+        _longitude = latLong.longitude?.toString();
       }
     }
     _setLocationData();
@@ -214,7 +216,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         _selectedSpecializationData = [];
         _selectedItemId.addAll(val['SelectedId']);
         _selectedSpecializationData.addAll(val['SelectedData']);
-        setState(() {});
+        _setState();
       }
     });
   }
@@ -946,8 +948,11 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     } else if (isDoctor && professionRegController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterProfRegNo;
       return false;
-    } else if ((isDoctor || isLab || _isHospital) &&
-        specializationController.text.trim().isEmpty) {
+    } else if (isDoctor && specializationController.text.trim().isEmpty) {
+      errorMessage = plunesStrings.errorMsgEnterSpecialization;
+      return false;
+    } else if ((isLab || _isHospital) &&
+        (_selectedItemId == null || _selectedItemId.isEmpty)) {
       errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
     } else if (isDoctor && experienceController.text.trim().isEmpty) {
@@ -1350,7 +1355,6 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         _longitude.isNotEmpty) {
       _preferenceObj.setPreferencesString(Constants.LATITUDE, _latitude);
       _preferenceObj.setPreferencesString(Constants.LONGITUDE, _longitude);
-      print('$_latitude  , $_longitude');
       print('$_latitude , $_longitude');
       final coordinates =
           new Coordinates(double.parse(_latitude), double.parse(_longitude));

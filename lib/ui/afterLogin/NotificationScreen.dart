@@ -237,8 +237,8 @@ class _NotificationScreenState extends State<NotificationScreen>
 //    } else {
 //      isSelected = false;
 //      bloc.changeAppBar(context, null);
-    print("Type of Notifcation:" + result?.notificationType);
-    print("Type of result" + result?.toString());
+//    print("Type of Notifcation:" + result?.notificationType);
+//    print("Type of result" + result?.toString());
 
     if (result.notificationScreen == FirebaseNotification.solutionScreen &&
         UserManager().getUserDetails().userType == Constants.user) {

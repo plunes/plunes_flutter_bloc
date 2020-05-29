@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/actionable_insights_response_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
@@ -44,6 +46,13 @@ class _HospitalOverviewScreenState
     _getActionableInsights();
     _getTotalBusinessData(days);
     _daysInput = [];
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == FirebaseNotification.insightScreen &&
+          mounted) {
+        _getRealTimeInsights();
+      }
+    });
     super.initState();
   }
 

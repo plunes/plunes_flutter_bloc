@@ -1,14 +1,14 @@
 import 'package:event_bus/event_bus.dart';
 
-class SessionExpirationEvent {
-  SessionExpirationEvent._create();
+class EventProvider {
+  EventProvider._create();
 
-  static SessionExpirationEvent _sessionExpirationEvent;
+  static EventProvider _sessionExpirationEvent;
   EventBus _eventBus;
 
-  factory SessionExpirationEvent() {
+  factory EventProvider() {
     if (_sessionExpirationEvent == null) {
-      _sessionExpirationEvent = SessionExpirationEvent._create();
+      _sessionExpirationEvent = EventProvider._create();
     }
     return _sessionExpirationEvent;
   }
@@ -19,4 +19,10 @@ class SessionExpirationEvent {
     }
     return _eventBus;
   }
+}
+
+class ScreenRefresher {
+  String screenName;
+
+  ScreenRefresher({this.screenName});
 }

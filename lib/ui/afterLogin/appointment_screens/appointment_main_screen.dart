@@ -1,10 +1,12 @@
-import 'package:flutter/gestures.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
-import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -58,6 +60,12 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     _bookingBloc = BookingBloc();
     _isDisplay = false;
     _getAppointmentDetails();
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == FirebaseNotification.bookingScreen && mounted) {
+        _getAppointmentDetails();
+      }
+    });
     super.initState();
   }
 

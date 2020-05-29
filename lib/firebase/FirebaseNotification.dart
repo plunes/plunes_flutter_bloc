@@ -5,11 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
@@ -166,7 +168,7 @@ class FirebaseNotification {
   fireBaseCloudMessagingListeners() {
     if (Platform.isIOS) iOSPermission();
     _firebaseMessaging.getToken().then((token) {
-//      print("token: $token");
+      print("token: $token");
       Constants.DEVICE_TOKEN = token;
     });
 //    _updateToken("randomtoken");
@@ -179,6 +181,7 @@ class FirebaseNotification {
       onMessage: (Map<String, dynamic> message) async {
 //        print('==firebase==onMessage== $message');
         setNotificationCount(1);
+        _notifyListeners(message);
         _showNotificationWithDefaultSound(message);
       },
       onResume: (Map<String, dynamic> message) async {
@@ -197,6 +200,12 @@ class FirebaseNotification {
         'your channel id', 'your channel name', 'your channel description',
         importance: Importance.Max,
         priority: Priority.High,
+        style: AndroidNotificationStyle.BigText,
+        icon: "@drawable/ic_launcher",
+        ledOffMs: 500,
+        ledOnMs: 1000,
+        ledColor: Colors.green,
+        color: Colors.green,
         styleInformation: BigTextStyleInformation(''));
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     var platformChannelSpecifics = new NotificationDetails(
@@ -398,5 +407,26 @@ class FirebaseNotification {
 
   close() {
     _notificationListener?.close();
+  }
+
+  void _notifyListeners(Map<String, dynamic> payLoad) {
+    String screenName;
+    if (payLoad != null &&
+        payLoad.containsKey("data") &&
+        payLoad["data"]['screen'] != null &&
+        payLoad["data"]['screen'].toString().isNotEmpty) {
+      if (payLoad["data"]['screen'] == plockrScreen) {
+        screenName = plockrScreen;
+      } else if (payLoad["data"]['screen'] == bookingScreen) {
+        screenName = bookingScreen;
+      } else if (payLoad["data"]['screen'] == insightScreen) {
+        screenName = insightScreen;
+      }
+      if (screenName != null && screenName.isNotEmpty) {
+        EventProvider()
+            .getSessionEventBus()
+            .fire(ScreenRefresher(screenName: screenName));
+      }
+    }
   }
 }

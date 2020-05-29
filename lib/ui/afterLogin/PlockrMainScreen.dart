@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:date_format/date_format.dart';
@@ -10,9 +11,11 @@ import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/plockr_blocs/plockr_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
 import 'package:plunes/models/plockr_model/plockr_shareable_report_model.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -59,8 +62,15 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     _searchedList = [];
     _isDeleting = false;
     _getPlockrData();
-    super.initState();
     initialize();
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == FirebaseNotification.plockrScreen &&
+          mounted) {
+        _getPlockrData();
+      }
+    });
+    super.initState();
   }
 
   _getPlockrData() {
