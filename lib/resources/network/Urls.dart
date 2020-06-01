@@ -16,15 +16,12 @@ class Urls {
   ///'Plunes is the sender id'
   get sendOTPUrl =>
       'https://control.msg91.com/api/sendotp.php?authkey=278069AIdfPwGj5ce79990&mobile=91';
-
-//  static const String googleApiAndroidKey =
-//      'AIzaSyDyYZw2NoD2oTmJp0U3hLmHOnvVMlbgtPs'; //'AIzaSyAXz9PuBzPhMjAdUZmlyFdst6J8v6Vx1IU';
   static const String googleApiKey = 'AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc';
 
-  static const String baseUrl =
-      'https://api.plunes.com/v5/'; // production server
 //  static const String baseUrl =
-//      'https://devapi.plunes.com/v5/'; // staging server
+//      'https://api.plunes.com/v5/'; // production server
+  static const String baseUrl =
+      'https://devapi.plunes.com/v5/'; // staging server
 
   get catalogue => baseUrl + 'catalogue';
 
@@ -62,10 +59,11 @@ class Urls {
   static const String CHECK_LOCATION_API = "user/checkLocation";
   static const String GET_DOC_HOS_API = "solution";
   static const String BOOKING_URL = 'booking';
-  static const String PAYMENT_WEB_VIEW_URL =
-      "https://api.plunes.com/payment"; //production
+
 //  static const String PAYMENT_WEB_VIEW_URL =
-//      'https://devapi.plunes.com/payment'; //'https://plunes.co/payment'; //dev
+//      "https://api.plunes.com/payment"; //production
+  static const String PAYMENT_WEB_VIEW_URL =
+      'https://devapi.plunes.com/payment'; //'https://plunes.co/payment'; //dev
   static const String PREV_SOLUTION_URL = "solution/search";
   static const String GENERATE_OTP_URL = "user/generateOtp";
   static const String FORGOT_PASSWORD_URL = "user/forgotPassword";

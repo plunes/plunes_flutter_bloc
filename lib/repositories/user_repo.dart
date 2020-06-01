@@ -337,4 +337,43 @@ class UserManager {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  Future<RequestState> checkUserExistence(String phoneNumber) async {
+    var result = await DioRequester().requestMethod(
+        url: urls.checkUserExistence + phoneNumber,
+        requestType: HttpRequestMethods.HTTP_GET);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: result.response.data);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> login(String phoneNumber, String password) async {
+    var result = await DioRequester().requestMethod(
+        url: urls.login,
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {
+          'mobileNumber': phoneNumber,
+          'password': password,
+          'deviceId': Constants.DEVICE_TOKEN
+        });
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: LoginPost.fromJson(result.response.data));
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> signUp(Map<String, dynamic> body) async {
+    var result = await DioRequester().requestMethod(
+        url: urls.signUp,
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: body);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: LoginPost.fromJson(result.response.data));
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

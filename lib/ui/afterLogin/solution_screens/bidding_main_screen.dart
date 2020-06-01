@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
@@ -72,6 +74,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       });
     _getUserDetails();
     _getPreviousSolutions();
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == EditProfileScreen.tag &&
+          mounted) {
+        _getUserDetails();
+      }
+    });
     super.initState();
   }
 

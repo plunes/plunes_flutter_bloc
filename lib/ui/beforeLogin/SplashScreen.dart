@@ -35,7 +35,7 @@ class SplashScreen extends BaseActivity {
 class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   Timer mTimer;
   Preferences preferences;
-  UserBloc  _userBloc;
+  UserBloc _userBloc;
   var location = new loc.Location();
 
   @override
@@ -52,33 +52,12 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
     bloc.dispose();
   }
 
-//  getData(data) {
-//    for (int i = 0; i < data.posts.length; i++) {
-//      CommonMethods.catalogueLists.add(data.posts[i]);
-//    }
-//    mTimer = new Timer(Duration(seconds: 7), navigationPage);
-//  }
-
   startTime() async {
-//    try {
     await Preferences().instantiatePreferences();
     preferences = new Preferences();
-//      var getLocation = await location.getLocation().catchError((e) {
-//        AppLog.printError("Location denied splash $e");
-//      });
-//      var _latitude = getLocation?.latitude?.toString();
-//      var _longitude = getLocation?.longitude?.toString();
-//
-//      if (_latitude != null && _longitude != null) {
-//        preferences.setPreferencesString(Constants.LATITUDE, _latitude);
-//        preferences.setPreferencesString(Constants.LONGITUDE, _longitude);
-//      }
     await Future.delayed(Duration(seconds: 2));
     _userBloc.getSpeciality();
     navigationPage();
-//    } catch(err){
-//       print("error is "+ err);
-//    }
   }
 
   navigationPage() {

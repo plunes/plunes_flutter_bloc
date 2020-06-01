@@ -1,7 +1,6 @@
 /// Created by Manvendra Kumar Singh
 
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,11 +8,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
-
 import 'EnterPhoneScreen.dart';
 import 'ForgotPassword.dart';
 
@@ -47,11 +48,20 @@ class _LoginState extends State<Login> implements DialogCallBack {
       isValidNumber = true;
   String title = '', body = '';
   var globalHeight, globalWidth;
+  UserBloc _userBloc;
+
+  @override
+  void dispose() {
+    _userBloc?.dispose();
+    phoneController?.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
-    super.initState();
+    _userBloc = UserBloc();
     phoneController.text = widget.phone;
+    super.initState();
   }
 
   Widget build(BuildContext context) {
@@ -99,8 +109,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
                 progress
                     ? SpinKitThreeBounce(
                         color: Color(hexColorCode.defaultGreen), size: 30.0)
-                    : widget.getDefaultButton(
-                        plunesStrings.login, globalWidth - 40, 42, submitLogin),
+                    : widget.getDefaultButton(plunesStrings.login,
+                        globalWidth - 40, 42, _submitLogin),
                 widget.getSpacer(0.0, 20.0),
                 getForgotPasswordButton(),
                 getSignUpViewButton()
@@ -224,9 +234,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
 
   Widget getForgotPasswordButton() {
     return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, ForgetPassword.tag);
-      },
+      onTap: () => Navigator.pushNamed(context, ForgetPassword.tag),
       child: Container(
         padding: EdgeInsets.all(10),
         child: widget.createTextViews(plunesStrings.forgotPassword, 16,
@@ -286,7 +294,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
         false;
   }
 
-  submitLogin() {
+  _submitLogin() {
     if (!isValidNumber || phoneController.text.isEmpty)
       widget.showInSnackBar(plunesStrings.enterValidNumber,
           PlunesColors.BLACKCOLOR, _scaffoldKey);
@@ -294,27 +302,32 @@ class _LoginState extends State<Login> implements DialogCallBack {
       widget.showInSnackBar(plunesStrings.errorMsgPassword,
           PlunesColors.BLACKCOLOR, _scaffoldKey);
     else
-      userLoginRequest();
+      _userLoginRequest();
   }
 
-  userLoginRequest() async {
+  _userLoginRequest() async {
     progress = true;
     _setState();
-    bloc.loginRequest(
-        context, this, phoneController.text, passwordController.text);
-    bloc.loginData.listen((data) async {
-      progress = false;
-      _setState();
+    await Future.delayed(Duration(milliseconds: 100));
+    var result = await _userBloc.login(
+        phoneController.text.trim(), passwordController.text.trim());
+    progress = false;
+    _setState();
+    await Future.delayed(Duration(milliseconds: 100));
+    if (result is RequestSuccess) {
+      LoginPost data = result.response;
       if (data.success) {
         await bloc.saveDataInPreferences(data, context, plunesStrings.login);
         widget.showInSnackBar(
             plunesStrings.success, PlunesColors.GREENCOLOR, _scaffoldKey);
       } else {
-        await Future.delayed(Duration(milliseconds: 100));
-        widget.showInSnackBar(
-            "Invalid credentials", PlunesColors.BLACKCOLOR, _scaffoldKey);
+        widget.showInSnackBar(PlunesStrings.invalidCredentials,
+            PlunesColors.BLACKCOLOR, _scaffoldKey);
       }
-    });
+    } else if (result is RequestFailed) {
+      widget.showInSnackBar(
+          result?.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+    }
   }
 
   _setState() {

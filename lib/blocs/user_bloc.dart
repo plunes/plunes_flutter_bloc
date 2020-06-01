@@ -106,4 +106,16 @@ class UserBloc extends BlocBase {
   Future<RequestState> getHelplineNumber() {
     return UserManager().getHelplineNumber();
   }
+
+  Future<RequestState> checkUserExistence(String phoneNumber) {
+    return UserManager().checkUserExistence(phoneNumber);
+  }
+
+  Future<RequestState> login(String phoneNumber, String password) {
+    return UserManager().login(phoneNumber, password);
+  }
+
+  Future<RequestState> signUp(Map<String, dynamic> body) {
+    return UserManager().signUp(body);
+  }
 }

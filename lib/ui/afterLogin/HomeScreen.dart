@@ -4,6 +4,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
@@ -96,7 +97,6 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     CommonMethods.globalContext = context;
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: Colors.white,
@@ -330,8 +330,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
           data[Constants.SUCCESS]) {
         navigationPage();
       } else {
-        widget.showInSnackBar(
-            plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
+        widget.showInSnackBar(plunesStrings.somethingWentWrong,
+            PlunesColors.BLACKCOLOR, _scaffoldKey);
       }
     });
   }
@@ -530,10 +530,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   void navigatePage(int position) async {
     switch (position) {
       case 0:
-//        setState(() {
-//          _selectedIndex = 3;
-//          closeDrawer();
-//        });
+        Navigator.pop(context);
         var user = UserManager().getUserDetails();
         await Navigator.push(
             context,
@@ -553,6 +550,9 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                     specializations: user.speciality,
                     experience: user.experience)));
         getSharedPreferencesData();
+        EventProvider()
+            .getSessionEventBus()
+            .fire(ScreenRefresher(screenName: EditProfileScreen.tag));
         break;
       case 1:
         Navigator.pop(context);

@@ -13,8 +13,8 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:plunes/ui/commonView/SelectSpecialization.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+// ignore: must_be_immutable
 class EditProfileScreen extends BaseActivity {
   static const tag = '/editprofile';
   final fullName,
@@ -81,7 +81,7 @@ class _EditProfileState extends State<EditProfileScreen>
   bool profession_valid = true;
   bool specification_valid = true, name_valid = true;
   bool experience_valid = true;
-  String _latitude = '', _longitude = '';
+  String _latitude = '0.0', _longitude = '0.0';
   bool progress = false;
   String user_token = "";
   String user_id = "";
@@ -100,16 +100,6 @@ class _EditProfileState extends State<EditProfileScreen>
     _userBloc = UserBloc();
     super.initState();
   }
-
-//  getSharedPreferences() async {
-//    SharedPreferences prefs = await SharedPreferences.getInstance();
-//    String token = prefs.getString("token");
-//    String uid = prefs.getString("uid");
-//    setState(() {
-//      user_token = token;
-//      user_id = uid;
-//    });
-//  }
 
   @override
   Widget build(BuildContext context) {
@@ -178,7 +168,7 @@ class _EditProfileState extends State<EditProfileScreen>
 //                  true,
 //                  '')
 //              : Container(),
-         // widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
+          // widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
 //          isDoctor
 //              ? createTextField(
 //                  specializationController,
@@ -333,6 +323,9 @@ class _EditProfileState extends State<EditProfileScreen>
             opaque: false,
             pageBuilder: (BuildContext context, _, __) => LocationFetch()))
         .then((val) {
+      if (val == null || val.toString().isEmpty) {
+        return;
+      }
       var addressControllerList = new List();
       addressControllerList = val.toString().split(":");
       locationController.text = addressControllerList[0] +
@@ -350,83 +343,53 @@ class _EditProfileState extends State<EditProfileScreen>
     nameController.text = widget.fullName;
     dobController.text = widget.dateOfBirth;
     locationController.text = widget.location;
-   // specializationController.text = widget.specializations;
+    // specializationController.text = widget.specializations;
     educationController.text = widget.education;
     collegeController.text = widget.college;
     var user = UserManager().getUserDetails();
     professionRegController.text = user.profRegistrationNumber;
     experienceController.text = user.experience;
     aboutController.text = user.about;
-
-
   }
 
   updateProfileRequest() async {
-    FocusScope.of(context).requestFocus (FocusNode());
+    FocusScope.of(context).requestFocus(FocusNode());
 //    List specialistId = new List();
 //    for (var item in _selectedItemId)
 //      specialistId.add({'specialityId': item});
+    var details = UserManager().getUserDetails();
     var body = {};
     var user = User(
       name: nameController.text.trim(),
-      latitude: _latitude,
-      longitude: _longitude,
+      latitude: (_latitude == null || _latitude == "0.0")
+          ? details.latitude ?? "0.0"
+          : _latitude,
+      longitude: (_longitude == null || _longitude == "0.0")
+          ? details.longitude ?? "0.0"
+          : _longitude,
       address: locationController.text.trim(),
       birthDate: dobController.text.trim(),
       registrationNumber: professionRegController.text.trim(),
       experience: experienceController.text.trim(),
-     // about: aboutController.text.trim(),
+      // about: aboutController.text.trim(),
       biography: aboutController.text.trim(),
       qualification: educationController.text.trim(),
       college: collegeController.text.trim(),
       practising: practisingController.text.trim(),
     );
-
-//    body['name'] = nameController.text;
-//    body['latitude'] = _latitude;
-//    body['longitude'] = _longitude;
-//    body['address'] = locationController.text;
-/*    if (_userType != Constants.hospital) {
-      body['birthDate'] = dobController.text;
-      body['referralCode'] = referralController.text;
-    }
-    if (_userType == Constants.doctor || _userType == Constants.hospital) {
-      body['registrationNumber'] = professionRegController.text;
-      body["specialities"] = specialistId;
-
-      if (_userType == Constants.doctor) {
-        body['experience'] = experienceController.text;
-      }
-      if (_userType == Constants.hospital) {
-        body['biography'] = aboutController.text;
-        body['doctors'] = _doctorsList;
-      }
-    }*/
-
-//    progress = true;
-//    bloc.updateRequest(context, this, body);
-//    bloc.updateProfileFetcher.listen((data) async {
-//      progress = false;
-//      if (data != null && data['success'] != null && data['success']) {
-//        await bloc.saveEditProfileDataInPreferences(context, body);
-//        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
-//      } else {
-//        widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
-//      }
-//    });
+    print("user.toJson() ${user.toJson()}");
     progress = true;
     _setState();
-   // print(user.toString());
     var result = await _userBloc.updateUserData(user.toJson());
     if (result is RequestSuccess) {
       widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
-      Future.delayed(Duration(milliseconds: 550)).then((value){
+      Future.delayed(Duration(milliseconds: 550)).then((value) {
         Navigator.pop(context);
       });
     } else if (result is RequestFailed) {
       RequestFailed requestFailed = result;
       widget.showInSnackBar(
-          requestFailed.failureCause, Colors.red, _scaffoldKey);
+          requestFailed.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
     }
     progress = false;
     _setState();

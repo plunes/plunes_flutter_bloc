@@ -52,8 +52,8 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
 
   @override
   void dispose() {
+    _userBloc?.dispose();
     super.dispose();
-    bloc.dispose();
   }
 
   Widget getEnterPhoneNumberRow() {
@@ -113,12 +113,17 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
         progress = true;
         _setState();
         await Future.delayed(Duration(milliseconds: 200));
-        bloc.checkUserExistence(context, this, phoneNumberController.text);
-        bloc.isUserExist.listen((data) {
-          getUserExistenceData(data);
-        }, onDone: () {
-          bloc.dispose();
-        });
+        var result = await _userBloc
+            .checkUserExistence(phoneNumberController.text.trim());
+        if (result is RequestSuccess) {
+          getUserExistenceData(result.response);
+        } else if (result is RequestFailed) {
+          progress = false;
+          _setState();
+          await Future.delayed(Duration(milliseconds: 200));
+          widget.showInSnackBar(
+              result.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+        }
       } else {
         progress = false;
         Navigator.push(
@@ -128,8 +133,8 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                     Registration(phone: phoneNumberController.text)));
       }
     } else
-      widget.showInSnackBar(
-          plunesStrings.enterValidNumber, Colors.red, _scaffoldKey);
+      widget.showInSnackBar(plunesStrings.enterValidNumber,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
   }
 
   @override
@@ -225,12 +230,12 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   dialogCallBackFunction(String action) {}
 
   void getUserExistenceData(data) async {
-//    Constants.OTP = CommonMethods.getRandomOTP();
     if (data != null && data['success'] != null && !data['success']) {
       var requestState =
           await _userBloc.getGenerateOtp(phoneNumberController.text.trim());
       progress = false;
       _setState();
+      await Future.delayed(Duration(milliseconds: 200));
       if (requestState is RequestSuccess) {
         Navigator.push(
             context,
@@ -241,25 +246,6 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
         widget.showInSnackBar(
             requestState.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
       }
-//      bloc.sendOTP(
-//          context,
-//          this,
-//          (urls.sendOTPUrl +
-//              phoneNumberController.text.trim() +
-//              urls.otpConfig));
-
-//      bloc.userOTP.listen((data) {
-//        if (data['type'] != null && data['type'] == 'success') {
-//          progress = false;
-//          Navigator.push(
-//              context,
-//              MaterialPageRoute(
-//                  builder: (context) =>
-//                      CheckOTP(phone: phoneNumberController.text, from: '')));
-//        }
-//      }, onDone: () {
-//        bloc.dispose();
-//      });
     } else {
       progress = false;
       Navigator.push(

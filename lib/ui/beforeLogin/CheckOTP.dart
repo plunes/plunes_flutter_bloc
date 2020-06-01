@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
-import 'package:plunes/Utils/Constants.dart';
-import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/blocs/user_bloc.dart';
@@ -10,7 +8,6 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:quiver/async.dart';
-
 import 'ChangePassword.dart';
 import 'Registration.dart';
 
@@ -35,6 +32,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
   bool progress = false, time = true, resend = false, errorMsg = false;
   int _start = 30, _current = 30;
   CountdownTimer countDownTimer;
+  UserBloc _userBloc;
 
   void _checkOTP(String pin, BuildContext context) async {
     if (pin == null || pin.isEmpty || pin.length != 4) {
@@ -42,7 +40,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
           PlunesStrings.invalidOtp, PlunesColors.BLACKCOLOR, scaffoldKey);
       return;
     }
-    var result = await UserBloc().getVerifyOtp(widget.phone, pin,
+    var result = await _userBloc.getVerifyOtp(widget.phone, pin,
         iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle);
     if (result is RequestSuccess) {
       VerifyOtpResponse verifyOtpResponse = result.response;
@@ -74,7 +72,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
   }
 
   void sendOtp() async {
-    var requestState = await UserBloc().getGenerateOtp(widget.phone,
+    var requestState = await _userBloc.getGenerateOtp(widget.phone,
         iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle);
     if (requestState is RequestSuccess) {
       _start = 30;
@@ -89,8 +87,9 @@ class _CheckOTPState extends BaseState<CheckOTP> {
 
   @override
   void initState() {
-    super.initState();
+    _userBloc = UserBloc();
     startTimer();
+    super.initState();
   }
 
   void startTimer() {
@@ -117,8 +116,9 @@ class _CheckOTPState extends BaseState<CheckOTP> {
 
   @override
   void dispose() {
-    super.dispose();
+    _userBloc?.dispose();
     countDownTimer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -176,14 +176,6 @@ class _CheckOTPState extends BaseState<CheckOTP> {
               ),
             ),
           ),
-//          Container(
-//            margin: EdgeInsets.only(bottom: 30),
-//            child: Visibility(
-//                visible: errorMsg,
-//                child: Center(
-//                    child: widget.createTextViews(plunesStrings.wrongOTPError, 12,
-//                        colorsFile.red, TextAlign.center, FontWeight.normal))),
-//          ),
           Visibility(
             visible: time,
             child: Container(
@@ -238,9 +230,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
         key: scaffoldKey,
         appBar: widget.getAppBar(context, plunesStrings.checkOTP, true),
         body: GestureDetector(
-          onTap: () {
-            CommonMethods.hideSoftKeyboard();
-          },
+          onTap: () => CommonMethods.hideSoftKeyboard(),
           child: form,
         ));
   }

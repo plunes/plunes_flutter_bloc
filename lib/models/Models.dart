@@ -296,7 +296,6 @@ class User {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-
     if (this.latitude != null &&
         this.longitude != null &&
         this.latitude.isNotEmpty &&
@@ -306,7 +305,6 @@ class User {
         double.parse(this.latitude)
       ]).toJson();
     }
-
     data['name'] = this.name;
     data['gender'] = this.gender;
     data['mobileNumber'] = this.mobileNumber;

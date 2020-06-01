@@ -2,16 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
-import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
-import 'package:plunes/resources/network/Urls.dart';
-
 import 'CheckOTP.dart';
 
 /*
@@ -44,7 +40,6 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
 
   @override
   void dispose() {
-    bloc.dispose();
     _userBloc?.dispose();
     phoneNumberController.dispose();
     super.dispose();
@@ -88,7 +83,7 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
               ? SpinKitThreeBounce(
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
               : widget.getDefaultButton(
-                  plunesStrings.ok, globalWidth, 42, submitForOTP),
+                  plunesStrings.ok, globalWidth, 42, _submitForOTP),
           widget.getSpacer(0.0, 30.0),
           widget.getBorderButton(
               plunesStrings.cancel, globalWidth, onBackPressed)
@@ -151,30 +146,39 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
     }
   }
 
-  submitForOTP() async {
+  _submitForOTP() async {
     if (isValidNumber && phoneNumberController.text != '') {
       progress = true;
-      bloc.checkUserExistence(context, this, phoneNumberController.text);
-      bloc.isUserExist.listen((data) {
-        getUserExistenceData(data);
-      }, onDone: () {
-        bloc.dispose();
-      });
+      _setState();
+      await Future.delayed(Duration(milliseconds: 200));
+      var result =
+          await _userBloc.checkUserExistence(phoneNumberController.text.trim());
+      if (result is RequestSuccess) {
+        _getUserExistenceData(result.response);
+      } else if (result is RequestFailed) {
+        progress = false;
+        _setState();
+        await Future.delayed(Duration(milliseconds: 200));
+        widget.showInSnackBar(
+            result.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      }
     } else
-      widget.showInSnackBar(
-          plunesStrings.enterValidNumber, Colors.red, _scaffoldKey);
+      widget.showInSnackBar(plunesStrings.enterValidNumber,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
   }
 
   onBackPressed() {
     Navigator.pop(context);
   }
 
-  getUserExistenceData(data) async {
-    progress = false;
+  _getUserExistenceData(data) async {
     if (data['success'] != null && data['success']) {
       var requestState = await _userBloc.getGenerateOtp(
           phoneNumberController.text.trim(),
           iFromForgotPassword: true);
+      progress = false;
+      _setState();
+      await Future.delayed(Duration(milliseconds: 200));
       if (requestState is RequestSuccess) {
         Navigator.push(
             context,
@@ -184,14 +188,21 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
                     from: plunesStrings.forgotPasswordTitle)));
       } else if (requestState is RequestFailed) {
         widget.showInSnackBar(
-            requestState.failureCause, Colors.red, _scaffoldKey);
+            requestState.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
       }
     } else if (!data['success']) {
+      progress = false;
+      _setState();
+      await Future.delayed(Duration(milliseconds: 200));
       widget.showInSnackBar(
-          plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
+          PlunesStrings.numberNotExist, PlunesColors.BLACKCOLOR, _scaffoldKey);
     }
   }
 
   @override
   dialogCallBackFunction(String action) {}
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
 }

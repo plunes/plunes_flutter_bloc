@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:location/location.dart' as loc;
@@ -11,6 +12,7 @@ import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -109,6 +111,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
 
   @override
   void dispose() {
+    _userBloc?.dispose();
     disposeControllers();
     super.dispose();
   }
@@ -379,7 +382,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     plunesStrings.alternatePhoneNo,
                     TextInputType.number,
                     TextCapitalization.none,
-                    false,
+                    true,
                     ''),
                 createTextField(aboutController, plunesStrings.aboutHospital,
                     TextInputType.text, TextCapitalization.none, true, ''),
@@ -628,7 +631,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                   plunesStrings.alternatePhoneNo,
                   TextInputType.number,
                   TextCapitalization.none,
-                  false,
+                  true,
                   '')
               : Container(),
           widget.getSpacer(0.0, 15.0),
@@ -863,16 +866,17 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         _selectedItemId = [];
       });
     } else {
-      widget.showInSnackBar((errorMessage), Colors.red, _scaffoldKey);
+      widget.showInSnackBar(
+          errorMessage, PlunesColors.BLACKCOLOR, _scaffoldKey);
     }
   }
 
-  submitRegistrationRequest() {
+  submitRegistrationRequest() async {
     if (validation()) {
       List specialistId = new List();
       for (var item in _selectedItemId)
         specialistId.add({'specialityId': item});
-      var body = {};
+      Map<String, dynamic> body = {};
       body['name'] = nameController.text;
       body['gender'] = gender == 'Male' ? 'M' : 'F';
       body['mobileNumber'] = phoneController.text;
@@ -904,20 +908,32 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           body['doctors'] = _doctorsList;
         }
       }
-//      print("body" + body.toString());
       progress = true;
-      bloc.registrationRequest(context, this, body);
-      bloc.registrationResult.listen((data) async {
-        progress = false;
+      _setState();
+      await Future.delayed(Duration(milliseconds: 50));
+      var result = await _userBloc.signUp(body);
+      progress = false;
+      _setState();
+      await Future.delayed(Duration(milliseconds: 50));
+      if (result is RequestSuccess) {
+        LoginPost data = result.response;
         if (data.success) {
           await bloc.saveDataInPreferences(
               data, context, plunesStrings.registration);
         } else {
-          widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
+          widget.showInSnackBar(
+              data.message, PlunesColors.BLACKCOLOR, _scaffoldKey);
         }
-      });
+      } else if (result is RequestFailed) {
+        widget.showInSnackBar(
+            result.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      } else {
+        widget.showInSnackBar(plunesStrings.somethingWentWrong,
+            PlunesColors.BLACKCOLOR, _scaffoldKey);
+      }
     } else {
-      widget.showInSnackBar((errorMessage), Colors.red, _scaffoldKey);
+      widget.showInSnackBar(
+          errorMessage, PlunesColors.BLACKCOLOR, _scaffoldKey);
     }
   }
 
@@ -1114,6 +1130,12 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               obscureText:
                   (controller == passwordController ? _passwordVisible : false),
               keyboardType: inputType,
+              inputFormatters:
+                  (controller != null && controller == alternatePhoneController)
+                      ? <TextInputFormatter>[
+                          WhitelistingTextInputFormatter.digitsOnly
+                        ]
+                      : null,
               textInputAction: controller == referralController
                   ? TextInputAction.done
                   : TextInputAction.next,
@@ -1241,7 +1263,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     plunesStrings.alternatePhoneNo,
                     TextInputType.number,
                     TextCapitalization.none,
-                    false,
+                    true,
                     ''),
                 createTextField(aboutController, plunesStrings.aboutLab,
                     TextInputType.text, TextCapitalization.none, true, ''),
@@ -1358,11 +1380,11 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       print('$_latitude , $_longitude');
       final coordinates =
           new Coordinates(double.parse(_latitude), double.parse(_longitude));
-      var addressControlleres =
+      var addressController =
           await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      var addr = addressControlleres.first;
+      var addr = addressController.first;
       String fullAddressController = addr.addressLine;
-      locationController.text = fullAddressController;
+      if (mounted) locationController.text = fullAddressController;
     }
     _setState();
   }

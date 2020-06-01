@@ -185,10 +185,15 @@ class PlunesStrings {
   static const String queryCantBeEmpty = "Please fill your description";
   static const String unableToCancel =
       "Appointment time is over, unable to cancel.";
-  static String unableToReschedule =
+  static const String unableToReschedule =
       "Appointment time is over, unable to reschedule";
-  static String unableToConfirm = "Appointment time is over, unable to confirm";
-  static String unableToRefund = "Appointment time is over, unable to refund";
+  static const String unableToConfirm =
+      "Appointment time is over, unable to confirm";
+  static const String unableToRefund =
+      "Appointment time is over, unable to refund";
+  static const String numberNotExist = "Phone number doesn't exists";
+
+  static const String invalidCredentials = "Invalid credentials";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
@@ -604,36 +609,6 @@ class PlunesStrings {
 
   get text2Referral =>
       'You will get instant cash as soon as your friend registers successfully';
-
-//  ///Solution strings
-//  static const String solutionSearched = "Solution Searched";
-//  static const String consultations = "Consultations";
-//  static const String tests = "Tests";
-//  static const String procedures = "Procedures";
-//  static const String NA = "NA";
-//  static const String negotiateForBestPrice =
-//      "Negotiate for the best price solution near you";
-//  static const String previousActivities = "Previous Activities";
-//  static const String noSolutionsAvailable = "No solutions available";
-//  static const String consultationNotAvailable = "Consultation not available";
-//  static const String proceduresNotAvailable = "Procedures not available";
-//  static const String testsNotAvailable = "Tests not available";
-//  static const String serviceNotAvailable =
-//      "Currently this service is not available";
-//  static const String weAreGettingBestSolution =
-//      "WE ARE GETTING THE BEST SOLUTIONS FOR YOU";
-//  static const String receiving = "Receiving...";
-//  static const String checkAvailability = "Check Availability";
-//  static const String bookIn = "Book in ";
-//  static const String homeCollectionAvailable = "Home Collection Available";
-//  static const String oopsServiceNotAvailable =
-//      "Oops, seems like we are not providing services in your area, kindly search in gurgoun location.";
-//  static const String save = "Save";
-//  static const String kmsAway = "kms away";
-//  static const String book = "Book";
-//  static const String viewDetails = 'View Details';
-//  static const String confirmYourBooking = "Confirm your Booking";
-//  static const String negotiating = "Negotiating. . .";
 
   static const String prePayConfirmBooking =
       "Make a payment of  300/- to confirm the booking";

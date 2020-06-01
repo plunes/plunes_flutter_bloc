@@ -10,7 +10,6 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
-
 import 'Login.dart';
 
 /*
@@ -65,7 +64,6 @@ class _ChangePasswordState extends State<ChangePassword>
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
     CommonMethods.globalContext = context;
-
     return Scaffold(
         key: _scaffoldKey,
         appBar: widget.getAppBar(
@@ -231,21 +229,24 @@ class _ChangePasswordState extends State<ChangePassword>
     if (widget.from != plunesStrings.createPassword &&
         _isValidOldPassword &&
         oldPasswordController.text.isEmpty)
-      widget.showInSnackBar(
-          plunesStrings.emptyOldPasswordError, Colors.red, _scaffoldKey);
+      widget.showInSnackBar(plunesStrings.emptyOldPasswordError,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
     else if (_isValidPassword && passwordController.text.isEmpty)
-      widget.showInSnackBar(
-          plunesStrings.emptyNewPasswordError, Colors.red, _scaffoldKey);
+      widget.showInSnackBar(plunesStrings.emptyNewPasswordError,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
     else if (_isValidPassword &&
         _isValidNewPassword &&
         newPasswordController.text.isEmpty)
-      widget.showInSnackBar(
-          plunesStrings.emptyConfirmPasswordError, Colors.red, _scaffoldKey);
+      widget.showInSnackBar(plunesStrings.emptyConfirmPasswordError,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
     else if (_isValidOldPassword && _isValidPassword && _isValidNewPassword) {
       if (newPasswordController.text != passwordController.text)
-        widget.showInSnackBar(
-            plunesStrings.passwordMismatchError, Colors.red, _scaffoldKey);
+        widget.showInSnackBar(plunesStrings.passwordMismatchError,
+            PlunesColors.BLACKCOLOR, _scaffoldKey);
       else {
+        progress = true;
+        _setState();
+        await Future.delayed(Duration(milliseconds: 200));
         if (widget.from == plunesStrings.createPassword) {
           _resetPassword();
         } else {
@@ -257,6 +258,8 @@ class _ChangePasswordState extends State<ChangePassword>
 
   Future delay(RequestState result) async {
     progress = false;
+    _setState();
+    await Future.delayed(Duration(milliseconds: 200));
     if (result is RequestSuccess) {
       widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
       await Future.delayed(new Duration(milliseconds: 2000));
@@ -266,10 +269,11 @@ class _ChangePasswordState extends State<ChangePassword>
         Navigator.pop(context);
       }
     } else if (result is RequestFailed) {
-      widget.showInSnackBar(result.failureCause, Colors.red, _scaffoldKey);
-    } else
       widget.showInSnackBar(
-          plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
+          result.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+    } else
+      widget.showInSnackBar(plunesStrings.somethingWentWrong,
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
   }
 
   getSharedPreferenceData() {
@@ -289,5 +293,9 @@ class _ChangePasswordState extends State<ChangePassword>
     var result = await _userBloc.changePassword(
         oldPasswordController.text.trim(), passwordController.text.trim());
     delay(result);
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
   }
 }
