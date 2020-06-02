@@ -7,10 +7,12 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -34,36 +36,46 @@ class NotificationScreen extends BaseActivity {
   _NotificationScreenState createState() => _NotificationScreenState();
 }
 
-class _NotificationScreenState extends State<NotificationScreen>
-    implements DialogCallBack {
+class _NotificationScreenState extends State<NotificationScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
   bool isSelected = false;
   List<String> selectedPositions = new List();
-  AllNotificationsPost items;
+  AllNotificationsPost _items;
+  NotificationBloc _notificationBloc;
+  String _failedMessage;
+  StreamController _streamController;
+  Timer _timer;
 
   @override
   void initState() {
+    _notificationBloc = NotificationBloc();
+    _getNotifications();
+    _streamController = StreamController.broadcast();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_streamController != null && !_streamController.isClosed)
+        _streamController?.add(null);
+    });
     FirebaseNotification().setNotificationCount(0);
     FirebaseNotification().notificationStream.listen((event) {
       if (FirebaseNotification().getNotificationCount() != null &&
           FirebaseNotification().getNotificationCount() != 0 &&
           mounted) {
-        initialize();
+        _getNotifications();
       }
     });
     super.initState();
-    initialize();
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _timer?.cancel();
+    _streamController?.close();
     if (FirebaseNotification().getNotificationCount() != null &&
         FirebaseNotification().getNotificationCount() != 0) {
       FirebaseNotification().setNotificationCount(0);
     }
-    bloc.disposeNotificationApiStream();
+    super.dispose();
   }
 
   @override
@@ -75,96 +87,69 @@ class _NotificationScreenState extends State<NotificationScreen>
         key: _scaffoldKey,
         backgroundColor: PlunesColors.WHITECOLOR,
         body: Container(
-          child: StreamBuilder(
-            stream: bloc.notificationApiFetcherList,
-            builder: ((context, snapshot) {
-              items = snapshot.data;
-              if (snapshot.hasData) {
-                if (items.posts.length == 0)
-                  return Center(
-                    child: Text(plunesStrings.noRecordsFound,
-                        style: TextStyle(fontSize: AppConfig.smallFont)),
-                  );
-                else
-                  return buildList(snapshot);
+            child: StreamBuilder<RequestState>(
+          stream: _notificationBloc.baseStream,
+          builder: ((context, snapshot) {
+            if (snapshot.data is RequestSuccess) {
+              RequestSuccess successObject = snapshot.data;
+              _items = successObject.response;
+            } else if (snapshot.data is RequestFailed) {
+              RequestFailed _failedObj = snapshot.data;
+              _failedMessage = _failedObj?.failureCause;
+            }
+            if (_items != null) {
+              if (_items == null ||
+                  _items.posts == null ||
+                  _items.posts.length == 0) {
+                return Center(
+                  child: Text(_failedMessage ?? plunesStrings.noRecordsFound,
+                      style: TextStyle(fontSize: AppConfig.smallFont)),
+                );
+              } else {
+                return buildList(_items);
               }
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }),
-          ),
-        ));
+            }
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
+        )));
   }
 
-  Widget buildList(AsyncSnapshot<AllNotificationsPost> snapshot) {
+  Widget buildList(final AllNotificationsPost items) {
     return ListView.builder(
       padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
-      itemCount: snapshot.data.posts.length,
+      itemCount: items.posts.length,
       itemBuilder: (context, index) {
-        return rowLayout(snapshot.data.posts[index]);
+        return rowLayout(items.posts[index]);
       },
     );
   }
 
   Widget rowLayout(PostsData result) {
-    int removePosition = selectedPositions.indexOf(result.id.toString());
     return InkWell(
-      onTap: () => addRemoveSelectedItem(result, removePosition),
-//      onLongPress: () {
-//        reset();
-//        isSelected = true;
-//        addRemoveSelectedItem(result, removePosition);
-//      },
+      onTap: () => _onTap(result),
       child: Container(
+        color: (result.hasSeen ?? true) ? null : PlunesColors.LIGHTGREENCOLOR,
         margin: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 3,
-        ),
+            horizontal: AppConfig.horizontalBlockSize * 3,
+            vertical: AppConfig.verticalBlockSize * 0.4),
         child: Column(
           children: <Widget>[
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(bottom: 0, right: 10),
-                  child: result.senderImageUrl != '' &&
-                          !result.senderImageUrl.contains("default")
-                      ? CircleAvatar(
-                          radius: AppConfig.horizontalBlockSize * 5,
-                          backgroundImage: NetworkImage(result.senderImageUrl),
-                        )
-                      : CustomWidgets()
-                          .getProfileIconWithName(result.senderName, 14, 14),
-
-//              Container(
-////                            height: AppConfig.verticalBlockSize*4,
-////                            width: AppConfig.horizontalBlockSize*8,
-//                      padding: EdgeInsets.all(
-//                          AppConfig.horizontalBlockSize * 1.6),
-//                      alignment: Alignment.center,
-//                      child: Text(
-//                          (result.senderName != ''
-//                                  ? CommonMethods.getInitialName(
-//                                      result.senderName)
-//                                  : '')
-//                              .toUpperCase(),
-//                          style: TextStyle(
-//                              color: Colors.white,
-//                              fontSize: AppConfig.smallFont,
-//                              fontWeight: FontWeight.normal)),
-//                      decoration: BoxDecoration(
-//                        borderRadius: BorderRadius.all(Radius.circular(
-//                            AppConfig.horizontalBlockSize * 5)),
-//                        gradient: new LinearGradient(
-//                            colors: [
-//                              Color(0xffababab),
-//                              Color(0xff686868)
-//                            ],
-//                            begin: FractionalOffset.topCenter,
-//                            end: FractionalOffset.bottomCenter,
-//                            stops: [0.0, 1.0],
-//                            tileMode: TileMode.clamp),
-//                      )),
-                ),
+                    margin: EdgeInsets.only(bottom: 0, right: 10),
+                    child: result.senderImageUrl != '' &&
+                            !result.senderImageUrl.contains("default")
+                        ? CircleAvatar(
+                            radius: AppConfig.horizontalBlockSize * 5,
+                            backgroundImage:
+                                NetworkImage(result.senderImageUrl),
+                          )
+                        : CustomWidgets()
+                            .getProfileIconWithName(result.senderName, 14, 14)),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,51 +180,39 @@ class _NotificationScreenState extends State<NotificationScreen>
                 Container(
                   margin: EdgeInsets.only(bottom: 20),
                   alignment: Alignment.topRight,
-                  child: Text(
-                    CommonMethods.getDuration(result.createdTime),
-                    style: TextStyle(fontSize: AppConfig.verySmallFont - 2),
-                  ),
+                  child: StreamBuilder<Object>(
+                      stream: _streamController.stream,
+                      builder: (context, snapshot) {
+                        return Text(
+                          CommonMethods.getDuration(result.createdTime),
+                          style:
+                              TextStyle(fontSize: AppConfig.verySmallFont - 2),
+                        );
+                      }),
                 )
               ],
             ),
-            CustomWidgets().getSeparatorLine(),
-//            Padding(
-//              padding: EdgeInsets.only(top:AppConfig.verticalBlockSize*2),
-//            ),
-//            Container(
-//              width: double.infinity,
-//              height: 0.5,
-//              color: PlunesColors.GREYCOLOR,
-//            )
+            Container(
+              padding:
+                  EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
+              margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 1.5,
+              ),
+              width: double.infinity,
+              height: 0.5,
+              color: PlunesColors.GREYCOLOR,
+            ),
           ],
         ),
       ),
     );
   }
 
-  Future addRemoveSelectedItem(PostsData result, int removePosition) async {
-//    if (isSelected) {
-//      List<String> list = new List();
-//      setState(() {
-//        String pos = result.id.toString();
-//        if (removePosition > -1) {
-//          selectedPositions.remove(pos);
-//        } else {
-//          selectedPositions.add(pos);
-//        }
-//      });
-//      if (selectedPositions.length == 0) reset();
-//      list = selectedPositions;
-//      var body = {};
-//      body['selectedItemList'] = list;
-//      body['isSelected'] = isSelected;
-//      bloc.changeAppBar(context, body);
-//    } else {
-//      isSelected = false;
-//      bloc.changeAppBar(context, null);
-//    print("Type of Notifcation:" + result?.notificationType);
-//    print("Type of result" + result?.toString());
-
+  Future _onTap(PostsData result) async {
+    if (result.hasSeen != null && !(result.hasSeen)) {
+      result.hasSeen = true;
+      _notificationBloc.addIntoStream(null);
+    }
     if (result.notificationScreen == FirebaseNotification.solutionScreen &&
         UserManager().getUserDetails().userType == Constants.user) {
       Navigator.push(
@@ -277,48 +250,9 @@ class _NotificationScreenState extends State<NotificationScreen>
                   HomeScreen(screenNo: Constants.plockerScreenNumber)),
           (_) => false);
     }
-    //  }
   }
 
-  void reset() {
-    if (mounted)
-      setState(() {
-        if (selectedPositions.length > 0) {
-          selectedPositions.clear();
-          isSelected = false;
-        }
-      });
-  }
-
-  void initialize() {
-    bloc.fetchNotificationData(context, this);
-//    bloc.deleteListenerFetcher.listen((data) {
-//      if (data == null)
-//        reset();
-//      else if (data != null && data['isYes'] != null && data['isYes']) {
-//        CommonMethods.confirmationDialog(
-//            context, plunesStrings.deleteNotificationMsg, this);
-//      }
-//    });
-  }
-
-  @override
-  dialogCallBackFunction(String action) {
-    if (action == 'CANCEL') {
-      reset();
-    } else {
-      for (int i = 0; i < items.posts.length; i++) {
-        bool flag = false;
-        for (int j = 0; j < selectedPositions.length; j++) {
-          if (!flag && items.posts[i].id.toString() == selectedPositions[j]) {
-            items.posts.removeAt(i);
-            flag = true;
-            i--;
-          }
-        }
-      }
-      reset();
-      bloc.notificationApiFetcher.sink.add(items);
-    }
+  void _getNotifications() {
+    _notificationBloc.getNotifications();
   }
 }

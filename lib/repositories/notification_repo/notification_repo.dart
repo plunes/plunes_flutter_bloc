@@ -6,7 +6,7 @@ import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class NotificationRepo {
-  Future<RequestState> getNotifications() async {
+  Future<RequestState> getNotifications({bool shouldNotify = false}) async {
     var result = await DioRequester().requestMethod(
         url: Urls.GET_NOTIFICATIONS_URL,
         requestType: HttpRequestMethods.HTTP_GET,
@@ -22,7 +22,8 @@ class NotificationRepo {
       if (_allNotificationPost != null &&
           _allNotificationPost.posts != null &&
           _allNotificationPost.unreadCount != null &&
-          _allNotificationPost.unreadCount != 0) {
+          _allNotificationPost.unreadCount != 0 &&
+          shouldNotify) {
         FirebaseNotification().setNotificationCount(1);
       }
       return RequestSuccess(response: _allNotificationPost);

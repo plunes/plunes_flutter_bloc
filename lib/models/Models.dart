@@ -69,9 +69,9 @@ class _Services {
       _category = result['category'] != null ? result['category'] : '';
     } else if (result['category'] != null && result['category'] is List) {
       _categoriesArray =
-      (result['category'] != null && result['category'].isNotEmpty)
-          ? result['category']
-          : [];
+          (result['category'] != null && result['category'].isNotEmpty)
+              ? result['category']
+              : [];
     }
     _description = result['dnd'] != null ? result['dnd'] : '';
   }
@@ -117,14 +117,17 @@ class BankDetails {
   String accountNumber;
   String panNumber, bankName;
 
-
   @override
   String toString() {
     return 'BankDetails{name: $accountHolderName, ifscCode: $ifscCode, accountNumber: $accountNumber, panNumber: $panNumber, bankName: $bankName}';
   }
 
   BankDetails(
-      {this.accountHolderName, this.ifscCode, this.accountNumber, this.panNumber, this.bankName});
+      {this.accountHolderName,
+      this.ifscCode,
+      this.accountNumber,
+      this.panNumber,
+      this.bankName});
 
   BankDetails.fromJson(Map<String, dynamic> json) {
     accountHolderName = json['name'];
@@ -181,38 +184,39 @@ class User {
   bool verifiedUser, notificationEnabled;
   BankDetails bankDetails;
 
-  User({this.uid,
-    this.name,
-    this.gender,
-    this.birthDate,
-    this.mobileNumber,
-    this.email,
-    this.verifiedUser,
-    this.userType,
-    this.address,
-    this.referralCode,
-    this.specialities,
-    this.timeSlots,
-    this.experience,
-    this.practising,
-    this.college,
-    this.biography,
-    this.registrationNumber,
-    this.qualification,
-    this.imageUrl,
-    this.achievements,
-    this.latitude,
-    this.longitude,
-    this.doctorsData,
-    this.coverImageUrl,
-    this.accessToken,
-    this.about,
-    this.speciality,
-    this.prescriptionLogoUrl,
-    this.credits,
-    this.userReferralCode,
-    this.notificationEnabled,
-    this.bankDetails});
+  User(
+      {this.uid,
+      this.name,
+      this.gender,
+      this.birthDate,
+      this.mobileNumber,
+      this.email,
+      this.verifiedUser,
+      this.userType,
+      this.address,
+      this.referralCode,
+      this.specialities,
+      this.timeSlots,
+      this.experience,
+      this.practising,
+      this.college,
+      this.biography,
+      this.registrationNumber,
+      this.qualification,
+      this.imageUrl,
+      this.achievements,
+      this.latitude,
+      this.longitude,
+      this.doctorsData,
+      this.coverImageUrl,
+      this.accessToken,
+      this.about,
+      this.speciality,
+      this.prescriptionLogoUrl,
+      this.credits,
+      this.userReferralCode,
+      this.notificationEnabled,
+      this.bankDetails});
 
   factory User.fromJson(Map<String, dynamic> json) {
     List<TimeSlotsData> _timeSlots = [];
@@ -222,75 +226,85 @@ class User {
           .map((value) => TimeSlotsData.fromJson(value))
           .toList(growable: true);
     }
-    return User(
-        uid: json['_id'] != null ? json['_id'] : '',
-        name: json['name'] != null ? json['name'] : '',
-        gender: json['gender'] != null ? json['gender'] : '',
-        birthDate: json['birthDate'] != null ? json['birthDate'] : '',
-        mobileNumber: json['mobileNumber'] != null ? json['mobileNumber'] : '',
-        email: json['email'] != null ? json['email'] : '',
-        verifiedUser: json['verifiedUser'] != null
-            ? json['verifiedUser']
-            : false,
-        userType: json['userType'] != null ? json['userType'] : '',
-        address: json['address'] != null ? json['address'] : '',
-        referralCode:
-        json['userReferralCode'] != null ? json['userReferralCode'] : null,
-        coverImageUrl: json['coverImageUrl'] != null
-            ? json['coverImageUrl']
-            : '',
-        specialities: json['specialities'] != null
-            ? List<ProcedureList>.from(
-            json['specialities'].map((i) => ProcedureList.fromJson(i)))
-            : List(),
-        achievements: json['achievements'] != null
-            ? List<AchievementsData>.from(
-            json['achievements'].map((i) => AchievementsData.fromJson(i)))
-            : List(),
-        doctorsData: json['doctors'] != null
-            ? List<DoctorsData>.from(
-            json['doctors'].map((i) => DoctorsData.fromJson(i)))
-            : List(),
-        experience:
-        json['experience'] != null ? json['experience'].toString() : '',
-        practising: json['practising'] != null ? json['practising'] : '',
-        college: json['college'] != null ? json['college'] : '',
-        biography: json['biography'] != null ? json['biography'] : '',
-        registrationNumber:
-        json['registrationNumber'] != null ? json['registrationNumber'] : '',
-        qualification: json['qualification'] != null
-            ? json['qualification']
-            : '',
-        imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
-        latitude: (json['geoLocation'] != null &&
+    String lat = "0.0", long = "0.0";
+    if ((json['geoLocation'] != null &&
             json['geoLocation']['latitude'] != null &&
-            json['geoLocation']['latitude']
-                .toString()
-                .trim()
-                .isNotEmpty)
-            ? json['geoLocation']['latitude'].toString()
-            : "0.0",
-        longitude: (json['geoLocation'] != null &&
+            json['geoLocation']['latitude'].toString().trim().isNotEmpty) &&
+        (json['geoLocation'] != null &&
             json['geoLocation']['longitude'] != null &&
-            json['geoLocation']['longitude']
-                .toString()
-                .trim()
-                .isNotEmpty)
-            ? json['geoLocation']['longitude'].toString()
-            : "0.0",
-        prescriptionLogoUrl: json['prescription'] != null
-            ? (json['prescription']['logoUrl'] != null
-            ? json['prescription']['logoUrl']
-            : '')
-            : '',
-        credits:
-        json['credits'].toString() != null ? json['credits'].toString() : '0',
-        speciality: json['specialityName'],
-        userReferralCode: json['userReferralCode'],
-        timeSlots: _timeSlots,
-        bankDetails: json['bankDetails'] != null
-            ? BankDetails.fromJson(json['bankDetails'])
-            : null
+            json['geoLocation']['longitude'].toString().trim().isNotEmpty)) {
+      lat = json['geoLocation']['latitude'].toString();
+      long = json['geoLocation']['longitude'].toString();
+    }
+    if (json['location'] != null &&
+        json['location']['coordinates'] != null &&
+        json['location']['coordinates'].isNotEmpty &&
+        lat == "0.0" &&
+        long == "0.0") {
+      long = json['location']['coordinates'][0]?.toString() ?? "0.0";
+      lat = json['location']['coordinates'][1]?.toString() ?? "0.0";
+    }
+//    print("lat in models $lat");
+//    print("long in models $long");
+    return User(
+      uid: json['_id'] != null ? json['_id'] : '',
+      name: json['name'] != null ? json['name'] : '',
+      gender: json['gender'] != null ? json['gender'] : '',
+      birthDate: json['birthDate'] != null ? json['birthDate'] : '',
+      mobileNumber: json['mobileNumber'] != null ? json['mobileNumber'] : '',
+      email: json['email'] != null ? json['email'] : '',
+      verifiedUser: json['verifiedUser'] != null ? json['verifiedUser'] : false,
+      userType: json['userType'] != null ? json['userType'] : '',
+      address: json['address'] != null ? json['address'] : '',
+      referralCode:
+          json['userReferralCode'] != null ? json['userReferralCode'] : null,
+      coverImageUrl: json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
+      specialities: json['specialities'] != null
+          ? List<ProcedureList>.from(
+              json['specialities'].map((i) => ProcedureList.fromJson(i)))
+          : List(),
+      achievements: json['achievements'] != null
+          ? List<AchievementsData>.from(
+              json['achievements'].map((i) => AchievementsData.fromJson(i)))
+          : List(),
+      doctorsData: json['doctors'] != null
+          ? List<DoctorsData>.from(
+              json['doctors'].map((i) => DoctorsData.fromJson(i)))
+          : List(),
+      experience:
+          json['experience'] != null ? json['experience'].toString() : '',
+      practising: json['practising'] != null ? json['practising'] : '',
+      college: json['college'] != null ? json['college'] : '',
+      biography: json['biography'] != null ? json['biography'] : '',
+      registrationNumber:
+          json['registrationNumber'] != null ? json['registrationNumber'] : '',
+      qualification: json['qualification'] != null ? json['qualification'] : '',
+      imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
+      latitude: lat,
+      longitude: long,
+//      latitude: (json['geoLocation'] != null &&
+//              json['geoLocation']['latitude'] != null &&
+//              json['geoLocation']['latitude'].toString().trim().isNotEmpty)
+//          ? json['geoLocation']['latitude'].toString()
+//          : "0.0",
+//      longitude: (json['geoLocation'] != null &&
+//              json['geoLocation']['longitude'] != null &&
+//              json['geoLocation']['longitude'].toString().trim().isNotEmpty)
+//          ? json['geoLocation']['longitude'].toString()
+//          : "0.0",
+      prescriptionLogoUrl: json['prescription'] != null
+          ? (json['prescription']['logoUrl'] != null
+              ? json['prescription']['logoUrl']
+              : '')
+          : '',
+      credits:
+          json['credits'].toString() != null ? json['credits'].toString() : '0',
+      speciality: json['specialityName'],
+      userReferralCode: json['userReferralCode'],
+      timeSlots: _timeSlots,
+      bankDetails: json['bankDetails'] != null
+          ? BankDetails.fromJson(json['bankDetails'])
+          : null,
     );
   }
 
@@ -348,8 +362,7 @@ class User {
 
   @override
   String toString() {
-    return 'User{email: $email, name: $name, activated: $activated, userType: $userType, uid: $uid, imageUrl: $imageUrl, speciality: $speciality, profRegistrationNumber: $profRegistrationNumber, qualification: $qualification, experience: $experience, practising: $practising, college: $college, about: $about, gender: $gender, birthDate: $birthDate, referralCode: $referralCode, coverImageUrl: $coverImageUrl, mobileNumber: $mobileNumber, latitude: $latitude, longitude: $longitude, address: $address, biography: $biography, registrationNumber: $registrationNumber, prescriptionLogoUrl: $prescriptionLogoUrl, accessToken: $accessToken, credits: $credits, specialities: $specialities, timeSlots: $timeSlots, doctorsData: $doctorsData, achievements: $achievements, verifiedUser: $verifiedUser, bankDetais: ${bankDetails
-        .toString()}';
+    return 'User{email: $email, name: $name, activated: $activated, userType: $userType, uid: $uid, imageUrl: $imageUrl, speciality: $speciality, profRegistrationNumber: $profRegistrationNumber, qualification: $qualification, experience: $experience, practising: $practising, college: $college, about: $about, gender: $gender, birthDate: $birthDate, referralCode: $referralCode, coverImageUrl: $coverImageUrl, mobileNumber: $mobileNumber, latitude: $latitude, longitude: $longitude, address: $address, biography: $biography, registrationNumber: $registrationNumber, prescriptionLogoUrl: $prescriptionLogoUrl, accessToken: $accessToken, credits: $credits, specialities: $specialities, timeSlots: $timeSlots, doctorsData: $doctorsData, achievements: $achievements, verifiedUser: $verifiedUser, bankDetais: ${bankDetails.toString()}';
   }
 }
 
@@ -361,7 +374,7 @@ class Location {
 
   Location.fromJson(Map<String, dynamic> json) {
     type = json['type'];
-    coordinates = json['coordinates'].cast<int>();
+    coordinates = json['coordinates'].cast<num>();
   }
 
   Map<String, dynamic> toJson() {
@@ -377,24 +390,25 @@ class DoctorsData {
   List<TimeSlotsData> timeSlots = [];
   String id, name, education, designation, department, experience, imageUrl;
 
-  DoctorsData({this.specialities,
-    this.timeSlots,
-    this.name,
-    this.education,
-    this.id,
-    this.designation,
-    this.department,
-    this.experience,
-    this.imageUrl});
+  DoctorsData(
+      {this.specialities,
+      this.timeSlots,
+      this.name,
+      this.education,
+      this.id,
+      this.designation,
+      this.department,
+      this.experience,
+      this.imageUrl});
 
   factory DoctorsData.fromJson(Map<String, dynamic> parsedJson) {
     return new DoctorsData(
       name: parsedJson['name'] != null ? parsedJson['name'] : 'NA',
       education: parsedJson['education'] != null ? parsedJson['education'] : '',
       designation:
-      parsedJson['designation'] != null ? parsedJson['designation'] : '',
+          parsedJson['designation'] != null ? parsedJson['designation'] : '',
       department:
-      parsedJson['department'] != null ? parsedJson['department'] : '',
+          parsedJson['department'] != null ? parsedJson['department'] : '',
       experience: parsedJson['experience'].toString() != null
           ? parsedJson['experience'].toString()
           : '',
@@ -470,13 +484,12 @@ class AllNotificationsPost {
       {this.success, this.message, this.posts, this.unreadCount});
 
   factory AllNotificationsPost.fromJson(Map<String, dynamic> json) {
-//    print("json ${json.toString()}");
     return AllNotificationsPost(
       success: json['success'] != null ? json['success'] : false,
       message: json['message'] != null ? json['message'] : '',
       posts: json['notifications'] != null
           ? List<PostsData>.from(
-          json['notifications'].map((i) => PostsData.fromJson(i)))
+              json['notifications'].map((i) => PostsData.fromJson(i)))
           : <PostsData>[],
       unreadCount: json['count'],
     );
@@ -493,41 +506,46 @@ class PostsData {
   final String senderName;
   final String notificationId;
   final String notificationScreen;
+  bool hasSeen;
 
-  PostsData({this.senderImageUrl,
-    this.createdTime,
-    this.notificationType,
-    this.senderUserId,
-    this.id,
-    this.notification,
-    this.senderName,
-    this.notificationId,
-    this.notificationScreen});
+  PostsData(
+      {this.senderImageUrl,
+      this.createdTime,
+      this.notificationType,
+      this.senderUserId,
+      this.id,
+      this.notification,
+      this.senderName,
+      this.notificationId,
+      this.notificationScreen,
+      this.hasSeen});
 
   factory PostsData.fromJson(Map<String, dynamic> parsedJson) {
     return new PostsData(
-      senderImageUrl: parsedJson['senderImageUrl'] != null
-          ? parsedJson['senderImageUrl']
-          : '',
-      createdTime:
-      parsedJson['createdTime'] != null ? parsedJson['createdTime'] : 0,
-      notificationType: parsedJson['notificationType'] != null
-          ? parsedJson['notificationType']
-          : '',
-      senderUserId:
-      parsedJson['senderUserId'] != null ? parsedJson['senderUserId'] : '',
-      id: parsedJson['_id'] != null ? parsedJson['_id'] : '',
-      notification:
-      parsedJson['notification'] != null ? parsedJson['notification'] : '',
-      senderName:
-      parsedJson['senderName'] != null ? parsedJson['senderName'] : '',
-      notificationId: parsedJson['notificationId'] != null
-          ? parsedJson['notificationId']
-          : '',
-      notificationScreen: parsedJson['notificationScreen'] != null
-          ? parsedJson['notificationScreen']
-          : '',
-    );
+        senderImageUrl: parsedJson['senderImageUrl'] != null
+            ? parsedJson['senderImageUrl']
+            : '',
+        createdTime:
+            parsedJson['createdTime'] != null ? parsedJson['createdTime'] : 0,
+        notificationType: parsedJson['notificationType'] != null
+            ? parsedJson['notificationType']
+            : '',
+        senderUserId: parsedJson['senderUserId'] != null
+            ? parsedJson['senderUserId']
+            : '',
+        id: parsedJson['_id'] != null ? parsedJson['_id'] : '',
+        notification: parsedJson['notification'] != null
+            ? parsedJson['notification']
+            : '',
+        senderName:
+            parsedJson['senderName'] != null ? parsedJson['senderName'] : '',
+        notificationId: parsedJson['notificationId'] != null
+            ? parsedJson['notificationId']
+            : '',
+        notificationScreen: parsedJson['notificationScreen'] != null
+            ? parsedJson['notificationScreen']
+            : '',
+        hasSeen: parsedJson['read']);
   }
 
   factory PostsData.fromJsonForPush(Map<String, dynamic> parsedJson) {
@@ -618,9 +636,9 @@ class SpecialityModel {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is SpecialityModel &&
-              runtimeType == other.runtimeType &&
-              id == other.id;
+      other is SpecialityModel &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -680,4 +698,3 @@ class HelpLineNumberModel {
     return data;
   }
 }
-

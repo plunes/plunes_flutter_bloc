@@ -735,19 +735,15 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
             opaque: false,
             pageBuilder: (BuildContext context, _, __) => LocationFetch()))
         .then((val) {
-      if (!isDoctor)
-        locationController.text = val;
-      else {
-        var addressControllerList = new List();
-        addressControllerList = val.toString().split(":");
-        locationController.text = addressControllerList[0] +
-            ' ' +
-            addressControllerList[1] +
-            ' ' +
-            addressControllerList[2];
-        _latitude = addressControllerList[3];
-        _longitude = addressControllerList[4];
-      }
+      var addressControllerList = new List();
+      addressControllerList = val.toString().split(":");
+      locationController.text = addressControllerList[0] +
+          ' ' +
+          addressControllerList[1] +
+          ' ' +
+          addressControllerList[2];
+      _latitude = addressControllerList[3];
+      _longitude = addressControllerList[4];
     });
   }
 
@@ -884,7 +880,15 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       body['email'] = emailController.text.trim();
       body['verifiedUser'] = 'true';
       body['password'] = passwordController.text;
-      body['geoLocation'] = {'latitude': _latitude, 'longitude': _longitude};
+      if (this._latitude != null &&
+          this._longitude != null &&
+          this._latitude.isNotEmpty &&
+          this._longitude.isNotEmpty) {
+        body['location'] = Location(type: 'Point', coordinates: [
+          double.parse(this._longitude),
+          double.parse(this._latitude)
+        ]).toJson();
+      }
       body['userType'] =
           _userType == Constants.generalUser ? 'User' : _userType;
       body['address'] = locationController.text;

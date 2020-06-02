@@ -58,7 +58,9 @@ class _LocationFetchState extends State<LocationFetch> {
         lat.isEmpty ||
         lng.isEmpty ||
         lat == "0.0" ||
-        lng == "0.0") {
+        lng == "0.0" ||
+        lat == "0" ||
+        lng == "0") {
       await Future.delayed(Duration(milliseconds: 400));
       var loc = await LocationUtil().getCurrentLatLong(_context);
       if (loc != null) {
@@ -75,8 +77,8 @@ class _LocationFetchState extends State<LocationFetch> {
     if (lat != null && lat.isNotEmpty && lng != null && lng.isNotEmpty) {
       latitude = lat;
       longitude = lng;
-//      print("lat $lat long $lng");
-//      print("lat $latitude long $longitude");
+      print("lat $lat long $lng");
+      print("lat $latitude long $longitude");
       final coordinates = new Coordinates(double.parse(lat), double.parse(lng));
       var addresses =
           await Geocoder.local.findAddressesFromCoordinates(coordinates);

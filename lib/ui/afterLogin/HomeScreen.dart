@@ -415,78 +415,57 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                                         colorsFile.black0,
                                         TextAlign.left,
                                         FontWeight.normal),
-                                    /* _userType == Constants.user ? widget.createTextViews(stringsFile.generalUser, 16, colorsFile.lightGrey2, TextAlign.left, FontWeight.w100)
-                                    : widget.createTextViews(specialities, 16, colorsFile.lightGrey2, TextAlign.left, FontWeight.w100)*/
                                   ],
-                                ) /*StreamBuilder(
-                             stream: bloc.preferenceFetcher,
-                             builder: ((context, snapshot) {
-                               if (snapshot.hasData) {
-//                                 _userName = snapshot
-                                 return Column(
-                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                   mainAxisAlignment: MainAxisAlignment.center,
-                                   children: <Widget>[
-                                     widget.createTextViews(_userName, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
-                                     _userType == Constants.user ? widget.createTextViews(stringsFile.generalUser, 16, colorsFile.lightGrey2, TextAlign.left, FontWeight.w100)
-                                         : widget.createTextViews(specialities, 16, colorsFile.lightGrey2, TextAlign.left, FontWeight.w100)
-                                   ],
-                                 );
-                               } else if (snapshot.hasError) {
-                                 print("Inside hasError");
-                                 return Text(snapshot.error.toString());
-                               }
-                               return Center(
-                                 child: CircularProgressIndicator(),
-                               );
-                             }),
-                           )*/
-                                ,
+                                ),
                               )),
                             ],
                           ),
                         ),
                       ),
-                      widget.getDividerRow(context, 0, 0, 70.0),
+                      _userType != Constants.user
+                          ? widget.getDividerRow(context, 0, 0, 70.0)
+                          : Container(),
                       _userType != Constants.user
                           ? getListTile(1, plunesStrings.myAvailability,
                               plunesImages.availIcon)
                           : Container(),
+                      widget.getDividerRow(context, 0, 0, 70.0),
+                      getListTile(2, plunesStrings.appointments,
+                          plunesImages.appointmentIcon),
                       _userType != Constants.user
                           ? widget.getDividerRow(context, 0, 0, 70.0)
                           : Container(),
-                      getListTile(2, plunesStrings.appointments,
-                          plunesImages.appointmentIcon),
-                      widget.getDividerRow(context, 0, 0, 70.0),
-                      getListTile(
-                          3, plunesStrings.settings, plunesImages.settingsIcon),
-                      widget.getDividerRow(context, 0, 0, 70.0),
                       _userType != Constants.user
                           ? getListTile(4, plunesStrings.managePayment,
                               plunesImages.walletIcon)
                           : Container(),
-                      _userType != Constants.user
-                          ? widget.getDividerRow(context, 0, 0, 70.0)
-                          : Container(),
-                      getListTile(5, plunesStrings.help, plunesImages.helpIcon),
                       widget.getDividerRow(context, 0, 0, 70.0),
                       getListTile(
                           6, plunesStrings.aboutUs, plunesImages.aboutUsIcon),
-                      widget.getDividerRow(context, 0, 0, 70.0),
-                      _userType != Constants.hospital
+                      (_userType != Constants.hospital &&
+                              _userType != Constants.labDiagnosticCenter)
+                          ? widget.getDividerRow(context, 0, 0, 70.0)
+                          : Container(),
+                      (_userType != Constants.hospital &&
+                              _userType != Constants.labDiagnosticCenter)
                           ? getListTile(7, plunesStrings.referAndEarn,
                               plunesImages.referIcon)
                           : Container(),
-                      _userType != Constants.hospital
+                      (_userType != Constants.hospital &&
+                              _userType != Constants.labDiagnosticCenter)
                           ? widget.getDividerRow(context, 0, 0, 70.0)
                           : Container(),
-                      _userType != Constants.hospital
+                      (_userType != Constants.hospital &&
+                              _userType != Constants.labDiagnosticCenter)
                           ? getListTile(8, plunesStrings.coupons,
                               plunesImages.navCouponIcon)
                           : Container(),
-                      _userType != Constants.hospital
-                          ? widget.getDividerRow(context, 0, 0, 70.0)
-                          : Container(),
+                      widget.getDividerRow(context, 0, 0, 70.0),
+                      getListTile(
+                          3, plunesStrings.settings, plunesImages.settingsIcon),
+                      widget.getDividerRow(context, 0, 0, 70.0),
+                      getListTile(5, plunesStrings.help, plunesImages.helpIcon),
+                      widget.getDividerRow(context, 0, 0, 70.0),
                       getListTile(
                           9, plunesStrings.logout, plunesImages.logoutIcon),
                       InkWell(
@@ -622,6 +601,6 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
 
   void _getNotifications() async {
     await Future.delayed(Duration(milliseconds: 400));
-    NotificationBloc().getNotifications();
+    NotificationBloc().getNotifications(shouldNotify: true);
   }
 }

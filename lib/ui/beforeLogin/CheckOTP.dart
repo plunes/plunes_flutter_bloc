@@ -30,7 +30,7 @@ class CheckOTP extends BaseActivity {
 
 class _CheckOTPState extends BaseState<CheckOTP> {
   bool progress = false, time = true, resend = false, errorMsg = false;
-  int _start = 30, _current = 30;
+  int _start = 60, _current = 60;
   CountdownTimer countDownTimer;
   UserBloc _userBloc;
 
@@ -75,8 +75,8 @@ class _CheckOTPState extends BaseState<CheckOTP> {
     var requestState = await _userBloc.getGenerateOtp(widget.phone,
         iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle);
     if (requestState is RequestSuccess) {
-      _start = 30;
-      _current = 30;
+      _start = 60;
+      _current = 60;
       countDownTimer?.cancel();
       startTimer();
     } else if (requestState is RequestFailed) {

@@ -377,7 +377,7 @@ class _EditProfileState extends State<EditProfileScreen>
       college: collegeController.text.trim(),
       practising: practisingController.text.trim(),
     );
-    print("user.toJson() ${user.toJson()}");
+//    print("user.toJson() ${user.toJson()}");
     progress = true;
     _setState();
     var result = await _userBloc.updateUserData(user.toJson());
