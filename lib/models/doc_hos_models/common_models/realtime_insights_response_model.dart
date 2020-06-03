@@ -34,6 +34,7 @@ class RealInsight {
   int timeRemaining;
   num userPrice;
   int createdAt;
+  bool suggested;
 
   @override
   String toString() {
@@ -51,7 +52,8 @@ class RealInsight {
       this.expired,
       this.expirationMessage,
       this.userPrice,
-      this.createdAt});
+      this.createdAt,
+      this.suggested});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
     solutionId = json['solutionId'];
@@ -65,6 +67,7 @@ class RealInsight {
     createdAt = json['createdAt'];
     expired = json['expired'];
     expirationMessage = json['expirationMessage'];
+    suggested = json['suggested'];
   }
 
   Map<String, dynamic> toJson() {
@@ -78,6 +81,7 @@ class RealInsight {
     data['timeRemaining'] = this.timeRemaining;
     data['userPrice'] = this.userPrice;
     data['createdAt'] = this.createdAt;
+    data['suggested'] = this.suggested;
     return data;
   }
 }

@@ -1065,7 +1065,7 @@ class CustomWidgets {
   }
 
   // ignore: non_constant_identifier_names
-  Widget UpdatePricePopUp(
+  Widget updatePricePopUp(
       {RealInsight realInsight, DocHosMainInsightBloc docHosMainInsightBloc}) {
     var sliderVal = (realInsight.userPrice.toDouble() / 2) +
         (((realInsight.userPrice.toDouble() / 2)) / 2);
@@ -1073,13 +1073,14 @@ class CustomWidgets {
         reductionInPrice =
             ((((realInsight.userPrice.toDouble() / 2)) / 2) * 100) /
                 realInsight.userPrice.toDouble();
-    ;
     if (sliderVal == 0) {
       chancesPercent = 0;
       reductionInPrice = 0;
     }
+    TextEditingController _priceController = TextEditingController();
     ScrollController _scrollController = ScrollController();
     String failureCause;
+    bool shouldShowField = false;
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
             shape: RoundedRectangleBorder(
@@ -1124,23 +1125,24 @@ class CustomWidgets {
                               top: AppConfig.verticalBlockSize * 5),
                           child: SingleChildScrollView(
                             controller: _scrollController,
+                            reverse: shouldShowField ? true : false,
                             child: Center(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
                                   Text(PlunesStrings.realTimePrediction,
                                       style: TextStyle(
-                                          fontSize: AppConfig.mediumFont,
+                                          fontSize: AppConfig.extraLargeFont,
                                           decoration: TextDecoration.underline,
                                           fontWeight: FontWeight.w600),
                                       textAlign: TextAlign.center),
                                   Padding(
                                     padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 0.8),
+                                        top: AppConfig.verticalBlockSize * 4.0),
                                     child: Text(
-                                      'Update your best price for maximum bookings',
+                                      'Update your best price for maximum bookings}',
                                       style: TextStyle(
-                                          fontSize: AppConfig.largeFont),
+                                          fontSize: AppConfig.mediumFont),
                                       textAlign: TextAlign.center,
                                     ),
                                   ),
@@ -1167,12 +1169,6 @@ class CustomWidgets {
                                                 fontSize: AppConfig.mediumFont,
                                                 fontWeight: FontWeight.w600),
                                           ),
-//                                          Text(
-//                                            PlunesStrings.reductionInPrice,
-//                                            style: TextStyle(
-//                                                color: Colors.black54,
-//                                                fontSize: AppConfig.smallFont),
-//                                          )
                                         ],
                                       )),
                                       Slider(
@@ -1186,6 +1182,9 @@ class CustomWidgets {
                                         divisions: 10,
                                         activeColor: Colors.green,
                                         onChanged: (newValue) {
+                                          if (shouldShowField) {
+                                            return;
+                                          }
                                           newState(() {
                                             try {
                                               var val = (newValue * 100) /
@@ -1201,8 +1200,6 @@ class CustomWidgets {
 
                                               chancesPercent =
                                                   (100 - val)?.toInt();
-//                                                      ((val - 50) * 2))
-//                                                      .toInt();
                                             } catch (e) {
                                               chancesPercent = 50;
                                               reductionInPrice = 50;
@@ -1233,19 +1230,121 @@ class CustomWidgets {
                                         ),
                                       ),
                                       Container(
-                                        margin: EdgeInsets.only(
-                                            top:
-                                                AppConfig.verticalBlockSize * 3,
-                                            bottom:
-                                                AppConfig.verticalBlockSize *
-                                                    3),
-                                        child: Text(
-                                          ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                              fontSize: AppConfig.largeFont,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
+                                          margin: EdgeInsets.only(
+                                              top: AppConfig.verticalBlockSize *
+                                                  3,
+                                              bottom:
+                                                  AppConfig.verticalBlockSize *
+                                                      3),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: AppConfig
+                                                      .horizontalBlockSize *
+                                                  15),
+                                          child: (realInsight.suggested !=
+                                                      null &&
+                                                  realInsight.suggested &&
+                                                  shouldShowField)
+                                              ? Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.end,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: <Widget>[
+                                                    Flexible(
+                                                      child: TextField(
+                                                        controller:
+                                                            _priceController,
+                                                        inputFormatters: [
+                                                          WhitelistingTextInputFormatter
+                                                              .digitsOnly
+                                                        ],
+                                                        maxLines: 1,
+                                                        autofocus: true,
+                                                        keyboardType:
+                                                            TextInputType
+                                                                .number,
+                                                        textAlignVertical:
+                                                            TextAlignVertical
+                                                                .bottom,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        shouldShowField = false;
+                                                        newState(() {});
+                                                      },
+                                                      child: Container(
+                                                        margin: EdgeInsets.only(
+                                                            left: AppConfig
+                                                                    .horizontalBlockSize *
+                                                                3),
+                                                        padding:
+                                                            EdgeInsets.all(5.0),
+                                                        alignment: Alignment
+                                                            .bottomRight,
+                                                        child: Icon(
+                                                          Icons.mode_edit,
+                                                          color: PlunesColors
+                                                              .GREENCOLOR,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
+                                              : Row(
+                                                  mainAxisAlignment:
+                                                      (realInsight.suggested !=
+                                                                  null &&
+                                                              realInsight
+                                                                  .suggested &&
+                                                              shouldShowField)
+                                                          ? MainAxisAlignment
+                                                              .end
+                                                          : MainAxisAlignment
+                                                              .center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: <Widget>[
+                                                    Text(
+                                                      ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
+                                                      style: TextStyle(
+                                                          fontSize: AppConfig
+                                                              .largeFont,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    (realInsight.suggested !=
+                                                                null &&
+                                                            realInsight
+                                                                .suggested)
+                                                        ? InkWell(
+                                                            onTap: () {
+                                                              shouldShowField =
+                                                                  true;
+                                                              newState(() {});
+                                                            },
+                                                            child: Container(
+                                                              margin: EdgeInsets.only(
+                                                                  left: AppConfig
+                                                                          .horizontalBlockSize *
+                                                                      3),
+                                                              padding:
+                                                                  EdgeInsets
+                                                                      .all(5.0),
+                                                              alignment: Alignment
+                                                                  .bottomRight,
+                                                              child: Icon(
+                                                                Icons.mode_edit,
+                                                                color: PlunesColors
+                                                                    .BLACKCOLOR,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        : Container()
+                                                  ],
+                                                )),
                                       chancesPercent != null
                                           ? Text(
                                               'Chances of Booking increases by',
@@ -1278,21 +1377,48 @@ class CustomWidgets {
                                               fontWeight: FontWeight.w400),
                                         ),
                                         onPressed: () {
-                                          if (sliderVal == null ||
-                                              sliderVal == 0) {
-                                            failureCause =
-                                                'price must not be 0';
-                                            newState(() {});
-                                            return;
+                                          if (realInsight.suggested != null &&
+                                              realInsight.suggested &&
+                                              shouldShowField) {
+                                            if (_priceController.text
+                                                    .trim()
+                                                    .isEmpty ||
+                                                _priceController.text
+                                                        .trim()
+                                                        .substring(0) ==
+                                                    "0") {
+                                              failureCause =
+                                                  'price must not be 0 or empty';
+                                              newState(() {});
+                                              return;
+                                            }
+                                            docHosMainInsightBloc
+                                                .updateRealTimeInsightPriceStream(
+                                                    RequestInProgress());
+                                            docHosMainInsightBloc
+                                                .getUpdateRealTimeInsightPrice(
+                                                    num.tryParse(
+                                                        _priceController.text
+                                                            .trim()),
+                                                    realInsight.solutionId,
+                                                    realInsight.serviceId);
+                                          } else {
+                                            if (sliderVal == null ||
+                                                sliderVal == 0) {
+                                              failureCause =
+                                                  'price must not be 0';
+                                              newState(() {});
+                                              return;
+                                            }
+                                            docHosMainInsightBloc
+                                                .updateRealTimeInsightPriceStream(
+                                                    RequestInProgress());
+                                            docHosMainInsightBloc
+                                                .getUpdateRealTimeInsightPrice(
+                                                    sliderVal,
+                                                    realInsight.solutionId,
+                                                    realInsight.serviceId);
                                           }
-                                          docHosMainInsightBloc
-                                              .updateRealTimeInsightPriceStream(
-                                                  RequestInProgress());
-                                          docHosMainInsightBloc
-                                              .getUpdateRealTimeInsightPrice(
-                                                  sliderVal,
-                                                  realInsight.solutionId,
-                                                  realInsight.serviceId);
                                         },
                                       ),
                                       Text(

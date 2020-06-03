@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
@@ -7,15 +6,13 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
-import 'package:plunes/Utils/log.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
-import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
-
 import 'GuidedTour.dart';
 
 /*
@@ -49,13 +46,15 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   void dispose() {
     super.dispose();
     _userBloc.dispose();
-    bloc.dispose();
   }
 
   startTime() async {
     await Preferences().instantiatePreferences();
     preferences = new Preferences();
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
+    try {
+      LocationUtil().getCurrentLatLong(context);
+    } catch (e) {}
     _userBloc.getSpeciality();
     navigationPage();
   }

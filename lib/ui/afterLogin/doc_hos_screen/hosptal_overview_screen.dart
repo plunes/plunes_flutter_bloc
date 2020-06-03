@@ -568,7 +568,7 @@ class _HospitalOverviewScreenState
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) => CustomWidgets().UpdatePricePopUp(
+        builder: (BuildContext context) => CustomWidgets().updatePricePopUp(
             docHosMainInsightBloc: _docHosMainInsightBloc,
             realInsight: realInsight)).then((value) {
       if (value != null && value) {

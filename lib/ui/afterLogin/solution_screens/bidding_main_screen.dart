@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:permission/permission.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
@@ -34,7 +35,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   FocusNode _focusNode;
   bool _progressEnabled;
   bool _canGoAhead, _hasLatLong;
-  String _failureCause;
+  String _failureCause, _locationMessage;
   PrevMissSolutionBloc _prevMissSolutionBloc;
   PrevSearchedSolution _prevSearchedSolution;
   Timer _timer;
@@ -43,6 +44,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   @override
   void initState() {
+    _locationMessage = PlunesStrings.switchToGurLoc;
     _progressEnabled = false;
     _hasLatLong = false;
     _canGoAhead = false;
@@ -56,15 +58,6 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     _focusNode = FocusNode()
       ..addListener(() async {
         if (_focusNode.hasFocus) {
-//          if (!_canGoAhead) {
-//            _focusNode?.unfocus();
-//            widget.showInSnackBar(
-//                "Kindly switch to Gurgaoun location, currently we are not providing service in your area",
-//                PlunesColors.GREYCOLOR,
-//                scaffoldKey);
-//            return;
-//          }
-//          print("got focus");
           await Future.delayed(Duration(milliseconds: 100));
           _focusNode?.unfocus();
           await Navigator.push(context,
@@ -123,16 +116,6 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                       right: 0.0,
                       top: AppConfig.verticalBlockSize * 15,
                     )
-//              Positioned(
-//                  right: 0.0,
-//                  bottom: 0.0,
-//                  child: FloatingActionButton(
-//                      backgroundColor: Colors.grey,
-//                      onPressed: () => _getCurrentLocation(),
-//                      child: Icon(
-//                        Icons.my_location,
-//                        color: Colors.indigo,
-//                      ))),
                   ],
                 ),
               ),
@@ -239,10 +222,12 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   _getCurrentLocation() async {
     var latLong = await LocationUtil().getCurrentLatLong(_context);
     if (latLong != null) {
+      print("location null nhai hai ${latLong.toString()}");
       _checkUserLocation(
           latLong?.latitude?.toString(), latLong?.longitude?.toString());
       _hasLatLong = true;
     } else {
+      print("location null hai bhai${latLong.toString()}");
       _hasLatLong = false;
       _setState();
     }
@@ -386,7 +371,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     if (user?.latitude != null &&
         user?.longitude != null &&
         user.latitude.isNotEmpty &&
-        user.longitude.isNotEmpty) {
+        user.longitude.isNotEmpty &&
+        user.latitude != "0.0" &&
+        user.latitude != "0" &&
+        user.longitude != "0.0" &&
+        user.longitude != "0") {
       _hasLatLong = true;
       if (_canGoAhead) {
         return;
@@ -415,8 +404,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       if (result.isRequestSucceed != null && result.isRequestSucceed) {
         if (result.response.data == null || !result.response.data) {
           if (mounted) {
-            widget?.showInSnackBar(PlunesStrings.switchToGurLoc,
-                PlunesColors.GREYCOLOR, scaffoldKey);
+//            widget?.showInSnackBar(PlunesStrings.switchToGurLoc,
+//                PlunesColors.GREYCOLOR, scaffoldKey);
           }
           _canGoAhead = UserManager().getIsUserInServiceLocation();
         } else {
@@ -424,9 +413,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         }
       } else {
         _failureCause = result.failureCause;
-        if (mounted)
-          widget.showInSnackBar(
-              _failureCause, PlunesColors.GREYCOLOR, scaffoldKey);
+//        if (mounted)
+//          widget.showInSnackBar(
+//              _failureCause, PlunesColors.GREYCOLOR, scaffoldKey);
       }
       _progressEnabled = false;
       _setState();
@@ -434,90 +423,111 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 
   Widget _getNoLocationView() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Container(
-            child: Container(
-              color: Color(0xff99000000),
-              padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 5),
-              child: Stack(
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      _hasLatLong
-                          ? Icon(
-                              Icons.location_off,
-                              color: PlunesColors.GREENCOLOR,
-                              size: AppConfig.verticalBlockSize * 4,
-                            )
-                          : Container(),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Expanded(
-                        child: Container(
-                          child: Text(
+    return FutureBuilder<bool>(
+        initialData: false,
+        future: _getLocationPermissionStatus(),
+        builder: (context, snapShot) {
+          return Container(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Container(
+                  child: Container(
+                    color: Color(0xff99000000),
+                    padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 5),
+                    child: Stack(
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            !(snapShot.data)
+                                ? Container()
+                                : _hasLatLong
+                                    ? _progressEnabled
+                                        ? CustomWidgets().getProgressIndicator()
+                                        : Icon(
+                                            Icons.location_off,
+                                            color: PlunesColors.GREENCOLOR,
+                                            size:
+                                                AppConfig.verticalBlockSize * 4,
+                                          )
+                                    : Container(),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Container(
+                                child: Text(
+                                  !(snapShot.data)
+                                      ? PlunesStrings.turnOnLocationService
+                                      : _hasLatLong
+                                          ? _progressEnabled
+                                              ? "Checking. . ."
+                                              : PlunesStrings
+                                                  .weAreNotAvailableInYourArea
+                                          : PlunesStrings.pleaseSelectLocation,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: AppConfig.mediumFont),
+                                ),
+                              ),
+                            ),
                             _hasLatLong
-                                ? PlunesStrings.weAreNotAvailableInYourArea
-                                : PlunesStrings.pleaseSelectLocation,
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: AppConfig.mediumFont),
-                          ),
-                        ),
-                      ),
-                      _hasLatLong
-                          ? Container()
-                          : InkWell(
-                              onTap: () {
-                                Navigator.of(context)
-                                    .push(PageRouteBuilder(
-                                        opaque: false,
-                                        pageBuilder:
-                                            (BuildContext context, _, __) =>
-                                                LocationFetch()))
-                                    .then((val) {
-                                  if (val != null) {
-                                    var addressControllerList = new List();
-                                    addressControllerList =
-                                        val.toString().split(":");
-                                    String addr = addressControllerList[0] +
-                                        ' ' +
-                                        addressControllerList[1] +
-                                        ' ' +
-                                        addressControllerList[2];
+                                ? Container()
+                                : InkWell(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(PageRouteBuilder(
+                                              opaque: false,
+                                              pageBuilder:
+                                                  (BuildContext context, _,
+                                                          __) =>
+                                                      LocationFetch()))
+                                          .then((val) {
+                                        if (val != null) {
+                                          var addressControllerList =
+                                              new List();
+                                          addressControllerList =
+                                              val.toString().split(":");
+                                          String addr =
+                                              addressControllerList[0] +
+                                                  ' ' +
+                                                  addressControllerList[1] +
+                                                  ' ' +
+                                                  addressControllerList[2];
 //                                    print("addr is $addr");
-                                    var _latitude = addressControllerList[3];
-                                    var _longitude = addressControllerList[4];
+                                          var _latitude =
+                                              addressControllerList[3];
+                                          var _longitude =
+                                              addressControllerList[4];
 //                                    print("_latitude $_latitude");
 //                                    print("_longitude $_longitude");
-                                    _checkUserLocation(_latitude, _longitude);
-                                  }
-                                });
-                              },
-                              child: Container(
-                                color: PlunesColors.LIGHTGREYCOLOR,
-                                padding: EdgeInsets.all(6.0),
-                                height: AppConfig.verticalBlockSize * 7,
-                                width: AppConfig.horizontalBlockSize * 12,
-                                child: Image.asset(
-                                  PlunesImages.userLandingGoogleIcon,
-                                  color: PlunesColors.GREENCOLOR,
-                                ),
-                              ))
-                    ],
+                                          _checkUserLocation(
+                                              _latitude, _longitude);
+                                        }
+                                      });
+                                    },
+                                    child: Container(
+                                      color: PlunesColors.LIGHTGREYCOLOR,
+                                      padding: EdgeInsets.all(6.0),
+                                      height: AppConfig.verticalBlockSize * 7,
+                                      width: AppConfig.horizontalBlockSize * 12,
+                                      child: Image.asset(
+                                        PlunesImages.userLandingGoogleIcon,
+                                        color: PlunesColors.GREENCOLOR,
+                                      ),
+                                    ))
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                )
+              ],
             ),
-          )
-        ],
-      ),
-    );
+          );
+        });
   }
 
   void _getPreviousSolutions() async {
@@ -526,5 +536,18 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       _prevSearchedSolution = requestState.response;
       _setState();
     }
+  }
+
+  Future<bool> _getLocationPermissionStatus() async {
+    bool _hasLocationPermission = true;
+    var permissionList =
+        await Permission.getPermissionsStatus([PermissionName.Location]);
+    permissionList.forEach((element) {
+      if (element.permissionName == PermissionName.Location &&
+          element.permissionStatus != PermissionStatus.allow) {
+        _hasLocationPermission = false;
+      }
+    });
+    return _hasLocationPermission;
   }
 }
