@@ -368,7 +368,11 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        Text('\u20B9 ${appointmentModel.service.price.first}',
+                        Text(
+                            (appointmentModel.service.price.first ==
+                                    appointmentModel?.service?.newPrice?.first)
+                                ? ""
+                                : '\u20B9 ${appointmentModel.service?.price?.first}',
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
                                 decoration: TextDecoration.lineThrough,

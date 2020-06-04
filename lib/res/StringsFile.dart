@@ -153,7 +153,7 @@ class PlunesStrings {
 
   static const String confirmFailedMessage = 'booking confirmation failed';
 
-  static const String pleaseSelectALocation = "Please select a location.";
+  static const String pleaseSelectALocation = "Please select a valid location.";
 
   static const String pay = "Pay";
 
@@ -196,7 +196,7 @@ class PlunesStrings {
   static const String invalidCredentials = "Invalid credentials";
 
   static const String turnOnLocationService =
-      "To Negotiate with nearest facilities , turn on location services.";
+      "To Negotiate with nearest facilities, turn on location services, or manually set location.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

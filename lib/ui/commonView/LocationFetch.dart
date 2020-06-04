@@ -36,8 +36,8 @@ class _LocationFetchState extends State<LocationFetch> {
   Set<Marker> marker = <Marker>{};
   var location = new loc.Location(), globalHeight, globalWidth;
   List _coordinateList = new List();
-  final double lat = 28.4594965, long = 77.0266383;
-  String latitude = '28.4594965', longitude = '77.0266383', address = '';
+//  final double lat = 28.4594965, long = 77.0266383;
+  String latitude = '0.0', longitude = '0.0', address = '';
   bool _isAddFetch = false, _isSettingLocationFromPlacesApi = false;
   Preferences _preferences;
   Completer<GoogleMapController> _completer = Completer();

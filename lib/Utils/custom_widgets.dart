@@ -719,8 +719,10 @@ class CustomWidgets {
                       children: <Widget>[
                         RichText(
                             text: TextSpan(
-                                text:
-                                    "\u20B9${solutions[index].price[0]?.toStringAsFixed(2) ?? PlunesStrings.NA} ",
+                                text: (solutions[index]?.price[0] ==
+                                        solutions[index]?.newPrice[0])
+                                    ? ""
+                                    : "\u20B9${solutions[index].price[0]?.toStringAsFixed(2) ?? PlunesStrings.NA} ",
                                 style: TextStyle(
                                     fontSize: AppConfig.smallFont,
                                     color: PlunesColors.GREYCOLOR,
@@ -1546,12 +1548,6 @@ class CustomWidgets {
                                                 fontSize: AppConfig.mediumFont,
                                                 fontWeight: FontWeight.w600),
                                           ),
-//                                          Text(
-//                                            PlunesStrings.reductionInPrice,
-//                                            style: TextStyle(
-//                                                color: Colors.black54,
-//                                                fontSize: AppConfig.smallFont),
-//                                          )
                                         ],
                                       )),
                                       Slider(
@@ -1577,9 +1573,6 @@ class CustomWidgets {
                                                         .toDouble();
                                                 chancesPercent =
                                                     (100 - val)?.toInt();
-//                                                        ((val - 50) * 2))
-//                                                        .toInt();
-
                                                 reductionInPrice = ((newValue) *
                                                         100) /
                                                     num.parse(actionableInsight

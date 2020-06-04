@@ -16,6 +16,7 @@ import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -146,7 +147,7 @@ class FirebaseNotification {
         );
       } else if (payLoad["data"]['screen'] == solutionScreen) {
         if (payLoad["data"]['id'] != null && payLoad["data"]['id'].isNotEmpty) {
-          widget = BiddingLoading(
+          widget = SolutionReceivedScreen(
             catalogueData: CatalogueData(
                 solutionId: payLoad["data"]['id'], isFromNotification: true),
           );
@@ -252,7 +253,7 @@ class FirebaseNotification {
       );
     } else if (notificationModel.notificationType == solutionScreen) {
       if (notificationModel.id != null && notificationModel.id.isNotEmpty) {
-        widget = BiddingLoading(
+        widget = SolutionReceivedScreen(
           catalogueData: CatalogueData(
               solutionId: notificationModel.id, isFromNotification: true),
         );

@@ -10,6 +10,7 @@ import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
@@ -34,7 +35,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   TextEditingController _textEditingController;
   FocusNode _focusNode;
   bool _progressEnabled;
-  bool _canGoAhead, _hasLatLong;
+  bool _canGoAhead;
   String _failureCause, _locationMessage;
   PrevMissSolutionBloc _prevMissSolutionBloc;
   PrevSearchedSolution _prevSearchedSolution;
@@ -46,7 +47,6 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   void initState() {
     _locationMessage = PlunesStrings.switchToGurLoc;
     _progressEnabled = false;
-    _hasLatLong = false;
     _canGoAhead = false;
     _prevMissSolutionBloc = PrevMissSolutionBloc();
     _textEditingController = TextEditingController();
@@ -55,16 +55,16 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       _timer = timer;
       _controller.add(null);
     });
-    _focusNode = FocusNode()
-      ..addListener(() async {
-        if (_focusNode.hasFocus) {
-          await Future.delayed(Duration(milliseconds: 100));
-          _focusNode?.unfocus();
-          await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => SolutionBiddingScreen()));
-          _getPreviousSolutions();
-        }
-      });
+    _focusNode = FocusNode();
+//      ..addListener(() async {
+//        if (_focusNode.hasFocus) {
+//          await Future.delayed(Duration(milliseconds: 100));
+//          _focusNode?.unfocus();
+//          await Navigator.push(context,
+//              MaterialPageRoute(builder: (context) => SolutionBiddingScreen()));
+//          _getPreviousSolutions();
+//        }
+//      });
     _getUserDetails();
     _getPreviousSolutions();
     EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
@@ -221,16 +221,15 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   _getCurrentLocation() async {
     var latLong = await LocationUtil().getCurrentLatLong(_context);
-    if (latLong != null) {
+    if (latLong != null &&
+        latLong.longitude != null &&
+        latLong.latitude != null) {
       print("location null nhai hai ${latLong.toString()}");
       _checkUserLocation(
           latLong?.latitude?.toString(), latLong?.longitude?.toString());
-      _hasLatLong = true;
-    } else {
-      print("location null hai bhai${latLong.toString()}");
-      _hasLatLong = false;
-      _setState();
     }
+    print("location null hai bhai${latLong.toString()}");
+    _setState();
   }
 
   Widget _getSearchWidget() {
@@ -263,7 +262,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                         child: Material(
                           child: InkWell(
                             onTap: () async {
-                              if (!_hasLatLong) {
+                              if ((!(await _getLocationPermissionStatus()) &&
+                                  !(UserManager()
+                                      .getIsUserInServiceLocation()))) {
                                 widget.showInSnackBar(
                                     PlunesStrings.pleaseSelectALocation,
                                     PlunesColors.GREYCOLOR,
@@ -308,7 +309,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                           var _longitude = addressControllerList[4];
 //                          print("_latitude $_latitude");
 //                          print("_longitude $_longitude");
-                          _checkUserLocation(_latitude, _longitude);
+                          _checkUserLocation(_latitude, _longitude,
+                              address: addr);
                         }
                       });
                     },
@@ -331,7 +333,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   _onViewMoreTap(int index) {}
 
   _onSolutionItemTap(CatalogueData catalogueData) async {
-    if ((!_hasLatLong) &&
+    if ((!(await _getLocationPermissionStatus()) &&
+            !(UserManager().getIsUserInServiceLocation())) &&
         (_prevSearchedSolution != null &&
             _prevSearchedSolution.topSearches != null &&
             _prevSearchedSolution.topSearches)) {
@@ -376,10 +379,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         user.latitude != "0" &&
         user.longitude != "0.0" &&
         user.longitude != "0") {
-      _hasLatLong = true;
       if (_canGoAhead) {
         return;
       } else {
+        _locationMessage = PlunesStrings.weAreNotAvailableInYourArea;
+        _setState();
         _checkUserLocation(user?.latitude, user?.longitude);
       }
     } else {
@@ -392,30 +396,24 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     if (mounted) setState(() {});
   }
 
-  _checkUserLocation(var latitude, var longitude) async {
+  _checkUserLocation(var latitude, var longitude, {String address}) async {
     if (!_progressEnabled) {
       _progressEnabled = true;
       _setState();
     }
-    if (latitude != null && longitude != null) {
-      _hasLatLong = true;
-    }
-    UserBloc().isUserInServiceLocation(latitude, longitude).then((result) {
-      if (result.isRequestSucceed != null && result.isRequestSucceed) {
-        if (result.response.data == null || !result.response.data) {
-          if (mounted) {
-//            widget?.showInSnackBar(PlunesStrings.switchToGurLoc,
-//                PlunesColors.GREYCOLOR, scaffoldKey);
-          }
-          _canGoAhead = UserManager().getIsUserInServiceLocation();
-        } else {
-          _canGoAhead = true;
+    UserBloc()
+        .isUserInServiceLocation(latitude, longitude, address: address)
+        .then((result) {
+      if (result is RequestSuccess) {
+        CheckLocationResponse checkLocationResponse = result.response;
+        _canGoAhead = UserManager().getIsUserInServiceLocation();
+        if (checkLocationResponse != null &&
+            checkLocationResponse.msg != null &&
+            checkLocationResponse.msg.isNotEmpty) {
+          _failureCause = checkLocationResponse.msg;
         }
-      } else {
+      } else if (result is RequestFailed) {
         _failureCause = result.failureCause;
-//        if (mounted)
-//          widget.showInSnackBar(
-//              _failureCause, PlunesColors.GREYCOLOR, scaffoldKey);
       }
       _progressEnabled = false;
       _setState();
@@ -440,18 +438,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            !(snapShot.data)
-                                ? Container()
-                                : _hasLatLong
-                                    ? _progressEnabled
-                                        ? CustomWidgets().getProgressIndicator()
-                                        : Icon(
-                                            Icons.location_off,
-                                            color: PlunesColors.GREENCOLOR,
-                                            size:
-                                                AppConfig.verticalBlockSize * 4,
-                                          )
-                                    : Container(),
+                            _progressEnabled
+                                ? CustomWidgets().getProgressIndicator()
+                                : Icon(
+                                    Icons.location_off,
+                                    color: PlunesColors.GREENCOLOR,
+                                    size: AppConfig.verticalBlockSize * 4,
+                                  ),
                             SizedBox(
                               width: 10,
                             ),
@@ -459,13 +452,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                               child: Container(
                                 child: Text(
                                   !(snapShot.data)
-                                      ? PlunesStrings.turnOnLocationService
-                                      : _hasLatLong
-                                          ? _progressEnabled
-                                              ? "Checking. . ."
-                                              : PlunesStrings
-                                                  .weAreNotAvailableInYourArea
-                                          : PlunesStrings.pleaseSelectLocation,
+                                      ? _progressEnabled
+                                          ? "Verifying location. . ."
+                                          : _failureCause ?? _locationMessage
+                                      : _failureCause ?? _locationMessage,
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w500,
@@ -473,51 +463,44 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                 ),
                               ),
                             ),
-                            _hasLatLong
-                                ? Container()
-                                : InkWell(
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .push(PageRouteBuilder(
-                                              opaque: false,
-                                              pageBuilder:
-                                                  (BuildContext context, _,
-                                                          __) =>
-                                                      LocationFetch()))
-                                          .then((val) {
-                                        if (val != null) {
-                                          var addressControllerList =
-                                              new List();
-                                          addressControllerList =
-                                              val.toString().split(":");
-                                          String addr =
-                                              addressControllerList[0] +
-                                                  ' ' +
-                                                  addressControllerList[1] +
-                                                  ' ' +
-                                                  addressControllerList[2];
+                            InkWell(
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .push(PageRouteBuilder(
+                                          opaque: false,
+                                          pageBuilder:
+                                              (BuildContext context, _, __) =>
+                                                  LocationFetch()))
+                                      .then((val) {
+                                    if (val != null) {
+                                      var addressControllerList = new List();
+                                      addressControllerList =
+                                          val.toString().split(":");
+                                      String addr = addressControllerList[0] +
+                                          ' ' +
+                                          addressControllerList[1] +
+                                          ' ' +
+                                          addressControllerList[2];
 //                                    print("addr is $addr");
-                                          var _latitude =
-                                              addressControllerList[3];
-                                          var _longitude =
-                                              addressControllerList[4];
+                                      var _latitude = addressControllerList[3];
+                                      var _longitude = addressControllerList[4];
 //                                    print("_latitude $_latitude");
 //                                    print("_longitude $_longitude");
-                                          _checkUserLocation(
-                                              _latitude, _longitude);
-                                        }
-                                      });
-                                    },
-                                    child: Container(
-                                      color: PlunesColors.LIGHTGREYCOLOR,
-                                      padding: EdgeInsets.all(6.0),
-                                      height: AppConfig.verticalBlockSize * 7,
-                                      width: AppConfig.horizontalBlockSize * 12,
-                                      child: Image.asset(
-                                        PlunesImages.userLandingGoogleIcon,
-                                        color: PlunesColors.GREENCOLOR,
-                                      ),
-                                    ))
+                                      _checkUserLocation(_latitude, _longitude,
+                                          address: addr);
+                                    }
+                                  });
+                                },
+                                child: Container(
+                                  color: PlunesColors.LIGHTGREYCOLOR,
+                                  padding: EdgeInsets.all(6.0),
+                                  height: AppConfig.verticalBlockSize * 7,
+                                  width: AppConfig.horizontalBlockSize * 12,
+                                  child: Image.asset(
+                                    PlunesImages.userLandingGoogleIcon,
+                                    color: PlunesColors.GREENCOLOR,
+                                  ),
+                                ))
                           ],
                         ),
                       ],
@@ -546,8 +529,24 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       if (element.permissionName == PermissionName.Location &&
           element.permissionStatus != PermissionStatus.allow) {
         _hasLocationPermission = false;
+        _locationMessage = PlunesStrings.turnOnLocationService;
       }
     });
+    if (!_hasLocationPermission) {
+      return _hasLocationPermission;
+    }
+    var user = UserManager().getUserDetails();
+    if (user?.latitude == null ||
+        user?.longitude == null ||
+        user.latitude.isNotEmpty ||
+        user.longitude.isNotEmpty ||
+        user.latitude == "0.0" ||
+        user.latitude == "0" ||
+        user.longitude == "0.0" ||
+        user.longitude == "0") {
+      _hasLocationPermission = false;
+      _locationMessage = PlunesStrings.pleaseSelectLocation;
+    }
     return _hasLocationPermission;
   }
 }

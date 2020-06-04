@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
@@ -88,13 +90,13 @@ class UserManager {
         .setPreferencesBoolean(Constants.NOTIFICATION_ENABLED, isOn);
   }
 
-  Future<RequestOutput> isUserInServiceLocation(
-      var latitude, var longitude) async {
+  Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
+      {String address}) async {
     if (longitude == null ||
         longitude.isEmpty ||
         latitude == null ||
         latitude.isEmpty) {
-      return RequestOutput(failureCause: PlunesStrings.pleaseSelectLocation);
+      return RequestFailed(failureCause: PlunesStrings.pleaseSelectLocation);
     }
     var result = await DioRequester().requestMethod(
       url: Urls.CHECK_LOCATION_API,
@@ -105,15 +107,32 @@ class UserManager {
       headerIncluded: true,
       requestType: HttpRequestMethods.HTTP_POST,
     );
+    print(json.encode(result.response.data));
+    RequestState requestState;
     if (result.isRequestSucceed) {
-      if (result.response.data != null && result.response.data) {
-        setIsUserInServiceLocation(result.response.data);
+      CheckLocationResponse checkLocationResponse =
+          CheckLocationResponse.fromJson(result.response.data);
+      if (checkLocationResponse != null &&
+          checkLocationResponse.success != null &&
+          checkLocationResponse.success) {
+        setIsUserInServiceLocation(checkLocationResponse.success);
         setLanLong(latitude, longitude);
+      } else if (checkLocationResponse != null &&
+          checkLocationResponse.success != null &&
+          !(checkLocationResponse.success) &&
+          checkLocationResponse.coordinates != null &&
+          checkLocationResponse.coordinates.isNotEmpty) {
+        setIsUserInServiceLocation(true);
+        setLanLong(checkLocationResponse.coordinates[1],
+            checkLocationResponse.coordinates[0]);
       } else {
         setIsUserInServiceLocation(false);
       }
+      requestState = RequestSuccess(response: checkLocationResponse);
+    } else {
+      requestState = RequestFailed(failureCause: result.failureCause);
     }
-    return result;
+    return requestState;
   }
 
   Future<RequestState> getUserProfile(String userId,

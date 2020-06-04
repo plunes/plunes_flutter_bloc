@@ -61,7 +61,8 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 //                  print("addr is $addr");
                   var _latitude = addressControllerList[3];
                   var _longitude = addressControllerList[4];
-                  UserBloc().isUserInServiceLocation(_latitude, _longitude);
+                  UserBloc().isUserInServiceLocation(_latitude, _longitude,
+                      address: addr);
                   Navigator.pop(context);
                   Navigator.push(
                       context,
@@ -111,15 +112,17 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
             Column(
               children: <Widget>[
                 Container(
-                  height: AppConfig.verticalBlockSize*20,
-                  width: AppConfig.verticalBlockSize*20,
-                  margin: EdgeInsets.only(top:AppConfig.verticalBlockSize*2, bottom: AppConfig.verticalBlockSize*1),
+                  height: AppConfig.verticalBlockSize * 20,
+                  width: AppConfig.verticalBlockSize * 20,
+                  margin: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 2,
+                      bottom: AppConfig.verticalBlockSize * 1),
                   child: Stack(
                     alignment: Alignment.center,
                     children: <Widget>[
                       Container(
-                        height: AppConfig.verticalBlockSize*30,
-                        width: AppConfig.verticalBlockSize*30,
+                        height: AppConfig.verticalBlockSize * 30,
+                        width: AppConfig.verticalBlockSize * 30,
                         decoration: BoxDecoration(
                             gradient: LinearGradient(
                                 colors: [Colors.white, Color(0xfffafafa)],
@@ -128,10 +131,10 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                 stops: [0.0, 1.0],
                                 tileMode: TileMode.clamp),
                             borderRadius: BorderRadius.all(
-                              Radius.circular(AppConfig.verticalBlockSize*30),
+                              Radius.circular(AppConfig.verticalBlockSize * 30),
                             ),
-                            border: Border.all(
-                                color: Color(0xfffafafa), width: 2)),
+                            border:
+                                Border.all(color: Color(0xfffafafa), width: 2)),
                       ),
                       Align(
                         child: AnimatedContainer(
@@ -170,18 +173,20 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
               ),
             ),
             SizedBox(
-              height: AppConfig.verticalBlockSize*25,
+              height: AppConfig.verticalBlockSize * 25,
             ),
             Center(
               child: Text(
                 PlunesStrings.receiving,
-                style: TextStyle(fontSize:AppConfig.smallFont, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    fontSize: AppConfig.smallFont, fontWeight: FontWeight.w500),
               ),
             ),
             Container(
-              height: AppConfig.horizontalBlockSize*1,
-              margin:
-                  EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize*0.2,horizontal: AppConfig.horizontalBlockSize*5),
+              height: AppConfig.horizontalBlockSize * 1,
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 0.2,
+                  horizontal: AppConfig.horizontalBlockSize * 5),
               child: LinearProgressIndicator(
                 value: _bidProgress,
                 backgroundColor: Color(0xffDCDCDC),
@@ -191,8 +196,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
               ),
             ),
             Padding(
-                padding:
-                    EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)),
+                padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)),
             holdOnPopUp
           ],
         ),
@@ -222,7 +226,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                       size: 50,
                     ),
                     SizedBox(
-                      width: AppConfig.horizontalBlockSize*2,
+                      width: AppConfig.horizontalBlockSize * 2,
                     ),
                     Expanded(
                       child: Container(

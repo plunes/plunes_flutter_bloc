@@ -227,25 +227,20 @@ class User {
           .toList(growable: true);
     }
     String lat = "0.0", long = "0.0";
-    if ((json['geoLocation'] != null &&
-            json['geoLocation']['latitude'] != null &&
-            json['geoLocation']['latitude'].toString().trim().isNotEmpty) &&
-        (json['geoLocation'] != null &&
-            json['geoLocation']['longitude'] != null &&
-            json['geoLocation']['longitude'].toString().trim().isNotEmpty)) {
-      lat = json['geoLocation']['latitude'].toString();
-      long = json['geoLocation']['longitude'].toString();
-    }
     if (json['location'] != null &&
         json['location']['coordinates'] != null &&
-        json['location']['coordinates'].isNotEmpty &&
-        lat == "0.0" &&
-        long == "0.0") {
+        json['location']['coordinates'].isNotEmpty) {
       long = json['location']['coordinates'][0]?.toString() ?? "0.0";
       lat = json['location']['coordinates'][1]?.toString() ?? "0.0";
     }
-//    print("lat in models $lat");
-//    print("long in models $long");
+    if (long == null || long.isEmpty || long == "0") {
+      long = "0.0";
+    }
+    if (lat == null || lat.isEmpty || lat == "0") {
+      lat = "0.0";
+    }
+    print("lat in models $lat");
+    print("long in models $long");
     return User(
       uid: json['_id'] != null ? json['_id'] : '',
       name: json['name'] != null ? json['name'] : '',
@@ -695,6 +690,29 @@ class HelpLineNumberModel {
     data['success'] = this.success;
     data['data'] = this.number;
     data['msg'] = this.msg;
+    return data;
+  }
+}
+
+class CheckLocationResponse {
+  bool success;
+  String msg;
+  List<double> coordinates;
+
+  CheckLocationResponse({this.success, this.msg, this.coordinates});
+
+  CheckLocationResponse.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    msg = json['msg'];
+    coordinates =
+        json['coordinates'] != null ? json['coordinates'].cast<double>() : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    data['msg'] = this.msg;
+    data['coordinates'] = this.coordinates;
     return data;
   }
 }

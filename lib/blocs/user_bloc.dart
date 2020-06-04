@@ -15,8 +15,10 @@ class UserBloc extends BlocBase {
 
   Observable<RequestState> get serviceStream => _serviceStreamProvider.stream;
 
-  Future<RequestOutput> isUserInServiceLocation(var latitude, var longitude) {
-    return UserManager().isUserInServiceLocation(latitude, longitude);
+  Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
+      {String address}) {
+    return UserManager()
+        .isUserInServiceLocation(latitude, longitude, address: address);
   }
 
   Future<RequestState> getUserProfile(final String userId,
