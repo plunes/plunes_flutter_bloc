@@ -850,9 +850,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     if (appointmentTime.contains("PM") && _selectedHour != 12) {
       _selectedHour = _selectedHour + 12;
     }
+    print(
+        "${fromDuration.toString()}appointment ${toDuration.toString()}time ${appointmentTime}");
     TimeOfDay _selectedTime = TimeOfDay(
         hour: _selectedHour,
         minute: int.tryParse(_hourNMinute[1].trim().split(" ")[0]));
+    print("_selectedTime ${_selectedTime.toString()}");
     if (_selectedTime.hour >= fromDuration.hour &&
         _selectedTime.hour <= toDuration.hour &&
         _tempSelectedDateTime.day == _dateNow.day &&
@@ -861,24 +864,50 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       if (_selectedTime.hour == _dateNow.hour &&
           _selectedTime.minute >= _dateNow.minute) {
         //make it true
-        _appointmentTime = appointmentTime;
-        isValidEntryFilled = true;
+        ///repeated ///
+        if (_selectedTime.hour == toDuration.hour) {
+          if (_selectedTime.minute <= toDuration.minute) {
+            _appointmentTime = appointmentTime;
+            isValidEntryFilled = true;
+          }
+        } else {
+          _appointmentTime = appointmentTime;
+          isValidEntryFilled = true;
+        }
+
+        ///repeated ///
+//        _appointmentTime = appointmentTime;
+//        isValidEntryFilled = true;
       } else if (_selectedTime.hour > _dateNow.hour) {
         //success
-        _appointmentTime = appointmentTime;
-        isValidEntryFilled = true;
-      } else {
-//        print("failed case 1");
+        ///repeated ///
+        if (_selectedTime.hour == toDuration.hour) {
+          if (_selectedTime.minute <= toDuration.minute) {
+            _appointmentTime = appointmentTime;
+            isValidEntryFilled = true;
+          }
+        } else {
+          _appointmentTime = appointmentTime;
+          isValidEntryFilled = true;
+        }
+
+        ///repeated ///
+//        _appointmentTime = appointmentTime;
+//        isValidEntryFilled = true;
       }
     } else if (_tempSelectedDateTime.day != _dateNow.day &&
         _selectedTime.hour >= fromDuration.hour &&
         _selectedTime.hour <= toDuration.hour) {
-      _appointmentTime = appointmentTime;
-      isValidEntryFilled = true;
+      if (_selectedTime.hour == toDuration.hour) {
+        if (_selectedTime.minute <= toDuration.minute) {
+          _appointmentTime = appointmentTime;
+          isValidEntryFilled = true;
+        }
+      } else {
+        _appointmentTime = appointmentTime;
+        isValidEntryFilled = true;
+      }
       //success
-    } else {
-//      print(
-//          "${_selectedTime.hour}failed ${fromDuration.hour}case2${toDuration.hour}");
     }
     return isValidEntryFilled;
   }
@@ -986,10 +1015,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     await showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (
-          BuildContext context,
-        ) =>
-            PopupChoose(
+        builder: (BuildContext context) => PopupChoose(
               bookInPrice: widget.bookInPrice,
               totalPrice: widget.price,
               services: widget.service,

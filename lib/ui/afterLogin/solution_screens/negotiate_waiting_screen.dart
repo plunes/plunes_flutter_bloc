@@ -173,7 +173,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
               ),
             ),
             SizedBox(
-              height: AppConfig.verticalBlockSize * 25,
+              height: AppConfig.verticalBlockSize * 20,
             ),
             Center(
               child: Text(

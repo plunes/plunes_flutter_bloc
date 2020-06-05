@@ -371,7 +371,7 @@ class _AvailabilitySelectionScreenState
           stream: userBloc.baseStream,
           builder: (context, snapshot) {
             if (snapshot.data is RequestInProgress && hasSubmitted) {
-              CustomWidgets().getProgressIndicator();
+              return CustomWidgets().getProgressIndicator();
             }
             if (snapshot.data is RequestSuccess && hasSubmitted) {
               Future.delayed(Duration(milliseconds: 20)).then((value) {
