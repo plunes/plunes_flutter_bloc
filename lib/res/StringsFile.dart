@@ -19,7 +19,7 @@ class PlunesStrings {
   static const String receiveTimeOut = "Server timeout, please try again later";
 
   static const String pleaseSelectLocation =
-      "We are not able to find you, please select a location first";
+      "We are not able to find you, please tap to select a location.";
 
   /////
   ///Solution strings
@@ -35,6 +35,7 @@ class PlunesStrings {
       "Negotiate for the best price solution near you";
   static const String previousActivities = "Previous Activities";
   static const String noSolutionsAvailable = "No solutions available";
+  static const String searchSolutions = "";
   static const String consultationNotAvailable = "Consultation not available";
   static const String proceduresNotAvailable = "Procedures not available";
   static const String testsNotAvailable = "Tests not available";
@@ -196,7 +197,10 @@ class PlunesStrings {
   static const String invalidCredentials = "Invalid credentials";
 
   static const String turnOnLocationService =
-      "To Negotiate with nearest facilities, turn on location services, or manually set location.";
+      "To Negotiate with nearest facilities, turn on location services, or tap to manually set location.";
+
+  static const String pleaseSelectLocationPopup =
+      "Please select a valid location to negotiate with nearest facilities";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

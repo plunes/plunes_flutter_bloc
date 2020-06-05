@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -119,7 +120,7 @@ class _TestProcedureSubScreenState
               widget.getAppBar(context, widget.title ?? PlunesStrings.NA, true),
           body: Builder(builder: (context) {
             return Container(
-             padding: CustomWidgets().getDefaultPaddingForScreensVertical(2),
+              padding: CustomWidgets().getDefaultPaddingForScreensVertical(2),
               width: double.infinity,
               child: _isFetchingInitialData
                   ? CustomWidgets().getProgressIndicator()
@@ -137,16 +138,15 @@ class _TestProcedureSubScreenState
       children: <Widget>[
         StreamBuilder(
           builder: (context, snapShot) {
-            return
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*2),
-              child:CustomWidgets().searchBar(
-                hintText: plunesStrings.searchHint,
-                hasFocus: false,
-                searchController: _searchController),
-              );
+            return Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 2),
+              child: CustomWidgets().searchBar(
+                  hintText: plunesStrings.searchHint,
+                  hasFocus: false,
+                  searchController: _searchController),
+            );
           },
-
           stream: _searchStreamController.stream,
         ),
 //        widget.getSpacer(
@@ -281,7 +281,18 @@ class _TestProcedureSubScreenState
     );
   }
 
-  _onSolutionItemTap(CatalogueData catalogueData) {
+  _onSolutionItemTap(CatalogueData catalogueData) async {
+    if (!UserManager().getIsUserInServiceLocation()) {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets().fetchLocationPopUp(context);
+          },
+          barrierDismissible: false);
+      if (!UserManager().getIsUserInServiceLocation()) {
+        return;
+      }
+    }
     Navigator.push(
         context,
         MaterialPageRoute(

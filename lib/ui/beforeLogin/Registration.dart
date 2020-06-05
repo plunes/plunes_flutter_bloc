@@ -647,8 +647,10 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               TextInputType.datetime, TextCapitalization.none, false, ''),
           getPasswordRow(plunesStrings.password),
           widget.getSpacer(0.0, 15.0),
-          createTextField(locationController, plunesStrings.location,
-              TextInputType.text, TextCapitalization.none, false, ''),
+          _userType == Constants.generalUser
+              ? Container()
+              : createTextField(locationController, plunesStrings.location,
+                  TextInputType.text, TextCapitalization.none, false, ''),
           Visibility(
               visible: isDoctor,
               child: Column(children: <Widget>[
@@ -883,7 +885,8 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       if (this._latitude != null &&
           this._longitude != null &&
           this._latitude.isNotEmpty &&
-          this._longitude.isNotEmpty) {
+          this._longitude.isNotEmpty &&
+          _userType != Constants.generalUser) {
         body['location'] = Location(type: 'Point', coordinates: [
           double.parse(this._longitude),
           double.parse(this._latitude)
@@ -891,7 +894,9 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       }
       body['userType'] =
           _userType == Constants.generalUser ? 'User' : _userType;
-      body['address'] = locationController.text;
+      if (_userType != Constants.generalUser) {
+        body['address'] = locationController.text;
+      }
       body['deviceId'] = Constants.DEVICE_TOKEN;
       if (_userType != Constants.hospital &&
           _userType != Constants.labDiagnosticCenter) {

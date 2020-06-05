@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
+import 'package:permission/permission.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
@@ -51,10 +52,14 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   startTime() async {
     await Preferences().instantiatePreferences();
     preferences = new Preferences();
-    await Future.delayed(Duration(seconds: 1));
     try {
       LocationUtil().getCurrentLatLong(context);
+      if (preferences.getPreferenceString(Constants.ACCESS_TOKEN) != null &&
+          preferences.getPreferenceString(Constants.ACCESS_TOKEN).length > 0) {
+        await _getCurrentLocation();
+      }
     } catch (e) {}
+    await Future.delayed(Duration(milliseconds: 5));
     _userBloc.getSpeciality();
     navigationPage();
   }
@@ -82,5 +87,30 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   @override
   dialogCallBackFunction(String action) {
     startTime();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    if (preferences.getPreferenceString(Constants.PREF_USER_TYPE) == null ||
+        preferences.getPreferenceString(Constants.PREF_USER_TYPE) !=
+            Constants.generalUser) {
+      return null;
+    }
+    bool _hasLocationPermission = true;
+    var permissionList =
+        await Permission.getPermissionsStatus([PermissionName.Location]);
+    permissionList.forEach((element) {
+      if (element.permissionName == PermissionName.Location &&
+          element.permissionStatus != PermissionStatus.allow) {
+        _hasLocationPermission = false;
+      }
+    });
+    if (_hasLocationPermission) {
+      var latLong = await LocationUtil().getCurrentLatLong(context);
+      if (latLong != null) {
+        await UserBloc().isUserInServiceLocation(
+            latLong.latitude?.toString(), latLong.longitude?.toString());
+      }
+    }
+    return null;
   }
 }

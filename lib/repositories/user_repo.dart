@@ -77,7 +77,6 @@ class UserManager {
   }
 
   setDeviceToken(String token) {
-    print("setPreferencesString $token");
     return Preferences().setPreferencesString(Constants.FIREBASE_TOKEN, token);
   }
 
@@ -91,7 +90,7 @@ class UserManager {
   }
 
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
-      {String address}) async {
+      {String address, bool isFromPopup = false}) async {
     if (longitude == null ||
         longitude.isEmpty ||
         latitude == null ||
@@ -102,12 +101,12 @@ class UserManager {
       url: Urls.CHECK_LOCATION_API,
       postData: {
         "latitude": double.parse(latitude),
-        "longitude": double.parse(longitude)
+        "longitude": double.parse(longitude),
+        "popup": isFromPopup
       },
       headerIncluded: true,
       requestType: HttpRequestMethods.HTTP_POST,
     );
-    print(json.encode(result.response.data));
     RequestState requestState;
     if (result.isRequestSucceed) {
       CheckLocationResponse checkLocationResponse =
@@ -117,15 +116,17 @@ class UserManager {
           checkLocationResponse.success) {
         setIsUserInServiceLocation(checkLocationResponse.success);
         setLanLong(latitude, longitude);
-      } else if (checkLocationResponse != null &&
-          checkLocationResponse.success != null &&
-          !(checkLocationResponse.success) &&
-          checkLocationResponse.coordinates != null &&
-          checkLocationResponse.coordinates.isNotEmpty) {
-        setIsUserInServiceLocation(true);
-        setLanLong(checkLocationResponse.coordinates[1],
-            checkLocationResponse.coordinates[0]);
-      } else {
+      }
+//      else if (checkLocationResponse != null &&
+//          checkLocationResponse.success != null &&
+//          !(checkLocationResponse.success) &&
+//          checkLocationResponse.coordinates != null &&
+//          checkLocationResponse.coordinates.isNotEmpty) {
+//        setIsUserInServiceLocation(true);
+//        setLanLong(checkLocationResponse.coordinates[1],
+//            checkLocationResponse.coordinates[0]);
+//      }
+      else {
         setIsUserInServiceLocation(false);
       }
       requestState = RequestSuccess(response: checkLocationResponse);

@@ -9,6 +9,7 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/actionable_insights_response_model.dart';
@@ -16,10 +17,12 @@ import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_res
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/models/solution_models/test_and_procedure_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:share/share.dart';
 import 'CommonMethods.dart';
 import 'app_config.dart';
@@ -2631,6 +2634,172 @@ class CustomWidgets {
           ),
         ],
       ),
+    );
+  }
+
+  Widget fetchLocationPopUp(BuildContext context) {
+    String message;
+    bool isProgressing = false;
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      margin: EdgeInsets.symmetric(
+          vertical: AppConfig.verticalBlockSize * 29,
+          horizontal: AppConfig.horizontalBlockSize * 14),
+      child: StatefulBuilder(builder: (context, newState) {
+        if (isProgressing) {
+          return getProgressIndicator();
+        }
+        return Container(
+          child: Column(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.topRight,
+                child: InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  onDoubleTap: () {},
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Icon(Icons.close),
+                  ),
+                ),
+              ),
+              Container(
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 2,
+                      horizontal: AppConfig.horizontalBlockSize * 5),
+                  child: message == null
+                      ? Column(
+                          children: <Widget>[
+                            Text(
+                              PlunesStrings.pleaseSelectLocationPopup,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 5),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  FlatButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: Text("No")),
+                                  FlatButton(
+                                      onPressed: () async {
+                                        Navigator.of(context)
+                                            .push(PageRouteBuilder(
+                                                opaque: false,
+                                                pageBuilder:
+                                                    (BuildContext context, _,
+                                                            __) =>
+                                                        LocationFetch()))
+                                            .then((val) async {
+                                          if (val != null) {
+                                            var addressControllerList =
+                                                new List();
+                                            addressControllerList =
+                                                val.toString().split(":");
+                                            String addr =
+                                                addressControllerList[0] +
+                                                    ' ' +
+                                                    addressControllerList[1] +
+                                                    ' ' +
+                                                    addressControllerList[2];
+//                          print("addr is $addr");
+                                            var _latitude =
+                                                addressControllerList[3];
+                                            var _longitude =
+                                                addressControllerList[4];
+//                          print("_latitude $_latitude");
+//                          print("_longitude $_longitude");
+                                            isProgressing = true;
+                                            newState(() {});
+                                            UserBloc()
+                                                .isUserInServiceLocation(
+                                                    _latitude, _longitude,
+                                                    address: addr,
+                                                    isFromPopup: true)
+                                                .then((value) {
+                                              if (value is RequestSuccess) {
+                                                CheckLocationResponse
+                                                    checkLocationResponse =
+                                                    value.response;
+                                                if (checkLocationResponse !=
+                                                        null &&
+                                                    checkLocationResponse.msg !=
+                                                        null &&
+                                                    checkLocationResponse
+                                                        .msg.isNotEmpty) {
+                                                  message =
+                                                      checkLocationResponse.msg;
+                                                }
+                                                if (UserManager()
+                                                    .getIsUserInServiceLocation()) {
+                                                  Navigator.of(context).pop();
+                                                  return;
+                                                } else if (message == null) {
+                                                  message =
+                                                      "Seems like we are not available in your area";
+                                                }
+                                              } else if (value
+                                                  is RequestFailed) {
+                                                message = value.failureCause;
+                                              }
+                                              isProgressing = false;
+                                              newState(() {});
+                                            });
+                                          }
+                                        });
+                                      },
+                                      child: Text(
+                                        "Yes",
+                                        style: TextStyle(
+                                            color: PlunesColors.GREENCOLOR),
+                                      )),
+                                ],
+                              ),
+                            )
+                          ],
+                        )
+                      : Column(
+                          children: <Widget>[
+                            Text(
+                              message.isEmpty
+                                  ? plunesStrings.somethingWentWrong
+                                  : message,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 8),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  FlatButton(
+                                      onPressed: () =>
+                                          Navigator.pop(context, false),
+                                      child: Text(
+                                        "OK",
+                                        style: TextStyle(
+                                            color: PlunesColors.GREENCOLOR),
+                                      )),
+                                ],
+                              ),
+                            )
+                          ],
+                        ))
+            ],
+          ),
+        );
+      }),
     );
   }
 }

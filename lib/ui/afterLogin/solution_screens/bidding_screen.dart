@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -35,9 +37,6 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     _catalogues = [];
     _endReached = false;
     _focusNode = FocusNode();
-//    Future.delayed(Duration(milliseconds: 450)).then((v) {
-//      if (mounted) FocusScope.of(context).requestFocus(_focusNode);
-//    });
     _searchSolutionBloc = SearchSolutionBloc();
     _streamController = StreamController();
     _searchController = TextEditingController()..addListener(_onSearch);
@@ -179,14 +178,15 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               pageIndex = SearchSolutionBloc.initialIndex;
             }
             return _catalogues == null || _catalogues.isEmpty
-                ? Text(PlunesStrings.noSolutionsAvailable)
+                ? _getDefaultWidget(snapShot)
                 : Column(
                     children: <Widget>[
                       Expanded(
                         child: _showSearchedItems(),
                         flex: 4,
                       ),
-                      snapShot.data is RequestInProgress
+                      (snapShot.data is RequestInProgress &&
+                              (_catalogues != null && _catalogues.isNotEmpty))
                           ? Expanded(
                               child: CustomWidgets().getProgressIndicator(),
                               flex: 1,
@@ -216,7 +216,18 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                 )));
   }
 
-  _onSolutionItemTap(int index) {
+  _onSolutionItemTap(int index) async {
+    if (!UserManager().getIsUserInServiceLocation()) {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets().fetchLocationPopUp(context);
+          },
+          barrierDismissible: false);
+      if (!UserManager().getIsUserInServiceLocation()) {
+        return;
+      }
+    }
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -241,6 +252,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
       if (_searchController != null &&
           _searchController.text != null &&
           _searchController.text.trim().isNotEmpty) {
+        _searchSolutionBloc.addIntoStream(RequestInProgress());
         _searchSolutionBloc.getSearchedSolution(
             searchedString: _searchController.text.trim().toString(), index: 0);
       } else {
@@ -276,5 +288,16 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         itemCount: _catalogues.length,
       ),
     );
+  }
+
+  Widget _getDefaultWidget(AsyncSnapshot<RequestState> snapshot) {
+    return snapshot.data is RequestInProgress
+        ? SpinKitThreeBounce(
+            color: Color(hexColorCode.defaultGreen), size: 30.0)
+        : Text(_catalogues != null &&
+                _catalogues.isEmpty &&
+                _searchController.text.trim().isNotEmpty
+            ? PlunesStrings.noSolutionsAvailable
+            : PlunesStrings.searchSolutions);
   }
 }

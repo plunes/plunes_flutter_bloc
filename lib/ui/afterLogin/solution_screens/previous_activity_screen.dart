@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:flutter/gestures.dart';
@@ -206,6 +207,17 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                   SolutionReceivedScreen(catalogueData: catalogueData)));
     } else {
       catalogueData.isFromNotification = false;
+      if (!UserManager().getIsUserInServiceLocation()) {
+        await showDialog(
+            context: context,
+            builder: (context) {
+              return CustomWidgets().fetchLocationPopUp(context);
+            },
+            barrierDismissible: false);
+        if (!UserManager().getIsUserInServiceLocation()) {
+          return;
+        }
+      }
       await Navigator.push(
           context,
           MaterialPageRoute(

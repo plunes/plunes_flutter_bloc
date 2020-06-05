@@ -262,20 +262,25 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                         child: Material(
                           child: InkWell(
                             onTap: () async {
-                              if ((!(await _getLocationPermissionStatus()) &&
-                                  !(UserManager()
-                                      .getIsUserInServiceLocation()))) {
-                                widget.showInSnackBar(
-                                    PlunesStrings.pleaseSelectALocation,
-                                    PlunesColors.GREYCOLOR,
-                                    scaffoldKey);
-                                return;
-                              }
+//                              if ((!(await _getLocationPermissionStatus()) &&
+//                                  !(UserManager()
+//                                      .getIsUserInServiceLocation()))) {
+//                                widget.showInSnackBar(
+//                                    PlunesStrings.pleaseSelectALocation,
+//                                    PlunesColors.GREYCOLOR,
+//                                    scaffoldKey);
+//                                return;
+//                              }
                               await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           SolutionBiddingScreen()));
+                              _canGoAhead =
+                                  UserManager().getIsUserInServiceLocation();
+                              if (_canGoAhead) {
+                                _setState();
+                              }
                               _getPreviousSolutions();
                             },
                             child: IgnorePointer(
@@ -338,9 +343,17 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         (_prevSearchedSolution != null &&
             _prevSearchedSolution.topSearches != null &&
             _prevSearchedSolution.topSearches)) {
-      widget.showInSnackBar(PlunesStrings.pleaseSelectALocation,
-          PlunesColors.GREYCOLOR, scaffoldKey);
-      return;
+      await showDialog(
+          context: _context,
+          builder: (context) {
+            return CustomWidgets().fetchLocationPopUp(_context);
+          },
+          barrierDismissible: false);
+      if (!UserManager().getIsUserInServiceLocation()) {
+        return;
+      }
+      _canGoAhead = UserManager().getIsUserInServiceLocation();
+      _setState();
     }
     if (_prevSearchedSolution.topSearches == null ||
         !(_prevSearchedSolution.topSearches)) {
@@ -358,6 +371,19 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               builder: (context) =>
                   SolutionReceivedScreen(catalogueData: catalogueData)));
     } else {
+      if (!_canGoAhead) {
+        await showDialog(
+            context: _context,
+            builder: (context) {
+              return CustomWidgets().fetchLocationPopUp(_context);
+            },
+            barrierDismissible: false);
+        if (!UserManager().getIsUserInServiceLocation()) {
+          return;
+        }
+        _canGoAhead = UserManager().getIsUserInServiceLocation();
+        _setState();
+      }
       catalogueData.isFromNotification = false;
       await Navigator.push(
           context,
@@ -425,89 +451,119 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         initialData: false,
         future: _getLocationPermissionStatus(),
         builder: (context, snapShot) {
-          return Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Container(
-                  child: Container(
-                    color: Color(0xff99000000),
-                    padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 5),
-                    child: Stack(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            _progressEnabled
-                                ? CustomWidgets().getProgressIndicator()
-                                : Icon(
-                                    Icons.location_off,
-                                    color: PlunesColors.GREENCOLOR,
-                                    size: AppConfig.verticalBlockSize * 4,
-                                  ),
-                            SizedBox(
-                              width: 10,
-                            ),
-                            Expanded(
-                              child: Container(
-                                child: Text(
-                                  !(snapShot.data)
-                                      ? _progressEnabled
-                                          ? "Verifying location. . ."
-                                          : _failureCause ?? _locationMessage
-                                      : _failureCause ?? _locationMessage,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: AppConfig.mediumFont),
-                                ),
-                              ),
-                            ),
-                            InkWell(
-                                onTap: () {
-                                  Navigator.of(context)
-                                      .push(PageRouteBuilder(
-                                          opaque: false,
-                                          pageBuilder:
-                                              (BuildContext context, _, __) =>
-                                                  LocationFetch()))
-                                      .then((val) {
-                                    if (val != null) {
-                                      var addressControllerList = new List();
-                                      addressControllerList =
-                                          val.toString().split(":");
-                                      String addr = addressControllerList[0] +
-                                          ' ' +
-                                          addressControllerList[1] +
-                                          ' ' +
-                                          addressControllerList[2];
+          return InkWell(
+            onTap: () {
+              if (_progressEnabled) {
+                return;
+              }
+              Navigator.of(context)
+                  .push(PageRouteBuilder(
+                      opaque: false,
+                      pageBuilder: (BuildContext context, _, __) =>
+                          LocationFetch()))
+                  .then((val) {
+                if (val != null) {
+                  var addressControllerList = new List();
+                  addressControllerList = val.toString().split(":");
+                  String addr = addressControllerList[0] +
+                      ' ' +
+                      addressControllerList[1] +
+                      ' ' +
+                      addressControllerList[2];
 //                                    print("addr is $addr");
-                                      var _latitude = addressControllerList[3];
-                                      var _longitude = addressControllerList[4];
+                  var _latitude = addressControllerList[3];
+                  var _longitude = addressControllerList[4];
 //                                    print("_latitude $_latitude");
 //                                    print("_longitude $_longitude");
-                                      _checkUserLocation(_latitude, _longitude,
-                                          address: addr);
-                                    }
-                                  });
-                                },
+                  _checkUserLocation(_latitude, _longitude, address: addr);
+                }
+              });
+            },
+            child: Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    child: Container(
+                      color: Color(0xff99000000),
+                      padding:
+                          EdgeInsets.all(AppConfig.horizontalBlockSize * 5),
+                      child: Stack(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              _progressEnabled
+                                  ? CustomWidgets().getProgressIndicator()
+                                  : Icon(
+                                      Icons.location_off,
+                                      color: PlunesColors.GREENCOLOR,
+                                      size: AppConfig.verticalBlockSize * 4,
+                                    ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
                                 child: Container(
-                                  color: PlunesColors.LIGHTGREYCOLOR,
-                                  padding: EdgeInsets.all(6.0),
-                                  height: AppConfig.verticalBlockSize * 7,
-                                  width: AppConfig.horizontalBlockSize * 12,
-                                  child: Image.asset(
-                                    PlunesImages.userLandingGoogleIcon,
-                                    color: PlunesColors.GREENCOLOR,
+                                  child: Text(
+                                    !(snapShot.data)
+                                        ? _progressEnabled
+                                            ? "Verifying location. . ."
+                                            : _failureCause ?? _locationMessage
+                                        : _failureCause ?? _locationMessage,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: AppConfig.mediumFont),
                                   ),
-                                ))
-                          ],
-                        ),
-                      ],
+                                ),
+                              ),
+//                            InkWell(
+//                                onTap: () {
+//                                  Navigator.of(context)
+//                                      .push(PageRouteBuilder(
+//                                          opaque: false,
+//                                          pageBuilder:
+//                                              (BuildContext context, _, __) =>
+//                                                  LocationFetch()))
+//                                      .then((val) {
+//                                    if (val != null) {
+//                                      var addressControllerList = new List();
+//                                      addressControllerList =
+//                                          val.toString().split(":");
+//                                      String addr = addressControllerList[0] +
+//                                          ' ' +
+//                                          addressControllerList[1] +
+//                                          ' ' +
+//                                          addressControllerList[2];
+////                                    print("addr is $addr");
+//                                      var _latitude = addressControllerList[3];
+//                                      var _longitude = addressControllerList[4];
+////                                    print("_latitude $_latitude");
+////                                    print("_longitude $_longitude");
+//                                      _checkUserLocation(_latitude, _longitude,
+//                                          address: addr);
+//                                    }
+//                                  });
+//                                },
+//                                child: Container(
+//                                  color: PlunesColors.LIGHTGREYCOLOR,
+//                                  padding: EdgeInsets.all(6.0),
+//                                  height: AppConfig.verticalBlockSize * 7,
+//                                  width: AppConfig.horizontalBlockSize * 12,
+//                                  child: Image.asset(
+//                                    PlunesImages.userLandingGoogleIcon,
+//                                    color: PlunesColors.GREENCOLOR,
+//                                  ),
+//                                ))
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           );
         });
