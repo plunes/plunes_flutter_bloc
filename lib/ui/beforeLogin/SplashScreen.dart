@@ -59,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
         await _getCurrentLocation();
       }
     } catch (e) {}
-    await Future.delayed(Duration(milliseconds: 5));
+    await Future.delayed(Duration(milliseconds: 1000));
     _userBloc.getSpeciality();
     navigationPage();
   }
@@ -105,11 +105,14 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
       }
     });
     if (_hasLocationPermission) {
-      var latLong = await LocationUtil().getCurrentLatLong(context);
-      if (latLong != null) {
-        await UserBloc().isUserInServiceLocation(
-            latLong.latitude?.toString(), latLong.longitude?.toString());
-      }
+      LocationUtil().getCurrentLatLong(context).then((latLong) {
+        {
+          if (latLong != null) {
+            UserBloc().isUserInServiceLocation(
+                latLong.latitude?.toString(), latLong.longitude?.toString());
+          }
+        }
+      });
     }
     return null;
   }

@@ -175,14 +175,9 @@ class _LoginState extends State<Login> implements DialogCallBack {
   }
 
   bool validation(text) {
-    if (CommonMethods.checkIfNumber(text)) {
-      if (text.length == 10 || text.length == 0) {
-        isValidNumber = true;
-        return true;
-      } else {
-        isValidNumber = false;
-        return false;
-      }
+    if (text.length >= 10 || text.length == 0) {
+      isValidNumber = true;
+      return true;
     } else {
       isValidNumber = false;
       return false;

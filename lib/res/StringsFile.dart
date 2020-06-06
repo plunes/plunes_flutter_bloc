@@ -353,7 +353,7 @@ class PlunesStrings {
 
   get aboutHospital => 'About Hospital';
 
-  get registrationNo => 'Registration No';
+  get registrationNo => 'Registration No*';
 
   get addSpecialization => 'Add Specialization';
 

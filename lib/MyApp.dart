@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
-
+//    throw Exception("This is a crash!");
     return MaterialApp(
       key: _scaffoldKey,
       navigatorKey: _navKey,

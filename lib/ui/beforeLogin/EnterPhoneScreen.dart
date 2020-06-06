@@ -93,14 +93,9 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   }
 
   bool validation(text) {
-    if (CommonMethods.checkIfNumber(text)) {
-      if (text.length == 10 || text.length == 0) {
-        isValidNumber = false;
-        return false;
-      } else {
-        isValidNumber = true;
-        return true;
-      }
+    if (text.length >= 10 || text.length == 0) {
+      isValidNumber = false;
+      return false;
     } else {
       isValidNumber = true;
       return true;

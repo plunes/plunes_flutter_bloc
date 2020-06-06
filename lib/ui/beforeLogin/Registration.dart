@@ -126,10 +126,10 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       _isProcessing = true;
       _getSpecialities();
     }
-    getLocation();
+    _getLocation();
   }
 
-  void getLocation() async {
+  void _getLocation() async {
     _preferenceObj = new Preferences();
     _latitude = _preferenceObj.getPreferenceString(Constants.LATITUDE);
     _longitude = _preferenceObj.getPreferenceString(Constants.LONGITUDE);
@@ -737,6 +737,9 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
             opaque: false,
             pageBuilder: (BuildContext context, _, __) => LocationFetch()))
         .then((val) {
+      if (val == null) {
+        return;
+      }
       var addressControllerList = new List();
       addressControllerList = val.toString().split(":");
       locationController.text = addressControllerList[0] +
@@ -746,6 +749,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           addressControllerList[2];
       _latitude = addressControllerList[3];
       _longitude = addressControllerList[4];
+      _setState();
     });
   }
 
@@ -969,6 +973,16 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       return false;
     } else if (passwordController.text.length < 8) {
       errorMessage = plunesStrings.errorMsgPassword;
+      return false;
+    } else if (_userType != Constants.generalUser &&
+        (locationController.text.isEmpty ||
+            _latitude == null ||
+            _latitude.isEmpty ||
+            _latitude == "0.0" ||
+            _longitude == null ||
+            _longitude.isEmpty ||
+            _longitude == "0.0")) {
+      errorMessage = PlunesStrings.pleaseSelectALocation;
       return false;
     } else if (isDoctor && professionRegController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterProfRegNo;
@@ -1389,9 +1403,11 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     if (_latitude != null &&
         _longitude != null &&
         _latitude.isNotEmpty &&
-        _longitude.isNotEmpty) {
-      _preferenceObj.setPreferencesString(Constants.LATITUDE, _latitude);
-      _preferenceObj.setPreferencesString(Constants.LONGITUDE, _longitude);
+        _longitude.isNotEmpty &&
+        _latitude != "0.0" &&
+        _longitude != "0.0") {
+//      _preferenceObj.setPreferencesString(Constants.LATITUDE, _latitude);
+//      _preferenceObj.setPreferencesString(Constants.LONGITUDE, _longitude);
       print('$_latitude , $_longitude');
       final coordinates =
           new Coordinates(double.parse(_latitude), double.parse(_longitude));
