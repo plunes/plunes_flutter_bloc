@@ -457,14 +457,14 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             AppointmentModel.notRequested)
                     ? InkWell(
                         onTap: () {
-                          if (appointmentModel != null &&
-                              appointmentModel.appointmentTime != null &&
-                              DateTime.fromMillisecondsSinceEpoch(int.parse(
-                                      appointmentModel.appointmentTime))
-                                  .isBefore(DateTime.now())) {
-                            _showSnackBar(PlunesStrings.unableToRefund);
-                            return;
-                          }
+//                          if (appointmentModel != null &&
+//                              appointmentModel.appointmentTime != null &&
+//                              DateTime.fromMillisecondsSinceEpoch(int.parse(
+//                                      appointmentModel.appointmentTime))
+//                                  .isBefore(DateTime.now())) {
+//                            _showSnackBar(PlunesStrings.unableToRefund);
+//                            return;
+//                          }
                           showDialog(
                               context: context,
                               builder: (context) => CustomWidgets().refundPopup(

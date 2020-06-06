@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -65,6 +66,8 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
         child: TextField(
           cursorColor: Color(hexColorCode.defaultGreen),
           keyboardType: TextInputType.number,
+          maxLength: 10,
+          inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
           textInputAction: TextInputAction.done,
           style: TextStyle(
               fontSize: 18,
@@ -77,6 +80,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
           },
           decoration: InputDecoration(
               hintText: plunesStrings.enterNumber,
+              counterText: "",
               hintStyle: TextStyle(
                   fontSize: 18,
                   color: Color(

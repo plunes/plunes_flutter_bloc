@@ -224,106 +224,106 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     });
   }
 
-  Widget getAddDoctorsView() {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          /*      widget.getSpacer(0.0, 20.0),
-          widget.createTextViews(stringsFile.profileImage, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
-          widget.getSpacer(0.0, 20.0),
-          Row(
-            children: <Widget>[
-              InkWell(
-                onTap: () {
-
-                },
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: <Widget>[
-                    Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(40)),
-                          color: Color(0x90ffBDBDBD)),
-                      height: 80,
-                      width: 80,
-                    ),
-                    Align(
-                      child: Icon(
-                        Icons.camera_enhance,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Align(
-                        child: image != null
-                            ? CircleAvatar(
-                                radius: 40,
-                                backgroundImage: FileImage(image),
-                              )
-                            : Container()),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              widget.getDefaultButton(
-                  stringsFile.upload, 100, _pickImage),
-            ],
-          ),*/
-          widget.getSpacer(0.0, 30.0),
-          createTextField(docNameController, plunesStrings.fullName,
-              TextInputType.text, TextCapitalization.words, true, ''),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(
-              docEducationController,
-              plunesStrings.educationQualification,
-              TextInputType.text,
-              TextCapitalization.characters,
-              true,
-              ''),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(docDesignationController, plunesStrings.designation,
-              TextInputType.text, TextCapitalization.characters, true, ''),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(docDepartmentController, plunesStrings.department,
-              TextInputType.text, TextCapitalization.words, true, ''),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(
-              specializationController,
-              plunesStrings.speciality,
-              TextInputType.text,
-              TextCapitalization.words,
-              isSpecificationValid,
-              plunesStrings.errorMsgEnterSpecialization),
-          widget.getSpacer(0.0, 20.0),
-          createTextField(
-              experienceController,
-              plunesStrings.experienceInNo,
-              TextInputType.numberWithOptions(decimal: true),
-              TextCapitalization.none,
-              isExperienceValid,
-              plunesStrings.errorMsgEnterExp),
-          widget.getSpacer(0.0, 20.0),
-          /*     widget.createTextViews(stringsFile.availability, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
-          widget.getSpacer(0.0, 10.0),
-          Row(
-            children: <Widget>[
-              Expanded(child: getSlotsRow(doc_availability_from, "00:00 AM")),
-              SizedBox(
-                width: 10,
-              ),
-              Expanded(child: getSlotsRow(doc_availability_to, "00:00 PM")),
-            ],
-          ),*/
-          widget.getSpacer(0.0, 20.0),
-          widget.getDefaultButton(
-              plunesStrings.add, globalWidth - 40, 42, addDoctorsInRow),
-          widget.getSpacer(0.0, 10.0),
-        ],
-      ),
-    );
-  }
+//  Widget getAddDoctorsView() {
+//    return Container(
+//      child: Column(
+//        crossAxisAlignment: CrossAxisAlignment.start,
+//        children: <Widget>[
+//          /*      widget.getSpacer(0.0, 20.0),
+//          widget.createTextViews(stringsFile.profileImage, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
+//          widget.getSpacer(0.0, 20.0),
+//          Row(
+//            children: <Widget>[
+//              InkWell(
+//                onTap: () {
+//
+//                },
+//                child: Stack(
+//                  alignment: Alignment.center,
+//                  children: <Widget>[
+//                    Container(
+//                      decoration: BoxDecoration(
+//                          borderRadius: BorderRadius.all(Radius.circular(40)),
+//                          color: Color(0x90ffBDBDBD)),
+//                      height: 80,
+//                      width: 80,
+//                    ),
+//                    Align(
+//                      child: Icon(
+//                        Icons.camera_enhance,
+//                        color: Colors.white,
+//                      ),
+//                    ),
+//                    Align(
+//                        child: image != null
+//                            ? CircleAvatar(
+//                                radius: 40,
+//                                backgroundImage: FileImage(image),
+//                              )
+//                            : Container()),
+//                  ],
+//                ),
+//              ),
+//              SizedBox(
+//                width: 20,
+//              ),
+//              widget.getDefaultButton(
+//                  stringsFile.upload, 100, _pickImage),
+//            ],
+//          ),*/
+//          widget.getSpacer(0.0, 30.0),
+//          createTextField(docNameController, plunesStrings.fullName,
+//              TextInputType.text, TextCapitalization.words, true, ''),
+//          widget.getSpacer(0.0, 20.0),
+//          createTextField(
+//              docEducationController,
+//              plunesStrings.educationQualification,
+//              TextInputType.text,
+//              TextCapitalization.characters,
+//              true,
+//              ''),
+//          widget.getSpacer(0.0, 20.0),
+//          createTextField(docDesignationController, plunesStrings.designation,
+//              TextInputType.text, TextCapitalization.characters, true, ''),
+//          widget.getSpacer(0.0, 20.0),
+//          createTextField(docDepartmentController, plunesStrings.department,
+//              TextInputType.text, TextCapitalization.words, true, ''),
+//          widget.getSpacer(0.0, 20.0),
+//          createTextField(
+//              specializationController,
+//              plunesStrings.speciality,
+//              TextInputType.text,
+//              TextCapitalization.words,
+//              isSpecificationValid,
+//              plunesStrings.errorMsgEnterSpecialization),
+//          widget.getSpacer(0.0, 20.0),
+//          createTextField(
+//              experienceController,
+//              plunesStrings.experienceInNo,
+//              TextInputType.numberWithOptions(decimal: true),
+//              TextCapitalization.none,
+//              isExperienceValid,
+//              plunesStrings.errorMsgEnterExp),
+//          widget.getSpacer(0.0, 20.0),
+//          /*     widget.createTextViews(stringsFile.availability, 18, colorsFile.black0, TextAlign.left, FontWeight.normal),
+//          widget.getSpacer(0.0, 10.0),
+//          Row(
+//            children: <Widget>[
+//              Expanded(child: getSlotsRow(doc_availability_from, "00:00 AM")),
+//              SizedBox(
+//                width: 10,
+//              ),
+//              Expanded(child: getSlotsRow(doc_availability_to, "00:00 PM")),
+//            ],
+//          ),*/
+//          widget.getSpacer(0.0, 20.0),
+//          widget.getDefaultButton(
+//              plunesStrings.add, globalWidth - 40, 42, addDoctorsInRow),
+//          widget.getSpacer(0.0, 10.0),
+//        ],
+//      ),
+//    );
+//  }
 
   Widget getSlotsRow(TextEditingController controller, String hint) {
     return Container(
@@ -844,30 +844,30 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     );
   }
 
-  addDoctorsInRow() {
-    if (validationAddDoctors()) {
-      setState(() {
-        var doctors = {};
-        doctors['name'] = docNameController.text;
-        doctors['education'] = docEducationController.text;
-        doctors['designation'] = docDesignationController.text;
-        doctors['department'] = docDepartmentController.text;
-        doctors['experience'] = experienceController.text;
-        doctors['specialities'] = _selectedItemId;
-        _doctorsList.add(doctors);
-        docNameController.text = '';
-        docEducationController.text = '';
-        docDesignationController.text = '';
-        docDepartmentController.text = '';
-        experienceController.text = '';
-        specializationController.text = '';
-        _selectedItemId = [];
-      });
-    } else {
-      widget.showInSnackBar(
-          errorMessage, PlunesColors.BLACKCOLOR, _scaffoldKey);
-    }
-  }
+//  addDoctorsInRow() {
+//    if (validationAddDoctors()) {
+//      setState(() {
+//        var doctors = {};
+//        doctors['name'] = docNameController.text;
+//        doctors['education'] = docEducationController.text;
+//        doctors['designation'] = docDesignationController.text;
+//        doctors['department'] = docDepartmentController.text;
+//        doctors['experience'] = experienceController.text;
+//        doctors['specialities'] = _selectedItemId;
+//        _doctorsList.add(doctors);
+//        docNameController.text = '';
+//        docEducationController.text = '';
+//        docDesignationController.text = '';
+//        docDepartmentController.text = '';
+//        experienceController.text = '';
+//        specializationController.text = '';
+//        _selectedItemId = [];
+//      });
+//    } else {
+//      widget.showInSnackBar(
+//          errorMessage, PlunesColors.BLACKCOLOR, _scaffoldKey);
+//    }
+//  }
 
   submitRegistrationRequest() async {
     if (validation()) {
@@ -998,26 +998,26 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     }
   }
 
-  bool validationAddDoctors() {
-    if (docNameController.text.trim().isEmpty) {
-      errorMessage = plunesStrings.errorMsgEnterDocName;
-      return false;
-    } else if (docEducationController.text.trim().isEmpty) {
-      errorMessage = plunesStrings.errorMsgEnterEducation;
-      return false;
-    } else if (docDepartmentController.text.trim().isEmpty) {
-      errorMessage = plunesStrings.errorMsgEnterDocDep;
-      return false;
-    } else if (specializationController.text.trim().isEmpty) {
-      errorMessage = plunesStrings.errorMsgEnterSpecialization;
-      return false;
-    } else if (experienceController.text.trim().isEmpty) {
-      errorMessage = plunesStrings.errorMsgEnterExp;
-      return false;
-    } else {
-      return true;
-    }
-  }
+//  bool validationAddDoctors() {
+//    if (docNameController.text.trim().isEmpty) {
+//      errorMessage = plunesStrings.errorMsgEnterDocName;
+//      return false;
+//    } else if (docEducationController.text.trim().isEmpty) {
+//      errorMessage = plunesStrings.errorMsgEnterEducation;
+//      return false;
+//    } else if (docDepartmentController.text.trim().isEmpty) {
+//      errorMessage = plunesStrings.errorMsgEnterDocDep;
+//      return false;
+//    } else if (specializationController.text.trim().isEmpty) {
+//      errorMessage = plunesStrings.errorMsgEnterSpecialization;
+//      return false;
+//    } else if (experienceController.text.trim().isEmpty) {
+//      errorMessage = plunesStrings.errorMsgEnterExp;
+//      return false;
+//    } else {
+//      return true;
+//    }
+//  }
 
   @override
   dialogCallBackFunction(String action) {}
@@ -1134,16 +1134,22 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                       controller == aboutController)
                   ? 2
                   : 1,
-              maxLength: (controller == aboutController) ? 250 : null,
+              maxLength: (controller == aboutController)
+                  ? 250
+                  : (controller != null && controller == alternatePhoneController)
+                      ? 10
+                      : null,
               textCapitalization: textCapitalization,
               obscureText:
                   (controller == passwordController ? _passwordVisible : false),
               keyboardType: inputType,
-              inputFormatters:
-                  (controller != null && controller == alternatePhoneController)
-                      ? <TextInputFormatter>[
-                          WhitelistingTextInputFormatter.digitsOnly
-                        ]
+              inputFormatters: (controller != null &&
+                      controller == alternatePhoneController)
+                  ? <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ]
+                  : controller != null && controller == nameController
+                      ? [WhitelistingTextInputFormatter(RegExp("[a-zA-Z ]"))]
                       : null,
               textInputAction: controller == referralController
                   ? TextInputAction.done

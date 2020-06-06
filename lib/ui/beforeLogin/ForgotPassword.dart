@@ -106,6 +106,7 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
             maxLines: 1,
             textCapitalization: textCapitalization,
             keyboardType: inputType,
+            maxLength: 10,
             inputFormatters: <TextInputFormatter>[
               WhitelistingTextInputFormatter.digitsOnly
             ],

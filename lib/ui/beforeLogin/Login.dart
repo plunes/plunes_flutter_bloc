@@ -153,6 +153,10 @@ class _LoginState extends State<Login> implements DialogCallBack {
                 }
               });
             },
+            inputFormatters: controller == phoneController
+                ? [WhitelistingTextInputFormatter.digitsOnly]
+                : null,
+            maxLength: controller == phoneController ? 10 : null,
             controller: controller,
             cursorColor: Color(
                 CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
