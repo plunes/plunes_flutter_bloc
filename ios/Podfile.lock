@@ -4,6 +4,8 @@ PODS:
     - Reachability
   - connectivity_macos (0.0.1):
     - Flutter
+  - Crashlytics (3.14.0):
+    - Fabric (~> 1.10.2)
   - device_info (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.1):
@@ -37,6 +39,7 @@ PODS:
   - DKPhotoGallery/Resource (0.0.15):
     - SDWebImage
     - SDWebImageFLPlugin
+  - Fabric (1.10.2)
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
     - Flutter
@@ -48,6 +51,11 @@ PODS:
   - Firebase/Messaging (6.21.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 4.3.0)
+  - firebase_crashlytics (0.0.1):
+    - Crashlytics
+    - Fabric
+    - Firebase/Core
+    - Flutter
   - firebase_messaging (0.0.1):
     - Firebase/Core
     - Firebase/Messaging
@@ -204,6 +212,7 @@ DEPENDENCIES:
   - connectivity_macos (from `.symlinks/plugins/connectivity_macos/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
+  - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - Flutter (from `Flutter`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
@@ -234,8 +243,10 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Crashlytics
     - DKImagePickerController
     - DKPhotoGallery
+    - Fabric
     - Firebase
     - FirebaseAnalytics
     - FirebaseAnalyticsInterop
@@ -269,6 +280,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/device_info/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
+  firebase_crashlytics:
+    :path: ".symlinks/plugins/firebase_crashlytics/ios"
   firebase_messaging:
     :path: ".symlinks/plugins/firebase_messaging/ios"
   Flutter:
@@ -327,11 +340,14 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   connectivity_macos: e2e9731b6b22dda39eb1b128f6969d574460e191
+  Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   device_info: 3ebad48f726348f69abd802f3334a8d1ed795fbd
   DKImagePickerController: f3d397887f38b98276a506b02ed9c167425f7cf3
   DKPhotoGallery: e880aef16c108333240e1e7327896f2ea380f4f0
+  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Firebase: f378c80340dd41c0ad0914af740c021eb282a04b
+  firebase_crashlytics: bd8c58df07f107cb7e1a20cb190b9a468e0a69fd
   firebase_messaging: 0d5c04cc40f58bd4bf7f2992c91050f9bc01bec3
   FirebaseAnalytics: a1a0b3327ceb5cd5b4bacffdb293f6c909aa087d
   FirebaseAnalyticsInterop: 3f86269c38ae41f47afeb43ebf32a001f58fcdae

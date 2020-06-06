@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart' as loc;
@@ -96,14 +97,22 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
       return null;
     }
     bool _hasLocationPermission = true;
-    var permissionList =
-        await Permission.getPermissionsStatus([PermissionName.Location]);
-    permissionList.forEach((element) {
-      if (element.permissionName == PermissionName.Location &&
-          element.permissionStatus != PermissionStatus.allow) {
+    if (Platform.isIOS) {
+      PermissionStatus permissionStatus =
+          await Permission.getSinglePermissionStatus(PermissionName.Location);
+      if (permissionStatus != PermissionStatus.allow) {
         _hasLocationPermission = false;
       }
-    });
+    } else {
+      var permissionList =
+          await Permission.getPermissionsStatus([PermissionName.Location]);
+      permissionList.forEach((element) {
+        if (element.permissionName == PermissionName.Location &&
+            element.permissionStatus != PermissionStatus.allow) {
+          _hasLocationPermission = false;
+        }
+      });
+    }
     if (_hasLocationPermission) {
       LocationUtil().getCurrentLatLong(context).then((latLong) {
         {

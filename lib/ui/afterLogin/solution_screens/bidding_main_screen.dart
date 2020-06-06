@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -579,29 +580,42 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 
   Future<bool> _getLocationPermissionStatus() async {
     bool _hasLocationPermission = true;
-    var permissionList =
-        await Permission.getPermissionsStatus([PermissionName.Location]);
-    permissionList.forEach((element) {
-      if (element.permissionName == PermissionName.Location &&
-          element.permissionStatus != PermissionStatus.allow) {
-        _hasLocationPermission = false;
-        _locationMessage = PlunesStrings.turnOnLocationService;
+    try {
+      if (Platform.isIOS) {
+        PermissionStatus permissionStatus =
+            await Permission.getSinglePermissionStatus(PermissionName.Location);
+        if (permissionStatus != PermissionStatus.allow) {
+          _hasLocationPermission = false;
+          _locationMessage = PlunesStrings.turnOnLocationService;
+        }
+      } else {
+        var permissionList =
+            await Permission.getPermissionsStatus([PermissionName.Location]);
+        permissionList.forEach((element) {
+          if (element.permissionName == PermissionName.Location &&
+              element.permissionStatus != PermissionStatus.allow) {
+            _hasLocationPermission = false;
+            _locationMessage = PlunesStrings.turnOnLocationService;
+          }
+        });
       }
-    });
-    if (!_hasLocationPermission) {
-      return _hasLocationPermission;
-    }
-    var user = UserManager().getUserDetails();
-    if (user?.latitude == null ||
-        user?.longitude == null ||
-        user.latitude.isNotEmpty ||
-        user.longitude.isNotEmpty ||
-        user.latitude == "0.0" ||
-        user.latitude == "0" ||
-        user.longitude == "0.0" ||
-        user.longitude == "0") {
-      _hasLocationPermission = false;
-      _locationMessage = PlunesStrings.pleaseSelectLocation;
+      if (!_hasLocationPermission) {
+        return _hasLocationPermission;
+      }
+      var user = UserManager().getUserDetails();
+      if (user?.latitude == null ||
+          user?.longitude == null ||
+          user.latitude.isNotEmpty ||
+          user.longitude.isNotEmpty ||
+          user.latitude == "0.0" ||
+          user.latitude == "0" ||
+          user.longitude == "0.0" ||
+          user.longitude == "0") {
+        _hasLocationPermission = false;
+        _locationMessage = PlunesStrings.pleaseSelectLocation;
+      }
+    } catch (e) {
+      print("error is " + e);
     }
     return _hasLocationPermission;
   }
