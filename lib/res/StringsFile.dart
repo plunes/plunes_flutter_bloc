@@ -59,7 +59,7 @@ class PlunesStrings {
   static const String negotiating = "Negotiating. . .";
   static const String topSearches = "Top Searches";
   static const String switchToGurLoc =
-      "Kindly switch to Gurgaon location, currently we are not providing service in your area";
+      "Seems like we are currently not providing services in your area";
   static const String setYourTime = "Set your Time";
   static const String choose = "Choose";
   static const String locationNotAvailable = "Location not available";

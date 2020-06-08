@@ -510,7 +510,9 @@ class CustomWidgets {
           failureCause ?? plunesStrings.somethingWentWrong,
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: PlunesColors.BLACKCOLOR, fontWeight: FontWeight.bold),
+              color: PlunesColors.BLACKCOLOR,
+              fontWeight: FontWeight.bold,
+              fontSize: 18),
         ),
       ),
     );

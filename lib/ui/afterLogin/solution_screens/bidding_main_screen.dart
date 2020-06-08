@@ -392,6 +392,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               builder: (context) =>
                   BiddingLoading(catalogueData: catalogueData)));
     }
+    _canGoAhead = UserManager().getIsUserInServiceLocation();
+    _setState();
     _getPreviousSolutions();
   }
 

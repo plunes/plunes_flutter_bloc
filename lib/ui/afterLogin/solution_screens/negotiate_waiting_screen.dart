@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -25,11 +29,14 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
   Timer _timer;
   int _start = 0;
   double _movingUnit = 110;
+  bool _progressEnabled;
+  String _failureCause;
 
   @override
   void initState() {
-    super.initState();
+    _progressEnabled = false;
     _startAnimating();
+    super.initState();
   }
 
   _startAnimating() {
@@ -61,15 +68,38 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 //                  print("addr is $addr");
                   var _latitude = addressControllerList[3];
                   var _longitude = addressControllerList[4];
-                  UserBloc().isUserInServiceLocation(_latitude, _longitude,
-                      address: addr);
-                  Navigator.pop(context);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BiddingLoading(
-                                catalogueData: widget.catalogueData,
-                              )));
+                  _progressEnabled = true;
+                  _setState();
+                  UserBloc()
+                      .isUserInServiceLocation(_latitude, _longitude,
+                          address: addr)
+                      .then((result) {
+                    if (result is RequestSuccess) {
+                      CheckLocationResponse checkLocationResponse =
+                          result.response;
+                      if (checkLocationResponse != null &&
+                          checkLocationResponse.msg != null &&
+                          checkLocationResponse.msg.isNotEmpty) {
+                        _failureCause = checkLocationResponse.msg;
+                      }
+                    } else if (result is RequestFailed) {
+                      _failureCause = result.failureCause;
+                    }
+                    if (UserManager().getIsUserInServiceLocation()) {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BiddingLoading(
+                                    catalogueData: widget.catalogueData,
+                                  )));
+                      return;
+                    } else if (_failureCause == null) {
+                      _failureCause = PlunesStrings.switchToGurLoc;
+                    }
+                    _progressEnabled = false;
+                    _setState();
+                  });
                 } else {
                   Navigator.pop(context);
                 }
@@ -93,114 +123,154 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 
   @override
   void dispose() {
-    super.dispose();
     _timer?.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: PlunesColors.WHITECOLOR,
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SizedBox(
-              height: AppConfig.verticalBlockSize * 7,
-            ),
-            Column(
-              children: <Widget>[
-                Container(
-                  height: AppConfig.verticalBlockSize * 20,
-                  width: AppConfig.verticalBlockSize * 20,
-                  margin: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 2,
-                      bottom: AppConfig.verticalBlockSize * 1),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: <Widget>[
-                      Container(
-                        height: AppConfig.verticalBlockSize * 30,
-                        width: AppConfig.verticalBlockSize * 30,
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                colors: [Colors.white, Color(0xfffafafa)],
-                                begin: FractionalOffset.topCenter,
-                                end: FractionalOffset.bottomCenter,
-                                stops: [0.0, 1.0],
-                                tileMode: TileMode.clamp),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(AppConfig.verticalBlockSize * 30),
-                            ),
-                            border:
-                                Border.all(color: Color(0xfffafafa), width: 2)),
+      body: _progressEnabled
+          ? CustomWidgets().getProgressIndicator()
+          : _failureCause != null
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    CustomWidgets().errorWidget(_failureCause),
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 38,
+                          vertical: AppConfig.verticalBlockSize * 4),
+                      child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: CustomWidgets().getRoundedButton(
+                            "Ok",
+                            AppConfig.horizontalBlockSize * 8,
+                            PlunesColors.GREENCOLOR,
+                            AppConfig.horizontalBlockSize * 3,
+                            AppConfig.verticalBlockSize * 1,
+                            PlunesColors.WHITECOLOR),
                       ),
-                      Align(
-                        child: AnimatedContainer(
-                          duration: Duration(seconds: 1),
-                          height: 70,
-                          width: 70,
-                          margin: EdgeInsets.only(top: _movingUnit),
-                          child: Center(
-                            child: Image.asset(
-                              plunesImages.bidActiveIcon,
-                              height: 70,
-                              width: 70,
+                    )
+                  ],
+                )
+              : Container(
+                  child: ListView(
+                    children: <Widget>[
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          SizedBox(
+                            height: AppConfig.verticalBlockSize * 7,
+                          ),
+                          Column(
+                            children: <Widget>[
+                              Container(
+                                height: AppConfig.verticalBlockSize * 20,
+                                width: AppConfig.verticalBlockSize * 20,
+                                margin: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 2,
+                                    bottom: AppConfig.verticalBlockSize * 1),
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      height: AppConfig.verticalBlockSize * 30,
+                                      width: AppConfig.verticalBlockSize * 30,
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                              colors: [
+                                                Colors.white,
+                                                Color(0xfffafafa)
+                                              ],
+                                              begin: FractionalOffset.topCenter,
+                                              end:
+                                                  FractionalOffset.bottomCenter,
+                                              stops: [0.0, 1.0],
+                                              tileMode: TileMode.clamp),
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(
+                                                AppConfig.verticalBlockSize *
+                                                    30),
+                                          ),
+                                          border: Border.all(
+                                              color: Color(0xfffafafa),
+                                              width: 2)),
+                                    ),
+                                    Align(
+                                      child: AnimatedContainer(
+                                        duration: Duration(seconds: 1),
+                                        height: 70,
+                                        width: 70,
+                                        margin:
+                                            EdgeInsets.only(top: _movingUnit),
+                                        child: Center(
+                                          child: Image.asset(
+                                            plunesImages.bidActiveIcon,
+                                            height: 70,
+                                            width: 70,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: AppConfig.verticalBlockSize * 7,
+                          ),
+                          Center(
+                            child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 9),
+                              child: Text(
+                                PlunesStrings.weAreNegotiatingBestSolution,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: AppConfig.largeFont,
+                                    fontWeight: FontWeight.w500),
+                              ),
                             ),
                           ),
-                        ),
+                          SizedBox(
+                            height: AppConfig.verticalBlockSize * 20,
+                          ),
+                          Center(
+                            child: Text(
+                              PlunesStrings.receiving,
+                              style: TextStyle(
+                                  fontSize: AppConfig.smallFont,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          Container(
+                            height: AppConfig.horizontalBlockSize * 1,
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 0.2,
+                                horizontal: AppConfig.horizontalBlockSize * 5),
+                            child: LinearProgressIndicator(
+                              value: _bidProgress,
+                              backgroundColor: Color(0xffDCDCDC),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                Color(0xff01d35a),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 2)),
+                          holdOnPopUp
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
-            SizedBox(
-              height: AppConfig.verticalBlockSize * 7,
-            ),
-            Center(
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 9),
-                child: Text(
-                  PlunesStrings.weAreNegotiatingBestSolution,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: AppConfig.largeFont,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: AppConfig.verticalBlockSize * 20,
-            ),
-            Center(
-              child: Text(
-                PlunesStrings.receiving,
-                style: TextStyle(
-                    fontSize: AppConfig.smallFont, fontWeight: FontWeight.w500),
-              ),
-            ),
-            Container(
-              height: AppConfig.horizontalBlockSize * 1,
-              margin: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 0.2,
-                  horizontal: AppConfig.horizontalBlockSize * 5),
-              child: LinearProgressIndicator(
-                value: _bidProgress,
-                backgroundColor: Color(0xffDCDCDC),
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  Color(0xff01d35a),
-                ),
-              ),
-            ),
-            Padding(
-                padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)),
-            holdOnPopUp
-          ],
-        ),
-      ),
     );
   }
 
@@ -255,4 +325,8 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
       ],
     ),
   );
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
 }
