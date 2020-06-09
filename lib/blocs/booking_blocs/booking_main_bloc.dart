@@ -102,4 +102,8 @@ class BookingBloc extends BlocBase {
   void addStateInInstallmentProvider(RequestState state) {
     addStateInGenericStream(_installmentPaymentProvider, state);
   }
+
+  Future<RequestState> cancelPayment(String bookingId) {
+    return BookingRepo().cancelPayment(bookingId);
+  }
 }

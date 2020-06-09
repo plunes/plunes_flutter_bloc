@@ -115,4 +115,17 @@ class BookingRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  Future<RequestState> cancelPayment(String bookingId) async {
+    String url = Urls.cancelPaymentUrl + "$bookingId";
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_GET,
+        headerIncluded: true,
+        url: url);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: result.isRequestSucceed);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

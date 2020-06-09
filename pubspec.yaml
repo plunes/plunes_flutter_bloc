@@ -276,6 +276,8 @@ flutter:
     - assets/images/solution/homeCollectionImage.png
     - assets/images/bottom_tabs/unreadNotificationIcon.png
     - assets/images/defaultImage.png
+    - assets/images/setLocationFailImage.png
+    - assets/images/setLocationMap.png
 
 
 

@@ -976,6 +976,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   pageBuilder: (BuildContext context, _, __) =>
                       PaymentWebView(id: _initPaymentResponse.id)))
               .then((val) {
+            if (val == null) {
+              _bookingBloc.cancelPayment(_initPaymentResponse.id);
+              return;
+            }
             if (val.toString().contains("success")) {
               showDialog(
                   context: context,

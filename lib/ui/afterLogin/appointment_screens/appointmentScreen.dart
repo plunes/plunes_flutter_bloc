@@ -666,6 +666,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   pageBuilder: (BuildContext context, _, __) =>
                       PaymentWebView(id: widget.appointmentModel.bookingId)))
               .then((val) {
+            if (val == null) {
+              _bookingBloc.cancelPayment(widget.appointmentModel.bookingId);
+              return;
+            }
             if (val.toString().contains("success")) {
               showDialog(
                       context: context,

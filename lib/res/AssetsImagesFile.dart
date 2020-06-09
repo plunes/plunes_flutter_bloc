@@ -36,6 +36,8 @@ class PlunesImages {
   static String notificationUnreadImage =
       "assets/images/bottom_tabs/unreadNotificationIcon.png";
   static String defaultImage = "assets/images/defaultImage.png";
+  static String setLocationMap = "assets/images/setLocationMap.png";
+  static String setLocationFailImage = "assets/images/setLocationFailImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

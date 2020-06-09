@@ -2645,7 +2645,7 @@ class CustomWidgets {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       margin: EdgeInsets.symmetric(
-          vertical: AppConfig.verticalBlockSize * 29,
+          vertical: AppConfig.verticalBlockSize * 25,
           horizontal: AppConfig.horizontalBlockSize * 14),
       child: StatefulBuilder(builder: (context, newState) {
         if (isProgressing) {
@@ -2666,138 +2666,180 @@ class CustomWidgets {
                 ),
               ),
               Container(
+                  height: AppConfig.verticalBlockSize * 34,
                   margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 2,
-                      horizontal: AppConfig.horizontalBlockSize * 5),
-                  child: message == null
-                      ? Column(
-                          children: <Widget>[
-                            Text(
-                              PlunesStrings.pleaseSelectLocationPopup,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 5),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  FlatButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, false),
-                                      child: Text("No")),
-                                  FlatButton(
-                                      onPressed: () async {
-                                        Navigator.of(context)
-                                            .push(PageRouteBuilder(
-                                                opaque: false,
-                                                pageBuilder:
-                                                    (BuildContext context, _,
-                                                            __) =>
-                                                        LocationFetch()))
-                                            .then((val) async {
-                                          if (val != null) {
-                                            var addressControllerList =
-                                                new List();
-                                            addressControllerList =
-                                                val.toString().split(":");
-                                            String addr =
-                                                addressControllerList[0] +
-                                                    ' ' +
-                                                    addressControllerList[1] +
-                                                    ' ' +
-                                                    addressControllerList[2];
+                      vertical: AppConfig.verticalBlockSize * 1),
+                  child: SingleChildScrollView(
+                      reverse: true,
+                      child: message == null
+                          ? Column(
+                              children: <Widget>[
+                                Image.asset(PlunesImages.setLocationMap),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 1.5),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 5),
+                                  child: Text(
+                                    PlunesStrings.pleaseSelectLocationPopup,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: PlunesColors.BLACKCOLOR,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 1.5),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 16),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(PageRouteBuilder(
+                                              opaque: false,
+                                              pageBuilder:
+                                                  (BuildContext context, _,
+                                                          __) =>
+                                                      LocationFetch()))
+                                          .then((val) async {
+                                        if (val != null) {
+                                          var addressControllerList =
+                                              new List();
+                                          addressControllerList =
+                                              val.toString().split(":");
+                                          String addr =
+                                              addressControllerList[0] +
+                                                  ' ' +
+                                                  addressControllerList[1] +
+                                                  ' ' +
+                                                  addressControllerList[2];
 //                          print("addr is $addr");
-                                            var _latitude =
-                                                addressControllerList[3];
-                                            var _longitude =
-                                                addressControllerList[4];
+                                          var _latitude =
+                                              addressControllerList[3];
+                                          var _longitude =
+                                              addressControllerList[4];
 //                          print("_latitude $_latitude");
 //                          print("_longitude $_longitude");
-                                            isProgressing = true;
-                                            newState(() {});
-                                            UserBloc()
-                                                .isUserInServiceLocation(
-                                                    _latitude, _longitude,
-                                                    address: addr,
-                                                    isFromPopup: true)
-                                                .then((value) {
-                                              if (value is RequestSuccess) {
-                                                CheckLocationResponse
-                                                    checkLocationResponse =
-                                                    value.response;
-                                                if (checkLocationResponse !=
-                                                        null &&
-                                                    checkLocationResponse.msg !=
-                                                        null &&
-                                                    checkLocationResponse
-                                                        .msg.isNotEmpty) {
-                                                  message =
-                                                      checkLocationResponse.msg;
-                                                }
-                                                if (UserManager()
-                                                    .getIsUserInServiceLocation()) {
-                                                  Navigator.of(context).pop();
-                                                  return;
-                                                } else if (message == null) {
-                                                  message =
-                                                      "Seems like we are not available in your area";
-                                                }
-                                              } else if (value
-                                                  is RequestFailed) {
-                                                message = value.failureCause;
+                                          isProgressing = true;
+                                          newState(() {});
+                                          UserBloc()
+                                              .isUserInServiceLocation(
+                                                  _latitude, _longitude,
+                                                  address: addr,
+                                                  isFromPopup: true)
+                                              .then((value) {
+                                            if (value is RequestSuccess) {
+                                              CheckLocationResponse
+                                                  checkLocationResponse =
+                                                  value.response;
+                                              if (checkLocationResponse !=
+                                                      null &&
+                                                  checkLocationResponse.msg !=
+                                                      null &&
+                                                  checkLocationResponse
+                                                      .msg.isNotEmpty) {
+                                                message =
+                                                    checkLocationResponse.msg;
                                               }
-                                              isProgressing = false;
-                                              newState(() {});
-                                            });
-                                          }
-                                        });
-                                      },
-                                      child: Text(
-                                        "Yes",
-                                        style: TextStyle(
-                                            color: PlunesColors.GREENCOLOR),
-                                      )),
-                                ],
-                              ),
+                                              if (UserManager()
+                                                  .getIsUserInServiceLocation()) {
+                                                Navigator.of(context).pop();
+                                                return;
+                                              } else if (message == null) {
+                                                message =
+                                                    "Seems like we are not available in your area";
+                                              }
+                                            } else if (value is RequestFailed) {
+                                              message = value.failureCause;
+                                            }
+                                            isProgressing = false;
+                                            newState(() {});
+                                          });
+                                        }
+                                      });
+                                    },
+                                    child: getRoundedButton(
+                                      "Set Location",
+                                      AppConfig.horizontalBlockSize * 5,
+                                      PlunesColors.GREENCOLOR,
+                                      AppConfig.horizontalBlockSize * 10,
+                                      AppConfig.verticalBlockSize * 1,
+                                      PlunesColors.WHITECOLOR,
+                                      hasBorder: true,
+                                    ),
+                                  ),
+                                )
+                              ],
                             )
-                          ],
-                        )
-                      : Column(
-                          children: <Widget>[
-                            Text(
-                              message.isEmpty
-                                  ? plunesStrings.somethingWentWrong
-                                  : message,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 8),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  FlatButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, false),
-                                      child: Text(
-                                        "OK",
-                                        style: TextStyle(
-                                            color: PlunesColors.GREENCOLOR),
-                                      )),
-                                ],
-                              ),
-                            )
-                          ],
-                        ))
+                          : Column(
+                              children: <Widget>[
+                                Container(
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal:
+                                            AppConfig.horizontalBlockSize * 20,
+                                        vertical:
+                                            AppConfig.verticalBlockSize * 5),
+                                    child: Image.asset(
+                                        PlunesImages.setLocationFailImage)),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 1.5),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 5),
+                                  child: Text(
+                                    message.isEmpty
+                                        ? plunesStrings.somethingWentWrong
+                                        : message,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: PlunesColors.BLACKCOLOR,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15),
+                                  ),
+                                ),
+                                Container(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 1.5),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 23),
+                                  child: InkWell(
+                                    onTap: () => Navigator.of(context).pop(),
+                                    child: getRoundedButton(
+                                      "Ok",
+                                      AppConfig.horizontalBlockSize * 5,
+                                      PlunesColors.GREENCOLOR,
+                                      AppConfig.horizontalBlockSize * 10,
+                                      AppConfig.verticalBlockSize * 1,
+                                      PlunesColors.WHITECOLOR,
+                                      hasBorder: true,
+                                    ),
+                                  ),
+                                )
+//                      Padding(
+//                        padding: EdgeInsets.only(
+//                            top: AppConfig.verticalBlockSize * 8),
+//                        child: Row(
+//                          mainAxisAlignment: MainAxisAlignment.end,
+//                          children: <Widget>[
+//                            FlatButton(
+//                                onPressed: () =>
+//                                    Navigator.pop(context, false),
+//                                child: Text(
+//                                  "OK",
+//                                  style: TextStyle(
+//                                      color: PlunesColors.GREENCOLOR),
+//                                )),
+//                          ],
+//                        ),
+//                      )
+                              ],
+                            )))
             ],
           ),
         );
