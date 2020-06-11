@@ -94,10 +94,10 @@ class _AccountSettingsState extends BaseState<AccountSettings> {
 
   Widget getSettingRow(String firstIcon, String title, int pos) {
     return InkWell(
-      onTap: () {
+      onTap: () async {
         switch (pos) {
           case 1:
-            CommonMethods.goToPage(
+            await CommonMethods.goToPage(
                 context,
                 EditProfileScreen(
                     userType: _userType,
@@ -113,6 +113,7 @@ class _AccountSettingsState extends BaseState<AccountSettings> {
                     introduction: _introduction,
                     specializations: _specialization,
                     experience: _experience));
+            getSharedPreferenceData();
             break;
         }
       },

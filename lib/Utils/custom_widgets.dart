@@ -727,7 +727,7 @@ class CustomWidgets {
                                 text: (solutions[index]?.price[0] ==
                                         solutions[index]?.newPrice[0])
                                     ? ""
-                                    : "\u20B9${solutions[index].price[0]?.toStringAsFixed(2) ?? PlunesStrings.NA} ",
+                                    : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
                                 style: TextStyle(
                                     fontSize: AppConfig.smallFont,
                                     color: PlunesColors.GREYCOLOR,
@@ -786,7 +786,7 @@ class CustomWidgets {
                     Text(
                         solutions[index].distance == null
                             ? ""
-                            : "${solutions[index].distance.toStringAsFixed(2)} ${PlunesStrings.kmsAway}",
+                            : "${solutions[index].distance.toStringAsFixed(1)} ${PlunesStrings.kmsAway}",
                         style: TextStyle(fontSize: AppConfig.verySmallFont))
                   ],
                 ),
@@ -1051,7 +1051,7 @@ class CustomWidgets {
                     color: Colors.black45,
                   ),
                   Text(
-                    'Do\'s and Don\'t:',
+                    'Do\'s and Don\'ts:',
                     style: TextStyle(
                         fontSize: AppConfig.smallFont,
                         fontWeight: FontWeight.bold),

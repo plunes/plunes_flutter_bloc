@@ -133,6 +133,9 @@ class UserManager {
     } else {
       requestState = RequestFailed(failureCause: result.failureCause);
     }
+    if (address != null && address.isNotEmpty) {
+      Preferences().setPreferencesString(Constants.PREF_USER_LOCATION, address);
+    }
     return requestState;
   }
 

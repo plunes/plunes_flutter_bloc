@@ -372,7 +372,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             (appointmentModel.service.price.first ==
                                     appointmentModel?.service?.newPrice?.first)
                                 ? ""
-                                : '\u20B9 ${appointmentModel.service?.price?.first}',
+                                : '\u20B9 ${appointmentModel.service?.price?.first?.toStringAsFixed(0)}',
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
                                 decoration: TextDecoration.lineThrough,
@@ -392,7 +392,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             appointmentModel.service.discount == null ||
                             appointmentModel.service.discount == 0)
                         ? Container()
-                        : Text('${appointmentModel?.service?.discount}%',
+                        : Text(
+                            '${appointmentModel?.service?.discount?.toStringAsFixed(0)}%',
                             style: TextStyle(color: Colors.green))
                   ],
                 ),

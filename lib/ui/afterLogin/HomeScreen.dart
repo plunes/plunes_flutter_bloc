@@ -546,6 +546,9 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       case 3:
         await Navigator.popAndPushNamed(context, SettingScreen.tag);
         getSharedPreferencesData();
+        EventProvider()
+            .getSessionEventBus()
+            .fire(ScreenRefresher(screenName: EditProfileScreen.tag));
         break;
       case 4:
         Navigator.popAndPushNamed(context, ManagePayments.tag);

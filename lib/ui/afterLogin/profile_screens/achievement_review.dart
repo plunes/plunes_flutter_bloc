@@ -10,7 +10,7 @@ import 'package:plunes/res/ColorsFile.dart';
 class AchievementAndReview extends BaseActivity {
   User user;
 
-  AchievementAndReview(user);
+  AchievementAndReview(this.user);
 
   @override
   _AchievementAndReviewState createState() => _AchievementAndReviewState();
@@ -69,7 +69,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
         itemBuilder: (context, index) {
           return _getAchievementView(index);
         },
-        itemCount: 5 ?? 0,
+        itemCount: _user?.achievements?.length ?? 0,
         scrollDirection: Axis.horizontal,
       ),
     );
@@ -118,26 +118,44 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                         ))
                     : CustomWidgets().getImageFromUrl(
                         _user.achievements[index].imageUrl,
-                        boxFit: BoxFit.fill),
+                        boxFit: BoxFit.cover),
               ),
             ),
             flex: 3,
           ),
-          Expanded(
-            child: Container(
-              child: Center(
-                child: Text(
-                  "${_user.achievements[index]?.title ?? ""} ${_user.achievements[index]?.achievement ?? ""}",
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14),
+          _user.achievements[index].title.isEmpty
+              ? Container()
+              : Flexible(
+                  child: Container(
+                    child: Center(
+                      child: Text(
+                        _user.achievements[index].title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    width: AppConfig.horizontalBlockSize * 50,
+                  ),
                 ),
-              ),
-              width: AppConfig.horizontalBlockSize * 55,
-            ),
-            flex: 1,
-          ),
+          _user.achievements[index].achievement.isEmpty
+              ? Container()
+              : Flexible(
+                  child: Container(
+                    child: Center(
+                      child: Text(
+                        _user.achievements[index]?.achievement,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                    width: AppConfig.horizontalBlockSize * 50,
+                  ),
+                  flex: 1,
+                ),
         ],
       ),
     );

@@ -397,13 +397,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         user.latitude != "0" &&
         user.longitude != "0.0" &&
         user.longitude != "0") {
-      if (_canGoAhead) {
-        return;
-      } else {
-        _locationMessage = PlunesStrings.switchToGurLoc;
-        _setState();
-        _checkUserLocation(user?.latitude, user?.longitude);
-      }
+      _locationMessage = PlunesStrings.switchToGurLoc;
+      _setState();
+      _checkUserLocation(user?.latitude, user?.longitude);
     } else {
       await Future.delayed(Duration(milliseconds: 400));
       _getCurrentLocation();
