@@ -968,7 +968,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           showDialog(
               context: context,
               builder: (BuildContext context) => PaymentSuccess(
-                  referenceID: _initPaymentResponse.referenceId));
+                    referenceID: _initPaymentResponse.referenceId,
+                    bookingId: _initPaymentResponse.referenceId,
+                  ));
         } else {
           Navigator.of(context)
               .push(PageRouteBuilder(

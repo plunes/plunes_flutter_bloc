@@ -210,7 +210,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   LatLng(docData.latitude ?? lat, docData.longitude ?? long),
               infoWindow: InfoWindow(
                   title: docData.name,
-                  snippet: "${docData.distance?.toStringAsFixed(0)} km away",
+                  snippet: "${docData.distance?.toStringAsFixed(1)} km",
                   onTap: () => _viewProfile(docData))));
         });
         _checkShouldTimerRun();

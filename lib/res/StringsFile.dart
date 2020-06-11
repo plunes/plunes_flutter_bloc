@@ -19,7 +19,7 @@ class PlunesStrings {
   static const String receiveTimeOut = "Server timeout, please try again later";
 
   static const String pleaseSelectLocation =
-      "We are not able to find you, please tap to select a location.";
+      "To Negotiate with nearest facilities, turn on location services, or tap to manually set location.";
 
   /////
   ///Solution strings
@@ -59,12 +59,10 @@ class PlunesStrings {
   static const String negotiating = "Negotiating. . .";
   static const String topSearches = "Top Searches";
   static const String switchToGurLoc =
-      "Seems like we are currently not providing services in your area";
+      'To Negotiate with nearest facilities, turn on location services, or manually set location';
   static const String setYourTime = "Set your Time";
   static const String choose = "Choose";
   static const String locationNotAvailable = "Location not available";
-  static const String weAreNotAvailableInYourArea =
-      "Sorry, We are currently not available in your area.";
   static const String pleaseSelectValidSlot =
       "Please select a valid appointment time";
   static const String pleaseMakeSureText =

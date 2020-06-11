@@ -264,7 +264,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                           ),
                           Padding(
                               padding: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 2)),
+                                  top: AppConfig.verticalBlockSize * 4)),
                           holdOnPopUp
                         ],
                       ),

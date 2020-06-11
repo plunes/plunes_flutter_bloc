@@ -57,15 +57,6 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       _controller.add(null);
     });
     _focusNode = FocusNode();
-//      ..addListener(() async {
-//        if (_focusNode.hasFocus) {
-//          await Future.delayed(Duration(milliseconds: 100));
-//          _focusNode?.unfocus();
-//          await Navigator.push(context,
-//              MaterialPageRoute(builder: (context) => SolutionBiddingScreen()));
-//          _getPreviousSolutions();
-//        }
-//      });
     _getUserDetails();
     _getPreviousSolutions();
     EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
@@ -225,11 +216,9 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     if (latLong != null &&
         latLong.longitude != null &&
         latLong.latitude != null) {
-      print("location null nhai hai ${latLong.toString()}");
       _checkUserLocation(
           latLong?.latitude?.toString(), latLong?.longitude?.toString());
     }
-    print("location null hai bhai${latLong.toString()}");
     _setState();
   }
 
@@ -411,7 +400,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       if (_canGoAhead) {
         return;
       } else {
-        _locationMessage = PlunesStrings.weAreNotAvailableInYourArea;
+        _locationMessage = PlunesStrings.switchToGurLoc;
         _setState();
         _checkUserLocation(user?.latitude, user?.longitude);
       }
@@ -435,7 +424,6 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         .then((result) {
       if (result is RequestSuccess) {
         CheckLocationResponse checkLocationResponse = result.response;
-        _canGoAhead = UserManager().getIsUserInServiceLocation();
         if (checkLocationResponse != null &&
             checkLocationResponse.msg != null &&
             checkLocationResponse.msg.isNotEmpty) {
@@ -444,6 +432,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       } else if (result is RequestFailed) {
         _failureCause = result.failureCause;
       }
+      _canGoAhead = UserManager().getIsUserInServiceLocation();
       _progressEnabled = false;
       _setState();
     });

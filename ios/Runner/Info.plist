@@ -17,13 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>$(FLUTTER_BUILD_NAME)</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>NSContactsUsageDescription</key>
-	<string>This app requires contacts access to function properly.</string>
-	<key>NSCalendarsUsageDescription</key>
-	<string>Plunes would like to access your calender.</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FirebaseAppDelegateProxyEnabled</key>
@@ -41,8 +37,12 @@
 	</dict>
 	<key>NSAppleMusicUsageDescription</key>
 	<string>This app needs access to media to upload your images.</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Plunes would like to access your calender.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to camera.</string>
+	<key>NSContactsUsageDescription</key>
+	<string>This app requires contacts access to function properly.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app need access to the location, because our app share the curated list of doctors with price details in the surroundings of the users. They get the nearest 10 doctors post search.</string>
 	<key>NSLocationAlwaysUsageDescription</key>

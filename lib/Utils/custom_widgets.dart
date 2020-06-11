@@ -752,7 +752,7 @@ class CustomWidgets {
                             : Text(
                                 solutions[index].discount == null
                                     ? ""
-                                    : "${PlunesStrings.save} ${solutions[index].discount.toStringAsFixed(2)}%",
+                                    : "${PlunesStrings.save} ${solutions[index].discount.toStringAsFixed(0)}%",
                                 style: TextStyle(
                                     fontSize: AppConfig.verySmallFont,
                                     color: PlunesColors.GREENCOLOR),
