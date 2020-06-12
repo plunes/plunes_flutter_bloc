@@ -48,8 +48,8 @@ class CatalogueData {
     category = json['category'];
     isActive = json['active'] ?? true;
     createdAt = json['createdAt'];
-//    sitting = json['sitting'];
-//    duration = json['duration'];
+    sitting = json['sittings'];
+    duration = json['duration'];
     maxDiscount = json['maxDiscount'];
     solutionId = json['_id'];
     iV = json['__v'];

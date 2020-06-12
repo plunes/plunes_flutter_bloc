@@ -870,19 +870,25 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             _appointmentTime = appointmentTime;
             isValidEntryFilled = true;
           }
+        } else if (_selectedTime.hour == fromDuration.hour) {
+          if (_selectedTime.minute >= fromDuration.minute) {
+            _appointmentTime = appointmentTime;
+            isValidEntryFilled = true;
+          }
         } else {
           _appointmentTime = appointmentTime;
           isValidEntryFilled = true;
         }
-
-        ///repeated ///
-//        _appointmentTime = appointmentTime;
-//        isValidEntryFilled = true;
       } else if (_selectedTime.hour > _dateNow.hour) {
         //success
         ///repeated ///
         if (_selectedTime.hour == toDuration.hour) {
           if (_selectedTime.minute <= toDuration.minute) {
+            _appointmentTime = appointmentTime;
+            isValidEntryFilled = true;
+          }
+        } else if (_selectedTime.hour == fromDuration.hour) {
+          if (_selectedTime.minute >= fromDuration.minute) {
             _appointmentTime = appointmentTime;
             isValidEntryFilled = true;
           }
@@ -892,14 +898,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         }
 
         ///repeated ///
-//        _appointmentTime = appointmentTime;
-//        isValidEntryFilled = true;
       }
     } else if (_tempSelectedDateTime.day != _dateNow.day &&
         _selectedTime.hour >= fromDuration.hour &&
         _selectedTime.hour <= toDuration.hour) {
       if (_selectedTime.hour == toDuration.hour) {
         if (_selectedTime.minute <= toDuration.minute) {
+          _appointmentTime = appointmentTime;
+          isValidEntryFilled = true;
+        }
+      } else if (_selectedTime.hour == fromDuration.hour) {
+        if (_selectedTime.minute >= fromDuration.minute) {
           _appointmentTime = appointmentTime;
           isValidEntryFilled = true;
         }

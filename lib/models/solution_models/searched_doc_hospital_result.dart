@@ -4,8 +4,10 @@ class SearchedDocResults {
   bool success;
   DocHosSolution solution;
   CatalogueData catalogueData;
+  String msg;
 
-  SearchedDocResults({this.success, this.solution, this.catalogueData});
+  SearchedDocResults(
+      {this.success, this.solution, this.catalogueData, this.msg});
 
   SearchedDocResults.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -15,6 +17,7 @@ class SearchedDocResults {
     catalogueData = json['service'] != null
         ? CatalogueData.fromJson(json['service'])
         : null;
+    msg = json['msg'];
   }
 
   Map<String, dynamic> toJson() {

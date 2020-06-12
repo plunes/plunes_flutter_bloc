@@ -195,11 +195,11 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _searchedDocResults = result.response;
       if (_searchedDocResults.solution?.services == null ||
           _searchedDocResults.solution.services.isEmpty) {
-        if (widget.catalogueData.isFromNotification != null &&
-            widget.catalogueData.isFromNotification) {
-          _failureCause = PlunesStrings.solutionExpired;
-        } else {
-          _failureCause = PlunesStrings.oopsServiceNotAvailable;
+        _failureCause = PlunesStrings.oopsServiceNotAvailable;
+        if (_searchedDocResults != null &&
+            _searchedDocResults.msg != null &&
+            _searchedDocResults.msg.isNotEmpty) {
+          _failureCause = _searchedDocResults.msg;
         }
       } else {
         _searchedDocResults.solution.services.forEach((docData) {

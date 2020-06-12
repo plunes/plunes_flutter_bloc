@@ -5,12 +5,14 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 
 // ignore: must_be_immutable
 class AchievementAndReview extends BaseActivity {
   User user;
+  BuildContext context;
 
-  AchievementAndReview(this.user);
+  AchievementAndReview(this.user, this.context);
 
   @override
   _AchievementAndReviewState createState() => _AchievementAndReviewState();
@@ -32,7 +34,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
   Widget build(BuildContext context) {
     return Container(
       height: AppConfig.verticalBlockSize * 50,
-      color: PlunesColors.LIGHTGREENCOLOR,
+      color: PlunesColors.WHITECOLOR,
       child: Column(
         children: <Widget>[
           TabBar(
@@ -88,75 +90,95 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
   }
 
   Widget _getAchievementView(int index) {
-    return Card(
-      elevation: 1.0,
-      margin:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 1),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-              Radius.circular(AppConfig.horizontalBlockSize * 5))),
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              width: AppConfig.horizontalBlockSize * 55,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(
-                    Radius.circular(AppConfig.horizontalBlockSize * 5)),
+    return InkWell(
+      onTap: () {
+        List<Photo> photos = [];
+        _user.achievements.forEach((element) {
+          if (_user.achievements[index] == null ||
+              _user.achievements[index].imageUrl.isEmpty ||
+              !(_user.achievements[index].imageUrl.contains("http"))) {
+            photos.add(Photo(assetName: plunesImages.achievementIcon));
+          } else {
+            photos.add(Photo(assetName: element.imageUrl));
+          }
+        });
+        if (photos != null && photos.isNotEmpty) {
+          Navigator.push(
+              widget.context,
+              MaterialPageRoute(
+                  builder: (context) => PageSlider(photos, index)));
+        }
+      },
+      child: Card(
+        elevation: 1.0,
+        margin:
+            EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 1),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+                Radius.circular(AppConfig.horizontalBlockSize * 5))),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                width: AppConfig.horizontalBlockSize * 55,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(AppConfig.horizontalBlockSize * 5)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(AppConfig.horizontalBlockSize * 5)),
+                  child: (_user.achievements[index] == null ||
+                          _user.achievements[index].imageUrl.isEmpty)
+                      ? Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 4,
+                              horizontal: AppConfig.horizontalBlockSize * 10),
+                          child: Image.asset(
+                            plunesImages.achievementIcon,
+                          ))
+                      : CustomWidgets().getImageFromUrl(
+                          _user.achievements[index].imageUrl,
+                          boxFit: BoxFit.cover),
+                ),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.all(
-                    Radius.circular(AppConfig.horizontalBlockSize * 5)),
-                child: (_user.achievements[index] == null ||
-                        _user.achievements[index].imageUrl.isEmpty)
-                    ? Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 4,
-                            horizontal: AppConfig.horizontalBlockSize * 10),
-                        child: Image.asset(
-                          plunesImages.achievementIcon,
-                        ))
-                    : CustomWidgets().getImageFromUrl(
-                        _user.achievements[index].imageUrl,
-                        boxFit: BoxFit.cover),
-              ),
+              flex: 3,
             ),
-            flex: 3,
-          ),
-          _user.achievements[index].title.isEmpty
-              ? Container()
-              : Flexible(
-                  child: Container(
-                    child: Center(
-                      child: Text(
-                        _user.achievements[index].title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 14),
+            _user.achievements[index].title.isEmpty
+                ? Container()
+                : Flexible(
+                    child: Container(
+                      child: Center(
+                        child: Text(
+                          _user.achievements[index].title,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14),
+                        ),
                       ),
+                      width: AppConfig.horizontalBlockSize * 50,
                     ),
-                    width: AppConfig.horizontalBlockSize * 50,
                   ),
-                ),
-          _user.achievements[index].achievement.isEmpty
-              ? Container()
-              : Flexible(
-                  child: Container(
-                    child: Center(
-                      child: Text(
-                        _user.achievements[index]?.achievement,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 14),
+            _user.achievements[index].achievement.isEmpty
+                ? Container()
+                : Flexible(
+                    child: Container(
+                      child: Center(
+                        child: Text(
+                          _user.achievements[index]?.achievement,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 14),
+                        ),
                       ),
+                      width: AppConfig.horizontalBlockSize * 50,
                     ),
-                    width: AppConfig.horizontalBlockSize * 50,
+                    flex: 1,
                   ),
-                  flex: 1,
-                ),
-        ],
+          ],
+        ),
       ),
     );
   }

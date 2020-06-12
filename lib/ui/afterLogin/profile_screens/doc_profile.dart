@@ -25,6 +25,7 @@ class _DocProfileState extends BaseState<DocProfile> {
   UserBloc _userBloc;
   LoginPost _profileResponse;
   String _failureCause;
+  BuildContext _context;
 
   @override
   void initState() {
@@ -44,6 +45,7 @@ class _DocProfileState extends BaseState<DocProfile> {
     return Scaffold(
       appBar: widget.getAppBar(context, plunesStrings.profile, true),
       body: Builder(builder: (context) {
+        _context = context;
         return Container(
           padding: EdgeInsets.symmetric(
               vertical: AppConfig.verticalBlockSize * 2,
@@ -252,7 +254,7 @@ class _DocProfileState extends BaseState<DocProfile> {
   }
 
   Widget _getBottomView() {
-    return AchievementAndReview(_profileResponse.user);
+    return AchievementAndReview(_profileResponse.user, _context);
   }
 
   void _getUserDetails() {

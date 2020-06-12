@@ -29,7 +29,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   String _specialitySelectedId;
   List<CatalogueData> _catalogueList;
   String _serviceFailureCause;
-
+  BuildContext _context;
   String _failureCause;
 
   @override
@@ -50,6 +50,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
     return Scaffold(
       appBar: widget.getAppBar(context, plunesStrings.profile, true),
       body: Builder(builder: (context) {
+        _context = context;
         return StreamBuilder<RequestState>(
           stream: _userBloc.baseStream,
           builder: (context, snapshot) {
@@ -547,7 +548,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   }
 
   Widget _getBottomView() {
-    return AchievementAndReview(_profileResponse.user);
+    return AchievementAndReview(_profileResponse.user, _context);
   }
 
   void _getDirections() {

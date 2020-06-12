@@ -1,9 +1,6 @@
 import 'package:plunes/blocs/base_bloc.dart';
-import 'package:plunes/repositories/doc_hos_repo/doc_hos_main_screen_repo.dart';
 import 'package:plunes/repositories/user_repo.dart';
-import 'package:plunes/requester/request_handler.dart';
 import 'package:plunes/requester/request_states.dart';
-import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserBloc extends BlocBase {

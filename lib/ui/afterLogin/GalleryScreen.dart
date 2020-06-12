@@ -3,7 +3,10 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/res/ColorsFile.dart';
 
 enum GridDemoTileStyle { imageOnly, oneLine, twoLine }
 
@@ -243,9 +246,9 @@ class _GridPhotoViewerState extends State<GridPhotoViewer>
             ..translate(_offset.dx, _offset.dy)
             ..scale(_scale),
           child: widget.photo.assetName.contains('http')
-              ? Image.network(
+              ? CustomWidgets().getImageFromUrl(
                   widget.photo.assetName,
-                  fit: BoxFit.contain,
+                  boxFit: BoxFit.contain,
                 )
               : Image.asset(
                   widget.photo.assetName,
@@ -367,5 +370,67 @@ class GridPhotoItem extends StatelessWidget {
     }
     assert(tileStyle != null);
     return null;
+  }
+}
+
+class PageSlider extends StatefulWidget {
+  final List<Photo> photos;
+  final int selectedIndex;
+
+  PageSlider(this.photos, this.selectedIndex);
+
+  @override
+  _PageSliderState createState() => _PageSliderState();
+}
+
+class _PageSliderState extends State<PageSlider> {
+  PageController _pageController;
+
+  @override
+  void initState() {
+    _pageController = PageController(initialPage: widget.selectedIndex ?? 0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Builder(builder: (context) {
+        return Container(
+            color: PlunesColors.BLACKCOLOR,
+            child: Stack(
+              children: <Widget>[
+                PageView(
+                    controller: _pageController,
+                    scrollDirection: Axis.horizontal,
+                    children: widget.photos
+                        .map((e) => GridPhotoViewer(photo: e))
+                        .toList()),
+                Positioned(
+                  child: InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: Icon(
+                        Icons.close,
+                        color: PlunesColors.WHITECOLOR,
+                        size: 30,
+                      ),
+                    ),
+                  ),
+                  top: AppConfig.getMediaQuery().padding.top,
+                  left: 5.0,
+                ),
+              ],
+              fit: StackFit.expand,
+            ));
+      }),
+    );
   }
 }

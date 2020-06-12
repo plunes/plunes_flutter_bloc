@@ -124,9 +124,6 @@ class PlunesStrings {
   static const String noActionableInsightAvailable =
       "No Actionable insights yet";
 
-  static const String solutionExpired =
-      "Solution you looking for has been Expired!";
-
   static const String noReportAvailabelMessage =
       "You don't have any reports yet";
   static const String noMatchReport = "No Match Found!";
