@@ -1147,7 +1147,7 @@ class CustomWidgets {
                                     padding: EdgeInsets.only(
                                         top: AppConfig.verticalBlockSize * 4.0),
                                     child: Text(
-                                      'Update your best price for maximum bookings}',
+                                      'Update your best price for maximum bookings',
                                       style: TextStyle(
                                           fontSize: AppConfig.mediumFont),
                                       textAlign: TextAlign.center,
