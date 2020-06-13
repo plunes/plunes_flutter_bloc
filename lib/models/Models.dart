@@ -716,3 +716,40 @@ class CheckLocationResponse {
     return data;
   }
 }
+
+class CouponTextResponseModel {
+  bool success;
+  CouponText data;
+
+  CouponTextResponseModel({this.success, this.data});
+
+  CouponTextResponseModel.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    data = json['data'] != null ? new CouponText.fromJson(json['data']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    if (this.data != null) {
+      data['data'] = this.data.toJson();
+    }
+    return data;
+  }
+}
+
+class CouponText {
+  String message;
+
+  CouponText({this.message});
+
+  CouponText.fromJson(Map<String, dynamic> json) {
+    message = json['message'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['message'] = this.message;
+    return data;
+  }
+}

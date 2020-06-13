@@ -1823,13 +1823,17 @@ class CustomWidgets {
       padding: AppConfig.getMediaQuery().viewInsets,
       duration: const Duration(milliseconds: 300),
       child: Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Card(
           elevation: 0.0,
           child: StreamBuilder<RequestState>(
             stream: bookingBloc.refundAppointmentStream,
             builder: (BuildContext context, snapshot) {
               if (snapshot.data != null && snapshot.data is RequestInProgress) {
-                return CustomWidgets().getProgressIndicator();
+                return Container(
+                    height: AppConfig.horizontalBlockSize * 55,
+                    width: AppConfig.horizontalBlockSize * 70,
+                    child: CustomWidgets().getProgressIndicator());
               }
               if (snapshot.data != null && snapshot.data is RequestSuccess) {
                 isSuccess = true;
@@ -1872,7 +1876,7 @@ class CustomWidgets {
                               children: <Widget>[
                                 Text(PlunesStrings.thankYouMessage,
                                     style: TextStyle(
-                                        fontSize: 36,
+                                        fontSize: 32,
                                         fontWeight: FontWeight.w600,
                                         color: PlunesColors.BLACKCOLOR)),
                                 Padding(
@@ -1882,7 +1886,7 @@ class CustomWidgets {
                                 Text(PlunesStrings.refundSuccessMessage,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: AppConfig.extraLargeFont,
+                                        fontSize: AppConfig.largeFont,
                                         fontWeight: FontWeight.w600,
                                         color: PlunesColors.GREYCOLOR)),
                               ],
@@ -1898,8 +1902,15 @@ class CustomWidgets {
                                 Text(PlunesStrings.refund,
                                     style: TextStyle(
                                         fontSize: AppConfig.extraLargeFont,
-                                        fontWeight: FontWeight.w600,
-                                        color: PlunesColors.GREYCOLOR)),
+                                        fontWeight: FontWeight.w500,
+                                        color: PlunesColors.BLACKCOLOR)),
+                                Container(
+                                    margin: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 4),
+                                    height: AppConfig.verticalBlockSize * 15,
+                                    width: AppConfig.horizontalBlockSize * 35,
+                                    child:
+                                        Image.asset(PlunesImages.refundImage)),
                                 Container(
                                     padding: EdgeInsets.only(
                                         top: AppConfig.verticalBlockSize * 4),
@@ -1908,8 +1919,8 @@ class CustomWidgets {
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontSize: AppConfig.largeFont,
-                                            fontWeight: FontWeight.w600,
-                                            color: PlunesColors.GREYCOLOR))),
+                                            fontWeight: FontWeight.w500,
+                                            color: PlunesColors.BLACKCOLOR))),
                                 Container(
                                     alignment: Alignment.topLeft,
                                     padding: EdgeInsets.only(
@@ -1927,7 +1938,7 @@ class CustomWidgets {
                                         controller: textEditingController,
                                         keyboardType: TextInputType.text,
                                         maxLines: 1,
-                                        autofocus: true,
+                                        autofocus: false,
                                       ),
                                     )
                                   ],

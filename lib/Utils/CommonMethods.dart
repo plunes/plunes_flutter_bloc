@@ -328,58 +328,68 @@ class CommonMethods {
   static Widget messageSubmitDialog(BuildContext context, String _title,
       TextEditingController controller, DialogCallBack _callBack) {
     DialogCallBack callBack = _callBack;
-    return Container(
-      color: Color(0xff90000000),
-      child: CupertinoAlertDialog(
-          content: Column(children: <Widget>[
-        Align(
-            alignment: Alignment.topRight,
-            child: GestureDetector(
-                onTap: () => callBack.dialogCallBackFunction('CANCEL'),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Icon(Icons.clear),
-                ))),
-        Center(
-            child: Text(
-          _title,
-          style: TextStyle(fontSize: 16),
-        )),
-        getSpacer(0, 20),
-        Container(
-          height: 80,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              autofocus: true,
-              controller: controller,
-              decoration: InputDecoration.collapsed(
-                  hintText: plunesStrings.description),
-            ),
-          ),
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      child: SingleChildScrollView(
+        reverse: true,
+        child: Container(
+          height: AppConfig.verticalBlockSize * 42,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(10)),
-              border: Border.all(color: Colors.grey, width: 0.3)),
-        ),
-        getSpacer(0, 20),
-        GestureDetector(
-            onTap: () {
-              callBack.dialogCallBackFunction('DONE');
-            },
-            child: Container(
-              height: 35,
-              width: 200,
-              alignment: Alignment.center,
-              child: Text(
-                plunesStrings.submit,
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              borderRadius: BorderRadius.all(
+                  Radius.circular(AppConfig.horizontalBlockSize * 7)),
+              color: PlunesColors.WHITECOLOR),
+          child: Column(children: <Widget>[
+            Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: InkWell(
+                    onTap: () => callBack.dialogCallBackFunction('CANCEL'),
+                    child: Icon(Icons.clear),
+                  ),
+                )),
+            Center(
+                child: Text(_title,
+                    style: TextStyle(
+                        fontSize: 18, color: PlunesColors.BLACKCOLOR))),
+            Expanded(child: Container()),
+            getSpacer(0, 20),
+            Container(
+              height: 80,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextField(
+                  controller: controller,
+                  maxLength: 150,
+                  maxLines: 1,
+                  decoration:
+                      InputDecoration(hintText: plunesStrings.description),
+                ),
               ),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
-                  color: Color(0xff01d35a)),
-            ))
-      ])),
+            ),
+            getSpacer(0, 20),
+            GestureDetector(
+                onTap: () {
+                  callBack.dialogCallBackFunction('DONE');
+                },
+                child: Container(
+                  height: 35,
+                  width: 200,
+                  alignment: Alignment.center,
+                  margin:
+                      EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
+                  child: Text(
+                    plunesStrings.submit,
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      color: Color(0xff01d35a)),
+                ))
+          ]),
+        ),
+      ),
     );
   }
 

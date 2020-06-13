@@ -278,6 +278,8 @@ flutter:
     - assets/images/defaultImage.png
     - assets/images/setLocationFailImage.png
     - assets/images/setLocationMap.png
+    - assets/images/refundImage.png
+    - assets/images/couponImage.png
 
 
 

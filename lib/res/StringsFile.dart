@@ -172,6 +172,8 @@ class PlunesStrings {
 
   ///Coupon
   static const String pleaseEnterYourCoupon = "Please enter coupon";
+  static const String enterYourCode = "Enter your code";
+  static const String hurry = "HURRY!";
 
   ///Bank details
   static const String bankDetails = "Bank Details";
@@ -573,7 +575,7 @@ class PlunesStrings {
 
   get wantEditFeedBack => 'I want to edit my feedback';
 
-  get description => 'Description';
+  get description => 'Enter Description';
 
   get successfullySent => 'Successfully Sent..';
 

@@ -3,7 +3,9 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/coupon_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 
@@ -18,17 +20,20 @@ class FillCoupon extends BaseActivity {
 class _FillCouponState extends BaseState<FillCoupon> {
   TextEditingController _couponController;
   CouponBloc _couponBloc;
+  CouponTextResponseModel _couponTextResponseModel;
+  String _failureCause;
 
   @override
   void initState() {
     _couponBloc = CouponBloc();
+    _getCouponText();
     _couponController = TextEditingController();
     super.initState();
   }
 
   @override
   void dispose() {
-    _couponBloc.dispose();
+    _couponBloc?.dispose();
     super.dispose();
   }
 
@@ -57,85 +62,140 @@ class _FillCouponState extends BaseState<FillCoupon> {
             title: widget.createTextViews(plunesStrings.coupons, 18,
                 colorsFile.black, TextAlign.center, FontWeight.w500)),
         body: Builder(builder: (context) {
-          return SingleChildScrollView(
-            reverse: true,
-            child: Container(
-              width: double.infinity,
+          return StreamBuilder<RequestState>(
+              builder: (context, snapShot) {
+                if (snapShot.data is RequestInProgress) {
+                  return CustomWidgets().getProgressIndicator();
+                } else if (snapShot.data is RequestSuccess) {
+                  RequestSuccess requestSuccess = snapShot.data;
+                  _couponTextResponseModel = requestSuccess.response;
+                  _couponBloc.addIntoCouponTextProviderStream(null);
+                } else if (snapShot.data is RequestFailed) {
+                  RequestFailed requestFailed = snapShot.data;
+                  _failureCause = requestFailed.failureCause;
+                  _couponBloc.addIntoCouponTextProviderStream(null);
+                }
+                return (_couponTextResponseModel == null ||
+                        _couponTextResponseModel.success == null ||
+                        !(_couponTextResponseModel.success))
+                    ? CustomWidgets().errorWidget(_failureCause)
+                    : _getCouponWidget();
+              },
+              stream: _couponBloc.couponTextStream,
+              initialData: RequestInProgress());
+        }),
+      ),
+    );
+  }
+
+  Widget _getCouponWidget() {
+    return SingleChildScrollView(
+      reverse: true,
+      child: Container(
+        width: double.infinity,
+        margin:
+            EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
               margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(
-                        top: AppConfig.verticalBlockSize * 8,
-                        bottom: AppConfig.verticalBlockSize * 1),
-                    child: Text(
-                      "Enter your coupon here ",
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR, fontSize: 20),
-                    ),
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: TextField(
-                          controller: _couponController,
-                          keyboardType: TextInputType.text,
-                          maxLines: 1,
-                          autofocus: true,
-                        ),
-                      )
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 4,
-                    ),
-                    child: StreamBuilder<RequestState>(
-                        stream: _couponBloc.baseStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.data is RequestInProgress) {
-                            return CustomWidgets().getProgressIndicator();
-                          } else if (snapshot.data is RequestSuccess) {
-                            _couponBloc.addIntoStream(null);
-                            Future.delayed(Duration(milliseconds: 200))
-                                .then((value) => _openSuccessDialog());
-                          } else if (snapshot.data is RequestFailed) {
-                            RequestFailed failedObj = snapshot.data;
-                            _couponBloc.addIntoStream(null);
-                            Future.delayed(Duration(milliseconds: 200)).then(
-                                (value) =>
-                                    _showMessages(failedObj.failureCause));
-                          }
-                          return InkWell(
-                            onTap: () {
-                              if (_couponController.text.trim().isEmpty) {
-                                _showMessages(
-                                    PlunesStrings.pleaseEnterYourCoupon);
-                                _couponBloc.addIntoStream(null);
-                                return;
-                              }
-                              _couponBloc.sendCouponDetails(
-                                  _couponController.text.trim());
-                            },
-                            onDoubleTap: () {},
-                            child: CustomWidgets().getRoundedButton(
-                                plunesStrings.submit,
-                                AppConfig.horizontalBlockSize * 6,
-                                PlunesColors.GREENCOLOR,
-                                AppConfig.horizontalBlockSize * 1,
-                                AppConfig.verticalBlockSize * 1.5,
-                                PlunesColors.WHITECOLOR),
-                          );
-                        }),
-                  ),
-                ],
+                  horizontal: AppConfig.horizontalBlockSize * 30,
+                  vertical: AppConfig.verticalBlockSize * 5),
+              child: CustomWidgets().getRoundedButton(
+                  PlunesStrings.hurry,
+                  0.0,
+                  PlunesColors.GREENCOLOR,
+                  AppConfig.horizontalBlockSize * 3,
+                  AppConfig.verticalBlockSize * 2,
+                  PlunesColors.WHITECOLOR),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 1),
+              child: Text(
+                _couponTextResponseModel?.data?.message ?? PlunesStrings.NA,
+                maxLines: 3,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600),
               ),
             ),
-          );
-        }),
+            Container(
+              alignment: Alignment.center,
+              width: double.infinity,
+              child: Container(
+                  margin: EdgeInsetsDirectional.only(
+                      top: AppConfig.verticalBlockSize * 4),
+                  width: AppConfig.horizontalBlockSize * 40,
+                  height: AppConfig.verticalBlockSize * 18,
+                  child: Image.asset(PlunesImages.couponImage)),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  top: AppConfig.verticalBlockSize * 8,
+                  bottom: AppConfig.verticalBlockSize * 1),
+              child: Text(
+                PlunesStrings.enterYourCode,
+                style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 20),
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: _couponController,
+                    keyboardType: TextInputType.text,
+                    maxLines: 1,
+                  ),
+                )
+              ],
+            ),
+            Container(
+              padding: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 4,
+              ),
+              child: StreamBuilder<RequestState>(
+                  stream: _couponBloc.baseStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.data is RequestInProgress) {
+                      return CustomWidgets().getProgressIndicator();
+                    } else if (snapshot.data is RequestSuccess) {
+                      _couponBloc.addIntoStream(null);
+                      Future.delayed(Duration(milliseconds: 200))
+                          .then((value) => _openSuccessDialog());
+                    } else if (snapshot.data is RequestFailed) {
+                      RequestFailed failedObj = snapshot.data;
+                      _couponBloc.addIntoStream(null);
+                      Future.delayed(Duration(milliseconds: 200)).then(
+                          (value) => _showMessages(failedObj.failureCause));
+                    }
+                    return InkWell(
+                      onTap: () {
+                        if (_couponController.text.trim().isEmpty) {
+                          _showMessages(PlunesStrings.pleaseEnterYourCoupon);
+                          _couponBloc.addIntoStream(null);
+                          return;
+                        }
+                        _couponBloc
+                            .sendCouponDetails(_couponController.text.trim());
+                      },
+                      onDoubleTap: () {},
+                      child: CustomWidgets().getRoundedButton(
+                          plunesStrings.submit,
+                          AppConfig.horizontalBlockSize * 6,
+                          PlunesColors.GREENCOLOR,
+                          AppConfig.horizontalBlockSize * 1,
+                          AppConfig.verticalBlockSize * 1.5,
+                          PlunesColors.WHITECOLOR),
+                    );
+                  }),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -181,5 +241,9 @@ class _FillCouponState extends BaseState<FillCoupon> {
 
   _showMessages(String message) {
     widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+  }
+
+  void _getCouponText() {
+    _couponBloc.getCouponText();
   }
 }

@@ -73,6 +73,9 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                     children: <Widget>[
                       getBodyUserView(),
                       isPopupShowing
+                          ? Container(color: Color(0xff90000000))
+                          : Container(),
+                      isPopupShowing
                           ? CommonMethods.messageSubmitDialog(
                               context, title, _descriptionController, this)
                           : Container()
