@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:permission/permission.dart';
@@ -12,6 +11,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
@@ -28,6 +28,10 @@ import './previous_activity_screen.dart';
 
 // ignore: must_be_immutable
 class BiddingMainScreen extends BaseActivity {
+  final Function func;
+
+  BiddingMainScreen(this.func);
+
   @override
   _BiddingMainScreenState createState() => _BiddingMainScreenState();
 }
@@ -77,6 +81,17 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     super.dispose();
   }
 
+  _showLocationDialog() async {
+    await showDialog(
+        context: _context,
+        builder: (context) {
+          return CustomWidgets().fetchLocationPopUp(_context);
+        },
+        barrierDismissible: false);
+    _canGoAhead = UserManager().getIsUserInServiceLocation();
+    _setState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,6 +131,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
             ],
           ),
         ),
+        Container(
+          child: HomePageAppBar(widget.func, () => _showLocationDialog()),
+          margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+        )
       ],
     );
   }
@@ -605,5 +624,151 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       print("error is " + e);
     }
     return _hasLocationPermission;
+  }
+}
+
+class HomePageAppBar extends StatefulWidget {
+  final Function onDrawerTap, onSetLocationTap;
+
+  HomePageAppBar(this.onDrawerTap, this.onSetLocationTap);
+
+  @override
+  _HomePageAppBarState createState() => _HomePageAppBarState();
+}
+
+class _HomePageAppBarState extends State<HomePageAppBar> {
+  Future<RequestState> _getLocationStatusForTop() async {
+    RequestState _requestState;
+    var user = UserManager().getUserDetails();
+    if (user?.latitude != null &&
+        user?.longitude != null &&
+        user.latitude.isNotEmpty &&
+        user.longitude.isNotEmpty &&
+        user.latitude != "0.0" &&
+        user.latitude != "0" &&
+        user.longitude != "0.0" &&
+        user.longitude != "0") {
+      String address = await LocationUtil()
+          .getAddressFromLatLong(user.latitude, user.longitude);
+      _requestState = RequestSuccess(
+          response: LocationAppBarModel(
+              address: (address != null &&
+                      address == PlunesStrings.enterYourLocation)
+                  ? PlunesStrings.enterYourLocation
+                  : address,
+              hasLocation: (address != null &&
+                      address == PlunesStrings.enterYourLocation)
+                  ? false
+                  : true));
+    } else {
+      _requestState = RequestSuccess(
+          response: LocationAppBarModel(
+              address: PlunesStrings.enterYourLocation, hasLocation: false));
+    }
+    return _requestState;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        InkWell(
+          onTap: () {
+            widget.onDrawerTap();
+            return;
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Icon(
+              Icons.menu,
+              color: PlunesColors.BLACKCOLOR,
+            ),
+          ),
+        ),
+        Expanded(child: Container()),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: FutureBuilder<RequestState>(
+            future: _getLocationStatusForTop(),
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestSuccess) {
+                RequestSuccess reqSuccess = snapshot.data;
+                LocationAppBarModel locationModel = reqSuccess.response;
+                if (locationModel != null && locationModel.hasLocation) {
+                  return Container(
+                    alignment: Alignment.topRight,
+                    child: Row(
+                      children: <Widget>[
+                        Flexible(
+                            flex: 1,
+                            child: Icon(Icons.location_on,
+                                color: PlunesColors.GREYCOLOR)),
+                        Expanded(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 12.0),
+                              child: Tooltip(
+                                  message: locationModel.address,
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 5),
+                                  preferBelow: true,
+                                  child: Text(
+                                    locationModel.address,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      decoration: TextDecoration.underline,
+                                      decorationStyle:
+                                          TextDecorationStyle.dashed,
+                                      decorationThickness: 2.0,
+                                    ),
+                                  )),
+                            ),
+                            flex: 10),
+                      ],
+                    ),
+                    width: AppConfig.horizontalBlockSize * 48,
+                  );
+                } else {
+                  return Container(
+                      width: AppConfig.horizontalBlockSize * 40,
+                      child: Column(
+                        children: <Widget>[
+                          InkWell(
+                            onTap: widget.onSetLocationTap,
+                            child: Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: Text(
+                                    locationModel.address ??
+                                        PlunesStrings.enterYourLocation,
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                                  flex: 10,
+                                ),
+                                Flexible(
+                                  child: Icon(Icons.radio_button_checked,
+                                      size: 16.0),
+                                  flex: 1,
+                                )
+                              ],
+                            ),
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(top: 3.0),
+                              width: double.infinity,
+                              height: 1,
+                              color: PlunesColors.GREYCOLOR)
+                        ],
+                      ));
+                }
+              }
+              return Text(PlunesStrings.processing);
+            },
+          ),
+        )
+      ],
+    );
   }
 }

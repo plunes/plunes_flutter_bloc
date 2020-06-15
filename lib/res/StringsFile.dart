@@ -68,6 +68,8 @@ class PlunesStrings {
   static const String pleaseMakeSureText =
       "Please make sure you book within a short time, keeping in mind price is valid for only one hour.";
   static const String chooseLocation = "Choose another location";
+  static const String enterYourLocation = "Enter your Location";
+  static const String processing = "Processing...";
 
   ///Booking strings
   static const String whyPlunes = "Why Plunes?";

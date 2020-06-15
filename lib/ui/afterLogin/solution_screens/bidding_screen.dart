@@ -233,6 +233,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         MaterialPageRoute(
             builder: (context) => BiddingLoading(
                   catalogueData: _catalogues[index],
+                  searchQuery: _searchController.text.trim(),
                 )));
   }
 

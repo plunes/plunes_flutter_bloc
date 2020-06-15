@@ -64,8 +64,10 @@ class SearchSolutionBloc extends BlocBase {
     super.dispose();
   }
 
-  Future<RequestState> getDocHosSolution(final CatalogueData catalogueData) async {
-    var result = await SearchedSolutionRepo().getDocHosSolution(catalogueData);
+  Future<RequestState> getDocHosSolution(final CatalogueData catalogueData,
+      {final String searchQuery}) async {
+    var result = await SearchedSolutionRepo()
+        .getDocHosSolution(catalogueData, searchQuery: searchQuery);
     addIntoDocHosStream(result);
     return result;
   }

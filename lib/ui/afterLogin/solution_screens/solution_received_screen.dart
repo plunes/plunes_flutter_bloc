@@ -25,8 +25,9 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 // ignore: must_be_immutable
 class SolutionReceivedScreen extends BaseActivity {
   final CatalogueData catalogueData;
+  final String searchQuery;
 
-  SolutionReceivedScreen({this.catalogueData});
+  SolutionReceivedScreen({this.catalogueData, this.searchQuery});
 
   @override
   _SolutionReceivedScreenState createState() => _SolutionReceivedScreenState();
@@ -183,8 +184,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Future<RequestState> _negotiate() async {
-    var result =
-        await _searchSolutionBloc.getDocHosSolution(widget.catalogueData);
+    var result = await _searchSolutionBloc.getDocHosSolution(
+        widget.catalogueData,
+        searchQuery: widget.searchQuery);
     if (_searchedDocResults != null &&
         _searchedDocResults.solution != null &&
         _searchedDocResults.solution.services != null &&

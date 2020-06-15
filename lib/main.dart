@@ -15,7 +15,6 @@ import 'MyApp.dart';
 main() {
   WidgetsFlutterBinding.ensureInitialized();
   Crashlytics.instance.enableInDevMode = true;
-  // Pass all uncaught errors from the framework to Crashlytics.
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.white, // navigation bar color

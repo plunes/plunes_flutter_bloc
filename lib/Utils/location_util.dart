@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:permission/permission.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/res/StringsFile.dart';
 
 class LocationUtil {
   static LocationUtil _instance;
@@ -45,5 +47,19 @@ class LocationUtil {
 
   void openSettings() async {
     await Permission.openSettings();
+  }
+
+  Future<String> getAddressFromLatLong(
+      String latitude, String longitude) async {
+    String address = PlunesStrings.enterYourLocation;
+    List<Address> addresses;
+    try {
+      final coordinates =
+          new Coordinates(double.parse(latitude), double.parse(longitude));
+      addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      address = addresses.first.addressLine;
+    } catch (e) {}
+    return address;
   }
 }

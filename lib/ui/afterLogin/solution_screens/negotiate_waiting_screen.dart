@@ -17,8 +17,9 @@ import 'package:plunes/ui/commonView/LocationFetch.dart';
 // ignore: must_be_immutable
 class BiddingLoading extends BaseActivity {
   final CatalogueData catalogueData;
+  final String searchQuery;
 
-  BiddingLoading({this.catalogueData});
+  BiddingLoading({this.catalogueData, this.searchQuery});
 
   @override
   _BiddingLoadingState createState() => _BiddingLoadingState();
@@ -49,6 +50,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
               MaterialPageRoute(
                   builder: (context) => SolutionReceivedScreen(
                         catalogueData: widget.catalogueData,
+                        searchQuery: widget.searchQuery,
                       ))).then((value) {
             if (value != null && value) {
               Navigator.of(context)
@@ -92,6 +94,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                           MaterialPageRoute(
                               builder: (context) => BiddingLoading(
                                     catalogueData: widget.catalogueData,
+                                    searchQuery: widget.searchQuery,
                                   )));
                       return;
                     } else if (_failureCause == null) {

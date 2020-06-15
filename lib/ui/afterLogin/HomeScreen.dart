@@ -4,12 +4,16 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
+import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -48,7 +52,8 @@ class HomeScreen extends BaseActivity {
 }
 
 class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  static final GlobalKey<ScaffoldState> _scaffoldKey =
+      new GlobalKey<ScaffoldState>();
   var globalHeight,
       globalWidth,
       _userType = '',
@@ -61,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       screen;
   bool _showBadge = false, progress = false, isSelected = false;
   final List<Widget> _widgetOptionsForUser = [
-    BiddingMainScreen(),
+    BiddingMainScreen(() => _scaffoldKey.currentState.openDrawer()),
     PlockrMainScreen(),
     NotificationScreen(),
   ];
@@ -102,25 +107,29 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         backgroundColor: Colors.white,
         extendBodyBehindAppBar:
             (_selectedIndex == 0 && _userType == Constants.user) ? true : false,
-        appBar: widget.getHomeAppBar(
-            context,
-            _userType != Constants.user
-                ? (_selectedIndex == 1
-                    ? plunesStrings.notifications
-                    : _selectedIndex == 3
-                        ? plunesStrings.profiles
+        appBar: (_selectedIndex == 0 && _userType == Constants.user)
+            ? null
+            : widget.getHomeAppBar(
+                context,
+                _userType != Constants.user
+                    ? (_selectedIndex == 1
+                        ? plunesStrings.notifications
+                        : _selectedIndex == 3
+                            ? plunesStrings.profiles
+                            : _selectedIndex == 2
+                                ? plunesStrings.notifications
+                                : '')
+                    : (_selectedIndex == 1
+                        ? plunesStrings.plockr
                         : _selectedIndex == 2
                             ? plunesStrings.notifications
-                            : '')
-                : (_selectedIndex == 1
-                    ? plunesStrings.plockr
-                    : _selectedIndex == 2 ? plunesStrings.notifications : ''),
-            isSelected,
-            selectedPositions,
-            from,
-            this,
-            isSolutionPageSelected:
-                (_selectedIndex == 0 && _userType == Constants.user)),
+                            : ''),
+                isSelected,
+                selectedPositions,
+                from,
+                this,
+                isSolutionPageSelected:
+                    (_selectedIndex == 0 && _userType == Constants.user)),
         drawer: getDrawerView(),
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()),

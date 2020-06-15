@@ -253,3 +253,10 @@ class PaymentStatus {
     return data;
   }
 }
+
+class LocationAppBarModel {
+  bool hasLocation;
+  String address;
+
+  LocationAppBarModel({this.address, this.hasLocation});
+}

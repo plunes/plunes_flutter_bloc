@@ -356,9 +356,9 @@ class BaseActivity extends StatefulWidget {
                   padding: EdgeInsets.zero,
                   icon: Icon(Icons.delete, color: Colors.grey),
                   onPressed: () {
-                    var body = {};
-                    body['isYes'] = true;
-                    bloc.changeAppBar(context, body);
+//                    var body = {};
+//                    body['isYes'] = true;
+//                    bloc.changeAppBar(context, body);
                   },
                 )
               : Container(),
