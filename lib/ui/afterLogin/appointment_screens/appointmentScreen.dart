@@ -161,7 +161,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   Expanded(
                     flex: 3,
                     child: Container(
-                      //margin: EdgeInsets.only(bottom:40),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
@@ -276,7 +275,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.data != null &&
                             snapshot.data is RequestInProgress) {
-                          print(snapshot.data);
                           RequestInProgress req = snapshot.data;
                           print(req.requestCode);
                           if (req.requestCode != null &&
@@ -291,10 +289,16 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               req.requestCode == index) {
                             Future.delayed(Duration(milliseconds: 20))
                                 .then((value) async {
-                              widget.showInSnackBar(
-                                  PlunesStrings.cancelSuccessMessage,
-                                  PlunesColors.BLACKCOLOR,
-                                  widget.globalKey);
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CustomWidgets()
+                                        .appointmentCancellationPopup(
+                                            req.response ??
+                                                PlunesStrings
+                                                    .cancelSuccessMessage,
+                                            widget.globalKey);
+                                  });
                               widget.getAppointment();
                             });
                             _bookingBloc.addStateInCancelProvider(null);
@@ -303,7 +307,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                         if (snapshot.data != null &&
                             snapshot.data is RequestFailed) {
                           RequestFailed requestFailed = snapshot.data;
-
                           if (requestFailed.requestCode != null &&
                               requestFailed.requestCode == index) {
                             Future.delayed(Duration(milliseconds: 20))
@@ -651,7 +654,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
             paymentPercent: paymentObj.title.replaceAll("%", ""))
         .toJson());
     if (result is RequestSuccess) {
-      print("payment success");
       InitPaymentResponse _initPaymentResponse = result.response;
       if (_initPaymentResponse.success) {
         if (_initPaymentResponse.status.contains("Confirmed")) {

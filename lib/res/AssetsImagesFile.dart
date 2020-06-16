@@ -40,6 +40,7 @@ class PlunesImages {
   static String setLocationFailImage = "assets/images/setLocationFailImage.png";
   static const String refundImage = "assets/images/refundImage.png";
   static const String couponImage = "assets/images/couponImage.png";
+  static const String bdSupportImage = "assets/images/bdSupportImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

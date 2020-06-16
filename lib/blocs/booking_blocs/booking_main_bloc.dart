@@ -45,7 +45,7 @@ class BookingBloc extends BlocBase {
     return result;
   }
 
-  Future cancelAppointment(String bookingId, int index) async {
+  Future<RequestState> cancelAppointment(String bookingId, int index) async {
     addStateInCancelProvider(RequestInProgress(requestCode: index));
     var result = await BookingRepo().cancelAppointment(bookingId, index);
     addStateInCancelProvider(result);

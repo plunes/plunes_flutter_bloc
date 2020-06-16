@@ -52,14 +52,16 @@ class BookingRepo {
   }
 
   Future<RequestState> cancelAppointment(String bookingId, int index) async {
-    String url = Urls.GET_CANCEL_AND_RESCHEDULE_URL + "/$bookingId/cancel";
+    String url =
+        Urls.GET_CANCEL_AND_RESCHEDULE_URL + "/$bookingId/cancellationRequest";
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true,
         url: url);
     if (result.isRequestSucceed) {
+      print("result is ${result.response.data}");
       return RequestSuccess(
-          response: result.isRequestSucceed, requestCode: index);
+          response: result.response.data["msg"], requestCode: index);
     } else {
       return RequestFailed(
           failureCause: result.failureCause, requestCode: index);

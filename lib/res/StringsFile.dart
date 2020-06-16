@@ -201,6 +201,8 @@ class PlunesStrings {
   static const String pleaseSelectLocationPopup =
       "Please select a valid location to negotiate with nearest facilities";
 
+  static const String ourTeamWillContactYou = "Our team will contact you soon";
+
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
         'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
@@ -577,7 +579,7 @@ class PlunesStrings {
 
   get wantEditFeedBack => 'I want to edit my feedback';
 
-  get description => 'Enter Description';
+  get description => 'Enter your Concern';
 
   get successfullySent => 'Successfully Sent..';
 

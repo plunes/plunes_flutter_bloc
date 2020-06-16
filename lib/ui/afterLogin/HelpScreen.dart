@@ -96,8 +96,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                     padding: const EdgeInsets.only(right: 10.0),
                     child: image != null
                         ? widget.getAssetIconWidget(image, 20, 20, BoxFit.cover)
-                        : Container(),
-                  )
+                        : Container())
                 : Container(),
             Expanded(
                 child: widget.createTextViews(_title, fontSize,
@@ -106,14 +105,8 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                     (plunesStrings.onlineSolution == _title &&
                         isOnlineSolution) ||
                     (plunesStrings.feedBacks == _title && isFeedback))
-                ? Icon(
-                    Icons.keyboard_arrow_down,
-                    color: Colors.black,
-                  )
-                : Icon(
-                    Icons.keyboard_arrow_right,
-                    color: Colors.black,
-                  )
+                ? Icon(Icons.keyboard_arrow_down, color: Colors.black)
+                : Icon(Icons.keyboard_arrow_right, color: Colors.black)
           ],
         ),
       ),
@@ -206,48 +199,42 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                             top: AppConfig.verticalBlockSize * 4,
                           ),
                           child: InkWell(
-                            onTap: () {
-                              if (_docHosQueryController.text
-                                  .trim()
-                                  .isNotEmpty) {
-                                _docHosMainInsightBloc.helpDocHosQuery(
-                                    _docHosQueryController.text.trim());
-                              } else if (_docHosQueryController.text
-                                  .trim()
-                                  .isEmpty) {
-                                failureMessage =
-                                    PlunesStrings.emptyQueryFieldMessage;
-                                _docHosMainInsightBloc
-                                    .addStateInHelpQueryStream(null);
-                              }
-                            },
-                            onDoubleTap: () {},
-                            child: CustomWidgets().getRoundedButton(
-                                plunesStrings.submit,
-                                AppConfig.horizontalBlockSize * 6,
-                                PlunesColors.GREENCOLOR,
-                                AppConfig.horizontalBlockSize * 1,
-                                AppConfig.verticalBlockSize * 1.5,
-                                PlunesColors.WHITECOLOR),
-                          ),
+                              onTap: () {
+                                if (_docHosQueryController.text
+                                    .trim()
+                                    .isNotEmpty) {
+                                  _docHosMainInsightBloc.helpDocHosQuery(
+                                      _docHosQueryController.text.trim());
+                                } else if (_docHosQueryController.text
+                                    .trim()
+                                    .isEmpty) {
+                                  failureMessage =
+                                      PlunesStrings.emptyQueryFieldMessage;
+                                  _docHosMainInsightBloc
+                                      .addStateInHelpQueryStream(null);
+                                }
+                              },
+                              onDoubleTap: () {},
+                              child: CustomWidgets().getRoundedButton(
+                                  plunesStrings.submit,
+                                  AppConfig.horizontalBlockSize * 6,
+                                  PlunesColors.GREENCOLOR,
+                                  AppConfig.horizontalBlockSize * 1,
+                                  AppConfig.verticalBlockSize * 1.5,
+                                  PlunesColors.WHITECOLOR)),
                         ),
                         failureMessage == null || failureMessage.isEmpty
                             ? Container()
                             : Container(
                                 padding: EdgeInsets.only(
                                     top: AppConfig.verticalBlockSize * 1),
-                                child: Text(
-                                  failureMessage,
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              ),
+                                child: Text(failureMessage,
+                                    style: TextStyle(color: Colors.red))),
                         Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: AppConfig.verticalBlockSize * 4),
                           child: Text('OR',
-                              style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                              )),
+                              style: TextStyle(fontSize: AppConfig.mediumFont)),
                         ),
                         _callWidget()
                       ],

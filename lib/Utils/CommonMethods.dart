@@ -333,7 +333,7 @@ class CommonMethods {
       child: SingleChildScrollView(
         reverse: true,
         child: Container(
-          height: AppConfig.verticalBlockSize * 42,
+          height: AppConfig.verticalBlockSize * 48,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(
                   Radius.circular(AppConfig.horizontalBlockSize * 7)),
@@ -348,26 +348,32 @@ class CommonMethods {
                     child: Icon(Icons.clear),
                   ),
                 )),
-            Center(
-                child: Text(_title,
-                    style: TextStyle(
-                        fontSize: 18, color: PlunesColors.BLACKCOLOR))),
-            Expanded(child: Container()),
-            getSpacer(0, 20),
+//            Center(
+//                child: Text(_title,
+//                    style: TextStyle(
+//                        fontSize: 18, color: PlunesColors.BLACKCOLOR))),
+            Flexible(child: Image.asset(PlunesImages.bdSupportImage)),
+//            Expanded(child: Container()),
+//            getSpacer(0, 20),
             Container(
               height: 80,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextField(
                   controller: controller,
-                  maxLength: 150,
                   maxLines: 1,
                   decoration:
                       InputDecoration(hintText: plunesStrings.description),
                 ),
               ),
             ),
-            getSpacer(0, 20),
+            getSpacer(0, 1),
+            Text(
+              PlunesStrings.ourTeamWillContactYou,
+              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 15),
+              textAlign: TextAlign.center,
+            ),
+            getSpacer(0, 22),
             GestureDetector(
                 onTap: () {
                   callBack.dialogCallBackFunction('DONE');

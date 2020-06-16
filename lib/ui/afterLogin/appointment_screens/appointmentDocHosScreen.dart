@@ -199,9 +199,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.data != null &&
                             snapshot.data is RequestInProgress) {
-//                          print(snapshot.data);
                           RequestInProgress req = snapshot.data;
-//                          print(req.requestCode);
                           if (req.requestCode != null &&
                               req.requestCode == index) {
                             return CustomWidgets().getProgressIndicator();
@@ -214,10 +212,11 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                               req.requestCode == index) {
                             Future.delayed(Duration(milliseconds: 20))
                                 .then((value) async {
-                              widget.showInSnackBar(
-                                  PlunesStrings.cancelSuccessMessage,
-                                  PlunesColors.BLACKCOLOR,
-                                  widget.globalKey);
+                              return CustomWidgets()
+                                  .appointmentCancellationPopup(
+                                      req.response ??
+                                          PlunesStrings.cancelSuccessMessage,
+                                      widget.globalKey);
                             });
                             _bookingBloc.addStateInCancelProvider(null);
                           }
@@ -226,7 +225,6 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                         if (snapshot.data != null &&
                             snapshot.data is RequestFailed) {
                           RequestFailed requestFailed = snapshot.data;
-
                           if (requestFailed.requestCode != null &&
                               requestFailed.requestCode == index) {
                             Future.delayed(Duration(milliseconds: 20))
