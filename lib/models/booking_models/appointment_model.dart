@@ -47,8 +47,6 @@ class AppointmentModel {
   Services service;
   bool isOpened = false;
   String lat, long;
-
-  // List<num> paymentOption;
   String paymentPercent;
   num amountPaid;
   num amountDue;
@@ -75,6 +73,7 @@ class AppointmentModel {
   static const String confirmedStatus = "Confirmed";
   static const String cancelledStatus = "Cancelled";
   static const String notRequested = "Not Requested";
+  static const String requestCancellation = "Request Cancellation";
 
   AppointmentModel(
       {this.professionalId,
@@ -96,7 +95,6 @@ class AppointmentModel {
       this.rescheduled,
       this.service,
       this.isOpened,
-      // this.paymentOption,
       this.paymentPercent,
       this.amountPaid,
       this.amountPaidCredits,
@@ -114,7 +112,6 @@ class AppointmentModel {
       this.serviceProviderType});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
-//    print("${json['location']['coordinates']}json ${json["location"]}");
     professionalId = json['professionalId'];
     solutionServiceId = json['solutionServiceId'];
     serviceId = json['serviceId'];
@@ -138,7 +135,6 @@ class AppointmentModel {
     if (json['service'] != null) {
       service = new Services.fromJson(json['service']);
     }
-    // paymentOption = json['paymentOption'];
     paymentPercent = json['paymentPercent'];
     amountPaid = json['amountPaid'];
     amountPaidCredits = json['amountPaidCredits'];
@@ -191,7 +187,6 @@ class AppointmentModel {
     data['serviceName'] = this.serviceName;
     data['rescheduled'] = this.rescheduled;
     data['services'] = this.service;
-    // data['paymentOption'] = this.paymentOption;
     data['paymentPercent'] = this.paymentPercent;
     data['amountPaid'] = this.amountPaid;
     data['amountPaidCredits'] = this.amountPaidCredits;

@@ -181,7 +181,7 @@ class User {
   List<TimeSlotsData> timeSlots = [];
   List<DoctorsData> doctorsData = [];
   List<AchievementsData> achievements = [];
-  bool verifiedUser, notificationEnabled;
+  bool verifiedUser, notificationEnabled, isAdmin;
   BankDetails bankDetails;
 
   User(
@@ -216,9 +216,11 @@ class User {
       this.credits,
       this.userReferralCode,
       this.notificationEnabled,
+      this.isAdmin,
       this.bankDetails});
 
   factory User.fromJson(Map<String, dynamic> json) {
+    bool _isAdmin = json['isAdmin'] ?? false;
     List<TimeSlotsData> _timeSlots = [];
     if (json['timeSlots'] != null) {
       Iterable iterable = json['timeSlots'];
@@ -277,16 +279,7 @@ class User {
       imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
       latitude: lat,
       longitude: long,
-//      latitude: (json['geoLocation'] != null &&
-//              json['geoLocation']['latitude'] != null &&
-//              json['geoLocation']['latitude'].toString().trim().isNotEmpty)
-//          ? json['geoLocation']['latitude'].toString()
-//          : "0.0",
-//      longitude: (json['geoLocation'] != null &&
-//              json['geoLocation']['longitude'] != null &&
-//              json['geoLocation']['longitude'].toString().trim().isNotEmpty)
-//          ? json['geoLocation']['longitude'].toString()
-//          : "0.0",
+      isAdmin: _isAdmin,
       prescriptionLogoUrl: json['prescription'] != null
           ? (json['prescription']['logoUrl'] != null
               ? json['prescription']['logoUrl']
@@ -751,5 +744,73 @@ class CouponText {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['message'] = this.message;
     return data;
+  }
+}
+
+class CentreResponse {
+  bool success;
+  int len;
+  List<CentreData> data;
+
+  CentreResponse({this.success, this.len, this.data});
+
+  CentreResponse.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    len = json['len'];
+    if (json['data'] != null) {
+      data = new List<CentreData>();
+      json['data'].forEach((v) {
+        data.add(new CentreData.fromJson(v));
+      });
+    }
+  }
+}
+
+class CentreData {
+  Location location;
+  String imageUrl;
+  bool isCenter;
+  bool isAdmin;
+  String sId;
+  String name;
+  String userType;
+  String email;
+  String centerLocation;
+  String mobileNumber;
+  String adminMobileNumber;
+  String adminRefId;
+  String address;
+
+  CentreData(
+      {this.address,
+      this.imageUrl,
+      this.name,
+      this.userType,
+      this.adminMobileNumber,
+      this.adminRefId,
+      this.centerLocation,
+      this.email,
+      this.isAdmin,
+      this.isCenter,
+      this.location,
+      this.mobileNumber,
+      this.sId});
+
+  CentreData.fromJson(Map<String, dynamic> json) {
+    location = json['location'] != null
+        ? new Location.fromJson(json['location'])
+        : null;
+    imageUrl = json['imageUrl'];
+    isCenter = json['isCenter'];
+    isAdmin = json['isAdmin'];
+    sId = json['_id'];
+    name = json['name'];
+    userType = json['userType'];
+    email = json['email'];
+    centerLocation = json['centerLocation'];
+    mobileNumber = json['mobileNumber'];
+    adminMobileNumber = json['adminMobileNumber'];
+    adminRefId = json['adminRefId'];
+    address = json['address'];
   }
 }
