@@ -75,14 +75,16 @@ class DocHosMainInsightBloc extends BlocBase {
         await DocHosMainRepo().getRealTimeInsights());
   }
 
-  getActionableInsights() async {
+  getActionableInsights({String userId}) async {
+    addStateInActionableInsightStream(RequestInProgress());
     addStateInActionableInsightStream(
-        await DocHosMainRepo().getActionableInsights());
+        await DocHosMainRepo().getActionableInsights(userId: userId));
   }
 
-  getTotalBusinessData(int days) async {
-    addStateInBusinessStream(
-        await DocHosMainRepo().getTotalBusinessEarnedAndLoss(days));
+  getTotalBusinessData(int days, {String userId}) async {
+    addStateInBusinessStream(RequestInProgress());
+    addStateInBusinessStream(await DocHosMainRepo()
+        .getTotalBusinessEarnedAndLoss(days, userId: userId));
   }
 
   getUpdateRealTimeInsightPrice(

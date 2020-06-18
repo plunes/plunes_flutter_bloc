@@ -27,25 +27,37 @@ class _HospitalOverviewScreenState
     extends BaseState<HospitalDoctorOverviewScreen> {
   User _user;
   DocHosMainInsightBloc _docHosMainInsightBloc;
+  List<CentreData> _centresList = [];
   RealTimeInsightsResponse _realTimeInsightsResponse;
   ActionableInsightResponseModel _actionableInsightResponse;
   TotalBusinessEarnedModel _totalBusinessEarnedResponse;
   String _reaTimeInsightFailureCause,
       _actionableInsightFailureCause,
-      _businessFailurecause,
-      selectedDay;
-  int days = 1;
+      _businessFailureCause,
+      _failureCause,
+      selectedDay,
+      _selectedUserIdForBusinessDropDown = "",
+      _selectedUserIdForActionableInsightDropDown = "",
+      _selectedDay = 'Today';
+  int days = 1, initialDayForAdminUser = 1;
   List<String> _daysCount = ['Today', 'Week', 'Month', 'Year'];
-  List<String> _daysInput;
+  List<int> duration = [1, 7, 30, 365];
+  bool _isProcessing;
 
   @override
   void initState() {
+    _centresList = [];
+    _isProcessing = false;
     _user = UserManager().getUserDetails();
     _docHosMainInsightBloc = DocHosMainInsightBloc();
-    _getRealTimeInsights();
-    _getActionableInsights();
-    _getTotalBusinessData(days);
-    _daysInput = [];
+    if (_user.isAdmin && (UserManager().centreData == null)) {
+      _getCentresData();
+    } else if (_user.isAdmin && UserManager().centreData != null) {
+      _setDataIntoList();
+      _getAllData();
+    } else {
+      _getAllData();
+    }
     EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == FirebaseNotification.insightScreen &&
@@ -60,12 +72,12 @@ class _HospitalOverviewScreenState
     _docHosMainInsightBloc.getRealTimeInsights();
   }
 
-  _getActionableInsights() {
-    _docHosMainInsightBloc.getActionableInsights();
+  _getActionableInsights({String userId}) {
+    _docHosMainInsightBloc.getActionableInsights(userId: userId);
   }
 
-  _getTotalBusinessData(int days) {
-    _docHosMainInsightBloc.getTotalBusinessData(days);
+  _getTotalBusinessData(int days, {String userId}) {
+    _docHosMainInsightBloc.getTotalBusinessData(days, userId: userId);
     _setState();
   }
 
@@ -78,35 +90,12 @@ class _HospitalOverviewScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
-      body: SingleChildScrollView(
-        child: Container(
-          margin: EdgeInsets.only(top: 5, left: 5, right: 5),
-          child: Column(
-            children: <Widget>[
-              Container(
-                // margin: EdgeInsets.only(top: 5, left: 5, right: 5),
-                width: double.infinity,
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Text(
-                      _user?.name ?? _getNaString(),
-                      style: TextStyle(
-                          fontSize: AppConfig.smallFont,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                ),
-              ),
-              _getRealTimeInsightView(),
-              _getTotalBusinessWidget(),
-              _getActionableInsightWidget(),
-            ],
-          ),
-        ),
-      ),
-    );
+        key: scaffoldKey,
+        body: _isProcessing
+            ? CustomWidgets().getProgressIndicator()
+            : _failureCause != null
+                ? CustomWidgets().errorWidget(_failureCause)
+                : _getBody());
   }
 
   String _getNaString() {
@@ -195,15 +184,16 @@ class _HospitalOverviewScreenState
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 PatientServiceInfo(
-                                  patientName: _realTimeInsightsResponse
-                                      .data[itemIndex].userName,
-                                  serviceName: "is looking for " +
-                                      "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
-                                  remainingTime: _realTimeInsightsResponse
-                                      .data[itemIndex].createdAt,
-                                  getRealTimeInsights: () =>
-                                      _getRealTimeInsights(),
-                                ),
+                                    patientName: _realTimeInsightsResponse
+                                        .data[itemIndex].userName,
+                                    serviceName: "is looking for " +
+                                        "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
+                                    remainingTime: _realTimeInsightsResponse
+                                        .data[itemIndex].createdAt,
+                                    centreLocation: _realTimeInsightsResponse
+                                        .data[itemIndex].centerLocation,
+                                    getRealTimeInsights: () =>
+                                        _getRealTimeInsights()),
                                 (_realTimeInsightsResponse.data[itemIndex] !=
                                             null &&
                                         _realTimeInsightsResponse
@@ -275,7 +265,7 @@ class _HospitalOverviewScreenState
     );
   }
 
-  Widget _getTotalBusinessWidget() {
+  Widget _getTotalBusinessWidgetForNonAdmin() {
     return Container(
       margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.5),
       width: double.infinity,
@@ -300,7 +290,12 @@ class _HospitalOverviewScreenState
                     decoration: TextDecoration.underline,
                   ),
                 ),
-                trailing: _selectDayDropDown(),
+                trailing: (_user.isAdmin &&
+                        UserManager().centreData != null &&
+                        UserManager().centreData.len != null &&
+                        UserManager().centreData.len != 0)
+                    ? _businessCentresDropDown()
+                    : _selectDayDropDown(),
                 //Text('drop down here'),
               ),
               Container(
@@ -316,19 +311,19 @@ class _HospitalOverviewScreenState
                       RequestSuccess _requestSuccess = snapShot.data;
                       _totalBusinessEarnedResponse = _requestSuccess.response;
                       if (_totalBusinessEarnedResponse == null) {
-                        _businessFailurecause =
+                        _businessFailureCause =
                             PlunesStrings.noBusinessDataFound;
                       }
                       _docHosMainInsightBloc.addStateInBusinessStream(null);
                     }
                     if (snapShot.data is RequestFailed) {
                       RequestFailed _requestFailed = snapShot.data;
-                      _businessFailurecause = _requestFailed.failureCause;
+                      _businessFailureCause = _requestFailed.failureCause;
                       _docHosMainInsightBloc.addStateInBusinessStream(null);
                     }
                     return (_totalBusinessEarnedResponse == null)
                         ? Center(
-                            child: Text(_businessFailurecause ??
+                            child: Text(_businessFailureCause ??
                                 PlunesStrings.noBusinessDataFound),
                           )
                         : Row(
@@ -366,12 +361,10 @@ class _HospitalOverviewScreenState
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    Text(
-                                      'Business Lost',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: AppConfig.verySmallFont),
-                                    ),
+                                    Text('Business Lost',
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: AppConfig.verySmallFont)),
                                   ],
                                 )
                               ]);
@@ -382,6 +375,15 @@ class _HospitalOverviewScreenState
                   stream: _docHosMainInsightBloc.businessDataStream,
                 ),
               ),
+              (_user.isAdmin &&
+                      UserManager().centreData != null &&
+                      UserManager().centreData.len != null &&
+                      UserManager().centreData.len != 0)
+                  ? Container(
+                      alignment: Alignment.center,
+                      child: _selectDayDropDown(),
+                    )
+                  : Container(),
               Container(
                   margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: Text(
@@ -421,6 +423,11 @@ class _HospitalOverviewScreenState
                     decoration: TextDecoration.underline,
                   ),
                 ),
+                trailing: (_user.isAdmin &&
+                        _centresList != null &&
+                        _centresList.isNotEmpty)
+                    ? _actionableDropDown()
+                    : null,
               ),
               Divider(color: Colors.black38),
               Container(
@@ -559,7 +566,12 @@ class _HospitalOverviewScreenState
       if (value != null && value) {
         widget.showInSnackBar(PlunesStrings.priceUpdateSuccessMessage,
             PlunesColors.BLACKCOLOR, scaffoldKey);
-        _getActionableInsights();
+        if (_user.isAdmin && _centresList != null && _centresList.isNotEmpty) {
+          _getActionableInsights(
+              userId: _selectedUserIdForActionableInsightDropDown);
+        } else {
+          _getActionableInsights();
+        }
       }
     });
   }
@@ -580,6 +592,9 @@ class _HospitalOverviewScreenState
   }
 
   Widget _selectDayDropDown() {
+    if (_selectedDay == null) {
+      _selectedDay = _daysCount.first;
+    }
     List<DropdownMenuItem<String>> _varianceDropDownItems = new List();
     for (String daysCount in _daysCount) {
       _varianceDropDownItems.add(new DropdownMenuItem(
@@ -598,40 +613,190 @@ class _HospitalOverviewScreenState
       ));
     }
     return Container(
-        width: AppConfig.horizontalBlockSize * 23,
-        child: ListView.builder(
-          itemBuilder: (context, itemIndex) {
-            _daysInput.add(_daysCount.first);
-            return Column(
-              children: <Widget>[
-                DropdownButtonFormField(
-                  items: _varianceDropDownItems,
-                  onChanged: (value) {
-                    _daysInput[itemIndex] = value;
-                    if (value == _daysCount[0]) {
-                      _getTotalBusinessData(1);
-                    } else if (value == _daysCount[1]) {
-                      _getTotalBusinessData(7);
-                    } else if (value == _daysCount[2]) {
-                      _getTotalBusinessData(30);
-                    } else {
-                      _getTotalBusinessData(365);
-                    }
-                    _setState();
-                  },
-                  value: _daysInput[itemIndex],
-                  decoration: InputDecoration.collapsed(
-                      hintText: "", border: InputBorder.none),
-                ),
-              ],
-            );
-          },
-          itemCount: 1,
+        width: AppConfig.horizontalBlockSize * 25,
+        child: Column(
+          children: <Widget>[
+            DropdownButtonFormField(
+              items: _varianceDropDownItems,
+              onChanged: (value) {
+                _selectedDay = value;
+                if (_user.isAdmin &&
+                    _centresList != null &&
+                    _centresList.isNotEmpty) {
+                  _getTotalBusinessData(
+                      duration[_daysCount.indexOf(_selectedDay)],
+                      userId: _selectedUserIdForBusinessDropDown);
+                  return;
+                }
+                _getTotalBusinessData(
+                    duration[_daysCount.indexOf(_selectedDay)]);
+              },
+              value: _selectedDay,
+              decoration: InputDecoration.collapsed(
+                  hintText: "", border: InputBorder.none),
+            ),
+          ],
+        ));
+  }
+
+  Widget _actionableDropDown() {
+    if (_selectedUserIdForActionableInsightDropDown == null) {
+      _selectedUserIdForActionableInsightDropDown = _centresList.first.sId;
+    }
+    List<DropdownMenuItem<String>> _varianceDropDownItems = new List();
+    for (CentreData centreData in _centresList) {
+      _varianceDropDownItems.add(new DropdownMenuItem(
+        value: centreData.sId,
+        child: Text(
+          centreData.centerLocation ?? PlunesStrings.NA,
+          style: TextStyle(
+            fontSize: AppConfig.mediumFont,
+            color: Colors.black,
+          ),
+          textAlign: TextAlign.start,
+        ),
+      ));
+    }
+    return Container(
+        width: AppConfig.horizontalBlockSize * 32,
+        child: Row(
+          children: <Widget>[
+            Flexible(
+              child: DropdownButtonFormField(
+                items: _varianceDropDownItems,
+                onChanged: (value) {
+                  _selectedUserIdForActionableInsightDropDown = value;
+                  _actionableInsightResponse = null;
+                  _getActionableInsights(
+                      userId: _selectedUserIdForActionableInsightDropDown);
+                  _setState();
+                },
+                value: _selectedUserIdForActionableInsightDropDown,
+                isExpanded: true,
+                isDense: false,
+                decoration: InputDecoration.collapsed(
+                    hintText: "", border: InputBorder.none),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget _businessCentresDropDown() {
+    if (_selectedUserIdForBusinessDropDown == null) {
+      _selectedUserIdForBusinessDropDown = _centresList.first.sId;
+    }
+    List<DropdownMenuItem<String>> _varianceDropDownItems = new List();
+    for (CentreData centreData in _centresList) {
+      _varianceDropDownItems.add(DropdownMenuItem(
+          value: centreData.sId,
+          child: Text(
+            centreData.centerLocation ?? PlunesStrings.NA,
+            style:
+                TextStyle(fontSize: AppConfig.mediumFont, color: Colors.black),
+            textAlign: TextAlign.start,
+          )));
+    }
+    return Container(
+        width: AppConfig.horizontalBlockSize * 32,
+        child: Row(
+          children: <Widget>[
+            Flexible(
+              child: DropdownButtonFormField(
+                items: _varianceDropDownItems,
+                onChanged: (value) {
+                  _selectedUserIdForBusinessDropDown = value;
+                  _totalBusinessEarnedResponse = null;
+                  _getTotalBusinessData(
+                      duration[_daysCount.indexOf(_selectedDay)],
+                      userId: _selectedUserIdForBusinessDropDown);
+                },
+                value: _selectedUserIdForBusinessDropDown,
+                isExpanded: true,
+                isDense: true,
+                decoration: InputDecoration.collapsed(
+                    hintText: "", border: InputBorder.none),
+              ),
+            ),
+          ],
         ));
   }
 
   void _setState() {
     if (mounted) setState(() {});
+  }
+
+  Widget _getBody() {
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.only(top: 5, left: 5, right: 5),
+        child: Column(
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Text(
+                    _user?.name ?? _getNaString(),
+                    style: TextStyle(
+                        fontSize: AppConfig.smallFont,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+              ),
+            ),
+            _getRealTimeInsightView(),
+            _getTotalBusinessWidgetForNonAdmin(),
+            _getActionableInsightWidget(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _getCentresData() async {
+    _isProcessing = true;
+    _setState();
+    var result = await UserManager().getAdminSpecificData();
+    if (result is RequestSuccess) {
+      if (UserManager().centreData == null) {
+        _failureCause = "Centres data not found";
+      } else {
+        _setDataIntoList();
+        _getAllData();
+      }
+    } else if (result is RequestFailed) {
+      _failureCause = result.failureCause;
+    }
+    _isProcessing = false;
+    _setState();
+  }
+
+  void _getAllData() {
+    _getRealTimeInsights();
+    (_user.isAdmin &&
+            UserManager().centreData != null &&
+            UserManager().centreData.len != 0)
+        ? _getActionableInsights(userId: "")
+        : _getActionableInsights();
+    (_user.isAdmin &&
+            UserManager().centreData != null &&
+            UserManager().centreData.len != 0)
+        ? _getTotalBusinessData(initialDayForAdminUser, userId: "")
+        : _getTotalBusinessData(days);
+  }
+
+  void _setDataIntoList() {
+    if (UserManager().centreData != null &&
+        UserManager().centreData.len != null &&
+        UserManager().centreData.len != 0) {
+      UserManager().centreData.data.forEach((element) {
+        _centresList.add(element);
+      });
+      _centresList.insert(
+          0, CentreData(isAdmin: true, centerLocation: "My Self", sId: ""));
+    }
   }
 }
 
@@ -698,7 +863,7 @@ class FlatButtonLinks extends StatelessWidget {
 }
 
 class PatientServiceInfo extends StatefulWidget {
-  final String patientName;
+  final String patientName, centreLocation;
   final String serviceName;
   final String imageUrl;
   final int remainingTime;
@@ -709,6 +874,7 @@ class PatientServiceInfo extends StatefulWidget {
       this.serviceName,
       this.imageUrl,
       this.remainingTime,
+      this.centreLocation,
       this.getRealTimeInsights});
 
   @override
@@ -781,14 +947,27 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    widget.patientName,
-                    style: TextStyle(
-                      fontSize: AppConfig.smallFont + 2,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  RichText(
+                      text: TextSpan(
+                          text: widget.patientName,
+                          style: TextStyle(
+                            fontSize: AppConfig.smallFont + 2,
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          children: (widget.centreLocation != null &&
+                                  widget.centreLocation.isNotEmpty)
+                              ? [
+                                  TextSpan(
+                                    text: " (${widget.centreLocation})",
+                                    style: TextStyle(
+                                      fontSize: AppConfig.smallFont + 2,
+                                      color: PlunesColors.GREENCOLOR,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  )
+                                ]
+                              : null)),
                   Text(
                     widget.serviceName,
                     style: TextStyle(

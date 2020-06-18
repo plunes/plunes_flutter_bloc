@@ -346,6 +346,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   }
 
   void navigationPage() {
+    UserManager().clear();
     preferences.clearPreferences();
     Future.delayed(Duration(milliseconds: 200), () {
       return Navigator.of(context)

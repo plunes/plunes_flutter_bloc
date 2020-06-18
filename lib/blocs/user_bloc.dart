@@ -117,4 +117,8 @@ class UserBloc extends BlocBase {
   Future<RequestState> signUp(Map<String, dynamic> body) {
     return UserManager().signUp(body);
   }
+
+  Future<RequestState> getAdminSpecificData() async {
+    return await UserManager().getAdminSpecificData();
+  }
 }

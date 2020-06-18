@@ -33,9 +33,13 @@ class DocHosMainRepo {
     }
   }
 
-  Future<RequestState> getActionableInsights() async {
+  Future<RequestState> getActionableInsights({String userId}) async {
+    String url = Urls.GET_ACTIONABLE_INSIGHTS_URL;
+    if (userId != null) {
+      url = url + "?userId=$userId";
+    }
     var result = await DioRequester().requestMethod(
-      url: Urls.GET_ACTIONABLE_INSIGHTS_URL,
+      url: url,
       requestType: HttpRequestMethods.HTTP_GET,
       headerIncluded: true,
     );
@@ -48,11 +52,16 @@ class DocHosMainRepo {
     }
   }
 
-  Future<RequestState> getTotalBusinessEarnedAndLoss(int days) async {
+  Future<RequestState> getTotalBusinessEarnedAndLoss(int days,
+      {String userId}) async {
+    Map<String, dynamic> _queryData = {"days": days};
+    if (userId != null) {
+      _queryData["userId"] = userId;
+    }
     var result = await DioRequester().requestMethod(
       url: Urls.GET_TOTAL_BUSINESS_EARNED_AND_LOSS_URL,
       requestType: HttpRequestMethods.HTTP_GET,
-      queryParameter: {"days": days},
+      queryParameter: _queryData,
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {

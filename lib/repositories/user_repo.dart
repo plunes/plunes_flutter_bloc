@@ -15,6 +15,7 @@ import 'package:plunes/resources/network/Urls.dart';
 
 class UserManager {
   static UserManager _instance;
+  CentreResponse _centreResponse;
 
   UserManager._init();
 
@@ -38,6 +39,8 @@ class UserManager {
     Preferences().setPreferencesString(Constants.LATITUDE, lat.toString());
     Preferences().setPreferencesString(Constants.LONGITUDE, long.toString());
   }
+
+  CentreResponse get centreData => _centreResponse;
 
   User getUserDetails() {
     Preferences preferences = Preferences();
@@ -69,7 +72,8 @@ class UserManager {
             preferences.getPreferenceString(Constants.PREF_USER_BANNER_IMAGE),
         credits: preferences.getPreferenceString(Constants.PREF_CREDITS),
         notificationEnabled:
-            preferences.getPreferenceBoolean(Constants.NOTIFICATION_ENABLED));
+            preferences.getPreferenceBoolean(Constants.NOTIFICATION_ENABLED),
+        isAdmin: preferences.getPreferenceBoolean(Constants.IS_ADMIN));
   }
 
   String getDeviceToken() {
@@ -398,5 +402,28 @@ class UserManager {
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
+  }
+
+  Future<RequestState> getAdminSpecificData() async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.GET_CENTRES_DATA,
+        headerIncluded: true,
+        requestType: HttpRequestMethods.HTTP_GET);
+    if (result.isRequestSucceed) {
+      CentreResponse centreResponse;
+      try {
+        centreResponse = CentreResponse.fromJson(result.response.data);
+      } catch (e) {
+        print("error $e");
+      }
+      _centreResponse = centreResponse;
+      return RequestSuccess(response: centreResponse);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  void clear() {
+    _centreResponse = null;
   }
 }

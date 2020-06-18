@@ -60,8 +60,13 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
         await _getCurrentLocation();
       }
     } catch (e) {}
-    await Future.delayed(Duration(milliseconds: 1000));
+    await Future.delayed(Duration(milliseconds: 100));
     _userBloc.getSpeciality();
+    if (preferences.getPreferenceString(Constants.ACCESS_TOKEN) != null &&
+        preferences.getPreferenceString(Constants.ACCESS_TOKEN).length > 0 &&
+        preferences.getPreferenceBoolean(Constants.IS_ADMIN)) {
+      await _userBloc.getAdminSpecificData();
+    }
     navigationPage();
   }
 

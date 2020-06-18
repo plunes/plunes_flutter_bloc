@@ -73,6 +73,30 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     super.initState();
   }
 
+  _setLocationManually() {
+    Navigator.of(context)
+        .push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) => LocationFetch()))
+        .then((val) {
+      if (val != null) {
+        var addressControllerList = new List();
+        addressControllerList = val.toString().split(":");
+        String addr = addressControllerList[0] +
+            ' ' +
+            addressControllerList[1] +
+            ' ' +
+            addressControllerList[2];
+//                          print("addr is $addr");
+        var _latitude = addressControllerList[3];
+        var _longitude = addressControllerList[4];
+//                          print("_latitude $_latitude");
+//                          print("_longitude $_longitude");
+        _checkUserLocation(_latitude, _longitude, address: addr);
+      }
+    });
+  }
+
   @override
   void dispose() {
     _controller?.close();
@@ -132,7 +156,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
           ),
         ),
         Container(
-          child: HomePageAppBar(widget.func, () => _showLocationDialog()),
+          child: HomePageAppBar(widget.func, () => _showLocationDialog(),
+              () => _setLocationManually()),
           margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
         )
       ],
@@ -302,40 +327,40 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                             ),
                           ),
                         ))),
-                InkWell(
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(PageRouteBuilder(
-                              opaque: false,
-                              pageBuilder: (BuildContext context, _, __) =>
-                                  LocationFetch()))
-                          .then((val) {
-                        if (val != null) {
-                          var addressControllerList = new List();
-                          addressControllerList = val.toString().split(":");
-                          String addr = addressControllerList[0] +
-                              ' ' +
-                              addressControllerList[1] +
-                              ' ' +
-                              addressControllerList[2];
-//                          print("addr is $addr");
-                          var _latitude = addressControllerList[3];
-                          var _longitude = addressControllerList[4];
-//                          print("_latitude $_latitude");
-//                          print("_longitude $_longitude");
-                          _checkUserLocation(_latitude, _longitude,
-                              address: addr);
-                        }
-                      });
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(6.0),
-                      height: AppConfig.verticalBlockSize * 5,
-                      width: AppConfig.horizontalBlockSize * 10,
-                      child: Image.asset(
-                        PlunesImages.userLandingGoogleIcon,
-                      ),
-                    ))
+//                InkWell(
+//                    onTap: () {
+//                      Navigator.of(context)
+//                          .push(PageRouteBuilder(
+//                              opaque: false,
+//                              pageBuilder: (BuildContext context, _, __) =>
+//                                  LocationFetch()))
+//                          .then((val) {
+//                        if (val != null) {
+//                          var addressControllerList = new List();
+//                          addressControllerList = val.toString().split(":");
+//                          String addr = addressControllerList[0] +
+//                              ' ' +
+//                              addressControllerList[1] +
+//                              ' ' +
+//                              addressControllerList[2];
+////                          print("addr is $addr");
+//                          var _latitude = addressControllerList[3];
+//                          var _longitude = addressControllerList[4];
+////                          print("_latitude $_latitude");
+////                          print("_longitude $_longitude");
+//                          _checkUserLocation(_latitude, _longitude,
+//                              address: addr);
+//                        }
+//                      });
+//                    },
+//                    child: Container(
+//                      padding: EdgeInsets.all(6.0),
+//                      height: AppConfig.verticalBlockSize * 5,
+//                      width: AppConfig.horizontalBlockSize * 10,
+//                      child: Image.asset(
+//                        PlunesImages.userLandingGoogleIcon,
+//                      ),
+//                    ))
               ],
             ),
           )
@@ -628,9 +653,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 }
 
 class HomePageAppBar extends StatefulWidget {
-  final Function onDrawerTap, onSetLocationTap;
+  final Function onDrawerTap, onSetLocationTap, onSetLocationManually;
 
-  HomePageAppBar(this.onDrawerTap, this.onSetLocationTap);
+  HomePageAppBar(
+      this.onDrawerTap, this.onSetLocationTap, this.onSetLocationManually);
 
   @override
   _HomePageAppBarState createState() => _HomePageAppBarState();
@@ -698,35 +724,38 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                 if (locationModel != null && locationModel.hasLocation) {
                   return Container(
                     alignment: Alignment.topRight,
-                    child: Row(
-                      children: <Widget>[
-                        Flexible(
-                            flex: 1,
-                            child: Icon(Icons.location_on,
-                                color: PlunesColors.GREYCOLOR)),
-                        Expanded(
-                            child: Container(
-                              margin: EdgeInsets.only(left: 12.0),
-                              child: Tooltip(
-                                  message: locationModel.address,
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          AppConfig.horizontalBlockSize * 5),
-                                  preferBelow: true,
-                                  child: Text(
-                                    locationModel.address,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      decoration: TextDecoration.underline,
-                                      decorationStyle:
-                                          TextDecorationStyle.dashed,
-                                      decorationThickness: 2.0,
-                                    ),
-                                  )),
-                            ),
-                            flex: 10),
-                      ],
+                    child: InkWell(
+                      onTap: widget.onSetLocationManually,
+                      child: Row(
+                        children: <Widget>[
+                          Flexible(
+                              flex: 1,
+                              child: Icon(Icons.location_on,
+                                  color: PlunesColors.GREYCOLOR)),
+                          Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 12.0),
+                                child: Tooltip(
+                                    message: locationModel.address,
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal:
+                                            AppConfig.horizontalBlockSize * 5),
+                                    preferBelow: true,
+                                    child: Text(
+                                      locationModel.address,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dashed,
+                                        decorationThickness: 2.0,
+                                      ),
+                                    )),
+                              ),
+                              flex: 10),
+                        ],
+                      ),
                     ),
                     width: AppConfig.horizontalBlockSize * 48,
                   );

@@ -51,7 +51,7 @@ class AppointmentModel {
   num amountPaid;
   num amountDue;
   num amountPaidCredits;
-  String bookingId;
+  String bookingId, centerLocation;
   String referenceId;
   bool doctorConfirmation;
   List<PaymentStatus> paymentStatus;
@@ -82,6 +82,7 @@ class AppointmentModel {
       this.professionalAddress,
       this.professionalMobileNumber,
       this.professionalImageUrl,
+      this.centerLocation,
       this.userName,
       this.userAddress,
       this.userMobileNumber,
@@ -128,6 +129,7 @@ class AppointmentModel {
         : null;
     serviceId = json['serviceId'];
     bookingStatus = json['bookingStatus'];
+    centerLocation = json['centerLocation'];
     timeSlot = json['timeSlot'];
     appointmentTime = json['appointmentTime'];
     serviceName = json['serviceName'];

@@ -797,9 +797,9 @@ class CentreData {
       this.sId});
 
   CentreData.fromJson(Map<String, dynamic> json) {
-    location = json['location'] != null
-        ? new Location.fromJson(json['location'])
-        : null;
+//    location = json['location'] != null
+//        ? new Location.fromJson(json['location'])
+//        : null;
     imageUrl = json['imageUrl'];
     isCenter = json['isCenter'];
     isAdmin = json['isAdmin'];

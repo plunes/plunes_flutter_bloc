@@ -9,9 +9,7 @@ class Constants {
   static const int homeScreenNumber = 0;
   static const int notificationScreenNumber = 2;
   static String DEVICE_TOKEN = "device_token";
-  static const String COUNTRY_CODE = "country_code";
   static const String profile = 'Profile';
-  static const String BIDS = 'bids';
   static const String POST = 'Post';
   static const String PUT = 'Put';
 
@@ -23,12 +21,7 @@ class Constants {
 
   static get labDiagnosticCenter => 'Lab';
 
-  //static get diagnosticCenter => 'Diagnostics Center';
-
   static get user => 'User';
-
-  static const String IS_TIP_HIDE = 'isTipHide';
-  static String OTP = '1111';
 
   //Preference keys
   static const String PREF_USER_ID = 'ID';
@@ -60,6 +53,5 @@ class Constants {
   static const String IS_IN_SERVICE_LOCATION = "IS_IN_SERVICE_LOCATION";
   static const String FIREBASE_TOKEN = "FIREBASE_TOKEN";
   static const String NOTIFICATION_ENABLED = "NOTIFICATION_ENABLED";
-
-  static const List<dynamic> PREF_SPECIALITIES = [];
+  static const String IS_ADMIN = "IS_ADMIN";
 }

@@ -28,7 +28,7 @@ class RealInsight {
   String solutionId;
   String serviceId;
   String userName;
-  String profName;
+  String profName, centerLocation;
   String serviceName, expirationMessage;
   bool negotiating, expired;
   int timeRemaining;
@@ -51,6 +51,7 @@ class RealInsight {
       this.timeRemaining,
       this.expired,
       this.expirationMessage,
+      this.centerLocation,
       this.userPrice,
       this.createdAt,
       this.suggested});
@@ -68,6 +69,7 @@ class RealInsight {
     expired = json['expired'];
     expirationMessage = json['expirationMessage'];
     suggested = json['suggested'];
+    centerLocation = json['centerLocation'];
   }
 
   Map<String, dynamic> toJson() {

@@ -68,11 +68,29 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
-                          Text(
-                            appointmentModel.userName ?? PlunesStrings.NA,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                fontWeight: FontWeight.bold),
+                          RichText(
+                            text: TextSpan(
+                                text: appointmentModel.userName ??
+                                    PlunesStrings.NA,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    fontWeight: FontWeight.bold,
+                                    color: PlunesColors.BLACKCOLOR),
+                                children: (appointmentModel.centerLocation !=
+                                            null &&
+                                        appointmentModel
+                                            .centerLocation.isNotEmpty)
+                                    ? [
+                                        TextSpan(
+                                          text:
+                                              " (${appointmentModel.centerLocation})",
+                                          style: TextStyle(
+                                              fontSize: AppConfig.mediumFont,
+                                              fontWeight: FontWeight.bold,
+                                              color: PlunesColors.GREENCOLOR),
+                                        )
+                                      ]
+                                    : null),
                           ),
                           SizedBox(height: 5),
                           Text(
