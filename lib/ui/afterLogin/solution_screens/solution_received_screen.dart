@@ -114,8 +114,64 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         bottom: false,
         child: Scaffold(
           key: scaffoldKey,
-          appBar: widget.getAppBar(
-              context, PlunesStrings.negotiatedSolutions, true),
+          appBar: PreferredSize(
+              child: Card(
+                  color: Colors.white,
+                  elevation: 3.0,
+                  margin: EdgeInsets.only(
+                      top: AppConfig.getMediaQuery().padding.top),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Container(
+                          padding:
+                              EdgeInsets.all(AppConfig.verticalBlockSize * 2),
+                          child: IconButton(
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                              return;
+                            },
+                            icon: Icon(
+                              Icons.arrow_back_ios,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          )),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            PlunesStrings.negotiatedSolutions,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Image.asset(
+                                PlunesImages.validForOneHourOnlyWatch,
+                                scale: 3,
+                              ),
+                              Padding(
+                                child: Text(
+                                  PlunesStrings.validForOneHour,
+                                  style: TextStyle(
+                                      color: PlunesColors.GREYCOLOR,
+                                      fontSize: 16),
+                                ),
+                                padding: EdgeInsets.only(left: 4.0),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                      Container(),
+                      Container(),
+                      Container(),
+                    ],
+                  )),
+              preferredSize:
+                  Size(double.infinity, AppConfig.verticalBlockSize * 8)),
           body: Builder(builder: (context) {
             _buildContext = context;
             return _isFetchingInitialData
@@ -264,132 +320,149 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             focusNode: _focusNode,
                             searchBarHeight: 5.5),
                       ),
-                Expanded(
-                  child: GoogleMap(
-                      padding: EdgeInsets.all(0.0),
-                      myLocationEnabled: false,
-                      markers: _markers,
-                      myLocationButtonEnabled: false,
-                      onMapCreated: (mapController) {
-                        if (!_googleMapController.isCompleted)
-                          _googleMapController.complete(mapController);
-                      },
-                      initialCameraPosition: CameraPosition(
-                          target: LatLng(double.tryParse(_user.latitude) ?? lat,
-                              double.tryParse(_user.longitude) ?? long),
-                          zoom: 11.2)),
-                  flex: 3,
-                ),
-                Expanded(
-                  child: Container(),
-                  flex: 3,
-                ),
+//                Expanded(
+//                  child: GoogleMap(
+//                      padding: EdgeInsets.all(0.0),
+//                      myLocationEnabled: false,
+//                      markers: _markers,
+//                      myLocationButtonEnabled: false,
+//                      onMapCreated: (mapController) {
+//                        if (!_googleMapController.isCompleted)
+//                          _googleMapController.complete(mapController);
+//                      },
+//                      initialCameraPosition: CameraPosition(
+//                          target: LatLng(double.tryParse(_user.latitude) ?? lat,
+//                              double.tryParse(_user.longitude) ?? long),
+//                          zoom: 11.2)),
+//                  flex: 3,
+//                ),
+//                Expanded(
+//                  child: Container(),
+//                  flex: 3,
+//                ),
               ],
             ),
           ],
         ),
       ),
-      maxHeight: AppConfig.verticalBlockSize * 70,
-      minHeight: AppConfig.verticalBlockSize * 38,
-      collapsed: (_timer != null && _timer.isActive && !(_isCrossClicked))
-          ? _getHoldOnPopup()
-          : Container(),
+      maxHeight: (widget.catalogueData != null &&
+              widget.catalogueData.isFromNotification != null &&
+              widget.catalogueData.isFromNotification)
+          ? AppConfig.verticalBlockSize * 90
+          : AppConfig.verticalBlockSize * 79,
+      minHeight: (widget.catalogueData != null &&
+              widget.catalogueData.isFromNotification != null &&
+              widget.catalogueData.isFromNotification)
+          ? AppConfig.verticalBlockSize * 90
+          : AppConfig.verticalBlockSize * 79,
+//      collapsed: (_timer != null && _timer.isActive && !(_isCrossClicked))
+//          ? _getHoldOnPopup()
+//          : Container(),
       panelBuilder: (sc) {
-        return Column(
+        return Stack(
           children: <Widget>[
-            Card(
-              elevation: 8.0,
-              margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 4),
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 4,
-                    vertical: AppConfig.verticalBlockSize * 2),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 2,
-                      child: InkWell(
-                        onTap: () => _viewDetails(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              widget.catalogueData.service ??
-                                  _searchedDocResults?.catalogueData?.service ??
-                                  PlunesStrings.NA,
-                              style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 1),
-                              child: Text(
-                                PlunesStrings.viewDetails,
-                                style: TextStyle(
-                                    fontSize: AppConfig.smallFont,
-                                    color: PlunesColors.GREENCOLOR,
-                                    decoration: TextDecoration.underline),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(child: Container()),
-                    Container(
-                        alignment: Alignment.topRight,
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 1),
-                        child: _solutionReceivedTime == null ||
-                                _solutionReceivedTime == 0
-                            ? Container()
-                            : StreamBuilder(
-                                builder: (context, snapShot) {
-                                  return Text(
-                                    DateUtil.getDuration(
-                                            _solutionReceivedTime) ??
-                                        PlunesStrings.NA,
+            Column(
+              children: <Widget>[
+                Card(
+                  elevation: 4.0,
+                  margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 4),
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 4,
+                        vertical: AppConfig.verticalBlockSize * 2),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          flex: 2,
+                          child: InkWell(
+                            onTap: () => _viewDetails(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  widget.catalogueData.service ??
+                                      _searchedDocResults
+                                          ?.catalogueData?.service ??
+                                      PlunesStrings.NA,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.mediumFont,
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 1),
+                                  child: Text(
+                                    PlunesStrings.viewDetails,
                                     style: TextStyle(
-                                        fontSize: AppConfig.verySmallFont),
-                                  );
-                                },
-                                stream: _streamForTimer.stream,
-                              ))
-                  ],
+                                        fontSize: AppConfig.smallFont,
+                                        color: PlunesColors.GREENCOLOR,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(child: Container()),
+                        Container(
+                            alignment: Alignment.topRight,
+                            padding: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1),
+                            child: _solutionReceivedTime == null ||
+                                    _solutionReceivedTime == 0
+                                ? Container()
+                                : StreamBuilder(
+                                    builder: (context, snapShot) {
+                                      return Text(
+                                        DateUtil.getDuration(
+                                                _solutionReceivedTime) ??
+                                            PlunesStrings.NA,
+                                        style: TextStyle(
+                                            fontSize: AppConfig.verySmallFont),
+                                      );
+                                    },
+                                    stream: _streamForTimer.stream,
+                                  ))
+                      ],
+                    ),
+                  ),
+                  color: PlunesColors.WHITECOLOR,
                 ),
-              ),
-              color: PlunesColors.WHITECOLOR,
-            ),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 4,
-                    vertical: AppConfig.verticalBlockSize * 2),
-                child: StreamBuilder<RequestState>(
-                  builder: (context, snapShot) {
-                    if (snapShot.data is RequestSuccess) {
-                      RequestSuccess _successObject = snapShot.data;
-                      _searchedDocResults = _successObject.response;
-                      _searchSolutionBloc.addIntoDocHosStream(null);
-                      _checkShouldTimerRun();
-                    } else if (snapShot.data is RequestFailed) {
-                      RequestFailed _failedObject = snapShot.data;
-                      _failureCause = _failedObject.failureCause;
-                      _searchSolutionBloc.addIntoDocHosStream(null);
-                      _cancelNegotiationTimer();
-                    }
-                    return _showContent(sc);
-                  },
-                  stream: _searchSolutionBloc.getDocHosStream(),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 4,
+                        vertical: AppConfig.verticalBlockSize * 2),
+                    child: StreamBuilder<RequestState>(
+                      builder: (context, snapShot) {
+                        if (snapShot.data is RequestSuccess) {
+                          RequestSuccess _successObject = snapShot.data;
+                          _searchedDocResults = _successObject.response;
+                          _searchSolutionBloc.addIntoDocHosStream(null);
+                          _checkShouldTimerRun();
+                        } else if (snapShot.data is RequestFailed) {
+                          RequestFailed _failedObject = snapShot.data;
+                          _failureCause = _failedObject.failureCause;
+                          _searchSolutionBloc.addIntoDocHosStream(null);
+                          _cancelNegotiationTimer();
+                        }
+                        return _showContent(sc);
+                      },
+                      stream: _searchSolutionBloc.getDocHosStream(),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
+            (_timer != null && _timer.isActive && !(_isCrossClicked))
+                ? _getHoldOnPopup()
+                : Container(),
           ],
         );
       },
+      boxShadow: null,
     );
   }
 
@@ -420,7 +493,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       SpinKitCircle(
                         color: Color(0xff01d35a),
                         size: 50.0,
-                        // controller: AnimationController(duration: const Duration(milliseconds: 1200)),
                       ),
                       SizedBox(
                         width: 10,

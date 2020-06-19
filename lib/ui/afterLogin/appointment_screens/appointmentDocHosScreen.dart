@@ -11,6 +11,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/ui/afterLogin/HelpScreen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -267,8 +268,25 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                               int.parse(appointmentModel
                                                   .appointmentTime))
                                           .isBefore(DateTime.now())) {
-                                    _showErrorMessage(
-                                        PlunesStrings.unableToCancel);
+                                    Navigator.push(
+                                        widget.globalKey.currentState.context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                HelpScreen()));
+//                                    _showSnackBar(PlunesStrings.unableToCancel);
+                                    return;
+                                  }
+                                  if (appointmentModel.bookingStatus ==
+                                      AppointmentModel.requestCancellation) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return CustomWidgets()
+                                              .appointmentCancellationPopup(
+                                                  PlunesStrings
+                                                      .ourTeamWillContactYouSoonOnCancel,
+                                                  widget.globalKey);
+                                        });
                                     return;
                                   }
                                   if (widget.appointmentModel != null) {
@@ -278,12 +296,26 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                   return;
                                 },
                                 onDoubleTap: () {},
-                                child: Text(plunesStrings.cancel,
+                                child: Text(
+                                    (appointmentModel != null &&
+                                            appointmentModel.appointmentTime !=
+                                                null &&
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                    int.parse(appointmentModel
+                                                        .appointmentTime))
+                                                .isBefore(DateTime.now()))
+                                        ? plunesStrings.help
+                                        : (appointmentModel.bookingStatus ==
+                                                AppointmentModel
+                                                    .requestCancellation)
+                                            ? AppointmentModel
+                                                .requestCancellation
+                                            : plunesStrings.cancel,
                                     style: TextStyle(
                                         fontSize: AppConfig.smallFont,
                                         color: Colors.red)),
                               )
-                            : alreadyCancelAppointment(plunesStrings.cancel);
+                            : alreadyCancelAppointment(plunesStrings.help);
                       }),
                 ),
               ],
@@ -532,8 +564,16 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
     return InkWell(
         child: Text(btnName,
             style: TextStyle(
-                fontSize: AppConfig.smallFont, color: Colors.black54)),
+                fontSize: AppConfig.smallFont,
+                color: btnName == plunesStrings.help
+                    ? Colors.red
+                    : Colors.black54)),
         onTap: () {
+          if (btnName == plunesStrings.help) {
+            Navigator.push(widget.globalKey.currentState.context,
+                MaterialPageRoute(builder: (context) => HelpScreen()));
+            return;
+          }
           showDialog(
               context: context,
               builder: (BuildContext context) =>

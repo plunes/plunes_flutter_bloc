@@ -61,7 +61,6 @@ class _MyAppState extends State<MyApp> {
       navigatorKey: _navKey,
       theme: ThemeData(
         fontFamily: fontFile.appDefaultFont,
-        // textTheme: TextTheme(body1:  TextStyle(fontSize: 18)),
         accentColor: Color(hexColorCode.defaultGreen),
         highlightColor:
             Color(CommonMethods.getColorHexFromStr(colorsFile.lightGreen)),

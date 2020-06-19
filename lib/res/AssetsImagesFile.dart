@@ -41,6 +41,8 @@ class PlunesImages {
   static const String refundImage = "assets/images/refundImage.png";
   static const String couponImage = "assets/images/couponImage.png";
   static const String bdSupportImage = "assets/images/bdSupportImage.png";
+  static const String validForOneHourOnlyWatch =
+      "assets/images/validForOneHourOnlyWatch.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

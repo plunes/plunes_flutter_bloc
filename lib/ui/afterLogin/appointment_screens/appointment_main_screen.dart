@@ -62,7 +62,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     _getAppointmentDetails();
     EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
       if (event != null &&
-          event.screenName == FirebaseNotification.bookingScreen && mounted) {
+          event.screenName == FirebaseNotification.bookingScreen &&
+          mounted) {
         _getAppointmentDetails();
       }
     });
@@ -120,7 +121,6 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
           _confirmedUserAppointments = [];
           _setDocHosSpecificData();
           _setUserSpecificData();
-          //  _scrollUserAppointment();
           _appointmentBloc.addStateInAppointmentStream(null);
         }
         if (snapShot.data is RequestFailed) {
@@ -140,23 +140,6 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
       initialData: RequestInProgress(),
     );
   }
-
-//  Widget _showUserAppointmentItems() {
-//    return ListView.builder(
-//      controller: _scrollUserController,
-//      itemBuilder: (context, index) {
-//        return AppointmentScreen(
-//          _appointmentResponse.bookings[index],
-//          index,
-//          _bookingBloc,
-//          scaffoldKey,
-//          () => _getAppointmentDetails(),
-//          bookingId: _isDisplay ? null : widget.bookingId,
-//        );
-//      },
-//      itemCount: _appointmentResponse?.bookings?.length ?? 0,
-//    );
-//  }
 
   Widget _showUserAppointmentItems() {
     return Column(
@@ -338,12 +321,10 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   _setTabIndex(int selectedIndex, String bookingId) {
-//    print("booking ${widget.bookingId}, $bookingId, $selectedIndex, $index");
     if (widget.bookingId != null &&
         widget.bookingId.isNotEmpty &&
         widget.bookingId == bookingId &&
         !_isDisplay) {
-//      print("matched");
       index = selectedIndex;
     }
   }
@@ -352,10 +333,9 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     if (appointmentModel.appointmentTime != null &&
         appointmentModel.appointmentTime.isNotEmpty &&
         appointmentModel.doctorConfirmation == false &&
-        appointmentModel.bookingStatus == AppointmentModel.confirmedStatus) {
-//      if (DateUtil.getDateFormat(now) ==
-//          DateUtil.getDateFormat(DateTime.fromMillisecondsSinceEpoch(
-//              int.parse(appointmentModel.appointmentTime)))){
+        (appointmentModel.bookingStatus == AppointmentModel.confirmedStatus ||
+            appointmentModel.bookingStatus ==
+                AppointmentModel.requestCancellation)) {
       _setTabIndex(0, appointmentModel.bookingId);
       _upComingAppointments.add(appointmentModel);
     }
@@ -364,8 +344,11 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   void _setConfirmedDocHosAppointmentList(AppointmentModel appointmentModel) {
     if (appointmentModel.bookingStatus != null &&
         appointmentModel.bookingStatus.isNotEmpty &&
-        appointmentModel.bookingStatus == AppointmentModel.confirmedStatus &&
-        appointmentModel.doctorConfirmation == true) {
+        ((appointmentModel.bookingStatus == AppointmentModel.confirmedStatus &&
+                appointmentModel.doctorConfirmation == true) ||
+            appointmentModel.bookingStatus ==
+                    AppointmentModel.requestCancellation &&
+                appointmentModel.doctorConfirmation == true)) {
       _setTabIndex(1, appointmentModel.bookingId);
       _confirmedDocHosAppointments.add(appointmentModel);
     }
@@ -374,7 +357,9 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   void _setConfirmedUserAppointmentList(AppointmentModel appointmentModel) {
     if (appointmentModel.bookingStatus != null &&
         appointmentModel.bookingStatus.isNotEmpty &&
-        appointmentModel.bookingStatus == AppointmentModel.confirmedStatus) {
+        (appointmentModel.bookingStatus == AppointmentModel.confirmedStatus ||
+            appointmentModel.bookingStatus ==
+                AppointmentModel.requestCancellation)) {
       _setTabIndex(0, appointmentModel.bookingId);
       _confirmedUserAppointments.add(appointmentModel);
     }
@@ -394,7 +379,6 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   void _changeTabAfterDelayForUser() async {
-//    print("called me $index");
     if (index != null) {
       Future.delayed(Duration(milliseconds: 700)).then((value) {
         _tabUserController.animateTo(index);
@@ -404,11 +388,9 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   void _changeTabAfterDelay() async {
-//    print("called me $index");
     if (index != null) {
       Future.delayed(Duration(milliseconds: 700)).then((value) {
         _tabDocHosController.animateTo(index);
-//        print("called me twice $index");
         _scrollToAppointment();
       });
     }
@@ -447,8 +429,6 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
             curve: Curves.ease);
         _removeBookingId();
       }
-//      print(
-//          "scrolll me twice $_appointmentIndex, booking id: ${appointmentModel.bookingId}");
     });
   }
 

@@ -73,7 +73,8 @@ class UserManager {
         credits: preferences.getPreferenceString(Constants.PREF_CREDITS),
         notificationEnabled:
             preferences.getPreferenceBoolean(Constants.NOTIFICATION_ENABLED),
-        isAdmin: preferences.getPreferenceBoolean(Constants.IS_ADMIN));
+        isAdmin: preferences.getPreferenceBoolean(Constants.IS_ADMIN),
+        isCentre: preferences.getPreferenceBoolean(Constants.IS_CENTRE));
   }
 
   String getDeviceToken() {

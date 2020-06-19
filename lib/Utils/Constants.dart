@@ -54,4 +54,5 @@ class Constants {
   static const String FIREBASE_TOKEN = "FIREBASE_TOKEN";
   static const String NOTIFICATION_ENABLED = "NOTIFICATION_ENABLED";
   static const String IS_ADMIN = "IS_ADMIN";
+  static const String IS_CENTRE = "IS_CENTRE";
 }

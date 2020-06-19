@@ -181,7 +181,7 @@ class User {
   List<TimeSlotsData> timeSlots = [];
   List<DoctorsData> doctorsData = [];
   List<AchievementsData> achievements = [];
-  bool verifiedUser, notificationEnabled, isAdmin;
+  bool verifiedUser, notificationEnabled, isAdmin, isCentre;
   BankDetails bankDetails;
 
   User(
@@ -217,10 +217,12 @@ class User {
       this.userReferralCode,
       this.notificationEnabled,
       this.isAdmin,
+      this.isCentre,
       this.bankDetails});
 
   factory User.fromJson(Map<String, dynamic> json) {
     bool _isAdmin = json['isAdmin'] ?? false;
+    bool _isCenter = json['isCenter'] ?? false;
     List<TimeSlotsData> _timeSlots = [];
     if (json['timeSlots'] != null) {
       Iterable iterable = json['timeSlots'];
@@ -280,6 +282,7 @@ class User {
       latitude: lat,
       longitude: long,
       isAdmin: _isAdmin,
+      isCentre: _isCenter,
       prescriptionLogoUrl: json['prescription'] != null
           ? (json['prescription']['logoUrl'] != null
               ? json['prescription']['logoUrl']
