@@ -727,33 +727,35 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                     child: InkWell(
                       onTap: widget.onSetLocationManually,
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
+                          Icon(Icons.location_on,
+                              color: PlunesColors.GREYCOLOR),
                           Flexible(
-                              flex: 1,
-                              child: Icon(Icons.location_on,
-                                  color: PlunesColors.GREYCOLOR)),
-                          Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(left: 12.0),
-                                child: Tooltip(
-                                    message: locationModel.address,
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal:
-                                            AppConfig.horizontalBlockSize * 5),
-                                    preferBelow: true,
-                                    child: Text(
-                                      locationModel.address,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        decoration: TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.dashed,
-                                        decorationThickness: 2.0,
-                                      ),
-                                    )),
-                              ),
-                              flex: 10),
+                            child: Container(
+                              margin: EdgeInsets.only(left: 12.0),
+                              child: Tooltip(
+                                  message: locationModel.address,
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 5),
+                                  preferBelow: true,
+                                  child: Text(
+                                    locationModel.address,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.clip,
+                                    softWrap: false,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      decoration: TextDecoration.underline,
+                                      decorationStyle:
+                                          TextDecorationStyle.dashed,
+                                      decorationThickness: 2.0,
+                                    ),
+                                  )),
+                            ),
+                          ),
                         ],
                       ),
                     ),

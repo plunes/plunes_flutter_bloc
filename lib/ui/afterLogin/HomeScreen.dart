@@ -442,11 +442,11 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                       widget.getDividerRow(context, 0, 0, 70.0),
                       getListTile(2, plunesStrings.appointments,
                           plunesImages.appointmentIcon),
-                      (_userType != Constants.user ||
+                      (_userType != Constants.user &&
                               !(UserManager().getUserDetails().isCentre))
                           ? widget.getDividerRow(context, 0, 0, 70.0)
                           : Container(),
-                      (_userType != Constants.user ||
+                      (_userType != Constants.user &&
                               !(UserManager().getUserDetails().isCentre))
                           ? getListTile(4, plunesStrings.managePayment,
                               plunesImages.walletIcon)

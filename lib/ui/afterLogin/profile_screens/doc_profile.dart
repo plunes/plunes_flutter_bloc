@@ -254,7 +254,11 @@ class _DocProfileState extends BaseState<DocProfile> {
   }
 
   Widget _getBottomView() {
-    return AchievementAndReview(_profileResponse.user, _context);
+    return (_profileResponse.user == null ||
+            _profileResponse.user.achievements == null ||
+            _profileResponse.user.achievements.isEmpty)
+        ? Container()
+        : AchievementAndReview(_profileResponse.user, _context);
   }
 
   void _getUserDetails() {

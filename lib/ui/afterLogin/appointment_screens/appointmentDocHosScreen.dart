@@ -231,11 +231,16 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                               req.requestCode == index) {
                             Future.delayed(Duration(milliseconds: 20))
                                 .then((value) async {
-                              return CustomWidgets()
-                                  .appointmentCancellationPopup(
-                                      req.response ??
-                                          PlunesStrings.cancelSuccessMessage,
-                                      widget.globalKey);
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CustomWidgets()
+                                        .appointmentCancellationPopup(
+                                            req.response ??
+                                                PlunesStrings
+                                                    .ourTeamWillContactYouSoonOnCancel,
+                                            widget.globalKey);
+                                  });
                             });
                             _bookingBloc.addStateInCancelProvider(null);
                           }

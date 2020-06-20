@@ -97,7 +97,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
               child: Column(children: <Widget>[
                 createTextField(
                     phoneController,
-                    plunesStrings.phoneNo,
+                    PlunesStrings.userName,
                     TextInputType.number,
                     TextCapitalization.none,
                     isValidNumber,
@@ -153,10 +153,10 @@ class _LoginState extends State<Login> implements DialogCallBack {
                 }
               });
             },
-            inputFormatters: controller == phoneController
-                ? [WhitelistingTextInputFormatter.digitsOnly]
-                : null,
-            maxLength: controller == phoneController ? 10 : null,
+//            inputFormatters: controller == phoneController
+//                ? [WhitelistingTextInputFormatter.digitsOnly]
+//                : null,
+//            maxLength: controller == phoneController ? 10 : null,
             controller: controller,
             cursorColor: Color(
                 CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
@@ -175,13 +175,15 @@ class _LoginState extends State<Login> implements DialogCallBack {
   }
 
   bool validation(text) {
-    if (text.length >= 10 || text.length == 0) {
-      isValidNumber = true;
-      return true;
-    } else {
-      isValidNumber = false;
-      return false;
-    }
+    isValidNumber = true;
+    return true;
+//    if (text.length >= 10 || text.length == 0) {
+//      isValidNumber = true;
+//      return true;
+//    } else {
+//      isValidNumber = false;
+//      return false;
+//    }
   }
 
   Widget getPasswordRow(title) {
@@ -295,8 +297,10 @@ class _LoginState extends State<Login> implements DialogCallBack {
 
   _submitLogin() {
     if (!isValidNumber || phoneController.text.isEmpty)
-      widget.showInSnackBar(plunesStrings.enterValidNumber,
-          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      widget.showInSnackBar(
+          PlunesStrings.usernameCantBeEmpty, //plunesStrings.enterValidNumber,
+          PlunesColors.BLACKCOLOR,
+          _scaffoldKey);
     else if (!isValidPassword || passwordController.text.isEmpty)
       widget.showInSnackBar(plunesStrings.errorMsgPassword,
           PlunesColors.BLACKCOLOR, _scaffoldKey);

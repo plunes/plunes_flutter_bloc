@@ -204,6 +204,9 @@ class PlunesStrings {
   static const String ourTeamWillContactYou = "Our team will contact you soon";
   static const String ourTeamWillContactYouSoonOnCancel =
       "Our team will contact you soon regarding the confirmation of your appointment cancellation";
+  static const String userName = "Username";
+
+  static const String usernameCantBeEmpty = "Username can't be empty";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

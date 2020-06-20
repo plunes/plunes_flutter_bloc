@@ -65,9 +65,9 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
       child: Center(
         child: TextField(
           cursorColor: Color(hexColorCode.defaultGreen),
-          keyboardType: TextInputType.number,
-          maxLength: 10,
-          inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+//          keyboardType: TextInputType.number,
+//          maxLength: 10,
+//          inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
           textInputAction: TextInputAction.done,
           style: TextStyle(
               fontSize: 18,
@@ -79,7 +79,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
             });
           },
           decoration: InputDecoration(
-              hintText: plunesStrings.enterNumber,
+              hintText: PlunesStrings.userName,
               counterText: "",
               hintStyle: TextStyle(
                   fontSize: 18,
@@ -93,13 +93,15 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   }
 
   bool validation(text) {
-    if (text.length >= 10 || text.length == 0) {
-      isValidNumber = false;
-      return false;
-    } else {
-      isValidNumber = true;
-      return true;
-    }
+    isValidNumber = false;
+    return true;
+//    if (text.length >= 10 || text.length == 0) {
+//      isValidNumber = false;
+//      return false;
+//    } else {
+//      isValidNumber = true;
+//      return true;
+//    }
   }
 
   _setState() {
@@ -132,8 +134,10 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                     Registration(phone: phoneNumberController.text)));
       }
     } else
-      widget.showInSnackBar(plunesStrings.enterValidNumber,
-          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      widget.showInSnackBar(
+          PlunesStrings.usernameCantBeEmpty, //plunesStrings.enterValidNumber,
+          PlunesColors.BLACKCOLOR,
+          _scaffoldKey);
   }
 
   @override
@@ -176,7 +180,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                       Container(
                           margin: EdgeInsets.only(top: 50),
                           child: widget.createTextViews(
-                              plunesStrings.phoneNumber,
+                              PlunesStrings.userName,
                               20,
                               colorsFile.darkGrey1,
                               TextAlign.start,
@@ -187,7 +191,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              widget.getCountryBox(),
+//                              widget.getCountryBox(),
                               Expanded(
                                   child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

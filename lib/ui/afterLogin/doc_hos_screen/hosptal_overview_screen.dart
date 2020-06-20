@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -647,13 +648,23 @@ class _HospitalOverviewScreenState
     for (CentreData centreData in _centresList) {
       _varianceDropDownItems.add(new DropdownMenuItem(
         value: centreData.sId,
-        child: Text(
-          centreData.centerLocation ?? PlunesStrings.NA,
-          style: TextStyle(
-            fontSize: AppConfig.mediumFont,
-            color: Colors.black,
-          ),
-          textAlign: TextAlign.start,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              centreData.centerLocation ?? PlunesStrings.NA,
+              style: TextStyle(
+                fontSize: AppConfig.mediumFont,
+                color: Colors.black,
+              ),
+              textAlign: TextAlign.start,
+            ),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+            )
+          ],
         ),
       ));
     }
@@ -690,11 +701,21 @@ class _HospitalOverviewScreenState
     for (CentreData centreData in _centresList) {
       _varianceDropDownItems.add(DropdownMenuItem(
           value: centreData.sId,
-          child: Text(
-            centreData.centerLocation ?? PlunesStrings.NA,
-            style:
-                TextStyle(fontSize: AppConfig.mediumFont, color: Colors.black),
-            textAlign: TextAlign.start,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                centreData.centerLocation ?? PlunesStrings.NA,
+                style: TextStyle(
+                    fontSize: AppConfig.mediumFont, color: Colors.black),
+                textAlign: TextAlign.start,
+              ),
+              Container(
+                height: 0.5,
+                width: double.infinity,
+                color: PlunesColors.GREYCOLOR,
+              )
+            ],
           )));
     }
     return Container(

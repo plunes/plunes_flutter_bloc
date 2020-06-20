@@ -101,7 +101,20 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                           SizedBox(height: 5),
                           InkWell(
                             onTap: () {
-                              if (appointmentModel.professionalMobileNumber !=
+                              if (appointmentModel.isCentre != null &&
+                                  appointmentModel.isCentre &&
+                                  appointmentModel.alternateNumber != null &&
+                                  appointmentModel.alternateNumber.isNotEmpty) {
+                                LauncherUtil.launchUrl(
+                                    "tel://${appointmentModel.alternateNumber}");
+                              } else if (appointmentModel.isCentre != null &&
+                                  appointmentModel.isCentre &&
+                                  (appointmentModel.alternateNumber == null ||
+                                      appointmentModel
+                                          .alternateNumber.isNotEmpty)) {
+                                return;
+                              } else if (appointmentModel
+                                          .professionalMobileNumber !=
                                       null &&
                                   appointmentModel
                                       .professionalMobileNumber.isNotEmpty) {
@@ -114,8 +127,23 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               padding: EdgeInsets.only(
                                   right: 5.0, top: 5.0, bottom: 5.0),
                               child: Text(
-                                appointmentModel.professionalMobileNumber ??
-                                    PlunesStrings.NA,
+                                (appointmentModel.isCentre != null &&
+                                        appointmentModel.isCentre &&
+                                        appointmentModel.alternateNumber !=
+                                            null &&
+                                        appointmentModel
+                                            .alternateNumber.isNotEmpty)
+                                    ? appointmentModel.alternateNumber
+                                    : (appointmentModel.isCentre != null &&
+                                            appointmentModel.isCentre &&
+                                            (appointmentModel.alternateNumber ==
+                                                    null ||
+                                                appointmentModel.alternateNumber
+                                                    .isNotEmpty))
+                                        ? ""
+                                        : appointmentModel
+                                                .professionalMobileNumber ??
+                                            PlunesStrings.NA,
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
                                     fontWeight: FontWeight.bold,
@@ -302,7 +330,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                         .appointmentCancellationPopup(
                                             req.response ??
                                                 PlunesStrings
-                                                    .cancelSuccessMessage,
+                                                    .ourTeamWillContactYouSoonOnCancel,
                                             widget.globalKey);
                                   });
                               widget.getAppointment();

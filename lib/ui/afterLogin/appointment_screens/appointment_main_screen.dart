@@ -304,8 +304,6 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   void _setDocHosSpecificData() {
-    var today = DateTime.now();
-
     if (UserManager().getUserDetails().userType != Constants.user) {
       if (_appointmentResponse != null &&
           _appointmentResponse.bookings != null &&
@@ -344,11 +342,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   void _setConfirmedDocHosAppointmentList(AppointmentModel appointmentModel) {
     if (appointmentModel.bookingStatus != null &&
         appointmentModel.bookingStatus.isNotEmpty &&
-        ((appointmentModel.bookingStatus == AppointmentModel.confirmedStatus &&
-                appointmentModel.doctorConfirmation == true) ||
-            appointmentModel.bookingStatus ==
-                    AppointmentModel.requestCancellation &&
-                appointmentModel.doctorConfirmation == true)) {
+        (appointmentModel.bookingStatus != AppointmentModel.cancelledStatus &&
+            appointmentModel.doctorConfirmation == true)) {
       _setTabIndex(1, appointmentModel.bookingId);
       _confirmedDocHosAppointments.add(appointmentModel);
     }
@@ -357,9 +352,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   void _setConfirmedUserAppointmentList(AppointmentModel appointmentModel) {
     if (appointmentModel.bookingStatus != null &&
         appointmentModel.bookingStatus.isNotEmpty &&
-        (appointmentModel.bookingStatus == AppointmentModel.confirmedStatus ||
-            appointmentModel.bookingStatus ==
-                AppointmentModel.requestCancellation)) {
+        appointmentModel.bookingStatus != AppointmentModel.cancelledStatus) {
       _setTabIndex(0, appointmentModel.bookingId);
       _confirmedUserAppointments.add(appointmentModel);
     }
