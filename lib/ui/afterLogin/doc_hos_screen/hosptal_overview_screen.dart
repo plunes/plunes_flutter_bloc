@@ -980,7 +980,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                                   widget.centreLocation.isNotEmpty)
                               ? [
                                   TextSpan(
-                                    text: " (${widget.centreLocation})",
+                                    text: " ${widget.centreLocation}",
                                     style: TextStyle(
                                       fontSize: AppConfig.smallFont + 2,
                                       color: PlunesColors.GREENCOLOR,

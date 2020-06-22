@@ -42,8 +42,9 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   final phoneNumberController = new TextEditingController();
-  bool progress = false, isValidNumber = false;
+  bool progress = false, isValidNumber = true;
   UserBloc _userBloc;
+  final String _dummyUserId = "PL-1WQPS-S7PN";
 
   @override
   void initState() {
@@ -57,6 +58,13 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
     super.dispose();
   }
 
+  bool _isNumber() {
+    return (phoneNumberController.text.trim().isNotEmpty &&
+        phoneNumberController.text.trim().length >= 1 &&
+        (phoneNumberController.text.trim().codeUnitAt(0) >= 48 &&
+            phoneNumberController.text.trim().codeUnitAt(0) <= 57));
+  }
+
   Widget getEnterPhoneNumberRow() {
     return Container(
       height: 45,
@@ -66,8 +74,9 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
         child: TextField(
           cursorColor: Color(hexColorCode.defaultGreen),
 //          keyboardType: TextInputType.number,
-//          maxLength: 10,
-//          inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+          maxLength: _isNumber() ? 10 : _dummyUserId.length,
+          inputFormatters:
+              _isNumber() ? [WhitelistingTextInputFormatter.digitsOnly] : null,
           textInputAction: TextInputAction.done,
           style: TextStyle(
               fontSize: 18,
@@ -93,15 +102,32 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   }
 
   bool validation(text) {
-    isValidNumber = false;
-    return true;
-//    if (text.length >= 10 || text.length == 0) {
-//      isValidNumber = false;
-//      return false;
-//    } else {
-//      isValidNumber = true;
-//      return true;
-//    }
+    if (text.toString().trim().isEmpty) {
+      isValidNumber = false;
+      return isValidNumber;
+    }
+    if (text.toString().trim().length >= 2 &&
+        text.toString().trim().substring(0, 2) == "PL") {
+      if (text.toString().trim().length >= _dummyUserId.length) {
+        isValidNumber = true;
+        return isValidNumber;
+      } else {
+        isValidNumber = false;
+        return isValidNumber;
+      }
+    }
+    if (CommonMethods.checkIfNumber(text.toString().trim())) {
+      if (text.toString().length >= 10) {
+        isValidNumber = true;
+        return isValidNumber;
+      } else {
+        isValidNumber = false;
+        return isValidNumber;
+      }
+    } else {
+      isValidNumber = false;
+      return isValidNumber;
+    }
   }
 
   _setState() {
@@ -109,7 +135,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   }
 
   void submitForOTP() async {
-    if (!isValidNumber && phoneNumberController.text != '') {
+    if (isValidNumber && phoneNumberController.text != '') {
       if (CommonMethods.checkOTPVerification) {
         progress = true;
         _setState();
@@ -135,7 +161,12 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
       }
     } else
       widget.showInSnackBar(
-          PlunesStrings.usernameCantBeEmpty, //plunesStrings.enterValidNumber,
+          (_isNumber() && phoneNumberController.text.trim().length != 10)
+              ? "Please fill a valid Phone Number"
+              : (!_isNumber() && phoneNumberController.text.trim().isNotEmpty)
+                  ? "Please fill a valid User Id"
+                  : PlunesStrings
+                      .usernameCantBeEmpty, //plunesStrings.enterValidNumber,
           PlunesColors.BLACKCOLOR,
           _scaffoldKey);
   }
@@ -200,9 +231,22 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                                   Container(
                                       margin: EdgeInsets.only(left: 20),
                                       child: Visibility(
-                                          visible: isValidNumber,
+                                          visible: !isValidNumber,
                                           child: widget.createTextViews(
-                                              plunesStrings.enterValidNumber,
+                                              (_isNumber() &&
+                                                      phoneNumberController.text
+                                                              .trim()
+                                                              .length !=
+                                                          10)
+                                                  ? "Please fill a valid Phone Number"
+                                                  : (!_isNumber() &&
+                                                          phoneNumberController
+                                                              .text
+                                                              .trim()
+                                                              .isNotEmpty)
+                                                      ? "Please fill a valid User Id"
+                                                      : PlunesStrings
+                                                          .usernameCantBeEmpty,
                                               14,
                                               colorsFile.redColor,
                                               TextAlign.start,
@@ -234,6 +278,13 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
 
   void getUserExistenceData(data) async {
     if (data != null && data['success'] != null && !data['success']) {
+      if (!CommonMethods.checkIfNumber(phoneNumberController.text.trim())) {
+        progress = false;
+        _setState();
+        widget.showInSnackBar(
+            "User Id doesn't exist!", PlunesColors.BLACKCOLOR, _scaffoldKey);
+        return;
+      }
       var requestState =
           await _userBloc.getGenerateOtp(phoneNumberController.text.trim());
       progress = false;

@@ -268,7 +268,17 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                       appointmentModel.bookingStatus,
                       style: TextStyle(
                           fontSize: AppConfig.smallFont, color: Colors.green)),
-                  onTap: () {},
+                  onTap: () {
+                    if (appointmentModel != null &&
+                        appointmentModel.bookingStatus !=
+                            AppointmentModel.confirmedStatus &&
+                        appointmentModel.appointmentTime != null &&
+                        DateTime.fromMillisecondsSinceEpoch(
+                                int.parse(appointmentModel.appointmentTime))
+                            .isBefore(DateTime.now())) {
+                      _showSnackBar(PlunesStrings.unableToProcess);
+                    }
+                  },
                   onDoubleTap: () {},
                 ),
                 (appointmentModel.bookingStatus !=

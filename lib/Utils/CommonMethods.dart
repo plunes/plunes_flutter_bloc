@@ -211,13 +211,16 @@ class CommonMethods {
 
   ///Below method is used for check entered string is number or not.
   static bool checkIfNumber(String value) {
+    bool isValidNum = false;
     for (int i = 0; i < value.length; i++) {
       int n = value.codeUnitAt(i);
-      if (n < 48 || n > 57) {
-        return false;
+      if (n >= 48 && n <= 57) {
+        isValidNum = true;
+      } else {
+        isValidNum = false;
       }
     }
-    return true;
+    return isValidNum;
   }
 
   ///Below method is used for open default Date Picker Dialog.

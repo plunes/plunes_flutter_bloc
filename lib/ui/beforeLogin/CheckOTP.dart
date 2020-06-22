@@ -138,7 +138,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
             alignment: Alignment.center,
             child: Padding(
               padding: const EdgeInsets.only(
-                  left: 60.0, right: 20, top: 70, bottom: 80),
+                  left: 60.0, right: 20, top: 70, bottom: 0),
               child: Center(
                 child: PinPut(
                   fieldsCount: 4,
@@ -225,13 +225,20 @@ class _CheckOTPState extends BaseState<CheckOTP> {
       ),
     );
 
-    return Scaffold(
-        backgroundColor: Colors.white,
-        key: scaffoldKey,
-        appBar: widget.getAppBar(context, plunesStrings.checkOTP, true),
-        body: GestureDetector(
-          onTap: () => CommonMethods.hideSoftKeyboard(),
-          child: form,
-        ));
+    return WillPopScope(
+      onWillPop: () async {
+        CommonMethods.hideSoftKeyboard();
+        return true;
+      },
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          key: scaffoldKey,
+          appBar: widget.getAppBar(context, plunesStrings.checkOTP, true,
+              func: () => CommonMethods.hideSoftKeyboard()),
+          body: GestureDetector(
+            onTap: () => CommonMethods.hideSoftKeyboard(),
+            child: form,
+          )),
+    );
   }
 }

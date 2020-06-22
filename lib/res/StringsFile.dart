@@ -189,8 +189,8 @@ class PlunesStrings {
       "Appointment time is over, unable to reschedule";
   static const String unableToConfirm =
       "Appointment time is over, unable to confirm";
-  static const String unableToRefund =
-      "Appointment time is over, unable to refund";
+  static const String unableToProcess =
+      "Appointment time is over, request cannot be processed";
   static const String numberNotExist = "Phone number doesn't exists";
 
   static const String invalidCredentials = "Invalid credentials";
@@ -204,9 +204,10 @@ class PlunesStrings {
   static const String ourTeamWillContactYou = "Our team will contact you soon";
   static const String ourTeamWillContactYouSoonOnCancel =
       "Our team will contact you soon regarding the confirmation of your appointment cancellation";
-  static const String userName = "Username";
+  static const String userName = "Phone Number or User Id";
 
-  static const String usernameCantBeEmpty = "Username can't be empty";
+  static const String usernameCantBeEmpty =
+      "Please fill valid Phone Number or User Id";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

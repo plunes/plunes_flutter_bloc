@@ -49,6 +49,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
   String title = '', body = '';
   var globalHeight, globalWidth;
   UserBloc _userBloc;
+  final String _dummyUserId = "PL-1WQPS-S7PN";
 
   @override
   void dispose() {
@@ -101,7 +102,11 @@ class _LoginState extends State<Login> implements DialogCallBack {
                     TextInputType.number,
                     TextCapitalization.none,
                     isValidNumber,
-                    plunesStrings.enterValidNumber),
+                    (!isValidNumber && phoneController.text.trim().isEmpty)
+                        ? PlunesStrings.usernameCantBeEmpty
+                        : _isNumber()
+                            ? "Please fill a valid Phone Number"
+                            : "Please fill a valid User Id"),
                 widget.getSpacer(0.0, 20.0),
                 getPasswordRow(plunesStrings.password.toString().substring(
                     0, plunesStrings.password.toString().length - 1)),
@@ -118,6 +123,13 @@ class _LoginState extends State<Login> implements DialogCallBack {
         ],
       ),
     );
+  }
+
+  bool _isNumber() {
+    return (phoneController.text.trim().isNotEmpty &&
+        phoneController.text.trim().length >= 1 &&
+        (phoneController.text.trim().codeUnitAt(0) >= 48 &&
+            phoneController.text.trim().codeUnitAt(0) <= 57));
   }
 
   Widget createTextField(
@@ -153,10 +165,14 @@ class _LoginState extends State<Login> implements DialogCallBack {
                 }
               });
             },
-//            inputFormatters: controller == phoneController
-//                ? [WhitelistingTextInputFormatter.digitsOnly]
-//                : null,
-//            maxLength: controller == phoneController ? 10 : null,
+            inputFormatters: (controller == phoneController && _isNumber())
+                ? [WhitelistingTextInputFormatter.digitsOnly]
+                : null,
+            maxLength: (controller == phoneController && _isNumber())
+                ? 10
+                : (controller != passwordController)
+                    ? _dummyUserId.length
+                    : null,
             controller: controller,
             cursorColor: Color(
                 CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
@@ -175,15 +191,32 @@ class _LoginState extends State<Login> implements DialogCallBack {
   }
 
   bool validation(text) {
-    isValidNumber = true;
-    return true;
-//    if (text.length >= 10 || text.length == 0) {
-//      isValidNumber = true;
-//      return true;
-//    } else {
-//      isValidNumber = false;
-//      return false;
-//    }
+    if (text.toString().trim().isEmpty) {
+      isValidNumber = false;
+      return isValidNumber;
+    }
+    if (text.toString().trim().length >= 2 &&
+        text.toString().trim().substring(0, 2) == "PL") {
+      if (text.toString().trim().length >= _dummyUserId.length) {
+        isValidNumber = true;
+        return isValidNumber;
+      } else {
+        isValidNumber = false;
+        return isValidNumber;
+      }
+    }
+    if (CommonMethods.checkIfNumber(text.toString().trim())) {
+      if (text.toString().length >= 10) {
+        isValidNumber = true;
+        return isValidNumber;
+      } else {
+        isValidNumber = false;
+        return isValidNumber;
+      }
+    } else {
+      isValidNumber = false;
+      return isValidNumber;
+    }
   }
 
   Widget getPasswordRow(title) {
@@ -298,7 +331,12 @@ class _LoginState extends State<Login> implements DialogCallBack {
   _submitLogin() {
     if (!isValidNumber || phoneController.text.isEmpty)
       widget.showInSnackBar(
-          PlunesStrings.usernameCantBeEmpty, //plunesStrings.enterValidNumber,
+          (_isNumber() && phoneController.text.trim().length != 10)
+              ? "Please fill a valid Phone Number"
+              : (!_isNumber() && phoneController.text.trim().isNotEmpty)
+                  ? "Please fill a valid User Id"
+                  : PlunesStrings
+                      .usernameCantBeEmpty, //plunesStrings.enterValidNumber,
           PlunesColors.BLACKCOLOR,
           _scaffoldKey);
     else if (!isValidPassword || passwordController.text.isEmpty)

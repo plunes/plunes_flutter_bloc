@@ -84,7 +84,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                     ? [
                                         TextSpan(
                                           text:
-                                              " (${appointmentModel.centerLocation})",
+                                              " \n${appointmentModel.centerLocation}",
                                           style: TextStyle(
                                               fontSize: AppConfig.mediumFont,
                                               fontWeight: FontWeight.bold,
@@ -171,18 +171,32 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             AppointmentModel.confirmedStatus)
                     ? confirmAppointment(
                         "Click to Confirm", _bookingBloc, appointmentModel)
-                    : InkWell(
+                    : Flexible(
+                        child: InkWell(
                         child: Text(
                             appointmentModel?.bookingStatus ?? PlunesStrings.NA,
+                            maxLines: 2,
+                            textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
                                 color: Colors.green)),
-                        onTap: () {},
+                        onTap: () {
+                          if (appointmentModel != null &&
+                              appointmentModel.bookingStatus !=
+                                  AppointmentModel.confirmedStatus &&
+                              appointmentModel.appointmentTime != null &&
+                              DateTime.fromMillisecondsSinceEpoch(int.parse(
+                                      appointmentModel.appointmentTime))
+                                  .isBefore(DateTime.now())) {
+                            _showErrorMessage(PlunesStrings.unableToProcess);
+                          }
+                        },
                         onDoubleTap: () {},
-                      ),
+                      )),
                 (appointmentModel.bookingStatus !=
                         AppointmentModel.cancelledStatus)
-                    ? InkWell(
+                    ? Flexible(
+                        child: InkWell(
                         child: Text(PlunesStrings.reschedule,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
@@ -210,118 +224,122 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           widget.getAppointment();
                         },
                         onDoubleTap: () {},
-                      )
+                      ))
                     : alreadyCancelAppointment(PlunesStrings.reschedule),
-                Container(
-                  child: StreamBuilder<Object>(
-                      stream: _bookingBloc.cancelAppointmentStream,
-                      builder: (context, snapshot) {
-                        if (snapshot.data != null &&
-                            snapshot.data is RequestInProgress) {
-                          RequestInProgress req = snapshot.data;
-                          if (req.requestCode != null &&
-                              req.requestCode == index) {
-                            return CustomWidgets().getProgressIndicator();
+                Flexible(
+                  child: Container(
+                    child: StreamBuilder<Object>(
+                        stream: _bookingBloc.cancelAppointmentStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.data != null &&
+                              snapshot.data is RequestInProgress) {
+                            RequestInProgress req = snapshot.data;
+                            if (req.requestCode != null &&
+                                req.requestCode == index) {
+                              return CustomWidgets().getProgressIndicator();
+                            }
                           }
-                        }
-                        if (snapshot.data != null &&
-                            snapshot.data is RequestSuccess) {
-                          RequestSuccess req = snapshot.data;
-                          if (req.requestCode != null &&
-                              req.requestCode == index) {
-                            Future.delayed(Duration(milliseconds: 20))
-                                .then((value) async {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return CustomWidgets()
-                                        .appointmentCancellationPopup(
-                                            req.response ??
-                                                PlunesStrings
-                                                    .ourTeamWillContactYouSoonOnCancel,
-                                            widget.globalKey);
-                                  });
-                            });
-                            _bookingBloc.addStateInCancelProvider(null);
-                          }
-                          widget.getAppointment();
-                        }
-                        if (snapshot.data != null &&
-                            snapshot.data is RequestFailed) {
-                          RequestFailed requestFailed = snapshot.data;
-                          if (requestFailed.requestCode != null &&
-                              requestFailed.requestCode == index) {
-                            Future.delayed(Duration(milliseconds: 20))
-                                .then((value) async {
-                              widget.showInSnackBar(
-                                  requestFailed.failureCause ??
-                                      PlunesStrings.cancelFailedMessage,
-                                  PlunesColors.BLACKCOLOR,
-                                  widget.globalKey);
-                            });
-                            _bookingBloc.addStateInCancelProvider(null);
-                          }
-                        }
-                        return (appointmentModel.bookingStatus !=
-                                AppointmentModel.cancelledStatus)
-                            ? InkWell(
-                                onTap: () {
-                                  if (appointmentModel != null &&
-                                      appointmentModel.appointmentTime !=
-                                          null &&
-                                      DateTime.fromMillisecondsSinceEpoch(
-                                              int.parse(appointmentModel
-                                                  .appointmentTime))
-                                          .isBefore(DateTime.now())) {
-                                    Navigator.push(
-                                        widget.globalKey.currentState.context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                HelpScreen()));
-//                                    _showSnackBar(PlunesStrings.unableToCancel);
-                                    return;
-                                  }
-                                  if (appointmentModel.bookingStatus ==
-                                      AppointmentModel.requestCancellation) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return CustomWidgets()
-                                              .appointmentCancellationPopup(
+                          if (snapshot.data != null &&
+                              snapshot.data is RequestSuccess) {
+                            RequestSuccess req = snapshot.data;
+                            if (req.requestCode != null &&
+                                req.requestCode == index) {
+                              Future.delayed(Duration(milliseconds: 20))
+                                  .then((value) async {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return CustomWidgets()
+                                          .appointmentCancellationPopup(
+                                              req.response ??
                                                   PlunesStrings
                                                       .ourTeamWillContactYouSoonOnCancel,
-                                                  widget.globalKey);
-                                        });
+                                              widget.globalKey);
+                                    });
+                              });
+                              _bookingBloc.addStateInCancelProvider(null);
+                            }
+                            widget.getAppointment();
+                          }
+                          if (snapshot.data != null &&
+                              snapshot.data is RequestFailed) {
+                            RequestFailed requestFailed = snapshot.data;
+                            if (requestFailed.requestCode != null &&
+                                requestFailed.requestCode == index) {
+                              Future.delayed(Duration(milliseconds: 20))
+                                  .then((value) async {
+                                widget.showInSnackBar(
+                                    requestFailed.failureCause ??
+                                        PlunesStrings.cancelFailedMessage,
+                                    PlunesColors.BLACKCOLOR,
+                                    widget.globalKey);
+                              });
+                              _bookingBloc.addStateInCancelProvider(null);
+                            }
+                          }
+                          return (appointmentModel.bookingStatus !=
+                                  AppointmentModel.cancelledStatus)
+                              ? InkWell(
+                                  onTap: () {
+                                    if (appointmentModel != null &&
+                                        appointmentModel.appointmentTime !=
+                                            null &&
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                                int.parse(appointmentModel
+                                                    .appointmentTime))
+                                            .isBefore(DateTime.now())) {
+                                      Navigator.push(
+                                          widget.globalKey.currentState.context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HelpScreen()));
+                                      return;
+                                    }
+                                    if (appointmentModel.bookingStatus ==
+                                        AppointmentModel.requestCancellation) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return CustomWidgets()
+                                                .appointmentCancellationPopup(
+                                                    PlunesStrings
+                                                        .ourTeamWillContactYouSoonOnCancel,
+                                                    widget.globalKey);
+                                          });
+                                      return;
+                                    }
+                                    if (widget.appointmentModel != null) {
+                                      _bookingBloc.cancelAppointment(
+                                          appointmentModel.bookingId, index);
+                                    }
                                     return;
-                                  }
-                                  if (widget.appointmentModel != null) {
-                                    _bookingBloc.cancelAppointment(
-                                        appointmentModel.bookingId, index);
-                                  }
-                                  return;
-                                },
-                                onDoubleTap: () {},
-                                child: Text(
-                                    (appointmentModel != null &&
-                                            appointmentModel.appointmentTime !=
-                                                null &&
-                                            DateTime.fromMillisecondsSinceEpoch(
-                                                    int.parse(appointmentModel
-                                                        .appointmentTime))
-                                                .isBefore(DateTime.now()))
-                                        ? plunesStrings.help
-                                        : (appointmentModel.bookingStatus ==
-                                                AppointmentModel
-                                                    .requestCancellation)
-                                            ? AppointmentModel
-                                                .requestCancellation
-                                            : plunesStrings.cancel,
-                                    style: TextStyle(
-                                        fontSize: AppConfig.smallFont,
-                                        color: Colors.red)),
-                              )
-                            : alreadyCancelAppointment(plunesStrings.help);
-                      }),
+                                  },
+                                  onDoubleTap: () {},
+                                  child: Text(
+                                      (appointmentModel != null &&
+                                              appointmentModel
+                                                      .appointmentTime !=
+                                                  null &&
+                                              DateTime.fromMillisecondsSinceEpoch(
+                                                      int.parse(appointmentModel
+                                                          .appointmentTime))
+                                                  .isBefore(DateTime.now()))
+                                          ? plunesStrings.help
+                                          : (appointmentModel.bookingStatus ==
+                                                  AppointmentModel
+                                                      .requestCancellation)
+                                              ? AppointmentModel
+                                                  .requestCancellation
+                                              : plunesStrings.cancel,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.smallFont,
+                                          color: Colors.red)),
+                                )
+                              : alreadyCancelAppointment(plunesStrings.help);
+                        }),
+                  ),
                 ),
               ],
             ),
