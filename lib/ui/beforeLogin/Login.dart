@@ -99,7 +99,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
                 createTextField(
                     phoneController,
                     PlunesStrings.userName,
-                    TextInputType.number,
+                    TextInputType.text,
                     TextCapitalization.none,
                     isValidNumber,
                     (!isValidNumber && phoneController.text.trim().isEmpty)
