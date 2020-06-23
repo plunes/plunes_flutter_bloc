@@ -181,7 +181,7 @@ class User {
   List<TimeSlotsData> timeSlots = [];
   List<DoctorsData> doctorsData = [];
   List<AchievementsData> achievements = [];
-  bool verifiedUser, notificationEnabled, isAdmin, isCentre;
+  bool verifiedUser, notificationEnabled, isAdmin, isCentre, referralExpired;
   BankDetails bankDetails;
 
   User(
@@ -218,11 +218,13 @@ class User {
       this.notificationEnabled,
       this.isAdmin,
       this.isCentre,
+      this.referralExpired,
       this.bankDetails});
 
   factory User.fromJson(Map<String, dynamic> json) {
     bool _isAdmin = json['isAdmin'] ?? false;
     bool _isCenter = json['isCenter'] ?? false;
+    bool _referralExpired = json['referralExpired'] ?? false;
     List<TimeSlotsData> _timeSlots = [];
     if (json['timeSlots'] != null) {
       Iterable iterable = json['timeSlots'];
@@ -246,57 +248,62 @@ class User {
     print("lat in models $lat");
     print("long in models $long");
     return User(
-      uid: json['_id'] != null ? json['_id'] : '',
-      name: json['name'] != null ? json['name'] : '',
-      gender: json['gender'] != null ? json['gender'] : '',
-      birthDate: json['birthDate'] != null ? json['birthDate'] : '',
-      mobileNumber: json['mobileNumber'] != null ? json['mobileNumber'] : '',
-      email: json['email'] != null ? json['email'] : '',
-      verifiedUser: json['verifiedUser'] != null ? json['verifiedUser'] : false,
-      userType: json['userType'] != null ? json['userType'] : '',
-      address: json['address'] != null ? json['address'] : '',
-      referralCode:
-          json['userReferralCode'] != null ? json['userReferralCode'] : null,
-      coverImageUrl: json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
-      specialities: json['specialities'] != null
-          ? List<ProcedureList>.from(
-              json['specialities'].map((i) => ProcedureList.fromJson(i)))
-          : List(),
-      achievements: json['achievements'] != null
-          ? List<AchievementsData>.from(
-              json['achievements'].map((i) => AchievementsData.fromJson(i)))
-          : List(),
-      doctorsData: json['doctors'] != null
-          ? List<DoctorsData>.from(
-              json['doctors'].map((i) => DoctorsData.fromJson(i)))
-          : List(),
-      experience:
-          json['experience'] != null ? json['experience'].toString() : '',
-      practising: json['practising'] != null ? json['practising'] : '',
-      college: json['college'] != null ? json['college'] : '',
-      biography: json['biography'] != null ? json['biography'] : '',
-      registrationNumber:
-          json['registrationNumber'] != null ? json['registrationNumber'] : '',
-      qualification: json['qualification'] != null ? json['qualification'] : '',
-      imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
-      latitude: lat,
-      longitude: long,
-      isAdmin: _isAdmin,
-      isCentre: _isCenter,
-      prescriptionLogoUrl: json['prescription'] != null
-          ? (json['prescription']['logoUrl'] != null
-              ? json['prescription']['logoUrl']
-              : '')
-          : '',
-      credits:
-          json['credits'].toString() != null ? json['credits'].toString() : '0',
-      speciality: json['specialityName'],
-      userReferralCode: json['userReferralCode'],
-      timeSlots: _timeSlots,
-      bankDetails: json['bankDetails'] != null
-          ? BankDetails.fromJson(json['bankDetails'])
-          : null,
-    );
+        uid: json['_id'] != null ? json['_id'] : '',
+        name: json['name'] != null ? json['name'] : '',
+        gender: json['gender'] != null ? json['gender'] : '',
+        birthDate: json['birthDate'] != null ? json['birthDate'] : '',
+        mobileNumber: json['mobileNumber'] != null ? json['mobileNumber'] : '',
+        email: json['email'] != null ? json['email'] : '',
+        verifiedUser:
+            json['verifiedUser'] != null ? json['verifiedUser'] : false,
+        userType: json['userType'] != null ? json['userType'] : '',
+        address: json['address'] != null ? json['address'] : '',
+        referralCode:
+            json['userReferralCode'] != null ? json['userReferralCode'] : null,
+        coverImageUrl:
+            json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
+        specialities: json['specialities'] != null
+            ? List<ProcedureList>.from(
+                json['specialities'].map((i) => ProcedureList.fromJson(i)))
+            : List(),
+        achievements: json['achievements'] != null
+            ? List<AchievementsData>.from(
+                json['achievements'].map((i) => AchievementsData.fromJson(i)))
+            : List(),
+        doctorsData: json['doctors'] != null
+            ? List<DoctorsData>.from(
+                json['doctors'].map((i) => DoctorsData.fromJson(i)))
+            : List(),
+        experience:
+            json['experience'] != null ? json['experience'].toString() : '',
+        practising: json['practising'] != null ? json['practising'] : '',
+        college: json['college'] != null ? json['college'] : '',
+        biography: json['biography'] != null ? json['biography'] : '',
+        registrationNumber: json['registrationNumber'] != null
+            ? json['registrationNumber']
+            : '',
+        qualification:
+            json['qualification'] != null ? json['qualification'] : '',
+        imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
+        latitude: lat,
+        longitude: long,
+        isAdmin: _isAdmin,
+        isCentre: _isCenter,
+        prescriptionLogoUrl: json['prescription'] != null
+            ? (json['prescription']['logoUrl'] != null
+                ? json['prescription']['logoUrl']
+                : '')
+            : '',
+        credits: json['credits'].toString() != null
+            ? json['credits'].toString()
+            : '0',
+        speciality: json['specialityName'],
+        userReferralCode: json['userReferralCode'],
+        timeSlots: _timeSlots,
+        bankDetails: json['bankDetails'] != null
+            ? BankDetails.fromJson(json['bankDetails'])
+            : null,
+        referralExpired: _referralExpired);
   }
 
   Map<String, dynamic> toJson() {

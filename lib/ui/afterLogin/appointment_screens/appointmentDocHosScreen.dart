@@ -209,6 +209,11 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                   .isBefore(DateTime.now())) {
                             _showErrorMessage(PlunesStrings.unableToReschedule);
                             return;
+                          } else if (appointmentModel.bookingStatus ==
+                              AppointmentModel.requestCancellation) {
+                            _showErrorMessage(
+                                PlunesStrings.cantRescheduleForDocHos);
+                            return;
                           }
                           await Navigator.push(
                               context,
@@ -281,13 +286,16 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                   AppointmentModel.cancelledStatus)
                               ? InkWell(
                                   onTap: () {
-                                    if (appointmentModel != null &&
-                                        appointmentModel.appointmentTime !=
-                                            null &&
-                                        DateTime.fromMillisecondsSinceEpoch(
-                                                int.parse(appointmentModel
-                                                    .appointmentTime))
-                                            .isBefore(DateTime.now())) {
+                                    if ((appointmentModel != null &&
+                                            appointmentModel.appointmentTime !=
+                                                null &&
+                                            DateTime.fromMillisecondsSinceEpoch(
+                                                    int.parse(appointmentModel
+                                                        .appointmentTime))
+                                                .isBefore(DateTime.now())) ||
+                                        (appointmentModel.bookingStatus ==
+                                            AppointmentModel
+                                                .requestCancellation)) {
                                       Navigator.push(
                                           widget.globalKey.currentState.context,
                                           MaterialPageRoute(
@@ -295,19 +303,19 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                                   HelpScreen()));
                                       return;
                                     }
-                                    if (appointmentModel.bookingStatus ==
-                                        AppointmentModel.requestCancellation) {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return CustomWidgets()
-                                                .appointmentCancellationPopup(
-                                                    PlunesStrings
-                                                        .ourTeamWillContactYouSoonOnCancel,
-                                                    widget.globalKey);
-                                          });
-                                      return;
-                                    }
+//                                    if (appointmentModel.bookingStatus ==
+//                                        AppointmentModel.requestCancellation) {
+//                                      showDialog(
+//                                          context: context,
+//                                          builder: (context) {
+//                                            return CustomWidgets()
+//                                                .appointmentCancellationPopup(
+//                                                    PlunesStrings
+//                                                        .ourTeamWillContactYouSoonOnCancel,
+//                                                    widget.globalKey);
+//                                          });
+//                                      return;
+//                                    }
                                     if (widget.appointmentModel != null) {
                                       _bookingBloc.cancelAppointment(
                                           appointmentModel.bookingId, index);
@@ -328,8 +336,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                           : (appointmentModel.bookingStatus ==
                                                   AppointmentModel
                                                       .requestCancellation)
-                                              ? AppointmentModel
-                                                  .requestCancellation
+                                              ? plunesStrings.help
                                               : plunesStrings.cancel,
                                       maxLines: 2,
                                       textAlign: TextAlign.center,

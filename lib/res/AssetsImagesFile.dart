@@ -43,6 +43,7 @@ class PlunesImages {
   static const String bdSupportImage = "assets/images/bdSupportImage.png";
   static const String validForOneHourOnlyWatch =
       "assets/images/validForOneHourOnlyWatch.png";
+  static const String refCodeUsedThrice = "assets/images/refCodeUsedThrice.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

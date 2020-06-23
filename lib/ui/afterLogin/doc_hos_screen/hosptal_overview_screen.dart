@@ -653,6 +653,8 @@ class _HospitalOverviewScreenState
           children: <Widget>[
             Text(
               centreData.centerLocation ?? PlunesStrings.NA,
+              maxLines: 1,
+              overflow: TextOverflow.clip,
               style: TextStyle(
                 fontSize: AppConfig.mediumFont,
                 color: Colors.black,
@@ -706,6 +708,8 @@ class _HospitalOverviewScreenState
             children: <Widget>[
               Text(
                 centreData.centerLocation ?? PlunesStrings.NA,
+                maxLines: 1,
+                overflow: TextOverflow.clip,
                 style: TextStyle(
                     fontSize: AppConfig.mediumFont, color: Colors.black),
                 textAlign: TextAlign.start,
@@ -734,7 +738,7 @@ class _HospitalOverviewScreenState
                 },
                 value: _selectedUserIdForBusinessDropDown,
                 isExpanded: true,
-                isDense: true,
+                isDense: false,
                 decoration: InputDecoration.collapsed(
                     hintText: "", border: InputBorder.none),
               ),

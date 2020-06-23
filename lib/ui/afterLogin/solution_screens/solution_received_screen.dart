@@ -19,6 +19,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
 import '../../widgets/dialogPopScreen.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
@@ -372,6 +373,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         vertical: AppConfig.verticalBlockSize * 2),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
                         Expanded(
                           flex: 2,
@@ -405,26 +407,66 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             ),
                           ),
                         ),
-                        Expanded(child: Container()),
-                        Container(
-                            alignment: Alignment.topRight,
-                            padding: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 1),
-                            child: _solutionReceivedTime == null ||
-                                    _solutionReceivedTime == 0
-                                ? Container()
-                                : StreamBuilder(
-                                    builder: (context, snapShot) {
-                                      return Text(
-                                        DateUtil.getDuration(
-                                                _solutionReceivedTime) ??
-                                            PlunesStrings.NA,
-                                        style: TextStyle(
-                                            fontSize: AppConfig.verySmallFont),
-                                      );
+                        Expanded(
+                          child: Container(
+                              alignment: Alignment.topRight,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: <Widget>[
+                                  _solutionReceivedTime == null ||
+                                          _solutionReceivedTime == 0
+                                      ? Container()
+                                      : StreamBuilder(
+                                          builder: (context, snapShot) {
+                                            return Text(
+                                              DateUtil.getDuration(
+                                                      _solutionReceivedTime) ??
+                                                  PlunesStrings.NA,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      AppConfig.smallFont),
+                                            );
+                                          },
+                                          stream: _streamForTimer.stream,
+                                        ),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => SolutionMap(
+                                                  _searchedDocResults,
+                                                  widget.catalogueData))).then(
+                                          (value) {
+                                        if (value != null && value) {
+                                          Navigator.pop(context, true);
+                                        }
+                                      });
                                     },
-                                    stream: _streamForTimer.stream,
-                                  ))
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          top: AppConfig.verticalBlockSize * 1),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: <Widget>[
+                                          Icon(Icons.location_on,
+                                              color: PlunesColors.GREENCOLOR),
+                                          Text(
+                                            PlunesStrings.viewOnMap,
+                                            style: TextStyle(
+                                                fontSize: AppConfig.smallFont,
+                                                color: PlunesColors.GREENCOLOR,
+                                                decoration:
+                                                    TextDecoration.underline),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )),
+                        )
                       ],
                     ),
                   ),

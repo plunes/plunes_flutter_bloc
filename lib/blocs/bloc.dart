@@ -259,7 +259,7 @@ class Bloc {
       LoginPost data, BuildContext context, String _from) async {
     Preferences preferences = Preferences();
     preferences.setPreferencesString(Constants.PREF_USER_ID, data.user.uid);
-    if (data.token.isNotEmpty)
+    if (data.token != null && data.token.isNotEmpty)
       preferences.setPreferencesString(Constants.ACCESS_TOKEN, data.token);
     preferences.setPreferencesString(Constants.PREF_USERNAME, data.user.name);
     preferences.setPreferencesString(

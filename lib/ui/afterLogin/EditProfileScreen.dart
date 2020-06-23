@@ -358,6 +358,11 @@ class _EditProfileState extends State<EditProfileScreen>
 //    for (var item in _selectedItemId)
 //      specialistId.add({'specialityId': item});
     var details = UserManager().getUserDetails();
+    if (details.isCentre != null && details.isCentre) {
+      widget.showInSnackBar("Centre details can't be updated",
+          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      return;
+    }
     var body = {};
     var user = User(
       name: nameController.text.trim(),

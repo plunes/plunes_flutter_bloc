@@ -73,7 +73,7 @@ class AppointmentModel {
   static const String confirmedStatus = "Confirmed";
   static const String cancelledStatus = "Cancelled";
   static const String notRequested = "Not Requested";
-  static const String requestCancellation = "Request Cancellation";
+  static const String requestCancellation = "Cancellation Requested";
 
   AppointmentModel(
       {this.professionalId,

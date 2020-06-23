@@ -211,8 +211,9 @@ class CommonMethods {
 
   ///Below method is used for check entered string is number or not.
   static bool checkIfNumber(String value) {
+    int limit = (value.length > 10) ? 10 : value.length;
     bool isValidNum = false;
-    for (int i = 0; i < value.length; i++) {
+    for (int i = 0; i < limit; i++) {
       int n = value.codeUnitAt(i);
       if (n >= 48 && n <= 57) {
         isValidNum = true;

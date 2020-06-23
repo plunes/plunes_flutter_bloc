@@ -61,7 +61,6 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
     CommonMethods.globalContext = context;
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
         appBar: widget.getAppBar(context, plunesStrings.help, true),
         key: _scaffoldKey,
@@ -171,16 +170,21 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                   : Column(
                       children: <Widget>[
                         Container(
+                          height: AppConfig.verticalBlockSize * 15,
+                          width: AppConfig.horizontalBlockSize * 50,
+                          child: Image.asset(PlunesImages.bdSupportImage),
+                        ),
+                        Container(
                             alignment: Alignment.topLeft,
                             padding: EdgeInsets.only(
                                 top: AppConfig.verticalBlockSize * 4),
-                            child: Text('Enter your Query',
+                            child: Text(PlunesStrings.writeYourConcern,
                                 textAlign: TextAlign.start,
                                 style: TextStyle(
                                   fontSize: AppConfig.mediumFont,
                                 ))),
                         SizedBox(
-                          height: AppConfig.verticalBlockSize * 6,
+                          height: AppConfig.verticalBlockSize * 1,
                         ),
                         Row(
                           children: <Widget>[
@@ -193,6 +197,14 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                               ),
                             )
                           ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 2),
+                          child: Text(
+                            PlunesStrings.ourTeamWillContactYou,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                         Container(
                           padding: EdgeInsets.only(

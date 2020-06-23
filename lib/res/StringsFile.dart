@@ -209,6 +209,19 @@ class PlunesStrings {
   static const String usernameCantBeEmpty =
       "Please fill valid Phone Number or User Id";
 
+  static const String cantRescheduleForUser =
+      "Sorry, You cannot Reschedule the appointment as you have requested for cancellation";
+  static const String cantRescheduleForDocHos =
+      "Sorry, You cannot Reschedule the appointment as you have requested for cancellation";
+
+  static const String codeCanBeUsedThreeTimes =
+      "Your Referral Code can be used for up to 3 times. So, ";
+  static const String hurryAndRefer = "Hurry and Refer!";
+  static const String looksLikeReferralCodeIsExpired =
+      "Looks like Your Referral Code is expired !";
+
+  static const String writeYourConcern = "Write your Concern";
+
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
         'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
