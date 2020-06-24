@@ -176,7 +176,7 @@ class FirebaseNotification {
       Constants.DEVICE_TOKEN = token;
 //      _updateToken(token);
     });
-//    _firebaseMessaging.subscribeToTopic("Testing");
+    _firebaseMessaging.subscribeToTopic("Testing123");
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
 //        print('==firebase==onMessage== $message');
@@ -200,7 +200,7 @@ class FirebaseNotification {
         'your channel id', 'your channel name', 'your channel description',
         importance: Importance.Max,
         priority: Priority.High,
-        style: AndroidNotificationStyle.BigText,
+//        style: AndroidNotificationStyle.BigText,
         icon: "@drawable/ic_launcher",
         ledOffMs: 500,
         ledOnMs: 1000,
