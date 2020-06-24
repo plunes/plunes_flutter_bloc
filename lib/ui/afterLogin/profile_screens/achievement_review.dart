@@ -33,17 +33,24 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppConfig.verticalBlockSize * 50,
+      height: AppConfig.verticalBlockSize * 35,
       color: PlunesColors.WHITECOLOR,
       child: Column(
         children: <Widget>[
           TabBar(
             controller: _tabController,
             tabs: [
-              Tab(child: Text("Achievement Book")),
+              Tab(
+                  child: Text(
+                "Achievement Book",
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 16),
+              )),
 //                Tab(child: Text("Reviews"))
             ],
-            indicatorColor: PlunesColors.GREENCOLOR,
+            indicatorColor: Colors.transparent,
           ),
           Expanded(
               child: TabBarView(
@@ -109,18 +116,17 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                   builder: (context) => PageSlider(photos, index)));
         }
       },
-      child: Card(
-        elevation: 1.0,
+      child: Container(
         margin:
-            EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 1),
-        shape: RoundedRectangleBorder(
+            EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
+        decoration: BoxDecoration(
             borderRadius: BorderRadius.all(
                 Radius.circular(AppConfig.horizontalBlockSize * 5))),
         child: Column(
           children: <Widget>[
             Expanded(
               child: Container(
-                width: AppConfig.horizontalBlockSize * 55,
+                width: AppConfig.horizontalBlockSize * 40,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(
                       Radius.circular(AppConfig.horizontalBlockSize * 5)),
@@ -142,38 +148,42 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                           boxFit: BoxFit.cover),
                 ),
               ),
-              flex: 3,
+              flex: 4,
             ),
             _user.achievements[index].title.isEmpty
                 ? Container()
                 : Flexible(
                     child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 0.5),
                       child: Center(
                         child: Text(
                           _user.achievements[index].title,
                           maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.clip,
+                          textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 14),
                         ),
                       ),
-                      width: AppConfig.horizontalBlockSize * 50,
+                      width: AppConfig.horizontalBlockSize * 40,
                     ),
                   ),
             _user.achievements[index].achievement.isEmpty
                 ? Container()
                 : Flexible(
                     child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 0.5),
                       child: Center(
                         child: Text(
                           _user.achievements[index]?.achievement,
                           maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.clip,
+                          textAlign: TextAlign.start,
                           style: TextStyle(fontSize: 14),
                         ),
                       ),
-                      width: AppConfig.horizontalBlockSize * 50,
+                      width: AppConfig.horizontalBlockSize * 40,
                     ),
                     flex: 1,
                   ),
