@@ -74,7 +74,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
         child: TextField(
           cursorColor: Color(hexColorCode.defaultGreen),
 //          keyboardType: TextInputType.number,
-          maxLength: _isNumber() ? 10 : _dummyUserId.length,
+          maxLength: _isNumber() ? 10 : null,
           inputFormatters:
               _isNumber() ? [WhitelistingTextInputFormatter.digitsOnly] : null,
           textInputAction: TextInputAction.done,
@@ -108,13 +108,13 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
     }
     if (text.toString().trim().length >= 2 &&
         text.toString().trim().substring(0, 2) == "PL") {
-      if (text.toString().trim().length >= _dummyUserId.length) {
-        isValidNumber = true;
-        return isValidNumber;
-      } else {
-        isValidNumber = false;
-        return isValidNumber;
-      }
+//      if (text.toString().trim().length >= _dummyUserId.length) {
+      isValidNumber = true;
+      return isValidNumber;
+//      } else {
+//        isValidNumber = false;
+//        return isValidNumber;
+//      }
     }
     if (CommonMethods.checkIfNumber(text.toString().trim())) {
       if (text.toString().length >= 10) {
@@ -208,14 +208,14 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                               colorsFile.darkBrown,
                               TextAlign.center,
                               FontWeight.normal)),
-                      Container(
-                          margin: EdgeInsets.only(top: 50),
-                          child: widget.createTextViews(
-                              PlunesStrings.userName,
-                              20,
-                              colorsFile.darkGrey1,
-                              TextAlign.start,
-                              FontWeight.normal)),
+//                      Container(
+//                          margin: EdgeInsets.only(top: 50),
+//                          child: widget.createTextViews(
+//                              PlunesStrings.userName,
+//                              20,
+//                              colorsFile.darkGrey1,
+//                              TextAlign.start,
+//                              FontWeight.normal)),
                       Container(
                           margin: EdgeInsets.only(top: 20, bottom: 30),
                           child: Row(
@@ -244,7 +244,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
                                                               .text
                                                               .trim()
                                                               .isNotEmpty)
-                                                      ? "Please fill a valid User Id"
+                                                      ? "Please fill a valid User ID"
                                                       : PlunesStrings
                                                           .usernameCantBeEmpty,
                                               14,
@@ -282,7 +282,7 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
         progress = false;
         _setState();
         widget.showInSnackBar(
-            "User Id doesn't exist!", PlunesColors.BLACKCOLOR, _scaffoldKey);
+            "User ID doesn't exist!", PlunesColors.BLACKCOLOR, _scaffoldKey);
         return;
       }
       var requestState =

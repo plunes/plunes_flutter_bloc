@@ -116,7 +116,14 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
           Column(
             children: <Widget>[
               getUploadReportRow(),
-              getSearchRow(),
+              StreamBuilder<RequestState>(
+                  stream: _plockrBloc.getPlockrFileStream,
+                  builder: (context, snapshot) {
+                    return (_originalDataList == null ||
+                            _originalDataList.isEmpty)
+                        ? Container()
+                        : getSearchRow();
+                  }),
               getListItemRowView()
             ],
           ),

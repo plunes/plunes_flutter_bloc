@@ -106,7 +106,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
                         ? PlunesStrings.usernameCantBeEmpty
                         : _isNumber()
                             ? "Please fill a valid Phone Number"
-                            : "Please fill a valid User Id"),
+                            : "Please fill a valid User ID"),
                 widget.getSpacer(0.0, 20.0),
                 getPasswordRow(plunesStrings.password.toString().substring(
                     0, plunesStrings.password.toString().length - 1)),
@@ -168,11 +168,11 @@ class _LoginState extends State<Login> implements DialogCallBack {
             inputFormatters: (controller == phoneController && _isNumber())
                 ? [WhitelistingTextInputFormatter.digitsOnly]
                 : null,
-            maxLength: (controller == phoneController && _isNumber())
-                ? 10
-                : (controller != passwordController)
-                    ? _dummyUserId.length
-                    : null,
+            maxLength:
+                (controller == phoneController && _isNumber()) ? 10 : null,
+//                : (controller != passwordController)
+//                    ? _dummyUserId.length
+//                    : null,
             controller: controller,
             cursorColor: Color(
                 CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
@@ -197,13 +197,13 @@ class _LoginState extends State<Login> implements DialogCallBack {
     }
     if (text.toString().trim().length >= 2 &&
         text.toString().trim().substring(0, 2) == "PL") {
-      if (text.toString().trim().length >= _dummyUserId.length) {
-        isValidNumber = true;
-        return isValidNumber;
-      } else {
-        isValidNumber = false;
-        return isValidNumber;
-      }
+//      if (text.toString().trim().length >= _dummyUserId.length) {
+      isValidNumber = true;
+      return isValidNumber;
+//      } else {
+//        isValidNumber = false;
+//        return isValidNumber;
+//      }
     }
     if (CommonMethods.checkIfNumber(text.toString().trim())) {
       if (text.toString().length >= 10) {

@@ -204,10 +204,10 @@ class PlunesStrings {
   static const String ourTeamWillContactYou = "Our team will contact you soon";
   static const String ourTeamWillContactYouSoonOnCancel =
       "Our team will contact you soon regarding the confirmation of your appointment cancellation";
-  static const String userName = "Phone Number or User Id";
+  static const String userName = "Phone Number or User ID";
 
   static const String usernameCantBeEmpty =
-      "Please fill valid Phone Number or User Id";
+      "Please fill valid Phone Number or User ID";
 
   static const String cantRescheduleForUser =
       "Sorry, You cannot Reschedule the appointment as you have requested for cancellation";

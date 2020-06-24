@@ -91,7 +91,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             Container(
               height: AppConfig.verticalBlockSize * 22,
               width: double.infinity,
-              child: (_profileResponse.user.coverImageUrl != null ||
+              child: (_profileResponse.user.coverImageUrl == null ||
                       _profileResponse.user.coverImageUrl.isEmpty)
                   ? Container(
                       margin: EdgeInsets.symmetric(
@@ -103,7 +103,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                       child: CustomWidgets().getImageFromUrl(
                           _profileResponse.user.coverImageUrl,
                           boxFit: BoxFit.cover),
-                    ),
+                      ),
             ),
             Container(
               margin: EdgeInsets.symmetric(
