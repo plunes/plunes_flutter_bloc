@@ -111,6 +111,11 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
 
   Widget getBodyView() {
     return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: ExactAssetImage(PlunesImages.plockrBgImage),
+              alignment: Alignment.bottomCenter),
+          color: PlunesColors.LIGHTGREYCOLOR),
       child: Stack(
         children: <Widget>[
           Column(
@@ -164,7 +169,11 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
               ],
             ),
             widget.getSpacer(0.0, 20),
-            widget.getDividerRow(context, 0.0, 0.0, 0.0)
+            Container(
+              height: 1.0,
+              width: MediaQuery.of(context).size.width,
+              color: PlunesColors.GREYCOLOR,
+            )
           ])),
     );
   }
@@ -298,14 +307,8 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
 
   Widget getItemImageView(UploadedReports uploadedReports) {
     return Container(
-      width: AppConfig.horizontalBlockSize * 18,
+      width: AppConfig.horizontalBlockSize * 22,
       height: AppConfig.verticalBlockSize * 13,
-      decoration: BoxDecoration(
-        color: PlunesColors.GREENCOLOR,
-        borderRadius: BorderRadius.all(
-          Radius.circular(8.0),
-        ),
-      ),
       child: SizedBox.expand(
           child: Container(
         color: Colors.black87,
@@ -460,77 +463,88 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
       itemCount: uploadedReports?.length ?? 0,
       itemBuilder: (context, index) {
         return Container(
-          padding: EdgeInsets.only(left: 10, right: 10, top: 0),
-          child: Column(
-            children: <Widget>[
-              InkWell(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) => ShowImageDetails(
-                        uploadedReports[index],
-                        _plockrResponseModel.webviewUrl),
-                  );
-                },
-                child: Container(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      getItemImageView(uploadedReports[index]),
-                      Expanded(
-                          child: Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              uploadedReports[index].reportDisplayName ??
-                                  PlunesStrings.NA,
-                              maxLines: 3,
-                              style: TextStyle(
-                                  color: Color(0xff5D5D5D),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15),
+          padding:
+              EdgeInsets.only(left: 10, right: 10, top: index == 0 ? 0 : 10),
+          child: Card(
+            elevation: 2,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: Column(
+                children: <Widget>[
+                  InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) => ShowImageDetails(
+                            uploadedReports[index],
+                            _plockrResponseModel.webviewUrl),
+                      );
+                    },
+                    child: Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          getItemImageView(uploadedReports[index]),
+                          Expanded(
+                              child: Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  uploadedReports[index].reportDisplayName ??
+                                      PlunesStrings.NA,
+                                  maxLines: 3,
+                                  style: TextStyle(
+                                      color: Color(0xff5D5D5D),
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15),
+                                ),
+                                Text(
+                                  DateUtil.getDuration(
+                                      uploadedReports[index].createdTime),
+                                  //'2 days ago',
+                                  style: TextStyle(
+                                      fontSize: 12, color: Color(0xff5D5D5D)),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                    uploadedReports[index]?.userName ??
+                                        PlunesStrings.NA,
+                                    style: TextStyle(
+                                        color: Color(0xff5D5D5D),
+                                        fontSize: 13)),
+                                Text(
+                                    uploadedReports[index]?.remarks ??
+                                        PlunesStrings.NA,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: Color(0xff5D5D5D),
+                                        fontSize: 13)),
+                              ],
                             ),
-                            Text(
-                              DateUtil.getDuration(
-                                  uploadedReports[index].createdTime),
-                              //'2 days ago',
-                              style: TextStyle(
-                                  fontSize: 12, color: Color(0xff5D5D5D)),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Text(
-                                uploadedReports[index]?.userName ??
-                                    PlunesStrings.NA,
-                                style: TextStyle(
-                                    color: Color(0xff5D5D5D), fontSize: 13)),
-                            Text(
-                                uploadedReports[index]?.remarks ??
-                                    PlunesStrings.NA,
-                                maxLines: 1,
-                                style: TextStyle(
-                                    color: Color(0xff5D5D5D), fontSize: 13)),
-                          ],
-                        ),
-                      )),
-                      getMenuPopup(uploadedReports[index]?.sId,
-                          uploadedReports[index]?.fileType),
-                    ],
+                          )),
+                          getMenuPopup(uploadedReports[index]?.sId,
+                              uploadedReports[index]?.fileType),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+//                index != uploadedReports.length ?? 0
+//                    ? Container(
+//                        height: 0.3,
+//                        color: Colors.grey,
+//                        margin: EdgeInsets.only(top: 20, bottom: 20))
+//                    : Container(margin: EdgeInsets.only(bottom: 20))
+                ],
               ),
-              index != uploadedReports.length ?? 0
-                  ? Container(
-                      height: 0.3,
-                      color: Colors.grey,
-                      margin: EdgeInsets.only(top: 20, bottom: 20))
-                  : Container(margin: EdgeInsets.only(bottom: 20))
-            ],
+            ),
           ),
         );
       },

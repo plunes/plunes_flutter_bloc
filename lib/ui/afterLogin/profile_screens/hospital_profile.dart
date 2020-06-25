@@ -103,7 +103,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                       child: CustomWidgets().getImageFromUrl(
                           _profileResponse.user.coverImageUrl,
                           boxFit: BoxFit.cover),
-                      ),
+                    ),
             ),
             Container(
               margin: EdgeInsets.symmetric(
@@ -413,23 +413,12 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                         onTap: () => _openDocDetails(
                             _profileResponse.user.doctorsData[itemIndex]),
                         child: Container(
-//              height: AppConfig.verticalBlockSize * 30,
-//              width: AppConfig.horizontalBlockSize * 60,
                           margin: EdgeInsets.symmetric(
                               vertical: AppConfig.verticalBlockSize * 0.5,
                               horizontal: AppConfig.horizontalBlockSize * 0.5),
                           padding: EdgeInsets.symmetric(
                               vertical: AppConfig.verticalBlockSize * 0.5),
-                          decoration: BoxDecoration(
-//                  borderRadius: BorderRadius.all(Radius.circular(25)),
-                              color: Color(0xffababab)
-//                gradient: new LinearGradient(
-//                    colors: [, Color(0xffababab)],
-//                    begin: FractionalOffset.topCenter,
-//                    end: FractionalOffset.bottomCenter,
-//                    stops: [0.0, 1.0],
-//                    tileMode: TileMode.clamp),
-                              ),
+                          decoration: BoxDecoration(color: Color(0xffababab)),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
@@ -460,53 +449,53 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                       ),
                                       radius: 30,
                                     ),
-                              Expanded(
-                                  child: Padding(
+                              Container(
+                                width: double.infinity,
                                 padding: EdgeInsets.symmetric(
                                     horizontal:
                                         AppConfig.horizontalBlockSize * 0.8),
                                 child: Text(
                                   _profileResponse
-                                          .user.doctorsData[itemIndex].name ??
+                                          .user?.doctorsData[itemIndex]?.name ??
                                       _getEmptyString(),
                                   maxLines: 1,
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                   style: TextStyle(
                                       color: PlunesColors.WHITECOLOR,
                                       fontWeight: FontWeight.w600,
                                       fontSize: 16),
                                 ),
-                              )),
-                              Expanded(
-                                  child: Padding(
+                              ),
+                              Container(
+                                width: double.infinity,
                                 padding: EdgeInsets.symmetric(
                                     horizontal:
                                         AppConfig.horizontalBlockSize * 0.8),
                                 child: Text(
-                                  _profileResponse.user.doctorsData[itemIndex]
+                                  _profileResponse.user?.doctorsData[itemIndex]
                                           .designation ??
                                       _getEmptyString(),
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                   maxLines: 1,
                                   style: TextStyle(
                                       color: PlunesColors.WHITECOLOR,
                                       fontSize: 15),
                                 ),
-                              )),
-                              Expanded(
-                                  child: Padding(
+                              ),
+                              Container(
+                                width: double.infinity,
                                 padding: EdgeInsets.symmetric(
                                     horizontal:
                                         AppConfig.horizontalBlockSize * 0.8),
                                 child: Text(
                                   _getExpr(itemIndex) ?? _getEmptyString(),
-                                  textAlign: TextAlign.center,
+                                  textAlign: TextAlign.left,
                                   maxLines: 1,
                                   style: TextStyle(
                                       color: PlunesColors.WHITECOLOR,
                                       fontSize: 15),
                                 ),
-                              )),
+                              ),
                             ],
                           ),
                         ),
@@ -529,10 +518,6 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                       },
                       child: Container(
                         alignment: Alignment.center,
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 0.1),
-                        padding:
-                            EdgeInsets.all(AppConfig.horizontalBlockSize * 5),
                         child: Text(
                           PlunesStrings.seeMoreDoctors,
                           style: TextStyle(
@@ -552,7 +537,17 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             _profileResponse.user.achievements == null ||
             _profileResponse.user.achievements.isEmpty)
         ? Container()
-        : AchievementAndReview(_profileResponse.user, _context);
+        : Column(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+                height: 0.5,
+                color: PlunesColors.GREYCOLOR,
+                width: double.infinity,
+              ),
+              AchievementAndReview(_profileResponse.user, _context)
+            ],
+          );
   }
 
   void _getDirections() {
@@ -578,8 +573,9 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding:
-              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2.5),
+          padding: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 2.5,
+              bottom: AppConfig.verticalBlockSize * 1),
           child: Text(
             PlunesStrings.serviceList,
             style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
@@ -605,14 +601,15 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 0.8,
-                            horizontal: AppConfig.horizontalBlockSize * 5),
+                            vertical: AppConfig.verticalBlockSize * 0.8),
                         child: Text(
                           _catalogueList[index].service ?? _getEmptyString(),
-                          style: TextStyle(fontSize: 16),
+                          maxLines: 2,
+                          textAlign: TextAlign.left,
+                          style: TextStyle(fontSize: 14),
                         ),
                       ),
-                      flex: 3,
+                      flex: 5,
                     ),
                     Expanded(
                       child: Container(),
@@ -621,7 +618,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                     Expanded(
                       child: Text(
                         PlunesStrings.knowMore,
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 14),
                       ),
                       flex: 2,
                     )

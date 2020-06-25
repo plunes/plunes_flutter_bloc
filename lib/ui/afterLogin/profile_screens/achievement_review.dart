@@ -33,7 +33,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppConfig.verticalBlockSize * 35,
+      height: AppConfig.verticalBlockSize * 32,
       color: PlunesColors.WHITECOLOR,
       child: Column(
         children: <Widget>[

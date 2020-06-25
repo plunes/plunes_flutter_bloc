@@ -142,7 +142,9 @@ class CustomWidgets {
   }
 
   Widget getSolutionRow(List<CatalogueData> solutionList, int index,
-      {Function onButtonTap, TapGestureRecognizer onViewMoreTap}) {
+      {Function onButtonTap,
+      TapGestureRecognizer onViewMoreTap,
+      bool isTopSearches = false}) {
     return StatefulBuilder(builder: (context, newState) {
       return Column(
         children: <Widget>[
@@ -183,7 +185,9 @@ class CustomWidgets {
               child: Column(
                 children: <Widget>[
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: isTopSearches
+                        ? CrossAxisAlignment.center
+                        : CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
                         color: PlunesColors.WHITECOLOR,

@@ -363,7 +363,6 @@ class _EditProfileState extends State<EditProfileScreen>
           PlunesColors.BLACKCOLOR, _scaffoldKey);
       return;
     }
-    var body = {};
     var user = User(
       name: nameController.text.trim(),
       latitude: (_latitude == null || _latitude == "0.0")

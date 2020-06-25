@@ -246,6 +246,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                         _prevSearchedSolution.data, index,
                                         onButtonTap: () => _onSolutionItemTap(
                                             _prevSearchedSolution.data[index]),
+                                        isTopSearches: (_prevSearchedSolution
+                                                    .topSearches !=
+                                                null &&
+                                            _prevSearchedSolution.topSearches),
                                         onViewMoreTap: tapRecognizer);
                                   },
                                   itemCount: _prevSearchedSolution.data.length,
