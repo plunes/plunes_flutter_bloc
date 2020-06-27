@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -403,10 +404,10 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       crossAxisSpacing: 5.0,
-                      childAspectRatio: 0.8,
+                      childAspectRatio: 0.74,
                     ),
-                    itemCount: _profileResponse.user.doctorsData.length > 5
-                        ? 5
+                    itemCount: _profileResponse.user.doctorsData.length > 6
+                        ? 6
                         : _profileResponse.user.doctorsData.length,
                     itemBuilder: (context, itemIndex) {
                       return InkWell(
@@ -418,9 +419,13 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                               horizontal: AppConfig.horizontalBlockSize * 0.5),
                           padding: EdgeInsets.symmetric(
                               vertical: AppConfig.verticalBlockSize * 0.5),
-                          decoration: BoxDecoration(color: Color(0xffababab)),
+                          decoration: BoxDecoration(
+                              color: Color(0xffababab),
+                              borderRadius: BorderRadius.all(Radius.circular(
+                                  AppConfig.horizontalBlockSize * 1.5))),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               (_profileResponse.user.doctorsData[itemIndex]
                                               .imageUrl ==
@@ -523,6 +528,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                           style: TextStyle(
                             color: PlunesColors.GREENCOLOR,
                             fontSize: 16,
+                            decoration: TextDecoration.underline,
+                            decorationThickness: 2.0,
                           ),
                         ),
                       ),

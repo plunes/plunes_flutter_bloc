@@ -76,8 +76,11 @@ class _ReferScreenState extends BaseState<ReferScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            widget.createTextViews(plunesStrings.inviteYourFriends, 22,
-                colorsFile.black1, TextAlign.start, FontWeight.bold),
+            Container(
+              width: double.infinity,
+              child: widget.createTextViews(plunesStrings.inviteYourFriends, 22,
+                  colorsFile.black1, TextAlign.center, FontWeight.bold),
+            ),
             widget.getSpacer(0.0, 20.0),
             getBulletRow(plunesStrings.text1Referral),
             getBulletRow(plunesStrings.text2Referral),

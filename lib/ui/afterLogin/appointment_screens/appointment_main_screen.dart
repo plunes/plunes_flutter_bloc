@@ -89,7 +89,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
           key: scaffoldKey,
           backgroundColor: PlunesColors.WHITECOLOR,
           appBar: widget.getAppBar(
-              context, 'Appointment' ?? PlunesStrings.NA, true),
+              context, plunesStrings.appointments ?? PlunesStrings.NA, true),
           body: Builder(builder: (context) {
             return Container(
               width: double.infinity,

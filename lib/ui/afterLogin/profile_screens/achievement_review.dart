@@ -45,8 +45,10 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                 "Achievement Book",
                 style: TextStyle(
                     color: PlunesColors.BLACKCOLOR,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16),
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                    decoration: TextDecoration.underline,
+                    decorationThickness: 2.0),
               )),
 //                Tab(child: Text("Reviews"))
             ],
