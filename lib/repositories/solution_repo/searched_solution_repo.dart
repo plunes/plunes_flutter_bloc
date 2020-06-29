@@ -1,3 +1,4 @@
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -91,11 +92,17 @@ class SearchedSolutionRepo {
         "notification": catalogueData.isFromNotification,
       };
     } else {
+      String _loc = "NA";
+      if (lat != null && long != null && lat != 0.0 && long != 0.0) {
+        _loc = await LocationUtil()
+            .getAddressFromLatLong(lat.toString(), long.toString());
+      }
       queryParams = {
         "serviceId": catalogueData.serviceId,
         "latitude": lat,
         "longitude": long,
-        "searchQuery": searchQuery
+        "searchQuery": searchQuery,
+        "geoLocationName": _loc
       };
     }
     var result = await DioRequester().requestMethod(
