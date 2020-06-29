@@ -397,14 +397,14 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                 ),
               ),
               Container(
-                height: AppConfig.verticalBlockSize * 42,
+                height: AppConfig.verticalBlockSize * 40,
                 width: double.infinity,
                 child: GridView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
-                      crossAxisSpacing: 5.0,
-                      childAspectRatio: 0.74,
+                      crossAxisSpacing: 4.0,
+                      childAspectRatio: 0.8,
                     ),
                     itemCount: _profileResponse.user.doctorsData.length > 6
                         ? 6
@@ -420,9 +420,10 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                           padding: EdgeInsets.symmetric(
                               vertical: AppConfig.verticalBlockSize * 0.5),
                           decoration: BoxDecoration(
-                              color: Color(0xffababab),
+                              color: PlunesColors.WHITECOLOR,
                               borderRadius: BorderRadius.all(Radius.circular(
-                                  AppConfig.horizontalBlockSize * 1.5))),
+                                  AppConfig.horizontalBlockSize * 3.5)),
+                              border: Border.all(color: Color(0xFFE0E0E0))),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -438,24 +439,36 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                   ? CustomWidgets().getBackImageView(
                                       _profileResponse.user
                                               .doctorsData[itemIndex].name ??
-                                          _getEmptyString())
+                                          _getEmptyString(),
+                                      width: 45,
+                                      height: 45)
                                   : CircleAvatar(
                                       child: Container(
-                                        height: 60,
-                                        width: 60,
-                                        child: ClipOval(
-                                            child: CustomWidgets()
-                                                .getImageFromUrl(
-                                                    _profileResponse
-                                                        .user
-                                                        .doctorsData[itemIndex]
-                                                        .imageUrl,
-                                                    boxFit: BoxFit.fill)),
+                                        decoration: BoxDecoration(
+                                            color: Color(0xFFE0E0E0),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30))),
+                                        child: Container(
+                                          margin: EdgeInsets.all(1.5),
+                                          height: 45,
+                                          width: 45,
+                                          child: ClipOval(
+                                              child: CustomWidgets()
+                                                  .getImageFromUrl(
+                                                      _profileResponse
+                                                          .user
+                                                          .doctorsData[
+                                                              itemIndex]
+                                                          .imageUrl,
+                                                      boxFit: BoxFit.fill)),
+                                        ),
                                       ),
-                                      radius: 30,
+                                      radius: 22.5,
                                     ),
                               Container(
                                 width: double.infinity,
+                                margin: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 1),
                                 padding: EdgeInsets.symmetric(
                                     horizontal:
                                         AppConfig.horizontalBlockSize * 0.8),
@@ -464,11 +477,11 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                           .user?.doctorsData[itemIndex]?.name ??
                                       _getEmptyString(),
                                   maxLines: 1,
-                                  textAlign: TextAlign.left,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      color: PlunesColors.WHITECOLOR,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16),
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 12),
                                 ),
                               ),
                               Container(
@@ -480,11 +493,11 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                   _profileResponse.user?.doctorsData[itemIndex]
                                           .designation ??
                                       _getEmptyString(),
-                                  textAlign: TextAlign.left,
+                                  textAlign: TextAlign.center,
                                   maxLines: 1,
                                   style: TextStyle(
-                                      color: PlunesColors.WHITECOLOR,
-                                      fontSize: 15),
+                                      color: PlunesColors.GREYCOLOR,
+                                      fontSize: 11),
                                 ),
                               ),
                               Container(
@@ -494,11 +507,11 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                         AppConfig.horizontalBlockSize * 0.8),
                                 child: Text(
                                   _getExpr(itemIndex) ?? _getEmptyString(),
-                                  textAlign: TextAlign.left,
+                                  textAlign: TextAlign.center,
                                   maxLines: 1,
                                   style: TextStyle(
-                                      color: PlunesColors.WHITECOLOR,
-                                      fontSize: 15),
+                                      color: PlunesColors.GREYCOLOR,
+                                      fontSize: 11),
                                 ),
                               ),
                             ],

@@ -733,8 +733,11 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          Icon(Icons.location_on,
-                              color: PlunesColors.GREYCOLOR),
+                          Container(
+                            child: Image.asset(plunesImages.locationIcon),
+                            height: AppConfig.verticalBlockSize * 3,
+                            width: AppConfig.horizontalBlockSize * 5,
+                          ),
                           Flexible(
                             child: Container(
                               margin: EdgeInsets.only(left: 12.0),

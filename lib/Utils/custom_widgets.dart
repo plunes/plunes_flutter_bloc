@@ -2325,10 +2325,10 @@ class CustomWidgets {
         ));
   }
 
-  Widget getBackImageView(String name) {
+  Widget getBackImageView(String name, {double height, double width}) {
     return Container(
-        height: 60,
-        width: 60,
+        height: height ?? 60,
+        width: width ?? 60,
         alignment: Alignment.center,
         child: createTextViews(
             (name != null && name != '')

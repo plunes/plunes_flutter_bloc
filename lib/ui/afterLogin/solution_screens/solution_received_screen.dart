@@ -450,15 +450,37 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
                                         children: <Widget>[
-                                          Icon(Icons.location_on,
-                                              color: PlunesColors.GREENCOLOR),
-                                          Text(
-                                            PlunesStrings.viewOnMap,
-                                            style: TextStyle(
-                                                fontSize: AppConfig.smallFont,
-                                                color: PlunesColors.GREENCOLOR,
-                                                decoration:
-                                                    TextDecoration.underline),
+                                          Flexible(
+                                            flex: 2,
+                                            child: Container(
+                                              child: Image.asset(
+                                                  plunesImages.locationIcon),
+                                              height:
+                                                  AppConfig.verticalBlockSize *
+                                                      3,
+                                              width: AppConfig
+                                                      .horizontalBlockSize *
+                                                  8,
+                                            ),
+                                          ),
+                                          Flexible(
+                                            flex: 10,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 2),
+                                              child: Text(
+                                                PlunesStrings.viewOnMap,
+                                                textAlign: TextAlign.right,
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        AppConfig.smallFont,
+                                                    color:
+                                                        PlunesColors.GREENCOLOR,
+                                                    decoration: TextDecoration
+                                                        .underline),
+                                              ),
+                                            ),
                                           ),
                                         ],
                                       ),
