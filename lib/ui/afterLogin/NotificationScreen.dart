@@ -231,6 +231,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
           MaterialPageRoute(
               builder: (context) => AppointmentMainScreen(
                     bookingId: result.notificationId,
+                    shouldOpenReviewPopup: true,
                   )));
     } else if ((result.notificationScreen ==
                 FirebaseNotification.insightScreen ||

@@ -10,6 +10,7 @@ class BookingBloc extends BlocBase {
   final _cancelAppointmentProvider = PublishSubject<RequestState>();
 
   final _refundAppointmentProvider = PublishSubject<RequestState>();
+  final _rateReviewProvider = PublishSubject<RequestState>();
 
   // ignore: close_sinks
   final _confirmAppointmentByDocHosProvider = PublishSubject<RequestState>();
@@ -29,6 +30,8 @@ class BookingBloc extends BlocBase {
 
   Observable<RequestState> get installmentStream =>
       _installmentPaymentProvider.stream;
+
+  Observable<RequestState> get rateReviewStream => _rateReviewProvider.stream;
 
   Future<RequestState> initPayment(InitPayment initPayment) async {
     RequestState requestState = await BookingRepo().initPayment(initPayment);
@@ -73,6 +76,15 @@ class BookingBloc extends BlocBase {
     return result;
   }
 
+  Future<RequestState> submitRateAndReview(
+      double rate, String review, String professionalId) async {
+    addStateInRateAndReviewProvider(RequestInProgress());
+    var result =
+        await BookingRepo().submitRateAndReview(rate, review, professionalId);
+    addStateInRateAndReviewProvider(result);
+    return result;
+  }
+
   @override
   void dispose() {
     _rescheduleAppointmentProvider?.close();
@@ -80,6 +92,7 @@ class BookingBloc extends BlocBase {
     _refundAppointmentProvider?.close();
     _confirmAppointmentByDocHosProvider?.close();
     _installmentPaymentProvider?.close();
+    _rateReviewProvider?.close();
     super.dispose();
   }
 
@@ -105,5 +118,9 @@ class BookingBloc extends BlocBase {
 
   Future<RequestState> cancelPayment(String bookingId) {
     return BookingRepo().cancelPayment(bookingId);
+  }
+
+  void addStateInRateAndReviewProvider(RequestState state) {
+    addStateInGenericStream(_rateReviewProvider, state);
   }
 }

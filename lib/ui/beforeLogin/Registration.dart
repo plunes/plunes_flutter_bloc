@@ -1144,10 +1144,10 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           padding: EdgeInsets.zero,
           width: MediaQuery.of(context).size.width,
           child: TextField(
-              maxLines: (controller == locationController ||
-                      controller == aboutController)
-                  ? 2
-                  : 1,
+              maxLines:
+                  (controller == locationController || controller == aboutController)
+                      ? 2
+                      : 1,
               maxLength: (controller == aboutController)
                   ? 250
                   : (controller != null && controller == alternatePhoneController)
@@ -1157,12 +1157,13 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               obscureText:
                   (controller == passwordController ? _passwordVisible : false),
               keyboardType: inputType,
-              inputFormatters: (controller != null &&
-                      controller == alternatePhoneController)
+              inputFormatters: (controller != null && controller == alternatePhoneController)
                   ? <TextInputFormatter>[
                       WhitelistingTextInputFormatter.digitsOnly
                     ]
-                  : controller != null && controller == nameController
+                  : (controller != null &&
+                          controller == nameController &&
+                          _userType == Constants.generalUser)
                       ? [WhitelistingTextInputFormatter(RegExp("[a-zA-Z ]"))]
                       : null,
               textInputAction: controller == referralController

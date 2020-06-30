@@ -130,4 +130,22 @@ class BookingRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  Future<RequestState> submitRateAndReview(
+      double rate, String review, String professionalId) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        headerIncluded: true,
+        postData: {
+          "professionalId": professionalId,
+          "description": review,
+          "rating": rate
+        },
+        url: Urls.Rate_AND_REVIEW);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: result.isRequestSucceed);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

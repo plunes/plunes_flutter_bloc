@@ -23,8 +23,9 @@ import 'appointmentDocHosScreen.dart';
 class AppointmentMainScreen extends BaseActivity {
   static const tag = '/appointment';
   final String bookingId;
+  final bool shouldOpenReviewPopup;
 
-  AppointmentMainScreen({this.bookingId});
+  AppointmentMainScreen({this.bookingId, this.shouldOpenReviewPopup});
 
   @override
   _AppointmentMainScreenState createState() => _AppointmentMainScreenState();
@@ -39,14 +40,16 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   ScrollController _scrollDocHosController, _scrollUserController;
   String _appointmentFailureCause;
   int index, _appointmentIndex;
-  bool _isDisplay;
+  bool _isDisplay, _shouldOpenPopUp = false;
   List<AppointmentModel> _upComingAppointments;
   List<AppointmentModel> _confirmedDocHosAppointments;
   List<AppointmentModel> _cancelledAppointments;
   List<AppointmentModel> _confirmedUserAppointments;
+  BuildContext _context;
 
   @override
   void initState() {
+    _shouldOpenPopUp = widget.shouldOpenReviewPopup ?? false;
     _upComingAppointments = [];
     _confirmedDocHosAppointments = [];
     _cancelledAppointments = [];
@@ -91,6 +94,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
           appBar: widget.getAppBar(
               context, plunesStrings.appointments ?? PlunesStrings.NA, true),
           body: Builder(builder: (context) {
+            _context = context;
             return Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(
@@ -400,7 +404,16 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
             _appointmentIndex.toDouble() * AppConfig.verticalBlockSize * 48,
             duration: Duration(milliseconds: 500),
             curve: Curves.ease);
+
+        /// you need to change here /////////////////////////////////////////////////////////////////////////
         _removeBookingId();
+        Future.delayed(Duration(milliseconds: 1500)).then((value) {
+          if (_shouldOpenPopUp != null && _shouldOpenPopUp) {
+            CustomWidgets().showScrollableDialog(_context,
+                _appointmentResponse.bookings[_appointmentIndex], _bookingBloc);
+            _shouldOpenPopUp = false;
+          }
+        });
       }
     });
   }

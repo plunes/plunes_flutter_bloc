@@ -219,8 +219,9 @@ class PlunesStrings {
   static const String hurryAndRefer = "Hurry and Refer!";
   static const String looksLikeReferralCodeIsExpired =
       "Looks like Your Referral Code is expired !";
-
   static const String writeYourConcern = "Write your Concern";
+  static const String thanksForService = "Thanks for availing service from";
+  static const String pleaseFillYourReview = "Please write your review.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
