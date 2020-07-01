@@ -12,6 +12,11 @@ class UserBloc extends BlocBase {
 
   Observable<RequestState> get serviceStream => _serviceStreamProvider.stream;
 
+  final _reviewStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get rateAndReviewStream =>
+      _reviewStreamProvider.stream;
+
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
       {String address, bool isFromPopup = false}) {
     return UserManager().isUserInServiceLocation(latitude, longitude,
@@ -81,6 +86,7 @@ class UserBloc extends BlocBase {
   void dispose() {
     _specialityStreamProvider?.close();
     _serviceStreamProvider?.close();
+    _reviewStreamProvider?.close();
     super.dispose();
   }
 
@@ -120,5 +126,17 @@ class UserBloc extends BlocBase {
 
   Future<RequestState> getAdminSpecificData() async {
     return await UserManager().getAdminSpecificData();
+  }
+
+  Future<RequestState> getRateAndReviews(String profId,
+      {int initialIndex = 0}) async {
+    addStateInReviewStream(RequestInProgress());
+    var result = await UserManager().getRateAndReviews(profId);
+    addStateInReviewStream(result);
+    return result;
+  }
+
+  addStateInReviewStream(RequestState data) {
+    addStateInGenericStream(_reviewStreamProvider, data);
   }
 }

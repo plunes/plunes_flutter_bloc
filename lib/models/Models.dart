@@ -824,3 +824,52 @@ class CentreData {
     address = json['address'];
   }
 }
+
+class RateAndReview {
+  String sId;
+  String professionalId;
+  String userId;
+  int iV;
+  String description;
+  num rating;
+  Null title;
+  String userName;
+  String userImage;
+
+  RateAndReview(
+      {this.sId,
+      this.professionalId,
+      this.userId,
+      this.iV,
+      this.description,
+      this.rating,
+      this.title,
+      this.userName,
+      this.userImage});
+
+  RateAndReview.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    professionalId = json['professionalId'];
+    userId = json['userId'];
+    iV = json['__v'];
+    description = json['description'];
+    rating = json['rating'];
+    title = json['title'];
+    userName = json['userName'];
+    userImage = json['userImage'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['professionalId'] = this.professionalId;
+    data['userId'] = this.userId;
+    data['__v'] = this.iV;
+    data['description'] = this.description;
+    data['rating'] = this.rating;
+    data['title'] = this.title;
+    data['userName'] = this.userName;
+    data['userImage'] = this.userImage;
+    return data;
+  }
+}

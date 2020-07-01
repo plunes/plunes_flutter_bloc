@@ -46,6 +46,7 @@ class PlunesImages {
   static const String refCodeUsedThrice = "assets/images/refCodeUsedThrice.png";
   static const String plockrBgImage = "assets/images/plockrBgImage.png";
   static const String ratingStar = "assets/images/ratringStar.png";
+  static const String reviewSubmitImage = "assets/images/reviewSubmitImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

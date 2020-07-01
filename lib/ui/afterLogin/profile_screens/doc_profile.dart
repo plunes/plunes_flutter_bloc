@@ -9,6 +9,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/achievement_review.dart';
 
 // ignore: must_be_immutable
@@ -144,22 +145,37 @@ class _DocProfileState extends BaseState<DocProfile> {
   Widget _getNameAndImageView() {
     return Row(
       children: <Widget>[
-        (_profileResponse.user != null &&
-                _profileResponse.user.imageUrl != null &&
-                _profileResponse.user.imageUrl.isNotEmpty)
-            ? CircleAvatar(
-                child: Container(
-                  height: 60,
-                  width: 60,
-                  child: ClipOval(
-                      child: CustomWidgets().getImageFromUrl(
-                          _profileResponse.user.imageUrl,
-                          boxFit: BoxFit.fill)),
-                ),
-                radius: 30,
-              )
-            : CustomWidgets().getBackImageView(
-                _profileResponse.user?.name ?? _getEmptyString()),
+        InkWell(
+            onTap: () {
+              List<Photo> photos = [];
+              if ((_profileResponse.user != null &&
+                  _profileResponse.user.imageUrl != null &&
+                  _profileResponse.user.imageUrl.isNotEmpty)) {
+                photos.add(Photo(assetName: _profileResponse.user.imageUrl));
+              }
+              if (photos != null && photos.isNotEmpty) {
+                Navigator.push(
+                    _context,
+                    MaterialPageRoute(
+                        builder: (context) => PageSlider(photos, 0)));
+              }
+            },
+            child: (_profileResponse.user != null &&
+                    _profileResponse.user.imageUrl != null &&
+                    _profileResponse.user.imageUrl.isNotEmpty)
+                ? CircleAvatar(
+                    child: Container(
+                      height: 60,
+                      width: 60,
+                      child: ClipOval(
+                          child: CustomWidgets().getImageFromUrl(
+                              _profileResponse.user.imageUrl,
+                              boxFit: BoxFit.fill)),
+                    ),
+                    radius: 30,
+                  )
+                : CustomWidgets().getBackImageView(
+                    _profileResponse.user?.name ?? _getEmptyString())),
         Expanded(
           child: Padding(
             padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 5),
@@ -254,11 +270,12 @@ class _DocProfileState extends BaseState<DocProfile> {
   }
 
   Widget _getBottomView() {
-    return (_profileResponse.user == null ||
-            _profileResponse.user.achievements == null ||
-            _profileResponse.user.achievements.isEmpty)
-        ? Container()
-        : AchievementAndReview(_profileResponse.user, _context);
+//      (_profileResponse.user == null ||
+//            _profileResponse.user.achievements == null ||
+//            _profileResponse.user.achievements.isEmpty)
+//        ? Container()
+//        :
+    return AchievementAndReview(_profileResponse.user, _context, _userBloc);
   }
 
   void _getUserDetails() {

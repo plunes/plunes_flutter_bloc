@@ -427,4 +427,22 @@ class UserManager {
   void clear() {
     _centreResponse = null;
   }
+
+  Future<RequestState> getRateAndReviews(String profId,
+      {int initialIndex = 0}) async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.RATE_AND_REVIEW,
+        requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {"professionalId": profId},
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      List<RateAndReview> _list = [];
+      Iterable items = result.response.data;
+      _list =
+          items?.map((e) => RateAndReview.fromJson(e))?.toList(growable: true);
+      return RequestSuccess(response: _list);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

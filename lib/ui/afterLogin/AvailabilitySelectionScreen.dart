@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -729,7 +728,17 @@ class _AvailabilitySelectionScreenState
       } else if (check == 'to1') {
         if (from1.isBefore(time)) {
           to1 = time;
-          _openTimePicker("form2", position);
+          _showSubmitNextSlotPopup("");
+          Future.delayed(Duration(milliseconds: 2000)).then((value) async {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+            Future.delayed(Duration(milliseconds: 400)).then((value) {
+              if (mounted && context != null) {
+                _openTimePicker("form2", position);
+              }
+            });
+          });
           return;
         } else {
           from1 = null;
@@ -791,5 +800,53 @@ class _AvailabilitySelectionScreenState
 
   void _showSnackBar(String message) {
     widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, _scaffoldKey);
+  }
+
+  void _showSubmitNextSlotPopup(String s) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return Card(
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 42,
+                horizontal: AppConfig.horizontalBlockSize * 10),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(6))),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Slot one filled ",
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR,
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal),
+                    ),
+                    Icon(
+                      Icons.check,
+                      color: PlunesColors.GREENCOLOR,
+                    )
+                  ],
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                  child: Text(
+                    PlunesStrings.enterTheRestToSubmit,
+                    style: TextStyle(
+                        color: PlunesColors.BLACKCOLOR,
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal),
+                  ),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }

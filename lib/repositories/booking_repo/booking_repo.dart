@@ -141,7 +141,7 @@ class BookingRepo {
           "description": review,
           "rating": rate
         },
-        url: Urls.Rate_AND_REVIEW);
+        url: Urls.RATE_AND_REVIEW);
     if (result.isRequestSucceed) {
       return RequestSuccess(response: result.isRequestSucceed);
     } else {

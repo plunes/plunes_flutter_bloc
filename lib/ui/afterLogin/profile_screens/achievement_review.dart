@@ -2,17 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 
 // ignore: must_be_immutable
 class AchievementAndReview extends BaseActivity {
   User user;
   BuildContext context;
+  final UserBloc userBloc;
 
-  AchievementAndReview(this.user, this.context);
+  AchievementAndReview(this.user, this.context, this.userBloc);
 
   @override
   _AchievementAndReviewState createState() => _AchievementAndReviewState();
@@ -22,11 +26,17 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
     with TickerProviderStateMixin {
   TabController _tabController;
   User _user;
+  UserBloc _userBloc;
+  List<RateAndReview> _rateAndReviewList = [];
+  String _failureCause;
+  bool _hasHitOnce = false;
 
   @override
   void initState() {
     _user = widget.user;
-    _tabController = TabController(length: 1, vsync: this, initialIndex: 0);
+    _userBloc = widget.userBloc;
+    _rateAndReviewList = [];
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     super.initState();
   }
 
@@ -46,13 +56,18 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                 style: TextStyle(
                     color: PlunesColors.BLACKCOLOR,
                     fontWeight: FontWeight.w500,
-                    fontSize: 20,
-                    decoration: TextDecoration.underline,
-                    decorationThickness: 2.0),
+                    fontSize: 15),
               )),
-//                Tab(child: Text("Reviews"))
+              Tab(
+                  child: Text(
+                "Reviews",
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15),
+              ))
             ],
-            indicatorColor: Colors.transparent,
+//            indicatorColor: Colors.transparent,
           ),
           Expanded(
               child: TabBarView(
@@ -62,7 +77,31 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                       _user.achievements.isEmpty)
                   ? _getEmptyView("No achievements found")
                   : _getAchievementListView(),
-//            _getReviewsListView()
+              StreamBuilder<RequestState>(
+                  stream: _userBloc.rateAndReviewStream,
+                  builder: (context, snapshot) {
+                    if (_hasHitOnce == null || !_hasHitOnce) {
+                      _hasHitOnce = true;
+                      _getReviews();
+                    }
+                    if (snapshot.data is RequestInProgress) {
+                      return CustomWidgets().getProgressIndicator();
+                    } else if (snapshot.data is RequestSuccess) {
+                      RequestSuccess _requestSuccess = snapshot.data;
+                      _rateAndReviewList = _requestSuccess.response;
+
+                      _userBloc.addStateInReviewStream(null);
+                    } else if (snapshot.data is RequestFailed) {
+                      RequestFailed _requestFailed = snapshot.data;
+                      _failureCause = _requestFailed.failureCause;
+                      _userBloc.addStateInReviewStream(null);
+                    }
+                    return (_failureCause != null ||
+                            _rateAndReviewList == null ||
+                            _rateAndReviewList.isEmpty)
+                        ? _getEmptyView(_failureCause ?? "No reviews found")
+                        : _getReviewsListView();
+                  })
             ],
             controller: _tabController,
           ))
@@ -91,9 +130,9 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
       child: ListView.builder(
         itemBuilder: (context, index) {
-          return _getReviewView();
+          return _getReviewView(index);
         },
-        itemCount: 50 ?? 0,
+        itemCount: _rateAndReviewList.length,
       ),
     );
   }
@@ -195,8 +234,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
     );
   }
 
-  Widget _getReviewView() {
-    int x;
+  Widget _getReviewView(int index) {
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: AppConfig.horizontalBlockSize * 3,
@@ -205,18 +243,23 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
         children: <Widget>[
           Row(
             children: <Widget>[
-              x == null
-                  ? CustomWidgets().getBackImageView("sd dd")
+              (_rateAndReviewList[index].userImage == null ||
+                      _rateAndReviewList[index].userImage.isEmpty ||
+                      !_rateAndReviewList[index].userImage.contains("http"))
+                  ? CustomWidgets().getBackImageView(
+                      _rateAndReviewList[index].userName,
+                      width: 45,
+                      height: 45)
                   : CircleAvatar(
                       child: Container(
-                        height: 60,
-                        width: 60,
+                        height: 45,
+                        width: 45,
                         child: ClipOval(
                             child: CustomWidgets().getImageFromUrl(
-                                "https://image.shutterstock.com/z/stock-photo-bright-spring-view-of-the-cameo-island-picturesque-morning-scene-on-the-port-sostis-zakinthos-1048185397.jpg",
+                                _rateAndReviewList[index].userImage,
                                 boxFit: BoxFit.fill)),
                       ),
-                      radius: 30,
+                      radius: 22.5,
                     ),
               Expanded(
                 child: Padding(
@@ -227,36 +270,37 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        "Sonam Singhdsjkfkasdhs",
+                        _rateAndReviewList[index]?.userName ?? PlunesStrings.NA,
                         style: TextStyle(
                             color: PlunesColors.BLACKCOLOR, fontSize: 18),
                       ),
-                      CustomWidgets().showRatingBar(4.0)
+                      CustomWidgets().showRatingBar(
+                          _rateAndReviewList[index].rating?.toDouble() ?? 1.0)
                     ],
                   ),
                 ),
                 flex: 6,
               ),
-              Expanded(
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
-                  child: Text("10 m Ago"),
-                ),
-                flex: 3,
-              )
+//              Expanded(
+//                child: Padding(
+//                  padding:
+//                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
+//                  child: Text(_rateAndReviewList[index].),
+//                ),
+//                flex: 3,
+//              )
             ],
           ),
           Container(
             margin: EdgeInsets.only(
                 top: AppConfig.verticalBlockSize * 1.2,
                 bottom: AppConfig.verticalBlockSize * 1.2),
-            height: AppConfig.verticalBlockSize * 13,
+//            height: AppConfig.verticalBlockSize * 13,
             width: double.infinity,
             child: Text(
-              "review here",
+              _rateAndReviewList[index].description ?? PlunesStrings.NA,
               textAlign: TextAlign.start,
-              maxLines: 4,
+              maxLines: 5,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
@@ -282,5 +326,9 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
         child: Text(message),
       ),
     );
+  }
+
+  void _getReviews() {
+    _userBloc.getRateAndReviews(_user.uid);
   }
 }

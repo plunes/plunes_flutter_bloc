@@ -22,6 +22,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:share/share.dart';
 import 'CommonMethods.dart';
@@ -2473,22 +2474,40 @@ class CustomWidgets {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          (doctorsData != null &&
-                                  doctorsData.imageUrl != null &&
-                                  doctorsData.imageUrl.isNotEmpty)
-                              ? CircleAvatar(
-                                  child: Container(
-                                    height: 60,
-                                    width: 60,
-                                    child: ClipOval(
-                                        child: CustomWidgets().getImageFromUrl(
-                                            doctorsData.imageUrl,
-                                            boxFit: BoxFit.fill)),
-                                  ),
-                                  radius: 30,
-                                )
-                              : CustomWidgets().getBackImageView(
-                                  doctorsData?.name ?? _getEmptyString()),
+                          InkWell(
+                              onTap: () {
+                                List<Photo> photos = [];
+                                if ((doctorsData != null &&
+                                    doctorsData.imageUrl != null &&
+                                    doctorsData.imageUrl.isNotEmpty)) {
+                                  photos.add(
+                                      Photo(assetName: doctorsData.imageUrl));
+                                }
+                                if (photos != null && photos.isNotEmpty) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PageSlider(photos, 0)));
+                                }
+                              },
+                              child: (doctorsData != null &&
+                                      doctorsData.imageUrl != null &&
+                                      doctorsData.imageUrl.isNotEmpty)
+                                  ? CircleAvatar(
+                                      child: Container(
+                                        height: 60,
+                                        width: 60,
+                                        child: ClipOval(
+                                            child: CustomWidgets()
+                                                .getImageFromUrl(
+                                                    doctorsData.imageUrl,
+                                                    boxFit: BoxFit.fill)),
+                                      ),
+                                      radius: 30,
+                                    )
+                                  : CustomWidgets().getBackImageView(
+                                      doctorsData?.name ?? _getEmptyString())),
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.only(
@@ -2884,7 +2903,7 @@ class CustomWidgets {
                     } else if (snapshot.data is RequestSuccess) {
                       return Card(
                         margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 24.5,
+                            vertical: AppConfig.verticalBlockSize * 26.5,
                             horizontal: AppConfig.horizontalBlockSize * 6),
                         shape: RoundedRectangleBorder(
                             borderRadius:
@@ -2892,7 +2911,7 @@ class CustomWidgets {
                         child: Container(
                           alignment: Alignment.topCenter,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                               Align(
@@ -2908,39 +2927,47 @@ class CustomWidgets {
                                 ),
                               ),
                               Container(
-                                height: AppConfig.verticalBlockSize * 22,
-                                width: AppConfig.horizontalBlockSize * 65,
+//                                height: AppConfig.verticalBlockSize * 30,
+//                                width: AppConfig.horizontalBlockSize * 65,
                                 alignment: Alignment.center,
                                 margin: EdgeInsets.only(
-                                    bottom: AppConfig.verticalBlockSize * 4),
-                                child: Image.asset(PlunesImages.bdSupportImage),
-                              ),
-                              Text(
-                                "Thanks for your valueable feedback.",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w600),
+                                    bottom: AppConfig.verticalBlockSize * 4,
+                                    left: AppConfig.horizontalBlockSize * 15,
+                                    right: AppConfig.horizontalBlockSize * 15),
+                                child:
+                                    Image.asset(PlunesImages.reviewSubmitImage),
                               ),
                               Container(
                                 margin: EdgeInsets.only(
-                                    left: AppConfig.horizontalBlockSize * 26,
-                                    right: AppConfig.horizontalBlockSize * 26,
-                                    top: AppConfig.verticalBlockSize * 4),
-                                child: InkWell(
-                                  onTap: () => Navigator.pop(context),
-                                  child: getRoundedButton(
-                                    "Done",
-                                    AppConfig.horizontalBlockSize * 5,
-                                    PlunesColors.GREENCOLOR,
-                                    AppConfig.horizontalBlockSize * 10,
-                                    AppConfig.verticalBlockSize * 1,
-                                    PlunesColors.WHITECOLOR,
-                                    hasBorder: true,
-                                  ),
+                                    left: AppConfig.horizontalBlockSize * 15,
+                                    right: AppConfig.horizontalBlockSize * 15),
+                                child: Text(
+                                  PlunesStrings.thankYouForValuableFeedback,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontWeight: FontWeight.w600),
                                 ),
-                              )
+                              ),
+//                              Container(
+//                                margin: EdgeInsets.only(
+//                                    left: AppConfig.horizontalBlockSize * 26,
+//                                    right: AppConfig.horizontalBlockSize * 26,
+//                                    top: AppConfig.verticalBlockSize * 4),
+//                                child: InkWell(
+//                                  onTap: () => Navigator.pop(context),
+//                                  child: getRoundedButton(
+//                                    "Done",
+//                                    AppConfig.horizontalBlockSize * 5,
+//                                    PlunesColors.GREENCOLOR,
+//                                    AppConfig.horizontalBlockSize * 10,
+//                                    AppConfig.verticalBlockSize * 1,
+//                                    PlunesColors.WHITECOLOR,
+//                                    hasBorder: true,
+//                                  ),
+//                                ),
+//                              )
                             ],
                           ),
                         ),
@@ -3087,7 +3114,7 @@ class CustomWidgets {
                                     textInputAction: TextInputAction.newline,
                                     maxLines: 2,
                                     controller: _reviewController,
-                                    maxLength: 250,
+                                    maxLength: 150,
                                   ),
                                 ),
                                 Container(
