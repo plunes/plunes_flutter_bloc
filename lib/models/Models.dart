@@ -836,6 +836,8 @@ class RateAndReview {
   String userName;
   String userImage;
 
+  int createdAt;
+
   RateAndReview(
       {this.sId,
       this.professionalId,
@@ -845,9 +847,11 @@ class RateAndReview {
       this.rating,
       this.title,
       this.userName,
+      this.createdAt,
       this.userImage});
 
   RateAndReview.fromJson(Map<String, dynamic> json) {
+    print("json $json");
     sId = json['_id'];
     professionalId = json['professionalId'];
     userId = json['userId'];
@@ -856,6 +860,7 @@ class RateAndReview {
     rating = json['rating'];
     title = json['title'];
     userName = json['userName'];
+    createdAt = json['createdAt'];
     userImage = json['userImage'];
   }
 

@@ -48,6 +48,7 @@ class FirebaseNotification {
   static const String bookingScreen = "booking"; // for all
   static const String plockrScreen = "plockr";
   static const String solutionScreen = "solution";
+  static const String reviewScreen = "review";
   int _notificationCount = 0, _plockrCount = 0;
 
   int getPlockrCount() {
@@ -140,11 +141,12 @@ class FirebaseNotification {
         );
       } else if (payLoad["data"]['screen'] == bookingScreen) {
         widget = AppointmentMainScreen(bookingId: payLoad['data']['id']);
+      } else if (payLoad["data"]['screen'] == reviewScreen) {
+        widget = AppointmentMainScreen(
+            bookingId: payLoad['data']['id'], shouldOpenReviewPopup: true);
       } else if (payLoad["data"]['screen'] == insightScreen) {
         isHomeScreen = true;
-        widget = HomeScreen(
-          screenNo: Constants.homeScreenNumber,
-        );
+        widget = HomeScreen(screenNo: Constants.homeScreenNumber);
       } else if (payLoad["data"]['screen'] == solutionScreen) {
         if (payLoad["data"]['id'] != null && payLoad["data"]['id'].isNotEmpty) {
           widget = SolutionReceivedScreen(
@@ -245,6 +247,11 @@ class FirebaseNotification {
     } else if (notificationModel.notificationType == bookingScreen) {
       widget = AppointmentMainScreen(
         bookingId: notificationModel.id,
+      );
+    } else if (notificationModel.notificationType == reviewScreen) {
+      widget = AppointmentMainScreen(
+        bookingId: notificationModel.id,
+        shouldOpenReviewPopup: true,
       );
     } else if (notificationModel.notificationType == insightScreen) {
       isHomeScreen = true;

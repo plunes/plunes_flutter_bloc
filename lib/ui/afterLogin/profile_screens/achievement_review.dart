@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
@@ -30,14 +33,29 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
   List<RateAndReview> _rateAndReviewList = [];
   String _failureCause;
   bool _hasHitOnce = false;
+  StreamController _streamController;
+  Timer _timer;
 
   @override
   void initState() {
     _user = widget.user;
     _userBloc = widget.userBloc;
     _rateAndReviewList = [];
+    _streamController = StreamController.broadcast();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _streamController?.add(null);
+      _timer = timer;
+    });
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _streamController?.close();
+    _tabController?.dispose();
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -281,14 +299,23 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                 ),
                 flex: 6,
               ),
-//              Expanded(
-//                child: Padding(
-//                  padding:
-//                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
-//                  child: Text(_rateAndReviewList[index].),
-//                ),
-//                flex: 3,
-//              )
+              Expanded(
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
+                  child: StreamBuilder<Object>(
+                      stream: _streamController.stream,
+                      builder: (context, snapshot) {
+                        return Text(
+                          DateUtil.getDuration(
+                                  _rateAndReviewList[index].createdAt ?? 0) ??
+                              PlunesStrings.NA,
+                          style: TextStyle(fontSize: AppConfig.smallFont),
+                        );
+                      }),
+                ),
+                flex: 3,
+              )
             ],
           ),
           Container(

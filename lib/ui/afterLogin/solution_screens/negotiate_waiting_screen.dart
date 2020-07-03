@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -32,6 +33,8 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
   double _movingUnit = 110;
   bool _progressEnabled;
   String _failureCause;
+  Completer<GoogleMapController> _googleMapController = Completer();
+  GoogleMapController _mapController;
 
   @override
   void initState() {
@@ -160,8 +163,48 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   ],
                 )
               : Container(
-                  child: ListView(
+                  child: Stack(
                     children: <Widget>[
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        top: 0,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Flexible(
+                              child: GoogleMap(
+                                onMapCreated: (mapController) {
+                                  if (_googleMapController != null &&
+                                      _googleMapController.isCompleted) {
+                                    return;
+                                  }
+                                  _mapController = mapController;
+                                  _googleMapController.complete(_mapController);
+                                },
+                                initialCameraPosition: CameraPosition(
+                                    target: LatLng(
+                                        double.parse(UserManager()
+                                            .getUserDetails()
+                                            .latitude),
+                                        double.parse(UserManager()
+                                            .getUserDetails()
+                                            .longitude)),
+                                    zoom: 12,
+                                    tilt: 0.5),
+                                padding: EdgeInsets.all(0.0),
+                                myLocationEnabled: false,
+                                zoomControlsEnabled: false,
+                                zoomGesturesEnabled: false,
+                                myLocationButtonEnabled: false,
+                                mapType: MapType.satellite,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -236,18 +279,21 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                 PlunesStrings.weAreNegotiatingBestSolution,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
+                                    color: Colors.white,
                                     fontSize: AppConfig.largeFont,
                                     fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: AppConfig.verticalBlockSize * 20,
-                          ),
+//                      SizedBox(
+//                        height: AppConfig.verticalBlockSize * 20,
+//                      ),
+                          Expanded(child: Container()),
                           Center(
                             child: Text(
                               PlunesStrings.receiving,
                               style: TextStyle(
+                                  color: Colors.white,
                                   fontSize: AppConfig.smallFont,
                                   fontWeight: FontWeight.w500),
                             ),
@@ -287,7 +333,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: PlunesColors.LIGHTGREENCOLOR),
+                color: PlunesColors.LIGHTGREYCOLOR),
             padding: EdgeInsets.all(10),
             child: Stack(
               children: <Widget>[
@@ -310,7 +356,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                 PlunesStrings.pleaseMakeSureText,
                                 maxLines: 3,
                                 style: TextStyle(
-                                    color: PlunesColors.GREENCOLOR,
+                                    color: PlunesColors.BLACKCOLOR,
                                     fontSize: AppConfig.mediumFont,
                                     fontWeight: FontWeight.w500),
                               ),
