@@ -633,9 +633,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
         ),
         Container(
           height: controller
-              ? AppConfig.verticalBlockSize *
-                      (_catalogueList.length * _catalogueList.length) -
-                  75
+              ? AppConfig.verticalBlockSize * _catalogueList.length * 4
               : AppConfig.verticalBlockSize * 16,
           width: double.infinity,
           child: ListView.builder(
