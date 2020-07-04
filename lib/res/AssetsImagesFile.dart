@@ -45,6 +45,7 @@ class PlunesImages {
       "assets/images/validForOneHourOnlyWatch.png";
   static const String refCodeUsedThrice = "assets/images/refCodeUsedThrice.png";
   static const String plockrBgImage = "assets/images/plockrBgImage.png";
+  static const String menuicon = "assets/images/profile/menuicon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

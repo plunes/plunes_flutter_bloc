@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:plunes/OpenMap.dart';
@@ -24,6 +25,7 @@ class HospitalProfile extends BaseActivity {
 }
 
 class _HospitalProfileState extends BaseState<HospitalProfile> {
+  bool controller = false;
   UserBloc _userBloc;
   LoginPost _profileResponse;
   List<SpecialityModel> specialityList;
@@ -397,126 +399,154 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                 ),
               ),
               Container(
-                height: AppConfig.verticalBlockSize * 40,
+                height: AppConfig.verticalBlockSize * 10,
                 width: double.infinity,
-                child: GridView.builder(
+                child: ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 4.0,
-                      childAspectRatio: 0.8,
-                    ),
-                    itemCount: _profileResponse.user.doctorsData.length > 6
-                        ? 6
+                    scrollDirection: Axis.horizontal,
+//                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+//                      crossAxisCount: 2,
+//                      crossAxisSpacing: 4.0,
+//                      childAspectRatio: 0.8,
+//                    ),
+                    itemCount: _profileResponse.user.doctorsData.length > 2
+                        ? 2
                         : _profileResponse.user.doctorsData.length,
                     itemBuilder: (context, itemIndex) {
                       return InkWell(
                         onTap: () => _openDocDetails(
                             _profileResponse.user.doctorsData[itemIndex]),
-                        child: Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 0.5,
-                              horizontal: AppConfig.horizontalBlockSize * 0.5),
-                          padding: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 0.5),
-                          decoration: BoxDecoration(
-                              color: PlunesColors.WHITECOLOR,
-                              borderRadius: BorderRadius.all(Radius.circular(
-                                  AppConfig.horizontalBlockSize * 3.5)),
-                              border: Border.all(color: Color(0xFFE0E0E0))),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              (_profileResponse.user.doctorsData[itemIndex]
-                                              .imageUrl ==
-                                          null ||
-                                      _profileResponse
-                                          .user
-                                          .doctorsData[itemIndex]
-                                          .imageUrl
-                                          .isEmpty)
-                                  ? CustomWidgets().getBackImageView(
-                                      _profileResponse.user
-                                              .doctorsData[itemIndex].name ??
-                                          _getEmptyString(),
-                                      width: 45,
-                                      height: 45)
-                                  : CircleAvatar(
+
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            (_profileResponse.user.doctorsData[itemIndex]
+                                            .imageUrl ==
+                                        null ||
+                                    _profileResponse.user.doctorsData[itemIndex]
+                                        .imageUrl.isEmpty)
+                                ? CustomWidgets().getBackImageView(
+                                    _profileResponse
+                                            .user.doctorsData[itemIndex].name ??
+                                        _getEmptyString(),
+                                    width: 45,
+                                    height: 45)
+                                : CircleAvatar(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Color(0xFFE0E0E0),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(30))),
                                       child: Container(
-                                        decoration: BoxDecoration(
-                                            color: Color(0xFFE0E0E0),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(30))),
-                                        child: Container(
-                                          margin: EdgeInsets.all(1.5),
-                                          height: 45,
-                                          width: 45,
-                                          child: ClipOval(
-                                              child: CustomWidgets()
-                                                  .getImageFromUrl(
-                                                      _profileResponse
-                                                          .user
-                                                          .doctorsData[
-                                                              itemIndex]
-                                                          .imageUrl,
-                                                      boxFit: BoxFit.fill)),
-                                        ),
+                                        margin: EdgeInsets.all(1.5),
+                                        height: 45,
+                                        width: 45,
+                                        child: ClipOval(
+                                            child: CustomWidgets()
+                                                .getImageFromUrl(
+                                                    _profileResponse
+                                                        .user
+                                                        .doctorsData[itemIndex]
+                                                        .imageUrl,
+                                                    boxFit: BoxFit.fill)),
                                       ),
-                                      radius: 22.5,
                                     ),
-                              Container(
-                                width: double.infinity,
+                                    radius: 22.5,
+                                  ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+//                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      width: AppConfig.horizontalBlockSize * 26,
+//                                      margin: EdgeInsets.only(
+//                                          top: AppConfig.verticalBlockSize * 1),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              AppConfig.horizontalBlockSize *
+                                                  0.8),
+                                      child: Text(
+                                        _profileResponse
+                                                .user
+                                                ?.doctorsData[itemIndex]
+                                                ?.name ??
+                                            _getEmptyString(),
+                                        maxLines: 1,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            color: PlunesColors.BLACKCOLOR,
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                    Image.asset(PlunesImages.menuicon,
+                                        height: 9, width: 9),
+                                  ],
+                                ),
+                                Container(
+                                  width: AppConfig.horizontalBlockSize * 26,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 0.8),
+                                  child: Text(
+                                    _profileResponse
+                                            .user
+                                            ?.doctorsData[itemIndex]
+                                            .designation ??
+                                        _getEmptyString(),
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: PlunesColors.GREYCOLOR,
+                                        fontSize: 11),
+                                  ),
+                                ),
+                                Container(
+                                  width: AppConfig.horizontalBlockSize * 26,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 0.8),
+                                  child: Text(
+                                    _getExpr(itemIndex) ?? _getEmptyString(),
+                                    textAlign: TextAlign.left,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        color: PlunesColors.GREYCOLOR,
+                                        fontSize: 11),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Container(
                                 margin: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 1),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 0.8),
-                                child: Text(
-                                  _profileResponse
-                                          .user?.doctorsData[itemIndex]?.name ??
-                                      _getEmptyString(),
-                                  maxLines: 1,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: PlunesColors.BLACKCOLOR,
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 12),
-                                ),
+                                    right: AppConfig.verticalBlockSize * 1),
+                                height: 50,
+                                color: PlunesColors.GREYCOLOR,
+                                width: 0.5,
                               ),
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 0.8),
-                                child: Text(
-                                  _profileResponse.user?.doctorsData[itemIndex]
-                                          .designation ??
-                                      _getEmptyString(),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      color: PlunesColors.GREYCOLOR,
-                                      fontSize: 11),
-                                ),
-                              ),
-                              Container(
-                                width: double.infinity,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 0.8),
-                                child: Text(
-                                  _getExpr(itemIndex) ?? _getEmptyString(),
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  style: TextStyle(
-                                      color: PlunesColors.GREYCOLOR,
-                                      fontSize: 11),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
+
+//                          margin: EdgeInsets.symmetric(
+//                              vertical: AppConfig.verticalBlockSize * 0.5,
+//                              horizontal: AppConfig.horizontalBlockSize * 0.5),
+//                          padding: EdgeInsets.symmetric(
+//                              vertical: AppConfig.verticalBlockSize * 0.5),
+//                          decoration: BoxDecoration(
+//                              color: PlunesColors.WHITECOLOR,
+//                              borderRadius: BorderRadius.all(Radius.circular(
+//                                  AppConfig.horizontalBlockSize * 3.5)),
+//                              border: Border.all(color: Color(0xFFE0E0E0))),
                       );
                     }),
               ),
@@ -541,7 +571,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                           style: TextStyle(
                             color: PlunesColors.GREENCOLOR,
                             fontSize: 16,
-                            decoration: TextDecoration.underline,
+//                            decoration: TextDecoration.underline,
                             decorationThickness: 2.0,
                           ),
                         ),
@@ -602,9 +632,14 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
           ),
         ),
         Container(
-          height: AppConfig.verticalBlockSize * 20,
+          height: controller
+              ? AppConfig.verticalBlockSize *
+                      (_catalogueList.length * _catalogueList.length) -
+                  75
+              : AppConfig.verticalBlockSize * 16,
           width: double.infinity,
           child: ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
@@ -638,16 +673,42 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                     Expanded(
                       child: Text(
                         PlunesStrings.knowMore,
-                        style: TextStyle(fontSize: 14),
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey[400],
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.end,
                       ),
-                      flex: 2,
+                      flex: 1,
                     )
                   ],
                 ),
               );
             },
-            itemCount: _catalogueList?.length ?? 0,
+            itemCount: controller
+                ? _catalogueList?.length
+                : _catalogueList.length < 4 ? _catalogueList?.length : 4,
           ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Builder(builder: (context) {
+              return FlatButton(
+                onPressed: () {
+                  setState(() {
+                    controller = !controller;
+                  });
+                },
+                child: Text(
+                  controller ? "See less Services ʌ" : " See more Services v",
+                  style:
+                      TextStyle(color: PlunesColors.GREENCOLOR, fontSize: 16),
+                ),
+                focusColor: PlunesColors.LIGHTGREENCOLOR,
+              );
+            })
+          ],
         ),
         Container(
           height: 0.5,

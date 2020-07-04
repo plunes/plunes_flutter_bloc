@@ -52,6 +52,7 @@ dependencies:
   bottom_navigation_badge: ^1.0.3
   flutter_typeahead: ^1.6.1
   flutter_local_notifications: ^1.4.4+1
+  expandable: ^4.1.4
   share: ^0.6.3+1
   dio: ^3.0.9
   event_bus: ^1.1.1
@@ -223,6 +224,7 @@ flutter:
     - assets/images/profile/uniIcon.png
     - assets/images/profile/pathIcon.png
     - assets/images/profile/genderIcon.png
+    - assets/images/profile/menuicon.png
 
 
     - assets/images/bid/location.png

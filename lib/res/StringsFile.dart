@@ -170,7 +170,7 @@ class PlunesStrings {
   static const String serviceList = "Service List";
   static const String seeMoreDoctors = "See more Doctors";
   static const String unableToLoadServices = "No Services available";
-  static const String knowMore = "Know More";
+  static const String knowMore = ">";
 
   ///Coupon
   static const String pleaseEnterYourCoupon = "Please enter coupon";
