@@ -94,8 +94,9 @@ class SearchedSolutionRepo {
     } else {
       String _loc = "NA";
       if (lat != null && long != null && lat != 0.0 && long != 0.0) {
-        _loc = await LocationUtil()
-            .getAddressFromLatLong(lat.toString(), long.toString());
+        _loc = await LocationUtil().getAddressFromLatLong(
+            lat.toString(), long.toString(),
+            needFullLocation: true);
       }
       queryParams = {
         "serviceId": catalogueData.serviceId,

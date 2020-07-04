@@ -282,6 +282,7 @@ class _TestProcedureSubScreenState
   }
 
   _onSolutionItemTap(CatalogueData catalogueData) async {
+    FocusScope.of(context).requestFocus(FocusNode());
     if (!UserManager().getIsUserInServiceLocation()) {
       await showDialog(
           context: context,

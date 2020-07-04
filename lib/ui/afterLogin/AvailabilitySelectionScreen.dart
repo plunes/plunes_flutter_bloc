@@ -728,7 +728,7 @@ class _AvailabilitySelectionScreenState
       } else if (check == 'to1') {
         if (from1.isBefore(time)) {
           to1 = time;
-          _showSubmitNextSlotPopup("");
+          _showSubmitNextSlotPopup();
           Future.delayed(Duration(milliseconds: 2000)).then((value) async {
             if (mounted) {
               Navigator.pop(context);
@@ -760,7 +760,42 @@ class _AvailabilitySelectionScreenState
         }
       } else if (check == 'to2') {
         if (from2.isBefore(time)) {
-          to2 = time;
+          _showSubmitNextSlotPopup(isCompleted: true);
+          Future.delayed(Duration(milliseconds: 2000)).then((value) async {
+            if (mounted) {
+              Navigator.pop(context);
+            }
+            Future.delayed(Duration(milliseconds: 400)).then((value) async {
+              if (mounted && context != null) {
+                to2 = time;
+                from_1[position] = DateUtil.getTimeWithAmAndPmFormat(from1);
+                to_1[position] = DateUtil.getTimeWithAmAndPmFormat(to1);
+                from_2[position] = DateUtil.getTimeWithAmAndPmFormat(from2);
+                to_2[position] = DateUtil.getTimeWithAmAndPmFormat(to2);
+                if (position == 0) {
+                  var result = await showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (
+                      BuildContext context,
+                    ) =>
+                        _confirmation(context),
+                  );
+                  if (result != null &&
+                      result.toString().isNotEmpty &&
+                      result == "Done") {
+                    for (int i = 0; i < days.length; i++) {
+                      from_1[i] = from_1[0];
+                      from_2[i] = from_2[0];
+                      to_1[i] = to_1[0];
+                      to_2[i] = to_2[0];
+                    }
+                  }
+                }
+                _setState();
+              }
+            });
+          });
         } else {
           from1 = null;
           to1 = null;
@@ -768,30 +803,6 @@ class _AvailabilitySelectionScreenState
           to2 = time;
           _showSnackBar("Please select valid time");
           return;
-        }
-        from_1[position] = DateUtil.getTimeWithAmAndPmFormat(from1);
-        to_1[position] = DateUtil.getTimeWithAmAndPmFormat(to1);
-        from_2[position] = DateUtil.getTimeWithAmAndPmFormat(from2);
-        to_2[position] = DateUtil.getTimeWithAmAndPmFormat(to2);
-        if (position == 0) {
-          var result = await showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (
-              BuildContext context,
-            ) =>
-                _confirmation(context),
-          );
-          if (result != null &&
-              result.toString().isNotEmpty &&
-              result == "Done") {
-            for (int i = 0; i < days.length; i++) {
-              from_1[i] = from_1[0];
-              from_2[i] = from_2[0];
-              to_1[i] = to_1[0];
-              to_2[i] = to_2[0];
-            }
-          }
         }
       }
       _setState();
@@ -802,7 +813,7 @@ class _AvailabilitySelectionScreenState
     widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, _scaffoldKey);
   }
 
-  void _showSubmitNextSlotPopup(String s) {
+  void _showSubmitNextSlotPopup({bool isCompleted = false}) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -821,7 +832,7 @@ class _AvailabilitySelectionScreenState
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Text(
-                      "Slot one filled ",
+                      isCompleted ? "Slot's filled!" : "Slot one filled ",
                       style: TextStyle(
                           color: PlunesColors.BLACKCOLOR,
                           fontSize: 15,
@@ -833,17 +844,19 @@ class _AvailabilitySelectionScreenState
                     )
                   ],
                 ),
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                  child: Text(
-                    PlunesStrings.enterTheRestToSubmit,
-                    style: TextStyle(
-                        color: PlunesColors.BLACKCOLOR,
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal),
-                  ),
-                ),
+                isCompleted
+                    ? Container()
+                    : Padding(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 1),
+                        child: Text(
+                          PlunesStrings.enterTheRestToSubmit,
+                          style: TextStyle(
+                              color: PlunesColors.BLACKCOLOR,
+                              fontSize: 15,
+                              fontWeight: FontWeight.normal),
+                        ),
+                      ),
               ],
             ),
           );

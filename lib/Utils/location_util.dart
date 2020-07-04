@@ -49,8 +49,8 @@ class LocationUtil {
     await Permission.openSettings();
   }
 
-  Future<String> getAddressFromLatLong(
-      String latitude, String longitude) async {
+  Future<String> getAddressFromLatLong(String latitude, String longitude,
+      {bool needFullLocation = false}) async {
     String address = PlunesStrings.enterYourLocation;
     List<Address> addresses;
     try {
@@ -58,8 +58,23 @@ class LocationUtil {
           new Coordinates(double.parse(latitude), double.parse(longitude));
       addresses =
           await Geocoder.local.findAddressesFromCoordinates(coordinates);
-      address = addresses.first.addressLine;
+      if (addresses != null &&
+          addresses.isNotEmpty &&
+          addresses.first.locality != null &&
+          addresses.first.locality.isNotEmpty) {
+        if (addresses.first.subLocality != null &&
+            addresses.first.subLocality.isNotEmpty) {
+          address = addresses.first.subLocality;
+        } else {
+          address = addresses.first.locality;
+        }
+      } else {
+        address = addresses.first.addressLine;
+      }
     } catch (e) {}
+    if (needFullLocation) {
+      return addresses?.first?.addressLine ?? address;
+    }
     return address;
   }
 }

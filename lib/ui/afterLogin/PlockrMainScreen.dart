@@ -113,8 +113,8 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: ExactAssetImage(PlunesImages.plockrBgImage),
-              alignment: Alignment.bottomCenter),
+              image: ExactAssetImage(PlunesImages.plockrBgImage, scale: 3.5),
+              alignment: Alignment.center),
           color: PlunesColors.LIGHTGREYCOLOR),
       child: Stack(
         children: <Widget>[

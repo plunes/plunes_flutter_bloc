@@ -228,6 +228,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         return;
       }
     }
+    FocusScope.of(context).requestFocus(FocusNode());
     Navigator.push(
         context,
         MaterialPageRoute(
