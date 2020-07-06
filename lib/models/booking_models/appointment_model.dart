@@ -55,7 +55,7 @@ class AppointmentModel {
   String referenceId;
   bool doctorConfirmation, isCentre;
   List<PaymentStatus> paymentStatus;
-  String serviceProviderType, alternateNumber;
+  String serviceProviderType, alternateNumber, centreNumber, adminHosNumber;
 
   @override
   bool operator ==(Object other) =>
@@ -112,9 +112,15 @@ class AppointmentModel {
       this.lat,
       this.serviceProviderType,
       this.isCentre,
-      this.alternateNumber});
+      this.alternateNumber,
+      this.centreNumber,
+      this.adminHosNumber});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
+    print("json['professionalName'] ${json['professionalName']}");
+    print("json['centerMobileNumber'] ${json['centerMobileNumber']}");
+    print("json['adminMobileNumber'] ${json['adminMobileNumber']}");
+
     professionalId = json['professionalId'];
     solutionServiceId = json['solutionServiceId'];
     serviceId = json['serviceId'];
@@ -168,6 +174,8 @@ class AppointmentModel {
     serviceProviderType = json['serviceProviderType'];
     isCentre = json['isCenter'];
     alternateNumber = json['alternateNumber'];
+    centreNumber = json['centerMobileNumber'];
+    adminHosNumber = json['adminMobileNumber'];
   }
 
   Map<String, dynamic> toJson() {

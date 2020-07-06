@@ -99,4 +99,5 @@ class Urls {
   static const String GET_COUPON_TEXT_URL = "user/couponText";
   static const String GET_CENTRES_DATA = "user/getAllCenters";
   static const String RATE_AND_REVIEW = "review";
+  static const String REQUEST_INVOICE_URL = 'booking/invoice';
 }

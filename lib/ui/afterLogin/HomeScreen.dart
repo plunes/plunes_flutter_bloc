@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
@@ -493,6 +494,26 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                               padding: const EdgeInsets.all(8.0),
                               child: widget.createTextViews(
                                   plunesStrings.availOfferMsg,
+                                  16.0,
+                                  colorsFile.lightGrey2,
+                                  TextAlign.left,
+                                  FontWeight.w100)),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          LauncherUtil.launchUrl("tel://7011311900");
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.only(top: 2.0),
+                          height: 50,
+                          color: Color(CommonMethods.getColorHexFromStr(
+                              colorsFile.white0)),
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: widget.createTextViews(
+                                  PlunesStrings.reachUsAt,
                                   16.0,
                                   colorsFile.lightGrey2,
                                   TextAlign.left,

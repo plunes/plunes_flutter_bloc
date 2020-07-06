@@ -213,6 +213,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
       result.hasSeen = true;
       _notificationBloc.addIntoStream(null);
     }
+    if (result.notificationScreen == null ||
+        result.notificationScreen.isEmpty) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.homeScreenNumber)),
+          (_) => false);
+    }
     if (result.notificationScreen == FirebaseNotification.solutionScreen &&
         UserManager().getUserDetails().userType == Constants.user) {
       Navigator.push(

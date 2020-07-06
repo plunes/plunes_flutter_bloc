@@ -199,12 +199,76 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                 zoomControlsEnabled: false,
                                 zoomGesturesEnabled: false,
                                 myLocationButtonEnabled: false,
-                                mapType: MapType.satellite,
+                                mapType: MapType.normal,
                               ),
                             )
                           ],
                         ),
                       ),
+                      (_start > 8)
+                          ? Positioned(
+                              top: AppConfig.verticalBlockSize * 5,
+                              left: AppConfig.horizontalBlockSize * 4,
+                              child: Container(
+                                child: Image.asset(PlunesImages.doctorMapImage),
+                                height: AppConfig.verticalBlockSize * 15,
+                                width: AppConfig.horizontalBlockSize * 40,
+                              ))
+                          : Container(),
+                      (_start > 8)
+                          ? Positioned(
+                              top: AppConfig.verticalBlockSize * 5,
+                              right: 10.0,
+                              child: Container(
+                                child:
+                                    Image.asset(PlunesImages.hospitalMapImage),
+                                height: AppConfig.verticalBlockSize * 12,
+                                width: AppConfig.horizontalBlockSize * 40,
+                              ))
+                          : Container(),
+                      (_start > 1)
+                          ? Positioned(
+                              top: AppConfig.verticalBlockSize * 30,
+                              right: 10,
+                              left: 0,
+                              child: Container(
+                                child: Image.asset(PlunesImages.labMapImage),
+                                height: AppConfig.verticalBlockSize * 12,
+                                width: AppConfig.horizontalBlockSize * 40,
+                              ))
+                          : Container(),
+                      (_start > 5)
+                          ? Positioned(
+                              top: AppConfig.verticalBlockSize * 55,
+                              right: 10.0,
+                              child: Container(
+                                child: Image.asset(PlunesImages.labMapImage),
+                                height: AppConfig.verticalBlockSize * 12,
+                                width: AppConfig.horizontalBlockSize * 40,
+                              ))
+                          : Container(),
+                      (_start > 3)
+                          ? Positioned(
+                              top: AppConfig.verticalBlockSize * 45,
+                              left: 10.0,
+                              child: Container(
+                                child:
+                                    Image.asset(PlunesImages.hospitalMapImage),
+                                height: AppConfig.verticalBlockSize * 12,
+                                width: AppConfig.horizontalBlockSize * 40,
+                              ))
+                          : Container(),
+                      (_start > 7)
+                          ? Positioned(
+                              bottom: AppConfig.verticalBlockSize * 18,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                child: Image.asset(PlunesImages.doctorMapImage),
+                                height: AppConfig.verticalBlockSize * 15,
+                                width: AppConfig.horizontalBlockSize * 40,
+                              ))
+                          : Container(),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -223,29 +287,29 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                 child: Stack(
                                   alignment: Alignment.center,
                                   children: <Widget>[
-                                    Container(
-                                      height: AppConfig.verticalBlockSize * 30,
-                                      width: AppConfig.verticalBlockSize * 30,
-                                      decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                              colors: [
-                                                Colors.white,
-                                                Color(0xfffafafa)
-                                              ],
-                                              begin: FractionalOffset.topCenter,
-                                              end:
-                                                  FractionalOffset.bottomCenter,
-                                              stops: [0.0, 1.0],
-                                              tileMode: TileMode.clamp),
-                                          borderRadius: BorderRadius.all(
-                                            Radius.circular(
-                                                AppConfig.verticalBlockSize *
-                                                    30),
-                                          ),
-                                          border: Border.all(
-                                              color: Color(0xfffafafa),
-                                              width: 2)),
-                                    ),
+//                                    Container(
+//                                      height: AppConfig.verticalBlockSize * 30,
+//                                      width: AppConfig.verticalBlockSize * 30,
+//                                      decoration: BoxDecoration(
+//                                          gradient: LinearGradient(
+//                                              colors: [
+//                                                Colors.white,
+//                                                Color(0xfffafafa)
+//                                              ],
+//                                              begin: FractionalOffset.topCenter,
+//                                              end:
+//                                                  FractionalOffset.bottomCenter,
+//                                              stops: [0.0, 1.0],
+//                                              tileMode: TileMode.clamp),
+//                                          borderRadius: BorderRadius.all(
+//                                            Radius.circular(
+//                                                AppConfig.verticalBlockSize *
+//                                                    30),
+//                                          ),
+//                                          border: Border.all(
+//                                              color: Color(0xfffafafa),
+//                                              width: 2)),
+//                                    ),
                                     Align(
                                       child: AnimatedContainer(
                                         duration: Duration(seconds: 1),
@@ -270,21 +334,21 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                           SizedBox(
                             height: AppConfig.verticalBlockSize * 7,
                           ),
-                          Center(
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal:
-                                      AppConfig.horizontalBlockSize * 9),
-                              child: Text(
-                                PlunesStrings.weAreNegotiatingBestSolution,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: AppConfig.largeFont,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
+//                          Center(
+//                            child: Container(
+//                              margin: EdgeInsets.symmetric(
+//                                  horizontal:
+//                                      AppConfig.horizontalBlockSize * 9),
+//                              child: Text(
+//                                PlunesStrings.weAreNegotiatingBestSolution,
+//                                textAlign: TextAlign.center,
+//                                style: TextStyle(
+//                                    color: Colors.black,
+//                                    fontSize: AppConfig.largeFont,
+//                                    fontWeight: FontWeight.bold),
+//                              ),
+//                            ),
+//                          ),
 //                      SizedBox(
 //                        height: AppConfig.verticalBlockSize * 20,
 //                      ),
@@ -293,7 +357,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                             child: Text(
                               PlunesStrings.receiving,
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.black,
                                   fontSize: AppConfig.smallFont,
                                   fontWeight: FontWeight.w500),
                             ),
@@ -333,7 +397,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: PlunesColors.LIGHTGREYCOLOR),
+                color: PlunesColors.WHITECOLOR),
             padding: EdgeInsets.all(10),
             child: Stack(
               children: <Widget>[

@@ -103,15 +103,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             onTap: () {
                               if (appointmentModel.isCentre != null &&
                                   appointmentModel.isCentre &&
-                                  appointmentModel.alternateNumber != null &&
-                                  appointmentModel.alternateNumber.isNotEmpty) {
+                                  appointmentModel.adminHosNumber != null &&
+                                  appointmentModel.adminHosNumber.isNotEmpty) {
                                 LauncherUtil.launchUrl(
-                                    "tel://${appointmentModel.alternateNumber}");
+                                    "tel://${appointmentModel.adminHosNumber}");
                               } else if (appointmentModel.isCentre != null &&
                                   appointmentModel.isCentre &&
-                                  (appointmentModel.alternateNumber == null ||
+                                  (appointmentModel.adminHosNumber == null ||
                                       appointmentModel
-                                          .alternateNumber.isNotEmpty)) {
+                                          .alternateNumber.isEmpty)) {
                                 return;
                               } else if (appointmentModel
                                           .professionalMobileNumber !=
@@ -129,14 +129,14 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               child: Text(
                                 (appointmentModel.isCentre != null &&
                                         appointmentModel.isCentre &&
-                                        appointmentModel.alternateNumber !=
+                                        appointmentModel.adminHosNumber !=
                                             null &&
                                         appointmentModel
-                                            .alternateNumber.isNotEmpty)
-                                    ? appointmentModel.alternateNumber
+                                            .adminHosNumber.isNotEmpty)
+                                    ? appointmentModel.adminHosNumber
                                     : (appointmentModel.isCentre != null &&
                                             appointmentModel.isCentre &&
-                                            (appointmentModel.alternateNumber ==
+                                            (appointmentModel.adminHosNumber ==
                                                     null ||
                                                 appointmentModel.alternateNumber
                                                     .isNotEmpty))
@@ -154,6 +154,40 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               ),
                             ),
                           ),
+                          (appointmentModel.centreNumber != null &&
+                                  appointmentModel.centreNumber.isNotEmpty)
+                              ? SizedBox(height: 5)
+                              : Container(),
+                          (appointmentModel.centreNumber != null &&
+                                  appointmentModel.centreNumber.isNotEmpty)
+                              ? InkWell(
+                                  onTap: () {
+                                    if (appointmentModel.centreNumber != null &&
+                                        appointmentModel
+                                            .centreNumber.isNotEmpty) {
+                                      LauncherUtil.launchUrl(
+                                          "tel://${appointmentModel.centreNumber}");
+                                    }
+                                  },
+                                  onDoubleTap: () {},
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        right: 5.0, top: 5.0, bottom: 5.0),
+                                    child: Text(
+                                      appointmentModel.centreNumber,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.underline,
+                                          decorationStyle:
+                                              TextDecorationStyle.solid,
+                                          decorationThickness: 2.0,
+                                          decorationColor:
+                                              PlunesColors.BLACKCOLOR),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                         ],
                       ),
                     ),
@@ -528,17 +562,93 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           Container(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: (appointmentModel.bookingStatus != null &&
+                      appointmentModel.bookingStatus ==
+                          AppointmentModel.confirmedStatus &&
+                      _isPaymentCompleted())
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.end,
               children: <Widget>[
-//                InkWell(
-//                  onTap: () {},
-//                  onDoubleTap: () {},
-//                  child: Text(PlunesStrings.requestInvoice,
-//                      style: TextStyle(
-//                          fontSize: AppConfig.smallFont,
-//                          color: Colors.black54,
-//                          decoration: TextDecoration.underline)),
-//                ),
+                (appointmentModel.bookingStatus != null &&
+                        appointmentModel.bookingStatus ==
+                            AppointmentModel.confirmedStatus &&
+                        _isPaymentCompleted())
+                    ? InkWell(
+                        onTap: () {
+                          _bookingBloc.requestInvoice(
+                              appointmentModel.bookingId, index);
+                        },
+                        onDoubleTap: () {},
+                        child: StreamBuilder<RequestState>(
+                            stream: _bookingBloc.requestInvoiceStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.data != null &&
+                                  snapshot.data is RequestInProgress) {
+                                RequestInProgress req = snapshot.data;
+                                if (req.requestCode != null &&
+                                    req.requestCode == index) {
+                                  return CustomWidgets().getProgressIndicator();
+                                }
+                              }
+                              if (snapshot.data != null &&
+                                  snapshot.data is RequestSuccess) {
+                                RequestSuccess req = snapshot.data;
+                                if (req.requestCode != null &&
+                                    req.requestCode == index) {
+                                  Future.delayed(Duration(milliseconds: 20))
+                                      .then((value) async {
+                                    widget.showInSnackBar(
+                                        "Invoice sent on your Email-Id, kindly check",
+                                        PlunesColors.BLACKCOLOR,
+                                        widget.globalKey);
+//                                    showDialog(
+//                                        context: context,
+//                                        builder: (context) {
+//                                          return CustomWidgets()
+//                                              .appointmentCancellationPopup(
+//                                                  req.response ??
+//                                                      PlunesStrings
+//                                                          .ourTeamWillContactYouSoonOnCancel,
+//                                                  widget.globalKey);
+//                                        });
+//                                    widget.getAppointment();
+                                  });
+                                  _bookingBloc
+                                      .addStateInRequestInvoiceProvider(null);
+                                }
+                              }
+                              if (snapshot.data != null &&
+                                  snapshot.data is RequestFailed) {
+                                RequestFailed requestFailed = snapshot.data;
+                                if (requestFailed.requestCode != null &&
+                                    requestFailed.requestCode == index) {
+                                  Future.delayed(Duration(milliseconds: 20))
+                                      .then((value) async {
+                                    widget.showInSnackBar(
+                                        requestFailed.failureCause ??
+                                            PlunesStrings
+                                                .unableToGenerateInvoice,
+                                        PlunesColors.BLACKCOLOR,
+                                        widget.globalKey);
+                                  });
+                                  _bookingBloc
+                                      .addStateInRequestInvoiceProvider(null);
+                                }
+                              }
+                              return Text(PlunesStrings.requestInvoice,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.smallFont,
+                                      color: Colors.black54,
+                                      decoration: TextDecoration.underline));
+                            }),
+                      )
+                    : Container(),
+                (appointmentModel.bookingStatus != null &&
+                        appointmentModel.bookingStatus ==
+                            AppointmentModel.confirmedStatus &&
+                        _isPaymentCompleted())
+                    ? Expanded(child: Container())
+                    : Container(),
                 (appointmentModel.refundStatus != null &&
                         appointmentModel.refundStatus ==
                             AppointmentModel.notRequested)
@@ -810,5 +920,24 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 
   _showSnackBar(String message) {
     widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, widget.globalKey);
+  }
+
+  bool _isPaymentCompleted() {
+    bool isPaymentCompleted = false;
+    if (widget.appointmentModel.paymentStatus != null &&
+        widget.appointmentModel.paymentStatus.isNotEmpty) {
+      for (int index = 0;
+          index < widget.appointmentModel.paymentStatus.length;
+          index++) {
+        if (widget.appointmentModel.paymentStatus[index].status != null &&
+            widget.appointmentModel.paymentStatus[index].status) {
+          isPaymentCompleted = true;
+        } else {
+          isPaymentCompleted = false;
+          break;
+        }
+      }
+    }
+    return isPaymentCompleted;
   }
 }

@@ -148,4 +148,18 @@ class BookingRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  Future<RequestState> requestInvoice(String bookingId, int index) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_GET,
+        headerIncluded: true,
+        url: Urls.REQUEST_INVOICE_URL + "/$bookingId");
+    if (result.isRequestSucceed) {
+      return RequestSuccess(
+          response: result.isRequestSucceed, requestCode: index);
+    } else {
+      return RequestFailed(
+          failureCause: result.failureCause, requestCode: index);
+    }
+  }
 }

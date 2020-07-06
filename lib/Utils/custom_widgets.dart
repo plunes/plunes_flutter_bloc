@@ -2950,24 +2950,6 @@ class CustomWidgets {
                                       fontWeight: FontWeight.w600),
                                 ),
                               ),
-//                              Container(
-//                                margin: EdgeInsets.only(
-//                                    left: AppConfig.horizontalBlockSize * 26,
-//                                    right: AppConfig.horizontalBlockSize * 26,
-//                                    top: AppConfig.verticalBlockSize * 4),
-//                                child: InkWell(
-//                                  onTap: () => Navigator.pop(context),
-//                                  child: getRoundedButton(
-//                                    "Done",
-//                                    AppConfig.horizontalBlockSize * 5,
-//                                    PlunesColors.GREENCOLOR,
-//                                    AppConfig.horizontalBlockSize * 10,
-//                                    AppConfig.verticalBlockSize * 1,
-//                                    PlunesColors.WHITECOLOR,
-//                                    hasBorder: true,
-//                                  ),
-//                                ),
-//                              )
                             ],
                           ),
                         ),
@@ -2978,7 +2960,7 @@ class CustomWidgets {
                     }
                     return Card(
                       margin: EdgeInsets.symmetric(
-                          vertical: AppConfig.verticalBlockSize * 16.5,
+                          vertical: AppConfig.verticalBlockSize * 20.5,
                           horizontal: AppConfig.horizontalBlockSize * 6),
                       shape: RoundedRectangleBorder(
                           borderRadius:
@@ -3059,9 +3041,18 @@ class CustomWidgets {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 0.8),
+                                  child: Text(
+                                    appointmentModel.serviceName ??
+                                        _getEmptyString(),
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 5),
                                   child: Text(
-                                    "Rate your comments",
+                                    "Rate your experience",
                                     style: TextStyle(
                                       fontSize: 15,
                                     ),

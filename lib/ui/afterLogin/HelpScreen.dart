@@ -32,7 +32,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   TextEditingController _docHosQueryController;
   UserBloc _userBloc;
   HelpLineNumberModel _helpLineNumberModel;
-  final String _helpNumber = "7701805081";
+  final String _helpNumber = "7011311900";
 
   bool booking = false,
       isOnlineSolution = false,
