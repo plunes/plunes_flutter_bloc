@@ -205,14 +205,21 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                           ],
                         ),
                       ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        top: 0,
+                        child: Container(color: Colors.black26),
+                      ),
                       (_start > 8)
                           ? Positioned(
                               top: AppConfig.verticalBlockSize * 5,
                               left: AppConfig.horizontalBlockSize * 4,
                               child: Container(
                                 child: Image.asset(PlunesImages.doctorMapImage),
-                                height: AppConfig.verticalBlockSize * 15,
-                                width: AppConfig.horizontalBlockSize * 40,
+                                height: AppConfig.verticalBlockSize * 10,
+                                width: AppConfig.horizontalBlockSize * 30,
                               ))
                           : Container(),
                       (_start > 8)
@@ -222,8 +229,8 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                               child: Container(
                                 child:
                                     Image.asset(PlunesImages.hospitalMapImage),
-                                height: AppConfig.verticalBlockSize * 12,
-                                width: AppConfig.horizontalBlockSize * 40,
+                                height: AppConfig.verticalBlockSize * 8,
+                                width: AppConfig.horizontalBlockSize * 30,
                               ))
                           : Container(),
                       (_start > 1)
@@ -233,8 +240,8 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                               left: 0,
                               child: Container(
                                 child: Image.asset(PlunesImages.labMapImage),
-                                height: AppConfig.verticalBlockSize * 12,
-                                width: AppConfig.horizontalBlockSize * 40,
+                                height: AppConfig.verticalBlockSize * 8,
+                                width: AppConfig.horizontalBlockSize * 30,
                               ))
                           : Container(),
                       (_start > 5)
@@ -243,8 +250,8 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                               right: 10.0,
                               child: Container(
                                 child: Image.asset(PlunesImages.labMapImage),
-                                height: AppConfig.verticalBlockSize * 12,
-                                width: AppConfig.horizontalBlockSize * 40,
+                                height: AppConfig.verticalBlockSize * 8,
+                                width: AppConfig.horizontalBlockSize * 30,
                               ))
                           : Container(),
                       (_start > 3)
@@ -254,19 +261,19 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                               child: Container(
                                 child:
                                     Image.asset(PlunesImages.hospitalMapImage),
-                                height: AppConfig.verticalBlockSize * 12,
-                                width: AppConfig.horizontalBlockSize * 40,
+                                height: AppConfig.verticalBlockSize * 8,
+                                width: AppConfig.horizontalBlockSize * 30,
                               ))
                           : Container(),
                       (_start > 7)
                           ? Positioned(
-                              bottom: AppConfig.verticalBlockSize * 18,
+                              bottom: AppConfig.verticalBlockSize * 20,
                               left: 0,
                               right: 0,
                               child: Container(
                                 child: Image.asset(PlunesImages.doctorMapImage),
-                                height: AppConfig.verticalBlockSize * 15,
-                                width: AppConfig.horizontalBlockSize * 40,
+                                height: AppConfig.verticalBlockSize * 10,
+                                width: AppConfig.horizontalBlockSize * 30,
                               ))
                           : Container(),
                       Column(

@@ -735,36 +735,39 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                 : _catalogueList.length < 4 ? _catalogueList?.length : 4,
           ),
         ),
-        InkWell(
-          onTap: () {
-            setState(() {
-              _isServiceListOpened = !_isServiceListOpened;
-            });
-          },
-          child: Container(
-            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-            padding: EdgeInsets.all(2.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  _isServiceListOpened
-                      ? "See less Services"
-                      : " See more Services",
-                  style:
-                      TextStyle(color: PlunesColors.GREENCOLOR, fontSize: 16),
+        (_catalogueList != null && _catalogueList.length <= 3)
+            ? Container()
+            : InkWell(
+                onTap: () {
+                  setState(() {
+                    _isServiceListOpened = !_isServiceListOpened;
+                  });
+                },
+                child: Container(
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                  padding: EdgeInsets.all(2.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        _isServiceListOpened
+                            ? "See less Services"
+                            : " See more Services",
+                        style: TextStyle(
+                            color: PlunesColors.GREENCOLOR, fontSize: 16),
+                      ),
+                      Icon(
+                        _isServiceListOpened
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down,
+                        color: PlunesColors.GREENCOLOR,
+                      )
+                    ],
+                  ),
                 ),
-                Icon(
-                  _isServiceListOpened
-                      ? Icons.keyboard_arrow_up
-                      : Icons.keyboard_arrow_down,
-                  color: PlunesColors.GREENCOLOR,
-                )
-              ],
-            ),
-          ),
-        ),
+              ),
         Container(
           height: 0.5,
           width: double.infinity,
