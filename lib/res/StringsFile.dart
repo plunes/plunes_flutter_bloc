@@ -225,6 +225,8 @@ class PlunesStrings {
 
   static const String thankYouForValuableFeedback =
       "Thank you for your valuable feedback.";
+  static const String invoiceSuccessMessage =
+      "Your Invoice has been sent at your registered mail. Make sure that you have entered the right credentials";
 
   static const String enterTheRestToSubmit = "Enter the rest to submit.";
 
@@ -232,6 +234,7 @@ class PlunesStrings {
 
   static const String unableToGenerateInvoice =
       "Unable to generate invoice, please try again later";
+  static const String emailIdAsConst = "Email-Id";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

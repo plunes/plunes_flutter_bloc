@@ -61,7 +61,7 @@ class _EditProfileState extends State<EditProfileScreen>
   final professionRegController = TextEditingController();
   final experienceController = TextEditingController();
   final practisingController = TextEditingController();
-
+  final _emailController = new TextEditingController();
   final aboutController = new TextEditingController();
   final docNameController = new TextEditingController();
   final educationController = TextEditingController();
@@ -76,7 +76,7 @@ class _EditProfileState extends State<EditProfileScreen>
       aboutFocusNode = new FocusNode();
 
   bool isDoctor = false;
-  bool emain_valid = true;
+  bool _isValidEmail = true;
   var globalHeight, globalWidth;
   bool profession_valid = true;
   bool specification_valid = true, name_valid = true;
@@ -87,9 +87,11 @@ class _EditProfileState extends State<EditProfileScreen>
   String user_id = "";
 
   UserBloc _userBloc;
+  User _user;
 
   @override
   void dispose() {
+    _emailController?.dispose();
     bloc.disposeEditStream();
     super.dispose();
   }
@@ -141,6 +143,18 @@ class _EditProfileState extends State<EditProfileScreen>
               TextCapitalization.words,
               name_valid,
               plunesStrings.errorMsgEnterFullName),
+          _user.userType == Constants.user
+              ? widget.getSpacer(0.0, 20.0)
+              : Container(),
+          _user.userType == Constants.user
+              ? createTextField(
+                  _emailController,
+                  PlunesStrings.emailIdAsConst,
+                  TextInputType.emailAddress,
+                  TextCapitalization.none,
+                  _isValidEmail,
+                  plunesStrings.errorValidEmailMsg)
+              : Container(),
           widget.getSpacer(0.0, 20.0),
           widget.userType != Constants.hospital
               ? createTextField(dobController, plunesStrings.dateOfBirth,
@@ -198,11 +212,6 @@ class _EditProfileState extends State<EditProfileScreen>
               ? createTextField(collegeController, plunesStrings.college,
                   TextInputType.text, TextCapitalization.words, true, '')
               : Container(),
-//          widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-//          isDoctor
-//              ? createTextField(aboutController, plunesStrings.introduction,
-//                  TextInputType.text, TextCapitalization.words, true, '')
-//              : Container(),
           widget.getSpacer(
               0.0, widget.userType != Constants.hospital ? 20.0 : 0),
           createTextField(locationController, plunesStrings.location,
@@ -227,6 +236,9 @@ class _EditProfileState extends State<EditProfileScreen>
       String errorMsg) {
     return InkWell(
       onTap: () {
+        if (_user.isCentre != null && _user.isCentre) {
+          return;
+        }
         if (controller == dobController)
           CommonMethods.selectHoloTypeDate(context).then((value) {
             dobController.text = value;
@@ -249,12 +261,26 @@ class _EditProfileState extends State<EditProfileScreen>
                   : ((controller == experienceController) ? 2 : null),
               textCapitalization: textCapitalization,
               keyboardType: inputType,
+              readOnly: (_user.isCentre != null && _user.isCentre)
+                  ? (controller == nameController) ? false : true
+                  : false,
               textInputAction: controller == aboutController
                   ? TextInputAction.done
                   : TextInputAction.next,
               onSubmitted: (String value) {
                 setFocus(controller).unfocus();
                 FocusScope.of(context).requestFocus(setTargetFocus(controller));
+              },
+              onChanged: (writtenText) {
+                if (controller == _emailController) {
+                  if (writtenText.trim().isNotEmpty &&
+                      CommonMethods.validateEmail(writtenText)) {
+                    _isValidEmail = true;
+                  } else {
+                    _isValidEmail = false;
+                  }
+                  _setState();
+                }
               },
               controller: controller,
               cursorColor: Color(
@@ -339,6 +365,9 @@ class _EditProfileState extends State<EditProfileScreen>
   }
 
   void initialize() {
+    _user = UserManager().getUserDetails();
+    _isValidEmail = true;
+    _emailController.text = _user.email ?? "";
     isDoctor = widget.userType == Constants.doctor ? true : false;
     nameController.text = widget.fullName;
     dobController.text = widget.dateOfBirth;
@@ -346,10 +375,9 @@ class _EditProfileState extends State<EditProfileScreen>
     // specializationController.text = widget.specializations;
     educationController.text = widget.education;
     collegeController.text = widget.college;
-    var user = UserManager().getUserDetails();
-    professionRegController.text = user.profRegistrationNumber;
-    experienceController.text = user.experience;
-    aboutController.text = user.about;
+    professionRegController.text = _user.profRegistrationNumber;
+    experienceController.text = _user.experience;
+    aboutController.text = _user.about;
   }
 
   updateProfileRequest() async {
@@ -358,29 +386,36 @@ class _EditProfileState extends State<EditProfileScreen>
 //    for (var item in _selectedItemId)
 //      specialistId.add({'specialityId': item});
     var details = UserManager().getUserDetails();
-    if (details.isCentre != null && details.isCentre) {
-      widget.showInSnackBar("Centre details can't be updated",
+//    if (details.isCentre != null && details.isCentre) {
+//      widget.showInSnackBar("Centre details can't be updated",
+//          PlunesColors.BLACKCOLOR, _scaffoldKey);
+//      return;
+//    }
+    if (_user.userType == Constants.user && !(_isValidEmail)) {
+      widget.showInSnackBar(plunesStrings.errorValidEmailMsg,
           PlunesColors.BLACKCOLOR, _scaffoldKey);
       return;
     }
     var user = User(
-      name: nameController.text.trim(),
-      latitude: (_latitude == null || _latitude == "0.0")
-          ? details.latitude ?? "0.0"
-          : _latitude,
-      longitude: (_longitude == null || _longitude == "0.0")
-          ? details.longitude ?? "0.0"
-          : _longitude,
-      address: locationController.text.trim(),
-      birthDate: dobController.text.trim(),
-      registrationNumber: professionRegController.text.trim(),
-      experience: experienceController.text.trim(),
-      // about: aboutController.text.trim(),
-      biography: aboutController.text.trim(),
-      qualification: educationController.text.trim(),
-      college: collegeController.text.trim(),
-      practising: practisingController.text.trim(),
-    );
+        name: nameController.text.trim(),
+        latitude: (_latitude == null || _latitude == "0.0")
+            ? details.latitude ?? "0.0"
+            : _latitude,
+        longitude: (_longitude == null || _longitude == "0.0")
+            ? details.longitude ?? "0.0"
+            : _longitude,
+        address: locationController.text.trim(),
+        birthDate: dobController.text.trim(),
+        registrationNumber: professionRegController.text.trim(),
+        experience: experienceController.text.trim(),
+        // about: aboutController.text.trim(),
+        biography: aboutController.text.trim(),
+        qualification: educationController.text.trim(),
+        college: collegeController.text.trim(),
+        practising: practisingController.text.trim(),
+        email: (_user.userType == Constants.user && _isValidEmail)
+            ? _emailController.text.trim()
+            : null);
 //    print("user.toJson() ${user.toJson()}");
     progress = true;
     _setState();

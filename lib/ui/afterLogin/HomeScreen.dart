@@ -606,11 +606,6 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     }
   }
 
-  void openDrawer() {
-    if (_scaffoldKey.currentState.isEndDrawerOpen)
-      _scaffoldKey.currentState.openDrawer();
-  }
-
   void closeDrawer() {
     if (_scaffoldKey.currentState.isDrawerOpen)
       _scaffoldKey.currentState.openEndDrawer();

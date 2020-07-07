@@ -597,20 +597,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                     req.requestCode == index) {
                                   Future.delayed(Duration(milliseconds: 20))
                                       .then((value) async {
-                                    widget.showInSnackBar(
-                                        "Invoice sent on your Email-Id, kindly check",
-                                        PlunesColors.BLACKCOLOR,
-                                        widget.globalKey);
-//                                    showDialog(
-//                                        context: context,
-//                                        builder: (context) {
-//                                          return CustomWidgets()
-//                                              .appointmentCancellationPopup(
-//                                                  req.response ??
-//                                                      PlunesStrings
-//                                                          .ourTeamWillContactYouSoonOnCancel,
-//                                                  widget.globalKey);
-//                                        });
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return CustomWidgets()
+                                              .requestInvoiceSuccessPopup(
+                                                  PlunesStrings
+                                                      .invoiceSuccessMessage,
+                                                  widget.globalKey);
+                                        });
 //                                    widget.getAppointment();
                                   });
                                   _bookingBloc

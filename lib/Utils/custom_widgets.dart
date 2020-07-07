@@ -2872,6 +2872,44 @@ class CustomWidgets {
     );
   }
 
+  Widget requestInvoiceSuccessPopup(
+      String message, GlobalKey<ScaffoldState> globalKey) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
+      child: Container(
+        height: AppConfig.verticalBlockSize * 40,
+        child: Column(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.topRight,
+              child: InkWell(
+                onTap: () => Navigator.of(globalKey.currentState.context).pop(),
+                onDoubleTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Icon(Icons.close),
+                ),
+              ),
+            ),
+            Flexible(child: Image.asset(PlunesImages.invoiceSuccessImage)),
+            Flexible(
+                child: Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 3,
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
   showScrollableDialog(BuildContext context, AppointmentModel appointmentModel,
       BookingBloc bookingBloc) async {
     TextEditingController _reviewController = TextEditingController();
@@ -2960,7 +2998,7 @@ class CustomWidgets {
                     }
                     return Card(
                       margin: EdgeInsets.symmetric(
-                          vertical: AppConfig.verticalBlockSize * 20.5,
+                          vertical: AppConfig.verticalBlockSize * 18.5,
                           horizontal: AppConfig.horizontalBlockSize * 6),
                       shape: RoundedRectangleBorder(
                           borderRadius:

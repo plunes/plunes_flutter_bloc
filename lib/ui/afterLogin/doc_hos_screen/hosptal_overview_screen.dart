@@ -820,7 +820,9 @@ class _HospitalOverviewScreenState
         _centresList.add(element);
       });
       _centresList.insert(
-          0, CentreData(isAdmin: true, centerLocation: "Myself", sId: ""));
+          0,
+          CentreData(
+              isAdmin: true, centerLocation: _user.name ?? "Myself", sId: ""));
     }
   }
 }
