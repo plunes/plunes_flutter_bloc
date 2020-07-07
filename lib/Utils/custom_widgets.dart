@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
@@ -1045,216 +1046,252 @@ class CustomWidgets {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0)),
             elevation: 0.0,
-            child: StreamBuilder<RequestState>(
-                stream: docHosMainInsightBloc.realTimePriceUpdateStream,
-                builder: (context, snapShot) {
-                  if (snapShot.data is RequestInProgress) {
-                    return Container(
-                        height: AppConfig.verticalBlockSize * 60,
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 5.5,
-                            right: AppConfig.horizontalBlockSize * 5.5,
-                            top: AppConfig.verticalBlockSize * 5),
-                        child: CustomWidgets().getProgressIndicator());
-                  }
-                  if (snapShot.data is RequestSuccess) {
-                    Future.delayed(Duration(milliseconds: 200)).then((value) {
-                      Navigator.pop(context, true);
-                    });
-                  }
-                  if (snapShot.data is RequestFailed) {
-                    RequestFailed requestFailed = snapShot.data;
-                    failureCause = requestFailed.failureCause;
-                  }
-                  return Container(
-                    margin: EdgeInsets.only(top: 5),
-                    child: Stack(
-                      children: <Widget>[
-                        Text(
-                          '',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Color(CommonMethods.getColorHexFromStr("#23407A"))),
+              child: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: ExactAssetImage(
+                          PlunesImages.technologyBackground,
                         ),
-                        Container(
-                          height: AppConfig.verticalBlockSize * 60,
-                          margin: EdgeInsets.only(
-                              left: AppConfig.horizontalBlockSize * 5.5,
-                              right: AppConfig.horizontalBlockSize * 5.5,
-                              top: AppConfig.verticalBlockSize * 5),
-                          child: SingleChildScrollView(
-                            controller: _scrollController,
-                            reverse: shouldShowField ? true : false,
-                            child: Center(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: <Widget>[
-                                  Text(PlunesStrings.realTimePrediction,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.extraLargeFont,
-                                          decoration: TextDecoration.underline,
-                                          fontWeight: FontWeight.w600),
-                                      textAlign: TextAlign.center),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 4.0),
-                                    child: Text(
-                                      'Update your best price for maximum bookings',
-                                      style: TextStyle(
-                                          fontSize: AppConfig.mediumFont),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
-                                  Column(
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(16.0)),
+                child: StreamBuilder<RequestState>(
+                    stream: docHosMainInsightBloc.realTimePriceUpdateStream,
+                    builder: (context, snapShot) {
+                      if (snapShot.data is RequestInProgress) {
+                        return Container(
+                            height: AppConfig.verticalBlockSize * 60,
+                            margin: EdgeInsets.only(
+                                left: AppConfig.horizontalBlockSize * 5.5,
+                                right: AppConfig.horizontalBlockSize * 5.5,
+                                top: AppConfig.verticalBlockSize * 5),
+                            child: CustomWidgets().getProgressIndicator());
+                      }
+                      if (snapShot.data is RequestSuccess) {
+                        Future.delayed(Duration(milliseconds: 200))
+                            .then((value) {
+                          Navigator.pop(context, true);
+                        });
+                      }
+                      if (snapShot.data is RequestFailed) {
+                        RequestFailed requestFailed = snapShot.data;
+                        failureCause = requestFailed.failureCause;
+                      }
+                      return Container(
+                        margin: EdgeInsets.only(top: 5),
+                        child: Stack(
+                          children: <Widget>[
+                            Text(
+                              '',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              height: AppConfig.verticalBlockSize * 60,
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 5.5,
+                                  right: AppConfig.horizontalBlockSize * 5.5,
+                                  top: AppConfig.verticalBlockSize * 5),
+                              child: SingleChildScrollView(
+                                controller: _scrollController,
+                                reverse: shouldShowField ? true : false,
+                                child: Center(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     children: <Widget>[
-                                      SizedBox(height: 10),
-                                      Text(
-                                        realInsight?.serviceName ??
-                                            PlunesStrings.NA,
-                                        style: TextStyle(
-                                            fontSize: AppConfig.mediumFont,
-                                            color: Colors.black54),
-                                      ),
-                                      SizedBox(height: 20),
-                                      Container(
-                                          child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          Text(
-                                            "${reductionInPrice?.toStringAsFixed(1)}% ",
-                                            style: TextStyle(
-                                                color: PlunesColors.BLACKCOLOR,
-                                                fontSize: AppConfig.mediumFont,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ],
-                                      )),
-                                      Slider(
-                                        value: sliderVal,
-                                        min: (realInsight.userPrice.floor() /
-                                                2) ??
-                                            0,
-                                        max: realInsight.userPrice
-                                            .floor()
-                                            .toDouble(),
-                                        divisions: 10,
-                                        activeColor: Colors.green,
-                                        onChanged: (newValue) {
-                                          if (shouldShowField) {
-                                            return;
-                                          }
-                                          newState(() {
-                                            try {
-                                              var val = (newValue * 100) /
-                                                  realInsight.userPrice
-                                                      .floor()
-                                                      .toDouble();
-                                              reductionInPrice =
-                                                  ((newValue) * 100) /
-                                                      realInsight.userPrice
-                                                          .toDouble();
-                                              reductionInPrice =
-                                                  100 - reductionInPrice;
-
-                                              chancesPercent =
-                                                  (100 - val)?.toInt();
-                                            } catch (e) {
-                                              chancesPercent = 50;
-                                              reductionInPrice = 50;
-                                            }
-                                            sliderVal = newValue;
-                                          });
-                                        },
-                                      ),
-                                      Container(
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(1)}',
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      AppConfig.mediumFont,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Expanded(child: Container()),
-                                            Text(
-                                              ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(1)}',
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      AppConfig.mediumFont,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
+                                      Text(PlunesStrings.realTimePrediction,
+                                          style: TextStyle(
+                                              fontSize:
+                                                  AppConfig.extraLargeFont,
+                                              color: PlunesColors.WHITECOLOR,
+                                              decoration:
+                                                  TextDecoration.underline,
+                                              fontWeight: FontWeight.w600),
+                                          textAlign: TextAlign.center),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: AppConfig.verticalBlockSize *
+                                                4.0),
+                                        child: Text(
+                                          'Update your best price for maximum bookings',
+                                          style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: AppConfig.mediumFont),
+                                          textAlign: TextAlign.center,
                                         ),
                                       ),
-                                      Container(
-                                          margin: EdgeInsets.only(
-                                              top: AppConfig.verticalBlockSize *
-                                                  3,
-                                              bottom:
-                                                  AppConfig.verticalBlockSize *
+                                      Column(
+                                        children: <Widget>[
+                                          SizedBox(height: 10),
+                                          Text(
+                                            realInsight?.serviceName ??
+                                                PlunesStrings.NA,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: AppConfig.mediumFont,
+                                            ),
+                                          ),
+                                          SizedBox(height: 20),
+                                          Container(
+                                              child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: <Widget>[
+                                              Text(
+                                                "${reductionInPrice?.toStringAsFixed(1)}% ",
+                                                style: TextStyle(
+                                                    color: Colors.white70,
+                                                    fontSize:
+                                                        AppConfig.mediumFont,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                            ],
+                                          )),
+                                          Slider(
+                                            value: sliderVal,
+                                            min:
+                                                (realInsight.userPrice.floor() /
+                                                        2) ??
+                                                    0,
+                                            max: realInsight.userPrice
+                                                .floor()
+                                                .toDouble(),
+                                            divisions: 10,
+                                            activeColor: Color(CommonMethods
+                                                .getColorHexFromStr("#78E8FF")),
+                                            onChanged: (newValue) {
+                                              if (shouldShowField) {
+                                                return;
+                                              }
+                                              newState(() {
+                                                try {
+                                                  var val = (newValue * 100) /
+                                                      realInsight.userPrice
+                                                          .floor()
+                                                          .toDouble();
+                                                  reductionInPrice =
+                                                      ((newValue) * 100) /
+                                                          realInsight.userPrice
+                                                              .toDouble();
+                                                  reductionInPrice =
+                                                      100 - reductionInPrice;
+
+                                                  chancesPercent =
+                                                      (100 - val)?.toInt();
+                                                } catch (e) {
+                                                  chancesPercent = 50;
+                                                  reductionInPrice = 50;
+                                                }
+                                                sliderVal = newValue;
+                                              });
+                                            },
+                                          ),
+                                          Container(
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(1)}',
+                                                  style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize:
+                                                          AppConfig.mediumFont,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Expanded(child: Container()),
+                                                Text(
+                                                  ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(1)}',
+                                                  style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize:
+                                                          AppConfig.mediumFont,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                              margin: EdgeInsets.only(
+                                                  top: AppConfig
+                                                          .verticalBlockSize *
+                                                      3,
+                                                  bottom: AppConfig
+                                                          .verticalBlockSize *
                                                       3),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: AppConfig
-                                                      .horizontalBlockSize *
-                                                  15),
-                                          child: (realInsight.suggested !=
-                                                      null &&
-                                                  realInsight.suggested &&
-                                                  shouldShowField)
-                                              ? Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
-                                                  children: <Widget>[
-                                                    Flexible(
-                                                      child: TextField(
-                                                        controller:
-                                                            _priceController,
-                                                        inputFormatters: [
-                                                          WhitelistingTextInputFormatter
-                                                              .digitsOnly
-                                                        ],
-                                                        maxLines: 1,
-                                                        autofocus: true,
-                                                        keyboardType:
-                                                            TextInputType
-                                                                .number,
-                                                        textAlignVertical:
-                                                            TextAlignVertical
-                                                                .bottom,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      ),
-                                                    ),
-                                                    InkWell(
-                                                      onTap: () {
-                                                        shouldShowField = false;
-                                                        newState(() {});
-                                                      },
-                                                      child: Container(
-                                                        margin: EdgeInsets.only(
-                                                            left: AppConfig
-                                                                    .horizontalBlockSize *
-                                                                3),
-                                                        padding:
-                                                            EdgeInsets.all(5.0),
-                                                        alignment: Alignment
-                                                            .bottomRight,
-                                                        child: Icon(
-                                                          Icons.mode_edit,
-                                                          color: PlunesColors
-                                                              .GREENCOLOR,
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: AppConfig
+                                                          .horizontalBlockSize *
+                                                      15),
+                                              child: (realInsight.suggested !=
+                                                          null &&
+                                                      realInsight.suggested &&
+                                                      shouldShowField)
+                                                  ? Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: <Widget>[
+                                                        Flexible(
+                                                          child: TextField(
+                                                            controller:
+                                                                _priceController,
+                                                            inputFormatters: [
+                                                              WhitelistingTextInputFormatter
+                                                                  .digitsOnly
+                                                            ],
+                                                            maxLines: 1,
+                                                            autofocus: true,
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .number,
+                                                            textAlignVertical:
+                                                                TextAlignVertical
+                                                                    .bottom,
+                                                            textAlign: TextAlign
+                                                                .center,
+                                                            style: TextStyle(
+                                                              color: Colors
+                                                                  .white70,
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
+                                                        InkWell(
+                                                          onTap: () {
+                                                            shouldShowField =
+                                                                false;
+                                                            newState(() {});
+                                                          },
+                                                          child: Container(
+                                                            margin: EdgeInsets.only(
+                                                                left: AppConfig
+                                                                        .horizontalBlockSize *
+                                                                    3),
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    5.0),
+                                                            alignment: Alignment
+                                                                .bottomRight,
+                                                            child: Icon(
+                                                              Icons.mode_edit,
+                                                              color: PlunesColors
+                                                                  .GREENCOLOR,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
                                                     )
-                                                  ],
-                                                )
-                                              : Row(
-                                                  mainAxisAlignment:
-                                                      (realInsight.suggested !=
+                                                  : Row(
+                                                      mainAxisAlignment: (realInsight
+                                                                      .suggested !=
                                                                   null &&
                                                               realInsight
                                                                   .suggested &&
@@ -1263,150 +1300,171 @@ class CustomWidgets {
                                                               .end
                                                           : MainAxisAlignment
                                                               .center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.end,
-                                                  children: <Widget>[
-                                                    Text(
-                                                      ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
-                                                      style: TextStyle(
-                                                          fontSize: AppConfig
-                                                              .largeFont,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    (realInsight.suggested !=
-                                                                null &&
-                                                            realInsight
-                                                                .suggested)
-                                                        ? InkWell(
-                                                            onTap: () {
-                                                              shouldShowField =
-                                                                  true;
-                                                              newState(() {});
-                                                            },
-                                                            child: Container(
-                                                              margin: EdgeInsets.only(
-                                                                  left: AppConfig
-                                                                          .horizontalBlockSize *
-                                                                      3),
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(5.0),
-                                                              alignment: Alignment
-                                                                  .bottomRight,
-                                                              child: Icon(
-                                                                Icons.mode_edit,
-                                                                color: PlunesColors
-                                                                    .BLACKCOLOR,
-                                                              ),
-                                                            ),
-                                                          )
-                                                        : Container()
-                                                  ],
-                                                )),
-                                      chancesPercent != null
-                                          ? Text(
-                                              'Chances of Booking increases by',
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: <Widget>[
+                                                        Text(
+                                                          ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
+                                                          style: TextStyle(
+                                                              color: Colors
+                                                                  .white70,
+                                                              fontSize: AppConfig
+                                                                  .largeFont,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        (realInsight.suggested !=
+                                                                    null &&
+                                                                realInsight
+                                                                    .suggested)
+                                                            ? InkWell(
+                                                                onTap: () {
+                                                                  shouldShowField =
+                                                                      true;
+                                                                  newState(
+                                                                      () {});
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                  margin: EdgeInsets.only(
+                                                                      left: AppConfig
+                                                                              .horizontalBlockSize *
+                                                                          3),
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              5.0),
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .bottomRight,
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .mode_edit,
+                                                                    color: PlunesColors
+                                                                        .WHITECOLOR,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : Container()
+                                                      ],
+                                                    )),
+                                          chancesPercent != null
+                                              ? Text(
+                                                  'Chances of Booking increases by',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize:
+                                                        AppConfig.mediumFont,
+                                                  ),
+                                                )
+                                              : Container(),
+                                          SizedBox(height: 10),
+                                          chancesPercent != null
+                                              ? Text(
+                                                  chancesPercent == 0
+                                                      ? '0%'
+                                                      : '${chancesPercent - 5}% to $chancesPercent%',
+                                                  style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize:
+                                                          AppConfig.mediumFont,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              : Container(),
+                                          SizedBox(height: 20),
+                                          FlatButton(
+                                            child: Text(
+                                              'Apply here',
                                               style: TextStyle(
-                                                fontSize: AppConfig.mediumFont,
-                                              ),
-                                            )
-                                          : Container(),
-                                      SizedBox(height: 10),
-                                      chancesPercent != null
-                                          ? Text(
-                                              chancesPercent == 0
-                                                  ? '0%'
-                                                  : '${chancesPercent - 5}% to $chancesPercent%',
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      AppConfig.mediumFont,
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          : Container(),
-                                      SizedBox(height: 20),
-                                      FlatButton(
-                                        child: Text(
-                                          'Apply here',
-                                          style: TextStyle(
-                                              fontSize: AppConfig.largeFont,
-                                              color: Colors.green,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        onPressed: () {
-                                          if (realInsight.suggested != null &&
-                                              realInsight.suggested &&
-                                              shouldShowField) {
-                                            if (_priceController.text
-                                                    .trim()
-                                                    .isEmpty ||
-                                                _priceController.text
+                                                  fontSize: AppConfig.largeFont,
+                                                  color: Colors.green,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                            onPressed: () {
+                                              if (realInsight.suggested !=
+                                                      null &&
+                                                  realInsight.suggested &&
+                                                  shouldShowField) {
+                                                if (_priceController.text
                                                         .trim()
-                                                        .substring(0) ==
-                                                    "0") {
-                                              failureCause =
-                                                  'price must not be 0 or empty';
-                                              newState(() {});
-                                              return;
-                                            }
-                                            docHosMainInsightBloc
-                                                .updateRealTimeInsightPriceStream(
-                                                    RequestInProgress());
-                                            docHosMainInsightBloc
-                                                .getUpdateRealTimeInsightPrice(
-                                                    num.tryParse(
-                                                        _priceController.text
-                                                            .trim()),
-                                                    realInsight.solutionId,
-                                                    realInsight.serviceId);
-                                          } else {
-                                            if (sliderVal == null ||
-                                                sliderVal == 0) {
-                                              failureCause =
-                                                  'price must not be 0';
-                                              newState(() {});
-                                              return;
-                                            }
-                                            docHosMainInsightBloc
-                                                .updateRealTimeInsightPriceStream(
-                                                    RequestInProgress());
-                                            docHosMainInsightBloc
-                                                .getUpdateRealTimeInsightPrice(
-                                                    sliderVal,
-                                                    realInsight.solutionId,
-                                                    realInsight.serviceId);
-                                          }
-                                        },
-                                      ),
-                                      Text(
-                                        failureCause ?? "",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold),
+                                                        .isEmpty ||
+                                                    _priceController.text
+                                                            .trim()
+                                                            .substring(0) ==
+                                                        "0") {
+                                                  failureCause =
+                                                      'price must not be 0 or empty';
+                                                  newState(() {});
+                                                  return;
+                                                }
+                                                docHosMainInsightBloc
+                                                    .updateRealTimeInsightPriceStream(
+                                                        RequestInProgress());
+                                                docHosMainInsightBloc
+                                                    .getUpdateRealTimeInsightPrice(
+                                                        num.tryParse(
+                                                            _priceController
+                                                                .text
+                                                                .trim()),
+                                                        realInsight.solutionId,
+                                                        realInsight.serviceId);
+                                              } else {
+                                                if (sliderVal == null ||
+                                                    sliderVal == 0) {
+                                                  failureCause =
+                                                      'price must not be 0';
+                                                  newState(() {});
+                                                  return;
+                                                }
+                                                docHosMainInsightBloc
+                                                    .updateRealTimeInsightPriceStream(
+                                                        RequestInProgress());
+                                                docHosMainInsightBloc
+                                                    .getUpdateRealTimeInsightPrice(
+                                                        sliderVal,
+                                                        realInsight.solutionId,
+                                                        realInsight.serviceId);
+                                              }
+                                            },
+                                          ),
+                                          Text(
+                                            failureCause ?? "",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                            Positioned(
+                              right: 0.0,
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: IconButton(
+                                    icon: Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop()),
+                              ),
+                            ),
+                          ],
                         ),
-                        Positioned(
-                          right: 0.0,
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                                icon: Icon(Icons.close),
-                                onPressed: () => Navigator.of(context).pop()),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
+                      );
+                    }),
+              ),
+            ),
           ) ??
           false;
     });
@@ -1434,221 +1492,262 @@ class CustomWidgets {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16.0)),
             elevation: 0.0,
-            child: StreamBuilder<RequestState>(
-                stream: docHosMainInsightBloc.actionablePriceUpdateStream,
-                builder: (context, snapShot) {
-                  if (snapShot.data is RequestInProgress) {
-                    return Container(
-                        height: AppConfig.verticalBlockSize * 60,
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 5.5,
-                            right: AppConfig.horizontalBlockSize * 5.5,
-                            top: AppConfig.verticalBlockSize * 5),
-                        child: CustomWidgets().getProgressIndicator());
-                  }
-                  if (snapShot.data is RequestSuccess) {
-                    Future.delayed(Duration(milliseconds: 200)).then((value) {
-                      Navigator.pop(context, true);
-                    });
-                  }
-                  if (snapShot.data is RequestFailed) {
-                    RequestFailed requestFailed = snapShot.data;
-                    failureCause = requestFailed.failureCause;
-                  }
-                  return Container(
-                    margin: EdgeInsets.only(top: 5),
-                    child: Stack(
-                      children: <Widget>[
-                        Text(
-                          '',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Color(CommonMethods.getColorHexFromStr("#23407A"))),
+              child: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: ExactAssetImage(
+                          PlunesImages.technologyBackground,
                         ),
-                        Container(
-                          height: AppConfig.verticalBlockSize * 60,
-                          margin: EdgeInsets.only(
-                              left: AppConfig.horizontalBlockSize * 5.5,
-                              right: AppConfig.horizontalBlockSize * 5.5,
-                              top: AppConfig.verticalBlockSize * 5),
-                          child: SingleChildScrollView(
-                            controller: _scrollController,
-                            child: Center(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: <Widget>[
-                                  Text(
-                                    'Update Price in your Catalogue for maximum Bookings',
-                                    style: TextStyle(fontSize: 20),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  Column(
+                        fit: BoxFit.cover),
+                    borderRadius: BorderRadius.circular(16.0)),
+                child: StreamBuilder<RequestState>(
+                    stream: docHosMainInsightBloc.actionablePriceUpdateStream,
+                    builder: (context, snapShot) {
+                      if (snapShot.data is RequestInProgress) {
+                        return Container(
+                            height: AppConfig.verticalBlockSize * 60,
+                            margin: EdgeInsets.only(
+                                left: AppConfig.horizontalBlockSize * 5.5,
+                                right: AppConfig.horizontalBlockSize * 5.5,
+                                top: AppConfig.verticalBlockSize * 5),
+                            child: CustomWidgets().getProgressIndicator());
+                      }
+                      if (snapShot.data is RequestSuccess) {
+                        Future.delayed(Duration(milliseconds: 200))
+                            .then((value) {
+                          Navigator.pop(context, true);
+                        });
+                      }
+                      if (snapShot.data is RequestFailed) {
+                        RequestFailed requestFailed = snapShot.data;
+                        failureCause = requestFailed.failureCause;
+                      }
+                      return Container(
+                        margin: EdgeInsets.only(top: 5),
+                        child: Stack(
+                          children: <Widget>[
+                            Text(
+                              '',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                              height: AppConfig.verticalBlockSize * 60,
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 5.5,
+                                  right: AppConfig.horizontalBlockSize * 5.5,
+                                  top: AppConfig.verticalBlockSize * 5),
+                              child: SingleChildScrollView(
+                                controller: _scrollController,
+                                child: Center(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     children: <Widget>[
-                                      SizedBox(height: 10),
                                       Text(
-                                        actionableInsight?.serviceName ??
-                                            PlunesStrings.NA,
+                                        'Update Price in your Catalogue for maximum Bookings',
                                         style: TextStyle(
                                             fontSize: 20,
-                                            color: Colors.black54),
+                                            color: PlunesColors.WHITECOLOR),
+                                        textAlign: TextAlign.center,
                                       ),
-                                      SizedBox(height: 20),
-                                      Container(
-                                          child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
+                                      Column(
                                         children: <Widget>[
+                                          SizedBox(height: 10),
                                           Text(
-                                            "${reductionInPrice?.toStringAsFixed(1)}% ",
+                                            actionableInsight?.serviceName ??
+                                                PlunesStrings.NA,
+                                            textAlign: TextAlign.center,
                                             style: TextStyle(
-                                                color: PlunesColors.BLACKCOLOR,
-                                                fontSize: AppConfig.mediumFont,
-                                                fontWeight: FontWeight.w600),
+                                                fontSize: 20,
+                                                color: Colors.white70),
+                                          ),
+                                          SizedBox(height: 20),
+                                          Container(
+                                              child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: <Widget>[
+                                              Text(
+                                                "${reductionInPrice?.toStringAsFixed(1)}% ",
+                                                style: TextStyle(
+                                                    color:
+                                                        PlunesColors.WHITECOLOR,
+                                                    fontSize:
+                                                        AppConfig.mediumFont,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                            ],
+                                          )),
+                                          Slider(
+                                              value: sliderVal,
+                                              min: (num.parse(actionableInsight
+                                                              .userPrice)
+                                                          .floor() /
+                                                      2) ??
+                                                  0,
+                                              max: num.parse(actionableInsight
+                                                      .userPrice)
+                                                  .floor()
+                                                  .toDouble(),
+                                              divisions: 10,
+                                              activeColor: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#78E8FF")),
+                                              onChanged: (newValue) {
+                                                newState(() {
+                                                  try {
+                                                    var val = (newValue * 100) /
+                                                        num.parse(
+                                                                actionableInsight
+                                                                    .userPrice)
+                                                            .floor()
+                                                            .toDouble();
+                                                    chancesPercent =
+                                                        (100 - val)?.toInt();
+                                                    reductionInPrice = ((newValue) *
+                                                            100) /
+                                                        num.parse(
+                                                                actionableInsight
+                                                                    .userPrice)
+                                                            .toDouble();
+                                                    reductionInPrice = 100 -
+                                                        (reductionInPrice);
+                                                  } catch (e) {
+                                                    chancesPercent = 50;
+                                                  }
+                                                  sliderVal = newValue;
+                                                });
+                                              }),
+                                          Container(
+                                            child: Row(
+                                              children: <Widget>[
+                                                Text(
+                                                  ' \u20B9 ${(num.parse(actionableInsight.userPrice).floor() / 2)?.toStringAsFixed(1)}',
+                                                  style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Expanded(child: Container()),
+                                                Text(
+                                                  ' \u20B9 ${num.parse(actionableInsight.userPrice)?.toStringAsFixed(1)}',
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.white70,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                                top: AppConfig
+                                                        .verticalBlockSize *
+                                                    3,
+                                                bottom: AppConfig
+                                                        .verticalBlockSize *
+                                                    3),
+                                            child: Text(
+                                              ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
+                                              style: TextStyle(
+                                                  color: Colors.white70,
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                          chancesPercent != null
+                                              ? Text(
+                                                  'Chances of Booking increases by',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                  ),
+                                                )
+                                              : Container(),
+                                          SizedBox(height: 10),
+                                          chancesPercent != null
+                                              ? Text(
+                                                  chancesPercent == 0
+                                                      ? '0%'
+                                                      : '${chancesPercent - 5}% to $chancesPercent%',
+                                                  style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                )
+                                              : Container(),
+                                          SizedBox(height: 20),
+                                          FlatButton(
+                                            child: Text(
+                                              'Apply here',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.green,
+                                                  decoration:
+                                                      TextDecoration.underline,
+                                                  fontWeight: FontWeight.w400),
+                                            ),
+                                            onPressed: () {
+                                              if (sliderVal == null ||
+                                                  sliderVal == 0) {
+                                                failureCause =
+                                                    'price must not be 0';
+                                                newState(() {});
+                                                return;
+                                              }
+                                              docHosMainInsightBloc
+                                                  .getUpdateActionableInsightPrice(
+                                                      sliderVal,
+                                                      actionableInsight
+                                                          .serviceId,
+                                                      actionableInsight
+                                                          .specialityId);
+                                            },
+                                          ),
+                                          Text(
+                                            failureCause ?? "",
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ],
-                                      )),
-                                      Slider(
-                                          value: sliderVal,
-                                          min: (num.parse(actionableInsight
-                                                          .userPrice)
-                                                      .floor() /
-                                                  2) ??
-                                              0,
-                                          max: num.parse(
-                                                  actionableInsight.userPrice)
-                                              .floor()
-                                              .toDouble(),
-                                          divisions: 10,
-                                          activeColor: Colors.green,
-                                          onChanged: (newValue) {
-                                            newState(() {
-                                              try {
-                                                var val = (newValue * 100) /
-                                                    num.parse(actionableInsight
-                                                            .userPrice)
-                                                        .floor()
-                                                        .toDouble();
-                                                chancesPercent =
-                                                    (100 - val)?.toInt();
-                                                reductionInPrice = ((newValue) *
-                                                        100) /
-                                                    num.parse(actionableInsight
-                                                            .userPrice)
-                                                        .toDouble();
-                                                reductionInPrice =
-                                                    100 - (reductionInPrice);
-                                              } catch (e) {
-                                                chancesPercent = 50;
-                                              }
-                                              sliderVal = newValue;
-                                            });
-                                          }),
-                                      Container(
-                                        child: Row(
-                                          children: <Widget>[
-                                            Text(
-                                              ' \u20B9 ${(num.parse(actionableInsight.userPrice).floor() / 2)?.toStringAsFixed(1)}',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Expanded(child: Container()),
-                                            Text(
-                                              ' \u20B9 ${num.parse(actionableInsight.userPrice)?.toStringAsFixed(1)}',
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Container(
-                                        margin: EdgeInsets.only(
-                                            top:
-                                                AppConfig.verticalBlockSize * 3,
-                                            bottom:
-                                                AppConfig.verticalBlockSize *
-                                                    3),
-                                        child: Text(
-                                          ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                      chancesPercent != null
-                                          ? Text(
-                                              'Chances of Booking increases by',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                              ),
-                                            )
-                                          : Container(),
-                                      SizedBox(height: 10),
-                                      chancesPercent != null
-                                          ? Text(
-                                              chancesPercent == 0
-                                                  ? '0%'
-                                                  : '${chancesPercent - 5}% to $chancesPercent%',
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.bold),
-                                            )
-                                          : Container(),
-                                      SizedBox(height: 20),
-                                      FlatButton(
-                                        child: Text(
-                                          'Apply here',
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.green,
-                                              decoration:
-                                                  TextDecoration.underline,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                        onPressed: () {
-                                          if (sliderVal == null ||
-                                              sliderVal == 0) {
-                                            failureCause =
-                                                'price must not be 0';
-                                            newState(() {});
-                                            return;
-                                          }
-                                          docHosMainInsightBloc
-                                              .getUpdateActionableInsightPrice(
-                                                  sliderVal,
-                                                  actionableInsight.serviceId,
-                                                  actionableInsight
-                                                      .specialityId);
-                                        },
-                                      ),
-                                      Text(
-                                        failureCause ?? "",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                            Positioned(
+                              right: 0.0,
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: IconButton(
+                                    icon: Icon(
+                                      Icons.close,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () =>
+                                        Navigator.of(context).pop()),
+                              ),
+                            ),
+                          ],
                         ),
-                        Positioned(
-                          right: 0.0,
-                          child: Align(
-                            alignment: Alignment.topRight,
-                            child: IconButton(
-                                icon: Icon(Icons.close),
-                                onPressed: () => Navigator.of(context).pop()),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }),
+                      );
+                    }),
+              ),
+            ),
           ) ??
           false;
     });
