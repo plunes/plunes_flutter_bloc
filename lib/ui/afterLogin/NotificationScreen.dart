@@ -234,7 +234,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   )));
     } else if (result.notificationScreen ==
         FirebaseNotification.bookingScreen) {
-      print("notification id is ${result.notificationId}");
+//      print("notification id is ${result.notificationId}");
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -242,7 +242,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     bookingId: result.notificationId,
                   )));
     } else if (result.notificationScreen == FirebaseNotification.reviewScreen) {
-      print("notification id is ${result.notificationId}");
+//      print("notification id is ${result.notificationId}");
       Navigator.push(
           context,
           MaterialPageRoute(

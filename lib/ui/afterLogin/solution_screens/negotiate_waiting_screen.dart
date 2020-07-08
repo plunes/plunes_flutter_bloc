@@ -192,14 +192,17 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                         double.parse(UserManager()
                                             .getUserDetails()
                                             .longitude)),
-                                    zoom: 12,
+                                    zoom: 11.5,
                                     tilt: 0.5),
                                 padding: EdgeInsets.all(0.0),
                                 myLocationEnabled: false,
                                 zoomControlsEnabled: false,
                                 zoomGesturesEnabled: false,
                                 myLocationButtonEnabled: false,
-                                mapType: MapType.normal,
+                                buildingsEnabled: false,
+                                trafficEnabled: false,
+                                indoorViewEnabled: false,
+                                mapType: MapType.terrain,
                               ),
                             )
                           ],
@@ -217,7 +220,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                               top: AppConfig.verticalBlockSize * 5,
                               left: AppConfig.horizontalBlockSize * 4,
                               child: Container(
-                                child: Image.asset(PlunesImages.doctorMapImage),
+                                child: Image.asset(PlunesImages.labMapImage),
                                 height: AppConfig.verticalBlockSize * 10,
                                 width: AppConfig.horizontalBlockSize * 30,
                               ))
@@ -271,7 +274,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                               left: 0,
                               right: 0,
                               child: Container(
-                                child: Image.asset(PlunesImages.doctorMapImage),
+                                child: Image.asset(PlunesImages.labMapImage),
                                 height: AppConfig.verticalBlockSize * 10,
                                 width: AppConfig.horizontalBlockSize * 30,
                               ))

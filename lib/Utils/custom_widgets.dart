@@ -1091,7 +1091,7 @@ class CustomWidgets {
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                             Container(
-                              height: AppConfig.verticalBlockSize * 60,
+                              height: AppConfig.verticalBlockSize * 68,
                               margin: EdgeInsets.only(
                                   left: AppConfig.horizontalBlockSize * 5.5,
                                   right: AppConfig.horizontalBlockSize * 5.5,
@@ -1164,7 +1164,9 @@ class CustomWidgets {
                                                 .toDouble(),
                                             divisions: 10,
                                             activeColor: Color(CommonMethods
-                                                .getColorHexFromStr("#78E8FF")),
+                                                .getColorHexFromStr("#F39A83")),
+                                            inactiveColor: Color(CommonMethods
+                                                .getColorHexFromStr("#F8F4FF")),
                                             onChanged: (newValue) {
                                               if (shouldShowField) {
                                                 return;
@@ -1361,20 +1363,52 @@ class CustomWidgets {
                                                 )
                                               : Container(),
                                           SizedBox(height: 10),
-                                          chancesPercent != null
-                                              ? Text(
-                                                  chancesPercent == 0
-                                                      ? '0%'
-                                                      : '${chancesPercent - 5}% to $chancesPercent%',
-                                                  style: TextStyle(
-                                                      color: Colors.white70,
-                                                      fontSize:
-                                                          AppConfig.mediumFont,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              : Container(),
-                                          SizedBox(height: 20),
+                                          Container(
+                                            child: Container(
+                                              child: chancesPercent != null
+                                                  ? Text(
+                                                      chancesPercent == 0
+                                                          ? '0%'
+                                                          : '$chancesPercent%',
+                                                      style: TextStyle(
+                                                          color: Colors.white70,
+                                                          fontSize: AppConfig
+                                                              .mediumFont,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    )
+                                                  : Container(),
+                                              padding: EdgeInsets.all(AppConfig
+                                                      .horizontalBlockSize *
+                                                  8),
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#23407A"))),
+                                            ),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                gradient: LinearGradient(
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                    tileMode: TileMode.clamp,
+                                                    colors: [
+                                                      Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#EBCB7F")),
+                                                      Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#F39A83")),
+                                                      Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#C000A6"))
+                                                    ])),
+                                            padding: EdgeInsets.all(
+                                                AppConfig.horizontalBlockSize *
+                                                    3),
+                                          ),
+                                          SizedBox(height: 1),
                                           FlatButton(
                                             child: Text(
                                               'Apply here',
@@ -1537,7 +1571,7 @@ class CustomWidgets {
                                   fontSize: 20, fontWeight: FontWeight.bold),
                             ),
                             Container(
-                              height: AppConfig.verticalBlockSize * 60,
+                              height: AppConfig.verticalBlockSize * 68,
                               margin: EdgeInsets.only(
                                   left: AppConfig.horizontalBlockSize * 5.5,
                                   right: AppConfig.horizontalBlockSize * 5.5,
@@ -1599,7 +1633,10 @@ class CustomWidgets {
                                               divisions: 10,
                                               activeColor: Color(CommonMethods
                                                   .getColorHexFromStr(
-                                                      "#78E8FF")),
+                                                      "#F39A83")),
+                                              inactiveColor: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#F8F4FF")),
                                               onChanged: (newValue) {
                                                 newState(() {
                                                   try {
@@ -1675,19 +1712,52 @@ class CustomWidgets {
                                                 )
                                               : Container(),
                                           SizedBox(height: 10),
-                                          chancesPercent != null
-                                              ? Text(
-                                                  chancesPercent == 0
-                                                      ? '0%'
-                                                      : '${chancesPercent - 5}% to $chancesPercent%',
-                                                  style: TextStyle(
-                                                      color: Colors.white70,
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                )
-                                              : Container(),
-                                          SizedBox(height: 20),
+                                          Container(
+                                            child: Container(
+                                              child: chancesPercent != null
+                                                  ? Text(
+                                                      chancesPercent == 0
+                                                          ? '0%'
+                                                          : '$chancesPercent%',
+                                                      style: TextStyle(
+                                                          color: Colors.white70,
+                                                          fontSize: AppConfig
+                                                              .mediumFont,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    )
+                                                  : Container(),
+                                              padding: EdgeInsets.all(AppConfig
+                                                      .horizontalBlockSize *
+                                                  8),
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#23407A"))),
+                                            ),
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                gradient: LinearGradient(
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                    tileMode: TileMode.clamp,
+                                                    colors: [
+                                                      Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#EBCB7F")),
+                                                      Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#F39A83")),
+                                                      Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#C000A6"))
+                                                    ])),
+                                            padding: EdgeInsets.all(
+                                                AppConfig.horizontalBlockSize *
+                                                    3),
+                                          ),
+                                          SizedBox(height: 1),
                                           FlatButton(
                                             child: Text(
                                               'Apply here',
@@ -3040,7 +3110,7 @@ class CustomWidgets {
                     } else if (snapshot.data is RequestSuccess) {
                       return Card(
                         margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 26.5,
+                            vertical: AppConfig.verticalBlockSize * 30,
                             horizontal: AppConfig.horizontalBlockSize * 6),
                         shape: RoundedRectangleBorder(
                             borderRadius:
@@ -3069,8 +3139,8 @@ class CustomWidgets {
                                 alignment: Alignment.center,
                                 margin: EdgeInsets.only(
                                     bottom: AppConfig.verticalBlockSize * 4,
-                                    left: AppConfig.horizontalBlockSize * 15,
-                                    right: AppConfig.horizontalBlockSize * 15),
+                                    left: AppConfig.horizontalBlockSize * 25,
+                                    right: AppConfig.horizontalBlockSize * 25),
                                 child:
                                     Image.asset(PlunesImages.reviewSubmitImage),
                               ),
