@@ -3,10 +3,13 @@ import 'package:animated_widgets/animated_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -37,11 +40,16 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
   Completer<GoogleMapController> _googleMapController = Completer();
   GoogleMapController _mapController;
   bool _hasAnimated = false;
+  SearchSolutionBloc _searchSolutionBloc;
+  SearchedDocResults _searchedDocResults;
+  Set<Marker> _markers = {};
 
   @override
   void initState() {
     _hasAnimated = false;
     _progressEnabled = false;
+    _searchSolutionBloc = SearchSolutionBloc();
+    _negotiate();
     _startAnimating();
     super.initState();
   }
@@ -52,72 +60,72 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
         _hasAnimated = !_hasAnimated;
         _start = _start + 1;
         if (_start > 9) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SolutionReceivedScreen(
-                        catalogueData: widget.catalogueData,
-                        searchQuery: widget.searchQuery,
-                      ))).then((value) {
-            if (value != null && value) {
-              Navigator.of(context)
-                  .push(PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (BuildContext context, _, __) =>
-                          LocationFetch()))
-                  .then((val) {
-                if (val != null) {
-                  var addressControllerList = new List();
-                  addressControllerList = val.toString().split(":");
-                  String addr = addressControllerList[0] +
-                      ' ' +
-                      addressControllerList[1] +
-                      ' ' +
-                      addressControllerList[2];
-//                  print("addr is $addr");
-                  var _latitude = addressControllerList[3];
-                  var _longitude = addressControllerList[4];
-                  _progressEnabled = true;
-                  _setState();
-                  UserBloc()
-                      .isUserInServiceLocation(_latitude, _longitude,
-                          address: addr)
-                      .then((result) {
-                    if (result is RequestSuccess) {
-                      CheckLocationResponse checkLocationResponse =
-                          result.response;
-                      if (checkLocationResponse != null &&
-                          checkLocationResponse.msg != null &&
-                          checkLocationResponse.msg.isNotEmpty) {
-                        _failureCause = checkLocationResponse.msg;
-                      }
-                    } else if (result is RequestFailed) {
-                      _failureCause = result.failureCause;
-                    }
-                    if (UserManager().getIsUserInServiceLocation()) {
-                      Navigator.pop(context);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BiddingLoading(
-                                    catalogueData: widget.catalogueData,
-                                    searchQuery: widget.searchQuery,
-                                  )));
-                      return;
-                    } else if (_failureCause == null) {
-                      _failureCause = PlunesStrings.switchToGurLoc;
-                    }
-                    _progressEnabled = false;
-                    _setState();
-                  });
-                } else {
-                  Navigator.pop(context);
-                }
-              });
-            } else {
-              Navigator.pop(context);
-            }
-          });
+//          Navigator.push(
+//              context,
+//              MaterialPageRoute(
+//                  builder: (context) => SolutionReceivedScreen(
+//                        catalogueData: widget.catalogueData,
+//                        searchQuery: widget.searchQuery,
+//                      ))).then((value) {
+//            if (value != null && value) {
+//              Navigator.of(context)
+//                  .push(PageRouteBuilder(
+//                      opaque: false,
+//                      pageBuilder: (BuildContext context, _, __) =>
+//                          LocationFetch()))
+//                  .then((val) {
+//                if (val != null) {
+//                  var addressControllerList = new List();
+//                  addressControllerList = val.toString().split(":");
+//                  String addr = addressControllerList[0] +
+//                      ' ' +
+//                      addressControllerList[1] +
+//                      ' ' +
+//                      addressControllerList[2];
+////                  print("addr is $addr");
+//                  var _latitude = addressControllerList[3];
+//                  var _longitude = addressControllerList[4];
+//                  _progressEnabled = true;
+//                  _setState();
+//                  UserBloc()
+//                      .isUserInServiceLocation(_latitude, _longitude,
+//                          address: addr)
+//                      .then((result) {
+//                    if (result is RequestSuccess) {
+//                      CheckLocationResponse checkLocationResponse =
+//                          result.response;
+//                      if (checkLocationResponse != null &&
+//                          checkLocationResponse.msg != null &&
+//                          checkLocationResponse.msg.isNotEmpty) {
+//                        _failureCause = checkLocationResponse.msg;
+//                      }
+//                    } else if (result is RequestFailed) {
+//                      _failureCause = result.failureCause;
+//                    }
+//                    if (UserManager().getIsUserInServiceLocation()) {
+//                      Navigator.pop(context);
+//                      Navigator.push(
+//                          context,
+//                          MaterialPageRoute(
+//                              builder: (context) => BiddingLoading(
+//                                    catalogueData: widget.catalogueData,
+//                                    searchQuery: widget.searchQuery,
+//                                  )));
+//                      return;
+//                    } else if (_failureCause == null) {
+//                      _failureCause = PlunesStrings.switchToGurLoc;
+//                    }
+//                    _progressEnabled = false;
+//                    _setState();
+//                  });
+//                } else {
+//                  Navigator.pop(context);
+//                }
+//              });
+//            } else {
+//              Navigator.pop(context);
+//            }
+//          });
         } else {
           _bidProgress = _bidProgress + 0.1;
           if (_movingUnit == 110) {
@@ -167,6 +175,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   ],
                 )
               : Container(
+                  color: Colors.black12,
                   child: Stack(
                     children: <Widget>[
                       Positioned(
@@ -188,6 +197,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                   _mapController = mapController;
                                   _googleMapController.complete(_mapController);
                                 },
+                                markers: _markers,
                                 initialCameraPosition: CameraPosition(
                                     target: LatLng(
                                         double.parse(UserManager()
@@ -196,12 +206,13 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                         double.parse(UserManager()
                                             .getUserDetails()
                                             .longitude)),
-                                    zoom: 11.5,
-                                    tilt: 0.5),
+                                    zoom: 11,
+                                    tilt: 6.5,
+                                    bearing: 45),
                                 padding: EdgeInsets.all(0.0),
                                 myLocationEnabled: false,
-                                zoomControlsEnabled: false,
-                                zoomGesturesEnabled: false,
+//                                zoomControlsEnabled: false,
+//                                zoomGesturesEnabled: false,
                                 myLocationButtonEnabled: false,
                                 buildingsEnabled: false,
                                 trafficEnabled: false,
@@ -217,148 +228,151 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                         right: 0,
                         bottom: 0,
                         top: 0,
-                        child: Container(color: Colors.black12),
+                        child: IgnorePointer(
+                          child: Container(color: Colors.black12),
+                          ignoring: true,
+                        ),
                       ),
-                      (_start > 8)
-                          ? Positioned(
-                              top: AppConfig.verticalBlockSize * 5,
-                              left: AppConfig.horizontalBlockSize * 4,
-                              child: ScaleAnimatedWidget.tween(
-                                enabled: !_hasAnimated,
-                                duration: Duration(milliseconds: 500),
-                                scaleDisabled: 0.5,
-                                scaleEnabled: 1.3,
-                                child: Container(
-                                  padding: EdgeInsets.all(15.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.green.withOpacity(0.5)),
-                                  child: Container(
-                                    child:
-                                        Image.asset(PlunesImages.labMapImage),
-                                    height: AppConfig.verticalBlockSize * 10,
-                                    width: AppConfig.horizontalBlockSize * 30,
-                                  ),
-                                ),
-                              ))
-                          : Container(),
-                      (_start > 8)
-                          ? Positioned(
-                              top: AppConfig.verticalBlockSize * 5,
-                              right: 10.0,
-                              child: ScaleAnimatedWidget.tween(
-                                enabled: !_hasAnimated,
-                                duration: Duration(milliseconds: 500),
-                                scaleDisabled: 0.5,
-                                scaleEnabled: 1.3,
-                                child: Container(
-                                  padding: EdgeInsets.all(15.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.green.withOpacity(0.5)),
-                                  child: Container(
-                                    child: Image.asset(
-                                        PlunesImages.hospitalMapImage),
-                                    height: AppConfig.verticalBlockSize * 8,
-                                    width: AppConfig.horizontalBlockSize * 30,
-                                  ),
-                                ),
-                              ))
-                          : Container(),
-                      (_start > 1)
-                          ? Positioned(
-                              top: AppConfig.verticalBlockSize * 30,
-                              right: 10,
-                              left: 0,
-                              child: ScaleAnimatedWidget.tween(
-                                enabled: !_hasAnimated,
-                                duration: Duration(milliseconds: 500),
-                                scaleDisabled: 0.5,
-                                scaleEnabled: 1.3,
-                                child: Container(
-                                  padding: EdgeInsets.all(15.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.green.withOpacity(0.5)),
-                                  child: Container(
-                                    child:
-                                        Image.asset(PlunesImages.labMapImage),
-                                    height: AppConfig.verticalBlockSize * 8,
-                                    width: AppConfig.horizontalBlockSize * 30,
-                                  ),
-                                ),
-                              ))
-                          : Container(),
-                      (_start > 5)
-                          ? Positioned(
-                              top: AppConfig.verticalBlockSize * 55,
-                              right: 10.0,
-                              child: ScaleAnimatedWidget.tween(
-                                enabled: _hasAnimated,
-                                duration: Duration(milliseconds: 500),
-                                scaleDisabled: 0.5,
-                                scaleEnabled: 1.3,
-                                child: Container(
-                                  padding: EdgeInsets.all(15.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.green.withOpacity(0.5)),
-                                  child: Container(
-                                    child:
-                                        Image.asset(PlunesImages.labMapImage),
-                                    height: AppConfig.verticalBlockSize * 8,
-                                    width: AppConfig.horizontalBlockSize * 30,
-                                  ),
-                                ),
-                              ))
-                          : Container(),
-                      (_start > 3)
-                          ? Positioned(
-                              top: AppConfig.verticalBlockSize * 45,
-                              left: 10.0,
-                              child: ScaleAnimatedWidget.tween(
-                                enabled: _hasAnimated,
-                                duration: Duration(milliseconds: 500),
-                                scaleDisabled: 0.5,
-                                scaleEnabled: 1.3,
-                                child: Container(
-                                  padding: EdgeInsets.all(15.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.green.withOpacity(0.5)),
-                                  child: Container(
-                                    child: Image.asset(
-                                        PlunesImages.hospitalMapImage),
-                                    height: AppConfig.verticalBlockSize * 8,
-                                    width: AppConfig.horizontalBlockSize * 30,
-                                  ),
-                                ),
-                              ))
-                          : Container(),
-                      (_start > 7)
-                          ? Positioned(
-                              bottom: AppConfig.verticalBlockSize * 28,
-                              left: 0,
-                              right: 0,
-                              child: ScaleAnimatedWidget.tween(
-                                enabled: _hasAnimated,
-                                duration: Duration(milliseconds: 500),
-                                scaleDisabled: 0.5,
-                                scaleEnabled: 1.3,
-                                child: Container(
-                                  padding: EdgeInsets.all(15.0),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.green.withOpacity(0.5)),
-                                  child: Container(
-                                    child:
-                                        Image.asset(PlunesImages.labMapImage),
-                                    height: AppConfig.verticalBlockSize * 10,
-                                    width: AppConfig.horizontalBlockSize * 30,
-                                  ),
-                                ),
-                              ))
-                          : Container(),
+//                      (_start > 8)
+//                          ? Positioned(
+//                              top: AppConfig.verticalBlockSize * 5,
+//                              left: AppConfig.horizontalBlockSize * 4,
+//                              child: ScaleAnimatedWidget.tween(
+//                                enabled: !_hasAnimated,
+//                                duration: Duration(milliseconds: 500),
+//                                scaleDisabled: 0.5,
+//                                scaleEnabled: 1.3,
+//                                child: Container(
+//                                  padding: EdgeInsets.all(15.0),
+//                                  decoration: BoxDecoration(
+//                                      shape: BoxShape.circle,
+//                                      color: Colors.green.withOpacity(0.5)),
+//                                  child: Container(
+//                                    child:
+//                                        Image.asset(PlunesImages.labMapImage),
+//                                    height: AppConfig.verticalBlockSize * 10,
+//                                    width: AppConfig.horizontalBlockSize * 30,
+//                                  ),
+//                                ),
+//                              ))
+//                          : Container(),
+//                      (_start > 8)
+//                          ? Positioned(
+//                              top: AppConfig.verticalBlockSize * 5,
+//                              right: 10.0,
+//                              child: ScaleAnimatedWidget.tween(
+//                                enabled: !_hasAnimated,
+//                                duration: Duration(milliseconds: 500),
+//                                scaleDisabled: 0.5,
+//                                scaleEnabled: 1.3,
+//                                child: Container(
+//                                  padding: EdgeInsets.all(15.0),
+//                                  decoration: BoxDecoration(
+//                                      shape: BoxShape.circle,
+//                                      color: Colors.green.withOpacity(0.5)),
+//                                  child: Container(
+//                                    child: Image.asset(
+//                                        PlunesImages.hospitalMapImage),
+//                                    height: AppConfig.verticalBlockSize * 8,
+//                                    width: AppConfig.horizontalBlockSize * 30,
+//                                  ),
+//                                ),
+//                              ))
+//                          : Container(),
+//                      (_start > 1)
+//                          ? Positioned(
+//                              top: AppConfig.verticalBlockSize * 30,
+//                              right: 10,
+//                              left: 0,
+//                              child: ScaleAnimatedWidget.tween(
+//                                enabled: !_hasAnimated,
+//                                duration: Duration(milliseconds: 500),
+//                                scaleDisabled: 0.5,
+//                                scaleEnabled: 1.3,
+//                                child: Container(
+//                                  padding: EdgeInsets.all(15.0),
+//                                  decoration: BoxDecoration(
+//                                      shape: BoxShape.circle,
+//                                      color: Colors.green.withOpacity(0.5)),
+//                                  child: Container(
+//                                    child:
+//                                        Image.asset(PlunesImages.labMapImage),
+//                                    height: AppConfig.verticalBlockSize * 8,
+//                                    width: AppConfig.horizontalBlockSize * 30,
+//                                  ),
+//                                ),
+//                              ))
+//                          : Container(),
+//                      (_start > 5)
+//                          ? Positioned(
+//                              top: AppConfig.verticalBlockSize * 55,
+//                              right: 10.0,
+//                              child: ScaleAnimatedWidget.tween(
+//                                enabled: _hasAnimated,
+//                                duration: Duration(milliseconds: 500),
+//                                scaleDisabled: 0.5,
+//                                scaleEnabled: 1.3,
+//                                child: Container(
+//                                  padding: EdgeInsets.all(15.0),
+//                                  decoration: BoxDecoration(
+//                                      shape: BoxShape.circle,
+//                                      color: Colors.green.withOpacity(0.5)),
+//                                  child: Container(
+//                                    child:
+//                                        Image.asset(PlunesImages.labMapImage),
+//                                    height: AppConfig.verticalBlockSize * 8,
+//                                    width: AppConfig.horizontalBlockSize * 30,
+//                                  ),
+//                                ),
+//                              ))
+//                          : Container(),
+//                      (_start > 3)
+//                          ? Positioned(
+//                              top: AppConfig.verticalBlockSize * 45,
+//                              left: 10.0,
+//                              child: ScaleAnimatedWidget.tween(
+//                                enabled: _hasAnimated,
+//                                duration: Duration(milliseconds: 500),
+//                                scaleDisabled: 0.5,
+//                                scaleEnabled: 1.3,
+//                                child: Container(
+//                                  padding: EdgeInsets.all(15.0),
+//                                  decoration: BoxDecoration(
+//                                      shape: BoxShape.circle,
+//                                      color: Colors.green.withOpacity(0.5)),
+//                                  child: Container(
+//                                    child: Image.asset(
+//                                        PlunesImages.hospitalMapImage),
+//                                    height: AppConfig.verticalBlockSize * 8,
+//                                    width: AppConfig.horizontalBlockSize * 30,
+//                                  ),
+//                                ),
+//                              ))
+//                          : Container(),
+//                      (_start > 7)
+//                          ? Positioned(
+//                              bottom: AppConfig.verticalBlockSize * 28,
+//                              left: 0,
+//                              right: 0,
+//                              child: ScaleAnimatedWidget.tween(
+//                                enabled: _hasAnimated,
+//                                duration: Duration(milliseconds: 500),
+//                                scaleDisabled: 0.5,
+//                                scaleEnabled: 1.3,
+//                                child: Container(
+//                                  padding: EdgeInsets.all(15.0),
+//                                  decoration: BoxDecoration(
+//                                      shape: BoxShape.circle,
+//                                      color: Colors.green.withOpacity(0.5)),
+//                                  child: Container(
+//                                    child:
+//                                        Image.asset(PlunesImages.labMapImage),
+//                                    height: AppConfig.verticalBlockSize * 10,
+//                                    width: AppConfig.horizontalBlockSize * 30,
+//                                  ),
+//                                ),
+//                              ))
+//                          : Container(),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -400,22 +414,22 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 //                                              color: Color(0xfffafafa),
 //                                              width: 2)),
 //                                    ),
-//                                    Align(
-//                                      child: AnimatedContainer(
-//                                        duration: Duration(seconds: 1),
-//                                        height: 70,
-//                                        width: 70,
-//                                        margin:
-//                                            EdgeInsets.only(top: _movingUnit),
-//                                        child: Center(
-//                                          child: Image.asset(
-//                                            plunesImages.bidActiveIcon,
-//                                            height: 70,
-//                                            width: 70,
-//                                          ),
-//                                        ),
-//                                      ),
-//                                    ),
+                                    Align(
+                                      child: AnimatedContainer(
+                                        duration: Duration(seconds: 1),
+                                        height: 70,
+                                        width: 70,
+                                        margin:
+                                            EdgeInsets.only(top: _movingUnit),
+                                        child: Center(
+                                          child: Image.asset(
+                                            plunesImages.bidActiveIcon,
+                                            height: 70,
+                                            width: 70,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -531,5 +545,63 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 
   void _setState() {
     if (mounted) setState(() {});
+  }
+
+  _negotiate() async {
+    var result = await _searchSolutionBloc.getDocHosSolution(
+        widget.catalogueData,
+        searchQuery: widget.searchQuery);
+    if (result is RequestSuccess) {
+      _searchedDocResults = result.response;
+      if (_searchedDocResults.solution?.services == null ||
+          _searchedDocResults.solution.services.isEmpty) {
+        //_failureCause = PlunesStrings.oopsServiceNotAvailable;
+        if (_searchedDocResults != null &&
+            _searchedDocResults.msg != null &&
+            _searchedDocResults.msg.isNotEmpty) {
+          _failureCause = _searchedDocResults.msg;
+        }
+      } else {
+        int arrLength = (_searchedDocResults.solution.services.length >= 5)
+            ? 5
+            : _searchedDocResults.solution.services.length;
+        IconGenerator _iconGen = IconGenerator();
+        for (int index = 0; index < arrLength; index++) {
+          print("$index init time ${DateTime.now().millisecondsSinceEpoch}");
+          bool shouldFetch =
+              (_searchedDocResults.solution.services[index].imageUrl != null &&
+                      _searchedDocResults
+                          .solution.services[index].imageUrl.isNotEmpty &&
+                      _searchedDocResults.solution.services[index].imageUrl
+                          .contains("http"))
+                  ? true
+                  : false;
+          BitmapDescriptor _icon = await _iconGen.getMarkerIcon(
+              shouldFetch
+                  ? _searchedDocResults.solution.services[index].imageUrl
+                  : PlunesImages.labMapImage,
+              Size(220, 220),
+              shouldFetch,
+              index);
+          print("$index took time ${DateTime.now().millisecondsSinceEpoch} \n");
+
+          _markers.add(Marker(
+              markerId:
+                  MarkerId(_searchedDocResults.solution.services[index].sId),
+              icon: _icon,
+              position: LatLng(
+                  _searchedDocResults.solution.services[index].latitude ?? 0.0,
+                  _searchedDocResults.solution.services[index].longitude ??
+                      0.0),
+              infoWindow: InfoWindow(
+                  title: _searchedDocResults.solution.services[index].name,
+                  snippet:
+                      "${_searchedDocResults.solution.services[index].distance?.toStringAsFixed(1)} km")));
+        }
+      }
+    } else if (result is RequestFailed) {
+      _failureCause = result.failureCause;
+      //_timer?.cancel();
+    }
   }
 }
