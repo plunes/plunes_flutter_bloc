@@ -17,10 +17,10 @@ class Urls {
       'https://control.msg91.com/api/sendotp.php?authkey=278069AIdfPwGj5ce79990&mobile=91';
   static const String googleApiKey = 'AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc';
 
-  static const String baseUrl =
-      'https://api.plunes.com/v5/'; // production server
 //  static const String baseUrl =
-//      'https://devapi.plunes.com/v5/'; // staging server
+//      'https://api.plunes.com/v5/'; // production server
+  static const String baseUrl =
+      'https://devapi.plunes.com/v5/'; // staging server
 
   get catalogue => baseUrl + 'catalogue';
 

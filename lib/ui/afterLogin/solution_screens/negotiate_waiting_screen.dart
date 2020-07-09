@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:animated_widgets/animated_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -35,9 +36,11 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
   String _failureCause;
   Completer<GoogleMapController> _googleMapController = Completer();
   GoogleMapController _mapController;
+  bool _hasAnimated = false;
 
   @override
   void initState() {
+    _hasAnimated = false;
     _progressEnabled = false;
     _startAnimating();
     super.initState();
@@ -46,6 +49,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
   _startAnimating() {
     _timer = Timer(Duration(seconds: 1), () {
       setState(() {
+        _hasAnimated = !_hasAnimated;
         _start = _start + 1;
         if (_start > 9) {
           Navigator.push(
@@ -213,27 +217,52 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                         right: 0,
                         bottom: 0,
                         top: 0,
-                        child: Container(color: Colors.black26),
+                        child: Container(color: Colors.black12),
                       ),
                       (_start > 8)
                           ? Positioned(
                               top: AppConfig.verticalBlockSize * 5,
                               left: AppConfig.horizontalBlockSize * 4,
-                              child: Container(
-                                child: Image.asset(PlunesImages.labMapImage),
-                                height: AppConfig.verticalBlockSize * 10,
-                                width: AppConfig.horizontalBlockSize * 30,
+                              child: ScaleAnimatedWidget.tween(
+                                enabled: !_hasAnimated,
+                                duration: Duration(milliseconds: 500),
+                                scaleDisabled: 0.5,
+                                scaleEnabled: 1.3,
+                                child: Container(
+                                  padding: EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.green.withOpacity(0.5)),
+                                  child: Container(
+                                    child:
+                                        Image.asset(PlunesImages.labMapImage),
+                                    height: AppConfig.verticalBlockSize * 10,
+                                    width: AppConfig.horizontalBlockSize * 30,
+                                  ),
+                                ),
                               ))
                           : Container(),
                       (_start > 8)
                           ? Positioned(
                               top: AppConfig.verticalBlockSize * 5,
                               right: 10.0,
-                              child: Container(
-                                child:
-                                    Image.asset(PlunesImages.hospitalMapImage),
-                                height: AppConfig.verticalBlockSize * 8,
-                                width: AppConfig.horizontalBlockSize * 30,
+                              child: ScaleAnimatedWidget.tween(
+                                enabled: !_hasAnimated,
+                                duration: Duration(milliseconds: 500),
+                                scaleDisabled: 0.5,
+                                scaleEnabled: 1.3,
+                                child: Container(
+                                  padding: EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.green.withOpacity(0.5)),
+                                  child: Container(
+                                    child: Image.asset(
+                                        PlunesImages.hospitalMapImage),
+                                    height: AppConfig.verticalBlockSize * 8,
+                                    width: AppConfig.horizontalBlockSize * 30,
+                                  ),
+                                ),
                               ))
                           : Container(),
                       (_start > 1)
@@ -241,42 +270,93 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                               top: AppConfig.verticalBlockSize * 30,
                               right: 10,
                               left: 0,
-                              child: Container(
-                                child: Image.asset(PlunesImages.labMapImage),
-                                height: AppConfig.verticalBlockSize * 8,
-                                width: AppConfig.horizontalBlockSize * 30,
+                              child: ScaleAnimatedWidget.tween(
+                                enabled: !_hasAnimated,
+                                duration: Duration(milliseconds: 500),
+                                scaleDisabled: 0.5,
+                                scaleEnabled: 1.3,
+                                child: Container(
+                                  padding: EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.green.withOpacity(0.5)),
+                                  child: Container(
+                                    child:
+                                        Image.asset(PlunesImages.labMapImage),
+                                    height: AppConfig.verticalBlockSize * 8,
+                                    width: AppConfig.horizontalBlockSize * 30,
+                                  ),
+                                ),
                               ))
                           : Container(),
                       (_start > 5)
                           ? Positioned(
                               top: AppConfig.verticalBlockSize * 55,
                               right: 10.0,
-                              child: Container(
-                                child: Image.asset(PlunesImages.labMapImage),
-                                height: AppConfig.verticalBlockSize * 8,
-                                width: AppConfig.horizontalBlockSize * 30,
+                              child: ScaleAnimatedWidget.tween(
+                                enabled: _hasAnimated,
+                                duration: Duration(milliseconds: 500),
+                                scaleDisabled: 0.5,
+                                scaleEnabled: 1.3,
+                                child: Container(
+                                  padding: EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.green.withOpacity(0.5)),
+                                  child: Container(
+                                    child:
+                                        Image.asset(PlunesImages.labMapImage),
+                                    height: AppConfig.verticalBlockSize * 8,
+                                    width: AppConfig.horizontalBlockSize * 30,
+                                  ),
+                                ),
                               ))
                           : Container(),
                       (_start > 3)
                           ? Positioned(
                               top: AppConfig.verticalBlockSize * 45,
                               left: 10.0,
-                              child: Container(
-                                child:
-                                    Image.asset(PlunesImages.hospitalMapImage),
-                                height: AppConfig.verticalBlockSize * 8,
-                                width: AppConfig.horizontalBlockSize * 30,
+                              child: ScaleAnimatedWidget.tween(
+                                enabled: _hasAnimated,
+                                duration: Duration(milliseconds: 500),
+                                scaleDisabled: 0.5,
+                                scaleEnabled: 1.3,
+                                child: Container(
+                                  padding: EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.green.withOpacity(0.5)),
+                                  child: Container(
+                                    child: Image.asset(
+                                        PlunesImages.hospitalMapImage),
+                                    height: AppConfig.verticalBlockSize * 8,
+                                    width: AppConfig.horizontalBlockSize * 30,
+                                  ),
+                                ),
                               ))
                           : Container(),
                       (_start > 7)
                           ? Positioned(
-                              bottom: AppConfig.verticalBlockSize * 20,
+                              bottom: AppConfig.verticalBlockSize * 28,
                               left: 0,
                               right: 0,
-                              child: Container(
-                                child: Image.asset(PlunesImages.labMapImage),
-                                height: AppConfig.verticalBlockSize * 10,
-                                width: AppConfig.horizontalBlockSize * 30,
+                              child: ScaleAnimatedWidget.tween(
+                                enabled: _hasAnimated,
+                                duration: Duration(milliseconds: 500),
+                                scaleDisabled: 0.5,
+                                scaleEnabled: 1.3,
+                                child: Container(
+                                  padding: EdgeInsets.all(15.0),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.green.withOpacity(0.5)),
+                                  child: Container(
+                                    child:
+                                        Image.asset(PlunesImages.labMapImage),
+                                    height: AppConfig.verticalBlockSize * 10,
+                                    width: AppConfig.horizontalBlockSize * 30,
+                                  ),
+                                ),
                               ))
                           : Container(),
                       Column(
@@ -320,22 +400,22 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 //                                              color: Color(0xfffafafa),
 //                                              width: 2)),
 //                                    ),
-                                    Align(
-                                      child: AnimatedContainer(
-                                        duration: Duration(seconds: 1),
-                                        height: 70,
-                                        width: 70,
-                                        margin:
-                                            EdgeInsets.only(top: _movingUnit),
-                                        child: Center(
-                                          child: Image.asset(
-                                            plunesImages.bidActiveIcon,
-                                            height: 70,
-                                            width: 70,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+//                                    Align(
+//                                      child: AnimatedContainer(
+//                                        duration: Duration(seconds: 1),
+//                                        height: 70,
+//                                        width: 70,
+//                                        margin:
+//                                            EdgeInsets.only(top: _movingUnit),
+//                                        child: Center(
+//                                          child: Image.asset(
+//                                            plunesImages.bidActiveIcon,
+//                                            height: 70,
+//                                            width: 70,
+//                                          ),
+//                                        ),
+//                                      ),
+//                                    ),
                                   ],
                                 ),
                               ),
@@ -344,32 +424,32 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                           SizedBox(
                             height: AppConfig.verticalBlockSize * 7,
                           ),
-//                          Center(
-//                            child: Container(
-//                              margin: EdgeInsets.symmetric(
-//                                  horizontal:
-//                                      AppConfig.horizontalBlockSize * 9),
-//                              child: Text(
-//                                PlunesStrings.weAreNegotiatingBestSolution,
-//                                textAlign: TextAlign.center,
-//                                style: TextStyle(
-//                                    color: Colors.black,
-//                                    fontSize: AppConfig.largeFont,
-//                                    fontWeight: FontWeight.bold),
-//                              ),
-//                            ),
-//                          ),
-//                      SizedBox(
-//                        height: AppConfig.verticalBlockSize * 20,
-//                      ),
                           Expanded(child: Container()),
+                          Center(
+                            child: Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 9),
+                              child: Text(
+                                PlunesStrings.weAreNegotiatingBestSolution,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: AppConfig.largeFont,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: AppConfig.verticalBlockSize * 2,
+                          ),
                           Center(
                             child: Text(
                               PlunesStrings.receiving,
                               style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: AppConfig.smallFont,
-                                  fontWeight: FontWeight.w500),
+                                  fontSize: AppConfig.mediumFont,
+                                  fontWeight: FontWeight.normal),
                             ),
                           ),
                           Container(
@@ -407,7 +487,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
           child: Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: PlunesColors.WHITECOLOR),
+                color: PlunesColors.LIGHTGREYCOLOR),
             padding: EdgeInsets.all(10),
             child: Stack(
               children: <Widget>[
