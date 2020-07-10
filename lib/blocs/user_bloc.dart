@@ -18,9 +18,9 @@ class UserBloc extends BlocBase {
       _reviewStreamProvider.stream;
 
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
-      {String address, bool isFromPopup = false}) {
+      {String address, bool isFromPopup = false, String region}) {
     return UserManager().isUserInServiceLocation(latitude, longitude,
-        address: address, isFromPopup: isFromPopup);
+        address: address, isFromPopup: isFromPopup, region: region);
   }
 
   Future<RequestState> getUserProfile(final String userId,

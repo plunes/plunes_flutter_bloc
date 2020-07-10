@@ -27,8 +27,10 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 class SolutionReceivedScreen extends BaseActivity {
   final CatalogueData catalogueData;
   final String searchQuery;
+  final SearchedDocResults searchedDocResults;
 
-  SolutionReceivedScreen({this.catalogueData, this.searchQuery});
+  SolutionReceivedScreen(
+      {this.catalogueData, this.searchQuery, this.searchedDocResults});
 
   @override
   _SolutionReceivedScreenState createState() => _SolutionReceivedScreenState();
@@ -93,6 +95,20 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _googleMapController = Completer();
     _searchSolutionBloc = SearchSolutionBloc();
     _user = UserManager().getUserDetails();
+    if (widget.searchedDocResults != null) {
+      _searchedDocResults = widget.searchedDocResults;
+    }
+    if (_searchedDocResults != null &&
+        _searchedDocResults.solution != null &&
+        _searchedDocResults.solution.services != null &&
+        _searchedDocResults.solution.services.isNotEmpty) {
+      _isFetchingInitialData = false;
+      _checkShouldTimerRun();
+    } else if (_searchedDocResults != null &&
+        _searchedDocResults.msg != null &&
+        _searchedDocResults.msg.isNotEmpty) {
+      _failureCause = _searchedDocResults.msg;
+    }
     _fetchResultAndStartTimer();
     super.initState();
   }
@@ -261,17 +277,17 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
           _failureCause = _searchedDocResults.msg;
         }
       } else {
-        _searchedDocResults.solution.services.forEach((docData) {
-          _markers.add(Marker(
-              markerId: MarkerId(docData.sId),
-              icon: BitmapDescriptor.defaultMarker,
-              position:
-                  LatLng(docData.latitude ?? lat, docData.longitude ?? long),
-              infoWindow: InfoWindow(
-                  title: docData.name,
-                  snippet: "${docData.distance?.toStringAsFixed(1)} km",
-                  onTap: () => _viewProfile(docData))));
-        });
+//        _searchedDocResults.solution.services.forEach((docData) {
+//          _markers.add(Marker(
+//              markerId: MarkerId(docData.sId),
+//              icon: BitmapDescriptor.defaultMarker,
+//              position:
+//                  LatLng(docData.latitude ?? lat, docData.longitude ?? long),
+//              infoWindow: InfoWindow(
+//                  title: docData.name,
+//                  snippet: "${docData.distance?.toStringAsFixed(1)} km",
+//                  onTap: () => _viewProfile(docData))));
+//        });
         _checkShouldTimerRun();
       }
     } else if (result is RequestFailed) {
@@ -291,10 +307,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       _negotiate();
-      _tenMinutesInSeconds = _tenMinutesInSeconds - 2;
-      if (_tenMinutesInSeconds <= 0) {
-        _cancelNegotiationTimer();
-      }
+//      _tenMinutesInSeconds = _tenMinutesInSeconds - 2;
+//      if (_tenMinutesInSeconds <= 0) {
+//        _cancelNegotiationTimer();
+//      }
     });
   }
 

@@ -61,8 +61,8 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       _controller.add(null);
     });
     _focusNode = FocusNode();
-    _getUserDetails();
     _getPreviousSolutions();
+    _getUserDetails();
     EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == EditProfileScreen.tag &&
@@ -90,9 +90,15 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //                          print("addr is $addr");
         var _latitude = addressControllerList[3];
         var _longitude = addressControllerList[4];
+        String region = addr;
+        if (addressControllerList.length == 6 &&
+            addressControllerList[5] != null) {
+          region = addressControllerList[5];
+        }
 //                          print("_latitude $_latitude");
 //                          print("_longitude $_longitude");
-        _checkUserLocation(_latitude, _longitude, address: addr);
+        _checkUserLocation(_latitude, _longitude,
+            address: addr, region: region);
       }
     });
   }
@@ -458,13 +464,15 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     if (mounted) setState(() {});
   }
 
-  _checkUserLocation(var latitude, var longitude, {String address}) async {
+  _checkUserLocation(var latitude, var longitude,
+      {String address, String region}) async {
     if (!_progressEnabled) {
       _progressEnabled = true;
       _setState();
     }
     UserBloc()
-        .isUserInServiceLocation(latitude, longitude, address: address)
+        .isUserInServiceLocation(latitude, longitude,
+            address: address, region: region)
         .then((result) {
       if (result is RequestSuccess) {
         CheckLocationResponse checkLocationResponse = result.response;
@@ -509,9 +517,15 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //                                    print("addr is $addr");
                   var _latitude = addressControllerList[3];
                   var _longitude = addressControllerList[4];
+                  String region = addr;
+                  if (addressControllerList.length == 6 &&
+                      addressControllerList[5] != null) {
+                    region = addressControllerList[5];
+                  }
 //                                    print("_latitude $_latitude");
 //                                    print("_longitude $_longitude");
-                  _checkUserLocation(_latitude, _longitude, address: addr);
+                  _checkUserLocation(_latitude, _longitude,
+                      address: addr, region: region);
                 }
               });
             },

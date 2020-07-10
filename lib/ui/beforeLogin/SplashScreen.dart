@@ -96,38 +96,38 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   }
 
   Future<void> _getCurrentLocation() async {
-    if (preferences.getPreferenceString(Constants.PREF_USER_TYPE) == null ||
-        preferences.getPreferenceString(Constants.PREF_USER_TYPE) !=
-            Constants.generalUser) {
-      return null;
-    }
-    bool _hasLocationPermission = true;
-    if (Platform.isIOS) {
-      PermissionStatus permissionStatus =
-          await Permission.getSinglePermissionStatus(PermissionName.Location);
-      if (permissionStatus != PermissionStatus.allow) {
-        _hasLocationPermission = false;
-      }
-    } else {
-      var permissionList =
-          await Permission.getPermissionsStatus([PermissionName.Location]);
-      permissionList.forEach((element) {
-        if (element.permissionName == PermissionName.Location &&
-            element.permissionStatus != PermissionStatus.allow) {
-          _hasLocationPermission = false;
-        }
-      });
-    }
-    if (_hasLocationPermission) {
-      LocationUtil().getCurrentLatLong(context).then((latLong) {
-        {
-          if (latLong != null) {
-            UserBloc().isUserInServiceLocation(
-                latLong.latitude?.toString(), latLong.longitude?.toString());
-          }
-        }
-      });
-    }
+//    if (preferences.getPreferenceString(Constants.PREF_USER_TYPE) == null ||
+//        preferences.getPreferenceString(Constants.PREF_USER_TYPE) !=
+//            Constants.generalUser) {
+//      return null;
+//    }
+//    bool _hasLocationPermission = true;
+//    if (Platform.isIOS) {
+//      PermissionStatus permissionStatus =
+//          await Permission.getSinglePermissionStatus(PermissionName.Location);
+//      if (permissionStatus != PermissionStatus.allow) {
+//        _hasLocationPermission = false;
+//      }
+//    } else {
+//      var permissionList =
+//          await Permission.getPermissionsStatus([PermissionName.Location]);
+//      permissionList.forEach((element) {
+//        if (element.permissionName == PermissionName.Location &&
+//            element.permissionStatus != PermissionStatus.allow) {
+//          _hasLocationPermission = false;
+//        }
+//      });
+//    }
+//    if (_hasLocationPermission) {
+//      LocationUtil().getCurrentLatLong(context).then((latLong) {
+//        {
+//          if (latLong != null) {
+//            UserBloc().isUserInServiceLocation(
+//                latLong.latitude?.toString(), latLong.longitude?.toString());
+//          }
+//        }
+//      });
+//    }
     return null;
   }
 }

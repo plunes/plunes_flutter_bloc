@@ -29,7 +29,9 @@ class ApiCall implements CallBackListener {
   CallBackListener callBackListener;
   Preferences preferences;
 
-  Future<dynamic> getAPIRequest(BuildContext mContext, String url, String action, bool _isLoader, {var body, encoding, var token, String method}) async {
+  Future<dynamic> getAPIRequest(
+      BuildContext mContext, String url, String action, bool _isLoader,
+      {var body, encoding, var token, String method}) async {
     this.url = url;
     this.body = body;
     this.encoding = encoding;
@@ -44,34 +46,40 @@ class ApiCall implements CallBackListener {
     onlyOnce = true;
     if (_token != null)
       headers = {
-        (action =='1'?'Content-Type': 'Accept' ) : "application/json",
+        (action == '1' ? 'Content-Type' : 'Accept'): "application/json",
         "Authorization": "Bearer " + _token
       };
     else
-      headers = {(action =='1'?'Content-Type': "Accept" ): "application/json"};
+      headers = {
+        (action == '1' ? 'Content-Type' : "Accept"): "application/json"
+      };
 
     print("URL is:  " + url);
     print("Body is:  " + body.toString());
 
-    if (body != null){
-      if(_method == Constants.POST)
-      return http.Client().post(url, headers: headers, body: body, encoding: encoding).then((http.Response response) {
-        onlyOnce = false;
-        final String res = response.body;
-        print("result=res============" + res.toString());
-        statusCode = response.statusCode;
-        resultFinal = _decoder.convert(res);
-        if (isLoader) Navigator.pop(mContextLoader);
-        if (statusCode == 401) {
-          logoutWebService();
-        }
-        return resultFinal;
-      }).catchError((onError) {
-        onlyOnce = false;
-        Navigator.pop(mContext);
-      });
-      else if(_method == Constants.PUT)
-        return http.Client().put(url, headers: headers, body: body, encoding: encoding).then((http.Response response) {
+    if (body != null) {
+      if (_method == Constants.POST)
+        return http.Client()
+            .post(url, headers: headers, body: body, encoding: encoding)
+            .then((http.Response response) {
+          onlyOnce = false;
+          final String res = response.body;
+          print("result=res============" + res.toString());
+          statusCode = response.statusCode;
+          resultFinal = _decoder.convert(res);
+          if (isLoader) Navigator.pop(mContextLoader);
+          if (statusCode == 401) {
+            logoutWebService();
+          }
+          return resultFinal;
+        }).catchError((onError) {
+          onlyOnce = false;
+//        Navigator.pop(mContext);
+        });
+      else if (_method == Constants.PUT)
+        return http.Client()
+            .put(url, headers: headers, body: body, encoding: encoding)
+            .then((http.Response response) {
           onlyOnce = false;
           final String res = response.body;
           print("result=res============" + res.toString());
@@ -86,10 +94,10 @@ class ApiCall implements CallBackListener {
           onlyOnce = false;
           Navigator.pop(mContext);
         });
-    }
-
-    else
-      return http.Client().get(url, headers: headers).then((http.Response response) {
+    } else
+      return http.Client()
+          .get(url, headers: headers)
+          .then((http.Response response) {
         onlyOnce = false;
         final String res = response.body;
         print("result=res============" + res.toString());
@@ -135,9 +143,9 @@ class ApiCall implements CallBackListener {
   void navigationPage() {
     preferences.clearPreferences();
     Future.delayed(Duration(milliseconds: 200), () {
-      return  Navigator.of(mContext).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
+      return Navigator.of(mContext)
+          .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     });
-
   }
 
   Future logoutWebService() async {
@@ -155,7 +163,8 @@ class ApiCall implements CallBackListener {
 */
 //      CommonMethods.clearPreferences();
     } else {
-      Scaffold.of(mContext).showSnackBar(new SnackBar(content: new Text(result[Constants.MESSAGE])));
+      Scaffold.of(mContext).showSnackBar(
+          new SnackBar(content: new Text(result[Constants.MESSAGE])));
     }
   }
 

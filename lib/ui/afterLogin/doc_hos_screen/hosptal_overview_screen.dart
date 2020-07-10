@@ -136,12 +136,20 @@ class _HospitalOverviewScreenState
                   flex: 3,
                 ),
                 Expanded(
-                  child: Text(
-                    'Maximum time limit 10 Min',
-                    style: TextStyle(
-                        fontSize: AppConfig.mediumFont,
-                        color: PlunesColors.GREYCOLOR),
-                  ),
+                  child: StreamBuilder<Object>(
+                      stream: _docHosMainInsightBloc.realTimeInsightStream,
+                      builder: (context, snapshot) {
+                        if (_realTimeInsightsResponse != null &&
+                            _realTimeInsightsResponse.timer != null) {
+                          return Text(
+                            'Maximum time limit ${_realTimeInsightsResponse.timer} Min',
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.GREYCOLOR),
+                          );
+                        }
+                        return Container();
+                      }),
                   flex: 2,
                 )
               ],
@@ -895,6 +903,7 @@ class PatientServiceInfo extends StatefulWidget {
   final String imageUrl;
   final int remainingTime;
   final Function getRealTimeInsights;
+  final int timer;
 
   PatientServiceInfo(
       {this.patientName,
@@ -902,7 +911,8 @@ class PatientServiceInfo extends StatefulWidget {
       this.imageUrl,
       this.remainingTime,
       this.centreLocation,
-      this.getRealTimeInsights});
+      this.getRealTimeInsights,
+      this.timer});
 
   @override
   _PatientServiceInfoState createState() => _PatientServiceInfoState();
@@ -911,7 +921,7 @@ class PatientServiceInfo extends StatefulWidget {
 class _PatientServiceInfoState extends State<PatientServiceInfo> {
   Timer _timer;
   int _secondVal = 60, _secFixVal = 60;
-  int _countDownValue = 9, _prevMinValue;
+  int _countDownValue = 14, _prevMinValue;
 
   @override
   void dispose() {
@@ -924,6 +934,9 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   @override
   void initState() {
     print(widget.remainingTime);
+    if (widget.timer != null) {
+      _countDownValue = widget.timer - 1;
+    }
     if (!isShowWidget()) {
       _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
         _startTimer(_timer);
@@ -1014,7 +1027,6 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
 
   Widget _getTimeWidget() {
     String timeValue = PlunesStrings.NA;
-
     if (widget.remainingTime != null && widget.remainingTime != 0) {
       var duration = DateTime.now().difference(
           DateTime.fromMillisecondsSinceEpoch(widget.remainingTime));

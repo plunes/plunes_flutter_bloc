@@ -5,6 +5,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:permission/permission.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/StringsFile.dart';
 
 class LocationUtil {
@@ -52,6 +53,17 @@ class LocationUtil {
   Future<String> getAddressFromLatLong(String latitude, String longitude,
       {bool needFullLocation = false}) async {
     String address = PlunesStrings.enterYourLocation;
+    var userObj = UserManager().getUserDetails();
+    if (needFullLocation &&
+        userObj.address != null &&
+        userObj.address.isNotEmpty) {
+      return userObj.address;
+    }
+    if (!(needFullLocation) &&
+        userObj.region != null &&
+        userObj.region.isNotEmpty) {
+      return userObj.region;
+    }
     List<Address> addresses;
     try {
       final coordinates =
@@ -65,14 +77,17 @@ class LocationUtil {
         if (addresses.first.subLocality != null &&
             addresses.first.subLocality.isNotEmpty) {
           address = addresses.first.subLocality;
+          UserManager().setRegion(address);
         } else {
           address = addresses.first.locality;
+          UserManager().setRegion(address);
         }
       } else {
         address = addresses.first.addressLine;
       }
     } catch (e) {}
     if (needFullLocation) {
+      UserManager().setAddress(addresses?.first?.addressLine);
       return addresses?.first?.addressLine ?? address;
     }
     return address;

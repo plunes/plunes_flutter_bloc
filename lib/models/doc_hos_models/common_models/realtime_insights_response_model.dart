@@ -1,11 +1,13 @@
 class RealTimeInsightsResponse {
   bool success;
   List<RealInsight> data;
+  int timer;
 
-  RealTimeInsightsResponse({this.success, this.data});
+  RealTimeInsightsResponse({this.success, this.data, this.timer});
 
   RealTimeInsightsResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
+    timer = json["timer"];
     if (json['data'] != null) {
       data = new List<RealInsight>();
       json['data'].forEach((v) {

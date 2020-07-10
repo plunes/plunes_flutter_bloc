@@ -71,6 +71,7 @@ class UserManager {
         coverImageUrl:
             preferences.getPreferenceString(Constants.PREF_USER_BANNER_IMAGE),
         credits: preferences.getPreferenceString(Constants.PREF_CREDITS),
+        region: preferences.getPreferenceString(Constants.REGION),
         notificationEnabled:
             preferences.getPreferenceBoolean(Constants.NOTIFICATION_ENABLED),
         isAdmin: preferences.getPreferenceBoolean(Constants.IS_ADMIN),
@@ -95,7 +96,7 @@ class UserManager {
   }
 
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
-      {String address, bool isFromPopup = false}) async {
+      {String address, bool isFromPopup = false, String region}) async {
     if (longitude == null ||
         longitude.isEmpty ||
         latitude == null ||
@@ -141,6 +142,8 @@ class UserManager {
     if (address != null && address.isNotEmpty) {
       Preferences().setPreferencesString(Constants.PREF_USER_LOCATION, address);
     }
+    setAddress(address);
+    setRegion(region);
     return requestState;
   }
 
@@ -443,6 +446,18 @@ class UserManager {
       return RequestSuccess(response: _list);
     } else {
       return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  void setRegion(String region) {
+    if (region != null && region.isNotEmpty) {
+      Preferences().setPreferencesString(Constants.REGION, region);
+    }
+  }
+
+  void setAddress(String address) {
+    if (address != null && address.isNotEmpty) {
+      Preferences().setPreferencesString(Constants.PREF_USER_LOCATION, address);
     }
   }
 }

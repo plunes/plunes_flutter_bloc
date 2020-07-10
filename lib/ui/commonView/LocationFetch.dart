@@ -30,12 +30,14 @@ class _LocationFetchState extends State<LocationFetch> {
   final landMarkController = new TextEditingController();
   final houseController = new TextEditingController();
   final locationController = TextEditingController();
+  final regionController = TextEditingController();
 
   GoogleMapController _mapController;
 
   Set<Marker> marker = <Marker>{};
   var location = new loc.Location(), globalHeight, globalWidth;
   List _coordinateList = new List();
+
 //  final double lat = 28.4594965, long = 77.0266383;
   String latitude = '0.0', longitude = '0.0', address = '';
   bool _isAddFetch = false, _isSettingLocationFromPlacesApi = false;
@@ -85,6 +87,7 @@ class _LocationFetchState extends State<LocationFetch> {
       var addr = addresses?.first;
       String full_address = addr?.addressLine;
       locationController.text = full_address;
+      _setRegionAddress(addr);
       if (lat != null && lng != null) {
         _setMarker(double.parse(lat), double.parse(lng));
         _animateCamera();
@@ -107,7 +110,9 @@ class _LocationFetchState extends State<LocationFetch> {
         ":" +
         latitude +
         ":" +
-        longitude);
+        longitude +
+        ":" +
+        regionController.text);
   }
 
   @override
@@ -269,6 +274,7 @@ class _LocationFetchState extends State<LocationFetch> {
             var addresses = await Geocoder.local.findAddressesFromCoordinates(
                 _coordinateList[_coordinateList.length - 1]);
             var addr = addresses.first;
+            _setRegionAddress(addr);
             String full_address = addr.addressLine;
             locationController.text = full_address;
             _isAddFetch = false;
@@ -302,6 +308,7 @@ class _LocationFetchState extends State<LocationFetch> {
         final query = p.description;
         var addresses = await Geocoder.local.findAddressesFromQuery(query);
         var first = addresses.first;
+        _setRegionAddress(first);
 //        print("${first.addressLine} : ${first.coordinates}");
         if (first == null ||
             first.addressLine == null ||
@@ -349,6 +356,22 @@ class _LocationFetchState extends State<LocationFetch> {
               target: LatLng(double.parse(latitude), double.parse(longitude))),
         ),
       );
+    }
+  }
+
+  void _setRegionAddress(Address address) {
+    if (address != null) {
+      if (address != null &&
+          address.locality != null &&
+          address.locality.isNotEmpty) {
+        if (address.subLocality != null && address.subLocality.isNotEmpty) {
+          regionController.text = address.subLocality;
+        } else {
+          regionController.text = address.locality;
+        }
+      } else {
+        regionController.text = address.addressLine;
+      }
     }
   }
 }

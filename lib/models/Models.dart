@@ -175,7 +175,8 @@ class User {
       registrationNumber,
       prescriptionLogoUrl,
       accessToken,
-      credits;
+      credits,
+      region;
 
   List<ProcedureList> specialities = [];
   List<TimeSlotsData> timeSlots = [];
@@ -219,7 +220,8 @@ class User {
       this.isAdmin,
       this.isCentre,
       this.referralExpired,
-      this.bankDetails});
+      this.bankDetails,
+      this.region});
 
   factory User.fromJson(Map<String, dynamic> json) {
     bool _isAdmin = json['isAdmin'] ?? false;

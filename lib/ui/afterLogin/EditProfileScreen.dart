@@ -88,6 +88,7 @@ class _EditProfileState extends State<EditProfileScreen>
 
   UserBloc _userBloc;
   User _user;
+  String _region;
 
   @override
   void dispose() {
@@ -361,6 +362,11 @@ class _EditProfileState extends State<EditProfileScreen>
           addressControllerList[2];
       _latitude = addressControllerList[3];
       _longitude = addressControllerList[4];
+      _region = locationController.text;
+      if (addressControllerList.length == 6 &&
+          addressControllerList[5] != null) {
+        _region = addressControllerList[5];
+      }
     });
   }
 
@@ -421,6 +427,9 @@ class _EditProfileState extends State<EditProfileScreen>
     _setState();
     var result = await _userBloc.updateUserData(user.toJson());
     if (result is RequestSuccess) {
+      if (_user.userType == Constants.user) {
+        UserManager().setRegion(_region);
+      }
       widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
       Future.delayed(Duration(milliseconds: 550)).then((value) {
         Navigator.pop(context);

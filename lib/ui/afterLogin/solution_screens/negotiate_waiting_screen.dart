@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:animated_widgets/animated_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -60,72 +61,72 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
         _hasAnimated = !_hasAnimated;
         _start = _start + 1;
         if (_start > 9) {
-//          Navigator.push(
-//              context,
-//              MaterialPageRoute(
-//                  builder: (context) => SolutionReceivedScreen(
-//                        catalogueData: widget.catalogueData,
-//                        searchQuery: widget.searchQuery,
-//                      ))).then((value) {
-//            if (value != null && value) {
-//              Navigator.of(context)
-//                  .push(PageRouteBuilder(
-//                      opaque: false,
-//                      pageBuilder: (BuildContext context, _, __) =>
-//                          LocationFetch()))
-//                  .then((val) {
-//                if (val != null) {
-//                  var addressControllerList = new List();
-//                  addressControllerList = val.toString().split(":");
-//                  String addr = addressControllerList[0] +
-//                      ' ' +
-//                      addressControllerList[1] +
-//                      ' ' +
-//                      addressControllerList[2];
-////                  print("addr is $addr");
-//                  var _latitude = addressControllerList[3];
-//                  var _longitude = addressControllerList[4];
-//                  _progressEnabled = true;
-//                  _setState();
-//                  UserBloc()
-//                      .isUserInServiceLocation(_latitude, _longitude,
-//                          address: addr)
-//                      .then((result) {
-//                    if (result is RequestSuccess) {
-//                      CheckLocationResponse checkLocationResponse =
-//                          result.response;
-//                      if (checkLocationResponse != null &&
-//                          checkLocationResponse.msg != null &&
-//                          checkLocationResponse.msg.isNotEmpty) {
-//                        _failureCause = checkLocationResponse.msg;
-//                      }
-//                    } else if (result is RequestFailed) {
-//                      _failureCause = result.failureCause;
-//                    }
-//                    if (UserManager().getIsUserInServiceLocation()) {
-//                      Navigator.pop(context);
-//                      Navigator.push(
-//                          context,
-//                          MaterialPageRoute(
-//                              builder: (context) => BiddingLoading(
-//                                    catalogueData: widget.catalogueData,
-//                                    searchQuery: widget.searchQuery,
-//                                  )));
-//                      return;
-//                    } else if (_failureCause == null) {
-//                      _failureCause = PlunesStrings.switchToGurLoc;
-//                    }
-//                    _progressEnabled = false;
-//                    _setState();
-//                  });
-//                } else {
-//                  Navigator.pop(context);
-//                }
-//              });
-//            } else {
-//              Navigator.pop(context);
-//            }
-//          });
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SolutionReceivedScreen(
+                        catalogueData: widget.catalogueData,
+                        searchQuery: widget.searchQuery,
+                      ))).then((value) {
+            if (value != null && value) {
+              Navigator.of(context)
+                  .push(PageRouteBuilder(
+                      opaque: false,
+                      pageBuilder: (BuildContext context, _, __) =>
+                          LocationFetch()))
+                  .then((val) {
+                if (val != null) {
+                  var addressControllerList = new List();
+                  addressControllerList = val.toString().split(":");
+                  String addr = addressControllerList[0] +
+                      ' ' +
+                      addressControllerList[1] +
+                      ' ' +
+                      addressControllerList[2];
+//                  print("addr is $addr");
+                  var _latitude = addressControllerList[3];
+                  var _longitude = addressControllerList[4];
+                  _progressEnabled = true;
+                  _setState();
+                  UserBloc()
+                      .isUserInServiceLocation(_latitude, _longitude,
+                          address: addr)
+                      .then((result) {
+                    if (result is RequestSuccess) {
+                      CheckLocationResponse checkLocationResponse =
+                          result.response;
+                      if (checkLocationResponse != null &&
+                          checkLocationResponse.msg != null &&
+                          checkLocationResponse.msg.isNotEmpty) {
+                        _failureCause = checkLocationResponse.msg;
+                      }
+                    } else if (result is RequestFailed) {
+                      _failureCause = result.failureCause;
+                    }
+                    if (UserManager().getIsUserInServiceLocation()) {
+                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BiddingLoading(
+                                    catalogueData: widget.catalogueData,
+                                    searchQuery: widget.searchQuery,
+                                  )));
+                      return;
+                    } else if (_failureCause == null) {
+                      _failureCause = PlunesStrings.switchToGurLoc;
+                    }
+                    _progressEnabled = false;
+                    _setState();
+                  });
+                } else {
+                  Navigator.pop(context);
+                }
+              });
+            } else {
+              Navigator.pop(context);
+            }
+          });
         } else {
           _bidProgress = _bidProgress + 0.1;
           if (_movingUnit == 110) {
@@ -206,13 +207,13 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                         double.parse(UserManager()
                                             .getUserDetails()
                                             .longitude)),
-                                    zoom: 11,
+                                    zoom: 10,
                                     tilt: 6.5,
                                     bearing: 45),
                                 padding: EdgeInsets.all(0.0),
                                 myLocationEnabled: false,
-//                                zoomControlsEnabled: false,
-//                                zoomGesturesEnabled: false,
+                                zoomControlsEnabled: false,
+                                zoomGesturesEnabled: false,
                                 myLocationButtonEnabled: false,
                                 buildingsEnabled: false,
                                 trafficEnabled: false,
@@ -441,14 +442,17 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                           Expanded(child: Container()),
                           Center(
                             child: Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal:
-                                      AppConfig.horizontalBlockSize * 9),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10)),
+                                  color: Colors.black38),
+                              padding: EdgeInsets.all(10),
+                              margin: EdgeInsets.all(10),
                               child: Text(
                                 PlunesStrings.weAreNegotiatingBestSolution,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    color: Colors.black,
+                                    color: Colors.white,
                                     fontSize: AppConfig.largeFont,
                                     fontWeight: FontWeight.normal),
                               ),
@@ -482,7 +486,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                           Padding(
                               padding: EdgeInsets.only(
                                   top: AppConfig.verticalBlockSize * 4)),
-                          holdOnPopUp
+                          _getHoldOnPopup()
                         ],
                       ),
                     ],
@@ -491,57 +495,59 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
     );
   }
 
-  final holdOnPopUp = Container(
-    margin: EdgeInsets.all(10),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Container(
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                color: PlunesColors.LIGHTGREYCOLOR),
-            padding: EdgeInsets.all(10),
-            child: Stack(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Icon(
-                      Icons.timer,
-                      color: PlunesColors.GREENCOLOR,
-                      size: 50,
-                    ),
-                    SizedBox(
-                      width: AppConfig.horizontalBlockSize * 2,
-                    ),
-                    Expanded(
-                      child: Container(
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              child: Text(
-                                PlunesStrings.pleaseMakeSureText,
-                                maxLines: 3,
-                                style: TextStyle(
-                                    color: PlunesColors.BLACKCOLOR,
-                                    fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ],
-                        ),
+  _getHoldOnPopup() {
+    return Container(
+      margin: EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Container(
+            child: Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  color: Colors.white),
+              padding: EdgeInsets.all(4),
+              child: Stack(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Icon(
+                        Icons.timer,
+                        color: PlunesColors.GREENCOLOR,
+                        size: 40,
                       ),
-                    )
-                  ],
-                ),
-              ],
+                      SizedBox(
+                        width: AppConfig.horizontalBlockSize * 2,
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Column(
+                            children: <Widget>[
+                              Container(
+                                child: Text(
+                                  PlunesStrings.pleaseMakeSureText,
+                                  maxLines: 3,
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        )
-      ],
-    ),
-  );
+          )
+        ],
+      ),
+    );
+  }
 
   void _setState() {
     if (mounted) setState(() {});

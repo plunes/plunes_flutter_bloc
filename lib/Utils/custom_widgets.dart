@@ -2878,6 +2878,13 @@ class CustomWidgets {
                                               addressControllerList[3];
                                           var _longitude =
                                               addressControllerList[4];
+                                          String region = addr;
+                                          if (addressControllerList.length ==
+                                                  6 &&
+                                              addressControllerList[5] !=
+                                                  null) {
+                                            region = addressControllerList[5];
+                                          }
 //                          print("_latitude $_latitude");
 //                          print("_longitude $_longitude");
                                           isProgressing = true;
@@ -2886,7 +2893,8 @@ class CustomWidgets {
                                               .isUserInServiceLocation(
                                                   _latitude, _longitude,
                                                   address: addr,
-                                                  isFromPopup: true)
+                                                  isFromPopup: true,
+                                                  region: region)
                                               .then((value) {
                                             if (value is RequestSuccess) {
                                               CheckLocationResponse

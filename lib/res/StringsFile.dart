@@ -41,10 +41,8 @@ class PlunesStrings {
   static const String testsNotAvailable = "Tests not available";
   static const String serviceNotAvailable =
       "Currently this service is not available";
-  static const String weAreGettingBestSolution =
-      'WE ARE GETTING THE BEST SOLUTIONS FOR YOU';
   static const String weAreNegotiatingBestSolution =
-      'WE ARE NEGOTIATING THE BEST SOLUTIONS FOR YOU';
+      'We are negotiating the best solutions for you';
   static const String receiving = "Receiving...";
   static const String checkAvailability = "Availability";
   static const String bookIn = "Lock in";
