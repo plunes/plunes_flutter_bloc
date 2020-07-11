@@ -43,13 +43,26 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
   bool _hasAnimated = false;
   SearchSolutionBloc _searchSolutionBloc;
   SearchedDocResults _searchedDocResults;
-  Set<Marker> _markers = {};
+  Set<Marker> _markers = {}, _bigMarkers = {};
+  BitmapDescriptor hosImage1XGreenBgDesc, hosImage2XGreenBgDesc;
+  User _user;
 
   @override
   void initState() {
     _hasAnimated = false;
     _progressEnabled = false;
     _searchSolutionBloc = SearchSolutionBloc();
+    _user = UserManager().getUserDetails();
+    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+            PlunesImages.hosImage1XGreenBg)
+        .then((onValue) {
+      hosImage1XGreenBgDesc = onValue;
+    });
+    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+            PlunesImages.hosImage2XGreenBg)
+        .then((onValue) {
+      hosImage2XGreenBgDesc = onValue;
+    });
     _negotiate();
     _startAnimating();
     super.initState();
@@ -198,18 +211,11 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                   _mapController = mapController;
                                   _googleMapController.complete(_mapController);
                                 },
-                                markers: _markers,
+                                markers: _hasAnimated ? _markers : _bigMarkers,
                                 initialCameraPosition: CameraPosition(
-                                    target: LatLng(
-                                        double.parse(UserManager()
-                                            .getUserDetails()
-                                            .latitude),
-                                        double.parse(UserManager()
-                                            .getUserDetails()
-                                            .longitude)),
-                                    zoom: 10,
-                                    tilt: 6.5,
-                                    bearing: 45),
+                                    target: LatLng(double.parse(_user.latitude),
+                                        double.parse(_user.longitude)),
+                                    zoom: 10),
                                 padding: EdgeInsets.all(0.0),
                                 myLocationEnabled: false,
                                 zoomControlsEnabled: false,
@@ -559,7 +565,9 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
         searchQuery: widget.searchQuery);
     if (result is RequestSuccess) {
       _searchedDocResults = result.response;
-      if (_searchedDocResults.solution?.services == null ||
+      if (_searchedDocResults == null ||
+          _searchedDocResults.solution == null ||
+          _searchedDocResults.solution.services == null ||
           _searchedDocResults.solution.services.isEmpty) {
         //_failureCause = PlunesStrings.oopsServiceNotAvailable;
         if (_searchedDocResults != null &&
@@ -568,33 +576,53 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
           _failureCause = _searchedDocResults.msg;
         }
       } else {
-        int arrLength = (_searchedDocResults.solution.services.length >= 5)
-            ? 5
-            : _searchedDocResults.solution.services.length;
-        IconGenerator _iconGen = IconGenerator();
+        double minZoom = 0;
+        int arrLength = _searchedDocResults.solution.services.length;
         for (int index = 0; index < arrLength; index++) {
-          print("$index init time ${DateTime.now().millisecondsSinceEpoch}");
-          bool shouldFetch =
-              (_searchedDocResults.solution.services[index].imageUrl != null &&
-                      _searchedDocResults
-                          .solution.services[index].imageUrl.isNotEmpty &&
-                      _searchedDocResults.solution.services[index].imageUrl
-                          .contains("http"))
-                  ? true
-                  : false;
-          BitmapDescriptor _icon = await _iconGen.getMarkerIcon(
-              shouldFetch
-                  ? _searchedDocResults.solution.services[index].imageUrl
-                  : PlunesImages.labMapImage,
-              Size(220, 220),
-              shouldFetch,
-              index);
-          print("$index took time ${DateTime.now().millisecondsSinceEpoch} \n");
+          if (_searchedDocResults.solution.services[index].distance != null &&
+              _searchedDocResults.solution.services[index].distance > minZoom) {
+            minZoom = _searchedDocResults.solution.services[index].distance;
+          }
+        }
+        if (minZoom != 0) {
+          _animateMapPosition(minZoom);
+        }
+//        IconGenerator _iconGen = IconGenerator();
+        for (int index = 0; index < arrLength; index++) {
+//          print("$index init time ${DateTime.now().millisecondsSinceEpoch}");
+//          bool shouldFetch =
+//              (_searchedDocResults.solution.services[index].imageUrl != null &&
+//                      _searchedDocResults
+//                          .solution.services[index].imageUrl.isNotEmpty &&
+//                      _searchedDocResults.solution.services[index].imageUrl
+//                          .contains("http"))
+//                  ? true
+//                  : false;
+//          BitmapDescriptor _icon = await _iconGen.getMarkerIcon(
+//              shouldFetch
+//                  ? _searchedDocResults.solution.services[index].imageUrl
+//                  : PlunesImages.labMapImage,
+//              Size(220, 220),
+//              shouldFetch,
+//              index);
+//          print("$index took time ${DateTime.now().millisecondsSinceEpoch} \n");
 
           _markers.add(Marker(
               markerId:
                   MarkerId(_searchedDocResults.solution.services[index].sId),
-              icon: _icon,
+              icon: hosImage1XGreenBgDesc,
+              position: LatLng(
+                  _searchedDocResults.solution.services[index].latitude ?? 0.0,
+                  _searchedDocResults.solution.services[index].longitude ??
+                      0.0),
+              infoWindow: InfoWindow(
+                  title: _searchedDocResults.solution.services[index].name,
+                  snippet:
+                      "${_searchedDocResults.solution.services[index].distance?.toStringAsFixed(1)} km")));
+          _bigMarkers.add(Marker(
+              markerId:
+                  MarkerId(_searchedDocResults.solution.services[index].sId),
+              icon: hosImage2XGreenBgDesc,
               position: LatLng(
                   _searchedDocResults.solution.services[index].latitude ?? 0.0,
                   _searchedDocResults.solution.services[index].longitude ??
@@ -607,7 +635,32 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
       }
     } else if (result is RequestFailed) {
       _failureCause = result.failureCause;
-      //_timer?.cancel();
     }
+  }
+
+  void _animateMapPosition(double minZoom) async {
+    if (minZoom < 5) {
+      minZoom = 14;
+    } else if (minZoom < 10) {
+      minZoom = 12;
+    } else if (minZoom < 20) {
+      minZoom = 11;
+    } else if (minZoom < 35) {
+      minZoom = 10.5;
+    } else if (minZoom < 55) {
+      minZoom = 9.2;
+    } else {
+      minZoom = 9;
+    }
+    Future.delayed(Duration(milliseconds: 10)).then((value) {
+      if (_mapController != null) {
+        _mapController.animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(
+                target: LatLng(double.parse(_user.latitude),
+                    double.parse(_user.longitude)),
+                zoom: minZoom,
+                bearing: 10)));
+      }
+    });
   }
 }

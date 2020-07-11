@@ -590,7 +590,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
               ),
               (_profileResponse.user.doctorsData != null &&
                       _profileResponse.user.doctorsData.isNotEmpty &&
-                      _profileResponse.user.doctorsData.length > 5)
+                      _profileResponse.user.doctorsData.length > 2)
                   ? InkWell(
                       onTap: () {
                         showDialog(

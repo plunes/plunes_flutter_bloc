@@ -52,6 +52,8 @@ class PlunesImages {
       "assets/images/invoiceSuccessImage.png";
   static const String technologyBackground =
       "assets/images/technologyBackground.png";
+  static const String hosImage1XGreenBg = "assets/images/hosImage1XGreenBg.png";
+  static const String hosImage2XGreenBg = "assets/images/hosImage2XGreenBg.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

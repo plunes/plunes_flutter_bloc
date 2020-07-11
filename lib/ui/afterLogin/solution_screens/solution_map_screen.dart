@@ -10,6 +10,7 @@ import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
@@ -34,10 +35,17 @@ class _SolutionMapState extends BaseState<SolutionMap> {
   FocusNode _focusNode;
   String _failureCause;
 
+//  BitmapDescriptor hosImage2XGreenBgDesc;
+
   @override
   void initState() {
     _searchedDocResults = widget.solution;
     _user = UserManager().getUserDetails();
+//    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+//            PlunesImages.hosImage2XGreenBg)
+//        .then((onValue) {
+//      hosImage2XGreenBgDesc = onValue;
+//    });
     _setMapSpecificData();
     _searchController = TextEditingController();
     _focusNode = FocusNode()
@@ -93,8 +101,11 @@ class _SolutionMapState extends BaseState<SolutionMap> {
                               markers: _markers,
                               myLocationButtonEnabled: false,
                               onMapCreated: (mapController) {
-                                if (!_googleMapController.isCompleted)
-                                  _googleMapController.complete(mapController);
+                                if (_googleMapController != null &&
+                                    _googleMapController.isCompleted) {
+                                  return;
+                                }
+                                _googleMapController.complete(mapController);
                               },
                               initialCameraPosition: CameraPosition(
                                   target: LatLng(
@@ -108,7 +119,7 @@ class _SolutionMapState extends BaseState<SolutionMap> {
         ));
   }
 
-  void _setMapSpecificData() {
+  void _setMapSpecificData() async {
     if (_searchedDocResults == null ||
         _searchedDocResults.solution == null ||
         _searchedDocResults.solution.services == null ||
@@ -120,6 +131,20 @@ class _SolutionMapState extends BaseState<SolutionMap> {
         _failureCause = _searchedDocResults.msg;
       }
     } else {
+//      double minZoom = 0;
+//      for (int index = 0;
+//          index < _searchedDocResults.solution.services.length;
+//          index++) {
+//        if (_searchedDocResults.solution.services[index].distance != null &&
+//            _searchedDocResults.solution.services[index].distance > minZoom) {
+//          minZoom = _searchedDocResults.solution.services[index].distance;
+//        }
+//      }
+//      if (minZoom != 0) {
+////        _animateMapPosition(minZoom);
+//        print("animating");
+//      }
+//      await Future.delayed(Duration(milliseconds: 100));
       _searchedDocResults.solution.services.forEach((docData) {
         _markers.add(Marker(
             markerId: MarkerId(docData.sId),
@@ -150,5 +175,32 @@ class _SolutionMapState extends BaseState<SolutionMap> {
 
   void _setState() {
     if (mounted) setState(() {});
+  }
+
+  void _animateMapPosition(double minZoom) async {
+    if (minZoom < 5) {
+      minZoom = 14;
+    } else if (minZoom < 10) {
+      minZoom = 12;
+    } else if (minZoom < 20) {
+      minZoom = 11;
+    } else if (minZoom < 35) {
+      minZoom = 10.5;
+    } else if (minZoom < 55) {
+      minZoom = 9.2;
+    } else {
+      minZoom = 9;
+    }
+    Future.delayed(Duration(milliseconds: 700)).then((value) async {
+      if (_googleMapController != null && _googleMapController.isCompleted) {
+        var _mapController = await _googleMapController.future;
+        _mapController.animateCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(
+                target: LatLng(double.parse(_user.latitude),
+                    double.parse(_user.longitude)),
+                zoom: minZoom,
+                bearing: 10)));
+      }
+    });
   }
 }
