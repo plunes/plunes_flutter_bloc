@@ -46,6 +46,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
   Set<Marker> _markers = {}, _bigMarkers = {};
   BitmapDescriptor hosImage1XGreenBgDesc, hosImage2XGreenBgDesc;
   User _user;
+  IconGenerator _iconGen;
 
   @override
   void initState() {
@@ -53,16 +54,28 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
     _progressEnabled = false;
     _searchSolutionBloc = SearchSolutionBloc();
     _user = UserManager().getUserDetails();
-    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
-            PlunesImages.hosImage1XGreenBg)
-        .then((onValue) {
-      hosImage1XGreenBgDesc = onValue;
+    _iconGen = IconGenerator();
+//    _iconGen
+//        .getBytesFromAsset(PlunesImages.hosImage1XGreenBg, 90)
+//        .then((value) {
+//      print("pehli image");
+//      hosImage1XGreenBgDesc = BitmapDescriptor.fromBytes(value);
+//    });
+    _iconGen
+        .getBytesFromAsset(PlunesImages.hosImage2XGreenBg, 180)
+        .then((value) {
+      hosImage2XGreenBgDesc = BitmapDescriptor.fromBytes(value);
     });
-    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
-            PlunesImages.hosImage2XGreenBg)
-        .then((onValue) {
-      hosImage2XGreenBgDesc = onValue;
-    });
+//    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+//            PlunesImages.hosImage1XGreenBg)
+//        .then((onValue) {
+//      hosImage1XGreenBgDesc = onValue;
+//    });
+//    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+//            PlunesImages.hosImage2XGreenBg)
+//        .then((onValue) {
+//      hosImage2XGreenBgDesc = onValue;
+//    });
     _negotiate();
     _startAnimating();
     super.initState();
@@ -211,7 +224,8 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                                   _mapController = mapController;
                                   _googleMapController.complete(_mapController);
                                 },
-                                markers: _hasAnimated ? _markers : _bigMarkers,
+                                markers: _markers,
+                                // _hasAnimated ? _markers : _bigMarkers,
                                 initialCameraPosition: CameraPosition(
                                     target: LatLng(double.parse(_user.latitude),
                                         double.parse(_user.longitude)),
@@ -587,7 +601,6 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
         if (minZoom != 0) {
           _animateMapPosition(minZoom);
         }
-//        IconGenerator _iconGen = IconGenerator();
         for (int index = 0; index < arrLength; index++) {
 //          print("$index init time ${DateTime.now().millisecondsSinceEpoch}");
 //          bool shouldFetch =
@@ -606,20 +619,8 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
 //              shouldFetch,
 //              index);
 //          print("$index took time ${DateTime.now().millisecondsSinceEpoch} \n");
-
+          await Future.delayed(Duration(milliseconds: 300));
           _markers.add(Marker(
-              markerId:
-                  MarkerId(_searchedDocResults.solution.services[index].sId),
-              icon: hosImage1XGreenBgDesc,
-              position: LatLng(
-                  _searchedDocResults.solution.services[index].latitude ?? 0.0,
-                  _searchedDocResults.solution.services[index].longitude ??
-                      0.0),
-              infoWindow: InfoWindow(
-                  title: _searchedDocResults.solution.services[index].name,
-                  snippet:
-                      "${_searchedDocResults.solution.services[index].distance?.toStringAsFixed(1)} km")));
-          _bigMarkers.add(Marker(
               markerId:
                   MarkerId(_searchedDocResults.solution.services[index].sId),
               icon: hosImage2XGreenBgDesc,
@@ -631,6 +632,18 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   title: _searchedDocResults.solution.services[index].name,
                   snippet:
                       "${_searchedDocResults.solution.services[index].distance?.toStringAsFixed(1)} km")));
+//          _bigMarkers.add(Marker(
+//              markerId:
+//                  MarkerId(_searchedDocResults.solution.services[index].sId),
+//              icon: hosImage2XGreenBgDesc,
+//              position: LatLng(
+//                  _searchedDocResults.solution.services[index].latitude ?? 0.0,
+//                  _searchedDocResults.solution.services[index].longitude ??
+//                      0.0),
+//              infoWindow: InfoWindow(
+//                  title: _searchedDocResults.solution.services[index].name,
+//                  snippet:
+//                      "${_searchedDocResults.solution.services[index].distance?.toStringAsFixed(1)} km")));
         }
       }
     } else if (result is RequestFailed) {
