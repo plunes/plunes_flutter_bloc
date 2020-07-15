@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/log.dart';
@@ -60,8 +61,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               widget.bookingId == appointmentModel.bookingId)
           ? PlunesColors.LIGHTGREENCOLOR
           : PlunesColors.WHITECOLOR,
-      padding:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+      padding: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 3,
+          vertical: AppConfig.verticalBlockSize * .5),
       child: Column(
         children: <Widget>[
           Container(
@@ -78,7 +80,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             onTap: () => _openProfile(),
                             onDoubleTap: () {},
                             child: Text(
-                              appointmentModel.professionalName ??
+                              CommonMethods.getStringInCamelCase(
+                                      appointmentModel?.professionalName) ??
                                   PlunesStrings.NA,
                               style: TextStyle(
                                   fontSize: AppConfig.mediumFont,
@@ -476,7 +479,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               children: <Widget>[
                 Expanded(
                   child: Container(
-                    child: Text(appointmentModel.serviceName,
+                    child: Text(
+                        CommonMethods.getStringInCamelCase(
+                            appointmentModel?.serviceName),
                         style: TextStyle(
                             fontSize: AppConfig.smallFont,
                             fontWeight: FontWeight.bold,

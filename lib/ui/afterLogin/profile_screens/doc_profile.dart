@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -175,7 +176,9 @@ class _DocProfileState extends BaseState<DocProfile> {
                     radius: 30,
                   )
                 : CustomWidgets().getBackImageView(
-                    _profileResponse.user?.name ?? _getEmptyString())),
+                    CommonMethods.getStringInCamelCase(
+                            _profileResponse?.user?.name) ??
+                        _getEmptyString())),
         Expanded(
           child: Padding(
             padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 5),

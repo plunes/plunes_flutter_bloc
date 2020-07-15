@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -299,7 +300,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       onTap: () => _goToProfilePage(),
                       onDoubleTap: () {},
                       child: Text(
-                        _docProfileInfo.user?.name ?? PlunesStrings.NA,
+                        CommonMethods.getStringInCamelCase(
+                                _docProfileInfo?.user?.name) ??
+                            PlunesStrings.NA,
                         style: TextStyle(
                             fontSize: AppConfig.mediumFont,
                             fontWeight: FontWeight.bold,

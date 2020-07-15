@@ -467,7 +467,7 @@ class PlunesStrings {
   get passwordMismatchError =>
       "New Password and Re-enter New Password do not match.";
 
-  get profile => 'PROFILE';
+  get profile => 'Profile';
 
   get notification => 'NOTIFICATION';
 

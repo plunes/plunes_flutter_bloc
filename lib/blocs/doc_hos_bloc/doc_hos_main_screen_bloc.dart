@@ -91,7 +91,7 @@ class DocHosMainInsightBloc extends BlocBase {
       num price, String solutionId, String serviceId) async {
     updateRealTimeInsightPriceStream(RequestInProgress());
     updateRealTimeInsightPriceStream(await DocHosMainRepo()
-        .updateRealTimeIsightPrice(price, solutionId, serviceId));
+        .updateRealTimeInsightPrice(price, solutionId, serviceId));
   }
 
   getUpdateActionableInsightPrice(

@@ -73,7 +73,7 @@ class DocHosMainRepo {
     }
   }
 
-  Future<RequestState> updateRealTimeIsightPrice(
+  Future<RequestState> updateRealTimeInsightPrice(
       num price, String solutionId, String serviceId) async {
     var result = await DioRequester().requestMethod(
       url: Urls.UPDATE_REALTIME_INSIGHT_PRICE_URL,

@@ -215,7 +215,8 @@ class CustomWidgets {
                           children: <Widget>[
                             RichText(
                                 text: TextSpan(
-                                    text: solutionList[index].service ??
+                                    text: CommonMethods.getStringInCamelCase(
+                                            solutionList[index]?.service) ??
                                         PlunesStrings.NA,
                                     style: TextStyle(
                                       fontSize: AppConfig.smallFont + 1,
@@ -561,7 +562,8 @@ class CustomWidgets {
                         left: AppConfig.horizontalBlockSize * 2)),
                 Expanded(
                   child: Text(
-                    testAndProcedures[index].sId,
+                    CommonMethods.getStringInCamelCase(
+                        testAndProcedures[index]?.sId),
                     style: TextStyle(
                         color: PlunesColors.BLACKCOLOR,
                         fontWeight: FontWeight.bold),
@@ -642,7 +644,9 @@ class CustomWidgets {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        solutions[index].name ?? PlunesStrings.NA,
+                        CommonMethods.getStringInCamelCase(
+                                solutions[index]?.name) ??
+                            PlunesStrings.NA,
                         style: TextStyle(
                             fontSize: AppConfig.mediumFont,
                             color: PlunesColors.BLACKCOLOR,
@@ -1098,7 +1102,12 @@ class CustomWidgets {
                                   top: AppConfig.verticalBlockSize * 5),
                               child: SingleChildScrollView(
                                 controller: _scrollController,
-                                reverse: shouldShowField ? true : false,
+                                reverse: shouldShowField
+                                    ? true
+                                    : (failureCause != null &&
+                                            failureCause.isNotEmpty)
+                                        ? true
+                                        : false,
                                 child: Center(
                                   child: Column(
                                     crossAxisAlignment:
@@ -1321,7 +1330,8 @@ class CustomWidgets {
                                                                     null &&
                                                                 realInsight
                                                                     .suggested)
-                                                            ? InkWell(
+                                                            ? Flexible(
+                                                                child: InkWell(
                                                                 onTap: () {
                                                                   shouldShowField =
                                                                       true;
@@ -1348,7 +1358,7 @@ class CustomWidgets {
                                                                         .WHITECOLOR,
                                                                   ),
                                                                 ),
-                                                              )
+                                                              ))
                                                             : Container()
                                                       ],
                                                     )),
@@ -1430,9 +1440,22 @@ class CustomWidgets {
                                                     _priceController.text
                                                             .trim()
                                                             .substring(0) ==
-                                                        "0") {
+                                                        "0" ||
+                                                    (double.tryParse(
+                                                            _priceController
+                                                                .text
+                                                                .trim()) <
+                                                        1)) {
                                                   failureCause =
-                                                      'price must not be 0 or empty';
+                                                      'Price must not be lesser than 1 or empty';
+                                                  newState(() {});
+                                                  return;
+                                                } else if (double.tryParse(
+                                                        _priceController.text
+                                                            .trim()) >
+                                                    realInsight.userPrice) {
+                                                  failureCause =
+                                                      'price must not be greater than original price.';
                                                   newState(() {});
                                                   return;
                                                 }
@@ -1451,7 +1474,13 @@ class CustomWidgets {
                                                 if (sliderVal == null ||
                                                     sliderVal == 0) {
                                                   failureCause =
-                                                      'price must not be 0';
+                                                      'price must not be 0.';
+                                                  newState(() {});
+                                                  return;
+                                                } else if (sliderVal ==
+                                                    realInsight.userPrice) {
+                                                  failureCause =
+                                                      'price must not be equals to original price.';
                                                   newState(() {});
                                                   return;
                                                 }
@@ -2548,7 +2577,8 @@ class CustomWidgets {
                                     padding:
                                         EdgeInsets.symmetric(vertical: 0.2),
                                     child: Text(
-                                      doctorsData[itemIndex].name ??
+                                      CommonMethods.getStringInCamelCase(
+                                              doctorsData[itemIndex]?.name) ??
                                           PlunesStrings.NA,
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
@@ -2685,7 +2715,9 @@ class CustomWidgets {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    doctorsData?.name ?? _getEmptyString(),
+                                    CommonMethods.getStringInCamelCase(
+                                            doctorsData?.name) ??
+                                        _getEmptyString(),
                                     style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 16),
@@ -2708,7 +2740,9 @@ class CustomWidgets {
                             22,
                             plunesImages.expertiseIcon,
                             plunesStrings.areaExpertise,
-                            doctorsData?.department ?? _getEmptyString()),
+                            CommonMethods.getStringInCamelCase(
+                                    doctorsData?.department) ??
+                                _getEmptyString()),
                       ),
                       Padding(
                         padding: EdgeInsets.only(
@@ -2731,7 +2765,8 @@ class CustomWidgets {
                             22,
                             plunesImages.practisingIcon,
                             plunesStrings.practising,
-                            hospitalName ?? _getEmptyString()),
+                            CommonMethods.getStringInCamelCase(hospitalName) ??
+                                _getEmptyString()),
                       ),
                       Padding(
                         padding: EdgeInsets.only(

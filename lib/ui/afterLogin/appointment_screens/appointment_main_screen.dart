@@ -16,7 +16,7 @@ import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/blocs/booking_blocs/appointment_bloc.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointmentScreen.dart';
-
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'appointmentDocHosScreen.dart';
 
 // ignore: must_be_immutable
@@ -37,7 +37,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   BookingBloc _bookingBloc;
   AppointmentResponseModel _appointmentResponse;
   TabController _tabDocHosController, _tabUserController;
-  ScrollController _scrollDocHosController, _scrollUserController;
+  ItemScrollController _scrollDocHosController, _scrollUserController;
   String _appointmentFailureCause;
   int index, _appointmentIndex;
   bool _isDisplay, _shouldOpenPopUp = false;
@@ -54,8 +54,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     _confirmedDocHosAppointments = [];
     _cancelledAppointments = [];
     _confirmedUserAppointments = [];
-    _scrollUserController = ScrollController();
-    _scrollDocHosController = ScrollController();
+    _scrollUserController = ItemScrollController();
+    _scrollDocHosController = ItemScrollController();
     _tabDocHosController =
         TabController(initialIndex: 0, length: 3, vsync: this);
     _tabUserController = TabController(initialIndex: 0, length: 2, vsync: this);
@@ -250,8 +250,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   _renderAppointmentUserList(List<AppointmentModel> appointmentList) {
-    return ListView.builder(
-      controller: _scrollUserController,
+    return ScrollablePositionedList.builder(
+      itemScrollController: _scrollUserController,
       itemBuilder: (context, index) {
         return Container(
           padding: (index == 0)
@@ -272,8 +272,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   Widget _renderAppointmentDocHosList(List<AppointmentModel> appointmentList) {
-    return ListView.builder(
-      controller: _scrollDocHosController,
+    return ScrollablePositionedList.builder(
+      itemScrollController: _scrollDocHosController,
       itemBuilder: (context, index) {
         return Container(
           padding: (index == 0)
@@ -400,10 +400,14 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
       _appointmentIndex =
           _appointmentResponse.bookings?.indexOf(appointmentModel);
       if (_appointmentIndex != null && _appointmentIndex >= 0) {
-        _scrollUserController?.animateTo(
-            _appointmentIndex.toDouble() * AppConfig.verticalBlockSize * 48,
+        _scrollUserController?.scrollTo(
+            index: _appointmentIndex,
             duration: Duration(milliseconds: 500),
             curve: Curves.ease);
+//        _scrollUserController?.animateTo(
+//            _appointmentIndex.toDouble() * AppConfig.verticalBlockSize * 48,
+//            duration: Duration(milliseconds: 500),
+//            curve: Curves.ease);
 
         /// you need to change here /////////////////////////////////////////////////////////////////////////
         _removeBookingId();
@@ -429,8 +433,8 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
       if (_appointmentIndex == null || _appointmentIndex < 0)
         _appointmentIndex = _cancelledAppointments?.indexOf(appointmentModel);
       if (_appointmentIndex != null && _appointmentIndex >= 0) {
-        _scrollDocHosController.animateTo(
-            _appointmentIndex.toDouble() * AppConfig.verticalBlockSize * 48,
+        _scrollDocHosController.scrollTo(
+            index: _appointmentIndex,
             duration: Duration(milliseconds: 500),
             curve: Curves.ease);
         _removeBookingId();
@@ -439,8 +443,11 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   }
 
   void _removeBookingId() {
-    Future.delayed(Duration(milliseconds: 1500)).then((value) {
+    Future.delayed(Duration(milliseconds: 2200)).then((value) {
       _isDisplay = true;
+      Future.delayed(Duration(milliseconds: 15)).then((value) {
+        _appointmentBloc.addStateInAppointmentStream(null);
+      });
     });
   }
 }

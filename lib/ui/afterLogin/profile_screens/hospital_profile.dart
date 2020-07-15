@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:plunes/OpenMap.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -262,7 +263,9 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  _profileResponse.user?.name ?? _getEmptyString(),
+                  CommonMethods.getStringInCamelCase(
+                          _profileResponse?.user?.name) ??
+                      _getEmptyString(),
                   style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
                 ),
                 Text(
@@ -366,7 +369,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
         itemList.add(DropdownMenuItem(
             value: item.id,
             child: Text(
-              item.speciality ?? _getEmptyString(),
+              CommonMethods.getStringInCamelCase(item?.speciality) ??
+                  _getEmptyString(),
               style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
             )));
       }
@@ -454,7 +458,6 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                       return InkWell(
                         onTap: () => _openDocDetails(
                             _profileResponse.user.doctorsData[itemIndex]),
-
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -510,10 +513,11 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                               AppConfig.horizontalBlockSize *
                                                   0.8),
                                       child: Text(
-                                        _profileResponse
-                                                .user
-                                                ?.doctorsData[itemIndex]
-                                                ?.name ??
+                                        CommonMethods.getStringInCamelCase(
+                                                _profileResponse
+                                                    .user
+                                                    ?.doctorsData[itemIndex]
+                                                    ?.name) ??
                                             _getEmptyString(),
                                         maxLines: 1,
                                         textAlign: TextAlign.left,
@@ -697,7 +701,9 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                         padding: EdgeInsets.symmetric(
                             vertical: AppConfig.verticalBlockSize * 0.8),
                         child: Text(
-                          _catalogueList[index].service ?? _getEmptyString(),
+                          CommonMethods.getStringInCamelCase(
+                                  _catalogueList[index]?.service) ??
+                              _getEmptyString(),
                           maxLines: 2,
                           textAlign: TextAlign.left,
                           style: TextStyle(
@@ -768,12 +774,15 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                   ),
                 ),
               ),
-        Container(
-          height: 0.5,
-          width: double.infinity,
-          color: PlunesColors.GREYCOLOR,
-          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
-        ),
+        (_profileResponse.user.doctorsData == null ||
+                _profileResponse.user.doctorsData.isEmpty)
+            ? Container()
+            : Container(
+                height: 0.5,
+                width: double.infinity,
+                color: PlunesColors.GREYCOLOR,
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
+              ),
       ],
     );
   }

@@ -496,7 +496,9 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  uploadedReports[index].reportDisplayName ??
+                                  CommonMethods.getStringInCamelCase(
+                                          uploadedReports[index]
+                                              ?.reportDisplayName) ??
                                       PlunesStrings.NA,
                                   maxLines: 3,
                                   style: TextStyle(

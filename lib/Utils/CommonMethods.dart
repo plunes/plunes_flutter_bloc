@@ -703,4 +703,36 @@ class CommonMethods {
       ]),
     );
   }
+
+  static String getStringInCamelCase(String someValue) {
+    String stringToReturn = PlunesStrings.NA;
+    try {
+      if (someValue == null || someValue.trim().isEmpty) {
+        return stringToReturn;
+      }
+      List<String> multipleStrings = someValue.split(" ");
+      stringToReturn = null;
+      multipleStrings.forEach((element) {
+        if (element == null || element.isEmpty) {
+        } else if (stringToReturn == null) {
+          stringToReturn = element.substring(0, 1).toUpperCase();
+          if (element.trim().length > 1) {
+            stringToReturn =
+                stringToReturn + element.substring(1).toLowerCase();
+          }
+        } else {
+          stringToReturn =
+              stringToReturn + " " + element.substring(0, 1).toUpperCase();
+          if (element.trim().length > 1) {
+            stringToReturn =
+                stringToReturn + element.substring(1).toLowerCase();
+          }
+        }
+      });
+    } catch (e) {
+      print("an error occured in getStringInCamelCase method commonMethods");
+      stringToReturn = someValue;
+    }
+    return stringToReturn;
+  }
 }

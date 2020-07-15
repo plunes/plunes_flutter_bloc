@@ -155,7 +155,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        result.senderName,
+                        CommonMethods.getStringInCamelCase(result?.senderName),
                         style: TextStyle(
                             color: Colors.black,
                             fontSize: AppConfig.smallFont,

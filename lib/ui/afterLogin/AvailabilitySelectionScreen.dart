@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -43,6 +45,9 @@ class _AvailabilitySelectionScreenState
   List<String> to_1 = new List();
   List<String> to_2 = new List();
   List timeslots_ = new List();
+  double _movingUnit = 30;
+  StreamController _streamController;
+  Timer _timer;
 
   List<String> days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   List<String> days_name = [
@@ -58,11 +63,28 @@ class _AvailabilitySelectionScreenState
 
   @override
   void initState() {
+    _streamController = StreamController.broadcast();
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _timer = timer;
+      if (_movingUnit == 30) {
+        _movingUnit = 10;
+      } else {
+        _movingUnit = 30;
+      }
+      _streamController.add(null);
+    });
     userBloc = UserBloc();
     getSlots();
     hasSubmitted = false;
     initialTime = DateTime.now();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _streamController?.close();
+    super.dispose();
   }
 
   void getSlots() async {
@@ -150,6 +172,53 @@ class _AvailabilitySelectionScreenState
     CommonMethods.globalContext = context;
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
+    var streamWidget = StreamBuilder(
+      builder: (context, snapshot) {
+        return Container(
+          height: 60,
+          width: double.infinity,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                child: Container(),
+                flex: 1,
+              ),
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      "animation",
+                      textAlign: TextAlign.left,
+                    ),
+                    Expanded(
+                      child: AnimatedContainer(
+                          alignment: Alignment.topLeft,
+                          duration: Duration(seconds: 1),
+                          margin: EdgeInsets.only(top: _movingUnit, left: 8),
+                          child: Icon(
+                            Icons.arrow_downward,
+                            color: Colors.grey,
+                          )),
+                    ),
+                  ],
+                ),
+                flex: 3,
+              ),
+              Expanded(
+                child: Container(),
+                flex: 3,
+              ),
+              Expanded(
+                child: Container(),
+                flex: 1,
+              ),
+            ],
+          ),
+        );
+      },
+      stream: _streamController.stream,
+    );
     final header = Container(
       margin: EdgeInsets.only(top: 20, bottom: 10),
       child: Row(
@@ -550,6 +619,7 @@ class _AvailabilitySelectionScreenState
                 ? Column(
                     children: <Widget>[
                       header,
+                      progress ? Container() : streamWidget,
                       progress ? loading : dayList,
                       submit
                     ],
