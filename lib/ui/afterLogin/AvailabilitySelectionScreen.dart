@@ -174,53 +174,68 @@ class _AvailabilitySelectionScreenState
     globalWidth = MediaQuery.of(context).size.width;
     var streamWidget = StreamBuilder(
       builder: (context, snapshot) {
-        return Container(
-          height: 60,
-          width: double.infinity,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: Container(),
-                flex: 1,
+        return Column(
+          children: <Widget>[
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 5, vertical: 5),
+              child: Text(
+                PlunesStrings.makeSureYouFillSlotAccurately,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14),
               ),
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      "animation",
-                      textAlign: TextAlign.left,
+            ),
+            Container(
+              height: 35,
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(),
+                    flex: 1,
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: AnimatedContainer(
+                              alignment: Alignment.center,
+                              duration: Duration(seconds: 1),
+                              margin:
+                                  EdgeInsets.only(top: _movingUnit, left: 8),
+                              child: Icon(
+                                Icons.arrow_downward,
+                                size: 28.0,
+                                color: PlunesColors.GREENCOLOR,
+                              )),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: AnimatedContainer(
-                          alignment: Alignment.topLeft,
-                          duration: Duration(seconds: 1),
-                          margin: EdgeInsets.only(top: _movingUnit, left: 8),
-                          child: Icon(
-                            Icons.arrow_downward,
-                            color: Colors.grey,
-                          )),
-                    ),
-                  ],
-                ),
-                flex: 3,
+                    flex: 3,
+                  ),
+                  Expanded(
+                    child: Container(),
+                    flex: 3,
+                  ),
+                  Expanded(
+                    child: Container(),
+                    flex: 1,
+                  ),
+                ],
               ),
-              Expanded(
-                child: Container(),
-                flex: 3,
-              ),
-              Expanded(
-                child: Container(),
-                flex: 1,
-              ),
-            ],
-          ),
+            ),
+          ],
         );
       },
       stream: _streamController.stream,
     );
     final header = Container(
-      margin: EdgeInsets.only(top: 20, bottom: 10),
+      margin: EdgeInsets.only(top: 15, bottom: 4, right: 5),
       child: Row(
         children: <Widget>[
           Expanded(
@@ -255,9 +270,10 @@ class _AvailabilitySelectionScreenState
 
     final dayList = Expanded(
       child: ListView.builder(
+        padding: EdgeInsets.all(0),
         itemBuilder: (context, index) {
           return Container(
-            margin: EdgeInsets.only(top: 10),
+            margin: EdgeInsets.only(top: 8),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -290,15 +306,18 @@ class _AvailabilitySelectionScreenState
                             height: 25,
                             decoration: BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(12)),
                                 border:
                                     Border.all(width: 0.5, color: Colors.grey)),
                             alignment: Alignment.center,
                             child: Padding(
-                              padding: const EdgeInsets.all(2.0),
+                              padding: const EdgeInsets.all(2.5),
                               child: Text(
                                 from_1[index],
-                                style: TextStyle(fontSize: 10),
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),
@@ -315,15 +334,18 @@ class _AvailabilitySelectionScreenState
                             height: 25,
                             decoration: BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(12)),
                                 border:
                                     Border.all(width: 0.5, color: Colors.grey)),
                             alignment: Alignment.center,
                             child: Padding(
-                              padding: const EdgeInsets.all(2.0),
+                              padding: const EdgeInsets.all(2.5),
                               child: Text(
                                 to_1[index],
-                                style: TextStyle(fontSize: 10),
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),
@@ -347,15 +369,18 @@ class _AvailabilitySelectionScreenState
                             height: 25,
                             decoration: BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(12)),
                                 border:
                                     Border.all(width: 0.5, color: Colors.grey)),
                             alignment: Alignment.center,
                             child: Padding(
-                              padding: const EdgeInsets.all(2.0),
+                              padding: const EdgeInsets.all(2.5),
                               child: Text(
                                 from_2[index],
-                                style: TextStyle(fontSize: 10),
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),
@@ -372,15 +397,18 @@ class _AvailabilitySelectionScreenState
                             height: 25,
                             decoration: BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
+                                    BorderRadius.all(Radius.circular(12)),
                                 border:
                                     Border.all(width: 0.5, color: Colors.grey)),
                             alignment: Alignment.center,
                             child: Padding(
-                              padding: const EdgeInsets.all(2.0),
+                              padding: const EdgeInsets.all(2.5),
                               child: Text(
                                 to_2[index],
-                                style: TextStyle(fontSize: 10),
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.w600),
                               ),
                             ),
                           ),
@@ -465,9 +493,11 @@ class _AvailabilitySelectionScreenState
               onTap: addSlot,
               child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
                     color: Color(0xff01d35a)),
                 alignment: Alignment.center,
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 15),
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Text(
@@ -618,8 +648,8 @@ class _AvailabilitySelectionScreenState
             child: failureCause == null
                 ? Column(
                     children: <Widget>[
-                      header,
                       progress ? Container() : streamWidget,
+                      header,
                       progress ? loading : dayList,
                       submit
                     ],

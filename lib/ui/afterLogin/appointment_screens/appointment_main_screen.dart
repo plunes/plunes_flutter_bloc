@@ -37,7 +37,11 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   BookingBloc _bookingBloc;
   AppointmentResponseModel _appointmentResponse;
   TabController _tabDocHosController, _tabUserController;
-  ItemScrollController _scrollDocHosController, _scrollUserController;
+  ItemScrollController _docHosUpcomingApScrollController,
+      _docHosConfirmedApScrollController,
+      _docHosCancelledApScrollController,
+      _scrollUserConfirmedApListController,
+      _scrollUserCancelledApListController;
   String _appointmentFailureCause;
   int index, _appointmentIndex;
   bool _isDisplay, _shouldOpenPopUp = false;
@@ -54,8 +58,11 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
     _confirmedDocHosAppointments = [];
     _cancelledAppointments = [];
     _confirmedUserAppointments = [];
-    _scrollUserController = ItemScrollController();
-    _scrollDocHosController = ItemScrollController();
+    _scrollUserConfirmedApListController = ItemScrollController();
+    _scrollUserCancelledApListController = ItemScrollController();
+    _docHosUpcomingApScrollController = ItemScrollController();
+    _docHosConfirmedApScrollController = ItemScrollController();
+    _docHosCancelledApScrollController = ItemScrollController();
     _tabDocHosController =
         TabController(initialIndex: 0, length: 3, vsync: this);
     _tabUserController = TabController(initialIndex: 0, length: 2, vsync: this);
@@ -169,12 +176,13 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
           child: TabBarView(
             controller: _tabUserController,
             children: <Widget>[
-              _confirmedUserAppointments.isEmpty
+              (_confirmedUserAppointments == null ||
+                      _confirmedUserAppointments.isEmpty)
                   ? _emptyAppointmentView(PlunesStrings.noConfirmedAppointments)
                   : _renderAppointmentUserList(_confirmedUserAppointments),
-              _cancelledAppointments.isEmpty
+              (_cancelledAppointments == null || _cancelledAppointments.isEmpty)
                   ? _emptyAppointmentView(PlunesStrings.noCancelledAppointments)
-                  : _renderAppointmentUserList(_cancelledAppointments)
+                  : _renderCancelledAppointmentUserList(_cancelledAppointments)
             ],
           ),
         ),
@@ -211,15 +219,18 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
           child: TabBarView(
             controller: _tabDocHosController,
             children: <Widget>[
-              _upComingAppointments.isEmpty
+              (_upComingAppointments == null || _upComingAppointments.isEmpty)
                   ? _emptyAppointmentView(PlunesStrings.noNewAppointments)
                   : _renderAppointmentDocHosList(_upComingAppointments),
-              _confirmedDocHosAppointments.isEmpty
+              (_confirmedDocHosAppointments == null ||
+                      _confirmedDocHosAppointments.isEmpty)
                   ? _emptyAppointmentView(PlunesStrings.noConfirmedAppointments)
-                  : _renderAppointmentDocHosList(_confirmedDocHosAppointments),
-              _cancelledAppointments.isEmpty
+                  : _renderConfirmedAppointmentDocHosList(
+                      _confirmedDocHosAppointments),
+              (_cancelledAppointments == null || _cancelledAppointments.isEmpty)
                   ? _emptyAppointmentView(PlunesStrings.noCancelledAppointments)
-                  : _renderAppointmentDocHosList(_cancelledAppointments)
+                  : _renderCancelledAppointmentDocHosList(
+                      _cancelledAppointments)
             ],
           ),
         ),
@@ -251,7 +262,29 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
 
   _renderAppointmentUserList(List<AppointmentModel> appointmentList) {
     return ScrollablePositionedList.builder(
-      itemScrollController: _scrollUserController,
+      itemScrollController: _scrollUserConfirmedApListController,
+      itemBuilder: (context, index) {
+        return Container(
+          padding: (index == 0)
+              ? EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)
+              : null,
+          child: AppointmentScreen(
+            appointmentList[index],
+            index,
+            _bookingBloc,
+            scaffoldKey,
+            () => _getAppointmentDetails(),
+            bookingId: _isDisplay ? null : widget.bookingId,
+          ),
+        );
+      },
+      itemCount: appointmentList?.length ?? 0,
+    );
+  }
+
+  _renderCancelledAppointmentUserList(List<AppointmentModel> appointmentList) {
+    return ScrollablePositionedList.builder(
+      itemScrollController: _scrollUserCancelledApListController,
       itemBuilder: (context, index) {
         return Container(
           padding: (index == 0)
@@ -273,7 +306,53 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
 
   Widget _renderAppointmentDocHosList(List<AppointmentModel> appointmentList) {
     return ScrollablePositionedList.builder(
-      itemScrollController: _scrollDocHosController,
+      itemScrollController: _docHosUpcomingApScrollController,
+      itemBuilder: (context, index) {
+        return Container(
+          padding: (index == 0)
+              ? EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)
+              : null,
+          child: AppointmentDocHosScreen(
+            appointmentList[index],
+            index,
+            _bookingBloc,
+            scaffoldKey,
+            () => _getAppointmentDetails(),
+            bookingId: _isDisplay ? null : widget.bookingId,
+          ),
+        );
+      },
+      itemCount: appointmentList?.length ?? 0,
+    );
+  }
+
+  Widget _renderConfirmedAppointmentDocHosList(
+      List<AppointmentModel> appointmentList) {
+    return ScrollablePositionedList.builder(
+      itemScrollController: _docHosConfirmedApScrollController,
+      itemBuilder: (context, index) {
+        return Container(
+          padding: (index == 0)
+              ? EdgeInsets.only(top: AppConfig.verticalBlockSize * 2)
+              : null,
+          child: AppointmentDocHosScreen(
+            appointmentList[index],
+            index,
+            _bookingBloc,
+            scaffoldKey,
+            () => _getAppointmentDetails(),
+            bookingId: _isDisplay ? null : widget.bookingId,
+          ),
+        );
+      },
+      itemCount: appointmentList?.length ?? 0,
+    );
+  }
+
+  Widget _renderCancelledAppointmentDocHosList(
+      List<AppointmentModel> appointmentList) {
+    return ScrollablePositionedList.builder(
+      itemScrollController: _docHosCancelledApScrollController,
       itemBuilder: (context, index) {
         return Container(
           padding: (index == 0)
@@ -395,21 +474,33 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
 
   void _scrollUserAppointment() {
     Future.delayed(Duration(milliseconds: 700)).then((value) {
+      bool hasIndex = false;
       AppointmentModel appointmentModel =
           AppointmentModel(bookingId: widget.bookingId);
-      _appointmentIndex =
-          _appointmentResponse.bookings?.indexOf(appointmentModel);
+      _appointmentIndex = _confirmedUserAppointments?.indexOf(appointmentModel);
       if (_appointmentIndex != null && _appointmentIndex >= 0) {
-        _scrollUserController?.scrollTo(
+        hasIndex = true;
+        _scrollUserConfirmedApListController?.scrollTo(
             index: _appointmentIndex,
             duration: Duration(milliseconds: 500),
             curve: Curves.ease);
-//        _scrollUserController?.animateTo(
-//            _appointmentIndex.toDouble() * AppConfig.verticalBlockSize * 48,
-//            duration: Duration(milliseconds: 500),
-//            curve: Curves.ease);
-
-        /// you need to change here /////////////////////////////////////////////////////////////////////////
+        _removeBookingId();
+        Future.delayed(Duration(milliseconds: 1500)).then((value) {
+          if (_shouldOpenPopUp != null && _shouldOpenPopUp) {
+            CustomWidgets().showScrollableDialog(_context,
+                _appointmentResponse.bookings[_appointmentIndex], _bookingBloc);
+            _shouldOpenPopUp = false;
+          }
+        });
+      }
+      if ((!hasIndex) && (_appointmentIndex == null || _appointmentIndex < 0)) {
+        _appointmentIndex = _cancelledAppointments?.indexOf(appointmentModel);
+      }
+      if ((!hasIndex) && _appointmentIndex != null && _appointmentIndex >= 0) {
+        _scrollUserCancelledApListController?.scrollTo(
+            index: _appointmentIndex,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.ease);
         _removeBookingId();
         Future.delayed(Duration(milliseconds: 1500)).then((value) {
           if (_shouldOpenPopUp != null && _shouldOpenPopUp) {
@@ -424,16 +515,35 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
 
   void _scrollToAppointment() {
     Future.delayed(Duration(milliseconds: 700)).then((value) {
+      bool hasIndex = false;
       AppointmentModel appointmentModel =
           AppointmentModel(bookingId: widget.bookingId);
       _appointmentIndex = _upComingAppointments?.indexOf(appointmentModel);
-      if (_appointmentIndex == null || _appointmentIndex < 0)
+      if (_appointmentIndex != null && _appointmentIndex >= 0) {
+        hasIndex = true;
+        _docHosUpcomingApScrollController.scrollTo(
+            index: _appointmentIndex,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.ease);
+        _removeBookingId();
+      }
+      if ((!hasIndex) && (_appointmentIndex == null || _appointmentIndex < 0)) {
         _appointmentIndex =
             _confirmedDocHosAppointments?.indexOf(appointmentModel);
-      if (_appointmentIndex == null || _appointmentIndex < 0)
+      }
+      if ((!hasIndex) && _appointmentIndex != null && _appointmentIndex >= 0) {
+        hasIndex = true;
+        _docHosConfirmedApScrollController.scrollTo(
+            index: _appointmentIndex,
+            duration: Duration(milliseconds: 500),
+            curve: Curves.ease);
+        _removeBookingId();
+      }
+      if ((!hasIndex) && (_appointmentIndex == null || _appointmentIndex < 0)) {
         _appointmentIndex = _cancelledAppointments?.indexOf(appointmentModel);
-      if (_appointmentIndex != null && _appointmentIndex >= 0) {
-        _scrollDocHosController.scrollTo(
+      }
+      if ((!hasIndex) && _appointmentIndex != null && _appointmentIndex >= 0) {
+        _docHosCancelledApScrollController.scrollTo(
             index: _appointmentIndex,
             duration: Duration(milliseconds: 500),
             curve: Curves.ease);
@@ -445,7 +555,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
   void _removeBookingId() {
     Future.delayed(Duration(milliseconds: 2200)).then((value) {
       _isDisplay = true;
-      Future.delayed(Duration(milliseconds: 15)).then((value) {
+      Future.delayed(Duration(milliseconds: 150)).then((value) {
         _appointmentBloc.addStateInAppointmentStream(null);
       });
     });

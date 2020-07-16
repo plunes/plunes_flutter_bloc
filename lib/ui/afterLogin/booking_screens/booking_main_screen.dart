@@ -79,6 +79,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _getUserInfo();
     _bookingBloc = BookingBloc();
     _currentDate = DateTime.now();
+    _selectedDate = _currentDate;
     _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
     super.initState();
   }
@@ -144,17 +145,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           getWhyPlunesView(),
           Padding(
             padding: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 2.5),
+                vertical: AppConfig.verticalBlockSize * 1.5),
             child: _getDoctorDetailsView(),
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
-            child: Text(
-              PlunesStrings.availableSlots,
-              style: TextStyle(
-                  color: PlunesColors.BLACKCOLOR,
-                  fontSize: AppConfig.mediumFont),
-            ),
           ),
           Container(
             margin: EdgeInsets.only(
@@ -162,12 +154,23 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 bottom: AppConfig.verticalBlockSize * .5),
             child: CustomWidgets().getSeparatorLine(),
           ),
+          Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 1.5),
+            child: Text(
+              PlunesStrings.availableSlots,
+              style: TextStyle(
+                  color: PlunesColors.BLACKCOLOR,
+                  fontSize: AppConfig.mediumFont),
+            ),
+          ),
           _getDatePicker(),
-          widget.getSpacer(
-              AppConfig.verticalBlockSize * 4, AppConfig.verticalBlockSize * 2),
+          widget.getSpacer(AppConfig.verticalBlockSize * 1.5,
+              AppConfig.verticalBlockSize * .1),
           _getSlots(),
-          widget.getSpacer(
-              AppConfig.verticalBlockSize * 4, AppConfig.verticalBlockSize * 1),
+          widget.getSpacer(AppConfig.verticalBlockSize * 2,
+              AppConfig.verticalBlockSize * .1),
           _getSelectedSlot(),
           _getApplyCouponAndCashWidget(),
           _getPayNowWidget()
@@ -293,6 +296,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
                     flex: 5,
@@ -331,10 +335,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 ],
               ),
               Text(
-                _docProfileInfo.user?.speciality ?? PlunesStrings.NA,
+                CommonMethods.getStringInCamelCase(
+                        _docProfileInfo.user?.speciality) ??
+                    PlunesStrings.NA,
                 style: TextStyle(
                     fontSize: AppConfig.mediumFont,
-                    color: PlunesColors.GREYCOLOR),
+                    fontWeight: FontWeight.normal,
+                    color: PlunesColors.BLACKCOLOR),
               ),
               Padding(
                 padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
@@ -356,7 +363,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                               _docProfileInfo.user?.address ?? PlunesStrings.NA,
                           style: new TextStyle(
                               fontSize: AppConfig.smallFont,
-                              fontWeight: FontWeight.w300,
+                              fontWeight: FontWeight.normal,
                               color: PlunesColors.BLACKCOLOR)),
                     ],
                   ),
@@ -397,39 +404,57 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         selectionColor: PlunesColors.GREENCOLOR,
         onDateChange: (DateTime selectedDateTime) {
           _selectedDate = selectedDateTime;
+          _appointmentTime = _notSelectedEntry;
+          _setState();
 //          print("selected date is ${selectedDateTime.toString()}");
-          _openTimePicker();
+//          _openTimePicker();
         },
       ),
     );
   }
 
-  Widget _getSlotInfo(String slotName, String fromAndToText) {
+  Widget _getSlotInfo(String slotName, String fromAndToText,
+      {bool isSelectedTimeSlot = false}) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Container(
-          child: Text(
-            slotName,
-            style: TextStyle(
-                color: PlunesColors.BLACKCOLOR, fontSize: AppConfig.mediumFont),
-          ),
-        ),
+        InkWell(
+            onTap: () {
+              if (isSelectedTimeSlot) {
+                _openTimePicker();
+              }
+            },
+            child: Container(
+              padding: EdgeInsets.all(5.0),
+              child: Text(
+                slotName,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: AppConfig.mediumFont),
+              ),
+            )),
         Padding(
-          padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+          padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
           child: Text(
             fromAndToText,
             style: TextStyle(
-                color: PlunesColors.BLACKCOLOR, fontSize: AppConfig.mediumFont),
+                color: PlunesColors.GREENCOLOR, fontSize: AppConfig.mediumFont),
           ),
         ),
         Container(
           margin: EdgeInsets.only(
               top: AppConfig.verticalBlockSize * .2,
-              right: AppConfig.horizontalBlockSize * 3),
+              right: isSelectedTimeSlot
+                  ? AppConfig.horizontalBlockSize * 26
+                  : AppConfig.horizontalBlockSize * 3,
+              left: isSelectedTimeSlot
+                  ? AppConfig.horizontalBlockSize * 26
+                  : AppConfig.horizontalBlockSize * 3),
           width: double.infinity,
-          height: 0.5,
-          color: PlunesColors.GREYCOLOR,
+          height: 0.8,
+          color: isSelectedTimeSlot
+              ? PlunesColors.GREYCOLOR
+              : PlunesColors.GREENCOLOR,
         )
       ],
     );
@@ -448,9 +473,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     return Row(
       children: <Widget>[
         Expanded(
-            child:
-                _getSlotInfo(PlunesStrings.appointmentTime, _appointmentTime)),
-        Expanded(child: Container())
+            child: _getSlotInfo(PlunesStrings.appointmentTime, _appointmentTime,
+                isSelectedTimeSlot: true)),
+//        Expanded(child: Container())
       ],
     );
   }
@@ -750,6 +775,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _getSlotsInfo(DateUtil.getDayAsString(_tempSelectedDateTime));
     _checkAndValidateSelectedTime();
     _setState();
+    _showPopupForInvalidSlotSelection();
   }
 
   void _checkAndValidateSelectedTime() {
@@ -1075,6 +1101,59 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       }
       Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
+  }
+
+  void _showPopupForInvalidSlotSelection() {
+    if (_appointmentTime != _notSelectedEntry) {
+      return;
+    }
+    Future.delayed(Duration(milliseconds: 300)).then((value) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0)),
+              elevation: 0.0,
+              child: Container(
+                height: AppConfig.verticalBlockSize * 44,
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.topRight,
+                      child: InkWell(
+                        onTap: () => Navigator.of(context).pop(),
+                        onDoubleTap: () {},
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Icon(Icons.close),
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                        child: Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 2,
+                                horizontal: AppConfig.horizontalBlockSize * 5),
+                            child: Image.asset(PlunesImages.invalidSlotImage))),
+                    Flexible(
+                        child: Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 3,
+                          vertical: AppConfig.verticalBlockSize * .1),
+                      child: Text(
+                        PlunesStrings.timeNotAvailable,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                      ),
+                    )),
+                  ],
+                ),
+              ),
+            );
+          });
+    });
   }
 }
 

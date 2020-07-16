@@ -76,7 +76,7 @@ class PlunesStrings {
   static const String availableSlots = "Available Slots";
   static const String slot1 = "Slot 1";
   static const String slot2 = "Slot 2";
-  static const String appointmentTime = "Appointment Time";
+  static const String appointmentTime = "Choose Appointment time";
   static const String tcApply = "T&C Apply.";
   static const String payNow = "PAY NOW";
   static const String availableCash = "Available Cash";
@@ -161,6 +161,8 @@ class PlunesStrings {
 
   static const String helpQuerySuccessMessage =
       "Thanks for contacting us! We will be in touch with you shortly.";
+  static const String timeNotAvailable =
+      "The selected time is not available with this facility, make sure to select in the available time slot to confirm your booking";
 
   ///Doc_hos profile
   static const String emailIdText = "Email_Id";
@@ -233,6 +235,8 @@ class PlunesStrings {
   static const String unableToGenerateInvoice =
       "Unable to generate invoice, please try again later";
   static const String emailIdAsConst = "Email-Id";
+  static const String makeSureYouFillSlotAccurately =
+      "Make sure to Enter your time slots accurately so that you receive bookings as per your availability and never lose a patient";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

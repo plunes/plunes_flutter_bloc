@@ -3281,8 +3281,11 @@ class CustomWidgets {
                                   padding: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 0.8),
                                   child: Text(
-                                    appointmentModel.professionalName ??
+                                    CommonMethods.getStringInCamelCase(
+                                            appointmentModel
+                                                ?.professionalName) ??
                                         _getEmptyString(),
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.w600,
@@ -3293,8 +3296,10 @@ class CustomWidgets {
                                   padding: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 0.8),
                                   child: Text(
-                                    appointmentModel.serviceName ??
+                                    CommonMethods.getStringInCamelCase(
+                                            appointmentModel?.serviceName) ??
                                         _getEmptyString(),
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 16),
                                   ),
                                 ),
