@@ -91,6 +91,7 @@ class Services {
   List<num> newPrice;
   List<String> category;
   List<num> paymentOptions;
+  List<Doctors> doctors;
   List<TimeSlots> timeSlots;
 
   @override
@@ -109,7 +110,7 @@ class Services {
   double latitude;
   double longitude;
   num distance;
-  bool homeCollection;
+  bool homeCollection, isExpanded = false;
   num recommendation;
   num bookIn;
   num rating;
@@ -136,7 +137,9 @@ class Services {
       this.rating,
       this.negotiating,
       this.experience,
-      this.paymentOptions});
+      this.paymentOptions,
+      this.doctors,
+      this.isExpanded = false});
 
   Services.fromJson(Map<String, dynamic> json) {
     price = json['price'].cast<num>();
@@ -146,6 +149,12 @@ class Services {
       timeSlots = new List<TimeSlots>();
       json['timeSlots'].forEach((v) {
         timeSlots.add(new TimeSlots.fromJson(v));
+      });
+    }
+    if (json['doctors'] != null) {
+      doctors = new List<Doctors>();
+      json['doctors'].forEach((v) {
+        doctors.add(new Doctors.fromJson(v));
       });
     }
     sId = json['_id'];
@@ -220,6 +229,75 @@ class TimeSlots {
     data['slots'] = this.slots;
     data['day'] = this.day;
     data['closed'] = this.closed;
+    return data;
+  }
+}
+
+class Doctors {
+  String professionalId;
+  String name;
+  String imageUrl;
+  List<num> price;
+  bool homeCollection;
+  num discount;
+  num experience;
+  List<num> newPrice;
+  List<String> category;
+  List<TimeSlots> timeSlots;
+  bool negotiating;
+  num bookIn;
+  num rating;
+
+  Doctors(
+      {this.professionalId,
+      this.name,
+      this.imageUrl,
+      this.price,
+      this.homeCollection,
+      this.discount,
+      this.experience,
+      this.newPrice,
+      this.category,
+      this.timeSlots,
+      this.negotiating,
+      this.rating,
+      this.bookIn});
+
+  Doctors.fromJson(Map<String, dynamic> json) {
+    professionalId = json['professionalId'];
+    name = json['name'];
+    imageUrl = json['imageUrl'];
+    price = json['price'].cast<num>();
+    homeCollection = json['homeCollection'];
+    discount = json['discount'];
+    experience = json['experience'];
+    newPrice = json['newPrice'].cast<num>();
+    category = json['category'].cast<String>();
+    bookIn = json['bookIn'];
+    rating = json['rating'];
+    negotiating = json['negotiating'];
+    if (json['timeSlots'] != null) {
+      timeSlots = new List<TimeSlots>();
+      json['timeSlots'].forEach((v) {
+        timeSlots.add(new TimeSlots.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['professionalId'] = this.professionalId;
+    data['name'] = this.name;
+    data['imageUrl'] = this.imageUrl;
+    data['price'] = this.price;
+    data['homeCollection'] = this.homeCollection;
+    data['discount'] = this.discount;
+    data['experience'] = this.experience;
+    data['newPrice'] = this.newPrice;
+    data['category'] = this.category;
+    if (this.timeSlots != null) {
+      data['timeSlots'] = this.timeSlots.map((v) => v.toJson()).toList();
+    }
     return data;
   }
 }

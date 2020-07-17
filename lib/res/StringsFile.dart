@@ -49,12 +49,12 @@ class PlunesStrings {
   static const String homeCollectionAvailable = "Home Collection Available";
   static const String oopsServiceNotAvailable =
       "Currently we don't have professionals in your area , we will update you soon";
-  static const String save = "Save";
+  static const String save = "Saved";
   static const String kmsAway = "kms away";
   static const String book = "Book";
   static const String viewDetails = 'View Details';
   static const String confirmYourBooking = "Confirm your Booking";
-  static const String negotiating = "Negotiating. . .";
+  static const String negotiating = "Negotiating ";
   static const String topSearches = "Top Searches";
   static const String switchToGurLoc =
       'To Negotiate with nearest facilities, turn on location services, or manually set location';
