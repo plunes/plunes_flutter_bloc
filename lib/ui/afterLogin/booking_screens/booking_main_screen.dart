@@ -425,11 +425,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               }
             },
             child: Container(
-              padding: EdgeInsets.all(5.0),
+              decoration: isSelectedTimeSlot
+                  ? BoxDecoration(
+                      color: PlunesColors.GREENCOLOR,
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(AppConfig.horizontalBlockSize * 8)))
+                  : null,
+              padding: EdgeInsets.all(isSelectedTimeSlot ? 10 : 3.0),
               child: Text(
                 slotName,
                 style: TextStyle(
-                    color: PlunesColors.BLACKCOLOR,
+                    color: isSelectedTimeSlot
+                        ? PlunesColors.WHITECOLOR
+                        : PlunesColors.BLACKCOLOR,
                     fontSize: AppConfig.mediumFont),
               ),
             )),
@@ -588,10 +596,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               : Container(),
           Container(
             padding: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 24,
+                left: AppConfig.horizontalBlockSize * 28,
                 bottom: AppConfig.verticalBlockSize * 1.5,
                 top: AppConfig.verticalBlockSize * 2.3,
-                right: AppConfig.horizontalBlockSize * 24),
+                right: AppConfig.horizontalBlockSize * 28),
             child: StreamBuilder<Object>(
                 stream: _bookingBloc.rescheduleAppointmentStream,
                 builder: (context, snapshot) {

@@ -38,7 +38,7 @@ class SolutionReceivedScreen extends BaseActivity {
 }
 
 class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
-  Timer _timer, _timerToUpdateSolutionReceivedTime;
+  Timer _timer, _timerToUpdateSolutionReceivedTime, _discountCalculationTimer;
   SearchSolutionBloc _searchSolutionBloc;
   SearchedDocResults _searchedDocResults;
   DocHosSolution _solution;
@@ -47,10 +47,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   String _failureCause;
   int _solutionReceivedTime = 0;
   bool _shouldStartTimer, _isCrossClicked;
-  StreamController _streamForTimer;
+  StreamController _streamForTimer,
+      _docExpandCollapseController,
+      _totalDiscountController;
   TextEditingController _searchController;
   FocusNode _focusNode;
   final double lat = 28.4594965, long = 77.0266383;
+  Set<Services> _services = {};
+  num _gainedDiscount = 0;
 
   @override
   void initState() {
@@ -64,10 +68,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _searchController = TextEditingController();
     _shouldStartTimer = false;
     _streamForTimer = StreamController.broadcast();
+    _docExpandCollapseController = StreamController.broadcast();
+    _totalDiscountController = StreamController.broadcast();
     _timerToUpdateSolutionReceivedTime =
         Timer.periodic(Duration(seconds: 1), (timer) {
       _timerToUpdateSolutionReceivedTime = timer;
       _streamForTimer.add(null);
+    });
+    _discountCalculationTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+      _discountCalculationTimer = timer;
+      _getDiscountAsync();
     });
     _solutionReceivedTime = DateTime.now().millisecondsSinceEpoch;
     _isFetchingInitialData = true;
@@ -98,6 +108,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _searchController?.dispose();
     _focusNode?.dispose();
     _searchSolutionBloc?.dispose();
+    _docExpandCollapseController?.close();
+    _totalDiscountController?.close();
+    _discountCalculationTimer?.cancel();
     super.dispose();
   }
 
@@ -186,6 +199,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   Widget _showContent() {
     return ListView.builder(
         shrinkWrap: true,
+        padding: EdgeInsets.all(0),
         itemBuilder: (context, index) {
           if (_searchedDocResults.solution.services[index].doctors != null &&
               _searchedDocResults.solution.services[index].doctors.isNotEmpty) {
@@ -221,6 +235,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   _onBookingTap(Services service, int index) {
+    if (!_canGoAhead()) {
+      _showSnackBar(PlunesStrings.cantBookPriceExpired);
+      return;
+    }
     _solution = _searchedDocResults.solution;
     Navigator.push(
         context,
@@ -285,9 +303,15 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       children: <Widget>[
         Column(
           children: <Widget>[
+            (_timer != null && _timer.isActive && !(_isCrossClicked))
+                ? _getHoldOnPopup()
+                : _getNegotiatedPriceTotalView(),
             Card(
               elevation: 4.0,
-              margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 4),
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 4,
+                  right: AppConfig.horizontalBlockSize * 4,
+                  top: AppConfig.verticalBlockSize * 1.5),
               child: Container(
                 margin: EdgeInsets.symmetric(
                     horizontal: AppConfig.horizontalBlockSize * 4,
@@ -410,14 +434,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             ),
             Expanded(
               child: Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 4,
-                    vertical: AppConfig.verticalBlockSize * 2),
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 4,
+                    right: AppConfig.horizontalBlockSize * 4,
+                    top: AppConfig.verticalBlockSize * 1.5),
                 child: StreamBuilder<RequestState>(
                   builder: (context, snapShot) {
                     if (snapShot.data is RequestSuccess) {
                       RequestSuccess _successObject = snapShot.data;
                       _searchedDocResults = _successObject.response;
+                      _checkExpandedSolutions();
                       _searchSolutionBloc.addIntoDocHosStream(null);
                       _checkShouldTimerRun();
                     } else if (snapShot.data is RequestFailed) {
@@ -432,11 +458,38 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                 ),
               ),
             ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 12,
+                vertical: AppConfig.verticalBlockSize * 1,
+              ),
+              child: InkWell(
+                onTap: () {},
+                child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "Negotiate with more facilities",
+                        style: TextStyle(
+                            color: PlunesColors.GREENCOLOR,
+                            fontSize: 15,
+                            fontWeight: FontWeight.normal),
+                      ),
+                      Icon(
+                        Icons.chevron_right,
+                        color: PlunesColors.GREENCOLOR,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            )
           ],
         ),
-        (_timer != null && _timer.isActive && !(_isCrossClicked))
-            ? _getHoldOnPopup()
-            : Container(),
       ],
     );
   }
@@ -659,7 +712,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   Widget _getHoldOnPopup() {
     return Container(
-      margin: EdgeInsets.all(10),
+      margin: EdgeInsets.only(
+          left: AppConfig.horizontalBlockSize * 4,
+          right: AppConfig.horizontalBlockSize * 4,
+          top: AppConfig.verticalBlockSize * 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.end,
@@ -668,14 +724,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: Color(0xff99000000)),
+                  color: Color(CommonMethods.getColorHexFromStr("#01D35A"))
+                  //Color(0xff99000000)
+                  ),
               padding: EdgeInsets.all(10),
               child: Stack(
                 children: <Widget>[
                   Row(
                     children: <Widget>[
                       SpinKitCircle(
-                        color: Color(0xff01d35a),
+                        color: Colors.white,
                         size: 50.0,
                       ),
                       SizedBox(
@@ -715,7 +773,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                               Container(
                                 child: Text(
                                   "We are negotiating the best fee for you."
-                                  "It may take upto 10 mins, we'll update you.",
+                                  "It may take upto 15 mins, we'll update you.",
                                   style: TextStyle(
                                       fontSize: AppConfig.smallFont,
                                       color: Colors.white,
@@ -750,6 +808,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _searchedDocResults.solution.services.forEach((service) {
         if (service.negotiating != null && service.negotiating) {
           service.negotiating = false;
+          if (service.doctors != null && service.doctors.isNotEmpty) {
+            service.doctors.forEach((doc) {
+              if (doc.negotiating != null && doc.negotiating) {
+                doc.negotiating = false;
+              }
+            });
+          }
         }
       });
     }
@@ -851,14 +916,22 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               width: double.infinity,
               color: PlunesColors.GREYCOLOR,
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return _hosDoc(service, index);
-              },
-              itemCount: (service.isExpanded) ? service.doctors.length : 1,
-            )
+            StreamBuilder<Object>(
+                stream: _docExpandCollapseController.stream,
+                builder: (context, snapshot) {
+//                  print("service name is ${service.name}");
+//                  print("service name is ${service.isExpanded} \n");
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(0),
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return _hosDoc(service, index);
+                    },
+                    itemCount:
+                        (service.isExpanded) ? service.doctors.length : 1,
+                  );
+                })
           ],
         ),
       ),
@@ -964,6 +1037,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     : null,
                 child: InkWell(
                     onTap: () {
+                      if (!_canGoAhead()) {
+                        _showSnackBar(PlunesStrings.cantBookPriceExpired);
+                        return;
+                      }
                       _solution = _searchedDocResults.solution;
                       Navigator.push(
                           context,
@@ -1108,7 +1185,11 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       child: InkWell(
                         onTap: () {
                           service.isExpanded = !service.isExpanded;
-                          setState(() {});
+                          if (_services.contains(service)) {
+                            _services.remove(service);
+                            _services.add(service);
+                          }
+                          _doExpandCollapse();
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(5.0),
@@ -1127,7 +1208,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           child: InkWell(
                             onTap: () {
                               service.isExpanded = !service.isExpanded;
-                              setState(() {});
+                              if (_services.contains(service)) {
+                                _services.remove(service);
+                                _services.add(service);
+                              } else {
+                                _services.add(service);
+                              }
+                              _doExpandCollapse();
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
@@ -1151,5 +1238,152 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         ],
       ),
     );
+  }
+
+  _doExpandCollapse() {
+    _docExpandCollapseController?.add(null);
+  }
+
+  void _checkExpandedSolutions() {
+    if (_services == null || _services.isEmpty) {
+//      print("return set from here");
+      return;
+    }
+    if (_searchedDocResults != null &&
+        _searchedDocResults.solution != null &&
+        _searchedDocResults.solution.services != null &&
+        _searchedDocResults.solution.services.isNotEmpty) {
+      _searchedDocResults.solution.services.forEach((service) {
+        if (service.doctors != null && service.doctors.isNotEmpty) {
+          _services?.forEach((processedService) {
+            if (service == processedService &&
+                processedService.isExpanded != null &&
+                processedService.isExpanded) {
+              service.isExpanded = processedService.isExpanded;
+//              print("is expanded set for ${processedService.name}");
+            }
+          });
+        }
+      });
+    }
+  }
+
+  Widget _getNegotiatedPriceTotalView() {
+    return StreamBuilder(
+      builder: (context, data) {
+        if (_gainedDiscount == null || _gainedDiscount == 0) {
+          return Container();
+        }
+        String time = "NA";
+        var duration = DateTime.now().difference(
+            DateTime.fromMillisecondsSinceEpoch(_solutionReceivedTime));
+        if (duration.inHours >= 1) {
+          time = "${duration.inHours} hour";
+        } else {
+          time = "${duration.inMinutes} mins";
+        }
+        return Card(
+          elevation: 2.5,
+          margin: EdgeInsets.only(
+              left: AppConfig.horizontalBlockSize * 4,
+              right: AppConfig.horizontalBlockSize * 4,
+              top: AppConfig.verticalBlockSize * 2),
+          child: Container(
+              padding: EdgeInsets.all(12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: Image.asset(PlunesImages.savedMoneyImage),
+                    height: AppConfig.verticalBlockSize * 4,
+                    width: AppConfig.horizontalBlockSize * 10,
+                  ),
+                  Padding(padding: EdgeInsets.only(left: 15.0)),
+                  Expanded(
+                      child: RichText(
+                          text: TextSpan(
+                              text: "We managed to save ",
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 16),
+                              children: [
+                        TextSpan(
+                            text: "${_gainedDiscount?.toStringAsFixed(0)} INR ",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16)),
+                        TextSpan(
+                            text: "For you in the last ",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16)),
+                        TextSpan(
+                            text: "$time !",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 16))
+                      ])))
+                ],
+              )),
+        );
+      },
+      stream: _totalDiscountController.stream,
+      initialData: _gainedDiscount,
+    );
+  }
+
+  Future<num> _getDiscountAsync() async {
+    return _getTotalDiscount();
+  }
+
+  num _getTotalDiscount() {
+    num totalDiscount = 0;
+    try {
+      if (_searchedDocResults != null &&
+          _searchedDocResults.solution != null &&
+          _searchedDocResults.solution.services != null &&
+          _searchedDocResults.solution.services.isNotEmpty) {
+        _searchedDocResults.solution.services.forEach((service) {
+          if (service.doctors != null && service.doctors.isNotEmpty) {
+            service.doctors.forEach((element) {
+              if (element.discount != null && element.discount > 0) {
+                totalDiscount =
+                    totalDiscount + (element.price[0] - element.newPrice[0]);
+              }
+            });
+          } else {
+            if (service.discount != null && service.discount > 0) {
+              totalDiscount =
+                  totalDiscount + (service.price[0] - service.newPrice[0]);
+            }
+          }
+        });
+      }
+    } catch (e) {
+      print("error in _getTotalDiscount ${e.toString()}");
+      totalDiscount = 0;
+    }
+    _gainedDiscount = totalDiscount;
+    _totalDiscountController.add(null);
+    return totalDiscount;
+  }
+
+  bool _canGoAhead() {
+    bool _canGoAhead = true;
+    var duration = DateTime.now()
+        .difference(DateTime.fromMillisecondsSinceEpoch(_solutionReceivedTime));
+    if (duration.inHours >= 1) {
+      _canGoAhead = false;
+    }
+    return _canGoAhead;
+  }
+
+  void _showSnackBar(String message) {
+    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
   }
 }

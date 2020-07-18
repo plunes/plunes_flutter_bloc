@@ -102,6 +102,14 @@ class Services {
   String userType;
   int experience;
   String sId;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Services && runtimeType == other.runtimeType && sId == other.sId;
+
+  @override
+  int get hashCode => sId.hashCode;
   String professionalId;
   String name;
   String imageUrl;

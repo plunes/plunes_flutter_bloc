@@ -238,6 +238,9 @@ class PlunesStrings {
   static const String makeSureYouFillSlotAccurately =
       "Make sure to Enter your time slots accurately so that you receive bookings as per your availability and never lose a patient";
 
+  static const String cantBookPriceExpired =
+      "Can't book the appointment as the prices was valid for only one hour.";
+
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
         'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
