@@ -3453,6 +3453,26 @@ class CustomWidgets {
                   }));
         });
   }
+
+  Widget getMoreFacilityWidget() {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Row(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              child: Icon(Icons.cancel),
+            ),
+            Expanded(
+              child: Row(),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 //  Widget getDocOrHospitalDetailWidget(
 //      List<Services> solutions,
 //      int index,
