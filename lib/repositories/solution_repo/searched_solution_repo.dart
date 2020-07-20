@@ -1,6 +1,7 @@
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/more_facilities_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
@@ -117,6 +118,27 @@ class SearchedSolutionRepo {
       return RequestSuccess(response: _searchedDocResult);
     } else {
       return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getMoreFacilities(CatalogueData catalogueData,
+      {String searchQuery, int pageIndex}) async {
+    var serverResponse = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {
+          "solutionId": "5ec8f282be716b1f259670dd",
+          "page": pageIndex,
+          "searchQuery": ""
+        },
+        headerIncluded: true,
+        url: Urls.MORE_FACILITIES);
+    if (serverResponse.isRequestSucceed) {
+      MoreFacilityResponse _facilitiesResponse =
+          MoreFacilityResponse.fromJson(serverResponse.response.data);
+      return RequestSuccess(
+          response: _facilitiesResponse?.data, requestCode: pageIndex);
+    } else {
+      return RequestFailed(failureCause: serverResponse.failureCause);
     }
   }
 }

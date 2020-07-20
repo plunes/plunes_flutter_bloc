@@ -249,8 +249,9 @@ class PlunesStrings {
   static const String searchFacilities = "Search Facilities";
   static const String chooseFacilities = "Choose Facilities";
 
-  get healthSolInfoArray =>
-      [
+  static const String negotiate = "Negotiate";
+
+  get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
         'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
         'Caesarean Section\n Colposcopy\n Cervical Cerclage\n Ovary Removal Surgery\n Female Infertility Treatment\n PCOD & Fibroids Management\n Hyteroscopy\n Dilation & Curettage\n Iud Placement\n',
@@ -262,8 +263,7 @@ class PlunesStrings {
         'CT Scan\n MRI\n X-Ray\n Ultrasound\n ECG\n Colour Doppler\n ECHO\n Ultrasonography\n Carotid Ultrasound'
       ];
 
-  get healthSolSpecialistArray =>
-      [
+  get healthSolSpecialistArray => [
         'Dentist',
         'Dermatology',
         'Gynaecology',
@@ -275,8 +275,7 @@ class PlunesStrings {
         'Radiology'
       ];
 
-  get healthSolProcedureArray =>
-      [
+  get healthSolProcedureArray => [
         'Dental',
         'Dermatology',
         'Gynae',
@@ -670,29 +669,6 @@ class PlunesStrings {
   static const String prePayConfirmBooking =
       "Make a payment of  300/- to confirm the booking";
 
-  String
-
-  get
-
-  invalidPhoneNumber =>
-
-      '
-
-  Valid phone
-
-  number
-
-  is
-
-  required.Digit must
-
-  be equals
-
-  to
-
-  10
-
-  '
-
-  ;
+  String get invalidPhoneNumber =>
+      'Valid phone number is required.Digit must be equals to 10';
 }

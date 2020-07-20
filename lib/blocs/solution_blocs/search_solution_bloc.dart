@@ -10,6 +10,7 @@ class SearchSolutionBloc extends BlocBase {
   final _defaultStreamProvider = PublishSubject<RequestState>();
   final _searchStreamProvider = PublishSubject<RequestState>();
   final _docHosStreamProvider = PublishSubject<RequestState>();
+  final _moreFacilitiesProvider = PublishSubject<RequestState>();
 
   Observable<RequestState> getDefaultCatalogueStream() =>
       _defaultStreamProvider.stream;
@@ -18,6 +19,9 @@ class SearchSolutionBloc extends BlocBase {
       _searchStreamProvider.stream;
 
   Observable<RequestState> getDocHosStream() => _docHosStreamProvider.stream;
+
+  Observable<RequestState> getMoreFacilitiesStream() =>
+      _moreFacilitiesProvider.stream;
 
   Future getSearchedSolution({
     @required String searchedString,
@@ -61,6 +65,7 @@ class SearchSolutionBloc extends BlocBase {
     _defaultStreamProvider?.close();
     _searchStreamProvider?.close();
     _docHosStreamProvider?.close();
+    _moreFacilitiesProvider?.close();
     super.dispose();
   }
 
@@ -75,6 +80,20 @@ class SearchSolutionBloc extends BlocBase {
   void addIntoDocHosStream(RequestState requestState) {
     if (_docHosStreamProvider != null && !_docHosStreamProvider.isClosed) {
       _docHosStreamProvider.add(requestState);
+    }
+  }
+
+  Future<RequestState> getMoreFacilities(final CatalogueData catalogueData,
+      {final String searchQuery, int pageIndex = initialIndex}) async {
+    var result = await SearchedSolutionRepo().getMoreFacilities(catalogueData,
+        searchQuery: searchQuery, pageIndex: pageIndex);
+    addIntoMoreFacilitiesStream(result);
+    return result;
+  }
+
+  void addIntoMoreFacilitiesStream(RequestState requestState) {
+    if (_moreFacilitiesProvider != null && !_moreFacilitiesProvider.isClosed) {
+      _moreFacilitiesProvider.add(requestState);
     }
   }
 }

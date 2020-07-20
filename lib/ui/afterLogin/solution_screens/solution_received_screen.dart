@@ -20,6 +20,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
 import '../../widgets/dialogPopScreen.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -465,7 +466,15 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                 vertical: AppConfig.verticalBlockSize * 1,
               ),
               child: InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MoreFacilityScreen(
+                                searchSolutionBloc: _searchSolutionBloc,
+                                catalogueData: widget.catalogueData,
+                              )));
+                },
                 child: Padding(
                   padding: EdgeInsets.all(5),
                   child: Row(
@@ -1279,6 +1288,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             DateTime.fromMillisecondsSinceEpoch(_solutionReceivedTime));
         if (duration.inHours >= 1) {
           time = "${duration.inHours} hour";
+        } else if (duration.inMinutes < 1) {
+          time = "${duration.inSeconds} secs";
         } else {
           time = "${duration.inMinutes} mins";
         }
