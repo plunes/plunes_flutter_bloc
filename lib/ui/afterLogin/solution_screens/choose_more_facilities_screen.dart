@@ -1,23 +1,28 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/more_facilities_model.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 
 // ignore: must_be_immutable
 class MoreFacilityScreen extends BaseActivity {
   final SearchSolutionBloc searchSolutionBloc;
+  final DocHosSolution docHosSolution;
   final CatalogueData catalogueData;
 
-  MoreFacilityScreen({this.searchSolutionBloc, this.catalogueData});
+  MoreFacilityScreen(
+      {this.searchSolutionBloc, this.docHosSolution, this.catalogueData});
 
   @override
   _MoreFacilityScreenState createState() => _MoreFacilityScreenState();
@@ -34,7 +39,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   String _failureCause;
 
   _getMoreFacilities() {
-    _searchSolutionBloc.getMoreFacilities(widget.catalogueData,
+    _searchSolutionBloc.getMoreFacilities(widget.docHosSolution,
         searchQuery: _searchController.text.trim().toString(),
         pageIndex: pageIndex);
   }
@@ -60,7 +65,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
           _searchController.text != null &&
           _searchController.text.trim().isNotEmpty) {
         _searchSolutionBloc.addIntoMoreFacilitiesStream(RequestInProgress());
-        _searchSolutionBloc.getMoreFacilities(widget.catalogueData,
+        _searchSolutionBloc.getMoreFacilities(widget.docHosSolution,
             searchQuery: _searchController.text.trim().toString(),
             pageIndex: 0);
       } else {
@@ -74,6 +79,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
     _searchController?.removeListener(_onSearch);
     _searchController?.dispose();
     _streamController?.close();
+    _debounce?.cancel();
     super.dispose();
   }
 
@@ -81,10 +87,34 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+            key: scaffoldKey,
             appBar:
                 widget.getAppBar(context, PlunesStrings.moreFacilities, true),
             body: Builder(builder: (context) {
-              return _getBody();
+              return StreamBuilder<RequestState>(
+                  stream: _searchSolutionBloc.getFacilityAdditionStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.data is RequestInProgress) {
+                      return CustomWidgets().getProgressIndicator();
+                    } else if (snapshot.data is RequestSuccess) {
+                      Future.delayed(Duration(milliseconds: 10)).then((value) {
+                        _showInSnackBar(
+                            "Congrats you have unlocked ${_selectedItemList?.length} more facilities!");
+                        Future.delayed(Duration(milliseconds: 1200))
+                            .then((value) {
+                          Navigator.pop(context, true);
+                        });
+                      });
+                    } else if (snapshot.data is RequestFailed) {
+                      RequestFailed requestFailed = snapshot.data;
+                      Future.delayed(Duration(milliseconds: 10)).then((value) {
+                        _showInSnackBar(requestFailed?.failureCause ??
+                            plunesStrings.somethingWentWrong);
+                      });
+                      _searchSolutionBloc.addIntoFacilitiesA(null);
+                    }
+                    return _getBody();
+                  });
             })));
   }
 
@@ -135,13 +165,13 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                           _catalogues = _allItems.toList(growable: true);
                         }
                         pageIndex++;
+                        _searchSolutionBloc.addIntoMoreFacilitiesStream(null);
                       } else if (snapShot.data is RequestFailed) {
                         RequestFailed _requestFailed = snapShot.data;
                         pageIndex = SearchSolutionBloc.initialIndex;
                         _failureCause = _requestFailed.failureCause;
+                        _searchSolutionBloc.addIntoMoreFacilitiesStream(null);
                       }
-                      print(
-                          "$pageIndex _catalogues_catalogues_catalogues ${_catalogues?.length}");
                       return (_catalogues == null || _catalogues.isEmpty)
                           ? _getDefaultWidget(snapShot)
                           : _showResultsFromBackend(snapShot);
@@ -236,7 +266,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                       !_endReached) {
                     _searchSolutionBloc
                         .addIntoMoreFacilitiesStream(RequestInProgress());
-                    _searchSolutionBloc.getMoreFacilities(widget.catalogueData,
+                    _searchSolutionBloc.getMoreFacilities(widget.docHosSolution,
                         searchQuery: _searchController.text.trim().toString(),
                         pageIndex: pageIndex);
                   }
@@ -246,7 +276,9 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                   itemBuilder: (context, index) {
                     return CustomWidgets().getMoreFacilityWidget(
                         _catalogues, index,
-                        onTap: () => _addRemoveFacilities(_catalogues[index]));
+                        onTap: () => _addRemoveFacilities(_catalogues[index],
+                            shouldAdd: true),
+                        onProfileTap: () => _viewProfile(_catalogues[index]));
                   },
                   shrinkWrap: true,
                   itemCount: _catalogues?.length ?? 0,
@@ -289,7 +321,17 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
     _getMoreFacilities();
   }
 
-  _addRemoveFacilities(MoreFacility facility) {
+  _addRemoveFacilities(MoreFacility facility, {bool shouldAdd = false}) {
+    if (shouldAdd &&
+        _selectedItemList != null &&
+        _selectedItemList.length >= 5) {
+      _showInSnackBar("Can't select more than 5 facilities");
+      return;
+    }
+    if (_selectedItemList.contains(facility) && shouldAdd) {
+      _showInSnackBar("Facility already selected");
+      return;
+    }
     if (_selectedItemList.contains(facility)) {
       _selectedItemList.remove(facility);
     } else {
@@ -320,28 +362,55 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                         _selectedItemList, index,
                         isSelected: true,
                         onTap: () =>
-                            _addRemoveFacilities(_selectedItemList[index]));
+                            _addRemoveFacilities(_selectedItemList[index]),
+                        onProfileTap: () => _viewProfile(_catalogues[index]));
                   },
                   shrinkWrap: true,
                   itemCount: _selectedItemList?.length ?? 0,
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(8),
                 margin: EdgeInsets.symmetric(
                     horizontal: AppConfig.horizontalBlockSize * 25),
-                child: CustomWidgets().getRoundedButton(
-                  PlunesStrings.negotiate,
-                  AppConfig.horizontalBlockSize * 5,
-                  PlunesColors.GREENCOLOR,
-                  AppConfig.horizontalBlockSize * 5,
-                  AppConfig.verticalBlockSize * 1.3,
-                  PlunesColors.WHITECOLOR,
-                  hasBorder: true,
+                child: InkWell(
+                  onTap: () {
+                    _searchSolutionBloc.addFacilitiesInSolution(
+                        widget.docHosSolution, _selectedItemList);
+                    return;
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    child: CustomWidgets().getRoundedButton(
+                      PlunesStrings.negotiate,
+                      AppConfig.horizontalBlockSize * 5,
+                      PlunesColors.GREENCOLOR,
+                      AppConfig.horizontalBlockSize * 5,
+                      AppConfig.verticalBlockSize * 1.3,
+                      PlunesColors.WHITECOLOR,
+                      hasBorder: true,
+                    ),
+                  ),
                 ),
               )
             ],
           );
         });
+  }
+
+  void _showInSnackBar(String message) {
+    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+  }
+
+  _viewProfile(MoreFacility service) {
+    if (service.userType != null && service.professionalId != null) {
+      Widget route;
+      if (service.userType.toLowerCase() ==
+          Constants.doctor.toString().toLowerCase()) {
+        route = DocProfile(userId: service.professionalId);
+      } else {
+        route = HospitalProfile(userID: service.professionalId);
+      }
+      Navigator.push(context, MaterialPageRoute(builder: (context) => route));
+    }
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:plunes/blocs/base_bloc.dart';
+import 'package:plunes/models/solution_models/more_facilities_model.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/solution_repo/searched_solution_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -11,6 +13,7 @@ class SearchSolutionBloc extends BlocBase {
   final _searchStreamProvider = PublishSubject<RequestState>();
   final _docHosStreamProvider = PublishSubject<RequestState>();
   final _moreFacilitiesProvider = PublishSubject<RequestState>();
+  final _facilitiesAdditionProvider = PublishSubject<RequestState>();
 
   Observable<RequestState> getDefaultCatalogueStream() =>
       _defaultStreamProvider.stream;
@@ -22,6 +25,9 @@ class SearchSolutionBloc extends BlocBase {
 
   Observable<RequestState> getMoreFacilitiesStream() =>
       _moreFacilitiesProvider.stream;
+
+  Observable<RequestState> getFacilityAdditionStream() =>
+      _facilitiesAdditionProvider.stream;
 
   Future getSearchedSolution({
     @required String searchedString,
@@ -66,6 +72,7 @@ class SearchSolutionBloc extends BlocBase {
     _searchStreamProvider?.close();
     _docHosStreamProvider?.close();
     _moreFacilitiesProvider?.close();
+    _facilitiesAdditionProvider?.close();
     super.dispose();
   }
 
@@ -83,7 +90,7 @@ class SearchSolutionBloc extends BlocBase {
     }
   }
 
-  Future<RequestState> getMoreFacilities(final CatalogueData catalogueData,
+  Future<RequestState> getMoreFacilities(final DocHosSolution catalogueData,
       {final String searchQuery, int pageIndex = initialIndex}) async {
     var result = await SearchedSolutionRepo().getMoreFacilities(catalogueData,
         searchQuery: searchQuery, pageIndex: pageIndex);
@@ -94,6 +101,23 @@ class SearchSolutionBloc extends BlocBase {
   void addIntoMoreFacilitiesStream(RequestState requestState) {
     if (_moreFacilitiesProvider != null && !_moreFacilitiesProvider.isClosed) {
       _moreFacilitiesProvider.add(requestState);
+    }
+  }
+
+  Future<RequestState> addFacilitiesInSolution(
+      final DocHosSolution catalogueData,
+      final List<MoreFacility> facilities) async {
+    addIntoFacilitiesA(RequestInProgress());
+    var result = await SearchedSolutionRepo()
+        .addFacilitiesInSolution(catalogueData, facilities);
+    addIntoFacilitiesA(result);
+    return result;
+  }
+
+  void addIntoFacilitiesA(RequestState requestState) {
+    if (_facilitiesAdditionProvider != null &&
+        !_facilitiesAdditionProvider.isClosed) {
+      _facilitiesAdditionProvider.add(requestState);
     }
   }
 }

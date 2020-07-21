@@ -100,5 +100,6 @@ class Urls {
   static const String GET_CENTRES_DATA = "user/getAllCenters";
   static const String RATE_AND_REVIEW = "review";
   static const String REQUEST_INVOICE_URL = 'booking/invoice';
-  static const String MORE_FACILITIES = "user/professionalForSpeciality";
+  static const String MORE_FACILITIES_URL = "user/professionalForSpeciality";
+  static const String ADD_TO_SOLUTION_URL = "solution/addToSolution";
 }

@@ -31,7 +31,7 @@ class SearchedDocResults {
 }
 
 class DocHosSolution {
-  bool booked;
+  bool booked, showAdditionalFacilities;
   String sId;
   String serviceId;
   String userId;
@@ -50,7 +50,8 @@ class DocHosSolution {
       this.imageUrl,
       this.createdTime,
       this.services,
-      this.iV});
+      this.iV,
+      this.showAdditionalFacilities});
 
   DocHosSolution.fromJson(Map<String, dynamic> json) {
     booked = json['booked'];
@@ -67,6 +68,7 @@ class DocHosSolution {
       });
     }
     iV = json['__v'];
+    showAdditionalFacilities = json['showAdditionalFacilities'];
   }
 
   Map<String, dynamic> toJson() {

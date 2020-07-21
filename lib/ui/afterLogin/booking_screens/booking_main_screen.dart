@@ -425,20 +425,24 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               }
             },
             child: Container(
-              decoration: isSelectedTimeSlot
-                  ? BoxDecoration(
-                      color: PlunesColors.GREENCOLOR,
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(AppConfig.horizontalBlockSize * 8)))
-                  : null,
+//              decoration: isSelectedTimeSlot
+//                  ? BoxDecoration(
+//                      color: PlunesColors.GREENCOLOR,
+//                      borderRadius: BorderRadius.all(
+//                          Radius.circular(AppConfig.horizontalBlockSize * 8)))
+//                  : null,
               padding: EdgeInsets.all(isSelectedTimeSlot ? 10 : 3.0),
               child: Text(
                 slotName,
                 style: TextStyle(
                     color: isSelectedTimeSlot
-                        ? PlunesColors.WHITECOLOR
+                        ? PlunesColors.GREENCOLOR
                         : PlunesColors.BLACKCOLOR,
-                    fontSize: AppConfig.mediumFont),
+                    fontSize: AppConfig.mediumFont,
+                    decoration: isSelectedTimeSlot
+                        ? TextDecoration.underline
+                        : TextDecoration.none,
+                    decorationThickness: 1.5),
               ),
             )),
         Padding(

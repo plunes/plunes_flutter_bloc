@@ -28,7 +28,7 @@ class MoreFacilityResponse {
 }
 
 class MoreFacility {
-  String sId;
+  String sId, professionalId;
 
   @override
   bool operator ==(Object other) =>
@@ -55,7 +55,8 @@ class MoreFacility {
       this.locality,
       this.distance,
       this.rating,
-      this.experience});
+      this.experience,
+      this.professionalId});
 
   MoreFacility.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -65,6 +66,7 @@ class MoreFacility {
     locality = json['locality'];
     distance = json['distance'];
     rating = json['rating'];
+    professionalId = json['_id'];
     experience =
         json['experience'].runtimeType is num ? json['experience'] : null;
   }

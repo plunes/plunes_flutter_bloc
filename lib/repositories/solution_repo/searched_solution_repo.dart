@@ -121,22 +121,43 @@ class SearchedSolutionRepo {
     }
   }
 
-  Future<RequestState> getMoreFacilities(CatalogueData catalogueData,
+  Future<RequestState> getMoreFacilities(DocHosSolution catalogueData,
       {String searchQuery, int pageIndex}) async {
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
         postData: {
-          "solutionId": "5ec8f282be716b1f259670dd",
+          "solutionId": catalogueData.sId,
           "page": pageIndex,
-          "searchQuery": ""
+          "searchQuery": searchQuery ?? ""
         },
         headerIncluded: true,
-        url: Urls.MORE_FACILITIES);
+        url: Urls.MORE_FACILITIES_URL);
     if (serverResponse.isRequestSucceed) {
       MoreFacilityResponse _facilitiesResponse =
           MoreFacilityResponse.fromJson(serverResponse.response.data);
       return RequestSuccess(
           response: _facilitiesResponse?.data, requestCode: pageIndex);
+    } else {
+      return RequestFailed(failureCause: serverResponse.failureCause);
+    }
+  }
+
+  Future<RequestState> addFacilitiesInSolution(
+      DocHosSolution catalogueData, final List<MoreFacility> facilities) async {
+    List<String> _facilityId = [];
+    facilities.forEach((facility) {
+      _facilityId.add(facility.sId);
+    });
+    var serverResponse = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {
+          "professionalIds": _facilityId,
+          "solutionId": catalogueData.sId
+        },
+        headerIncluded: true,
+        url: Urls.ADD_TO_SOLUTION_URL);
+    if (serverResponse.isRequestSucceed) {
+      return RequestSuccess();
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
     }

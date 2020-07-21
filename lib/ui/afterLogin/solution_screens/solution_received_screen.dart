@@ -202,7 +202,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         shrinkWrap: true,
         padding: EdgeInsets.all(0),
         itemBuilder: (context, index) {
-          if (_searchedDocResults.solution.services[index].doctors != null &&
+          if (_searchedDocResults.solution.showAdditionalFacilities != null &&
+              _searchedDocResults.solution.showAdditionalFacilities &&
+              (_searchedDocResults.solution.services != null ||
+                  _searchedDocResults.solution.services.isNotEmpty) &&
+              index == _searchedDocResults.solution.services.length) {
+            return _getViewMoreFacilityWidget();
+          } else if (_searchedDocResults.solution.services[index].doctors !=
+                  null &&
               _searchedDocResults.solution.services[index].doctors.isNotEmpty) {
             return _showHosDocCards(
                 _searchedDocResults.solution.services[index]);
@@ -223,7 +230,57 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             : _searchedDocResults.solution.services == null ||
                     _searchedDocResults.solution.services.isEmpty
                 ? 0
-                : _searchedDocResults.solution.services.length);
+                : (_searchedDocResults.solution.showAdditionalFacilities !=
+                            null &&
+                        _searchedDocResults.solution.showAdditionalFacilities)
+                    ? (_searchedDocResults.solution.services.length + 1)
+                    : _searchedDocResults.solution.services.length);
+  }
+
+  Widget _getViewMoreFacilityWidget() {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.symmetric(
+        horizontal: AppConfig.horizontalBlockSize * 12,
+        vertical: AppConfig.verticalBlockSize * 1,
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MoreFacilityScreen(
+                        searchSolutionBloc: _searchSolutionBloc,
+                        docHosSolution: _searchedDocResults?.solution,
+                        catalogueData: _searchedDocResults?.catalogueData,
+                      ))).then((value) {
+            if (value != null && value) {
+              _negotiate();
+            }
+          });
+        },
+        child: Padding(
+          padding: EdgeInsets.all(5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Negotiate with more facilities",
+                style: TextStyle(
+                    color: PlunesColors.GREENCOLOR,
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal),
+              ),
+              Icon(
+                Icons.chevron_right,
+                color: PlunesColors.GREENCOLOR,
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   _checkAvailability(int selectedIndex) {
@@ -344,8 +401,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 PlunesStrings.viewDetails,
                                 style: TextStyle(
                                     fontSize: AppConfig.smallFont,
-                                    color: PlunesColors.GREENCOLOR,
-                                    decoration: TextDecoration.underline),
+                                    color: PlunesColors.GREENCOLOR),
                               ),
                             )
                           ],
@@ -415,9 +471,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                             maxLines: 1,
                                             style: TextStyle(
                                                 fontSize: AppConfig.smallFont,
-                                                color: PlunesColors.GREENCOLOR,
-                                                decoration:
-                                                    TextDecoration.underline),
+                                                color: PlunesColors.GREENCOLOR),
                                           ),
                                         ),
                                       ),
@@ -459,44 +513,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                 ),
               ),
             ),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 12,
-                vertical: AppConfig.verticalBlockSize * 1,
-              ),
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MoreFacilityScreen(
-                                searchSolutionBloc: _searchSolutionBloc,
-                                catalogueData: widget.catalogueData,
-                              )));
-                },
-                child: Padding(
-                  padding: EdgeInsets.all(5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        "Negotiate with more facilities",
-                        style: TextStyle(
-                            color: PlunesColors.GREENCOLOR,
-                            fontSize: 15,
-                            fontWeight: FontWeight.normal),
-                      ),
-                      Icon(
-                        Icons.chevron_right,
-                        color: PlunesColors.GREENCOLOR,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            )
           ],
         ),
       ],
@@ -898,9 +914,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          fontSize: AppConfig.mediumFont,
+                          fontSize: 15,
                           color: PlunesColors.BLACKCOLOR,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.normal),
                     ),
                   ),
                   Row(
@@ -928,8 +944,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             StreamBuilder<Object>(
                 stream: _docExpandCollapseController.stream,
                 builder: (context, snapshot) {
-//                  print("service name is ${service.name}");
-//                  print("service name is ${service.isExpanded} \n");
                   return ListView.builder(
                     shrinkWrap: true,
                     padding: EdgeInsets.all(0),
@@ -953,179 +967,183 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
           vertical: AppConfig.verticalBlockSize * 1.8,
           horizontal: AppConfig.horizontalBlockSize * 2.5),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              InkWell(
-                onTap: () => _viewProfile(service),
-                onDoubleTap: () {},
-                child: (service.doctors[index].imageUrl != null &&
-                        service.doctors[index].imageUrl.isNotEmpty)
-                    ? CircleAvatar(
-                        child: Container(
-                          height: AppConfig.horizontalBlockSize * 14,
-                          width: AppConfig.horizontalBlockSize * 14,
-                          child: ClipOval(
-                              child: CustomWidgets().getImageFromUrl(
-                                  service.doctors[index].imageUrl,
-                                  boxFit: BoxFit.fill)),
-                        ),
-                        radius: AppConfig.horizontalBlockSize * 7,
-                      )
-                    : CustomWidgets().getProfileIconWithName(
-                        service.doctors[index].name,
-                        14,
-                        14,
-                      ),
-              ),
-              Padding(
-                  padding:
-                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3)),
-              Expanded(
-                child: InkWell(
-                  onTap: () => _viewProfile(service),
-                  child: (service.doctors[index] == null ||
-                          service.doctors[index].experience == null ||
-                          service.doctors[index].experience <= 0)
-                      ? Container(
-                          height: AppConfig.horizontalBlockSize * 14,
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            CommonMethods.getStringInCamelCase(
-                                    service.doctors[index]?.name) ??
-                                PlunesStrings.NA,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.bold),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () => _viewProfile(service),
+                    onDoubleTap: () {},
+                    child: (service.doctors[index].imageUrl != null &&
+                            service.doctors[index].imageUrl.isNotEmpty)
+                        ? CircleAvatar(
+                            child: Container(
+                              height: AppConfig.horizontalBlockSize * 14,
+                              width: AppConfig.horizontalBlockSize * 14,
+                              child: ClipOval(
+                                  child: CustomWidgets().getImageFromUrl(
+                                      service.doctors[index].imageUrl,
+                                      boxFit: BoxFit.fill)),
+                            ),
+                            radius: AppConfig.horizontalBlockSize * 7,
+                          )
+                        : CustomWidgets().getProfileIconWithName(
+                            service.doctors[index].name,
+                            14,
+                            14,
                           ),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              CommonMethods.getStringInCamelCase(
-                                      service.doctors[index]?.name) ??
-                                  PlunesStrings.NA,
-                              style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            (service.doctors[index] != null &&
-                                    service.doctors[index].experience != null &&
-                                    service.doctors[index].experience > 0)
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                        top: AppConfig.horizontalBlockSize * 1),
-                                    child: Text(
-                                      "${service.doctors[index].experience} ${PlunesStrings.yrExp}",
-                                      style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        color: PlunesColors.GREYCOLOR,
-                                      ),
-                                    ))
-                                : Container()
-                          ],
-                        ),
-                ),
-              ),
-              Padding(
-                  padding:
-                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3)),
-              Container(
-                margin: (service.doctors[index] == null ||
-                        service.doctors[index].experience == null ||
-                        service.doctors[index].experience <= 0)
-                    ? EdgeInsets.only(top: AppConfig.horizontalBlockSize * 3.5)
-                    : null,
-                child: InkWell(
-                    onTap: () {
-                      if (!_canGoAhead()) {
-                        _showSnackBar(PlunesStrings.cantBookPriceExpired);
-                        return;
-                      }
-                      _solution = _searchedDocResults.solution;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookingMainScreen(
-                                    price: service.doctors[index].newPrice[0]
-                                        .toString(),
-                                    profId:
-                                        service.doctors[index].professionalId,
-                                    searchedSolutionServiceId: service.sId,
-                                    timeSlots: service.doctors[index].timeSlots,
-                                    docHosSolution: _solution,
-                                    bookInPrice: service.doctors[index].bookIn,
-                                    serviceIndex: 0,
-                                    service: Services(
-                                        price: service.doctors[index].price,
-                                        newPrice:
-                                            service.doctors[index].newPrice,
-                                        paymentOptions: service.paymentOptions),
-                                  )));
-                    },
-                    child: CustomWidgets().getRoundedButton(
-                        service.doctors[index].bookIn == null
-                            ? PlunesStrings.book
-                            : "${PlunesStrings.bookIn} ${service.doctors[index].bookIn}",
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.GREENCOLOR,
-                        AppConfig.horizontalBlockSize * 3,
-                        AppConfig.verticalBlockSize * 1,
-                        PlunesColors.WHITECOLOR)),
-              ),
-            ],
-          ),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  width: AppConfig.horizontalBlockSize * 14,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Icon(
-                        Icons.star,
-                        color: PlunesColors.GREENCOLOR,
-                      ),
-                      Text(
-                        service.doctors[index].rating?.toStringAsFixed(1) ??
-                            PlunesStrings.NA,
-                        style: TextStyle(
-                            color: PlunesColors.GREYCOLOR, fontSize: 15),
-                      ),
-                    ],
                   ),
-                ),
-                Padding(
-                    padding: EdgeInsets.only(
-                        left: AppConfig.horizontalBlockSize * 3)),
-                Expanded(
-                  child: service.doctors[index].negotiating ?? false
-                      ? Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              PlunesStrings.negotiating,
-                              style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  fontWeight: FontWeight.w400),
+                  Container(
+                    width: AppConfig.horizontalBlockSize * 14,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(
+                          Icons.star,
+                          color: PlunesColors.GREENCOLOR,
+                        ),
+                        Text(
+                          service.doctors[index].rating?.toStringAsFixed(1) ??
+                              PlunesStrings.NA,
+                          style: TextStyle(
+                              color: PlunesColors.GREYCOLOR, fontSize: 15),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                  child: Padding(
+                padding:
+                    EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => _viewProfile(service),
+                            child: Container(
+                              height: AppConfig.horizontalBlockSize * 14,
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * .5),
+                              child: Text(
+                                CommonMethods.getStringInCamelCase(
+                                        service.doctors[index]?.name) ??
+                                    PlunesStrings.NA,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.normal),
+                              ),
                             ),
-                            CustomWidgets().getLinearIndicator()
-                          ],
-                        )
-                      : Row(
+                          ),
+                        ),
+                        Container(
+                            padding: EdgeInsets.only(
+                                left: AppConfig.horizontalBlockSize * 2)),
+                        service.doctors[index].negotiating ?? false
+                            ? Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    PlunesStrings.negotiating,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                  CustomWidgets().getLinearIndicator()
+                                ],
+                              )
+                            : InkWell(
+                                onTap: () {
+                                  if (!_canGoAhead()) {
+                                    _showSnackBar(
+                                        PlunesStrings.cantBookPriceExpired);
+                                    return;
+                                  }
+                                  _solution = _searchedDocResults.solution;
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              BookingMainScreen(
+                                                price: service
+                                                    .doctors[index].newPrice[0]
+                                                    .toString(),
+                                                profId: service.doctors[index]
+                                                    .professionalId,
+                                                searchedSolutionServiceId:
+                                                    service.sId,
+                                                timeSlots: service
+                                                    .doctors[index].timeSlots,
+                                                docHosSolution: _solution,
+                                                bookInPrice: service
+                                                    .doctors[index].bookIn,
+                                                serviceIndex: 0,
+                                                service: Services(
+                                                    price: service
+                                                        .doctors[index].price,
+                                                    newPrice: service
+                                                        .doctors[index]
+                                                        .newPrice,
+                                                    paymentOptions:
+                                                        service.paymentOptions),
+                                              )));
+                                },
+                                child: CustomWidgets().getRoundedButton(
+                                    service.doctors[index].bookIn == null
+                                        ? PlunesStrings.book
+                                        : "${PlunesStrings.bookIn} ${service.doctors[index].bookIn}",
+                                    AppConfig.horizontalBlockSize * 8,
+                                    PlunesColors.GREENCOLOR,
+                                    AppConfig.horizontalBlockSize * 3,
+                                    AppConfig.verticalBlockSize * 1,
+                                    PlunesColors.WHITECOLOR))
+                      ],
+                    ),
+                    Container(
+                        width: double.infinity,
+                        alignment: Alignment.topLeft,
+                        padding: EdgeInsets.only(
+                            top: AppConfig.horizontalBlockSize * 1),
+                        child: (service.doctors[index] != null &&
+                                service.doctors[index].experience != null &&
+                                service.doctors[index].experience > 0)
+                            ? Text(
+                                "${service.doctors[index].experience} ${PlunesStrings.yrExp}",
+                                style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                  color: PlunesColors.GREYCOLOR,
+                                ),
+                              )
+                            : Container()),
+                    Container(
+                        width: double.infinity,
+                        alignment: Alignment.topLeft,
+                        padding: EdgeInsets.only(
+                            top: AppConfig.horizontalBlockSize * 1),
+                        child: (service.doctors[index].homeCollection != null &&
+                                service.doctors[index].homeCollection)
+                            ? Text(
+                                PlunesStrings.homeCollectionAvailable,
+                                style: TextStyle(color: PlunesColors.GREYCOLOR),
+                              )
+                            : Container()),
+                    Container(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.horizontalBlockSize * 1),
+                        child: Row(
                           children: <Widget>[
                             RichText(
                                 text: TextSpan(
@@ -1134,7 +1152,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                         ? ""
                                         : "\u20B9${service.doctors[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
                                     style: TextStyle(
-                                        fontSize: AppConfig.smallFont,
+                                        fontSize: 15,
                                         color: PlunesColors.GREYCOLOR,
                                         decoration: TextDecoration.lineThrough),
                                     children: <TextSpan>[
@@ -1142,7 +1160,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                     text:
                                         " \u20B9${service.doctors[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
                                     style: TextStyle(
-                                        fontSize: AppConfig.smallFont,
+                                        fontSize: 15,
                                         color: PlunesColors.BLACKCOLOR,
                                         fontWeight: FontWeight.bold,
                                         decoration: TextDecoration.none),
@@ -1159,38 +1177,26 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                             service.doctors[index].discount ==
                                                 0)
                                         ? ""
-                                        : "${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(0)}",
+                                        : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(0)}",
                                     style: TextStyle(
-                                        fontSize: AppConfig.verySmallFont,
+                                        fontSize: 15,
                                         color: PlunesColors.GREENCOLOR),
                                   )
                           ],
-                        ),
+                        ))
+                  ],
                 ),
-              ],
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 1,
-              left: AppConfig.horizontalBlockSize * 17,
-            ),
-            child: Row(
-              children: <Widget>[
-                (service.doctors[index].homeCollection != null &&
-                        service.doctors[index].homeCollection)
-                    ? Text(
-                        PlunesStrings.homeCollectionAvailable,
-                        style: TextStyle(color: PlunesColors.GREYCOLOR),
-                      )
-                    : Container()
-              ],
-            ),
+              )),
+            ],
           ),
           (service.doctors.length == 1)
               ? Container()
               : (service.isExpanded && (index == (service.doctors.length - 1)))
                   ? Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 0.5),
                       child: InkWell(
                         onTap: () {
                           service.isExpanded = !service.isExpanded;
@@ -1214,6 +1220,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     )
                   : (!(service.isExpanded) && index == 0)
                       ? Container(
+                          margin: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 0.5),
+                          width: double.infinity,
+                          alignment: Alignment.center,
                           child: InkWell(
                             onTap: () {
                               service.isExpanded = !service.isExpanded;
@@ -1239,7 +1249,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         )
                       : Container(
                           margin: EdgeInsets.only(
-                              top: AppConfig.verticalBlockSize * 1.8),
+                              top: AppConfig.verticalBlockSize * 2),
                           height: 0.5,
                           width: double.infinity,
                           color: PlunesColors.GREYCOLOR,
