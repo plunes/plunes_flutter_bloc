@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -9,10 +8,8 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
-import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
-import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -23,7 +20,6 @@ import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
 import '../../widgets/dialogPopScreen.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // ignore: must_be_immutable
 class SolutionReceivedScreen extends BaseActivity {
@@ -246,6 +242,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       ),
       child: InkWell(
         onTap: () {
+          if (!_canGoAhead()) {
+            _showSnackBar(PlunesStrings.cantNegotiateWithMoreFacilities);
+            return;
+          }
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -749,9 +749,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: Color(CommonMethods.getColorHexFromStr("#01D35A"))
-                  //Color(0xff99000000)
-                  ),
+                  color: PlunesColors.SPARKLINGGREEN),
               padding: EdgeInsets.all(10),
               child: Stack(
                 children: <Widget>[
@@ -980,7 +978,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     onTap: () => _viewProfile(service),
                     onDoubleTap: () {},
                     child: (service.doctors[index].imageUrl != null &&
-                            service.doctors[index].imageUrl.isNotEmpty)
+                            service.doctors[index].imageUrl.isNotEmpty &&
+                            service.doctors[index].imageUrl.contains("http"))
                         ? CircleAvatar(
                             child: Container(
                               height: AppConfig.horizontalBlockSize * 14,
@@ -1011,7 +1010,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           service.doctors[index].rating?.toStringAsFixed(1) ??
                               PlunesStrings.NA,
                           style: TextStyle(
-                              color: PlunesColors.GREYCOLOR, fontSize: 15),
+                              color: PlunesColors.GREYCOLOR, fontSize: 14),
                         ),
                       ],
                     ),
@@ -1032,7 +1031,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           child: InkWell(
                             onTap: () => _viewProfile(service),
                             child: Container(
-                              height: AppConfig.horizontalBlockSize * 14,
                               padding: EdgeInsets.only(
                                   top: AppConfig.verticalBlockSize * .5),
                               child: Text(
@@ -1081,7 +1079,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                                 price: service
                                                     .doctors[index].newPrice[0]
                                                     .toString(),
-                                                profId: service.doctors[index]
+                                                profId: service.professionalId,
+                                                docId: service.doctors[index]
                                                     .professionalId,
                                                 searchedSolutionServiceId:
                                                     service.sId,
@@ -1106,7 +1105,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                         ? PlunesStrings.book
                                         : "${PlunesStrings.bookIn} ${service.doctors[index].bookIn}",
                                     AppConfig.horizontalBlockSize * 8,
-                                    PlunesColors.GREENCOLOR,
+                                    PlunesColors.SPARKLINGGREEN,
                                     AppConfig.horizontalBlockSize * 3,
                                     AppConfig.verticalBlockSize * 1,
                                     PlunesColors.WHITECOLOR))
@@ -1123,7 +1122,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             ? Text(
                                 "${service.doctors[index].experience} ${PlunesStrings.yrExp}",
                                 style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
+                                  fontSize: 13.5,
                                   color: PlunesColors.GREYCOLOR,
                                 ),
                               )
@@ -1137,7 +1136,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 service.doctors[index].homeCollection)
                             ? Text(
                                 PlunesStrings.homeCollectionAvailable,
-                                style: TextStyle(color: PlunesColors.GREYCOLOR),
+                                style: TextStyle(
+                                  color: PlunesColors.GREYCOLOR,
+                                  fontSize: 13.5,
+                                ),
                               )
                             : Container()),
                     Container(
@@ -1152,7 +1154,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                         ? ""
                                         : "\u20B9${service.doctors[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
                                     style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         color: PlunesColors.GREYCOLOR,
                                         decoration: TextDecoration.lineThrough),
                                     children: <TextSpan>[
@@ -1160,9 +1162,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                     text:
                                         " \u20B9${service.doctors[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
                                     style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         color: PlunesColors.BLACKCOLOR,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w500,
                                         decoration: TextDecoration.none),
                                   )
                                 ])),
@@ -1179,7 +1181,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                         ? ""
                                         : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(0)}",
                                     style: TextStyle(
-                                        fontSize: 15,
+                                        fontSize: 14,
                                         color: PlunesColors.GREENCOLOR),
                                   )
                           ],
@@ -1265,7 +1267,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   void _checkExpandedSolutions() {
     if (_services == null || _services.isEmpty) {
-//      print("return set from here");
       return;
     }
     if (_searchedDocResults != null &&
@@ -1279,7 +1280,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                 processedService.isExpanded != null &&
                 processedService.isExpanded) {
               service.isExpanded = processedService.isExpanded;
-//              print("is expanded set for ${processedService.name}");
             }
           });
         }
@@ -1386,7 +1386,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         });
       }
     } catch (e) {
-      print("error in _getTotalDiscount ${e.toString()}");
+//      print("error in _getTotalDiscount ${e.toString()}");
       totalDiscount = 0;
     }
     _gainedDiscount = totalDiscount;

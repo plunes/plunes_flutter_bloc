@@ -240,6 +240,8 @@ class PlunesStrings {
 
   static const String cantBookPriceExpired =
       "Can't book the appointment as the prices was valid for only one hour.";
+  static const String cantNegotiateWithMoreFacilities =
+      "Can't negotitate with more facilities as the prices was valid for only one hour.";
 
   ///More Facilities Screen
   static const String moreFacilities = "More Facilities";

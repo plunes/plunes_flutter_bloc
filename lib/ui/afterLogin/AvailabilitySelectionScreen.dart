@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -735,82 +734,6 @@ class _AvailabilitySelectionScreenState
       temporaryTimeObj = date;
       _setTimeInBoxes(temporaryTimeObj, position, check);
     });
-//    return showDialog(
-//        builder: (context) {
-//          return Container(
-//            margin: EdgeInsets.only(
-//                top: AppConfig.verticalBlockSize * 20,
-//                right: AppConfig.horizontalBlockSize * 10,
-//                left: AppConfig.horizontalBlockSize * 10,
-//                bottom: AppConfig.verticalBlockSize * 20),
-//            child: Material(
-//              borderRadius: BorderRadius.circular(16),
-//              child: Column(
-//                children: <Widget>[
-//                  Container(
-//                    alignment: Alignment.topRight,
-//                    child: InkWell(
-//                      onTap: () => Navigator.pop(context),
-//                      child: Container(
-//                        padding: const EdgeInsets.all(15.0),
-//                        child: Icon(Icons.close),
-//                      ),
-//                    ),
-//                  ),
-//                  Container(
-//                    alignment: Alignment.center,
-//                    child: Text(
-//                      PlunesStrings.setYourTime + " ($check)",
-//                      style: TextStyle(fontSize: AppConfig.mediumFont),
-//                    ),
-//                  ),
-//                  Expanded(
-//                    flex: 5,
-//                    child: TimePickerSpinner(
-//                        is24HourMode: false,
-//                        time: initialTime,
-//                        normalTextStyle: TextStyle(
-//                            fontSize: 24, color: PlunesColors.BLACKCOLOR),
-//                        highlightedTextStyle: TextStyle(
-//                            fontSize: 24, color: PlunesColors.GREENCOLOR),
-//                        spacing: AppConfig.horizontalBlockSize * 8,
-//                        isShowSeconds: false,
-//                        itemHeight: AppConfig.verticalBlockSize * 10,
-//                        isForce2Digits: true,
-//                        onTimeChange: (time) {
-//                          temporaryTimeObj = time;
-//                          return;
-//                        }),
-//                  ),
-//                  Container(
-//                    padding: EdgeInsets.only(
-//                        left: AppConfig.horizontalBlockSize * 26,
-//                        bottom: AppConfig.verticalBlockSize * 4,
-//                        top: AppConfig.verticalBlockSize * 2.3,
-//                        right: AppConfig.horizontalBlockSize * 26),
-//                    child: InkWell(
-//                      onTap: () {
-//                        Navigator.pop(context);
-//                        _setTimeInBoxes(temporaryTimeObj, position, check);
-//                        return;
-//                      },
-//                      child: CustomWidgets().getRoundedButton(
-//                          PlunesStrings.choose,
-//                          AppConfig.horizontalBlockSize * 8,
-//                          PlunesColors.GREENCOLOR,
-//                          AppConfig.horizontalBlockSize * 3,
-//                          AppConfig.verticalBlockSize * 1,
-//                          PlunesColors.WHITECOLOR,
-//                          hasBorder: false),
-//                    ),
-//                  ),
-//                ],
-//              ),
-//            ),
-//          );
-//        },
-//        barrierDismissible: true,
-//        context: context);
   }
 
   void _setState() {

@@ -22,7 +22,6 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 import 'package:plunes/resources/network/Urls.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
@@ -33,7 +32,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
 // ignore: must_be_immutable
 class BookingMainScreen extends BaseActivity {
   final List<TimeSlots> timeSlots;
-  final String price, searchedSolutionServiceId, profId;
+  final String price, searchedSolutionServiceId, profId, docId;
   final num bookInPrice;
   final DocHosSolution docHosSolution;
   final String screenName = "BookingMainScreen";
@@ -50,7 +49,8 @@ class BookingMainScreen extends BaseActivity {
       this.bookInPrice,
       this.serviceIndex,
       this.appointmentModel,
-      this.service});
+      this.service,
+      this.docId});
 
   @override
   _BookingMainScreenState createState() => _BookingMainScreenState();
@@ -150,8 +150,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           ),
           Container(
             margin: EdgeInsets.only(
-                top: AppConfig.verticalBlockSize * .5,
-                bottom: AppConfig.verticalBlockSize * .5),
+                top: AppConfig.verticalBlockSize * .7,
+                bottom: AppConfig.verticalBlockSize * .7),
             child: CustomWidgets().getSeparatorLine(),
           ),
           Container(
@@ -233,10 +233,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   Widget getTagsView(String image, String text) {
     return Container(
-      height: AppConfig.verticalBlockSize * 7,
+      height: AppConfig.verticalBlockSize * 6,
       width: MediaQuery.of(context).size.width / 2,
       margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-      padding: EdgeInsets.all(10),
+      padding: EdgeInsets.all(5),
       child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -274,20 +274,23 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           onDoubleTap: () {},
           child: (_docProfileInfo.user != null &&
                   _docProfileInfo.user.imageUrl != null &&
-                  _docProfileInfo.user.imageUrl.isNotEmpty)
+                  _docProfileInfo.user.imageUrl.isNotEmpty &&
+                  _docProfileInfo.user.imageUrl.contains("http"))
               ? CircleAvatar(
                   child: Container(
-                    height: 60,
-                    width: 60,
+                    height: 45,
+                    width: 45,
                     child: ClipOval(
                         child: CustomWidgets().getImageFromUrl(
                             _docProfileInfo.user?.imageUrl,
                             boxFit: BoxFit.fill)),
                   ),
-                  radius: 30,
+                  radius: 22.5,
                 )
               : CustomWidgets().getBackImageView(
-                  _docProfileInfo.user?.name ?? PlunesStrings.NA),
+                  _docProfileInfo.user?.name ?? PlunesStrings.NA,
+                  width: 45,
+                  height: 45),
         ),
         Expanded(
             child: Padding(
@@ -390,18 +393,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   Widget _getDatePicker() {
     return Container(
       width: double.infinity,
-      //height: AppConfig.verticalBlockSize * 10,
       child: DatePicker(
         _currentDate,
         width: AppConfig.horizontalBlockSize * 19,
-        height: AppConfig.verticalBlockSize * 15,
+        height: AppConfig.verticalBlockSize * 14,
         daysCount: 100,
         initialSelectedDate: _currentDate,
         dateTextStyle: TextStyle(
             color: PlunesColors.BLACKCOLOR, fontSize: AppConfig.largeFont),
         dayTextStyle: TextStyle(color: PlunesColors.BLACKCOLOR),
         monthTextStyle: TextStyle(color: PlunesColors.BLACKCOLOR),
-        selectionColor: PlunesColors.GREENCOLOR,
+        selectionColor: PlunesColors.SPARKLINGGREEN,
         onDateChange: (DateTime selectedDateTime) {
           _selectedDate = selectedDateTime;
           _appointmentTime = _notSelectedEntry;
@@ -414,7 +416,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   Widget _getSlotInfo(String slotName, String fromAndToText,
-      {bool isSelectedTimeSlot = false}) {
+      {bool isSelectedTimeSlot = false, Color selectedColor}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -450,7 +452,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           child: Text(
             fromAndToText,
             style: TextStyle(
-                color: PlunesColors.GREENCOLOR, fontSize: AppConfig.mediumFont),
+                color: selectedColor != null
+                    ? selectedColor
+                    : PlunesColors.GREENCOLOR,
+                fontSize: AppConfig.mediumFont),
           ),
         ),
         Container(
@@ -464,9 +469,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   : AppConfig.horizontalBlockSize * 3),
           width: double.infinity,
           height: 0.8,
-          color: isSelectedTimeSlot
-              ? PlunesColors.GREYCOLOR
-              : PlunesColors.GREENCOLOR,
+          color: selectedColor != null
+              ? selectedColor
+              : isSelectedTimeSlot
+                  ? PlunesColors.GREYCOLOR
+                  : PlunesColors.GREENCOLOR,
         )
       ],
     );
@@ -486,7 +493,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       children: <Widget>[
         Expanded(
             child: _getSlotInfo(PlunesStrings.appointmentTime, _appointmentTime,
-                isSelectedTimeSlot: true)),
+                isSelectedTimeSlot: true,
+                selectedColor: _appointmentTime == _notSelectedEntry
+                    ? PlunesColors.GREYCOLOR
+                    : PlunesColors.GREENCOLOR)),
 //        Expanded(child: Container())
       ],
     );
@@ -497,7 +507,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             _userProfileInfo.user == null ||
             _userProfileInfo.user.credits == null ||
             _userProfileInfo.user.credits == "0")
-        ? Container()
+        ? Container(
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 3,
+                bottom: AppConfig.verticalBlockSize * 1),
+            width: double.infinity,
+            height: 0.5,
+            color: PlunesColors.GREYCOLOR,
+          )
         : Column(
             children: <Widget>[
               Container(
@@ -654,7 +671,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                         (_selectedDate == _tempSelectedDateTime &&
                                 _appointmentTime != _notSelectedEntry &&
                                 _appointmentTime != null)
-                            ? PlunesColors.GREENCOLOR
+                            ? PlunesColors.SPARKLINGGREEN
                             : PlunesColors.WHITECOLOR,
                         AppConfig.horizontalBlockSize * 3,
                         AppConfig.verticalBlockSize * 1,
@@ -703,82 +720,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       _tempSelectedDateTime = date;
       _timeChooseCallBack();
     });
-//    return showDialog(
-//        builder: (context) {
-//          return Container(
-//            margin: EdgeInsets.only(
-//                top: AppConfig.verticalBlockSize * 31,
-//                right: AppConfig.horizontalBlockSize * 10,
-//                left: AppConfig.horizontalBlockSize * 10,
-//                bottom: AppConfig.verticalBlockSize * 2),
-//            child: Material(
-//              borderRadius: BorderRadius.circular(16),
-//              child: Column(
-//                children: <Widget>[
-//                  Container(
-//                    alignment: Alignment.topRight,
-//                    child: InkWell(
-//                      onTap: () => Navigator.pop(context),
-//                      child: Container(
-//                        padding: const EdgeInsets.all(15.0),
-//                        child: Icon(Icons.close),
-//                      ),
-//                    ),
-//                  ),
-//                  Container(
-//                    alignment: Alignment.center,
-//                    child: Text(
-//                      PlunesStrings.setYourTime,
-//                      style: TextStyle(fontSize: AppConfig.mediumFont),
-//                    ),
-//                  ),
-//                  Expanded(
-//                    flex: 5,
-//                    child: TimePickerSpinner(
-//                      is24HourMode: false,
-//                      time: _selectedDate,
-//                      normalTextStyle: TextStyle(
-//                          fontSize: 24, color: PlunesColors.BLACKCOLOR),
-//                      highlightedTextStyle: TextStyle(
-//                          fontSize: 24, color: PlunesColors.GREENCOLOR),
-//                      spacing: AppConfig.horizontalBlockSize * 8,
-//                      isShowSeconds: false,
-//                      itemHeight: AppConfig.verticalBlockSize * 10,
-//                      isForce2Digits: true,
-//                      onTimeChange: (time) {
-//                        _tempSelectedDateTime = time;
-//                      },
-//                    ),
-//                  ),
-//                  Container(
-//                    padding: EdgeInsets.only(
-//                        left: AppConfig.horizontalBlockSize * 26,
-//                        bottom: AppConfig.verticalBlockSize * 4,
-//                        top: AppConfig.verticalBlockSize * 2.3,
-//                        right: AppConfig.horizontalBlockSize * 26),
-//                    child: InkWell(
-//                      onTap: () {
-//                        Navigator.pop(context);
-//                        _timeChooseCallBack();
-//                        return;
-//                      },
-//                      child: CustomWidgets().getRoundedButton(
-//                          PlunesStrings.choose,
-//                          AppConfig.horizontalBlockSize * 8,
-//                          PlunesColors.GREENCOLOR,
-//                          AppConfig.horizontalBlockSize * 3,
-//                          AppConfig.verticalBlockSize * 1,
-//                          PlunesColors.WHITECOLOR,
-//                          hasBorder: false),
-//                    ),
-//                  ),
-//                ],
-//              ),
-//            ),
-//          );
-//        },
-//        barrierDismissible: true,
-//        context: context);
   }
 
   _timeChooseCallBack() {

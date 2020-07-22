@@ -113,7 +113,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                 height: AppConfig.verticalBlockSize * 22,
                 width: double.infinity,
                 child: (_profileResponse.user.coverImageUrl == null ||
-                        _profileResponse.user.coverImageUrl.isEmpty)
+                        _profileResponse.user.coverImageUrl.isEmpty ||
+                        !(_profileResponse.user.coverImageUrl.contains("http")))
                     ? Container(
                         margin: EdgeInsets.symmetric(
                             vertical: AppConfig.verticalBlockSize * 5,
@@ -242,7 +243,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             },
             child: (_profileResponse.user != null &&
                     _profileResponse.user.imageUrl != null &&
-                    _profileResponse.user.imageUrl.isNotEmpty)
+                    _profileResponse.user.imageUrl.isNotEmpty &&
+                    _profileResponse.user.imageUrl.contains("http"))
                 ? CircleAvatar(
                     child: Container(
                       height: 60,
@@ -466,7 +468,10 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                             .imageUrl ==
                                         null ||
                                     _profileResponse.user.doctorsData[itemIndex]
-                                        .imageUrl.isEmpty)
+                                        .imageUrl.isEmpty ||
+                                    !(_profileResponse
+                                        .user.doctorsData[itemIndex].imageUrl
+                                        .contains("http")))
                                 ? CustomWidgets().getBackImageView(
                                     _profileResponse
                                             .user.doctorsData[itemIndex].name ??
@@ -578,17 +583,6 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                             ),
                           ],
                         ),
-
-//                          margin: EdgeInsets.symmetric(
-//                              vertical: AppConfig.verticalBlockSize * 0.5,
-//                              horizontal: AppConfig.horizontalBlockSize * 0.5),
-//                          padding: EdgeInsets.symmetric(
-//                              vertical: AppConfig.verticalBlockSize * 0.5),
-//                          decoration: BoxDecoration(
-//                              color: PlunesColors.WHITECOLOR,
-//                              borderRadius: BorderRadius.all(Radius.circular(
-//                                  AppConfig.horizontalBlockSize * 3.5)),
-//                              border: Border.all(color: Color(0xFFE0E0E0))),
                       );
                     }),
               ),
@@ -613,7 +607,6 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                           style: TextStyle(
                             color: PlunesColors.GREENCOLOR,
                             fontSize: 16,
-//                            decoration: TextDecoration.underline,
                             decorationThickness: 2.0,
                           ),
                         ),
@@ -625,11 +618,6 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   }
 
   Widget _getBottomView() {
-//     (_profileResponse.user == null ||
-//            _profileResponse.user.achievements == null ||
-//            _profileResponse.user.achievements.isEmpty)
-//        ? Container()
-//        :
     return Column(
       children: <Widget>[
         Container(

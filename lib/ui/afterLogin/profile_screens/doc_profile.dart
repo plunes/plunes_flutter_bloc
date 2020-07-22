@@ -163,7 +163,8 @@ class _DocProfileState extends BaseState<DocProfile> {
             },
             child: (_profileResponse.user != null &&
                     _profileResponse.user.imageUrl != null &&
-                    _profileResponse.user.imageUrl.isNotEmpty)
+                    _profileResponse.user.imageUrl.isNotEmpty &&
+                    _profileResponse.user.imageUrl.contains("http"))
                 ? CircleAvatar(
                     child: Container(
                       height: 60,

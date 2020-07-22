@@ -87,11 +87,12 @@ class DocHosMainInsightBloc extends BlocBase {
         .getTotalBusinessEarnedAndLoss(days, userId: userId));
   }
 
-  getUpdateRealTimeInsightPrice(
-      num price, String solutionId, String serviceId) async {
+  getUpdateRealTimeInsightPrice(num price, String solutionId, String serviceId,
+      {bool isSuggestive = false}) async {
     updateRealTimeInsightPriceStream(RequestInProgress());
     updateRealTimeInsightPriceStream(await DocHosMainRepo()
-        .updateRealTimeInsightPrice(price, solutionId, serviceId));
+        .updateRealTimeInsightPrice(price, solutionId, serviceId,
+            isSuggestive: isSuggestive));
   }
 
   getUpdateActionableInsightPrice(

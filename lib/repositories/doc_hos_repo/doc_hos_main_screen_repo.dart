@@ -74,15 +74,26 @@ class DocHosMainRepo {
   }
 
   Future<RequestState> updateRealTimeInsightPrice(
-      num price, String solutionId, String serviceId) async {
+      num price, String solutionId, String serviceId,
+      {bool isSuggestive = false}) async {
+    Map<String, dynamic> postData;
+    if (isSuggestive) {
+      postData = {
+        "solutionId": solutionId,
+        "serviceId": serviceId,
+        "price": price
+      };
+    } else {
+      postData = {
+        "solutionId": solutionId,
+        "serviceId": serviceId,
+        "discount": price
+      };
+    }
     var result = await DioRequester().requestMethod(
       url: Urls.UPDATE_REALTIME_INSIGHT_PRICE_URL,
       requestType: HttpRequestMethods.HTTP_PUT,
-      postData: {
-        "solutionId": solutionId,
-        "serviceId": serviceId,
-        "updatedPrice": price
-      },
+      postData: postData,
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {

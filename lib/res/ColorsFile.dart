@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 
 /// Created by Manvendra Kumar Singh
 
@@ -70,6 +71,8 @@ class PlunesColors {
   static const Color LIGHTGREENCOLOR = Color(0xFFF1F8E9);
   static const Color LIGHTGREYCOLOR = Color(0xFFEEEEEE);
   static const Color WHITECOLOR = Colors.white;
+  static final Color SPARKLINGGREEN =
+      Color(CommonMethods.getColorHexFromStr("#01D35A"));
 }
 
 final hexColorCode = HexColorCode();

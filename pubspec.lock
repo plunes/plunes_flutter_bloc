@@ -270,13 +270,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_time_picker_spinner:
-    dependency: "direct main"
-    description:
-      name: flutter_time_picker_spinner
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.6+1"
   flutter_typeahead:
     dependency: "direct main"
     description:
@@ -632,13 +625,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
-  sliding_up_panel:
-    dependency: "direct main"
-    description:
-      name: sliding_up_panel
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.2"
   source_span:
     dependency: transitive
     description:

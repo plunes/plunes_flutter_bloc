@@ -56,6 +56,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   }
 
   Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
+    print(
+        "${appointmentModel.service.newPrice.isEmpty} appointment${appointmentModel.serviceId}Model.service ${appointmentModel.service.name}");
     return Container(
       color: (widget.bookingId != null &&
               widget.bookingId == appointmentModel.bookingId)
@@ -494,8 +496,11 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                     Row(
                       children: <Widget>[
                         Text(
-                            (appointmentModel.service.price.first ==
-                                    appointmentModel?.service?.newPrice?.first)
+                            (appointmentModel.service.price == null ||
+                                    appointmentModel.service.price.isEmpty ||
+                                    appointmentModel.service.price.first ==
+                                        appointmentModel
+                                            ?.service?.newPrice?.first)
                                 ? ""
                                 : '\u20B9 ${appointmentModel.service?.price?.first?.toStringAsFixed(0)}',
                             style: TextStyle(

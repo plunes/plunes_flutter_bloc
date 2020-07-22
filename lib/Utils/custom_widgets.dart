@@ -625,7 +625,8 @@ class CustomWidgets {
                   onTap: () => viewProfile(),
                   onDoubleTap: () {},
                   child: (solutions[index].imageUrl != null &&
-                          solutions[index].imageUrl.isNotEmpty)
+                          solutions[index].imageUrl.isNotEmpty &&
+                          solutions[index].imageUrl.contains("http"))
                       ? CircleAvatar(
                           child: Container(
                             height: AppConfig.horizontalBlockSize * 14,
@@ -658,7 +659,7 @@ class CustomWidgets {
                         solutions[index].rating?.toStringAsFixed(1) ??
                             _getEmptyString(),
                         style: TextStyle(
-                            color: PlunesColors.GREYCOLOR, fontSize: 15),
+                            color: PlunesColors.GREYCOLOR, fontSize: 14),
                       ),
                     ],
                   ),
@@ -679,7 +680,6 @@ class CustomWidgets {
                           child: InkWell(
                             onTap: () => viewProfile(),
                             child: Container(
-                              height: AppConfig.horizontalBlockSize * 14,
                               padding: EdgeInsets.only(
                                   top: AppConfig.verticalBlockSize * .5),
                               alignment: Alignment.topLeft,
@@ -690,7 +690,7 @@ class CustomWidgets {
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 15,
                                     color: PlunesColors.BLACKCOLOR,
                                     fontWeight: FontWeight.normal),
                               ),
@@ -720,7 +720,7 @@ class CustomWidgets {
                                         ? PlunesStrings.book
                                         : "${PlunesStrings.bookIn} ${solutions[index].bookIn}",
                                     AppConfig.horizontalBlockSize * 8,
-                                    PlunesColors.GREENCOLOR,
+                                    PlunesColors.SPARKLINGGREEN,
                                     AppConfig.horizontalBlockSize * 3,
                                     AppConfig.verticalBlockSize * 1,
                                     PlunesColors.WHITECOLOR)),
@@ -738,7 +738,7 @@ class CustomWidgets {
                               ? Text(
                                   "${solutions[index].experience} ${PlunesStrings.yrExp}",
                                   style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
+                                    fontSize: 13.5,
                                     color: PlunesColors.GREYCOLOR,
                                   ),
                                 )
@@ -747,8 +747,9 @@ class CustomWidgets {
                                   solutions[index].homeCollection)
                               ? Text(
                                   PlunesStrings.homeCollectionAvailable,
-                                  style:
-                                      TextStyle(color: PlunesColors.GREYCOLOR),
+                                  style: TextStyle(
+                                      color: PlunesColors.GREYCOLOR,
+                                      fontSize: 13.5),
                                 )
                               : Container(),
                           Expanded(child: Container()),
@@ -786,7 +787,7 @@ class CustomWidgets {
                                             ? ""
                                             : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
                                         style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 14,
                                             color: PlunesColors.GREYCOLOR,
                                             decoration:
                                                 TextDecoration.lineThrough),
@@ -795,9 +796,9 @@ class CustomWidgets {
                                         text:
                                             " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
                                         style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 14,
                                             color: PlunesColors.BLACKCOLOR,
-                                            fontWeight: FontWeight.bold,
+                                            fontWeight: FontWeight.w500,
                                             decoration: TextDecoration.none),
                                       )
                                     ])),
@@ -814,7 +815,7 @@ class CustomWidgets {
                                             ? ""
                                             : " ${PlunesStrings.save} \u20B9 ${(solutions[index].price[0] - solutions[index].newPrice[0])?.toStringAsFixed(0)}",
                                         style: TextStyle(
-                                            fontSize: 15,
+                                            fontSize: 14,
                                             color: PlunesColors.GREENCOLOR),
                                       )
                               ],
@@ -1448,15 +1449,16 @@ class CustomWidgets {
                                                       'Price must not be lesser than 1 or empty';
                                                   newState(() {});
                                                   return;
-                                                } else if (double.tryParse(
-                                                        _priceController.text
-                                                            .trim()) >
-                                                    realInsight.userPrice) {
-                                                  failureCause =
-                                                      'price must not be greater than original price.';
-                                                  newState(() {});
-                                                  return;
                                                 }
+//                                                else if (double.tryParse(
+//                                                        _priceController.text
+//                                                            .trim()) >
+//                                                    realInsight.userPrice) {
+//                                                  failureCause =
+//                                                      'price must not be greater than original price.';
+//                                                  newState(() {});
+//                                                  return;
+//                                                }
                                                 docHosMainInsightBloc
                                                     .updateRealTimeInsightPriceStream(
                                                         RequestInProgress());
@@ -1467,7 +1469,8 @@ class CustomWidgets {
                                                                 .text
                                                                 .trim()),
                                                         realInsight.solutionId,
-                                                        realInsight.serviceId);
+                                                        realInsight.serviceId,
+                                                        isSuggestive: true);
                                               } else {
                                                 if (sliderVal == null ||
                                                     sliderVal == 0) {
@@ -1487,7 +1490,7 @@ class CustomWidgets {
                                                         RequestInProgress());
                                                 docHosMainInsightBloc
                                                     .getUpdateRealTimeInsightPrice(
-                                                        sliderVal,
+                                                        chancesPercent,
                                                         realInsight.solutionId,
                                                         realInsight.serviceId);
                                               }
@@ -2552,7 +2555,10 @@ class CustomWidgets {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               (doctorsData[itemIndex].imageUrl == null ||
-                                      doctorsData[itemIndex].imageUrl.isEmpty)
+                                      doctorsData[itemIndex].imageUrl.isEmpty ||
+                                      !(doctorsData[itemIndex]
+                                          .imageUrl
+                                          .contains("http")))
                                   ? CustomWidgets().getBackImageView(
                                       doctorsData[itemIndex].name ??
                                           PlunesStrings.NA)
@@ -2676,7 +2682,8 @@ class CustomWidgets {
                                 List<Photo> photos = [];
                                 if ((doctorsData != null &&
                                     doctorsData.imageUrl != null &&
-                                    doctorsData.imageUrl.isNotEmpty)) {
+                                    doctorsData.imageUrl.isNotEmpty &&
+                                    doctorsData.imageUrl.contains("http"))) {
                                   photos.add(
                                       Photo(assetName: doctorsData.imageUrl));
                                 }
@@ -2690,7 +2697,8 @@ class CustomWidgets {
                               },
                               child: (doctorsData != null &&
                                       doctorsData.imageUrl != null &&
-                                      doctorsData.imageUrl.isNotEmpty)
+                                      doctorsData.imageUrl.isNotEmpty &&
+                                      doctorsData.imageUrl.contains("http"))
                                   ? CircleAvatar(
                                       child: Container(
                                         height: 60,
@@ -3497,7 +3505,8 @@ class CustomWidgets {
                 },
                 child: Container(
                   child: (catalogues[index].imageUrl != null &&
-                          catalogues[index].imageUrl.isNotEmpty)
+                          catalogues[index].imageUrl.isNotEmpty &&
+                          catalogues[index].imageUrl.contains("http"))
                       ? CircleAvatar(
                           child: Container(
                             height: 45,
