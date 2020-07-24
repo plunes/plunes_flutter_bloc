@@ -310,7 +310,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   bookInPrice: service.bookIn,
                   serviceIndex: 0,
                   service: service,
-                )));
+                ))).then((value) {
+                  print("hhh${(value != null &&
+                      value.runtimeType == "pop".runtimeType &&
+                      value.toString() == "pop")}");
+      if (value != null &&
+          value.runtimeType == "pop".runtimeType &&
+          value.toString() == "pop") {
+        Navigator.pop(context);
+      }
+    });
   }
 
   Future<RequestState> _negotiate() async {
@@ -1098,7 +1107,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                                         .newPrice,
                                                     paymentOptions:
                                                         service.paymentOptions),
-                                              )));
+                                              ))).then((value) {
+                                    if (value != null &&
+                                        value.runtimeType ==
+                                            "pop".runtimeType &&
+                                        value.toString() == "pop") {
+                                      Navigator.pop(context);
+                                    }
+                                  });
                                 },
                                 child: CustomWidgets().getRoundedButton(
                                     service.doctors[index].bookIn == null

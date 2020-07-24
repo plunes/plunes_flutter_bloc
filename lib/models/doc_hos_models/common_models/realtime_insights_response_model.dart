@@ -36,12 +36,13 @@ class RealInsight {
   int timeRemaining;
   num userPrice;
   int createdAt;
-  bool suggested;
 
   @override
   String toString() {
-    return 'RealInsight{expirationMessage: $expirationMessage,expired: $expired, solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, serviceName: $serviceName, negotiating: $negotiating, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt}';
+    return 'RealInsight{solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, centerLocation: $centerLocation, serviceName: $serviceName, expirationMessage: $expirationMessage, negotiating: $negotiating, expired: $expired, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt, suggested: $suggested}';
   }
+
+  bool suggested;
 
   RealInsight(
       {this.solutionId,

@@ -1724,7 +1724,7 @@ class CustomWidgets {
                                                         .verticalBlockSize *
                                                     3),
                                             child: Text(
-                                              ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
+                                              ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
                                               style: TextStyle(
                                                   color: Colors.white70,
                                                   fontSize: 20,
@@ -1799,10 +1799,22 @@ class CustomWidgets {
                                                   fontWeight: FontWeight.w400),
                                             ),
                                             onPressed: () {
+                                              print(
+                                                  "sliderVal$sliderVal==num.parse(actionableInsight.userPrice)${num.parse(actionableInsight.userPrice)} ${sliderVal == num.parse(actionableInsight.userPrice)}");
+
                                               if (sliderVal == null ||
                                                   sliderVal == 0) {
                                                 failureCause =
                                                     'price must not be 0';
+                                                newState(() {});
+                                                return;
+                                              } else if (sliderVal
+                                                      .toStringAsFixed(0) ==
+                                                  num.parse(actionableInsight
+                                                          .userPrice)
+                                                      .toStringAsFixed(0)) {
+                                                failureCause =
+                                                    'price must not be equals to original price.';
                                                 newState(() {});
                                                 return;
                                               }

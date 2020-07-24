@@ -117,8 +117,8 @@ class Services {
   String imageUrl;
   String address;
   num discount;
-  double latitude;
-  double longitude;
+  num latitude;
+  num longitude;
   num distance;
   bool homeCollection, isExpanded = false;
   num recommendation;

@@ -940,6 +940,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         docHosServiceId: widget.docHosSolution.serviceId,
         //Services[0].id
         service_id: widget.searchedSolutionServiceId,
+        doctorId: widget.docId,
         //DocHosSolution's _id
         sol_id: widget.docHosSolution.sId,
         time_slot: _selectedTimeSlot,
@@ -961,7 +962,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               builder: (BuildContext context) => PaymentSuccess(
                     referenceID: _initPaymentResponse.referenceId,
                     bookingId: _initPaymentResponse.referenceId,
-                  ));
+                  )).then((value) {
+            Navigator.pop(context, "pop");
+          });
         } else {
           Navigator.of(context)
               .push(PageRouteBuilder(
@@ -975,13 +978,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             }
             if (val.toString().contains("success")) {
               showDialog(
-                  context: context,
-                  builder: (
-                    BuildContext context,
-                  ) =>
-                      PaymentSuccess(
-                          referenceID: _initPaymentResponse.referenceId,
-                          bookingId: _initPaymentResponse.referenceId));
+                      context: context,
+                      builder: (
+                        BuildContext context,
+                      ) =>
+                          PaymentSuccess(
+                              referenceID: _initPaymentResponse.referenceId,
+                              bookingId: _initPaymentResponse.referenceId))
+                  .then((value) {
+                Navigator.pop(context, "pop");
+              });
             } else if (val.toString().contains("fail")) {
               widget.showInSnackBar(
                   "Payment Failed", PlunesColors.BLACKCOLOR, scaffoldKey);
@@ -1160,13 +1166,16 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
             isDefaultAction: true,
             child: new Text("OK"),
             onPressed: () {
-              Navigator.pop(context);
               if (widget.bookingId != null && widget.bookingId.isNotEmpty) {
-                Navigator.pop(context);
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AppointmentMainScreen()));
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AppointmentMainScreen()))
+                    .then((value) {
+                  Navigator.pop(context, "pop");
+                });
+              } else {
+                Navigator.pop(context);
               }
             },
           ),
