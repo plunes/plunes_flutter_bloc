@@ -102,4 +102,7 @@ class Urls {
   static const String REQUEST_INVOICE_URL = 'booking/invoice';
   static const String MORE_FACILITIES_URL = "user/professionalForSpeciality";
   static const String ADD_TO_SOLUTION_URL = "solution/addToSolution";
+  static const String GET_FACILITIES_MANUAL_BIDDING = "user/getFacilities";
+  static const String CREATE_MANUAL_BIDDING_URL =
+      "solution/createManualBidding";
 }

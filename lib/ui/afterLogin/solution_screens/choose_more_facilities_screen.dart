@@ -122,11 +122,11 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
     return Container(
       decoration: BoxDecoration(
           image: DecorationImage(
-              image: ExactAssetImage(PlunesImages.moreFacilityBgImage),
+              image: ExactAssetImage(PlunesImages.userLandingImage),
               fit: BoxFit.fill,
               alignment: Alignment.center)),
       child: Container(
-        color: PlunesColors.WHITECOLOR.withOpacity(0.5),
+        color: PlunesColors.WHITECOLOR.withOpacity(0.1),
         margin:
             EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 5),
         child: ListView(
@@ -260,7 +260,6 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
             Expanded(
               child: NotificationListener<ScrollNotification>(
                 onNotification: (scrollState) {
-                  print("listning");
                   if (scrollState is ScrollEndNotification &&
                       scrollState.metrics.extentAfter == 0 &&
                       !_endReached) {

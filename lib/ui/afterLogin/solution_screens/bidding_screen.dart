@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -12,6 +13,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/manual_bidding.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/testNproceduresMainScreen.dart';
 
@@ -38,7 +40,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     _endReached = false;
     _focusNode = FocusNode();
     _searchSolutionBloc = SearchSolutionBloc();
-    _streamController = StreamController();
+    _streamController = StreamController.broadcast();
     _searchController = TextEditingController()..addListener(_onSearch);
     super.initState();
   }
@@ -69,6 +71,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         },
         child: Scaffold(
           key: scaffoldKey,
+          resizeToAvoidBottomInset: false,
           backgroundColor: PlunesColors.WHITECOLOR,
           appBar: AppBar(
               automaticallyImplyLeading: true,
@@ -99,104 +102,168 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   }
 
   Widget _showBody() {
-    return Column(
+    return Stack(
       children: <Widget>[
-        StreamBuilder(
-          builder: (context, snapShot) {
-            return Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 2),
-                child: CustomWidgets().searchBar(
-                    hintText: plunesStrings.searchHint,
-                    hasFocus: true,
-                    searchController: _searchController));
-          },
-          stream: _streamController.stream,
+        Column(
+          children: <Widget>[
+            StreamBuilder(
+              builder: (context, snapShot) {
+                return Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 2),
+                    child: CustomWidgets().searchBar(
+                        hintText: plunesStrings.searchHint,
+                        hasFocus: true,
+                        searchController: _searchController));
+              },
+              stream: _streamController.stream,
+            ),
+            widget.getSpacer(AppConfig.verticalBlockSize * 1,
+                AppConfig.verticalBlockSize * 1),
+            Container(
+              padding: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 3,
+                  right: AppConfig.horizontalBlockSize * 3),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  CustomWidgets().rectangularButtonWithPadding(
+                      buttonColor: PlunesColors.WHITECOLOR,
+                      buttonText: PlunesStrings.consultations,
+                      textColor: PlunesColors.GREYCOLOR,
+                      borderColor: PlunesColors.LIGHTGREYCOLOR,
+                      horizontalPadding: AppConfig.horizontalBlockSize * 4,
+                      verticalPadding: AppConfig.verticalBlockSize * 1,
+                      onTap: () => _onConsultationButtonClick()),
+                  CustomWidgets().rectangularButtonWithPadding(
+                      buttonColor: PlunesColors.WHITECOLOR,
+                      buttonText: PlunesStrings.tests,
+                      textColor: PlunesColors.GREYCOLOR,
+                      borderColor: PlunesColors.LIGHTGREYCOLOR,
+                      horizontalPadding: AppConfig.horizontalBlockSize * 11,
+                      verticalPadding: AppConfig.verticalBlockSize * 1,
+                      onTap: () => _onTestAndProcedureButtonClick(
+                          PlunesStrings.tests, false)),
+                  CustomWidgets().rectangularButtonWithPadding(
+                      buttonColor: PlunesColors.WHITECOLOR,
+                      buttonText: PlunesStrings.procedures,
+                      textColor: PlunesColors.GREYCOLOR,
+                      borderColor: PlunesColors.LIGHTGREYCOLOR,
+                      horizontalPadding: AppConfig.horizontalBlockSize * 5,
+                      verticalPadding: AppConfig.verticalBlockSize * 1,
+                      onTap: () => _onTestAndProcedureButtonClick(
+                          PlunesStrings.procedures, true)),
+                ],
+              ),
+            ),
+            widget.getSpacer(AppConfig.verticalBlockSize * 1,
+                AppConfig.verticalBlockSize * 1),
+            Expanded(
+                child: StreamBuilder<RequestState>(
+              builder: (context, snapShot) {
+                if (snapShot.data is RequestSuccess) {
+                  RequestSuccess _requestSuccessObject = snapShot.data;
+                  if (_requestSuccessObject.requestCode ==
+                      SearchSolutionBloc.initialIndex) {
+                    pageIndex = SearchSolutionBloc.initialIndex;
+                    _catalogues = [];
+                  }
+                  if (_requestSuccessObject.requestCode !=
+                          SearchSolutionBloc.initialIndex &&
+                      _requestSuccessObject.response.isEmpty) {
+                    _endReached = true;
+                  } else {
+                    _endReached = false;
+                    Set _allItems = _catalogues.toSet();
+                    _allItems.addAll(_requestSuccessObject.response);
+                    _catalogues = _allItems.toList(growable: true);
+                  }
+                  pageIndex++;
+                } else if (snapShot.data is RequestFailed) {
+                  pageIndex = SearchSolutionBloc.initialIndex;
+                }
+                return _catalogues == null || _catalogues.isEmpty
+                    ? _getDefaultWidget(snapShot)
+                    : Column(
+                        children: <Widget>[
+                          Expanded(
+                            child: _showSearchedItems(),
+                            flex: 4,
+                          ),
+                          (snapShot.data is RequestInProgress &&
+                                  (_catalogues != null &&
+                                      _catalogues.isNotEmpty))
+                              ? Expanded(
+                                  child: CustomWidgets().getProgressIndicator(),
+                                  flex: 1,
+                                )
+                              : Container()
+                        ],
+                      );
+              },
+              stream: _searchSolutionBloc.baseStream,
+            ))
+          ],
         ),
-        widget.getSpacer(
-            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
-        Container(
-          padding: EdgeInsets.only(
-              left: AppConfig.horizontalBlockSize * 3,
-              right: AppConfig.horizontalBlockSize * 3),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              CustomWidgets().rectangularButtonWithPadding(
-                  buttonColor: PlunesColors.WHITECOLOR,
-                  buttonText: PlunesStrings.consultations,
-                  textColor: PlunesColors.GREYCOLOR,
-                  borderColor: PlunesColors.LIGHTGREYCOLOR,
-                  horizontalPadding: AppConfig.horizontalBlockSize * 4,
-                  verticalPadding: AppConfig.verticalBlockSize * 1,
-                  onTap: () => _onConsultationButtonClick()),
-              CustomWidgets().rectangularButtonWithPadding(
-                  buttonColor: PlunesColors.WHITECOLOR,
-                  buttonText: PlunesStrings.tests,
-                  textColor: PlunesColors.GREYCOLOR,
-                  borderColor: PlunesColors.LIGHTGREYCOLOR,
-                  horizontalPadding: AppConfig.horizontalBlockSize * 11,
-                  verticalPadding: AppConfig.verticalBlockSize * 1,
-                  onTap: () => _onTestAndProcedureButtonClick(
-                      PlunesStrings.tests, false)),
-              CustomWidgets().rectangularButtonWithPadding(
-                  buttonColor: PlunesColors.WHITECOLOR,
-                  buttonText: PlunesStrings.procedures,
-                  textColor: PlunesColors.GREYCOLOR,
-                  borderColor: PlunesColors.LIGHTGREYCOLOR,
-                  horizontalPadding: AppConfig.horizontalBlockSize * 5,
-                  verticalPadding: AppConfig.verticalBlockSize * 1,
-                  onTap: () => _onTestAndProcedureButtonClick(
-                      PlunesStrings.procedures, true)),
-            ],
-          ),
-        ),
-        widget.getSpacer(
-            AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
-        Expanded(
-            child: StreamBuilder<RequestState>(
-          builder: (context, snapShot) {
-            if (snapShot.data is RequestSuccess) {
-              RequestSuccess _requestSuccessObject = snapShot.data;
-              if (_requestSuccessObject.requestCode ==
-                  SearchSolutionBloc.initialIndex) {
-                pageIndex = SearchSolutionBloc.initialIndex;
-                _catalogues = [];
-              }
-              if (_requestSuccessObject.requestCode !=
-                      SearchSolutionBloc.initialIndex &&
-                  _requestSuccessObject.response.isEmpty) {
-                _endReached = true;
-              } else {
-                _endReached = false;
-                Set _allItems = _catalogues.toSet();
-                _allItems.addAll(_requestSuccessObject.response);
-                _catalogues = _allItems.toList(growable: true);
-              }
-              pageIndex++;
-            } else if (snapShot.data is RequestFailed) {
-              pageIndex = SearchSolutionBloc.initialIndex;
-            }
-            return _catalogues == null || _catalogues.isEmpty
-                ? _getDefaultWidget(snapShot)
-                : Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: _showSearchedItems(),
-                        flex: 4,
-                      ),
-                      (snapShot.data is RequestInProgress &&
-                              (_catalogues != null && _catalogues.isNotEmpty))
-                          ? Expanded(
-                              child: CustomWidgets().getProgressIndicator(),
-                              flex: 1,
-                            )
-                          : Container()
-                    ],
+        Positioned(
+          child: StreamBuilder<Object>(
+              stream: _streamController.stream,
+              builder: (context, snapshot) {
+                if (_searchController != null &&
+                    _searchController.text != null &&
+                    _searchController.text.trim().isNotEmpty) {
+                  return Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          child: Center(
+                            child: Text(
+                              PlunesStrings.couldNotFindText,
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontSize: 17.5,
+                                  fontWeight: FontWeight.normal),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#D8F1E2")),
+                          padding: EdgeInsets.all(10),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ManualBidding()));
+                          },
+                          child: Container(
+                            child: Center(
+                              child: Text(
+                                PlunesStrings.negotiateManually,
+                                style: TextStyle(
+                                    color: PlunesColors.SPARKLINGGREEN,
+                                    fontSize: 17.5,
+                                    fontWeight: FontWeight.normal),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            color: PlunesColors.WHITECOLOR,
+                            padding: EdgeInsets.all(10),
+                            margin: EdgeInsets.only(top: 2),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
-          },
-          stream: _searchSolutionBloc.baseStream,
-        ))
+                }
+                return Container();
+              }),
+          bottom: 0.0,
+          right: 0,
+          left: 0,
+        )
       ],
     );
   }

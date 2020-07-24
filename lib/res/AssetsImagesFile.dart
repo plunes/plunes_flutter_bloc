@@ -58,6 +58,8 @@ class PlunesImages {
   static const String savedMoneyImage = "assets/images/savedMoneyImage.png";
   static const String moreFacilityBgImage =
       "assets/images/moreFacilityBgImage.png";
+  static const String manualBiddingSuccessImage =
+      "assets/images/biddingAddedSuccessImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

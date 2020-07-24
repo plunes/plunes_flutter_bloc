@@ -14,6 +14,8 @@ class SearchSolutionBloc extends BlocBase {
   final _docHosStreamProvider = PublishSubject<RequestState>();
   final _moreFacilitiesProvider = PublishSubject<RequestState>();
   final _facilitiesAdditionProvider = PublishSubject<RequestState>();
+  final _manualBiddingFacilitiesProvider = PublishSubject<RequestState>();
+  final _manualBiddingAdditionProvider = PublishSubject<RequestState>();
 
   Observable<RequestState> getDefaultCatalogueStream() =>
       _defaultStreamProvider.stream;
@@ -28,6 +30,12 @@ class SearchSolutionBloc extends BlocBase {
 
   Observable<RequestState> getFacilityAdditionStream() =>
       _facilitiesAdditionProvider.stream;
+
+  Observable<RequestState> getManualBiddingStream() =>
+      _manualBiddingFacilitiesProvider.stream;
+
+  Observable<RequestState> getManualBiddingAdditionStream() =>
+      _manualBiddingAdditionProvider.stream;
 
   Future getSearchedSolution({
     @required String searchedString,
@@ -73,6 +81,8 @@ class SearchSolutionBloc extends BlocBase {
     _docHosStreamProvider?.close();
     _moreFacilitiesProvider?.close();
     _facilitiesAdditionProvider?.close();
+    _manualBiddingFacilitiesProvider?.close();
+    _manualBiddingAdditionProvider?.close();
     super.dispose();
   }
 
@@ -119,5 +129,32 @@ class SearchSolutionBloc extends BlocBase {
         !_facilitiesAdditionProvider.isClosed) {
       _facilitiesAdditionProvider.add(requestState);
     }
+  }
+
+  Future<RequestState> getFacilitiesForManualBidding(
+      {String searchQuery, int pageIndex}) async {
+    addStateInManualBiddingStream(RequestInProgress());
+    var result = await SearchedSolutionRepo()
+        .getFacilitiesForManualBidding(searchQuery, pageIndex);
+    addStateInManualBiddingStream(result);
+    return result;
+  }
+
+  void addStateInManualBiddingStream(RequestState requestState) {
+    super.addStateInGenericStream(
+        _manualBiddingFacilitiesProvider, requestState);
+  }
+
+  Future<RequestState> saveManualBiddingData(
+      String query, List<MoreFacility> facilities) async {
+    addStateInManualBiddingAdditionStream(RequestInProgress());
+    var result =
+        await SearchedSolutionRepo().saveManualBiddingData(query, facilities);
+    addStateInManualBiddingAdditionStream(result);
+    return result;
+  }
+
+  void addStateInManualBiddingAdditionStream(RequestState requestState) {
+    super.addStateInGenericStream(_manualBiddingAdditionProvider, requestState);
   }
 }

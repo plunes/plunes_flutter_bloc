@@ -250,8 +250,18 @@ class PlunesStrings {
       "Negotiate with up to 5 more facilities near you";
   static const String searchFacilities = "Search Facilities";
   static const String chooseFacilities = "Choose Facilities";
-
   static const String negotiate = "Negotiate";
+
+  ///Manual Bidding
+  static const String couldNotFindText =
+      "Couldn't find what you are looking for?";
+  static const String negotiateManually = "Negotiate Manually";
+  static const String enterProcedureAndTestDetails =
+      "Enter Procedure & Test details";
+  static const String makeSureTheDetailsText =
+      "Make sure the details are correct so that hospitals can offer you competitive bids.";
+  static const String chooseUptoText =
+      "You can choose upto 5 facilities to negotiate with.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

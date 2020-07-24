@@ -3647,6 +3647,31 @@ class CustomWidgets {
       ),
     );
   }
+
+  Widget getManualBiddingSuccessWidget(GlobalKey<ScaffoldState> globalKey) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
+      child: Container(
+        height: AppConfig.verticalBlockSize * 40,
+        child: Container(
+          alignment: Alignment.center,
+          child: InkWell(
+            onTap: () => Navigator.of(globalKey.currentState.context).pop(),
+            highlightColor: Colors.transparent,
+            onDoubleTap: () {},
+            child: SizedBox.expand(
+              child: Image.asset(
+                PlunesImages.manualBiddingSuccessImage,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 //  Widget getDocOrHospitalDetailWidget(
 //      List<Services> solutions,
 //      int index,

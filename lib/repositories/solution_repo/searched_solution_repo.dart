@@ -162,4 +162,43 @@ class SearchedSolutionRepo {
       return RequestFailed(failureCause: serverResponse.failureCause);
     }
   }
+
+  Future<RequestState> getFacilitiesForManualBidding(
+      String searchQuery, int pageIndex) async {
+    var serverResponse = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {"page": pageIndex, "searchQuery": searchQuery ?? ""},
+        headerIncluded: true,
+        url: Urls.GET_FACILITIES_MANUAL_BIDDING);
+    if (serverResponse.isRequestSucceed) {
+      MoreFacilityResponse _facilitiesResponse =
+          MoreFacilityResponse.fromJson(serverResponse.response.data);
+      return RequestSuccess(
+          response: _facilitiesResponse?.data, requestCode: pageIndex);
+    } else {
+      return RequestFailed(failureCause: serverResponse.failureCause);
+    }
+  }
+
+  Future<RequestState> saveManualBiddingData(
+      String query, List<MoreFacility> facilities) async {
+    List _facilities = [];
+    facilities.forEach((facility) {
+      Map<String, dynamic> item = {
+        "_id": facility.sId,
+        "distance": facility.distance
+      };
+      _facilities.add(item);
+    });
+    var serverResponse = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {"facilities": _facilities, "queryDetails": query},
+        headerIncluded: true,
+        url: Urls.CREATE_MANUAL_BIDDING_URL);
+    if (serverResponse.isRequestSucceed) {
+      return RequestSuccess();
+    } else {
+      return RequestFailed(failureCause: serverResponse.failureCause);
+    }
+  }
 }

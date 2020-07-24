@@ -311,9 +311,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   serviceIndex: 0,
                   service: service,
                 ))).then((value) {
-                  print("hhh${(value != null &&
-                      value.runtimeType == "pop".runtimeType &&
-                      value.toString() == "pop")}");
       if (value != null &&
           value.runtimeType == "pop".runtimeType &&
           value.toString() == "pop") {
