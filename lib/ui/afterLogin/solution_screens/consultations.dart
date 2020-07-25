@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/consultation_tests_procedure_bloc.dart';
@@ -49,7 +50,7 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
           body: (Builder(builder: (context) {
             return Container(
               width: double.infinity,
-              //padding: CustomWidgets().getDefaultPaddingForScreens(),
+              color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
               child: StreamBuilder<RequestState>(
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestFailed) {

@@ -616,6 +616,7 @@ class CustomWidgets {
             vertical: AppConfig.verticalBlockSize * 2.5,
             horizontal: AppConfig.horizontalBlockSize * 2.5),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -672,6 +673,7 @@ class CustomWidgets {
                     EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -3266,9 +3268,8 @@ class CustomWidgets {
                                   padding: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 1.5),
                                   child: (appointmentModel.service == null ||
-                                              appointmentModel
-                                                      .service.imageUrl ==
-                                                  null ||
+                                          appointmentModel.service.imageUrl ==
+                                              null ||
                                           appointmentModel
                                               .service.imageUrl.isEmpty)
                                       ? CustomWidgets().getBackImageView(
@@ -3511,42 +3512,41 @@ class CustomWidgets {
                       ),
                       padding: EdgeInsets.all(4),
                     ),
-              InkWell(
-                onTap: () {
-                  if (onProfileTap != null) {
-                    onProfileTap();
-                  }
-                },
-                child: Container(
-                  child: (catalogues[index].imageUrl != null &&
-                          catalogues[index].imageUrl.isNotEmpty &&
-                          catalogues[index].imageUrl.contains("http"))
-                      ? CircleAvatar(
-                          child: Container(
-                            height: 45,
-                            width: 45,
-                            child: ClipOval(
-                                child: CustomWidgets().getImageFromUrl(
-                                    catalogues[index].imageUrl,
-                                    boxFit: BoxFit.fill)),
-                          ),
-                          radius: 22.5,
-                        )
-                      : CustomWidgets().getBackImageView(
-                          CommonMethods.getStringInCamelCase(
-                                  catalogues[index].name) ??
-                              PlunesStrings.NA,
-                          width: 45,
-                          height: 45),
-                  margin: EdgeInsets.only(
-                      bottom: AppConfig.verticalBlockSize * 5,
-                      left: AppConfig.horizontalBlockSize * 3),
-                ),
-              ),
               Expanded(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        if (onProfileTap != null) {
+                          onProfileTap();
+                        }
+                      },
+                      child: Container(
+                        child: (catalogues[index].imageUrl != null &&
+                                catalogues[index].imageUrl.isNotEmpty &&
+                                catalogues[index].imageUrl.contains("http"))
+                            ? CircleAvatar(
+                                child: Container(
+                                  height: 45,
+                                  width: 45,
+                                  child: ClipOval(
+                                      child: CustomWidgets().getImageFromUrl(
+                                          catalogues[index].imageUrl,
+                                          boxFit: BoxFit.fill)),
+                                ),
+                                radius: 22.5,
+                              )
+                            : CustomWidgets().getBackImageView(
+                                CommonMethods.getStringInCamelCase(
+                                        catalogues[index].name) ??
+                                    PlunesStrings.NA,
+                                width: 45,
+                                height: 45),
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 3),
+                      ),
+                    ),
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.only(

@@ -67,7 +67,8 @@ class PlunesColors {
   get lightGrey9 => '#7E7E7E';
   static const Color BLACKCOLOR = Colors.black;
   static const Color GREYCOLOR = Colors.grey;
-  static const Color GREENCOLOR = Colors.green;
+  static final Color GREENCOLOR =
+      Color(CommonMethods.getColorHexFromStr("#01D35A"));
   static const Color LIGHTGREENCOLOR = Color(0xFFF1F8E9);
   static const Color LIGHTGREYCOLOR = Color(0xFFEEEEEE);
   static const Color WHITECOLOR = Colors.white;

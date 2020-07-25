@@ -255,8 +255,7 @@ class _DocProfileState extends BaseState<DocProfile> {
           ),
           Text(
             plunesStrings.introduction,
-            style: TextStyle(
-                color: PlunesColors.BLACKCOLOR, fontWeight: FontWeight.w600),
+            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
           ),
           Padding(
             padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),

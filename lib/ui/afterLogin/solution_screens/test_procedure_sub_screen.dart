@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -120,6 +121,7 @@ class _TestProcedureSubScreenState
               widget.getAppBar(context, widget.title ?? PlunesStrings.NA, true),
           body: Builder(builder: (context) {
             return Container(
+              color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
               padding: CustomWidgets().getDefaultPaddingForScreensVertical(2),
               width: double.infinity,
               child: _isFetchingInitialData

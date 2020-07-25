@@ -120,13 +120,14 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
 
   Widget _getBody() {
     return Container(
+      padding: EdgeInsets.all(0.0),
       decoration: BoxDecoration(
+          color: Colors.black12.withOpacity(0.000001),
           image: DecorationImage(
               image: ExactAssetImage(PlunesImages.userLandingImage),
               fit: BoxFit.fill,
               alignment: Alignment.center)),
       child: Container(
-        color: PlunesColors.WHITECOLOR.withOpacity(0.1),
         margin:
             EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 5),
         child: ListView(

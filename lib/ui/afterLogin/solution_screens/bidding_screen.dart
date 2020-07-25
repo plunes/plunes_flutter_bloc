@@ -90,6 +90,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                   colorsFile.black, TextAlign.center, FontWeight.w500)),
           body: Builder(builder: (context) {
             return Container(
+              color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
               padding: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 3),
               width: double.infinity,
@@ -209,54 +210,12 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
           child: StreamBuilder<Object>(
               stream: _streamController.stream,
               builder: (context, snapshot) {
-                if (_searchController != null &&
+                if ((_searchController != null &&
                     _searchController.text != null &&
-                    _searchController.text.trim().isNotEmpty) {
-                  return Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          child: Center(
-                            child: Text(
-                              PlunesStrings.couldNotFindText,
-                              style: TextStyle(
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontSize: 17.5,
-                                  fontWeight: FontWeight.normal),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#D8F1E2")),
-                          padding: EdgeInsets.all(10),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ManualBidding()));
-                          },
-                          child: Container(
-                            child: Center(
-                              child: Text(
-                                PlunesStrings.negotiateManually,
-                                style: TextStyle(
-                                    color: PlunesColors.SPARKLINGGREEN,
-                                    fontSize: 17.5,
-                                    fontWeight: FontWeight.normal),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            color: PlunesColors.WHITECOLOR,
-                            padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.only(top: 2),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                    _searchController.text.trim().isNotEmpty &&
+                    _catalogues != null &&
+                    _catalogues.isNotEmpty)) {
+                  return _getManualBiddingWidget();
                 }
                 return Container();
               }),
@@ -361,12 +320,63 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
 
   Widget _getDefaultWidget(AsyncSnapshot<RequestState> snapshot) {
     return snapshot.data is RequestInProgress
-        ? SpinKitThreeBounce(
-            color: Color(hexColorCode.defaultGreen), size: 30.0)
-        : Text(_catalogues != null &&
-                _catalogues.isEmpty &&
-                _searchController.text.trim().isNotEmpty
-            ? PlunesStrings.noSolutionsAvailable
-            : PlunesStrings.searchSolutions);
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SpinKitThreeBounce(
+                  color: Color(hexColorCode.defaultGreen), size: 30.0),
+              Expanded(child: Container())
+            ],
+          )
+        : ((_catalogues == null || _catalogues.isEmpty) &&
+                _searchController.text.trim().isNotEmpty)
+            ? _getManualBiddingWidget()
+            : Text(PlunesStrings.searchSolutions);
+  }
+
+  Widget _getManualBiddingWidget() {
+    return Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            child: Center(
+              child: Text(
+                PlunesStrings.couldNotFindText,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 17.5,
+                    fontWeight: FontWeight.normal),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            color: Color(CommonMethods.getColorHexFromStr("#D8F1E2")),
+            padding: EdgeInsets.all(10),
+          ),
+          InkWell(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ManualBidding()));
+            },
+            child: Container(
+              child: Center(
+                child: Text(
+                  PlunesStrings.negotiateManually,
+                  style: TextStyle(
+                      color: PlunesColors.SPARKLINGGREEN,
+                      fontSize: 17.5,
+                      fontWeight: FontWeight.normal),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              color: PlunesColors.WHITECOLOR,
+              padding: EdgeInsets.all(10),
+              margin: EdgeInsets.only(top: 2),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

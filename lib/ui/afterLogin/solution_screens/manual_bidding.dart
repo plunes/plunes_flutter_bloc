@@ -9,6 +9,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/more_facilities_model.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
@@ -108,82 +109,90 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 
   Widget _getBody() {
     return Container(
-      margin:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 4),
-      child: Stack(
-        children: <Widget>[
-          ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              _getTextFiledWidget(),
-              Container(
-                margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 2.5,
-                  left: AppConfig.verticalBlockSize * 3,
-                  right: AppConfig.verticalBlockSize * 3,
-                  bottom: AppConfig.verticalBlockSize * 2,
-                ),
-                child: Center(
-                  child: Text(
-                    PlunesStrings.chooseUptoText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        color: PlunesColors.BLACKCOLOR,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 18),
+      decoration: BoxDecoration(
+          color: Colors.black12.withOpacity(0.000001),
+          image: DecorationImage(
+              image: ExactAssetImage(PlunesImages.userLandingImage),
+              fit: BoxFit.fill,
+              alignment: Alignment.center)),
+      child: Container(
+        margin:
+            EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 4),
+        child: Stack(
+          children: <Widget>[
+            ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                _getTextFiledWidget(),
+                Container(
+                  margin: EdgeInsets.only(
+                    top: AppConfig.verticalBlockSize * 2.5,
+                    left: AppConfig.verticalBlockSize * 3,
+                    right: AppConfig.verticalBlockSize * 3,
+                    bottom: AppConfig.verticalBlockSize * 2,
+                  ),
+                  child: Center(
+                    child: Text(
+                      PlunesStrings.chooseUptoText,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 18),
+                    ),
                   ),
                 ),
-              ),
-              StreamBuilder<Object>(
-                  stream: _streamController.stream,
-                  builder: (context, snapshot) {
-                    return _getSearchBar();
-                  }),
-              _getSelectedItems(),
-              StreamBuilder<RequestState>(
-                  stream: _searchSolutionBloc.getManualBiddingStream(),
-                  initialData: (_catalogues == null || _catalogues.isEmpty)
-                      ? RequestInProgress()
-                      : null,
-                  builder: (context, snapShot) {
-                    if (snapShot.data is RequestSuccess) {
-                      RequestSuccess _requestSuccessObject = snapShot.data;
-                      if (_requestSuccessObject.requestCode ==
-                          SearchSolutionBloc.initialIndex) {
+                StreamBuilder<Object>(
+                    stream: _streamController.stream,
+                    builder: (context, snapshot) {
+                      return _getSearchBar();
+                    }),
+                _getSelectedItems(),
+                StreamBuilder<RequestState>(
+                    stream: _searchSolutionBloc.getManualBiddingStream(),
+                    initialData: (_catalogues == null || _catalogues.isEmpty)
+                        ? RequestInProgress()
+                        : null,
+                    builder: (context, snapShot) {
+                      if (snapShot.data is RequestSuccess) {
+                        RequestSuccess _requestSuccessObject = snapShot.data;
+                        if (_requestSuccessObject.requestCode ==
+                            SearchSolutionBloc.initialIndex) {
+                          pageIndex = SearchSolutionBloc.initialIndex;
+                          _catalogues = [];
+                        }
+                        if (_requestSuccessObject.requestCode !=
+                                SearchSolutionBloc.initialIndex &&
+                            _requestSuccessObject.response.isEmpty) {
+                          _endReached = true;
+                        } else {
+                          _endReached = false;
+                          Set _allItems = _catalogues.toSet();
+                          _allItems.addAll(_requestSuccessObject.response);
+                          _catalogues = _allItems.toList(growable: true);
+                        }
+                        pageIndex++;
+                        _searchSolutionBloc.addStateInManualBiddingStream(null);
+                      } else if (snapShot.data is RequestFailed) {
+                        RequestFailed _requestFailed = snapShot.data;
                         pageIndex = SearchSolutionBloc.initialIndex;
-                        _catalogues = [];
+                        _failureCause = _requestFailed.failureCause;
+                        _searchSolutionBloc.addStateInManualBiddingStream(null);
                       }
-                      if (_requestSuccessObject.requestCode !=
-                              SearchSolutionBloc.initialIndex &&
-                          _requestSuccessObject.response.isEmpty) {
-                        _endReached = true;
-                      } else {
-                        _endReached = false;
-                        Set _allItems = _catalogues.toSet();
-                        _allItems.addAll(_requestSuccessObject.response);
-                        _catalogues = _allItems.toList(growable: true);
-                      }
-                      pageIndex++;
-                      _searchSolutionBloc.addStateInManualBiddingStream(null);
-                    } else if (snapShot.data is RequestFailed) {
-                      RequestFailed _requestFailed = snapShot.data;
-                      pageIndex = SearchSolutionBloc.initialIndex;
-                      _failureCause = _requestFailed.failureCause;
-                      _searchSolutionBloc.addStateInManualBiddingStream(null);
-                    }
-                    return (_catalogues == null || _catalogues.isEmpty)
-                        ? _getDefaultWidget(snapShot)
-                        : _showResultsFromBackend(snapShot);
-                  }),
-            ],
-          ),
-          Positioned(
-            child: _getSubmitButton(),
-            bottom: 0.0,
-            left: 0.0,
-            right: 0.0,
-          )
-        ],
+                      return (_catalogues == null || _catalogues.isEmpty)
+                          ? _getDefaultWidget(snapShot)
+                          : _showResultsFromBackend(snapShot);
+                    }),
+              ],
+            ),
+            Positioned(
+              child: _getSubmitButton(),
+              bottom: 0.0,
+              left: 0.0,
+              right: 0.0,
+            )
+          ],
+        ),
       ),
     );
   }

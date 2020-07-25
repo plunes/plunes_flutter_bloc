@@ -790,8 +790,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                           text: '${PlunesStrings.pay}',
                           style: TextStyle(
                               fontSize: AppConfig.mediumFont,
-                              color: Colors.black,
-                              decoration: TextDecoration.underline),
+                              color: Colors.black),
                           children: appointmentModel.paymentStatus
                                   .where((element) => !(element.status))
                                   .map((paymentObj) {

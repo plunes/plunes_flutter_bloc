@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -55,8 +56,10 @@ class _TestAndProcedureScreenState extends BaseState<TestAndProcedureScreen> {
           body: Builder(builder: (context) {
             return Container(
                 width: double.infinity,
-               padding: EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize*3,
-                   vertical: AppConfig.verticalBlockSize*1.5),
+                color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+                padding: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 3,
+                    vertical: AppConfig.verticalBlockSize * 1.5),
                 child: _renderTestAndProcedures());
           }),
         ));

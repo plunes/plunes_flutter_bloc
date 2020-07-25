@@ -369,165 +369,171 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Widget _showBody() {
-    return Stack(
-      children: <Widget>[
-        Column(
-          children: <Widget>[
-            (_timer != null && _timer.isActive && !(_isCrossClicked))
-                ? _getHoldOnPopup()
-                : _getNegotiatedPriceTotalView(),
-            Card(
-              elevation: 4.0,
-              margin: EdgeInsets.only(
-                  left: AppConfig.horizontalBlockSize * 4,
-                  right: AppConfig.horizontalBlockSize * 4,
-                  top: AppConfig.verticalBlockSize * 1.5),
-              child: Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 4,
-                    vertical: AppConfig.verticalBlockSize * 2),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Expanded(
-                      flex: 2,
-                      child: InkWell(
-                        onTap: () => _viewDetails(),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              widget.catalogueData.service ??
-                                  _searchedDocResults?.catalogueData?.service ??
-                                  PlunesStrings.NA,
-                              style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 1),
-                              child: Text(
-                                PlunesStrings.viewDetails,
-                                style: TextStyle(
-                                    fontSize: AppConfig.smallFont,
-                                    color: PlunesColors.GREENCOLOR),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                          alignment: Alignment.topRight,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              _solutionReceivedTime == null ||
-                                      _solutionReceivedTime == 0
-                                  ? Container()
-                                  : StreamBuilder(
-                                      builder: (context, snapShot) {
-                                        return Text(
-                                          DateUtil.getDuration(
-                                                  _solutionReceivedTime) ??
-                                              PlunesStrings.NA,
-                                          style: TextStyle(
-                                              fontSize: AppConfig.smallFont),
-                                        );
-                                      },
-                                      stream: _streamForTimer.stream,
-                                    ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => SolutionMap(
-                                                  _searchedDocResults,
-                                                  widget.catalogueData)))
-                                      .then((value) {
-                                    if (value != null && value) {
-                                      Navigator.pop(context, true);
-                                    }
-                                  });
-                                },
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 1),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: <Widget>[
-                                      Flexible(
-                                        flex: 2,
-                                        child: Container(
-                                          child: Image.asset(
-                                              plunesImages.locationIcon),
-                                          height:
-                                              AppConfig.verticalBlockSize * 3,
-                                          width:
-                                              AppConfig.horizontalBlockSize * 8,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        flex: 10,
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 2),
-                                          child: Text(
-                                            PlunesStrings.viewOnMap,
-                                            textAlign: TextAlign.right,
-                                            maxLines: 1,
-                                            style: TextStyle(
-                                                fontSize: AppConfig.smallFont,
-                                                color: PlunesColors.GREENCOLOR),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          )),
-                    )
-                  ],
-                ),
-              ),
-              color: PlunesColors.WHITECOLOR,
-            ),
-            Expanded(
-              child: Container(
+    return Container(
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      child: Stack(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              (_timer != null && _timer.isActive && !(_isCrossClicked))
+                  ? _getHoldOnPopup()
+                  : _getNegotiatedPriceTotalView(),
+              Card(
+                elevation: 4.0,
                 margin: EdgeInsets.only(
                     left: AppConfig.horizontalBlockSize * 4,
                     right: AppConfig.horizontalBlockSize * 4,
                     top: AppConfig.verticalBlockSize * 1.5),
-                child: StreamBuilder<RequestState>(
-                  builder: (context, snapShot) {
-                    if (snapShot.data is RequestSuccess) {
-                      RequestSuccess _successObject = snapShot.data;
-                      _searchedDocResults = _successObject.response;
-                      _checkExpandedSolutions();
-                      _searchSolutionBloc.addIntoDocHosStream(null);
-                      _checkShouldTimerRun();
-                    } else if (snapShot.data is RequestFailed) {
-                      RequestFailed _failedObject = snapShot.data;
-                      _failureCause = _failedObject.failureCause;
-                      _searchSolutionBloc.addIntoDocHosStream(null);
-                      _cancelNegotiationTimer();
-                    }
-                    return _showContent();
-                  },
-                  stream: _searchSolutionBloc.getDocHosStream(),
+                child: Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 4,
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Expanded(
+                        flex: 2,
+                        child: InkWell(
+                          onTap: () => _viewDetails(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                widget.catalogueData.service ??
+                                    _searchedDocResults
+                                        ?.catalogueData?.service ??
+                                    PlunesStrings.NA,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 1),
+                                child: Text(
+                                  PlunesStrings.viewDetails,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.smallFont,
+                                      color: PlunesColors.GREENCOLOR),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                            alignment: Alignment.topRight,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                _solutionReceivedTime == null ||
+                                        _solutionReceivedTime == 0
+                                    ? Container()
+                                    : StreamBuilder(
+                                        builder: (context, snapShot) {
+                                          return Text(
+                                            DateUtil.getDuration(
+                                                    _solutionReceivedTime) ??
+                                                PlunesStrings.NA,
+                                            style: TextStyle(
+                                                fontSize: AppConfig.smallFont),
+                                          );
+                                        },
+                                        stream: _streamForTimer.stream,
+                                      ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SolutionMap(
+                                                _searchedDocResults,
+                                                widget.catalogueData))).then(
+                                        (value) {
+                                      if (value != null && value) {
+                                        Navigator.pop(context, true);
+                                      }
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 1),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        Flexible(
+                                          flex: 2,
+                                          child: Container(
+                                            child: Image.asset(
+                                                plunesImages.locationIcon),
+                                            height:
+                                                AppConfig.verticalBlockSize * 3,
+                                            width:
+                                                AppConfig.horizontalBlockSize *
+                                                    8,
+                                          ),
+                                        ),
+                                        Flexible(
+                                          flex: 10,
+                                          child: Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 2),
+                                            child: Text(
+                                              PlunesStrings.viewOnMap,
+                                              textAlign: TextAlign.right,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                  fontSize: AppConfig.smallFont,
+                                                  color:
+                                                      PlunesColors.GREENCOLOR),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )),
+                      )
+                    ],
+                  ),
+                ),
+                color: PlunesColors.WHITECOLOR,
+              ),
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 4,
+                      right: AppConfig.horizontalBlockSize * 4,
+                      top: AppConfig.verticalBlockSize * 1.5),
+                  child: StreamBuilder<RequestState>(
+                    builder: (context, snapShot) {
+                      if (snapShot.data is RequestSuccess) {
+                        RequestSuccess _successObject = snapShot.data;
+                        _searchedDocResults = _successObject.response;
+                        _checkExpandedSolutions();
+                        _searchSolutionBloc.addIntoDocHosStream(null);
+                        _checkShouldTimerRun();
+                      } else if (snapShot.data is RequestFailed) {
+                        RequestFailed _failedObject = snapShot.data;
+                        _failureCause = _failedObject.failureCause;
+                        _searchSolutionBloc.addIntoDocHosStream(null);
+                        _cancelNegotiationTimer();
+                      }
+                      return _showContent();
+                    },
+                    stream: _searchSolutionBloc.getDocHosStream(),
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -1162,50 +1168,58 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 ),
                               )
                             : Container()),
-                    Container(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.horizontalBlockSize * 1),
-                        child: Row(
-                          children: <Widget>[
-                            RichText(
-                                text: TextSpan(
-                                    text: (service.doctors[index]?.price[0] ==
-                                            service.doctors[index]?.newPrice[0])
-                                        ? ""
-                                        : "\u20B9${service.doctors[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: PlunesColors.GREYCOLOR,
-                                        decoration: TextDecoration.lineThrough),
-                                    children: <TextSpan>[
-                                  TextSpan(
-                                    text:
-                                        " \u20B9${service.doctors[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: PlunesColors.BLACKCOLOR,
-                                        fontWeight: FontWeight.w500,
-                                        decoration: TextDecoration.none),
-                                  )
-                                ])),
-                            Padding(
-                                padding: EdgeInsets.only(
-                                    left: AppConfig.horizontalBlockSize * 1)),
-                            (service.doctors[index].price[0] ==
-                                    service.doctors[index].newPrice[0])
-                                ? Container()
-                                : Text(
-                                    (service.doctors[index].discount == null ||
-                                            service.doctors[index].discount ==
-                                                0)
-                                        ? ""
-                                        : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(0)}",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: PlunesColors.GREENCOLOR),
-                                  )
-                          ],
-                        ))
+                    service.doctors[index].negotiating ?? false
+                        ? Container()
+                        : Container(
+                            padding: EdgeInsets.only(
+                                top: AppConfig.horizontalBlockSize * 1),
+                            child: Row(
+                              children: <Widget>[
+                                RichText(
+                                    text: TextSpan(
+                                        text: (service
+                                                    .doctors[index]?.price[0] ==
+                                                service.doctors[index]
+                                                    ?.newPrice[0])
+                                            ? ""
+                                            : "\u20B9${service.doctors[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: PlunesColors.GREYCOLOR,
+                                            decoration:
+                                                TextDecoration.lineThrough),
+                                        children: <TextSpan>[
+                                      TextSpan(
+                                        text:
+                                            " \u20B9${service.doctors[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: PlunesColors.BLACKCOLOR,
+                                            fontWeight: FontWeight.w500,
+                                            decoration: TextDecoration.none),
+                                      )
+                                    ])),
+                                Padding(
+                                    padding: EdgeInsets.only(
+                                        left:
+                                            AppConfig.horizontalBlockSize * 1)),
+                                (service.doctors[index].price[0] ==
+                                        service.doctors[index].newPrice[0])
+                                    ? Container()
+                                    : Text(
+                                        (service.doctors[index].discount ==
+                                                    null ||
+                                                service.doctors[index]
+                                                        .discount ==
+                                                    0)
+                                            ? ""
+                                            : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(0)}",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: PlunesColors.GREENCOLOR),
+                                      )
+                              ],
+                            ))
                   ],
                 ),
               )),

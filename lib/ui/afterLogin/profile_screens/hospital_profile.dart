@@ -338,7 +338,6 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             plunesStrings.introduction,
             style: TextStyle(
                 color: PlunesColors.BLACKCOLOR,
-                fontWeight: FontWeight.w600,
                 fontSize: 16),
           ),
           Padding(
