@@ -601,48 +601,22 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
           _animateMapPosition(minZoom);
         }
         for (int index = 0; index < arrLength; index++) {
-//          print("$index init time ${DateTime.now().millisecondsSinceEpoch}");
-//          bool shouldFetch =
-//              (_searchedDocResults.solution.services[index].imageUrl != null &&
-//                      _searchedDocResults
-//                          .solution.services[index].imageUrl.isNotEmpty &&
-//                      _searchedDocResults.solution.services[index].imageUrl
-//                          .contains("http"))
-//                  ? true
-//                  : false;
-//          BitmapDescriptor _icon = await _iconGen.getMarkerIcon(
-//              shouldFetch
-//                  ? _searchedDocResults.solution.services[index].imageUrl
-//                  : PlunesImages.labMapImage,
-//              Size(220, 220),
-//              shouldFetch,
-//              index);
-//          print("$index took time ${DateTime.now().millisecondsSinceEpoch} \n");
           await Future.delayed(Duration(milliseconds: 300));
           _markers.add(Marker(
               markerId:
                   MarkerId(_searchedDocResults.solution.services[index].sId),
               icon: hosImage2XGreenBgDesc,
               position: LatLng(
-                  _searchedDocResults.solution.services[index].latitude ?? 0.0,
-                  _searchedDocResults.solution.services[index].longitude ??
+                  _searchedDocResults.solution.services[index].latitude
+                          ?.toDouble() ??
+                      0.0,
+                  _searchedDocResults.solution.services[index].longitude
+                          ?.toDouble() ??
                       0.0),
               infoWindow: InfoWindow(
                   title: _searchedDocResults.solution.services[index].name,
                   snippet:
                       "${_searchedDocResults.solution.services[index].distance?.toStringAsFixed(1)} km")));
-//          _bigMarkers.add(Marker(
-//              markerId:
-//                  MarkerId(_searchedDocResults.solution.services[index].sId),
-//              icon: hosImage2XGreenBgDesc,
-//              position: LatLng(
-//                  _searchedDocResults.solution.services[index].latitude ?? 0.0,
-//                  _searchedDocResults.solution.services[index].longitude ??
-//                      0.0),
-//              infoWindow: InfoWindow(
-//                  title: _searchedDocResults.solution.services[index].name,
-//                  snippet:
-//                      "${_searchedDocResults.solution.services[index].distance?.toStringAsFixed(1)} km")));
         }
       }
     } else if (result is RequestFailed) {

@@ -407,7 +407,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         onDateChange: (DateTime selectedDateTime) {
           _selectedDate = selectedDateTime;
           _appointmentTime = _notSelectedEntry;
-          _setState();
+          _getSlotsInfo(DateUtil.getDayAsString(_selectedDate));
 //          print("selected date is ${selectedDateTime.toString()}");
 //          _openTimePicker();
         },
@@ -725,7 +725,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   _timeChooseCallBack() {
 //    print(
 //        "${_tempSelectedDateTime.hour} selected Date Time is $_tempSelectedDateTime");
-    _getSlotsInfo(DateUtil.getDayAsString(_tempSelectedDateTime));
+//    _getSlotsInfo(DateUtil.getDayAsString(_tempSelectedDateTime));
     _checkAndValidateSelectedTime();
     _setState();
     _showPopupForInvalidSlotSelection();

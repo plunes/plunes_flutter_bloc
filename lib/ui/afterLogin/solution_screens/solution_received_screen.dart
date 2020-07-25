@@ -255,7 +255,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         catalogueData: _searchedDocResults?.catalogueData,
                       ))).then((value) {
             if (value != null && value) {
-              _negotiate();
+              _isCrossClicked = false;
+              _shouldStartTimer = true;
+              _fetchResultAndStartTimer().then((value) {
+                Future.delayed(Duration(seconds: 1)).then((value) {
+                  _setState();
+                });
+              });
             }
           });
         },
@@ -824,11 +830,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     );
   }
 
-  void _fetchResultAndStartTimer() async {
+  Future<void> _fetchResultAndStartTimer() async {
     await _negotiate();
     if (_shouldStartTimer) {
       _startTimer();
     }
+    return null;
   }
 
   _cancelNegotiationTimer() {

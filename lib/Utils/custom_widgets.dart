@@ -1151,7 +1151,7 @@ class CustomWidgets {
                                                 MainAxisAlignment.end,
                                             children: <Widget>[
                                               Text(
-                                                "${reductionInPrice?.toStringAsFixed(1)}% ",
+                                                "${reductionInPrice?.toStringAsFixed(0)}% ",
                                                 style: TextStyle(
                                                     color: Colors.white70,
                                                     fontSize:
@@ -1206,7 +1206,7 @@ class CustomWidgets {
                                             child: Row(
                                               children: <Widget>[
                                                 Text(
-                                                  ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(1)}',
+                                                  ' \u20B9 ${(realInsight.userPrice.floor() / 2)?.toStringAsFixed(0)}',
                                                   style: TextStyle(
                                                       color: Colors.white70,
                                                       fontSize:
@@ -1216,7 +1216,7 @@ class CustomWidgets {
                                                 ),
                                                 Expanded(child: Container()),
                                                 Text(
-                                                  ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(1)}',
+                                                  ' \u20B9 ${realInsight.userPrice?.toStringAsFixed(0)}',
                                                   style: TextStyle(
                                                       color: Colors.white70,
                                                       fontSize:
@@ -1315,7 +1315,7 @@ class CustomWidgets {
                                                               .end,
                                                       children: <Widget>[
                                                         Text(
-                                                          ' \u20B9 ${sliderVal.toStringAsFixed(2)}',
+                                                          ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
                                                           style: TextStyle(
                                                               color: Colors
                                                                   .white70,
@@ -1638,7 +1638,7 @@ class CustomWidgets {
                                                 MainAxisAlignment.end,
                                             children: <Widget>[
                                               Text(
-                                                "${reductionInPrice?.toStringAsFixed(1)}% ",
+                                                "${reductionInPrice?.toStringAsFixed(0)}% ",
                                                 style: TextStyle(
                                                     color:
                                                         PlunesColors.WHITECOLOR,
@@ -1651,22 +1651,24 @@ class CustomWidgets {
                                           )),
                                           Slider(
                                               value: sliderVal,
-                                              min: (num.parse(actionableInsight
-                                                              .userPrice)
-                                                          .floor() /
-                                                      2) ??
-                                                  0,
-                                              max: num.parse(actionableInsight
-                                                      .userPrice)
-                                                  .floor()
-                                                  .toDouble(),
+                                              min: (actionableInsight.userPrice != null)
+                                                  ? num.tryParse((num.parse(actionableInsight.userPrice)
+                                                                  .floor() /
+                                                              2)
+                                                          ?.toStringAsFixed(0))
+                                                      .toDouble()
+                                                  : 0,
+                                              max: (actionableInsight.userPrice != null)
+                                                  ? num.tryParse(num.parse(
+                                                              actionableInsight
+                                                                  .userPrice)
+                                                          .toStringAsFixed(0))
+                                                      .toDouble()
+                                                  : 0,
                                               divisions: 10,
-                                              activeColor: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      "#F39A83")),
-                                              inactiveColor: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      "#F8F4FF")),
+                                              activeColor:
+                                                  Color(CommonMethods.getColorHexFromStr("#F39A83")),
+                                              inactiveColor: Color(CommonMethods.getColorHexFromStr("#F8F4FF")),
                                               onChanged: (newValue) {
                                                 newState(() {
                                                   try {
@@ -1696,7 +1698,7 @@ class CustomWidgets {
                                             child: Row(
                                               children: <Widget>[
                                                 Text(
-                                                  ' \u20B9 ${(num.parse(actionableInsight.userPrice).floor() / 2)?.toStringAsFixed(1)}',
+                                                  ' \u20B9 ${(num.parse(actionableInsight.userPrice).floor() / 2)?.toStringAsFixed(0)}',
                                                   style: TextStyle(
                                                       color: Colors.white70,
                                                       fontSize: 20,
@@ -1705,7 +1707,7 @@ class CustomWidgets {
                                                 ),
                                                 Expanded(child: Container()),
                                                 Text(
-                                                  ' \u20B9 ${num.parse(actionableInsight.userPrice)?.toStringAsFixed(1)}',
+                                                  ' \u20B9 ${num.parse(actionableInsight.userPrice)?.toStringAsFixed(0)}',
                                                   style: TextStyle(
                                                       fontSize: 20,
                                                       color: Colors.white70,
@@ -1724,7 +1726,7 @@ class CustomWidgets {
                                                         .verticalBlockSize *
                                                     3),
                                             child: Text(
-                                              ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
+                                              ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
                                               style: TextStyle(
                                                   color: Colors.white70,
                                                   fontSize: 20,
@@ -3263,7 +3265,7 @@ class CustomWidgets {
                                 Padding(
                                   padding: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 1.5),
-                                  child: (appointmentModel.service == null &&
+                                  child: (appointmentModel.service == null ||
                                               appointmentModel
                                                       .service.imageUrl ==
                                                   null ||
