@@ -165,13 +165,13 @@ class _FillCouponState extends BaseState<FillCoupon> {
                       return CustomWidgets().getProgressIndicator();
                     } else if (snapshot.data is RequestSuccess) {
                       _couponBloc.addIntoStream(null);
-                      Future.delayed(Duration(milliseconds: 200)).then(
-                          (value) => _showMessages('failedObj.failureCause'));
+                      Future.delayed(Duration(milliseconds: 200))
+                          .then((value) => _openSuccessDialog());
                     } else if (snapshot.data is RequestFailed) {
                       RequestFailed failedObj = snapshot.data;
                       _couponBloc.addIntoStream(null);
-                      Future.delayed(Duration(milliseconds: 200))
-                          .then((value) => _openSuccessDialog());
+                      Future.delayed(Duration(milliseconds: 200)).then(
+                          (value) => _showMessages(failedObj.failureCause));
                     }
                     return InkWell(
                       onTap: () {
