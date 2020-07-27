@@ -165,6 +165,16 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                           _allItems.addAll(_requestSuccessObject.response);
                           _catalogues = _allItems.toList(growable: true);
                         }
+                        if (_catalogues != null &&
+                            _catalogues.isNotEmpty &&
+                            _selectedItemList != null &&
+                            _selectedItemList.isNotEmpty) {
+                          _selectedItemList.forEach((selectedItem) {
+                            if (_catalogues.contains(selectedItem)) {
+                              _catalogues.remove(selectedItem);
+                            }
+                          });
+                        }
                         pageIndex++;
                         _searchSolutionBloc.addIntoMoreFacilitiesStream(null);
                       } else if (snapShot.data is RequestFailed) {
@@ -274,11 +284,19 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                 },
                 child: ListView.builder(
                   itemBuilder: (context, index) {
-                    return CustomWidgets().getMoreFacilityWidget(
-                        _catalogues, index,
-                        onTap: () => _addRemoveFacilities(_catalogues[index],
-                            shouldAdd: true),
-                        onProfileTap: () => _viewProfile(_catalogues[index]));
+                    return Container(
+                      margin: EdgeInsets.only(
+                          bottom: (_catalogues != null &&
+                                  _catalogues.isNotEmpty &&
+                                  (index == _catalogues.length - 1))
+                              ? AppConfig.verticalBlockSize * 4
+                              : 0),
+                      child: CustomWidgets().getMoreFacilityWidget(
+                          _catalogues, index,
+                          onTap: () => _addRemoveFacilities(_catalogues[index],
+                              shouldAdd: true),
+                          onProfileTap: () => _viewProfile(_catalogues[index])),
+                    );
                   },
                   shrinkWrap: true,
                   itemCount: _catalogues?.length ?? 0,
@@ -328,16 +346,23 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
       _showInSnackBar("Can't select more than 5 facilities");
       return;
     }
-    if (_selectedItemList.contains(facility) && shouldAdd) {
-      _showInSnackBar("Facility already selected");
-      return;
-    }
+//    if (_selectedItemList.contains(facility) && shouldAdd) {
+//      _showInSnackBar("Facility already selected");
+//      return;
+//    }
     if (_selectedItemList.contains(facility)) {
       _selectedItemList.remove(facility);
+      if (_catalogues != null &&
+          _catalogues.isNotEmpty &&
+          _searchController.text.trim().isEmpty) {
+        _catalogues.insert(0, facility);
+      }
     } else {
       _selectedItemList.add(facility);
+      _catalogues.remove(facility);
     }
     _selectUnselectController.add(null);
+    _searchSolutionBloc.addIntoMoreFacilitiesStream(null);
   }
 
   Widget _getSelectedItems() {

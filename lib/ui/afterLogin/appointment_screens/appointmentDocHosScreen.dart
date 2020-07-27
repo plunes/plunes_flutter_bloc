@@ -541,8 +541,12 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
               SizedBox(
                 height: AppConfig.verticalBlockSize * 1,
               ),
-              Text('Category : ${appointmentModel.service.category.first}',
-                  style: TextStyle(fontSize: AppConfig.smallFont - 3)),
+              (appointmentModel.service.category != null &&
+                      appointmentModel.service.category.isNotEmpty)
+                  ? Text(
+                      'Category : ${appointmentModel.service.category.first}',
+                      style: TextStyle(fontSize: AppConfig.smallFont - 3))
+                  : Container(),
             ],
           ),
 //          Container(

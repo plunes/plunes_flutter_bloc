@@ -468,9 +468,9 @@ class CustomWidgets {
       imageUrl: imageUrl ?? PlunesStrings.NA,
       fit: boxFit,
       errorWidget: (_, str, sds) =>
-          Image.asset(PlunesImages.defaultImage, fit: boxFit),
+          Image.asset(PlunesImages.plunesPlaceHolderAndErrorLogo, fit: boxFit),
       placeholder: (_, sds) =>
-          Image.asset(PlunesImages.defaultImage, fit: boxFit),
+          Image.asset(PlunesImages.plunesPlaceHolderAndErrorLogo, fit: boxFit),
     );
   }
 

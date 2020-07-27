@@ -171,6 +171,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                           _allItems.addAll(_requestSuccessObject.response);
                           _catalogues = _allItems.toList(growable: true);
                         }
+                        _selectedItemList.forEach((selectedItem) {
+                          if (_catalogues.contains(selectedItem)) {
+                            _catalogues.remove(selectedItem);
+                          }
+                        });
                         pageIndex++;
                         _searchSolutionBloc.addStateInManualBiddingStream(null);
                       } else if (snapShot.data is RequestFailed) {
@@ -291,11 +296,19 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 },
                 child: ListView.builder(
                   itemBuilder: (context, index) {
-                    return CustomWidgets().getMoreFacilityWidget(
-                        _catalogues, index,
-                        onTap: () => _addRemoveFacilities(_catalogues[index],
-                            shouldAdd: true),
-                        onProfileTap: () => _viewProfile(_catalogues[index]));
+                    return Container(
+                      margin: EdgeInsets.only(
+                          bottom: (_catalogues != null &&
+                                  _catalogues.isNotEmpty &&
+                                  (index == _catalogues.length - 1))
+                              ? AppConfig.verticalBlockSize * 16
+                              : 0),
+                      child: CustomWidgets().getMoreFacilityWidget(
+                          _catalogues, index,
+                          onTap: () => _addRemoveFacilities(_catalogues[index],
+                              shouldAdd: true),
+                          onProfileTap: () => _viewProfile(_catalogues[index])),
+                    );
                   },
                   shrinkWrap: true,
                   itemCount: _catalogues?.length ?? 0,
@@ -336,16 +349,23 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       _showInSnackBar("Can't select more than 5 facilities");
       return;
     }
-    if (_selectedItemList.contains(facility) && shouldAdd) {
-      _showInSnackBar("Facility already selected");
-      return;
-    }
+//    if (_selectedItemList.contains(facility) && shouldAdd) {
+//      _showInSnackBar("Facility already selected");
+//      return;
+//    }
     if (_selectedItemList.contains(facility)) {
       _selectedItemList.remove(facility);
+      if (_catalogues != null &&
+          _catalogues.isNotEmpty &&
+          _searchController.text.trim().isEmpty) {
+        _catalogues.insert(0, facility);
+      }
     } else {
       _selectedItemList.add(facility);
+      _catalogues.remove(facility);
     }
     _selectUnselectController.add(null);
+    _searchSolutionBloc.addStateInManualBiddingStream(null);
   }
 
   void _showInSnackBar(String message) {

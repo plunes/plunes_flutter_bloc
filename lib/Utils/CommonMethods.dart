@@ -710,6 +710,7 @@ class CommonMethods {
       if (someValue == null || someValue.trim().isEmpty) {
         return stringToReturn;
       }
+      someValue = someValue.replaceAll("(", "( ");
       List<String> multipleStrings = someValue.split(" ");
       stringToReturn = null;
       multipleStrings.forEach((element) {
@@ -733,6 +734,6 @@ class CommonMethods {
       print("an error occured in getStringInCamelCase method commonMethods");
       stringToReturn = someValue;
     }
-    return stringToReturn;
+    return stringToReturn?.replaceAll("( ", "(");
   }
 }
