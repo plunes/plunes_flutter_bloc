@@ -74,7 +74,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
       height: AppConfig.verticalBlockSize * 90,
       child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
               width: double.infinity,
@@ -91,17 +91,18 @@ class _ReferScreenState extends BaseState<ReferScreen> {
               width: double.infinity,
               child: Image.asset(
                 plunesImages.coverIcon,
-                height: AppConfig.verticalBlockSize * 10,
-                width: AppConfig.horizontalBlockSize * 20,
+                height: AppConfig.verticalBlockSize * 30,
+//                width: AppConfig.horizontalBlockSize * 100,
                 alignment: Alignment.center,
               ),
             ),
-            widget.getSpacer(0.0, 10.0),
+//            widget.getSpacer(0.0, 10.0),
             widget.createTextViews(plunesStrings.availableCredits, 14,
-                colorsFile.darkGrey1, TextAlign.start, FontWeight.normal),
+                colorsFile.darkGrey1, TextAlign.start, FontWeight.bold),
             widget.getSpacer(0.0, 10.0),
             Container(
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Image.asset(
                     plunesImages.creditIcon,
