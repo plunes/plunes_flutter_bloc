@@ -165,13 +165,13 @@ class _FillCouponState extends BaseState<FillCoupon> {
                       return CustomWidgets().getProgressIndicator();
                     } else if (snapshot.data is RequestSuccess) {
                       _couponBloc.addIntoStream(null);
-                      Future.delayed(Duration(milliseconds: 200))
-                          .then((value) => _openSuccessDialog());
+                      Future.delayed(Duration(milliseconds: 200)).then(
+                          (value) => _showMessages('failedObj.failureCause'));
                     } else if (snapshot.data is RequestFailed) {
                       RequestFailed failedObj = snapshot.data;
                       _couponBloc.addIntoStream(null);
-                      Future.delayed(Duration(milliseconds: 200)).then(
-                          (value) => _showMessages(failedObj.failureCause));
+                      Future.delayed(Duration(milliseconds: 200))
+                          .then((value) => _openSuccessDialog());
                     }
                     return InkWell(
                       onTap: () {
@@ -216,20 +216,45 @@ class _FillCouponState extends BaseState<FillCoupon> {
             content: Container(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
+                  Container(
+                    alignment: Alignment.topRight,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      onDoubleTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Icon(
+                          Icons.close,
+                          color: PlunesColors.GREYCOLOR,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                      width: AppConfig.horizontalBlockSize * 30,
+                      height: AppConfig.verticalBlockSize * 15,
+                      child: Image.asset(PlunesImages.couponImage)),
+                  SizedBox(height: 10),
                   Text("Coupon Applied Successfully!"),
+                  SizedBox(height: 20),
                   SizedBox(height: AppConfig.verticalBlockSize * 1),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      FlatButton(
-                          onPressed: () => Navigator.pop(context, true),
-                          child: Text(
-                            "Ok",
-                            style: TextStyle(color: PlunesColors.GREENCOLOR),
-                          )),
-                    ],
-                  )
+                  FlatButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      color: PlunesColors.GREENCOLOR,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Container(
+                        width: AppConfig.horizontalBlockSize * 20,
+                        child: Text(
+                          "Ok",
+                          style: TextStyle(color: PlunesColors.WHITECOLOR),
+                          textAlign: TextAlign.center,
+                        ),
+                      )),
+//                    ],
+//                  )
                 ],
               ),
             ),
