@@ -25,7 +25,8 @@ class HospitalDoctorOverviewScreen extends BaseActivity {
 }
 
 class _HospitalOverviewScreenState
-    extends BaseState<HospitalDoctorOverviewScreen> {
+    extends BaseState<HospitalDoctorOverviewScreen>
+    with WidgetsBindingObserver {
   User _user;
   DocHosMainInsightBloc _docHosMainInsightBloc;
   List<CentreData> _centresList = [];
@@ -47,6 +48,7 @@ class _HospitalOverviewScreenState
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
     _centresList = [];
     _isProcessing = false;
     _user = UserManager().getUserDetails();
@@ -84,8 +86,17 @@ class _HospitalOverviewScreenState
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _docHosMainInsightBloc?.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _setState();
+    }
+    super.didChangeAppLifecycleState(state);
   }
 
   @override
