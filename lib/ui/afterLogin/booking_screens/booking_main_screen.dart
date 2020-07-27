@@ -148,12 +148,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 vertical: AppConfig.verticalBlockSize * 1.5),
             child: _getDoctorDetailsView(),
           ),
-          Container(
-            margin: EdgeInsets.only(
-                top: AppConfig.verticalBlockSize * .7,
-                bottom: AppConfig.verticalBlockSize * .7),
-            child: CustomWidgets().getSeparatorLine(),
-          ),
+          CustomWidgets().getSeparatorLine(),
+//          Container(
+//            margin: EdgeInsets.only(
+//                top: AppConfig.verticalBlockSize * .1,
+//                bottom: AppConfig.verticalBlockSize * .1),
+//            child:,
+//          ),
           Container(
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(
@@ -238,28 +239,31 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
       padding: EdgeInsets.all(5),
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
                 margin: EdgeInsets.only(right: AppConfig.verticalBlockSize * 1),
                 child: Image.asset(
                   image,
-                  height: AppConfig.verticalBlockSize * 2.1,
-                  width: AppConfig.verticalBlockSize * 2.1,
-                  color: PlunesColors.BLACKCOLOR,
+                  height: AppConfig.verticalBlockSize * 4,
+                  width: AppConfig.verticalBlockSize * 4,
+                  color: PlunesColors.GREYCOLOR,
                 )),
+            SizedBox(
+              width: 5,
+            ),
             Expanded(
               child: Text(
                 text,
                 style: TextStyle(
-                    fontSize: AppConfig.verySmallFont,
+                    fontSize: AppConfig.smallFont,
                     color: PlunesColors.BLACKCOLOR),
               ),
             )
           ]),
       decoration: BoxDecoration(
-          color: PlunesColors.LIGHTGREYCOLOR,
+          color: PlunesColors.LIGHTGREYCOLOR.withOpacity(.30),
           borderRadius: BorderRadius.all(Radius.circular(5))),
     );
   }
@@ -285,7 +289,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                             _docProfileInfo.user?.imageUrl,
                             boxFit: BoxFit.fill)),
                   ),
-                  radius: 22.5,
+                  radius: 23.5,
                 )
               : CustomWidgets().getBackImageView(
                   _docProfileInfo.user?.name ?? PlunesStrings.NA,
@@ -395,8 +399,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       width: double.infinity,
       child: DatePicker(
         _currentDate,
-        width: AppConfig.horizontalBlockSize * 19,
-        height: AppConfig.verticalBlockSize * 14,
+        width: AppConfig.horizontalBlockSize * 15.5,
+        height: AppConfig.verticalBlockSize * 12.5,
         daysCount: 100,
         initialSelectedDate: _currentDate,
         dateTextStyle: TextStyle(
@@ -483,7 +487,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     return Row(
       children: <Widget>[
         Expanded(child: _getSlotInfo(PlunesStrings.slot1, _firstSlotTime)),
-        Expanded(child: _getSlotInfo(PlunesStrings.slot2, _secondSlotTime))
+        Expanded(child: _getSlotInfo(PlunesStrings.slot2, _secondSlotTime)),
       ],
     );
   }
@@ -492,11 +496,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     return Row(
       children: <Widget>[
         Expanded(
-            child: _getSlotInfo(PlunesStrings.appointmentTime, _appointmentTime,
-                isSelectedTimeSlot: true,
-                selectedColor: _appointmentTime == _notSelectedEntry
-                    ? PlunesColors.GREYCOLOR
-                    : PlunesColors.GREENCOLOR)),
+          child: _getSlotInfo(PlunesStrings.appointmentTime, _appointmentTime,
+              isSelectedTimeSlot: true,
+              selectedColor: _appointmentTime == _notSelectedEntry
+                  ? PlunesColors.GREYCOLOR
+                  : PlunesColors.GREENCOLOR),
+        ),
 //        Expanded(child: Container())
       ],
     );
@@ -516,6 +521,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             color: PlunesColors.GREYCOLOR,
           )
         : Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Container(
                 margin: EdgeInsets.only(
@@ -528,6 +534,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               Text(
                 PlunesStrings.availableCash,
                 style: TextStyle(fontSize: AppConfig.smallFont),
+                textAlign: TextAlign.center,
               ),
               SizedBox(
                 height: AppConfig.verticalBlockSize * 1,
@@ -550,6 +557,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(
+                height: AppConfig.verticalBlockSize * 2,
               ),
               InkWell(
                 onTap: () {
@@ -611,7 +621,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               ? Center(
                   child: Text(
                     "Make a payment of  ${_calcPriceToShow()}/- to confirm the booking",
-                    style: TextStyle(fontSize: AppConfig.verySmallFont),
+                    style: TextStyle(fontSize: AppConfig.smallFont),
                   ),
                 )
               : Container(),
@@ -693,7 +703,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 PlunesStrings.tcApply,
                 style: TextStyle(
                     decoration: TextDecoration.underline,
-                    fontSize: AppConfig.verySmallFont),
+                    fontSize: AppConfig.smallFont),
               ),
             ),
           ),

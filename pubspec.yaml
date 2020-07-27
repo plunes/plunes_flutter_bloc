@@ -275,7 +275,6 @@ flutter:
     - assets/images/solution/homeCollectionImage.png
     - assets/images/solution/labMapImage.png
     - assets/images/bottom_tabs/unreadNotificationIcon.png
-    - assets/images/defaultImage.png
     - assets/images/setLocationFailImage.png
     - assets/images/setLocationMap.png
     - assets/images/refundImage.png
@@ -286,14 +285,12 @@ flutter:
     - assets/images/plockrBgImage.png
     - assets/images/ratringStar.png
     - assets/images/reviewSubmitImage.png
-    - assets/images/plockrBgNewImage.png
     - assets/images/invoiceSuccessImage.png
     - assets/images/technologyBackground.png
     - assets/images/hosImage1XGreenBg.png
     - assets/images/hosImage2XGreenBg.png
     - assets/images/invalidSlotImage.png
     - assets/images/savedMoneyImage.png
-    - assets/images/moreFacilityBgImage.png
     - assets/images/biddingAddedSuccessImage.png
     - assets/images/plunesPlaceHolderAndErrorLogo.png
 

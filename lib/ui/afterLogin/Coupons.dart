@@ -6,6 +6,7 @@ import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/StringsFile.dart';
 
+// ignore: must_be_immutable
 class Coupons extends BaseActivity {
   static const tag = '/coupons';
 
@@ -13,7 +14,7 @@ class Coupons extends BaseActivity {
   _CouponsState createState() => _CouponsState();
 }
 
-class _CouponsState extends State<Coupons> {
+class _CouponsState extends BaseState<Coupons> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   var globalHeight, globalWidth;
   Preferences _preferences;

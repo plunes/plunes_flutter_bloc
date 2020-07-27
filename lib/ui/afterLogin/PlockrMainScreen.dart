@@ -1,13 +1,8 @@
-import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'package:date_format/date_format.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
-import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/ImagePicker/ImagePickerHandler.dart';
-import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
@@ -25,7 +20,6 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/showPlockrFileDetails.dart';
 import 'package:plunes/ui/commonView/UploadPrescriptionDialog.dart';
-import 'package:share/share.dart';
 
 /// New 28/02/2020 - 03:30PM
 // ignore: must_be_immutable

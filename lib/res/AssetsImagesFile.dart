@@ -35,7 +35,6 @@ class PlunesImages {
       "assets/images/solution/homeCollectionImage.png";
   static String notificationUnreadImage =
       "assets/images/bottom_tabs/unreadNotificationIcon.png";
-  static String defaultImage = "assets/images/defaultImage.png";
   static String setLocationMap = "assets/images/setLocationMap.png";
   static String setLocationFailImage = "assets/images/setLocationFailImage.png";
   static const String refundImage = "assets/images/refundImage.png";
@@ -44,8 +43,7 @@ class PlunesImages {
   static const String validForOneHourOnlyWatch =
       "assets/images/validForOneHourOnlyWatch.png";
   static const String refCodeUsedThrice = "assets/images/refCodeUsedThrice.png";
-  static const String plockrBgImage =
-      "assets/images/plockrBgNewImage.png"; //"assets/images/plockrBgImage.png";
+  static const String plockrBgImage = "assets/images/plockrBgImage.png";
   static const String ratingStar = "assets/images/ratringStar.png";
   static const String reviewSubmitImage = "assets/images/reviewSubmitImage.png";
   static const String invoiceSuccessImage =
@@ -56,8 +54,6 @@ class PlunesImages {
   static const String hosImage2XGreenBg = "assets/images/hosImage2XGreenBg.png";
   static const String invalidSlotImage = "assets/images/invalidSlotImage.png";
   static const String savedMoneyImage = "assets/images/savedMoneyImage.png";
-  static const String moreFacilityBgImage =
-      "assets/images/moreFacilityBgImage.png";
   static const String manualBiddingSuccessImage =
       "assets/images/biddingAddedSuccessImage.png";
   static const String plunesPlaceHolderAndErrorLogo =
