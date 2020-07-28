@@ -20,6 +20,10 @@ import 'package:plunes/resources/network/Urls.dart';
 
 // ignore: must_be_immutable
 class LocationFetch extends BaseActivity {
+  final bool shouldSaveLocation;
+
+  LocationFetch({this.shouldSaveLocation});
+
   static const tag = '/location_fetch';
 
   @override
@@ -97,8 +101,10 @@ class _LocationFetchState extends State<LocationFetch> {
   }
 
   saveLatLang() async {
-    await _preferences.setPreferencesString(Constants.LATITUDE, latitude);
-    await _preferences.setPreferencesString(Constants.LONGITUDE, longitude);
+    if (widget.shouldSaveLocation == null) {
+      await _preferences.setPreferencesString(Constants.LATITUDE, latitude);
+      await _preferences.setPreferencesString(Constants.LONGITUDE, longitude);
+    }
     String home = houseController.text;
     String land = landMarkController.text;
 //    print(home + "," + land + "," + address + "," + latitude + "," + longitude);

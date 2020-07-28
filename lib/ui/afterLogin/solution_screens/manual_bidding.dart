@@ -1,19 +1,24 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/more_facilities_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:plunes/ui/commonView/LocationFetch.dart';
 
 // ignore: must_be_immutable
 class ManualBidding extends BaseActivity {
@@ -32,9 +37,15 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   String _failureCause;
   SearchSolutionBloc _searchSolutionBloc;
   Timer _debounce;
+  LatLng _selectedLoc;
+  String _location = PlunesStrings.enterYourLocation;
+
+  User _userObj;
 
   @override
   void initState() {
+    _userObj = UserManager().getUserDetails();
+    _getRegion();
     _searchSolutionBloc = SearchSolutionBloc();
     _catalogues = [];
     _selectedItemList = [];
@@ -51,7 +62,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   _getMoreFacilities() {
     _searchSolutionBloc.getFacilitiesForManualBidding(
         searchQuery: _searchController.text.trim().toString(),
-        pageIndex: pageIndex);
+        pageIndex: pageIndex,
+        latLng: _selectedLoc);
   }
 
   @override
@@ -70,8 +82,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
-        appBar:
-            widget.getAppBar(context, PlunesStrings.negotiateManually, true),
+        appBar: _getAppBar(),
         body: Builder(builder: (context) {
           return StreamBuilder<RequestState>(
               stream: _searchSolutionBloc.getManualBiddingAdditionStream(),
@@ -438,7 +449,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         _catalogues = [];
         _searchSolutionBloc.getFacilitiesForManualBidding(
             searchQuery: _searchController.text.trim().toString(),
-            pageIndex: SearchSolutionBloc.initialIndex);
+            pageIndex: SearchSolutionBloc.initialIndex,
+            latLng: _selectedLoc);
       } else {
         _onTextClear();
       }
@@ -485,5 +497,129 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 }),
           );
         });
+  }
+
+  _getLocation() {
+    Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => LocationFetch(shouldSaveLocation: false)))
+        .then((val) {
+      if (val != null) {
+        var addressControllerList = new List();
+        addressControllerList = val.toString().split(":");
+        String addr = addressControllerList[0] +
+            ' ' +
+            addressControllerList[1] +
+            ' ' +
+            addressControllerList[2];
+//                          print("addr is $addr");
+        var _latitude = addressControllerList[3];
+        var _longitude = addressControllerList[4];
+        String region = addr;
+        if (addressControllerList.length == 6 &&
+            addressControllerList[5] != null) {
+          region = addressControllerList[5];
+        }
+        _location = region;
+        _setState();
+        _selectedLoc =
+            LatLng(double.tryParse(_latitude), double.tryParse(_longitude));
+//        print("_latitude $_latitude");
+//        print("_longitude $_longitude");
+        pageIndex = SearchSolutionBloc.initialIndex;
+        _catalogues = [];
+        _getMoreFacilities();
+      }
+    });
+  }
+
+  _getAppBar() {
+    return PreferredSize(
+        child: Card(
+            color: Colors.white,
+            elevation: 3.0,
+            margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.all(AppConfig.verticalBlockSize * 0.5),
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                        return;
+                      },
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: PlunesColors.BLACKCOLOR,
+                      ),
+                    )),
+                Text(
+                  PlunesStrings.negotiateManually,
+                  textAlign: TextAlign.start,
+                  style:
+                      TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                ),
+                Flexible(
+                  child: InkWell(
+                    onTap: () => _getLocation(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 2.0, right: 3.0, top: 2.0, bottom: 2.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.all(2),
+                            child: Image.asset(plunesImages.locationIcon),
+                            height: AppConfig.verticalBlockSize * 3.5,
+                            width: AppConfig.horizontalBlockSize * 6,
+                          ),
+                          Flexible(
+                              child: FittedBox(
+                            child: Text(
+                              _location ?? PlunesStrings.enterYourLocation,
+                              softWrap: false,
+                              style: TextStyle(
+                                fontSize: 14,
+                                decoration: TextDecoration.underline,
+                                decorationStyle: TextDecorationStyle.dashed,
+                                decorationThickness: 2.0,
+                              ),
+                            ),
+                          ))
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )),
+        preferredSize: Size(double.infinity, AppConfig.verticalBlockSize * 10));
+  }
+
+  _setState() {
+    if (mounted) setState(() {});
+  }
+
+  void _getRegion() {
+    if (_userObj.latitude == null ||
+        _userObj.longitude == null ||
+        _userObj.latitude.isEmpty ||
+        _userObj.longitude.isEmpty ||
+        _userObj.latitude == '0.0' ||
+        _userObj.longitude == '0.0') {
+      _location = PlunesStrings.enterYourLocation;
+      _setState();
+    } else {
+      LocationUtil()
+          .getAddressFromLatLong(_userObj.latitude, _userObj.longitude)
+          .then((value) {
+        _location = value;
+        _setState();
+      });
+    }
   }
 }

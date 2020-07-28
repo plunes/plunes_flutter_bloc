@@ -1,3 +1,4 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/models/Models.dart';
@@ -164,10 +165,15 @@ class SearchedSolutionRepo {
   }
 
   Future<RequestState> getFacilitiesForManualBidding(
-      String searchQuery, int pageIndex) async {
+      String searchQuery, int pageIndex, LatLng latLng) async {
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
-        postData: {"page": pageIndex, "searchQuery": searchQuery ?? ""},
+        postData: {
+          "page": pageIndex,
+          "searchQuery": searchQuery ?? "",
+          "latitude": latLng?.latitude,
+          "longitude": latLng?.longitude
+        },
         headerIncluded: true,
         url: Urls.GET_FACILITIES_MANUAL_BIDDING);
     if (serverResponse.isRequestSucceed) {

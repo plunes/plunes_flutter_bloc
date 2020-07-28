@@ -247,8 +247,8 @@ class User {
     if (lat == null || lat.isEmpty || lat == "0") {
       lat = "0.0";
     }
-    print("lat in models $lat");
-    print("long in models $long");
+//    print("lat in models $lat");
+//    print("long in models $long");
     return User(
         uid: json['_id'] != null ? json['_id'] : '',
         name: json['name'] != null ? json['name'] : '',

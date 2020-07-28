@@ -1551,6 +1551,8 @@ class CustomWidgets {
       chancesPercent = 0;
       reductionInPrice = 0;
     }
+    TextEditingController _priceController = TextEditingController();
+    bool shouldShowField = false;
     ScrollController _scrollController = ScrollController();
     String failureCause;
     return StatefulBuilder(builder: (context, newState) {
@@ -1672,6 +1674,9 @@ class CustomWidgets {
                                                   Color(CommonMethods.getColorHexFromStr("#F39A83")),
                                               inactiveColor: Color(CommonMethods.getColorHexFromStr("#F8F4FF")),
                                               onChanged: (newValue) {
+                                                if (shouldShowField) {
+                                                  return;
+                                                }
                                                 newState(() {
                                                   try {
                                                     var val = (newValue * 100) /
@@ -1720,20 +1725,115 @@ class CustomWidgets {
                                             ),
                                           ),
                                           Container(
-                                            margin: EdgeInsets.only(
-                                                top: AppConfig
+                                            margin: EdgeInsets.symmetric(
+                                                vertical: AppConfig
                                                         .verticalBlockSize *
                                                     3,
-                                                bottom: AppConfig
-                                                        .verticalBlockSize *
-                                                    3),
-                                            child: Text(
-                                              ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
-                                              style: TextStyle(
-                                                  color: Colors.white70,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                                horizontal: AppConfig
+                                                        .horizontalBlockSize *
+                                                    17),
+                                            child: shouldShowField
+                                                ? Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      Flexible(
+                                                        child: TextField(
+                                                          controller:
+                                                              _priceController,
+                                                          inputFormatters: [
+                                                            WhitelistingTextInputFormatter
+                                                                .digitsOnly
+                                                          ],
+                                                          maxLines: 1,
+                                                          autofocus: true,
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .number,
+                                                          textAlignVertical:
+                                                              TextAlignVertical
+                                                                  .bottom,
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            color:
+                                                                Colors.white70,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      InkWell(
+                                                        onTap: () {
+                                                          shouldShowField =
+                                                              false;
+                                                          newState(() {});
+                                                        },
+                                                        child: Container(
+                                                          margin: EdgeInsets.only(
+                                                              left: AppConfig
+                                                                      .horizontalBlockSize *
+                                                                  3),
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  5.0),
+                                                          alignment: Alignment
+                                                              .bottomRight,
+                                                          child: Icon(
+                                                            Icons.mode_edit,
+                                                            color: PlunesColors
+                                                                .GREENCOLOR,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      Text(
+                                                        ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white70,
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Flexible(
+                                                          child: InkWell(
+                                                        onTap: () {
+                                                          shouldShowField =
+                                                              true;
+                                                          newState(() {});
+                                                        },
+                                                        child: Container(
+                                                          margin: EdgeInsets.only(
+                                                              left: AppConfig
+                                                                      .horizontalBlockSize *
+                                                                  3),
+                                                          padding:
+                                                              EdgeInsets.all(
+                                                                  5.0),
+                                                          alignment: Alignment
+                                                              .bottomRight,
+                                                          child: Icon(
+                                                            Icons.mode_edit,
+                                                            color: PlunesColors
+                                                                .WHITECOLOR,
+                                                          ),
+                                                        ),
+                                                      ))
+                                                    ],
+                                                  ),
                                           ),
                                           chancesPercent != null
                                               ? Text(
@@ -1805,30 +1905,50 @@ class CustomWidgets {
                                             onPressed: () {
                                               print(
                                                   "sliderVal$sliderVal==num.parse(actionableInsight.userPrice)${num.parse(actionableInsight.userPrice)} ${sliderVal == num.parse(actionableInsight.userPrice)}");
-
-                                              if (sliderVal == null ||
-                                                  sliderVal == 0) {
-                                                failureCause =
-                                                    'price must not be 0';
-                                                newState(() {});
-                                                return;
-                                              } else if (sliderVal
-                                                      .toStringAsFixed(0) ==
-                                                  num.parse(actionableInsight
-                                                          .userPrice)
-                                                      .toStringAsFixed(0)) {
-                                                failureCause =
-                                                    'price must not be equals to original price.';
-                                                newState(() {});
-                                                return;
+                                              if (shouldShowField) {
+                                                double value = double.tryParse(
+                                                    _priceController.text
+                                                        .trim());
+                                                if (value == null ||
+                                                    value == 0 ||
+                                                    value < 1) {
+                                                  failureCause =
+                                                      'price must be greater than 0';
+                                                  newState(() {});
+                                                  return;
+                                                }
+                                                docHosMainInsightBloc
+                                                    .getUpdateActionableInsightPrice(
+                                                        value,
+                                                        actionableInsight
+                                                            .serviceId,
+                                                        actionableInsight
+                                                            .specialityId);
+                                              } else {
+                                                if (sliderVal == null ||
+                                                    sliderVal == 0) {
+                                                  failureCause =
+                                                      'price must not be 0';
+                                                  newState(() {});
+                                                  return;
+                                                } else if (sliderVal
+                                                        .toStringAsFixed(0) ==
+                                                    num.parse(actionableInsight
+                                                            .userPrice)
+                                                        .toStringAsFixed(0)) {
+                                                  failureCause =
+                                                      'price must not be equals to original price.';
+                                                  newState(() {});
+                                                  return;
+                                                }
+                                                docHosMainInsightBloc
+                                                    .getUpdateActionableInsightPrice(
+                                                        sliderVal,
+                                                        actionableInsight
+                                                            .serviceId,
+                                                        actionableInsight
+                                                            .specialityId);
                                               }
-                                              docHosMainInsightBloc
-                                                  .getUpdateActionableInsightPrice(
-                                                      sliderVal,
-                                                      actionableInsight
-                                                          .serviceId,
-                                                      actionableInsight
-                                                          .specialityId);
                                             },
                                           ),
                                           Text(
