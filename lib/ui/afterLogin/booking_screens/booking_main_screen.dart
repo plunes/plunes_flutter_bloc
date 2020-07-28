@@ -331,7 +331,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                         child: Text(
                           PlunesStrings.getDirection,
                           style: TextStyle(
-                              decoration: TextDecoration.underline,
                               fontSize: AppConfig.smallFont,
                               color: PlunesColors.GREENCOLOR),
                         ),
@@ -354,8 +353,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
                 child: RichText(
                   text: new TextSpan(
-                    // Note: Styles for TextSpans must be explicitly defined.
-                    // Child text spans will inherit styles from parent
                     style: new TextStyle(
                       color: Colors.black,
                     ),
@@ -431,12 +428,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               }
             },
             child: Container(
-//              decoration: isSelectedTimeSlot
-//                  ? BoxDecoration(
-//                      color: PlunesColors.GREENCOLOR,
-//                      borderRadius: BorderRadius.all(
-//                          Radius.circular(AppConfig.horizontalBlockSize * 8)))
-//                  : null,
               padding: EdgeInsets.all(isSelectedTimeSlot ? 10 : 3.0),
               child: Text(
                 slotName,
@@ -462,23 +453,25 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 fontSize: AppConfig.mediumFont),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * .2,
-              right: isSelectedTimeSlot
-                  ? AppConfig.horizontalBlockSize * 26
-                  : AppConfig.horizontalBlockSize * 3,
-              left: isSelectedTimeSlot
-                  ? AppConfig.horizontalBlockSize * 26
-                  : AppConfig.horizontalBlockSize * 3),
-          width: double.infinity,
-          height: 0.8,
-          color: selectedColor != null
-              ? selectedColor
-              : isSelectedTimeSlot
-                  ? PlunesColors.GREYCOLOR
-                  : PlunesColors.GREENCOLOR,
-        )
+        isSelectedTimeSlot
+            ? Container(
+                margin: EdgeInsets.only(
+                    top: AppConfig.verticalBlockSize * .2,
+                    right: isSelectedTimeSlot
+                        ? AppConfig.horizontalBlockSize * 26
+                        : AppConfig.horizontalBlockSize * 3,
+                    left: isSelectedTimeSlot
+                        ? AppConfig.horizontalBlockSize * 26
+                        : AppConfig.horizontalBlockSize * 3),
+                width: double.infinity,
+                height: 0.8,
+                color: selectedColor != null
+                    ? selectedColor
+                    : isSelectedTimeSlot
+                        ? PlunesColors.GREYCOLOR
+                        : PlunesColors.GREENCOLOR,
+              )
+            : Container()
       ],
     );
   }

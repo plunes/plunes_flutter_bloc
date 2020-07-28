@@ -58,6 +58,7 @@ class PlunesImages {
       "assets/images/biddingAddedSuccessImage.png";
   static const String plunesPlaceHolderAndErrorLogo =
       "assets/images/plunesPlaceHolderAndErrorLogo.png";
+  static const String informativeIcon = "assets/images/informativeIcon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

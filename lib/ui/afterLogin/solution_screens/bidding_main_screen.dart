@@ -202,6 +202,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                   vertical: AppConfig.verticalBlockSize * 1.5),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
                                     (_prevSearchedSolution.topSearches !=
@@ -210,20 +211,21 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                         ? PlunesStrings.topSearches
                                         : PlunesStrings.previousActivities,
                                     style: TextStyle(
-                                        fontSize: AppConfig.smallFont,
-                                        fontWeight: FontWeight.w600,
-                                        decoration: (_prevSearchedSolution
-                                                        .topSearches !=
-                                                    null &&
-                                                _prevSearchedSolution
-                                                    .topSearches)
-                                            ? TextDecoration.none
-                                            : TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.solid,
-                                        decorationThickness: 5,
-                                        decorationColor:
-                                            PlunesColors.GREENCOLOR),
+                                      fontSize: AppConfig.mediumFont,
+                                      fontWeight: FontWeight.normal,
+//                                        decoration: (_prevSearchedSolution
+//                                                        .topSearches !=
+//                                                    null &&
+//                                                _prevSearchedSolution
+//                                                    .topSearches)
+//                                            ? TextDecoration.none
+//                                            : TextDecoration.underline,
+//                                        decorationStyle:
+//                                            TextDecorationStyle.solid,
+//                                        decorationThickness: 5,
+//                                        decorationColor:
+//                                            PlunesColors.GREENCOLOR
+                                    ),
                                   ),
                                   (_prevSearchedSolution.topSearches != null &&
                                           _prevSearchedSolution.topSearches)

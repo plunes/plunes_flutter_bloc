@@ -42,7 +42,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   BuildContext _buildContext;
   bool _isFetchingInitialData;
   String _failureCause;
-  int _solutionReceivedTime = 0;
+  int _solutionReceivedTime = 0, _expirationTimer;
   bool _shouldStartTimer, _isCrossClicked;
   StreamController _streamForTimer,
       _docExpandCollapseController,
@@ -77,6 +77,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _getDiscountAsync();
     });
     _solutionReceivedTime = DateTime.now().millisecondsSinceEpoch;
+    _expirationTimer = _solutionReceivedTime;
     _isFetchingInitialData = true;
     _searchSolutionBloc = SearchSolutionBloc();
     if (widget.searchedDocResults != null) {
@@ -242,7 +243,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       ),
       child: InkWell(
         onTap: () {
-          if (!_canGoAhead()) {
+          if (!_canNegotiate()) {
             _showSnackBar(PlunesStrings.cantNegotiateWithMoreFacilities);
             return;
           }
@@ -876,6 +877,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     }
     bool shouldNegotiate = false;
     _solutionReceivedTime = _searchedDocResults.solution?.createdTime ?? 0;
+    _expirationTimer = _searchedDocResults.solution?.expirationTimer;
+    if (DateTime.now()
+            .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer))
+            .inHours >=
+        1) {
+      _cancelNegotiationTimer();
+      return;
+    }
     _searchedDocResults.solution.services.forEach((service) {
       if (service.negotiating != null && service.negotiating) {
         shouldNegotiate = true;
@@ -1016,24 +1025,24 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             14,
                           ),
                   ),
-                  Container(
-                    width: AppConfig.horizontalBlockSize * 14,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.star,
-                          color: PlunesColors.GREENCOLOR,
-                        ),
-                        Text(
-                          service.doctors[index].rating?.toStringAsFixed(1) ??
-                              PlunesStrings.NA,
-                          style: TextStyle(
-                              color: PlunesColors.GREYCOLOR, fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ),
+//                  Container(
+//                    width: AppConfig.horizontalBlockSize * 14,
+//                    child: Column(
+//                      crossAxisAlignment: CrossAxisAlignment.center,
+//                      children: <Widget>[
+//                        Icon(
+//                          Icons.star,
+//                          color: PlunesColors.GREENCOLOR,
+//                        ),
+//                        Text(
+//                          service.doctors[index].rating?.toStringAsFixed(1) ??
+//                              PlunesStrings.NA,
+//                          style: TextStyle(
+//                              color: PlunesColors.GREYCOLOR, fontSize: 14),
+//                        ),
+//                      ],
+//                    ),
+//                  ),
                 ],
               ),
               Expanded(
@@ -1429,6 +1438,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   bool _canGoAhead() {
+    bool _canGoAhead = true;
+    var duration = DateTime.now()
+        .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer));
+    if (duration.inHours >= 1) {
+      _canGoAhead = false;
+    }
+    return _canGoAhead;
+  }
+
+  bool _canNegotiate() {
     bool _canGoAhead = true;
     var duration = DateTime.now()
         .difference(DateTime.fromMillisecondsSinceEpoch(_solutionReceivedTime));

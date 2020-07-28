@@ -115,7 +115,7 @@ class PlunesStrings {
   static const String editVariance = "Variance";
 
   ///Insight main screen
-  static const String realTimeInsights = 'Real Time Insights';
+  static const String realTimeInsights = 'Real Time Insights  ';
   static const String realTimePrediction = 'Real Time Prediction';
   static const String noRealTimeInsights =
       "You don't have any real time insights yet";
@@ -262,6 +262,8 @@ class PlunesStrings {
       "Make sure the details are correct so that hospitals can offer you competitive bids.";
   static const String chooseUptoText =
       "You can choose upto 5 facilities to negotiate with.";
+  static const String makeSureToUpdatePrice =
+      "Make sure to Update price in the Preferred time to ensure booking";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
