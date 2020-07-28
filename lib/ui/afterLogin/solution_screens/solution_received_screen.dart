@@ -258,10 +258,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             if (value != null && value) {
               _isCrossClicked = false;
               _shouldStartTimer = true;
-              _fetchResultAndStartTimer().then((value) {
-                Future.delayed(Duration(seconds: 1)).then((value) {
-                  _setState();
-                });
+              print(
+                  "_timer!=null && !_timer.isActive ${(_timer != null && _timer.isActive)}");
+              if (_timer != null && !_timer.isActive) {
+                _fetchResultAndStartTimer();
+              }
+              Future.delayed(Duration(seconds: 5)).then((value) {
+                _setState();
               });
             }
           });
@@ -365,6 +368,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      _timer = timer;
       _negotiate();
     });
   }
@@ -877,7 +881,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     }
     bool shouldNegotiate = false;
     _solutionReceivedTime = _searchedDocResults.solution?.createdTime ?? 0;
-    _expirationTimer = _searchedDocResults.solution?.expirationTimer;
+    _expirationTimer = _searchedDocResults.solution?.expirationTimer ?? 0;
     if (DateTime.now()
             .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer))
             .inHours >=
@@ -1186,10 +1190,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                               children: <Widget>[
                                 RichText(
                                     text: TextSpan(
-                                        text: (service
-                                                    .doctors[index]?.price[0] ==
+                                        text: (service.doctors[index].price ==
+                                                    null ||
+                                                service.doctors[index].price
+                                                    .isEmpty ||
                                                 service.doctors[index]
-                                                    ?.newPrice[0])
+                                                        ?.price[0] ==
+                                                    service.doctors[index]
+                                                        ?.newPrice[0])
                                             ? ""
                                             : "\u20B9${service.doctors[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
                                         style: TextStyle(

@@ -488,7 +488,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
         Future.delayed(Duration(milliseconds: 1500)).then((value) {
           if (_shouldOpenPopUp != null && _shouldOpenPopUp) {
             CustomWidgets().showScrollableDialog(_context,
-                _appointmentResponse.bookings[_appointmentIndex], _bookingBloc);
+                _confirmedUserAppointments[_appointmentIndex], _bookingBloc);
             _shouldOpenPopUp = false;
           }
         });
@@ -505,7 +505,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
         Future.delayed(Duration(milliseconds: 1500)).then((value) {
           if (_shouldOpenPopUp != null && _shouldOpenPopUp) {
             CustomWidgets().showScrollableDialog(_context,
-                _appointmentResponse.bookings[_appointmentIndex], _bookingBloc);
+                _cancelledAppointments[_appointmentIndex], _bookingBloc);
             _shouldOpenPopUp = false;
           }
         });

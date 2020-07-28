@@ -784,8 +784,13 @@ class CustomWidgets {
                               children: <Widget>[
                                 RichText(
                                     text: TextSpan(
-                                        text: (solutions[index]?.price[0] ==
-                                                solutions[index]?.newPrice[0])
+                                        text: (solutions[index].price == null ||
+                                                solutions[index]
+                                                    .price
+                                                    .isEmpty ||
+                                                solutions[index]?.price[0] ==
+                                                    solutions[index]
+                                                        ?.newPrice[0])
                                             ? ""
                                             : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
                                         style: TextStyle(
