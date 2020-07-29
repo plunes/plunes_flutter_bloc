@@ -576,7 +576,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                                  const EdgeInsets.symmetric(horizontal: 14),
                               child: Container(
                                 margin: EdgeInsets.only(
                                     right: AppConfig.verticalBlockSize * 1),
