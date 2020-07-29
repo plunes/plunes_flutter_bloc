@@ -152,7 +152,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
                                     fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline,
+//                                    decoration: TextDecoration.underline,
                                     decorationStyle: TextDecorationStyle.solid,
                                     decorationThickness: 2.0,
                                     decorationColor: PlunesColors.BLACKCOLOR),
@@ -183,7 +183,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                       style: TextStyle(
                                           fontSize: AppConfig.mediumFont,
                                           fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
+//                                          decoration: TextDecoration.underline,
                                           decorationStyle:
                                               TextDecorationStyle.solid,
                                           decorationThickness: 2.0,
@@ -306,7 +306,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 //                          :
                       appointmentModel.bookingStatus,
                       style: TextStyle(
-                          fontSize: AppConfig.smallFont, color: Colors.green)),
+                          fontSize: AppConfig.smallFont,
+                          color: PlunesColors.GREENCOLOR)),
                   onTap: () {
                     if (appointmentModel != null &&
                         appointmentModel.bookingStatus !=
@@ -524,7 +525,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                         ? Container()
                         : Text(
                             '${appointmentModel?.service?.discount?.toStringAsFixed(0)}%',
-                            style: TextStyle(color: Colors.green))
+                            style: TextStyle(color: PlunesColors.GREENCOLOR))
                   ],
                 ),
               ],
@@ -548,9 +549,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                 children: <Widget>[
                   Text(PlunesStrings.paymentStatus,
                       style: TextStyle(
-                          fontSize: AppConfig.mediumFont,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline)),
+                        fontSize: AppConfig.mediumFont,
+                        fontWeight: FontWeight.bold,
+//                          decoration: TextDecoration.underline
+                      )),
                   (widget.appointmentModel.isOpened != null &&
                           UserManager().getUserDetails().userType !=
                               Constants.user)
@@ -642,9 +644,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               }
                               return Text(PlunesStrings.requestInvoice,
                                   style: TextStyle(
-                                      fontSize: AppConfig.smallFont,
-                                      color: Colors.black54,
-                                      decoration: TextDecoration.underline));
+                                    fontSize: AppConfig.smallFont,
+                                    color: Colors.black54,
+//                                      decoration: TextDecoration.underline
+                                  ));
                             }),
                       )
                     : Container(),
@@ -682,9 +685,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                         child: Text(
                           PlunesStrings.refund,
                           style: TextStyle(
-                              fontSize: AppConfig.smallFont,
-                              color: Colors.black54,
-                              decoration: TextDecoration.underline),
+                            fontSize: AppConfig.smallFont,
+                            color: Colors.black54,
+//                              decoration: TextDecoration.underline
+                          ),
                         ),
                       )
                     : Text(
@@ -803,7 +807,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                         '      \u20B9${paymentObj.amount ?? 0}',
                                     style: TextStyle(
                                         fontSize: AppConfig.mediumFont,
-                                        color: Colors.green,
+                                        color: PlunesColors.GREENCOLOR,
                                         decoration: TextDecoration.none),
                                     recognizer: tapRecognizer);
                               }).toList() ??

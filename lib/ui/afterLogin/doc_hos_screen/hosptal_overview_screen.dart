@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -566,12 +567,14 @@ class _HospitalOverviewScreenState
 
   _openActionableUpdatePriceWidget(ActionableInsight actionableInsight) {
     showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => CustomWidgets()
-            .UpdatePricePopUpForActionableInsight(
-                docHosMainInsightBloc: _docHosMainInsightBloc,
-                actionableInsight: actionableInsight)).then((value) {
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) => CustomWidgets()
+                .UpdatePricePopUpForActionableInsight(
+                    docHosMainInsightBloc: _docHosMainInsightBloc,
+                    actionableInsight: actionableInsight,
+                    centreId: _selectedUserIdForActionableInsightDropDown))
+        .then((value) {
       if (value != null && value) {
         widget.showInSnackBar(PlunesStrings.priceUpdateSuccessMessage,
             PlunesColors.BLACKCOLOR, scaffoldKey);
@@ -772,7 +775,8 @@ class _HospitalOverviewScreenState
                 child: Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Text(
-                    _user?.name ?? _getNaString(),
+                    CommonMethods.getStringInCamelCase(_user?.name) ??
+                        _getNaString(),
                     style: TextStyle(
                         fontSize: AppConfig.smallFont,
                         fontWeight: FontWeight.w500),

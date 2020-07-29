@@ -493,12 +493,13 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
         padding: const EdgeInsets.all(5.0),
         child: Text('Call at: ${_helpLineNumberModel?.number ?? _helpNumber}',
             style: TextStyle(
-                fontSize: AppConfig.mediumFont,
-                fontWeight: FontWeight.bold,
-                decoration: TextDecoration.underline,
-                decorationStyle: TextDecorationStyle.solid,
-                decorationThickness: 2.0,
-                decorationColor: PlunesColors.BLACKCOLOR)),
+              fontSize: AppConfig.mediumFont,
+              fontWeight: FontWeight.bold,
+//                decoration: TextDecoration.underline,
+//                decorationStyle: TextDecorationStyle.solid,
+//                decorationThickness: 2.0,
+//                decorationColor: PlunesColors.BLACKCOLOR
+            )),
       ),
     );
   }

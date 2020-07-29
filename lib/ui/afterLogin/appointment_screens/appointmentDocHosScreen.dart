@@ -122,12 +122,13 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                 appointmentModel.userMobileNumber ??
                                     PlunesStrings.NA,
                                 style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline,
-                                    decorationStyle: TextDecorationStyle.solid,
-                                    decorationThickness: 2.0,
-                                    decorationColor: PlunesColors.BLACKCOLOR),
+                                  fontSize: AppConfig.mediumFont,
+                                  fontWeight: FontWeight.bold,
+//                                    decoration: TextDecoration.underline,
+//                                    decorationStyle: TextDecorationStyle.solid,
+//                                    decorationThickness: 2.0,
+//                                    decorationColor: PlunesColors.BLACKCOLOR
+                                ),
                               ),
                             ),
                           ),
@@ -182,7 +183,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
-                                color: Colors.green)),
+                                color: PlunesColors.GREENCOLOR)),
                         onTap: () {
                           if (appointmentModel != null &&
                               appointmentModel.bookingStatus !=
@@ -400,9 +401,10 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                 children: <Widget>[
                   Text(PlunesStrings.paymentStatus,
                       style: TextStyle(
-                          fontSize: AppConfig.mediumFont,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline)),
+                        fontSize: AppConfig.mediumFont,
+                        fontWeight: FontWeight.bold,
+//                          decoration: TextDecoration.underline
+                      )),
                   (widget.appointmentModel.isOpened != null &&
                           UserManager().getUserDetails().userType !=
                               Constants.user)
@@ -524,9 +526,10 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   '\u20B9 ${appointmentModel.amountDue}  remaining amount to be paid',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: AppConfig.smallFont + 2,
-                      color: Colors.green,
-                      decoration: TextDecoration.underline)),
+                    fontSize: AppConfig.smallFont + 2,
+                    color: PlunesColors.GREENCOLOR,
+//                      decoration: TextDecoration.underline
+                  )),
           SizedBox(
             height: AppConfig.verticalBlockSize * 5,
           ),

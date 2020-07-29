@@ -1093,8 +1093,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                   Text(
                                     PlunesStrings.negotiating,
                                     style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        fontWeight: FontWeight.w400),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal,
+                                        color: PlunesColors.BLACKCOLOR),
                                   ),
                                   CustomWidgets().getLinearIndicator()
                                 ],

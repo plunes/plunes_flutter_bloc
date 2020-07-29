@@ -580,7 +580,7 @@ class CommonMethods {
     String name = _name;
     String initialName = _name.substring(0, 1);
     List nameList = name.split(" ");
-    print(name + nameList.length.toString());
+//    print(name + nameList.length.toString());
     try {
       if (name.contains("Dr")) {
         if (nameList.length > 2) {

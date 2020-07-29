@@ -193,7 +193,7 @@ class CustomWidgets {
                         : CrossAxisAlignment.start,
                     children: <Widget>[
                       Container(
-                        color: PlunesColors.WHITECOLOR,
+                        color: Colors.transparent,
                         height: AppConfig.horizontalBlockSize * 14,
                         width: AppConfig.horizontalBlockSize * 14,
                         child: (solutionList[index] == null ||
@@ -261,7 +261,7 @@ class CustomWidgets {
                                 ? Container()
                                 : RichText(
                                     text: TextSpan(
-                                        text: "view more",
+                                        text: plunesStrings.viewMore,
                                         recognizer: onViewMoreTap,
                                         style: TextStyle(
                                             fontSize: AppConfig.verySmallFont,
@@ -703,8 +703,9 @@ class CustomWidgets {
                                   Text(
                                     PlunesStrings.negotiating,
                                     style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        fontWeight: FontWeight.w400),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal,
+                                        color: PlunesColors.BLACKCOLOR),
                                   ),
                                   getLinearIndicator()
                                 ],
@@ -1118,8 +1119,8 @@ class CustomWidgets {
                                               fontSize:
                                                   AppConfig.extraLargeFont,
                                               color: PlunesColors.WHITECOLOR,
-                                              decoration:
-                                                  TextDecoration.underline,
+//                                              decoration:
+//                                                  TextDecoration.underline,
                                               fontWeight: FontWeight.w600),
                                           textAlign: TextAlign.center),
                                       Padding(
@@ -1424,9 +1425,9 @@ class CustomWidgets {
                                               'Apply here',
                                               style: TextStyle(
                                                   fontSize: AppConfig.largeFont,
-                                                  color: Colors.green,
-                                                  decoration:
-                                                      TextDecoration.underline,
+                                                  color: PlunesColors.GREENCOLOR,
+//                                                  decoration:
+//                                                      TextDecoration.underline,
                                                   fontWeight: FontWeight.w400),
                                             ),
                                             onPressed: () {
@@ -1541,7 +1542,8 @@ class CustomWidgets {
   // ignore: non_constant_identifier_names
   Widget UpdatePricePopUpForActionableInsight(
       {ActionableInsight actionableInsight,
-      DocHosMainInsightBloc docHosMainInsightBloc}) {
+      DocHosMainInsightBloc docHosMainInsightBloc,
+      String centreId}) {
     var sliderVal = (num.parse(actionableInsight.userPrice).toDouble() / 2) +
         (((num.parse(actionableInsight.userPrice).toDouble() / 2)) / 2);
     num chancesPercent = 25;
@@ -1900,8 +1902,8 @@ class CustomWidgets {
                                               style: TextStyle(
                                                   fontSize: 20,
                                                   color: Colors.green,
-                                                  decoration:
-                                                      TextDecoration.underline,
+//                                                  decoration:
+//                                                      TextDecoration.underline,
                                                   fontWeight: FontWeight.w400),
                                             ),
                                             onPressed: () {
@@ -1925,7 +1927,8 @@ class CustomWidgets {
                                                         actionableInsight
                                                             .serviceId,
                                                         actionableInsight
-                                                            .specialityId);
+                                                            .specialityId,
+                                                        centreId: centreId);
                                               } else {
                                                 if (sliderVal == null ||
                                                     sliderVal == 0) {
@@ -1949,7 +1952,8 @@ class CustomWidgets {
                                                         actionableInsight
                                                             .serviceId,
                                                         actionableInsight
-                                                            .specialityId);
+                                                            .specialityId,
+                                                        centreId: centreId);
                                               }
                                             },
                                           ),
@@ -3270,293 +3274,276 @@ class CustomWidgets {
       BookingBloc bookingBloc) async {
     TextEditingController _reviewController = TextEditingController();
     double rating = 1;
-    return await showGeneralDialog(
+    return await showDialog(
         context: context,
-        pageBuilder: (context, anim1, anim2) {},
-        barrierDismissible: true,
-        barrierLabel: "",
-        barrierColor: Colors.black45,
-        transitionDuration: Duration(milliseconds: 120),
-        transitionBuilder: (context, ag_first, ag_two, widget) {
+        builder: (context) {
           String failureCause;
-          return Transform.scale(
-              scale: ag_first.value,
-              child: StreamBuilder<Object>(
-                  stream: bookingBloc.rateReviewStream,
-                  builder: (context, snapshot) {
-                    if (snapshot.data is RequestInProgress) {
-                      return Card(
-                        child: getProgressIndicator(),
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 20.5,
-                            horizontal: AppConfig.horizontalBlockSize * 6),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0))),
-                      );
-                    } else if (snapshot.data is RequestSuccess) {
-                      return Card(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 30,
-                            horizontal: AppConfig.horizontalBlockSize * 6),
-                        shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0))),
-                        child: Container(
-                          alignment: Alignment.topCenter,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: InkWell(
-                                  onTap: () => Navigator.pop(context),
-                                  child: Container(
-                                    margin: EdgeInsets.all(
-                                        AppConfig.horizontalBlockSize * 1),
-                                    padding: EdgeInsets.all(12),
-                                    child: Icon(Icons.close),
-                                  ),
-                                ),
+          return StreamBuilder<Object>(
+              stream: bookingBloc.rateReviewStream,
+              builder: (context, snapshot) {
+                if (snapshot.data is RequestInProgress) {
+                  return Card(
+                    child: getProgressIndicator(),
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 20.5,
+                        horizontal: AppConfig.horizontalBlockSize * 6),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                  );
+                } else if (snapshot.data is RequestSuccess) {
+                  return Card(
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 30,
+                        horizontal: AppConfig.horizontalBlockSize * 6),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                    child: Container(
+                      alignment: Alignment.topCenter,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: InkWell(
+                              onTap: () => Navigator.pop(context),
+                              child: Container(
+                                margin: EdgeInsets.all(
+                                    AppConfig.horizontalBlockSize * 1),
+                                padding: EdgeInsets.all(12),
+                                child: Icon(Icons.close),
                               ),
-                              Container(
+                            ),
+                          ),
+                          Container(
 //                                height: AppConfig.verticalBlockSize * 30,
 //                                width: AppConfig.horizontalBlockSize * 65,
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.only(
-                                    bottom: AppConfig.verticalBlockSize * 4,
-                                    left: AppConfig.horizontalBlockSize * 25,
-                                    right: AppConfig.horizontalBlockSize * 25),
-                                child:
-                                    Image.asset(PlunesImages.reviewSubmitImage),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                    left: AppConfig.horizontalBlockSize * 15,
-                                    right: AppConfig.horizontalBlockSize * 15),
-                                child: Text(
-                                  PlunesStrings.thankYouForValuableFeedback,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: PlunesColors.BLACKCOLOR,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ],
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(
+                                bottom: AppConfig.verticalBlockSize * 4,
+                                left: AppConfig.horizontalBlockSize * 25,
+                                right: AppConfig.horizontalBlockSize * 25),
+                            child: Image.asset(PlunesImages.reviewSubmitImage),
                           ),
-                        ),
-                      );
-                    } else if (snapshot.data is RequestFailed) {
-                      RequestFailed requestFailed = snapshot.data;
-                      failureCause = requestFailed.failureCause;
-                    }
-                    return Card(
-                      margin: EdgeInsets.symmetric(
-                          vertical: AppConfig.verticalBlockSize * 18.5,
-                          horizontal: AppConfig.horizontalBlockSize * 6),
-                      shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(20.0))),
-                      child: StreamBuilder<RequestState>(
-                          builder: (context, snapshot) {
-                        return SingleChildScrollView(
-                            reverse: true,
-                            padding: EdgeInsets.only(
-                                bottom:
-                                    MediaQuery.of(context).viewInsets.bottom),
-                            physics: AlwaysScrollableScrollPhysics(),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Align(
-                                  alignment: Alignment.bottomRight,
-                                  child: InkWell(
-                                    onTap: () => Navigator.pop(context),
-                                    child: Container(
-                                      margin: EdgeInsets.all(
-                                          AppConfig.horizontalBlockSize * 1),
-                                      padding: EdgeInsets.all(12),
-                                      child: Icon(Icons.close),
-                                    ),
-                                  ),
-                                ),
-                                Text(
-                                  PlunesStrings.thanksForService,
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                                Padding(
+                          Container(
+                            margin: EdgeInsets.only(
+                                left: AppConfig.horizontalBlockSize * 15,
+                                right: AppConfig.horizontalBlockSize * 15),
+                            child: Text(
+                              PlunesStrings.thankYouForValuableFeedback,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                } else if (snapshot.data is RequestFailed) {
+                  RequestFailed requestFailed = snapshot.data;
+                  failureCause = requestFailed.failureCause;
+                }
+                return Card(
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 16.5,
+                      horizontal: AppConfig.horizontalBlockSize * 6),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0))),
+                  child:
+                      StreamBuilder<RequestState>(builder: (context, snapshot) {
+                    return SingleChildScrollView(
+                        reverse: true,
+                        padding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom,
+                            left: AppConfig.horizontalBlockSize * 2,
+                            right: AppConfig.horizontalBlockSize * 2),
+                        physics: AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.bottomRight,
+                              child: InkWell(
+                                onTap: () => Navigator.pop(context),
+                                child: Container(
+                                  margin: EdgeInsets.all(
+                                      AppConfig.horizontalBlockSize * 1),
                                   padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 1.5),
-                                  child: (appointmentModel.service == null ||
-                                          appointmentModel.service.imageUrl ==
-                                              null ||
-                                          appointmentModel
-                                              .service.imageUrl.isEmpty)
-                                      ? CustomWidgets().getBackImageView(
-                                          appointmentModel.professionalName ??
-                                              _getEmptyString(),
+                                      left: 12, top: 12, bottom: 12, right: 2),
+                                  child: Icon(Icons.close),
+                                ),
+                              ),
+                            ),
+                            Text(
+                              PlunesStrings.thanksForService,
+                              style: TextStyle(fontSize: 15),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1.5),
+                              child: (appointmentModel.service == null ||
+                                      appointmentModel.service.imageUrl ==
+                                          null ||
+                                      appointmentModel.service.imageUrl.isEmpty)
+                                  ? CustomWidgets().getBackImageView(
+                                      appointmentModel.professionalName ??
+                                          _getEmptyString(),
+                                      width: 60,
+                                      height: 60)
+                                  : CircleAvatar(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xFFE0E0E0),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30))),
+                                        child: Container(
+                                          margin: EdgeInsets.all(1.5),
+                                          height: 60,
                                           width: 60,
-                                          height: 60)
-                                      : CircleAvatar(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Color(0xFFE0E0E0),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(30))),
-                                            child: Container(
-                                              margin: EdgeInsets.all(1.5),
-                                              height: 60,
-                                              width: 60,
-                                              child: ClipOval(
-                                                  child: CustomWidgets()
-                                                      .getImageFromUrl(
-                                                          appointmentModel
-                                                              .service.imageUrl,
-                                                          boxFit: BoxFit.fill)),
-                                            ),
-                                          ),
-                                          radius: 30,
+                                          child: ClipOval(
+                                              child: CustomWidgets()
+                                                  .getImageFromUrl(
+                                                      appointmentModel
+                                                          .service.imageUrl,
+                                                      boxFit: BoxFit.fill)),
                                         ),
+                                      ),
+                                      radius: 30,
+                                    ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 0.8),
+                              child: Text(
+                                CommonMethods.getStringInCamelCase(
+                                        appointmentModel?.professionalName) ??
+                                    _getEmptyString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: PlunesColors.BLACKCOLOR),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 0.8),
+                              child: Text(
+                                CommonMethods.getStringInCamelCase(
+                                        appointmentModel?.serviceName) ??
+                                    _getEmptyString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 5),
+                              child: Text(
+                                "Rate your experience",
+                                style: TextStyle(
+                                  fontSize: 15,
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 0.8),
-                                  child: Text(
-                                    CommonMethods.getStringInCamelCase(
-                                            appointmentModel
-                                                ?.professionalName) ??
-                                        _getEmptyString(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w600,
-                                        color: PlunesColors.BLACKCOLOR),
-                                  ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1.5),
+                              child: RatingBar(
+                                onRatingUpdate: (currentRating) {
+                                  rating = currentRating;
+                                },
+                                direction: Axis.horizontal,
+                                itemCount: 5,
+                                allowHalfRating: true,
+                                minRating: 1,
+                                initialRating: rating,
+                                maxRating: 5,
+                                itemSize: AppConfig.horizontalBlockSize * 7,
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: .7),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.green,
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 0.8),
-                                  child: Text(
-                                    CommonMethods.getStringInCamelCase(
-                                            appointmentModel?.serviceName) ??
-                                        _getEmptyString(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 5),
-                                  child: Text(
-                                    "Rate your experience",
-                                    style: TextStyle(
+                                unratedColor: PlunesColors.GREYCOLOR,
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 5,
+                                    left: AppConfig.horizontalBlockSize * 5),
+                                child: Text(
+                                  "Leave your comments",
+                                  style: TextStyle(
                                       fontSize: 15,
-                                    ),
-                                  ),
+                                      color: PlunesColors.GREYCOLOR),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 1.5),
-                                  child: RatingBar(
-                                    onRatingUpdate: (currentRating) {
-                                      rating = currentRating;
-                                    },
-                                    direction: Axis.horizontal,
-                                    itemCount: 5,
-                                    allowHalfRating: true,
-                                    minRating: 1,
-                                    initialRating: rating,
-                                    maxRating: 5,
-                                    itemSize: AppConfig.horizontalBlockSize * 7,
-                                    itemPadding:
-                                        EdgeInsets.symmetric(horizontal: .7),
-                                    itemBuilder: (context, _) => Icon(
-                                      Icons.star,
-                                      color: Colors.green,
-                                    ),
-                                    unratedColor: PlunesColors.GREYCOLOR,
-                                  ),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 5,
+                                  right: AppConfig.horizontalBlockSize * 5),
+                              child: TextField(
+                                keyboardType: TextInputType.multiline,
+                                textInputAction: TextInputAction.newline,
+                                maxLines: 2,
+                                controller: _reviewController,
+                                maxLength: 150,
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 26,
+                                  right: AppConfig.horizontalBlockSize * 26,
+                                  bottom: AppConfig.verticalBlockSize * 3.5),
+                              child: InkWell(
+                                onTap: () {
+                                  if (_reviewController.text.trim().isEmpty) {
+                                    failureCause =
+                                        PlunesStrings.pleaseFillYourReview;
+                                    bookingBloc
+                                        .addStateInRateAndReviewProvider(null);
+                                    return;
+                                  }
+                                  bookingBloc.submitRateAndReview(
+                                      rating,
+                                      _reviewController.text.trim(),
+                                      appointmentModel.professionalId);
+                                },
+                                child: getRoundedButton(
+                                  "Submit",
+                                  AppConfig.horizontalBlockSize * 5,
+                                  PlunesColors.GREENCOLOR,
+                                  AppConfig.horizontalBlockSize * 10,
+                                  AppConfig.verticalBlockSize * 1,
+                                  PlunesColors.WHITECOLOR,
+                                  hasBorder: true,
                                 ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 5,
-                                        left:
-                                            AppConfig.horizontalBlockSize * 5),
+                              ),
+                            ),
+                            failureCause == null
+                                ? Container()
+                                : Container(
+                                    margin: EdgeInsets.only(
+                                        bottom:
+                                            AppConfig.verticalBlockSize * 3.5),
                                     child: Text(
-                                      "Leave your comments",
+                                      failureCause,
+                                      textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: 15,
-                                          color: PlunesColors.GREYCOLOR),
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 14),
                                     ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: AppConfig.horizontalBlockSize * 5,
-                                      right: AppConfig.horizontalBlockSize * 5),
-                                  child: TextField(
-                                    keyboardType: TextInputType.multiline,
-                                    textInputAction: TextInputAction.newline,
-                                    maxLines: 2,
-                                    controller: _reviewController,
-                                    maxLength: 150,
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      left: AppConfig.horizontalBlockSize * 26,
-                                      right: AppConfig.horizontalBlockSize * 26,
-                                      bottom:
-                                          AppConfig.verticalBlockSize * 3.5),
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (_reviewController.text
-                                          .trim()
-                                          .isEmpty) {
-                                        failureCause =
-                                            PlunesStrings.pleaseFillYourReview;
-                                        bookingBloc
-                                            .addStateInRateAndReviewProvider(
-                                                null);
-                                        return;
-                                      }
-                                      bookingBloc.submitRateAndReview(
-                                          rating,
-                                          _reviewController.text.trim(),
-                                          appointmentModel.professionalId);
-                                    },
-                                    child: getRoundedButton(
-                                      "Submit",
-                                      AppConfig.horizontalBlockSize * 5,
-                                      PlunesColors.GREENCOLOR,
-                                      AppConfig.horizontalBlockSize * 10,
-                                      AppConfig.verticalBlockSize * 1,
-                                      PlunesColors.WHITECOLOR,
-                                      hasBorder: true,
-                                    ),
-                                  ),
-                                ),
-                                failureCause == null
-                                    ? Container()
-                                    : Container(
-                                        margin: EdgeInsets.only(
-                                            bottom:
-                                                AppConfig.verticalBlockSize *
-                                                    3.5),
-                                        child: Text(
-                                          failureCause,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 14),
-                                        ),
-                                      )
-                                //                      Container(
+                                  )
+                            //                      Container(
 //                        height: AppConfig.verticalBlockSize * 20,
 //                        margin: EdgeInsets.only(
 //                            left: AppConfig.horizontalBlockSize * 5,
@@ -3579,11 +3566,11 @@ class CustomWidgets {
 //                              hintText: "", border: InputBorder.none),
 //                        ),
 //                      )
-                              ],
-                            ));
-                      }),
-                    );
-                  }));
+                          ],
+                        ));
+                  }),
+                );
+              });
         });
   }
 

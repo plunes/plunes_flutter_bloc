@@ -284,16 +284,25 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             maxHeight: AppConfig.verticalBlockSize * 65),
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Text(
-                PlunesStrings.chooseFacilities,
-                style: TextStyle(
-                    color: PlunesColors.BLACKCOLOR,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-            ),
+            StreamBuilder<Object>(
+                stream: _selectUnselectController.stream,
+                builder: (context, snapshot) {
+                  return Container(
+                    padding: const EdgeInsets.all(5.0),
+                    margin: EdgeInsets.only(
+                        top: (_selectedItemList == null ||
+                                _selectedItemList.isEmpty)
+                            ? AppConfig.verticalBlockSize * 1.5
+                            : 0),
+                    child: Text(
+                      PlunesStrings.chooseFacilities,
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16),
+                    ),
+                  );
+                }),
             Expanded(
               child: NotificationListener<ScrollNotification>(
                 onNotification: (scrollState) {

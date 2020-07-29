@@ -96,10 +96,12 @@ class DocHosMainInsightBloc extends BlocBase {
   }
 
   getUpdateActionableInsightPrice(
-      num price, String serviceId, String specialityId) async {
+      num price, String serviceId, String specialityId,
+      {String centreId}) async {
     addStateInActionableUpdatePriceStream(RequestInProgress());
     addStateInActionableUpdatePriceStream(await DocHosMainRepo()
-        .updateActionableInsightPrice(price, serviceId, specialityId));
+        .updateActionableInsightPrice(price, serviceId, specialityId,
+            centreId: centreId));
   }
 
   Future helpDocHosQuery(String query) async {
