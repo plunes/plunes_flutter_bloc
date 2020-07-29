@@ -157,10 +157,6 @@ class CustomWidgets {
         children: <Widget>[
           InkWell(
             onTap: () {
-//              if (solutionList[index].isActive != null &&
-//                  !(solutionList[index].isActive)) {
-//                return;
-//              }
               if (solutionList[index].createdAt != null &&
                   solutionList[index].createdAt != 0) {
                 var difference = DateTime.fromMillisecondsSinceEpoch(
@@ -234,7 +230,7 @@ class CustomWidgets {
                                           "(${solutionList[index].category ?? PlunesStrings.NA})",
                                       style: TextStyle(
                                           fontSize: AppConfig.smallFont,
-                                          color: Colors.green))
+                                          color: PlunesColors.GREENCOLOR))
                                 ])),
                             Padding(
                                 padding: EdgeInsets.only(
@@ -269,9 +265,7 @@ class CustomWidgets {
                                         recognizer: onViewMoreTap,
                                         style: TextStyle(
                                             fontSize: AppConfig.verySmallFont,
-                                            color: PlunesColors.GREENCOLOR,
-                                            decoration:
-                                                TextDecoration.underline)),
+                                            color: PlunesColors.GREENCOLOR)),
                                   ),
                             (!(solutionList[index].isActive) &&
                                     solutionList[index].maxDiscount != null &&
@@ -1457,15 +1451,6 @@ class CustomWidgets {
                                                   newState(() {});
                                                   return;
                                                 }
-//                                                else if (double.tryParse(
-//                                                        _priceController.text
-//                                                            .trim()) >
-//                                                    realInsight.userPrice) {
-//                                                  failureCause =
-//                                                      'price must not be greater than original price.';
-//                                                  newState(() {});
-//                                                  return;
-//                                                }
                                                 docHosMainInsightBloc
                                                     .updateRealTimeInsightPriceStream(
                                                         RequestInProgress());
@@ -1477,7 +1462,12 @@ class CustomWidgets {
                                                                 .trim()),
                                                         realInsight.solutionId,
                                                         realInsight.serviceId,
-                                                        isSuggestive: true);
+                                                        isSuggestive: true,
+                                                        suggestedPrice:
+                                                            num.tryParse(
+                                                                _priceController
+                                                                    .text
+                                                                    .trim()));
                                               } else {
                                                 if (sliderVal == null ||
                                                     sliderVal == 0) {
@@ -1499,7 +1489,14 @@ class CustomWidgets {
                                                     .getUpdateRealTimeInsightPrice(
                                                         chancesPercent,
                                                         realInsight.solutionId,
-                                                        realInsight.serviceId);
+                                                        realInsight.serviceId,
+                                                        isSuggestive: (realInsight
+                                                                    .suggested !=
+                                                                null &&
+                                                            realInsight
+                                                                .suggested),
+                                                        suggestedPrice:
+                                                            sliderVal);
                                               }
                                             },
                                           ),

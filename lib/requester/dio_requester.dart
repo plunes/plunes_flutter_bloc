@@ -10,14 +10,18 @@ import 'package:plunes/resources/network/Urls.dart';
 
 class DioRequester {
   static DioRequester _instance;
-  Dio _dioClient;
+  Dio _dioClient, _customClient;
 
   DioRequester._create() {
     _dioClient = Dio();
+    _customClient = Dio();
     _dioClient.options.baseUrl = Urls.baseUrl;
     _dioClient.options.sendTimeout = Urls.SEND_TIMEOUT;
     _dioClient.options.connectTimeout = Urls.CONNECTION_TIMEOUT;
     _dioClient.options.receiveTimeout = Urls.RECEIVE_TIMEOUT;
+    _customClient.options.sendTimeout = Urls.SEND_TIMEOUT;
+    _customClient.options.connectTimeout = Urls.CONNECTION_TIMEOUT;
+    _customClient.options.receiveTimeout = Urls.RECEIVE_TIMEOUT;
   }
 
   factory DioRequester() {
@@ -138,5 +142,68 @@ class DioRequester {
         failureCause: errorDescription,
         statusCode:
             e.type == DioErrorType.RESPONSE ? e.response.statusCode : 0);
+  }
+
+  Future<RequestOutput> requestMethodWithNoBaseUrl(
+      {final String url,
+      dynamic postData,
+      dynamic queryParameter,
+      final String requestType,
+      bool headerIncluded,
+      bool isMultipartEnabled = false}) async {
+    RequestOutput response;
+    try {
+      AppLog.printLog(url);
+      AppLog.printLog(_debug + _postData + " $postData");
+      AppLog.printLog(_debug + _paramData + " $queryParameter");
+      var options = Options(method: requestType);
+      User userManager = UserManager().getUserDetails();
+      var accessToken = userManager.accessToken;
+
+      if (headerIncluded != null && accessToken != null && headerIncluded) {
+        AppLog.debugLog("jwt token " + accessToken);
+        options.headers = {
+          _keyAuth: 'Bearer $accessToken',
+        };
+      }
+
+      if (isMultipartEnabled) {
+        options.contentType = "multipart/form-data";
+      }
+      Response response = await _customClient.request(url,
+          data: postData,
+          queryParameters: queryParameter,
+          options: options, onSendProgress: (int sent, int total) {
+        AppLog.debugLog("${sent / total * 100} total sent");
+      });
+      AppLog.printLog("Response occurred ${response.data.toString()}");
+      return ResponseStatusCodeHandler()
+          .checkRequestResponseStatusCode(response);
+    } catch (e) {
+      AppLog.printLog("Response occurred ${e}");
+      AppLog.printError(_debug + ' ${e.toString()}');
+      if (e is TimeoutException) {
+        response = RequestOutput(
+            isRequestSucceed: false,
+            failureCause: PlunesStrings.pleaseCheckInternetConnection,
+            statusCode: 0);
+        return response;
+      } else if (e is SocketException) {
+        response = RequestOutput(
+            isRequestSucceed: false,
+            failureCause: PlunesStrings.noInternet,
+            statusCode: 0);
+        return response;
+      } else if (e is DioError) {
+        response = _handleDioError(e);
+        return response;
+      } else {
+        response = RequestOutput(
+            isRequestSucceed: false,
+            failureCause: plunesStrings.somethingWentWrong,
+            statusCode: 0);
+        return response;
+      }
+    }
   }
 }

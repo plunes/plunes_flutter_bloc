@@ -124,8 +124,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
           color: Colors.black12.withOpacity(0.000001),
           image: DecorationImage(
               image: ExactAssetImage(PlunesImages.userLandingImage),
-              fit: BoxFit.fill,
-              alignment: Alignment.center)),
+              fit: BoxFit.cover)),
       child: Container(
         margin:
             EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 4),

@@ -258,12 +258,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             if (value != null && value) {
               _isCrossClicked = false;
               _shouldStartTimer = true;
-              print(
-                  "_timer!=null && !_timer.isActive ${(_timer != null && _timer.isActive)}");
-              if (_timer != null && !_timer.isActive) {
+              if (DateTime.now()
+                      .difference(DateTime.fromMillisecondsSinceEpoch(
+                          _solutionReceivedTime))
+                      .inMinutes >=
+                  15) {
                 _fetchResultAndStartTimer();
+              } else {
+                _negotiate();
               }
-              Future.delayed(Duration(seconds: 5)).then((value) {
+              Future.delayed(Duration(seconds: 3)).then((value) {
                 _setState();
               });
             }
@@ -855,13 +859,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _searchedDocResults.solution.services.forEach((service) {
         if (service.negotiating != null && service.negotiating) {
           service.negotiating = false;
-          if (service.doctors != null && service.doctors.isNotEmpty) {
-            service.doctors.forEach((doc) {
-              if (doc.negotiating != null && doc.negotiating) {
-                doc.negotiating = false;
-              }
-            });
-          }
+//          if (service.doctors != null && service.doctors.isNotEmpty) {
+//            service.doctors.forEach((doc) {
+//              if (doc.negotiating != null && doc.negotiating) {
+//                doc.negotiating = false;
+//              }
+//            });
+//          }
         }
       });
     }
@@ -1082,7 +1086,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         Container(
                             padding: EdgeInsets.only(
                                 left: AppConfig.horizontalBlockSize * 2)),
-                        service.doctors[index].negotiating ?? false
+                        service.negotiating ?? false
                             ? Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
@@ -1181,7 +1185,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 ),
                               )
                             : Container()),
-                    service.doctors[index].negotiating ?? false
+                    service.negotiating ?? false
                         ? Container()
                         : Container(
                             padding: EdgeInsets.only(

@@ -336,9 +336,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
           ),
           Text(
             plunesStrings.introduction,
-            style: TextStyle(
-                color: PlunesColors.BLACKCOLOR,
-                fontSize: 16),
+            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
           ),
           Padding(
             padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
@@ -707,18 +705,6 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                       Icons.navigate_next,
                       color: PlunesColors.GREYCOLOR,
                     )
-
-//                    Expanded(
-//                      child: Text(
-//                        PlunesStrings.knowMore,
-//                        style: TextStyle(
-//                            fontSize: 16,
-//                            color: Colors.grey[400],
-//                            fontWeight: FontWeight.bold),
-//                        textAlign: TextAlign.end,
-//                      ),
-//                      flex: 1,
-//                    )
                   ],
                 ),
               );
