@@ -61,9 +61,10 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: AppConfig.verticalBlockSize * 32,
+      height: AppConfig.verticalBlockSize * 23,
       color: PlunesColors.WHITECOLOR,
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           TabBar(
             controller: _tabController,
@@ -87,6 +88,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
             ],
 //            indicatorColor: Colors.transparent,
           ),
+          SizedBox(height: AppConfig.verticalBlockSize * 2),
           Expanded(
               child: TabBarView(
             children: [
@@ -132,7 +134,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
     return Container(
       margin: EdgeInsets.symmetric(
           vertical: AppConfig.verticalBlockSize * 1,
-          horizontal: AppConfig.horizontalBlockSize * 2),
+          horizontal: AppConfig.horizontalBlockSize * 1),
       child: ListView.builder(
         itemBuilder: (context, index) {
           return _getAchievementView(index);
@@ -145,7 +147,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
 
   Widget _getReviewsListView() {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
       child: ListView.builder(
         itemBuilder: (context, index) {
           return _getReviewView(index);
@@ -176,8 +178,8 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
         }
       },
       child: Container(
-        margin:
-            EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 1.5),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(
                 Radius.circular(AppConfig.horizontalBlockSize * 5))),
@@ -185,7 +187,8 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
           children: <Widget>[
             Expanded(
               child: Container(
-                width: AppConfig.horizontalBlockSize * 40,
+                width: AppConfig.horizontalBlockSize * 27,
+                height: 0.5,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(
                       Radius.circular(AppConfig.horizontalBlockSize * 5)),
