@@ -246,8 +246,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 margin: EdgeInsets.only(right: AppConfig.verticalBlockSize * 1),
                 child: Image.asset(
                   image,
-                  height: AppConfig.verticalBlockSize * 4,
-                  width: AppConfig.verticalBlockSize * 4,
+                  height: AppConfig.verticalBlockSize * 3.8,
+                  width: AppConfig.verticalBlockSize * 3.8,
                   color: PlunesColors.GREYCOLOR,
                 )),
             SizedBox(

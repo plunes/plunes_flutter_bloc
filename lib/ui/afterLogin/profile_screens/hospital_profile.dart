@@ -136,7 +136,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 4),
+                        vertical: AppConfig.verticalBlockSize * 3),
                     child: _getNameAndImageView(),
                   ),
                   getProfileInfoView(
@@ -152,8 +152,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                           onDoubleTap: () {},
                           child: Container(
                             width: double.infinity,
-                            padding: EdgeInsets.all(
-                                AppConfig.horizontalBlockSize * 4),
+                            padding: EdgeInsets.only(
+                                top: AppConfig.horizontalBlockSize * 3),
                             margin: EdgeInsets.only(left: 24),
                             child: Text(
                               PlunesStrings.viewOnMap,
@@ -431,8 +431,15 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Container(
-                padding: EdgeInsets.symmetric(
-                    vertical: AppConfig.verticalBlockSize * 2),
+                height: 0.5,
+                width: double.infinity,
+                color: PlunesColors.GREYCOLOR,
+                margin:
+                    EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
+              ),
+              Container(
+                padding:
+                    EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
                 child: Text(
                   plunesStrings.teamOfExperts,
                   style:
@@ -569,7 +576,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                                  const EdgeInsets.symmetric(horizontal: 14),
                               child: Container(
                                 margin: EdgeInsets.only(
                                     right: AppConfig.verticalBlockSize * 1),
@@ -603,7 +610,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                           PlunesStrings.seeMoreDoctors,
                           style: TextStyle(
                             color: PlunesColors.GREENCOLOR,
-                            fontSize: 16,
+                            fontSize: 14,
                             decorationThickness: 2.0,
                           ),
                         ),
