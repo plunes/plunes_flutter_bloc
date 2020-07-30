@@ -1425,7 +1425,8 @@ class CustomWidgets {
                                               'Apply here',
                                               style: TextStyle(
                                                   fontSize: AppConfig.largeFont,
-                                                  color: PlunesColors.GREENCOLOR,
+                                                  color:
+                                                      PlunesColors.GREENCOLOR,
 //                                                  decoration:
 //                                                      TextDecoration.underline,
                                                   fontWeight: FontWeight.w400),
@@ -1907,8 +1908,8 @@ class CustomWidgets {
                                                   fontWeight: FontWeight.w400),
                                             ),
                                             onPressed: () {
-                                              print(
-                                                  "sliderVal$sliderVal==num.parse(actionableInsight.userPrice)${num.parse(actionableInsight.userPrice)} ${sliderVal == num.parse(actionableInsight.userPrice)}");
+//                                              print(
+//                                                  "sliderVal$sliderVal==num.parse(actionableInsight.userPrice)${num.parse(actionableInsight.userPrice)} ${sliderVal == num.parse(actionableInsight.userPrice)}");
                                               if (shouldShowField) {
                                                 double value = double.tryParse(
                                                     _priceController.text
@@ -3348,7 +3349,7 @@ class CustomWidgets {
                 }
                 return Card(
                   margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 16.5,
+                      vertical: AppConfig.verticalBlockSize * 17,
                       horizontal: AppConfig.horizontalBlockSize * 6),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(20.0))),
@@ -3500,8 +3501,8 @@ class CustomWidgets {
                             ),
                             Container(
                               margin: EdgeInsets.only(
-                                  left: AppConfig.horizontalBlockSize * 26,
-                                  right: AppConfig.horizontalBlockSize * 26,
+                                  left: AppConfig.horizontalBlockSize * 24,
+                                  right: AppConfig.horizontalBlockSize * 24,
                                   bottom: AppConfig.verticalBlockSize * 3.5),
                               child: InkWell(
                                 onTap: () {
@@ -3521,7 +3522,7 @@ class CustomWidgets {
                                   "Submit",
                                   AppConfig.horizontalBlockSize * 5,
                                   PlunesColors.GREENCOLOR,
-                                  AppConfig.horizontalBlockSize * 10,
+                                  AppConfig.horizontalBlockSize * 8,
                                   AppConfig.verticalBlockSize * 1,
                                   PlunesColors.WHITECOLOR,
                                   hasBorder: true,
@@ -3783,6 +3784,7 @@ class CustomWidgets {
       ),
     );
   }
+
 //  Widget getDocOrHospitalDetailWidget(
 //      List<Services> solutions,
 //      int index,

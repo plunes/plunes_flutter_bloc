@@ -835,12 +835,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     if (appointmentTime.contains("PM") && _selectedHour != 12) {
       _selectedHour = _selectedHour + 12;
     }
-    print(
-        "${fromDuration.toString()}appointment ${toDuration.toString()}time ${appointmentTime}");
+//    print(
+//        "${fromDuration.toString()}appointment ${toDuration.toString()}time ${appointmentTime}");
     TimeOfDay _selectedTime = TimeOfDay(
         hour: _selectedHour,
         minute: int.tryParse(_hourNMinute[1].trim().split(" ")[0]));
-    print("_selectedTime ${_selectedTime.toString()}");
+//    print("_selectedTime ${_selectedTime.toString()}");
     if (_selectedTime.hour >= fromDuration.hour &&
         _selectedTime.hour <= toDuration.hour &&
         _tempSelectedDateTime.day == _dateNow.day &&

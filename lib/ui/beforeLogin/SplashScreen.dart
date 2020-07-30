@@ -159,54 +159,85 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
         Future.delayed(Duration(seconds: 2)).then((value) {
           Navigator.pushAndRemoveUntil(
               AppConfig.getNavKey().currentState.overlay.context,
-              MaterialPageRoute(builder: (context) => Container()),
+              MaterialPageRoute(
+                  builder: (context) => Container(
+                        color: PlunesColors.LIGHTGREYCOLOR.withOpacity(0.5),
+                      )),
               (_) => false);
-          _showVersionDialog();
+          updateAlertDialog();
         });
       }
     } on FetchThrottledException catch (exception) {
       // Fetch throttled.
-      print(exception);
+//      print(exception);
     } catch (exception) {
-      print('Unable to fetch remote config. Cached or default values will be '
-          'used');
+//      print('Unable to fetch remote config. Cached or default values will be '
+//          'used');
     }
   }
 
-  _showVersionDialog() async {
-    await showDialog<String>(
-      context: AppConfig.getNavKey().currentState.overlay.context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        String title = "New Update Available";
-        String message =
-            "There is a newer version of app available please update it now.";
-        String btnLabel = "Update Now";
-        return Platform.isIOS
-            ? new CupertinoAlertDialog(
-                title: Text(title),
-                content: Text(message),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text(btnLabel),
-                    onPressed: () =>
-                        LauncherUtil.launchUrl(PlunesStrings.appleStoreUrl),
+  updateAlertDialog() {
+    showDialog(
+        context: AppConfig.getNavKey().currentState.overlay.context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
+            content: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.only(top: 3.5),
+                      width: AppConfig.horizontalBlockSize * 30,
+                      height: AppConfig.verticalBlockSize * 15,
+                      child: Image.asset(PlunesImages.updateApp)),
+                  SizedBox(height: 10),
+                  Text(
+                    PlunesStrings.newVersionAvailable,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: PlunesColors.BLACKCOLOR),
                   ),
-                ],
-              )
-            : new AlertDialog(
-                title: Text(title),
-                content: Text(message),
-                actions: <Widget>[
-                  FlatButton(
-                    child: Text(btnLabel),
-                    onPressed: () => LauncherUtil.launchUrl(
-                        PlunesStrings.googlePlayStoreUrl),
+                  SizedBox(height: 5),
+                  Text(
+                    PlunesStrings.usingOlderVersion,
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
                   ),
+                  SizedBox(height: AppConfig.verticalBlockSize * 2),
+                  FlatButton(
+                      onPressed: () {
+                        if (Platform.isIOS) {
+                          LauncherUtil.launchUrl(PlunesStrings.appleStoreUrl);
+                        } else {
+                          LauncherUtil.launchUrl(
+                              PlunesStrings.googlePlayStoreUrl);
+                        }
+                        return;
+                      },
+                      color: PlunesColors.GREENCOLOR,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Container(
+                        width: AppConfig.horizontalBlockSize * 20,
+                        child: Text(
+                          "Update",
+                          style: TextStyle(
+                              color: PlunesColors.WHITECOLOR, fontSize: 15),
+                          textAlign: TextAlign.center,
+                        ),
+                      )),
                 ],
-              );
-      },
-    ).then((value) {
+              ),
+            ),
+          );
+        }).then((value) {
       SystemNavigator.pop(animated: true);
     });
   }

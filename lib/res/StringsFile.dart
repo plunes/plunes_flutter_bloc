@@ -27,6 +27,9 @@ class PlunesStrings {
 
   /////
   ///Solution strings
+  static const String usingOlderVersion =
+      "You are using an older version of the application, please update to continue using our services.";
+  static const String newVersionAvailable = "New Version Available";
   static const String solutionSearched = "Solution Searched";
   static const String negotiatedSolutions = "Negotiated Prices";
   static const String validForOneHour = "Valid for 1 hour only";

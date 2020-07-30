@@ -625,8 +625,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
     return Column(
       children: <Widget>[
         Container(
-          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
-          height: 0.5,
+          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+          height: 0.7,
           color: PlunesColors.GREYCOLOR,
           width: double.infinity,
         ),
