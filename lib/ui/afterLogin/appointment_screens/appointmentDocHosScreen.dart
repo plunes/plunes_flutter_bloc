@@ -87,7 +87,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                     ? [
                                         TextSpan(
                                           text:
-                                              "\n${appointmentModel.centerLocation}",
+                                              "\n${appointmentModel.centerLocation?.trim()}",
                                           style: TextStyle(
                                               fontSize: AppConfig.mediumFont,
                                               fontWeight: FontWeight.bold,
