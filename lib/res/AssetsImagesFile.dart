@@ -3,6 +3,7 @@
 final plunesImages = PlunesImages();
 
 class PlunesImages {
+  static String updateApp = "assets/images/update.png";
   static String errorPage = 'assets/error_page.png';
   static String splashImage = 'assets/images/splash_final.jpg';
   static String userLandingImage = 'assets/images/user_landing_map.png';

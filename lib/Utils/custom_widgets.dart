@@ -3411,7 +3411,7 @@ class CustomWidgets {
                                       "Submit",
                                       AppConfig.horizontalBlockSize * 5,
                                       PlunesColors.GREENCOLOR,
-                                      AppConfig.horizontalBlockSize * 10,
+                                      AppConfig.horizontalBlockSize * 8,
                                       AppConfig.verticalBlockSize * 1,
                                       PlunesColors.WHITECOLOR,
                                       hasBorder: true,
@@ -3674,6 +3674,64 @@ class CustomWidgets {
       ),
     );
   }
+
+  updateAlertDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
+            content: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.only(top: 3.5),
+                      width: AppConfig.horizontalBlockSize * 30,
+                      height: AppConfig.verticalBlockSize * 15,
+                      child: Image.asset(PlunesImages.updateApp)),
+                  SizedBox(height: 10),
+                  Text(
+                    PlunesStrings.newVersionAvailable,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: PlunesColors.BLACKCOLOR),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    PlunesStrings.usingOlderVersion,
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
+                  ),
+                  SizedBox(height: AppConfig.verticalBlockSize * 2),
+                  FlatButton(
+                      onPressed: () {},
+                      color: PlunesColors.GREENCOLOR,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Container(
+                        width: AppConfig.horizontalBlockSize * 20,
+                        child: Text(
+                          "Update",
+                          style: TextStyle(color: PlunesColors.WHITECOLOR),
+                          textAlign: TextAlign.center,
+                        ),
+                      )),
+//                    ],
+//                  )
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
 //  Widget getDocOrHospitalDetailWidget(
 //      List<Services> solutions,
 //      int index,
