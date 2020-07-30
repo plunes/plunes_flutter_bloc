@@ -57,7 +57,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 
   Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
     print(
-        "${appointmentModel.service.newPrice.isEmpty} appointment${appointmentModel.serviceId}Model.service ${appointmentModel.service.name}");
+        "Model.service${appointmentModel.service.address}");
     return Container(
       color: (widget.bookingId != null &&
               widget.bookingId == appointmentModel.bookingId)
@@ -95,7 +95,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             onTap: () => _openProfile(),
                             onDoubleTap: () {},
                             child: Text(
-                              appointmentModel.professionalAddress ??
+                              appointmentModel.professionalAddress?.trim() ??
                                   PlunesStrings.NA,
                               overflow: TextOverflow.visible,
                               style: TextStyle(
@@ -822,7 +822,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                       vertical: AppConfig.verticalBlockSize * 3,
                       horizontal: AppConfig.horizontalBlockSize * 3),
                   child: Text(
-                      'Please make sure that you pay through app for ${appointmentModel?.service?.discount ?? 0}% discount to be valid',
+                      'Please make sure that you pay through app for ${appointmentModel?.service?.discount?.toStringAsFixed(0) ?? 0}% discount to be valid',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: AppConfig.verySmallFont,
@@ -902,7 +902,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
         }
       }
     } else if (result is RequestFailed) {
-      print("payment failed");
       widget.showInSnackBar(
           result.failureCause, PlunesColors.BLACKCOLOR, widget.globalKey);
     }

@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/ui/afterLogin/AccountSettings.dart';
 import 'package:plunes/ui/afterLogin/AchievementsScreen.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
@@ -56,6 +58,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     CommonMethods.globalContext = context;
+    AppConfig.setNavKey(_navKey);
     return MaterialApp(
       key: _scaffoldKey,
       navigatorKey: _navKey,

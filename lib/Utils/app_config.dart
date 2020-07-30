@@ -17,6 +17,15 @@ class AppConfig {
   static double veryExtraLargeFont;
   static double horizontalBlockSize;
   static double verticalBlockSize;
+  static GlobalKey<NavigatorState> _navKey;
+
+  static void setNavKey(GlobalKey<NavigatorState> navKey) {
+    _navKey = navKey;
+  }
+
+  static GlobalKey<NavigatorState> getNavKey() {
+    return _navKey;
+  }
 
   static init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);

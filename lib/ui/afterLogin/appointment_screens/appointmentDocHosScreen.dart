@@ -87,7 +87,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                     ? [
                                         TextSpan(
                                           text:
-                                              " \n${appointmentModel.centerLocation}",
+                                              "\n${appointmentModel.centerLocation}",
                                           style: TextStyle(
                                               fontSize: AppConfig.mediumFont,
                                               fontWeight: FontWeight.bold,
@@ -98,7 +98,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           ),
                           SizedBox(height: 5),
                           Text(
-                            appointmentModel.userAddress ?? PlunesStrings.NA,
+                            appointmentModel.userAddress?.trim() ??
+                                PlunesStrings.NA,
                             overflow: TextOverflow.visible,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,

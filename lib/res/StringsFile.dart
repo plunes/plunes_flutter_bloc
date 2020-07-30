@@ -3,6 +3,10 @@
 final plunesStrings = PlunesStrings();
 
 class PlunesStrings {
+  static const String googlePlayStoreUrl =
+      "https://play.google.com/store/apps/details?id=com.plunes&hl=en_IN/";
+  static const String appleStoreUrl =
+      "https://apps.apple.com/us/app/plunes/id1463747553/";
   static const String exceptionMsg =
       'An error occurred when converting a color';
   static const String noInternetMsg = 'No Internet';
