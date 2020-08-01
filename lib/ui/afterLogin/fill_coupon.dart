@@ -158,6 +158,8 @@ class _FillCouponState extends BaseState<FillCoupon> {
               padding: EdgeInsets.only(
                 top: AppConfig.verticalBlockSize * 4,
               ),
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 26.5),
               child: StreamBuilder<RequestState>(
                   stream: _couponBloc.baseStream,
                   builder: (context, snapshot) {

@@ -63,6 +63,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
   final doc_availability_to = new TextEditingController();
   final docNameController = new TextEditingController();
   final aboutController = new TextEditingController();
+  final fullAddressController = new TextEditingController();
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
   List<dynamic> _selectedItemId = List(),
@@ -375,6 +376,14 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                 widget.getSpacer(0.0, 20.0),
                 createTextField(locationController, plunesStrings.location,
                     TextInputType.text, TextCapitalization.none, false, ''),
+                createTextField(
+                    fullAddressController,
+                    plunesStrings.fullAddress,
+                    TextInputType.text,
+                    TextCapitalization.none,
+                    true,
+                    ''),
+                widget.getSpacer(0.0, 20.0),
                 createTextField(phoneController, plunesStrings.phoneNo,
                     TextInputType.number, TextCapitalization.none, false, ''),
                 createTextField(
@@ -624,7 +633,6 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           widget.getSpacer(0.0, 15.0),
           createTextField(phoneController, plunesStrings.phoneNo,
               TextInputType.number, TextCapitalization.none, false, ''),
-          //widget.getSpacer(0.0, 20.0),
           _userType == Constants.doctor
               ? createTextField(
                   alternatePhoneController,
@@ -651,6 +659,16 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               ? Container()
               : createTextField(locationController, plunesStrings.location,
                   TextInputType.text, TextCapitalization.none, false, ''),
+          _userType == Constants.generalUser
+              ? Container()
+              : createTextField(
+                  fullAddressController,
+                  plunesStrings.fullAddress,
+                  TextInputType.text,
+                  TextCapitalization.none,
+                  true,
+                  ''),
+          widget.getSpacer(0.0, 15.0),
           Visibility(
               visible: isDoctor,
               child: Column(children: <Widget>[
@@ -899,7 +917,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       body['userType'] =
           _userType == Constants.generalUser ? 'User' : _userType;
       if (_userType != Constants.generalUser) {
-        body['address'] = locationController.text;
+        body['address'] = fullAddressController.text.trim();
       }
       body['deviceId'] = Constants.DEVICE_TOKEN;
       if (_userType != Constants.hospital &&
@@ -983,6 +1001,10 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
             _longitude.isEmpty ||
             _longitude == "0.0")) {
       errorMessage = PlunesStrings.pleaseSelectALocation;
+      return false;
+    } else if (_userType != Constants.generalUser &&
+        (fullAddressController.text.trim().isEmpty)) {
+      errorMessage = plunesStrings.errorFullAddressRequired;
       return false;
     } else if (isDoctor && professionRegController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterProfRegNo;
@@ -1265,6 +1287,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     dobController.dispose();
     nameFocusNode.dispose();
     expFocusNode.dispose();
+    fullAddressController.dispose();
   }
 
   Widget getLabView() {
@@ -1286,6 +1309,14 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                 widget.getSpacer(0.0, 20.0),
                 createTextField(locationController, plunesStrings.location,
                     TextInputType.text, TextCapitalization.none, false, ''),
+                createTextField(
+                    fullAddressController,
+                    plunesStrings.fullAddress,
+                    TextInputType.text,
+                    TextCapitalization.none,
+                    true,
+                    ''),
+                widget.getSpacer(0.0, 20.0),
                 createTextField(phoneController, plunesStrings.phoneNo,
                     TextInputType.number, TextCapitalization.none, false, ''),
                 createTextField(

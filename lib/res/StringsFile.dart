@@ -367,6 +367,8 @@ class PlunesStrings {
 
   get errorEmptyEmailMsg => 'Please enter email id';
 
+  get errorFullAddressRequired => 'Please enter full address';
+
   get password => 'Password*';
 
   get errorMsgPassword => 'Please enter atleast 8 character password';
@@ -398,6 +400,8 @@ class PlunesStrings {
   get errorMsgEnterDocDep => 'Please enter department';
 
   get errorMsgEnterRegNo => 'Please enter registration. no';
+
+  get fullAddress => 'Full Address*';
 
   get errorMsgEnterEducation => 'Please enter education qualification';
 

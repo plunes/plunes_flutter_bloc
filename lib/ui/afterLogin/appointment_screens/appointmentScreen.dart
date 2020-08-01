@@ -56,8 +56,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   }
 
   Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
-    print(
-        "Model.service${appointmentModel.service.address}");
     return Container(
       color: (widget.bookingId != null &&
               widget.bookingId == appointmentModel.bookingId)

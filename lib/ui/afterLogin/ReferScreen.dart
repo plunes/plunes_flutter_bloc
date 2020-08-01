@@ -161,9 +161,11 @@ class _ReferScreenState extends BaseState<ReferScreen> {
                 Share.share(
                     "Join me on Plunes and get upto 50% discount instantly!Use my invite code: $_referralCode and get Rs. 100/- as free referral cash.Download Plunes now: https://plunes.com");
               },
-              borderRadius: BorderRadius.all(Radius.circular(20)),
+              borderRadius: BorderRadius.all(Radius.circular(28)),
               child: Container(
-                height: 45,
+                height: 42,
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 16.5),
                 alignment: Alignment.center,
                 child: widget.createTextViews(plunesStrings.inviteFriends, 18,
                     colorsFile.white, TextAlign.center, FontWeight.normal),
