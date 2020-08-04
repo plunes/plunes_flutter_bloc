@@ -9,10 +9,6 @@ class PlunesImages {
   static String userLandingImage = 'assets/images/user_landing_map.png';
   static String userLandingGoogleIcon =
       'assets/images/locationIconUserLandingScreen.png';
-  static String actionableInsightIcon =
-      'assets/images/actinable-insights-icon.png';
-  static String realTimeInsightIcon = 'assets/images/realtime-insight-icon.png';
-  static String totalBusinessIcon = 'assets/images/totalBusiness-icon.png';
   static String consultationImage = 'assets/images/consultation-avatar.png';
   static String procedureImage = 'assets/images/procedure-avatar.png';
   static String basicImage = 'assets/images/Basic-icon.png';
