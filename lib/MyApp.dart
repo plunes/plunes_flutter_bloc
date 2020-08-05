@@ -30,8 +30,8 @@ import 'ui/beforeLogin/CheckOTP.dart';
 import 'ui/beforeLogin/ForgotPassword.dart';
 import 'ui/beforeLogin/Login.dart';
 import 'ui/beforeLogin/SplashScreen.dart';
-import 'ui/afterLogin/appointment_screens/appointmentScreen.dart';
 import 'ui/afterLogin/appointment_screens/appointment_main_screen.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 
 /*
  * Created by - Plunes Technologies .
@@ -47,11 +47,13 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<NavigatorState> _navKey = new GlobalKey<NavigatorState>();
+  static final facebookAppEvents = FacebookAppEvents();
 
   @override
   void initState() {
     super.initState();
-    FirebaseNotification().setUpFireBase(context, _scaffoldKey, _navKey);
+    FirebaseNotification()
+        .setUpFireBase(context, _scaffoldKey, _navKey, facebookAppEvents);
   }
 
   ///Below method having all the routes of the application.

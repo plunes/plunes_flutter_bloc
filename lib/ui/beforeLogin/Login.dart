@@ -9,6 +9,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -329,21 +330,27 @@ class _LoginState extends State<Login> implements DialogCallBack {
   }
 
   _submitLogin() {
-    if (!isValidNumber || phoneController.text.isEmpty)
-      widget.showInSnackBar(
-          (_isNumber() && phoneController.text.trim().length != 10)
-              ? "Please fill a valid Phone Number"
-              : (!_isNumber() && phoneController.text.trim().isNotEmpty)
-                  ? "Please fill a valid User Id"
-                  : PlunesStrings
-                      .usernameCantBeEmpty, //plunesStrings.enterValidNumber,
-          PlunesColors.BLACKCOLOR,
-          _scaffoldKey);
-    else if (!isValidPassword || passwordController.text.isEmpty)
-      widget.showInSnackBar(plunesStrings.errorMsgPassword,
-          PlunesColors.BLACKCOLOR, _scaffoldKey);
-    else
-      _userLoginRequest();
+    print("hello");
+    FirebaseNotification().getFbInstance().logEvent(
+        name: "my_first_android_event",
+        parameters: {"key": "value"}).then((value) {
+      print("pixel lag gy");
+    });
+//    if (!isValidNumber || phoneController.text.isEmpty)
+//      widget.showInSnackBar(
+//          (_isNumber() && phoneController.text.trim().length != 10)
+//              ? "Please fill a valid Phone Number"
+//              : (!_isNumber() && phoneController.text.trim().isNotEmpty)
+//                  ? "Please fill a valid User Id"
+//                  : PlunesStrings
+//                      .usernameCantBeEmpty, //plunesStrings.enterValidNumber,
+//          PlunesColors.BLACKCOLOR,
+//          _scaffoldKey);
+//    else if (!isValidPassword || passwordController.text.isEmpty)
+//      widget.showInSnackBar(plunesStrings.errorMsgPassword,
+//          PlunesColors.BLACKCOLOR, _scaffoldKey);
+//    else
+//      _userLoginRequest();
   }
 
   _userLoginRequest() async {
