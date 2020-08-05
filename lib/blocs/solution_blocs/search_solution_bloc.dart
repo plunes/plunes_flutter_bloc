@@ -133,10 +133,13 @@ class SearchSolutionBloc extends BlocBase {
   }
 
   Future<RequestState> getFacilitiesForManualBidding(
-      {String searchQuery, int pageIndex, LatLng latLng}) async {
+      {String searchQuery,
+      int pageIndex,
+      LatLng latLng,
+      String specialityId}) async {
     addStateInManualBiddingStream(RequestInProgress());
-    var result = await SearchedSolutionRepo()
-        .getFacilitiesForManualBidding(searchQuery, pageIndex, latLng);
+    var result = await SearchedSolutionRepo().getFacilitiesForManualBidding(
+        searchQuery, pageIndex, latLng, specialityId);
     addStateInManualBiddingStream(result);
     return result;
   }

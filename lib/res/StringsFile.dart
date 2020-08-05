@@ -271,6 +271,7 @@ class PlunesStrings {
       "You can choose upto 5 facilities to negotiate with.";
   static const String makeSureToUpdatePrice =
       "Make sure to Update price in the Preferred time to ensure booking";
+  static const String specialities = "Specialities";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

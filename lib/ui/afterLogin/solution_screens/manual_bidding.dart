@@ -9,6 +9,7 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/more_facilities_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
@@ -33,18 +34,27 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       _selectUnselectController,
       _queryStreamController;
   int pageIndex = SearchSolutionBloc.initialIndex;
-  bool _endReached;
-  String _failureCause;
+  bool _endReached, _isProcessing;
+  String _failureCause, _specialityFailureCause;
   SearchSolutionBloc _searchSolutionBloc;
   Timer _debounce;
   LatLng _selectedLoc;
   String _location = PlunesStrings.enterYourLocation;
-
   User _userObj;
+  UserBloc _userBloc;
+
+  String _specialitySelectedId;
 
   @override
   void initState() {
+    _isProcessing = false;
     _userObj = UserManager().getUserDetails();
+    _userBloc = UserBloc();
+    if (CommonMethods.catalogueLists == null ||
+        CommonMethods.catalogueLists.isEmpty) {
+      _isProcessing = true;
+      _getSpecialities();
+    }
     _getRegion();
     _searchSolutionBloc = SearchSolutionBloc();
     _catalogues = [];
@@ -63,7 +73,26 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
     _searchSolutionBloc.getFacilitiesForManualBidding(
         searchQuery: _searchController.text.trim().toString(),
         pageIndex: pageIndex,
-        latLng: _selectedLoc);
+        latLng: _selectedLoc,
+        specialityId: _specialitySelectedId);
+  }
+
+  void _getSpecialities() async {
+    if (!_isProcessing) {
+      _isProcessing = true;
+      _setState();
+    }
+    var result = await _userBloc.getSpeciality();
+    if (result is RequestSuccess) {
+      if (CommonMethods.catalogueLists == null ||
+          CommonMethods.catalogueLists.isEmpty) {
+        _specialityFailureCause = "No Data Available";
+      }
+    } else if (result is RequestFailed) {
+      _specialityFailureCause = result.failureCause;
+    }
+    _isProcessing = false;
+    _setState();
   }
 
   @override
@@ -84,38 +113,49 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         key: scaffoldKey,
         appBar: _getAppBar(),
         body: Builder(builder: (context) {
-          return StreamBuilder<RequestState>(
-              stream: _searchSolutionBloc.getManualBiddingAdditionStream(),
-              builder: (context, snapshot) {
-                if (snapshot.data is RequestInProgress) {
-                  return CustomWidgets().getProgressIndicator();
-                } else if (snapshot.data is RequestSuccess) {
-                  Future.delayed(Duration(milliseconds: 10)).then((value) {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return CustomWidgets()
-                              .getManualBiddingSuccessWidget(scaffoldKey);
-                        }).then((value) {
-                      Navigator.pop(context);
-                    });
-                  });
-                } else if (snapshot.data is RequestFailed) {
-                  RequestFailed requestFailed = snapshot.data;
-                  Future.delayed(Duration(milliseconds: 10)).then((value) {
-                    _showInSnackBar(requestFailed?.failureCause ??
-                        plunesStrings.somethingWentWrong);
-                  });
-                  _searchSolutionBloc
-                      .addStateInManualBiddingAdditionStream(null);
-                }
-                return _getBody();
-              });
+          if (_isProcessing) {
+            return CustomWidgets().getProgressIndicator();
+          } else if (_specialityFailureCause != null &&
+              _specialityFailureCause.isNotEmpty) {
+            return CustomWidgets().errorWidget(_specialityFailureCause);
+          }
+          print(
+              "speciality list length ${CommonMethods.catalogueLists.length}");
+          return _getSubmitBody();
         }),
       ),
       top: false,
       bottom: false,
     );
+  }
+
+  Widget _getSubmitBody() {
+    return StreamBuilder<RequestState>(
+        stream: _searchSolutionBloc.getManualBiddingAdditionStream(),
+        builder: (context, snapshot) {
+          if (snapshot.data is RequestInProgress) {
+            return CustomWidgets().getProgressIndicator();
+          } else if (snapshot.data is RequestSuccess) {
+            Future.delayed(Duration(milliseconds: 10)).then((value) {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return CustomWidgets()
+                        .getManualBiddingSuccessWidget(scaffoldKey);
+                  }).then((value) {
+                Navigator.pop(context);
+              });
+            });
+          } else if (snapshot.data is RequestFailed) {
+            RequestFailed requestFailed = snapshot.data;
+            Future.delayed(Duration(milliseconds: 10)).then((value) {
+              _showInSnackBar(requestFailed?.failureCause ??
+                  plunesStrings.somethingWentWrong);
+            });
+            _searchSolutionBloc.addStateInManualBiddingAdditionStream(null);
+          }
+          return _getBody();
+        });
   }
 
   Widget _getBody() {
@@ -134,6 +174,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
               shrinkWrap: true,
               children: <Widget>[
                 _getTextFiledWidget(),
+                StreamBuilder<Object>(
+                    stream: _searchSolutionBloc.getManualBiddingStream(),
+                    builder: (context, snapshot) {
+                      return _getSpecialityDropDown();
+                    }),
                 Container(
                   margin: EdgeInsets.only(
                     top: AppConfig.verticalBlockSize * 2.5,
@@ -238,10 +283,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                   decoration: InputDecoration(
                     labelText: PlunesStrings.enterProcedureAndTestDetails,
                     hintText: PlunesStrings.enterProcedureAndTestDetails,
+                    alignLabelWithHint: true,
                     hintStyle: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.normal,
-                        color: PlunesColors.GREYCOLOR),
+                        color: PlunesColors.BLACKCOLOR),
                   ),
                   maxLines: null,
                   maxLength: 400,
@@ -458,7 +504,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         _searchSolutionBloc.getFacilitiesForManualBidding(
             searchQuery: _searchController.text.trim().toString(),
             pageIndex: SearchSolutionBloc.initialIndex,
-            latLng: _selectedLoc);
+            latLng: _selectedLoc,
+            specialityId: _specialitySelectedId);
       } else {
         _onTextClear();
       }
@@ -629,5 +676,57 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         _setState();
       });
     }
+  }
+
+  Widget _getSpecialityDropDown() {
+    List<DropdownMenuItem<String>> itemList = [];
+    CommonMethods.catalogueLists.toSet().forEach((item) {
+      if (item != null && item.id != null && item.id.isNotEmpty) {
+        itemList.add(DropdownMenuItem(
+            value: item.id,
+            child: Text(
+              CommonMethods.getStringInCamelCase(item?.speciality) ??
+                  PlunesStrings.NA,
+              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+            )));
+      }
+    });
+    Widget dropDown;
+    if (itemList != null && itemList.isNotEmpty) {
+      dropDown = DropdownButton<String>(
+        isDense: true,
+        onChanged: (itemId) {
+          _specialitySelectedId = itemId;
+          _catalogues = [];
+          pageIndex = SearchSolutionBloc.initialIndex;
+          _getMoreFacilities();
+        },
+        value: _specialitySelectedId,
+        hint: Text(
+          PlunesStrings.specialities,
+          style: TextStyle(
+            color: PlunesColors.BLACKCOLOR,
+            fontSize: 16,
+            fontWeight: FontWeight.normal,
+          ),
+        ),
+        items: itemList,
+        underline: Container(
+          width: double.infinity,
+          color: PlunesColors.GREYCOLOR,
+          height: 0.8,
+        ),
+        isExpanded: true,
+        elevation: 0,
+      );
+    }
+    return itemList == null || itemList.isEmpty
+        ? Container()
+        : Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 5,
+                vertical: AppConfig.verticalBlockSize * 2),
+            child: dropDown //DropdownButtonHideUnderline(child: dropDown),
+            );
   }
 }
