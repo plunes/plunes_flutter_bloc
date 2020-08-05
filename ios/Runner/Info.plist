@@ -79,5 +79,18 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>625558944851927</string>
+      </array>
+      </dict>
+    </array>
+    <key>FacebookAppID</key>
+    <string>625558944851927</string>
+    <key>FacebookDisplayName</key>
+    <string>Plunes</string>
 </dict>
 </plist>

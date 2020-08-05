@@ -332,8 +332,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
   _submitLogin() {
     print("hello");
     FirebaseNotification().getFbInstance().logEvent(
-        name: "my_first_android_event",
-        parameters: {"key": "value"}).then((value) {
+        name: "another_ios_event",
+        parameters: {"key1": "value"}).then((value) {
       print("pixel lag gy");
     });
 //    if (!isValidNumber || phoneController.text.isEmpty)
