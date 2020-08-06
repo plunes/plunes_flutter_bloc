@@ -266,12 +266,16 @@ class PlunesStrings {
   static const String enterProcedureAndTestDetails =
       "Enter Procedure & Test details";
   static const String makeSureTheDetailsText =
-      "Make sure the details are correct so that hospitals can offer you competitive bids.";
-  static const String chooseUptoText =
-      "You can choose upto 5 facilities to negotiate with.";
+      "Enter details to receive competitive bids from hospitals.";
+  static const String chooseUptoText = "Choose upto 5 facilities";
   static const String makeSureToUpdatePrice =
       "Make sure to Update price in the Preferred time to ensure booking";
-  static const String specialities = "Specialities";
+  static const String specialities = "Choose Speciality";
+
+  static const String actionAbleMessage =
+      "These insights are predicted by our AI so that you get maximum conversions. Make sure to act on Actionable Insights so that You increase your Revenue.";
+  static const String realTimeMessage =
+      "These are real Time requests from Patients near you who are looking for Procedures and are viewing your Profiles. Make sure to take action on the insights to achieve successful conversion.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

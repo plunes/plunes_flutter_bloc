@@ -1,6 +1,7 @@
 import 'dart:async';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -42,7 +43,6 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   String _location = PlunesStrings.enterYourLocation;
   User _userObj;
   UserBloc _userBloc;
-
   String _specialitySelectedId;
 
   @override
@@ -111,7 +111,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
-        appBar: _getAppBar(),
+        appBar:
+            widget.getAppBar(context, PlunesStrings.negotiateManually, true),
         body: Builder(builder: (context) {
           if (_isProcessing) {
             return CustomWidgets().getProgressIndicator();
@@ -119,8 +120,6 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
               _specialityFailureCause.isNotEmpty) {
             return CustomWidgets().errorWidget(_specialityFailureCause);
           }
-          print(
-              "speciality list length ${CommonMethods.catalogueLists.length}");
           return _getSubmitBody();
         }),
       ),
@@ -173,18 +172,28 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             ListView(
               shrinkWrap: true,
               children: <Widget>[
-                _getTextFiledWidget(),
+                _getLocationField(),
                 StreamBuilder<Object>(
                     stream: _searchSolutionBloc.getManualBiddingStream(),
                     builder: (context, snapshot) {
                       return _getSpecialityDropDown();
                     }),
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                  child: _getGreenDash(),
+                ),
+                _getTextFiledWidget(),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  child: _getGreenDash(),
+                ),
                 Container(
                   margin: EdgeInsets.only(
-                    top: AppConfig.verticalBlockSize * 2.5,
                     left: AppConfig.verticalBlockSize * 3,
                     right: AppConfig.verticalBlockSize * 3,
-                    bottom: AppConfig.verticalBlockSize * 2,
+                    bottom: AppConfig.verticalBlockSize * 1.5,
                   ),
                   child: Center(
                     child: Text(
@@ -263,11 +272,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       child: Column(
         children: <Widget>[
           Container(
-            constraints: BoxConstraints(
-                minHeight: AppConfig.verticalBlockSize * 3,
-                maxHeight: AppConfig.verticalBlockSize * 44,
-                minWidth: double.infinity,
-                maxWidth: double.infinity),
+//            constraints: BoxConstraints(
+//                minHeight: AppConfig.verticalBlockSize * .1,
+//                maxHeight: AppConfig.verticalBlockSize * 44,
+//                minWidth: double.infinity,
+//                maxWidth: double.infinity),
             child: Row(
               children: <Widget>[
                 Flexible(
@@ -276,19 +285,18 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                   onChanged: (data) {
                     _queryStreamController.add(null);
                   },
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.normal,
                       color: PlunesColors.BLACKCOLOR),
                   decoration: InputDecoration(
-                    labelText: PlunesStrings.enterProcedureAndTestDetails,
-                    hintText: PlunesStrings.enterProcedureAndTestDetails,
-                    alignLabelWithHint: true,
-                    hintStyle: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.normal,
-                        color: PlunesColors.BLACKCOLOR),
-                  ),
+                      counterText: "",
+                      hintText: PlunesStrings.enterProcedureAndTestDetails,
+                      hintStyle: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.normal,
+                          color: PlunesColors.BLACKCOLOR)),
                   maxLines: null,
                   maxLength: 400,
                 ))
@@ -296,8 +304,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             ),
           ),
           Container(
-            margin:
-                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
+            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
             child: Center(
               child: Text(
                 PlunesStrings.makeSureTheDetailsText,
@@ -315,7 +322,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   Widget _getSearchBar() {
-    return CustomWidgets().searchBar(
+    return searchBar(
         searchController: _searchController,
         hintText: PlunesStrings.searchFacilities,
         onTextClear: () => _onTextClear());
@@ -328,27 +335,28 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             minWidth: double.infinity,
             maxWidth: double.infinity,
             maxHeight: AppConfig.verticalBlockSize * 65),
+        margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
         child: Column(
           children: <Widget>[
-            StreamBuilder<Object>(
-                stream: _selectUnselectController.stream,
-                builder: (context, snapshot) {
-                  return Container(
-                    padding: const EdgeInsets.all(5.0),
-                    margin: EdgeInsets.only(
-                        top: (_selectedItemList == null ||
-                                _selectedItemList.isEmpty)
-                            ? AppConfig.verticalBlockSize * 1.5
-                            : 0),
-                    child: Text(
-                      PlunesStrings.chooseFacilities,
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
-                  );
-                }),
+//            StreamBuilder<Object>(
+//                stream: _selectUnselectController.stream,
+//                builder: (context, snapshot) {
+//                  return Container(
+//                    padding: const EdgeInsets.all(5.0),
+//                    margin: EdgeInsets.only(
+//                        top: (_selectedItemList == null ||
+//                                _selectedItemList.isEmpty)
+//                            ? AppConfig.verticalBlockSize * 1.5
+//                            : 0),
+//                    child: Text(
+//                      PlunesStrings.chooseFacilities,
+//                      style: TextStyle(
+//                          color: PlunesColors.BLACKCOLOR,
+//                          fontWeight: FontWeight.bold,
+//                          fontSize: 16),
+//                    ),
+//                  );
+//                }),
             Expanded(
               child: NotificationListener<ScrollNotification>(
                 onNotification: (scrollState) {
@@ -360,6 +368,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                   return;
                 },
                 child: ListView.builder(
+                  padding: null,
                   itemBuilder: (context, index) {
                     return Container(
                       margin: EdgeInsets.only(
@@ -684,10 +693,14 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       if (item != null && item.id != null && item.id.isNotEmpty) {
         itemList.add(DropdownMenuItem(
             value: item.id,
-            child: Text(
-              CommonMethods.getStringInCamelCase(item?.speciality) ??
-                  PlunesStrings.NA,
-              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+            child: Container(
+              alignment: Alignment.center,
+              child: Text(
+                CommonMethods.getStringInCamelCase(item?.speciality) ??
+                    PlunesStrings.NA,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+              ),
             )));
       }
     });
@@ -702,12 +715,16 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
           _getMoreFacilities();
         },
         value: _specialitySelectedId,
-        hint: Text(
-          PlunesStrings.specialities,
-          style: TextStyle(
-            color: PlunesColors.BLACKCOLOR,
-            fontSize: 16,
-            fontWeight: FontWeight.normal,
+        hint: Container(
+          alignment: Alignment.center,
+          child: Text(
+            PlunesStrings.specialities,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: PlunesColors.BLACKCOLOR,
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+            ),
           ),
         ),
         items: itemList,
@@ -723,10 +740,141 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
     return itemList == null || itemList.isEmpty
         ? Container()
         : Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 5,
-                vertical: AppConfig.verticalBlockSize * 2),
+            padding: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 5,
+                right: AppConfig.horizontalBlockSize * 5),
             child: dropDown //DropdownButtonHideUnderline(child: dropDown),
             );
+  }
+
+  Widget _getLocationField() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Flexible(
+          child: InkWell(
+            onTap: () => _getLocation(),
+            child: Container(
+              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.verticalBlockSize * 2,
+                  vertical: AppConfig.horizontalBlockSize * 1.5),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.all(2),
+                    child: Image.asset(plunesImages.locationIcon),
+                    height: AppConfig.verticalBlockSize * 3.5,
+                    width: AppConfig.horizontalBlockSize * 6,
+                  ),
+                  Flexible(
+                      child: FittedBox(
+                    child: Text(
+                      _location ?? PlunesStrings.enterYourLocation,
+                      softWrap: false,
+                      style: TextStyle(
+                        fontSize: 14,
+                        decoration: TextDecoration.underline,
+                        decorationStyle: TextDecorationStyle.dashed,
+                        decorationThickness: 2.0,
+                      ),
+                    ),
+                  ))
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _getGreenDash() {
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 40),
+      height: AppConfig.verticalBlockSize * 0.45,
+      color: Color(CommonMethods.getColorHexFromStr("#20D86E")),
+    );
+  }
+
+  Widget searchBar(
+      {@required final TextEditingController searchController,
+      @required final String hintText,
+      bool hasFocus = false,
+      isRounded = true,
+      FocusNode focusNode,
+      double searchBarHeight = 6,
+      Function onTextClear}) {
+    return StatefulBuilder(builder: (context, newState) {
+      return Column(
+        children: <Widget>[
+          Container(
+            height: AppConfig.verticalBlockSize * searchBarHeight,
+            padding: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 4,
+                right: AppConfig.horizontalBlockSize * 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                Expanded(
+                  child: TextField(
+                    controller: searchController,
+                    focusNode: focusNode,
+                    autofocus: hasFocus,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.normal,
+                        color: PlunesColors.BLACKCOLOR),
+                    inputFormatters: [LengthLimitingTextInputFormatter(40)],
+                    decoration: InputDecoration(
+                        isDense: true,
+                        border: InputBorder.none,
+                        hintText: hintText,
+                        hintStyle: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#5D5D5D")))),
+                  ),
+                ),
+                searchController.text.trim().isEmpty
+                    ? Image.asset(
+                        PlunesImages.searchIcon,
+                        color: PlunesColors.BLACKCOLOR,
+                        width: AppConfig.verticalBlockSize * 2.5,
+                        height: AppConfig.verticalBlockSize * 2.2,
+                      )
+                    : InkWell(
+                        onTap: () {
+                          searchController.text = "";
+                          newState(() {});
+                          if (onTextClear != null) {
+                            onTextClear();
+                          }
+                        },
+                        child: Padding(
+                            padding: EdgeInsets.all(5.0),
+                            child: Icon(
+                              Icons.clear,
+                              color: Colors.green,
+                            )),
+                      )
+              ],
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            color: PlunesColors.GREYCOLOR,
+            height: 0.8,
+          ),
+        ],
+      );
+    });
   }
 }

@@ -84,11 +84,12 @@ class CommonMethods {
     return isAndroid;
   }
 
-  static showLongToast(String message) {
+  static showLongToast(String message,
+      {bool centerGravity = false, Color bgColor}) {
     Fluttertoast.showToast(
         msg: message,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.transparent,
+        gravity: centerGravity ? ToastGravity.TOP : ToastGravity.BOTTOM,
+        backgroundColor: (bgColor == null) ? Colors.transparent : bgColor,
         textColor: Colors.black,
         toastLength: Toast.LENGTH_LONG,
         timeInSecForIos: 2);
