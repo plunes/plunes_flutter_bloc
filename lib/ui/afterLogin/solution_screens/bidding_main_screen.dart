@@ -25,6 +25,7 @@ import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.d
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import './previous_activity_screen.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 // ignore: must_be_immutable
 class BiddingMainScreen extends BaseActivity {
@@ -126,10 +127,12 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      body: Builder(builder: (context) {
-        _context = context;
-        return _getWidgetBody();
-      }),
+      body: ShowCaseWidget(
+        builder: Builder(builder: (context) {
+          _context = context;
+          return _getWidgetBody();
+        }),
+      ),
     );
   }
 
@@ -683,6 +686,16 @@ class HomePageAppBar extends StatefulWidget {
 }
 
 class _HomePageAppBarState extends State<HomePageAppBar> {
+  GlobalKey _one = GlobalKey();
+
+  initState() {
+    Future.delayed(Duration(seconds: 1)).then((value) {
+      WidgetsBinding.instance.addPostFrameCallback(
+          (_) => ShowCaseWidget.of(context).startShowCase([_one]));
+    });
+    super.initState();
+  }
+
   Future<RequestState> _getLocationStatusForTop() async {
     RequestState _requestState;
     var user = UserManager().getUserDetails();
@@ -755,28 +768,36 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                             width: AppConfig.horizontalBlockSize * 5,
                           ),
                           Flexible(
-                            child: Container(
-                              margin: EdgeInsets.only(left: 12.0),
-                              child: Tooltip(
-                                  message: locationModel.address,
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          AppConfig.horizontalBlockSize * 5),
-                                  preferBelow: true,
-                                  child: Text(
-                                    locationModel.address,
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.clip,
-                                    softWrap: false,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      decoration: TextDecoration.underline,
-                                      decorationStyle:
-                                          TextDecorationStyle.dashed,
-                                      decorationThickness: 2.0,
-                                    ),
-                                  )),
+                            child: Showcase(
+                              showcaseBackgroundColor: Colors.blueAccent,
+                              textColor: Colors.white,
+                              shapeBorder: CircleBorder(),
+                              key: _one,
+                              description: "Tap to change your location",
+                              title: 'Location',
+                              child: Container(
+                                margin: EdgeInsets.only(left: 12.0),
+                                child: Tooltip(
+                                    message: locationModel.address,
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal:
+                                            AppConfig.horizontalBlockSize * 5),
+                                    preferBelow: true,
+                                    child: Text(
+                                      locationModel.address,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.clip,
+                                      softWrap: false,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dashed,
+                                        decorationThickness: 2.0,
+                                      ),
+                                    )),
+                              ),
                             ),
                           ),
                         ],
@@ -794,10 +815,18 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                  child: Text(
-                                    locationModel.address ??
-                                        PlunesStrings.enterYourLocation,
-                                    style: TextStyle(fontSize: 15),
+                                  child: Showcase(
+                                    showcaseBackgroundColor: Colors.blueAccent,
+                                    textColor: Colors.white,
+                                    shapeBorder: CircleBorder(),
+                                    key: _one,
+                                    description: "Tap to change your location",
+                                    title: 'Location',
+                                    child: Text(
+                                      locationModel.address ??
+                                          PlunesStrings.enterYourLocation,
+                                      style: TextStyle(fontSize: 15),
+                                    ),
                                   ),
                                   flex: 10,
                                 ),
