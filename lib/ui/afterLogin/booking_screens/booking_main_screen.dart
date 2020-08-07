@@ -316,7 +316,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                             PlunesStrings.NA,
                         style: TextStyle(
                             fontSize: AppConfig.mediumFont,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                             color: PlunesColors.BLACKCOLOR),
                       ),
                     ),
@@ -545,7 +545,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   Text(
                     _userProfileInfo.user.credits,
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: AppConfig.smallFont,
                     ),
                   ),
@@ -683,7 +683,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                                 _appointmentTime != null)
                             ? PlunesColors.WHITECOLOR
                             : PlunesColors.BLACKCOLOR,
-                        hasBorder: true),
+                        hasBorder: (_selectedDate == _tempSelectedDateTime &&
+                                _appointmentTime != _notSelectedEntry &&
+                                _appointmentTime != null)
+                            ? false
+                            : true),
                   );
                 }),
           ),

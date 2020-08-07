@@ -242,26 +242,26 @@ class _AvailabilitySelectionScreenState
             child: Center(
                 child: Text(
               "All",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(fontWeight: FontWeight.w600),
             )),
           ),
           Expanded(
             flex: 2,
             child: Center(
                 child: Text("From - To",
-                    style: TextStyle(fontWeight: FontWeight.bold))),
+                    style: TextStyle(fontWeight: FontWeight.w600))),
           ),
           Expanded(
             flex: 2,
             child: Center(
                 child: Text("From - To",
-                    style: TextStyle(fontWeight: FontWeight.bold))),
+                    style: TextStyle(fontWeight: FontWeight.w600))),
           ),
           Expanded(
             flex: 1,
             child: Center(
                 child: Text("Closed",
-                    style: TextStyle(fontWeight: FontWeight.bold))),
+                    style: TextStyle(fontWeight: FontWeight.w600))),
           ),
         ],
       ),
@@ -316,7 +316,7 @@ class _AvailabilitySelectionScreenState
                                 style: TextStyle(
                                     fontSize: 10,
                                     color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w600),
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
@@ -344,7 +344,7 @@ class _AvailabilitySelectionScreenState
                                 style: TextStyle(
                                     fontSize: 10,
                                     color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w600),
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
@@ -379,7 +379,7 @@ class _AvailabilitySelectionScreenState
                                 style: TextStyle(
                                     fontSize: 10,
                                     color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w600),
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
@@ -407,7 +407,7 @@ class _AvailabilitySelectionScreenState
                                 style: TextStyle(
                                     fontSize: 10,
                                     color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w600),
+                                    fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
@@ -487,23 +487,20 @@ class _AvailabilitySelectionScreenState
               });
               userBloc.addIntoStream(null);
             }
-            return InkWell(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              onTap: addSlot,
-              child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Color(0xff01d35a)),
-                alignment: Alignment.center,
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 15),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    'Submit',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+            return Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 30,
+                  right: AppConfig.horizontalBlockSize * 30),
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                onTap: addSlot,
+                child: CustomWidgets().getRoundedButton(
+                    plunesStrings.submit,
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.GREENCOLOR,
+                    AppConfig.horizontalBlockSize * 0,
+                    AppConfig.verticalBlockSize * 1.2,
+                    PlunesColors.WHITECOLOR),
               ),
             );
           }),

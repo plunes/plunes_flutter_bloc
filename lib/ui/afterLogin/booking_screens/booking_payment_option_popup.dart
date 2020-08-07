@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
+import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 
 class PopupChoose extends StatefulWidget {
@@ -136,33 +138,32 @@ class _PopupChooseState extends State<PopupChoose> {
               ),
             ),
             GestureDetector(
-              onTap: () {
-                PaymentSelector _paymentSelector;
-                if (_paymentSelectionOptions != null &&
-                    _paymentSelectionOptions.isNotEmpty) {
-                  _paymentSelectionOptions.forEach((paymentObj) {
-                    if (paymentObj.isSelected) {
-                      _paymentSelector = paymentObj;
-                    }
-                  });
-                }
-                Navigator.of(context).pop(_paymentSelector);
-              },
-              child: Container(
-                height: 35,
-                width: double.infinity,
-                margin: EdgeInsets.only(left: 5, right: 5),
-                alignment: Alignment.center,
-                child: Text(
-                  "Continue",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w500),
-                ),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    color: Color(0xff01d35a)),
-              ),
-            ),
+                onTap: () {
+                  PaymentSelector _paymentSelector;
+                  if (_paymentSelectionOptions != null &&
+                      _paymentSelectionOptions.isNotEmpty) {
+                    _paymentSelectionOptions.forEach((paymentObj) {
+                      if (paymentObj.isSelected) {
+                        _paymentSelector = paymentObj;
+                      }
+                    });
+                  }
+                  Navigator.of(context).pop(_paymentSelector);
+                },
+                child: Container(
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 15,
+                      right: AppConfig.horizontalBlockSize * 15),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5))),
+                  child: CustomWidgets().getRoundedButton(
+                      "Continue",
+                      AppConfig.horizontalBlockSize * 8,
+                      PlunesColors.GREENCOLOR,
+                      AppConfig.horizontalBlockSize * 0,
+                      AppConfig.verticalBlockSize * 1.2,
+                      PlunesColors.WHITECOLOR),
+                )),
             SizedBox(
               height: 5,
             ),

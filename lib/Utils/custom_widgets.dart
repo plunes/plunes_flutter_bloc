@@ -317,7 +317,7 @@ class CustomWidgets {
                           AppConfig.horizontalBlockSize * 8,
                           PlunesColors.GREENCOLOR,
                           AppConfig.horizontalBlockSize * 0,
-                          AppConfig.verticalBlockSize * 2,
+                          AppConfig.verticalBlockSize * 1.5,
                           PlunesColors.WHITECOLOR)))
               : Container(),
           solutionList[index].isSelected ?? true
@@ -493,7 +493,7 @@ class CustomWidgets {
         child: Text(
           buttonName,
           style: TextStyle(
-            fontSize: AppConfig.smallFont,
+            fontSize: 15,
             color: textColor ?? PlunesColors.BLACKCOLOR,
           ),
         ),
@@ -519,7 +519,7 @@ class CustomWidgets {
           textAlign: TextAlign.center,
           style: TextStyle(
               color: PlunesColors.BLACKCOLOR,
-              fontWeight: FontWeight.bold,
+              fontWeight: FontWeight.w600,
               fontSize: 18),
         ),
       ),
@@ -567,7 +567,7 @@ class CustomWidgets {
                         testAndProcedures[index]?.sId),
                     style: TextStyle(
                         color: PlunesColors.BLACKCOLOR,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.w500),
                   ),
                   flex: 3,
                 ),
@@ -963,7 +963,7 @@ class CustomWidgets {
                     'Definition:',
                     style: TextStyle(
                         fontSize: AppConfig.smallFont,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.w600),
                   ),
                   Text(
                     catalogueData?.details ?? PlunesStrings.NA,
@@ -979,7 +979,7 @@ class CustomWidgets {
                         'Duration',
                         style: TextStyle(
                             fontSize: AppConfig.smallFont,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.w600),
                       ),
                       SizedBox(width: 5),
                       Text(
@@ -998,7 +998,7 @@ class CustomWidgets {
                       'Sittings:',
                       style: TextStyle(
                           fontSize: AppConfig.smallFont,
-                          fontWeight: FontWeight.bold),
+                          fontWeight: FontWeight.w600),
                     ),
                     SizedBox(width: 5),
                     Text(
@@ -1014,7 +1014,7 @@ class CustomWidgets {
                     'Do\'s and Don\'ts:',
                     style: TextStyle(
                         fontSize: AppConfig.smallFont,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.w600),
                   ),
                   Text(
                     catalogueData?.dnd?.replaceAll(replaceFrom, "") ??
@@ -1095,7 +1095,7 @@ class CustomWidgets {
                               '',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                                  fontSize: 20, fontWeight: FontWeight.w600),
                             ),
                             Container(
                               height: AppConfig.verticalBlockSize * 68,
@@ -1216,7 +1216,7 @@ class CustomWidgets {
                                                       fontSize:
                                                           AppConfig.mediumFont,
                                                       fontWeight:
-                                                          FontWeight.bold),
+                                                          FontWeight.w600),
                                                 ),
                                                 Expanded(child: Container()),
                                                 Text(
@@ -1226,7 +1226,7 @@ class CustomWidgets {
                                                       fontSize:
                                                           AppConfig.mediumFont,
                                                       fontWeight:
-                                                          FontWeight.bold),
+                                                          FontWeight.w600),
                                                 ),
                                               ],
                                             ),
@@ -1327,7 +1327,7 @@ class CustomWidgets {
                                                                   .largeFont,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .bold),
+                                                                      .w600),
                                                         ),
                                                         (realInsight.suggested !=
                                                                     null &&
@@ -1388,7 +1388,7 @@ class CustomWidgets {
                                                           fontSize: AppConfig
                                                               .mediumFont,
                                                           fontWeight:
-                                                              FontWeight.bold),
+                                                              FontWeight.w600),
                                                     )
                                                   : Container(),
                                               padding: EdgeInsets.all(AppConfig
@@ -1509,7 +1509,7 @@ class CustomWidgets {
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.red,
-                                                fontWeight: FontWeight.bold),
+                                                fontWeight: FontWeight.w600),
                                           ),
                                         ],
                                       ),
@@ -1609,7 +1609,7 @@ class CustomWidgets {
                               '',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
+                                  fontSize: 20, fontWeight: FontWeight.w600),
                             ),
                             Container(
                               height: AppConfig.verticalBlockSize * 68,
@@ -1717,7 +1717,7 @@ class CustomWidgets {
                                                       color: Colors.white70,
                                                       fontSize: 20,
                                                       fontWeight:
-                                                          FontWeight.bold),
+                                                          FontWeight.w600),
                                                 ),
                                                 Expanded(child: Container()),
                                                 Text(
@@ -1726,7 +1726,7 @@ class CustomWidgets {
                                                       fontSize: 20,
                                                       color: Colors.white70,
                                                       fontWeight:
-                                                          FontWeight.bold),
+                                                          FontWeight.w600),
                                                 ),
                                               ],
                                             ),
@@ -1813,7 +1813,7 @@ class CustomWidgets {
                                                             fontSize: 20,
                                                             fontWeight:
                                                                 FontWeight
-                                                                    .bold),
+                                                                    .w600),
                                                       ),
                                                       Flexible(
                                                           child: InkWell(
@@ -1865,7 +1865,7 @@ class CustomWidgets {
                                                           fontSize: AppConfig
                                                               .mediumFont,
                                                           fontWeight:
-                                                              FontWeight.bold),
+                                                              FontWeight.w600),
                                                     )
                                                   : Container(),
                                               padding: EdgeInsets.all(AppConfig
@@ -1965,7 +1965,7 @@ class CustomWidgets {
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 color: Colors.red,
-                                                fontWeight: FontWeight.bold),
+                                                fontWeight: FontWeight.w600),
                                           ),
                                         ],
                                       ),
@@ -2095,7 +2095,7 @@ class CustomWidgets {
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: AppConfig.smallFont,
-                                      fontWeight: FontWeight.bold),
+                                      fontWeight: FontWeight.w600),
                                 )),
                               )
                             ],
@@ -2173,7 +2173,7 @@ class CustomWidgets {
                                 Text(PlunesStrings.thankYouMessage,
                                     style: TextStyle(
                                         fontSize: 32,
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w500,
                                         color: PlunesColors.BLACKCOLOR)),
                                 Padding(
                                   padding: EdgeInsets.only(
@@ -2183,7 +2183,7 @@ class CustomWidgets {
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontSize: AppConfig.largeFont,
-                                        fontWeight: FontWeight.w600,
+                                        fontWeight: FontWeight.w500,
                                         color: PlunesColors.GREYCOLOR)),
                               ],
                             ),
@@ -2387,7 +2387,7 @@ class CustomWidgets {
               "Tips for more Conversions",
               textAlign: TextAlign.center,
               style: TextStyle(
-                  fontSize: AppConfig.mediumFont, fontWeight: FontWeight.bold),
+                  fontSize: AppConfig.mediumFont, fontWeight: FontWeight.w600),
             ),
           ),
           Container(
@@ -3037,7 +3037,7 @@ class CustomWidgets {
                                       top: AppConfig.verticalBlockSize * 1.5),
                                   margin: EdgeInsets.symmetric(
                                       horizontal:
-                                          AppConfig.horizontalBlockSize * 16),
+                                          AppConfig.horizontalBlockSize * 15.5),
                                   child: InkWell(
                                     onTap: () {
                                       Navigator.of(context)
@@ -3116,10 +3116,9 @@ class CustomWidgets {
                                       "Set Location",
                                       AppConfig.horizontalBlockSize * 5,
                                       PlunesColors.GREENCOLOR,
-                                      AppConfig.horizontalBlockSize * 10,
-                                      AppConfig.verticalBlockSize * 1,
+                                      AppConfig.horizontalBlockSize * 8,
+                                      AppConfig.verticalBlockSize * 1.2,
                                       PlunesColors.WHITECOLOR,
-                                      hasBorder: true,
                                     ),
                                   ),
                                 )
@@ -3167,7 +3166,6 @@ class CustomWidgets {
                                       AppConfig.horizontalBlockSize * 10,
                                       AppConfig.verticalBlockSize * 1,
                                       PlunesColors.WHITECOLOR,
-                                      hasBorder: true,
                                     ),
                                   ),
                                 )

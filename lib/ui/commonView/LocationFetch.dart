@@ -9,6 +9,8 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:location/location.dart' as loc;
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -175,7 +177,7 @@ class _LocationFetchState extends State<LocationFetch> {
             widget.getLinearProgressView(_isAddFetch),
             widget.getSpacer(0.0, 10.0),
             widget.createTextViews(plunesStrings.setLocation, 16.0,
-                colorsFile.black0, TextAlign.left, FontWeight.bold),
+                colorsFile.black0, TextAlign.left, FontWeight.w600),
             widget.getSpacer(0.0, 20.0),
             createTextField(locationController, plunesStrings.address,
                 TextInputType.text, TextCapitalization.none, false, ''),
@@ -185,8 +187,22 @@ class _LocationFetchState extends State<LocationFetch> {
             createTextField(landMarkController, plunesStrings.landMark,
                 TextInputType.text, TextCapitalization.none, true, ''),
             widget.getSpacer(0.0, 20.0),
-            widget.getDefaultButton(
-                plunesStrings.proceed, globalWidth - 40, 42, saveLatLang),
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 30,
+                  right: AppConfig.horizontalBlockSize * 30),
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                onTap: saveLatLang,
+                child: CustomWidgets().getRoundedButton(
+                    plunesStrings.proceed,
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.GREENCOLOR,
+                    AppConfig.horizontalBlockSize * 0,
+                    AppConfig.verticalBlockSize * 1.2,
+                    PlunesColors.WHITECOLOR),
+              ),
+            ),
             widget.getSpacer(0.0, 20.0),
           ],
         ),

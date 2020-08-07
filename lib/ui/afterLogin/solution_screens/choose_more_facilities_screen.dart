@@ -220,7 +220,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: PlunesColors.BLACKCOLOR,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
                 fontSize: 16),
           ),
           Padding(padding: EdgeInsets.only(top: 3)),
@@ -271,7 +271,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                       PlunesStrings.chooseFacilities,
                       style: TextStyle(
                           color: PlunesColors.BLACKCOLOR,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w600,
                           fontSize: 16),
                     ),
                   );
@@ -419,9 +419,9 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                       AppConfig.horizontalBlockSize * 5,
                       PlunesColors.GREENCOLOR,
                       AppConfig.horizontalBlockSize * 5,
-                      AppConfig.verticalBlockSize * 1.3,
+                      AppConfig.verticalBlockSize * 1.2,
                       PlunesColors.WHITECOLOR,
-                      hasBorder: true,
+                      hasBorder: false,
                     ),
                   ),
                 ),

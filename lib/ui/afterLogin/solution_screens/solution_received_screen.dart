@@ -416,7 +416,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
                                     color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.w600),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(
@@ -804,7 +804,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                       Text("Hold on",
                                           style: TextStyle(
                                               fontSize: AppConfig.smallFont,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w600,
                                               color: Colors.white)),
                                       Expanded(child: Container()),
                                       InkWell(

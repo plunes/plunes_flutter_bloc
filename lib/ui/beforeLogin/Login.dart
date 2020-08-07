@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
@@ -114,8 +116,22 @@ class _LoginState extends State<Login> implements DialogCallBack {
                 progress
                     ? SpinKitThreeBounce(
                         color: Color(hexColorCode.defaultGreen), size: 30.0)
-                    : widget.getDefaultButton(plunesStrings.login,
-                        globalWidth - 40, 42, _submitLogin),
+                    : Container(
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 30,
+                            right: AppConfig.horizontalBlockSize * 30),
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          onTap: _submitLogin,
+                          child: CustomWidgets().getRoundedButton(
+                              plunesStrings.login,
+                              AppConfig.horizontalBlockSize * 8,
+                              PlunesColors.GREENCOLOR,
+                              AppConfig.horizontalBlockSize * 0,
+                              AppConfig.verticalBlockSize * 1.2,
+                              PlunesColors.WHITECOLOR),
+                        ),
+                      ),
                 widget.getSpacer(0.0, 20.0),
                 getForgotPasswordButton(),
                 getSignUpViewButton()

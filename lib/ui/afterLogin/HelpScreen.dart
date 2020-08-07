@@ -152,7 +152,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                           Text(PlunesStrings.thankYouMessage,
                               style: TextStyle(
                                   fontSize: 36,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                   color: PlunesColors.BLACKCOLOR)),
                           Padding(
                             padding: EdgeInsets.only(
@@ -162,7 +162,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontSize: AppConfig.extraLargeFont,
-                                  fontWeight: FontWeight.w600,
+                                  fontWeight: FontWeight.w500,
                                   color: PlunesColors.GREYCOLOR)),
                         ],
                       ),
@@ -210,6 +210,9 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                           padding: EdgeInsets.only(
                             top: AppConfig.verticalBlockSize * 4,
                           ),
+                          margin: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 30,
+                              right: AppConfig.horizontalBlockSize * 30),
                           child: InkWell(
                               onTap: () {
                                 if (_docHosQueryController.text
@@ -229,10 +232,10 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                               onDoubleTap: () {},
                               child: CustomWidgets().getRoundedButton(
                                   plunesStrings.submit,
-                                  AppConfig.horizontalBlockSize * 6,
+                                  AppConfig.horizontalBlockSize * 8,
                                   PlunesColors.GREENCOLOR,
-                                  AppConfig.horizontalBlockSize * 1,
-                                  AppConfig.verticalBlockSize * 1.5,
+                                  AppConfig.horizontalBlockSize * 0,
+                                  AppConfig.verticalBlockSize * 1.2,
                                   PlunesColors.WHITECOLOR)),
                         ),
                         failureMessage == null || failureMessage.isEmpty
@@ -493,13 +496,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
         padding: const EdgeInsets.all(5.0),
         child: Text('Call at: ${_helpLineNumberModel?.number ?? _helpNumber}',
             style: TextStyle(
-              fontSize: AppConfig.mediumFont,
-              fontWeight: FontWeight.bold,
-//                decoration: TextDecoration.underline,
-//                decorationStyle: TextDecorationStyle.solid,
-//                decorationThickness: 2.0,
-//                decorationColor: PlunesColors.BLACKCOLOR
-            )),
+                fontSize: AppConfig.mediumFont, fontWeight: FontWeight.w600)),
       ),
     );
   }

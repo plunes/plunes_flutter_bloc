@@ -85,7 +85,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   PlunesStrings.NA,
                               style: TextStyle(
                                   fontSize: AppConfig.mediumFont,
-                                  fontWeight: FontWeight.bold),
+                                  fontWeight: FontWeight.w600),
                             ),
                           ),
                           SizedBox(height: 5),
@@ -149,7 +149,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                             PlunesStrings.NA,
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w500,
 //                                    decoration: TextDecoration.underline,
                                     decorationStyle: TextDecorationStyle.solid,
                                     decorationThickness: 2.0,
@@ -180,7 +180,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                       appointmentModel.centreNumber,
                                       style: TextStyle(
                                           fontSize: AppConfig.mediumFont,
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: FontWeight.w500,
 //                                          decoration: TextDecoration.underline,
                                           decorationStyle:
                                               TextDecorationStyle.solid,
@@ -232,7 +232,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                         children: <Widget>[
                           Text(_getMonthWithYear().toUpperCase(),
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
                                 fontSize: AppConfig.mediumFont,
                               )),
                           Text(_getFullDate(),
@@ -485,7 +485,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             appointmentModel?.serviceName),
                         style: TextStyle(
                             fontSize: AppConfig.smallFont,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w500,
                             color: Colors.black54)),
                   ),
                 ),
@@ -548,8 +548,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   Text(PlunesStrings.paymentStatus,
                       style: TextStyle(
                         fontSize: AppConfig.mediumFont,
-                        fontWeight: FontWeight.bold,
-//                          decoration: TextDecoration.underline
+                        fontWeight: FontWeight.w500,
                       )),
                   (widget.appointmentModel.isOpened != null &&
                           UserManager().getUserDetails().userType !=
