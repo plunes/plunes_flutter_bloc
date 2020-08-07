@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -517,15 +519,27 @@ class CustomWidgets {
 
   Widget errorWidget(String failureCause) {
     return Container(
-      child: Center(
-        child: Text(
-          failureCause ?? plunesStrings.somethingWentWrong,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-              color: PlunesColors.BLACKCOLOR,
-              fontWeight: FontWeight.bold,
-              fontSize: 18),
-        ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+              height: AppConfig.verticalBlockSize * 10,
+              width: double.infinity,
+              child: Image.asset(PlunesImages.noServiceAvailable)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Text(
+                failureCause ?? plunesStrings.somethingWentWrong,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.GREYCOLOR,
+                    fontWeight: FontWeight.normal,
+                    fontSize: 12),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -2527,30 +2541,48 @@ class CustomWidgets {
 
   showDoctorList(List<DoctorsData> doctorsData, BuildContext context,
       String hospitalName) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      elevation: 0.0,
+    return Material(
+//      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+//      elevation: 0.0,
       child: Container(
-        height: AppConfig.verticalBlockSize * 80,
-        width: double.infinity,
+//        color: PlunesColors.GREENCOLOR.withOpacity(0.25),
+//        height: double.infinity,
+//        width: double.infinity,
         child: Column(
           children: <Widget>[
             Container(
-              alignment: Alignment.topRight,
-              child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
-                onDoubleTap: () {},
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Icon(Icons.close),
+//                color: PlunesColors.GREENCOLOR,
+//             alignment: Alignment.topRight,
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  onDoubleTap: () {},
+                  child: Icon(Icons.close, size: 40),
                 ),
-              ),
-            ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    plunesStrings.teamOfExperts,
+                    style: TextStyle(
+                        color: PlunesColors.BLACKCOLOR,
+                        fontSize: AppConfig.largeFont,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(),
+              ],
+            )),
+            Divider(height: 0.5, color: PlunesColors.GREYCOLOR),
             Expanded(
                 child: Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 7,
-                  vertical: AppConfig.verticalBlockSize * 2),
+              margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 7,
+                right: AppConfig.horizontalBlockSize * 7,
+                bottom: AppConfig.verticalBlockSize * 4,
+//                  top: AppConfig.verticalBlockSize * 2
+              ),
               child: ListView.builder(
                 itemBuilder: (context, itemIndex) {
                   return InkWell(
@@ -2567,7 +2599,7 @@ class CustomWidgets {
                           padding: EdgeInsets.symmetric(
                               vertical: AppConfig.verticalBlockSize * 1.5),
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               (doctorsData[itemIndex].imageUrl == null ||
@@ -2589,6 +2621,9 @@ class CustomWidgets {
                                       ),
                                       radius: 30,
                                     ),
+                              SizedBox(
+                                width: AppConfig.horizontalBlockSize * 5,
+                              ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
@@ -2620,7 +2655,22 @@ class CustomWidgets {
                                       maxLines: 1,
                                       style: TextStyle(
                                           color: PlunesColors.GREYCOLOR,
-                                          fontSize: 15),
+                                          fontSize: AppConfig.smallFont),
+                                    ),
+                                  ),
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 0.2),
+                                    width: AppConfig.horizontalBlockSize * 64,
+                                    child: Text(
+                                      doctorsData[itemIndex].education ??
+                                          PlunesStrings.NA,
+                                      textAlign: TextAlign.start,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                          color: PlunesColors.GREYCOLOR,
+                                          fontSize: AppConfig.smallFont),
                                     ),
                                   ),
                                   Container(
@@ -2639,7 +2689,7 @@ class CustomWidgets {
                                       maxLines: 1,
                                       style: TextStyle(
                                           color: PlunesColors.GREYCOLOR,
-                                          fontSize: 15),
+                                          fontSize: AppConfig.smallFont),
                                     ),
                                     width: AppConfig.horizontalBlockSize * 40,
                                   ),
@@ -2648,12 +2698,312 @@ class CustomWidgets {
                             ],
                           ),
                         ),
-                        Divider(height: 0.5, color: PlunesColors.LIGHTGREYCOLOR)
+                        Divider(height: 0.5, color: PlunesColors.GREYCOLOR)
                       ],
                     ),
                   );
                 },
                 itemCount: doctorsData?.length ?? 0,
+              ),
+            ))
+          ],
+        ),
+      ),
+    );
+  }
+
+  showReviewList(List<RateAndReview> _rateAndReviewList, BuildContext context) {
+    return Material(
+//      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+//      elevation: 0.0,
+      child: Container(
+//        color: PlunesColors.GREENCOLOR.withOpacity(0.25),
+//        height: double.infinity,
+//        width: double.infinity,
+        child: Column(
+          children: <Widget>[
+            Container(
+//                color: PlunesColors.GREENCOLOR,
+//             alignment: Alignment.topRight,
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  onDoubleTap: () {},
+                  child: Icon(Icons.close, size: 40),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    "Check All Reviews",
+                    style: TextStyle(
+                        color: PlunesColors.BLACKCOLOR,
+                        fontSize: AppConfig.largeFont,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                Container(),
+              ],
+            )),
+            Divider(height: 0.5, color: PlunesColors.GREYCOLOR),
+            Expanded(
+                child: Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 7,
+                  right: AppConfig.horizontalBlockSize * 7,
+                  bottom: AppConfig.verticalBlockSize * 4,
+                  top: AppConfig.verticalBlockSize * 2),
+              child: ListView.builder(
+                itemBuilder: (context, itemIndex) {
+                  return Column(
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: AppConfig.verticalBlockSize * 2),
+                        margin: EdgeInsets.only(
+                          right: AppConfig.horizontalBlockSize * 2,
+//          vertical: AppConfig.verticalBlockSize * 1
+                        ),
+                        child: Column(
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                (_rateAndReviewList[itemIndex].userImage ==
+                                            null ||
+                                        _rateAndReviewList[itemIndex]
+                                            .userImage
+                                            .isEmpty ||
+                                        !_rateAndReviewList[itemIndex]
+                                            .userImage
+                                            .contains("http"))
+                                    ? CustomWidgets().getBackImageView(
+                                        _rateAndReviewList[itemIndex].userName,
+                                        width: 50,
+                                        height: 50)
+                                    : CircleAvatar(
+                                        child: Container(
+                                          height: 50,
+                                          width: 50,
+                                          child: ClipOval(
+                                              child: CustomWidgets()
+                                                  .getImageFromUrl(
+                                                      _rateAndReviewList[
+                                                              itemIndex]
+                                                          .userImage,
+                                                      boxFit: BoxFit.fill)),
+                                        ),
+                                        radius: 25,
+                                      ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left:
+                                            AppConfig.horizontalBlockSize * 2),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: Text(
+                                            _rateAndReviewList[itemIndex]
+                                                    ?.userName ??
+                                                PlunesStrings.NA,
+                                            style: TextStyle(
+                                                color: PlunesColors.BLACKCOLOR,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 5.0),
+                                          child: CustomWidgets().showRatingBar(
+                                              _rateAndReviewList[itemIndex]
+                                                      .rating
+                                                      ?.toDouble() ??
+                                                  1.0),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  flex: 4,
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left:
+                                            AppConfig.horizontalBlockSize * 2),
+                                    child:
+//                  StreamBuilder<Object>(
+//                                        stream: _streamController.stream,
+//                                        builder: (context, snapshot) {
+//                                          return
+                                        Text(
+                                      DateUtil.getDuration(
+                                              _rateAndReviewList[itemIndex]
+                                                      .createdAt ??
+                                                  0) ??
+                                          PlunesStrings.NA,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.smallFont),
+                                    ),
+//                                        }),
+                                  ),
+                                  flex: 2,
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: AppConfig.verticalBlockSize * 2,
+                            ),
+                            Container(
+//            margin: EdgeInsets.only(
+//                top: AppConfig.verticalBlockSize * 1.2,
+//                bottom: AppConfig.verticalBlockSize * 1.2),
+//            height: AppConfig.verticalBlockSize * 13,
+                              width: double.infinity,
+                              child: Text(
+                                _rateAndReviewList[itemIndex].description ??
+                                    PlunesStrings.NA,
+                                textAlign: TextAlign.start,
+                                maxLines: 4,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 12),
+                              ),
+                            ),
+//          Container(
+//            margin: EdgeInsets.only(
+//                left: AppConfig.horizontalBlockSize * 12,
+//                right: AppConfig.horizontalBlockSize * 5,
+//                top: AppConfig.verticalBlockSize * .5,
+//                bottom: AppConfig.verticalBlockSize * 1),
+//            width: double.infinity,
+//            height: 0.5,
+//            color: PlunesColors.GREYCOLOR,
+//          )
+                          ],
+                        ),
+                      ),
+                      Divider(height: 0.5, color: PlunesColors.GREYCOLOR),
+                    ],
+                  );
+//                        Column(
+//                          children: <Widget>[
+//                            Padding(
+//                              padding: EdgeInsets.symmetric(
+//                                  vertical: AppConfig.verticalBlockSize * 1.5),
+//                              child: Row(
+//                                mainAxisAlignment: MainAxisAlignment.start,
+//                                crossAxisAlignment: CrossAxisAlignment.start,
+//                                children: <Widget>[
+//                                  (doctorsData[itemIndex].imageUrl == null ||
+//                                      doctorsData[itemIndex].imageUrl.isEmpty ||
+//                                      !(doctorsData[itemIndex]
+//                                          .imageUrl
+//                                          .contains("http")))
+//                                      ? CustomWidgets().getBackImageView(
+//                                      doctorsData[itemIndex].name ??
+//                                          PlunesStrings.NA)
+//                                      : CircleAvatar(
+//                                    child: Container(
+//                                      height: 60,
+//                                      width: 60,
+//                                      child: ClipOval(
+//                                          child: getImageFromUrl(
+//                                              doctorsData[itemIndex].imageUrl,
+//                                              boxFit: BoxFit.fill)),
+//                                    ),
+//                                    radius: 30,
+//                                  ),
+//                                  SizedBox(
+//                                    width: AppConfig.horizontalBlockSize * 5,
+//                                  ),
+//                                  Column(
+//                                    crossAxisAlignment: CrossAxisAlignment.start,
+//                                    children: <Widget>[
+//                                      Container(
+//                                        width: AppConfig.horizontalBlockSize * 40,
+//                                        padding:
+//                                        EdgeInsets.symmetric(vertical: 0.2),
+//                                        child: Text(
+//                                          CommonMethods.getStringInCamelCase(
+//                                              doctorsData[itemIndex]?.name) ??
+//                                              PlunesStrings.NA,
+//                                          textAlign: TextAlign.start,
+//                                          overflow: TextOverflow.ellipsis,
+//                                          maxLines: 1,
+//                                          style: TextStyle(
+//                                              color: PlunesColors.BLACKCOLOR,
+//                                              fontSize: 15),
+//                                        ),
+//                                      ),
+//                                      Container(
+//                                        padding:
+//                                        EdgeInsets.symmetric(vertical: 0.2),
+//                                        width: AppConfig.horizontalBlockSize * 40,
+//                                        child: Text(
+//                                          doctorsData[itemIndex].designation ??
+//                                              PlunesStrings.NA,
+//                                          textAlign: TextAlign.start,
+//                                          overflow: TextOverflow.ellipsis,
+//                                          maxLines: 1,
+//                                          style: TextStyle(
+//                                              color: PlunesColors.GREYCOLOR,
+//                                              fontSize: AppConfig.smallFont),
+//                                        ),
+//                                      ),
+//                                      Container(
+//                                        padding:
+//                                        EdgeInsets.symmetric(vertical: 0.2),
+//                                        width: AppConfig.horizontalBlockSize * 64,
+//                                        child: Text(
+//                                          doctorsData[itemIndex].education ??
+//                                              PlunesStrings.NA,
+//                                          textAlign: TextAlign.start,
+//                                          overflow: TextOverflow.ellipsis,
+//                                          maxLines: 1,
+//                                          style: TextStyle(
+//                                              color: PlunesColors.GREYCOLOR,
+//                                              fontSize: AppConfig.smallFont),
+//                                        ),
+//                                      ),
+//                                      Container(
+//                                        padding:
+//                                        EdgeInsets.symmetric(vertical: 0.2),
+//                                        child: Text(
+//                                          doctorsData[itemIndex].experience ==
+//                                              null ||
+//                                              doctorsData[itemIndex]
+//                                                  .experience ==
+//                                                  "0"
+//                                              ? PlunesStrings.NA
+//                                              : "Expr ${doctorsData[itemIndex].experience} years",
+//                                          textAlign: TextAlign.start,
+//                                          overflow: TextOverflow.ellipsis,
+//                                          maxLines: 1,
+//                                          style: TextStyle(
+//                                              color: PlunesColors.GREYCOLOR,
+//                                              fontSize: AppConfig.smallFont),
+//                                        ),
+//                                        width: AppConfig.horizontalBlockSize * 40,
+//                                      ),
+//                                    ],
+//                                  )
+//                                ],
+//                              ),
+//                            ),
+//                            Divider(height: 0.5, color: PlunesColors.GREYCOLOR)
+//                          ],
+//                        );
+                },
+                itemCount: _rateAndReviewList?.length ?? 0,
               ),
             ))
           ],

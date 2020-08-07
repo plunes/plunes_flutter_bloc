@@ -1,8 +1,16 @@
+import 'package:flutter/cupertino.dart';
+
 /// Created by Manvendra Kumar Singh
 
 final plunesStrings = PlunesStrings();
 
 class PlunesStrings {
+  static const String forAnyQueries = "For Any Queries, Call Us Now!";
+  static const String medicalRegistrationVerified =
+      "Medical Registration Verified";
+  static const String view_More = "View more";
+  static const String checkReviews = "Check Reviews";
+  static const String timing = 'Timings';
   static const String exceptionMsg =
       'An error occurred when converting a color';
   static const String noInternetMsg = 'No Internet';
@@ -171,7 +179,7 @@ class PlunesStrings {
   static const String emailIdText = "Email_Id";
   static const String viewOnMap = "View on map";
   static const String serviceList = "Service List";
-  static const String seeMoreDoctors = "See more Doctors";
+  static const String seeAllDoctors = "See all Doctors";
   static const String unableToLoadServices = "No Services available";
   static const String knowMore = "Know More";
 

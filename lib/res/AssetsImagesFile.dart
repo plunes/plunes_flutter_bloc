@@ -3,6 +3,14 @@
 final plunesImages = PlunesImages();
 
 class PlunesImages {
+//  static String achievement = "assets/images/profile/achievement.png";
+  static String greenCheck = "assets/images/profile/greenCheck.png";
+  static String specialization = "assets/images/profile/specialization.png";
+  static String expert = "assets/images/profile/expert.png";
+  static String review = "assets/images/profile/review.png";
+  static String clock = "assets/images/profile/clock.png";
+  static String map = "assets/images/profile/Map.png";
+  static String noServiceAvailable = "assets/images/profile/No_service.png";
   static String updateApp = "assets/images/update.png";
   static String errorPage = 'assets/error_page.png';
   static String splashImage = 'assets/images/splash_final.jpg';
@@ -141,6 +149,10 @@ class PlunesImages {
 
   get locationIcon => 'assets/images/profile/location.png';
 
+  get introduction => 'assets/images/profile/Introduction.png';
+
+//  get clockImg => 'assets/images/profile/clock.png';
+
   get calIcon => 'assets/images/profile/calIcon.png';
 
   get eduIcon => 'assets/images/profile/eduIcon.png';
@@ -152,6 +164,8 @@ class PlunesImages {
   get uniIcon => 'assets/images/profile/uniIcon.png';
 
   get achievementIcon => 'assets/images/achievments/achivement.png';
+
+  get achievement => 'assets/images/profile/achievement.png';
 
   get pathIcon => 'assets/images/profile/pathIcon.png';
 

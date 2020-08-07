@@ -223,7 +223,14 @@ flutter:
     - assets/images/profile/uniIcon.png
     - assets/images/profile/pathIcon.png
     - assets/images/profile/genderIcon.png
-
+    - assets/images/profile/No_service.png
+    - assets/images/profile/Introduction.png
+    - assets/images/profile/Map.png
+    - assets/images/profile/achievement.png
+    - assets/images/profile/review.png
+    - assets/images/profile/expert.png
+    - assets/images/profile/specialization.png
+    - assets/images/profile/greenCheck.png
 
     - assets/images/bid/location.png
     - assets/images/bid/add_image.png
