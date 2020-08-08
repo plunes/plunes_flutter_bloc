@@ -214,20 +214,17 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                         ),
                       ),
                       Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Icon(
-                            Icons.star,
-                            color: PlunesColors.GREENCOLOR,
-                            size: AppConfig.veryExtraLargeFont -
-                                AppConfig.mediumFont,
-                          ),
+                          Icon(Icons.star,
+                              color: PlunesColors.GREENCOLOR,
+                              size: AppConfig.veryExtraLargeFont -
+                                  AppConfig.extraLargeFont),
                           Text(
-                            "4.5",
-//                            _services.doctors[0].rating?.toStringAsFixed(1)
-//                          ?? PlunesStrings.NA,
+                            widget.rating ?? PlunesStrings.NA,
                             style: TextStyle(
-                                color: PlunesColors.BLACKCOLOR,
+                                color: PlunesColors.GREYCOLOR,
                                 fontSize: AppConfig.mediumFont),
                           ),
                         ],
