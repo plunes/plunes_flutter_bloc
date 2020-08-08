@@ -912,9 +912,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       Widget route;
       if (service.userType.toLowerCase() ==
           Constants.doctor.toString().toLowerCase()) {
-        route = DocProfile(userId: service.professionalId);
+        route = DocProfile(
+            userId: service.professionalId,
+            rating: service.rating.toStringAsFixed(1));
       } else {
-        route = HospitalProfile(userID: service.professionalId);
+        route = HospitalProfile(
+            userID: service.professionalId,
+            rating: service.rating.toStringAsFixed(1));
       }
       Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
@@ -1011,7 +1015,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   InkWell(
-                    onTap: () => _viewProfile(service),
+                    onTap: () {
+                      _viewProfile(service);
+                    },
                     onDoubleTap: () {},
                     child: (service.doctors[index].imageUrl != null &&
                             service.doctors[index].imageUrl.isNotEmpty &&

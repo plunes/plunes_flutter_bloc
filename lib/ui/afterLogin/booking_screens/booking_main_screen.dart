@@ -436,9 +436,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                         ? PlunesColors.GREENCOLOR
                         : PlunesColors.BLACKCOLOR,
                     fontSize: AppConfig.mediumFont,
-                    decoration: isSelectedTimeSlot
-                        ? TextDecoration.underline
-                        : TextDecoration.none,
+//                    decoration: isSelectedTimeSlot
+//                        ? TextDecoration.underline
+//                        : TextDecoration.none,
                     decorationThickness: 1.5),
               ),
             )),

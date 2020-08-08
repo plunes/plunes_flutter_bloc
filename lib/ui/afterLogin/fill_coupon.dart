@@ -240,7 +240,6 @@ class _FillCouponState extends BaseState<FillCoupon> {
                       child: Image.asset(PlunesImages.couponImage)),
                   SizedBox(height: 10),
                   Text("Coupon Applied Successfully!"),
-                  SizedBox(height: 20),
                   SizedBox(height: AppConfig.verticalBlockSize * 1),
                   FlatButton(
                       onPressed: () => Navigator.pop(context, true),

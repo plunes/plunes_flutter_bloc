@@ -16,8 +16,9 @@ import 'package:plunes/ui/afterLogin/profile_screens/achievement_review.dart';
 // ignore: must_be_immutable
 class DocProfile extends BaseActivity {
   final String userId;
+  final String rating;
 
-  DocProfile({this.userId});
+  DocProfile({this.userId, this.rating});
 
   @override
   _DocProfileState createState() => _DocProfileState();
@@ -197,7 +198,21 @@ class _DocProfileState extends BaseState<DocProfile> {
               ],
             ),
           ),
-        )
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(Icons.star,
+                color: PlunesColors.GREENCOLOR,
+                size: AppConfig.veryExtraLargeFont - AppConfig.extraLargeFont),
+            Text(
+              widget.rating ?? PlunesStrings.NA,
+              style: TextStyle(
+                  color: PlunesColors.BLACKCOLOR,
+                  fontSize: AppConfig.mediumFont),
+            ),
+          ],
+        ),
       ],
     );
   }
