@@ -902,6 +902,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         route = HospitalProfile(
           userID: service.professionalId,
           rating: service.rating.toStringAsFixed(1),
+          timeSlots: service.timeSlots,
         );
       }
       Navigator.push(context, MaterialPageRoute(builder: (context) => route));

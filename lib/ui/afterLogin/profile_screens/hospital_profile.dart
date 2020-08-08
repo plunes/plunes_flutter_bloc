@@ -28,13 +28,9 @@ import 'package:plunes/ui/afterLogin/profile_screens/achievement_review.dart';
 class HospitalProfile extends BaseActivity {
   final String userID;
   final String rating;
-//  final List<TimeSlots> timeSlots;
+  final List<TimeSlots> timeSlots;
 
-  HospitalProfile({
-    this.userID,
-    this.rating,
-//    this.timeSlots
-  });
+  HospitalProfile({this.userID, this.rating, this.timeSlots});
 
   @override
   _HospitalProfileState createState() => _HospitalProfileState();
@@ -42,9 +38,7 @@ class HospitalProfile extends BaseActivity {
 
 class _HospitalProfileState extends BaseState<HospitalProfile> {
   DateTime _currentDate;
-//  String _weekDay;
-//  String _firstSlotTime;
-//  String _secondSlotTime;
+  String _weekDay, _firstSlotTime, _secondSlotTime;
   bool _isServiceListOpened = false;
   UserBloc _userBloc;
   LoginPost _profileResponse;
@@ -62,8 +56,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   @override
   void initState() {
     _userBloc = UserBloc();
-//    _currentDate = DateTime.now();
-//    _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
+    _currentDate = DateTime.now();
+    _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
     _getUserDetails();
     super.initState();
   }
@@ -446,27 +440,44 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   Widget _getTimings(double height, double width, String icon, String title) {
     return Column(
       children: <Widget>[
-        Container(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                  width: width,
-                  height: height,
-                  child: widget.getAssetIconWidget(
-                      icon, height, width, BoxFit.contain)),
-              SizedBox(width: 10),
-              Text(
-                title,
-                style: TextStyle(
-                    color: PlunesColors.BLACKCOLOR,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500),
-              ),
-            ],
+        Expanded(
+          child: Container(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                    width: width,
+                    height: height,
+                    child: widget.getAssetIconWidget(
+                        icon, height, width, BoxFit.contain)),
+                SizedBox(width: 10),
+                Text(
+                  title,
+                  style: TextStyle(
+                      color: PlunesColors.BLACKCOLOR,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
           ),
         ),
+        Expanded(
+          child: Container(
+              height: AppConfig.verticalBlockSize * 15,
+              width: double.infinity,
+              child: ListView.builder(
+//                physics: NeverScrollableScrollPhysics(),
+
+                  scrollDirection: Axis.horizontal,
+                  itemCount: 6,
+                  itemBuilder: (context, itemIndex) {
+                    _getSlotsInfo(DateUtil.getDayAsString(
+                        _currentDate.add(Duration(days: itemIndex))));
+                    return _getSlots();
+                  })),
+        )
 //        _getSlots(),
 //        Container(
 //          child: ListView.builder(
@@ -1232,97 +1243,93 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             .showDocPopup(doctorsData, context, _profileResponse?.user?.name));
   }
 
-//  void _getSlotsInfo(String dateAsString) {
-//    _firstSlotTime = PlunesStrings.NA;
-//    _secondSlotTime = _firstSlotTime;
-//    _weekDay = dateAsString;
-//    widget.timeSlots.forEach((slot) {
-//      if (slot.day.toLowerCase().contains(dateAsString.toLowerCase())) {
-//        if (!slot.closed) {
-//          if (slot.slots.length >= 1)
-//            _firstSlotTime = slot?.slots[0] ?? _firstSlotTime;
-//          if (slot.slots.length >= 2)
-//            _secondSlotTime = slot?.slots[1] ?? _secondSlotTime;
-//        }
-//      }
-//    });
+  void _getSlotsInfo(String dateAsString) {
+    _firstSlotTime = PlunesStrings.NA;
+    _secondSlotTime = _firstSlotTime;
+    _weekDay = dateAsString;
+    widget.timeSlots.forEach((slot) {
+      if (slot.day.toLowerCase().contains(dateAsString.toLowerCase())) {
+        if (!slot.closed) {
+          if (slot.slots.length >= 1)
+            _firstSlotTime = slot?.slots[0] ?? _firstSlotTime;
+          if (slot.slots.length >= 2)
+            _secondSlotTime = slot?.slots[1] ?? _secondSlotTime;
+        }
+      }
+    });
 //    _setState();
-//  }
-//
-//  Widget _getSlotInfo(String slotName, String fromAndToText) {
-//    return Column(
-//      crossAxisAlignment: CrossAxisAlignment.center,
-//      children: <Widget>[
-//        InkWell(
-//            onTap: () {
-////              if (isSelectedTimeSlot) {
-////                _openTimePicker();
-////              }
-//            },
-//            child: Container(
-////              decoration: isSelectedTimeSlot
-////                  ? BoxDecoration(
-////                      color: PlunesColors.GREENCOLOR,
-////                      borderRadius: BorderRadius.all(
-////                          Radius.circular(AppConfig.horizontalBlockSize * 8)))
-////                  : null,
-//              padding: EdgeInsets.all(3.0),
-//              child: Text(
-//                slotName,
-//                style: TextStyle(
-////                    color: isSelectedTimeSlot
-////                        ? PlunesColors.GREENCOLOR
-////                        : PlunesColors.BLACKCOLOR,
-//                    fontSize: AppConfig.mediumFont,
-////                    decoration: isSelectedTimeSlot
-////                        ? TextDecoration.underline
-////                        : TextDecoration.none,
-//                    decorationThickness: 1.5),
-//              ),
-//            )),
-//        Padding(
-//          padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-//          child: Text(
-//            fromAndToText,
-//            style: TextStyle(
-////                color: selectedColor != null
-////                    ? selectedColor
-////                    : PlunesColors.GREENCOLOR,
-//                fontSize: AppConfig.mediumFont),
-//          ),
-//        ),
+  }
+
+  Widget _getSlotInfo(String weekDay, String slot1, String slot2) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+      decoration: BoxDecoration(
+        border:
+            Border.all(color: PlunesColors.GREYCOLOR, style: BorderStyle.solid),
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            padding: EdgeInsets.only(top: 4, bottom: 2, right: 2, left: 2),
+            child: Text(
+              weekDay,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: AppConfig.mediumFont,
+                  decorationThickness: 1.5,
+                  color: PlunesColors.BLACKCOLOR),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 1.5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text(
+                      slot1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.smallFont,
+                          color: PlunesColors.GREYCOLOR),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text(
+                      slot1,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: PlunesColors.GREYCOLOR,
+                          fontSize: AppConfig.smallFont),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
 //        Container(
-//          margin: EdgeInsets.all(2
-////              top: AppConfig.verticalBlockSize * .2,
-////              right: isSelectedTimeSlot
-////                  ? AppConfig.horizontalBlockSize * 26
-////                  : AppConfig.horizontalBlockSize * 3,
-////              left: isSelectedTimeSlot
-////                  ? AppConfig.horizontalBlockSize * 26
-////                  : AppConfig.horizontalBlockSize * 3
-//              ),
+//          margin: EdgeInsets.all(2),
 //          width: double.infinity,
 //          height: 0.8,
-////          color: selectedColor != null
-////              ? selectedColor
-////              : isSelectedTimeSlot
-////                  ? PlunesColors.GREYCOLOR
-////                  : PlunesColors.GREENCOLOR,
 //        )
-//      ],
-//    );
-//  }
-//
-//  Widget _getSlots() {
-//    return Row(
-//      children: <Widget>[
-//        Expanded(child: _getSlotInfo(_weekDay, _firstSlotTime)),
-//        Expanded(child: _getSlotInfo(PlunesStrings.slot2, _secondSlotTime)),
-//      ],
-//    );
-//  }
-//
-//  void _setState() {
-//    if (mounted) setState(() {});
-//  }
+        ],
+      ),
+    );
+  }
+
+  Widget _getSlots() {
+    return _getSlotInfo(_weekDay, _firstSlotTime, _secondSlotTime);
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
 }
