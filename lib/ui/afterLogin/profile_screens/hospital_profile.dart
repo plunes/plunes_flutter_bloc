@@ -37,7 +37,6 @@ class HospitalProfile extends BaseActivity {
 
 class _HospitalProfileState extends BaseState<HospitalProfile> {
   DateTime _currentDate;
-  String _weekDay, _firstSlotTime, _secondSlotTime;
   bool _isServiceListOpened = false;
   UserBloc _userBloc;
   LoginPost _profileResponse;
@@ -48,6 +47,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   BuildContext _context;
   String _failureCause;
   Services _services;
+
 //  Completer<GoogleMapController> _googleMapController = Completer();
 //  GoogleMapController _mapController;
 //  Set<Marker> _markers = {};
@@ -56,7 +56,6 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   void initState() {
     _userBloc = UserBloc();
     _currentDate = DateTime.now();
-    _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
     _getUserDetails();
     super.initState();
   }
@@ -437,58 +436,46 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   }
 
   Widget _getTimings(double height, double width, String icon, String title) {
-    return Column(
-      children: <Widget>[
-        Expanded(
-          child: Container(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                    width: width,
-                    height: height,
-                    child: widget.getAssetIconWidget(
-                        icon, height, width, BoxFit.contain)),
-                SizedBox(width: 10),
-                Text(
-                  title,
-                  style: TextStyle(
-                      color: PlunesColors.BLACKCOLOR,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-              height: AppConfig.verticalBlockSize * 15,
-              width: double.infinity,
-              child: ListView.builder(
-//                physics: NeverScrollableScrollPhysics(),
-
+    return (_profileResponse.user == null ||
+            _profileResponse.user.timeSlots == null ||
+            _profileResponse.user.timeSlots.isEmpty)
+        ? Container()
+        : Column(
+            children: <Widget>[
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                      width: width,
+                      height: height,
+                      child: widget.getAssetIconWidget(
+                          icon, height, width, BoxFit.contain)),
+                  SizedBox(width: 10),
+                  Text(
+                    title,
+                    style: TextStyle(
+                        color: PlunesColors.BLACKCOLOR,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+              Container(
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return _getSlotInfo(
+                        _profileResponse?.user?.timeSlots[index]);
+                  },
+                  itemCount: _profileResponse?.user?.timeSlots?.length ?? 0,
                   scrollDirection: Axis.horizontal,
-                  itemCount: 6,
-                  itemBuilder: (context, itemIndex) {
-                    _getSlotsInfo(DateUtil.getDayAsString(
-                        _currentDate.add(Duration(days: itemIndex))));
-                    return _getSlots();
-                  })),
-        )
-//        _getSlots(),
-//        Container(
-//          child: ListView.builder(
-//              physics: NeverScrollableScrollPhysics(),
-//              scrollDirection: Axis.horizontal,
-//              itemCount: widget.t,
-//              itemBuilder: (context, itemIndex) {
-//                return;
-//              }),
-//        )
-      ],
-    );
+                  shrinkWrap: true,
+                ),
+                width: double.infinity,
+                height: AppConfig.verticalBlockSize * 16,
+              )
+            ],
+          );
   }
 
   Widget _getIntroductionView(double height, double width, String icon) {
@@ -1242,76 +1229,82 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             .showDocPopup(doctorsData, context, _profileResponse?.user?.name));
   }
 
-  Widget _getSlotInfo(String weekDay, String slot1, String slot2) {
+  Widget _getSlotInfo(TimeSlotsData timeSlot) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+      margin: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 1,
+          bottom: AppConfig.verticalBlockSize * 1,
+          right: AppConfig.horizontalBlockSize * 3),
       decoration: BoxDecoration(
         border:
             Border.all(color: PlunesColors.GREYCOLOR, style: BorderStyle.solid),
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(top: 4, bottom: 2, right: 2, left: 2),
-            child: Text(
-              weekDay,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: AppConfig.mediumFont,
-                  decorationThickness: 1.5,
-                  color: PlunesColors.BLACKCOLOR),
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 1.5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+      child: (timeSlot != null && timeSlot.closed != null && timeSlot.closed)
+          ? Container(
+              color: Colors.red.withOpacity(0.6),
+              alignment: Alignment.center,
+              padding: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 7),
+              child: Text(
+                "Closed",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: AppConfig.verySmallFont,
+                    color: PlunesColors.WHITECOLOR),
+              ),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text(
-                      slot1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontSize: AppConfig.smallFont,
-                          color: PlunesColors.GREYCOLOR),
-                    ),
+                Container(
+                  padding:
+                      EdgeInsets.only(top: 4, bottom: 2, right: 2, left: 2),
+                  child: Text(
+                    timeSlot?.day?.substring(0, 3)?.toUpperCase() ??
+                        _getEmptyString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: AppConfig.mediumFont,
+                        decorationThickness: 1.5,
+                        color: PlunesColors.BLACKCOLOR),
                   ),
                 ),
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text(
-                      slot1,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: PlunesColors.GREYCOLOR,
-                          fontSize: AppConfig.smallFont),
-                    ),
+                Container(
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                  padding: EdgeInsets.all(2),
+                  child: Text(
+                    (timeSlot != null &&
+                            timeSlot.slots != null &&
+                            timeSlot.slots.isNotEmpty)
+                        ? timeSlot.slots.first
+                        : _getEmptyString(),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: AppConfig.verySmallFont,
+                        color: PlunesColors.GREYCOLOR),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * .4),
+                  padding: EdgeInsets.all(2),
+                  child: Text(
+                    (timeSlot != null &&
+                            timeSlot.slots != null &&
+                            timeSlot.slots.isNotEmpty &&
+                            timeSlot.slots.length == 2)
+                        ? timeSlot.slots[1]
+                        : "",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: AppConfig.verySmallFont,
+                        color: PlunesColors.GREYCOLOR),
                   ),
                 ),
               ],
             ),
-          ),
-//        Container(
-//          margin: EdgeInsets.all(2),
-//          width: double.infinity,
-//          height: 0.8,
-//        )
-        ],
-      ),
     );
-  }
-
-  Widget _getSlots() {
-    return _getSlotInfo(_weekDay, _firstSlotTime, _secondSlotTime);
-  }
-
-  void _setState() {
-    if (mounted) setState(() {});
   }
 }
