@@ -961,6 +961,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           _userType == Constants.generalUser ? 'User' : _userType;
       if (_userType != Constants.generalUser) {
         body['address'] = fullAddressController.text.trim();
+        body['googleAddress'] = locationController.text.trim();
       }
       body['deviceId'] = Constants.DEVICE_TOKEN;
       if (_userType != Constants.hospital &&

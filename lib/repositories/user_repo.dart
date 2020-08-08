@@ -75,7 +75,9 @@ class UserManager {
         notificationEnabled:
             preferences.getPreferenceBoolean(Constants.NOTIFICATION_ENABLED),
         isAdmin: preferences.getPreferenceBoolean(Constants.IS_ADMIN),
-        isCentre: preferences.getPreferenceBoolean(Constants.IS_CENTRE));
+        isCentre: preferences.getPreferenceBoolean(Constants.IS_CENTRE),
+        googleLocation:
+            preferences.getPreferenceString(Constants.GOOGLE_LOCATION));
   }
 
   String getDeviceToken() {

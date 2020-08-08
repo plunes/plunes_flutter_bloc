@@ -68,6 +68,7 @@ class _EditProfileState extends State<EditProfileScreen>
   final docNameController = new TextEditingController();
   final educationController = TextEditingController();
   final collegeController = TextEditingController();
+  final manualAddressController = TextEditingController();
   List<dynamic> _selectedItemId = List(), _selectedSpecializationData = List();
   FocusNode nameFocusNode = new FocusNode(),
       educationFocusNode = new FocusNode(),
@@ -158,12 +159,19 @@ class _EditProfileState extends State<EditProfileScreen>
                   _isValidEmail,
                   plunesStrings.errorValidEmailMsg)
               : Container(),
-          widget.getSpacer(0.0, 20.0),
-          widget.userType != Constants.hospital
+          widget.getSpacer(
+              0.0,
+              (widget.userType != Constants.hospital &&
+                      widget.userType != Constants.labDiagnosticCenter)
+                  ? 20.0
+                  : 0),
+          (widget.userType != Constants.hospital &&
+                  widget.userType != Constants.labDiagnosticCenter)
               ? createTextField(dobController, plunesStrings.dateOfBirth,
                   TextInputType.datetime, TextCapitalization.none, false, '')
               : Container(),
-          widget.userType != Constants.hospital
+          (widget.userType != Constants.hospital &&
+                  widget.userType != Constants.labDiagnosticCenter)
               ? createTextField(
                   educationController,
                   isDoctor
@@ -174,8 +182,6 @@ class _EditProfileState extends State<EditProfileScreen>
                   true,
                   '')
               : Container(),
-          widget.getSpacer(
-              0.0, widget.userType != Constants.hospital ? 20.0 : 0),
 //          isDoctor
 //              ? createTextField(
 //                  professionRegController,
@@ -211,12 +217,22 @@ class _EditProfileState extends State<EditProfileScreen>
 //                  TextInputType.text, TextCapitalization.words, true, '')
 //              : Container(),
           widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-          widget.userType != Constants.hospital
+          (widget.userType != Constants.hospital &&
+                  widget.userType != Constants.labDiagnosticCenter)
               ? createTextField(collegeController, plunesStrings.college,
                   TextInputType.text, TextCapitalization.words, true, '')
               : Container(),
-          widget.getSpacer(
-              0.0, widget.userType != Constants.hospital ? 20.0 : 0),
+          widget.getSpacer(0.0, (_user.userType != Constants.user) ? 20.0 : 0),
+          (_user.userType != Constants.user)
+              ? createTextField(
+                  manualAddressController,
+                  plunesStrings.fullAddress,
+                  TextInputType.text,
+                  TextCapitalization.none,
+                  true,
+                  '')
+              : Container(),
+          widget.getSpacer(0.0, 20.0),
           createTextField(locationController, plunesStrings.location,
               TextInputType.text, TextCapitalization.none, false, ''),
           progress
@@ -393,13 +409,17 @@ class _EditProfileState extends State<EditProfileScreen>
     isDoctor = widget.userType == Constants.doctor ? true : false;
     nameController.text = widget.fullName;
     dobController.text = widget.dateOfBirth;
-    locationController.text = widget.location;
-    // specializationController.text = widget.specializations;
     educationController.text = widget.education;
     collegeController.text = widget.college;
     professionRegController.text = _user.profRegistrationNumber;
     experienceController.text = _user.experience;
     aboutController.text = _user.about;
+    if (_user.userType == Constants.user) {
+      locationController.text = widget.location;
+    } else {
+      locationController.text = _user.googleLocation ?? "";
+      manualAddressController.text = widget.location;
+    }
   }
 
   updateProfileRequest() async {
@@ -417,6 +437,13 @@ class _EditProfileState extends State<EditProfileScreen>
       widget.showInSnackBar(plunesStrings.errorValidEmailMsg,
           PlunesColors.BLACKCOLOR, _scaffoldKey);
       return;
+    } else if (_user.userType != Constants.user) {
+      if (manualAddressController.text.trim() == null ||
+          manualAddressController.text.trim().isEmpty) {
+        widget.showInSnackBar(plunesStrings.errorFullAddressRequired,
+            PlunesColors.BLACKCOLOR, _scaffoldKey);
+        return;
+      }
     }
     var user = User(
         name: nameController.text.trim(),
@@ -426,7 +453,12 @@ class _EditProfileState extends State<EditProfileScreen>
         longitude: (_longitude == null || _longitude == "0.0")
             ? details.longitude ?? "0.0"
             : _longitude,
-        address: locationController.text.trim(),
+        address: (_user.userType == Constants.user)
+            ? locationController.text.trim()
+            : manualAddressController.text,
+        googleLocation: (_user.userType != Constants.user)
+            ? locationController.text.trim()
+            : "",
         birthDate: dobController.text.trim(),
         registrationNumber: professionRegController.text.trim(),
         experience: experienceController.text.trim(),

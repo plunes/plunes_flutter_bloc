@@ -294,6 +294,8 @@ class Bloc {
     preferences.setPreferencesString(Constants.PREF_CREDITS, data.user.credits);
     preferences.setPreferencesBoolean(Constants.IS_ADMIN, data.user.isAdmin);
     preferences.setPreferencesBoolean(Constants.IS_CENTRE, data.user.isCentre);
+    preferences.setPreferencesString(
+        Constants.GOOGLE_LOCATION, data.user.googleLocation);
     if (_preferenceFetcher != null && !_preferenceFetcher.isClosed) {
       _preferenceFetcher.sink.add(data);
     }

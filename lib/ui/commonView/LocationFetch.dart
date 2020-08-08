@@ -114,7 +114,7 @@ class _LocationFetchState extends State<LocationFetch> {
         ":" +
         land +
         ":" +
-        locationController.text +
+        locationController.text?.trim() +
         ":" +
         latitude +
         ":" +
