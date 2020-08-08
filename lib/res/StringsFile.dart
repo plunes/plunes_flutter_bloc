@@ -284,6 +284,18 @@ class PlunesStrings {
       "These are real Time requests from Patients near you who are looking for Procedures and are viewing your Profiles. Make sure to take action on the insights to achieve successful conversion.";
   static const String appointmentWithText = "Appointment with ";
 
+  ///Highlight Desc for demo
+  static const String youCanChangeLocationFromHere =
+      "You can change your location from here.";
+
+  static const String locationDesc = "Location";
+
+  static const String menu = "Menu";
+
+  static const String menuDesc = "Tap to see menu options.";
+
+  static const String searchDesc = "Tap to search facilities.";
+
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
         'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',

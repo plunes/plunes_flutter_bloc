@@ -13,6 +13,8 @@ class Constants {
   static const String POST = 'Post';
   static const String PUT = 'Put';
 
+  static const String BIDDING_MAIN_SCREEN = "BIDDING_MAIN_SCREEN";
+
   static get hospital => 'Hospital';
 
   static get doctor => 'Doctor';

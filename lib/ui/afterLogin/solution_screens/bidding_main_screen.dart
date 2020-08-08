@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:permission/permission.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
@@ -48,9 +49,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   Timer _timer;
   StreamController _controller;
   BuildContext _context;
+  GlobalKey _searchKey = GlobalKey();
+  GlobalKey _one = GlobalKey();
+  GlobalKey _two = GlobalKey();
 
   @override
   void initState() {
+    _highlightSearchBar();
     _locationMessage = PlunesStrings.switchToGurLoc;
     _progressEnabled = false;
     _canGoAhead = false;
@@ -72,6 +77,19 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       }
     });
     super.initState();
+  }
+
+  _highlightSearchBar() {
+    if (!UserManager().getWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN)) {
+      Future.delayed(Duration(seconds: 1)).then((value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) =>
+            ShowCaseWidget.of(_context)
+                .startShowCase([_searchKey, _one, _two]));
+        Future.delayed(Duration(seconds: 1)).then((value) {
+          UserManager().setWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN);
+        });
+      });
+    }
   }
 
   _setLocationManually() {
@@ -165,8 +183,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
           ),
         ),
         Container(
-          child: HomePageAppBar(widget.func, () => _showLocationDialog(),
-              () => _setLocationManually()),
+          child: HomePageAppBar(
+            widget.func,
+            () => _showLocationDialog(),
+            () => _setLocationManually(),
+            one: _one,
+            two: _two,
+          ),
           margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
         )
       ],
@@ -334,11 +357,14 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                             },
                             child: IgnorePointer(
                               ignoring: true,
-                              child: CustomWidgets().searchBar(
-                                  searchController: _textEditingController,
-                                  isRounded: true,
-                                  focusNode: _focusNode,
-                                  hintText: plunesStrings.searchHint),
+                              child: CustomWidgets().getShowCase(_searchKey,
+                                  child: CustomWidgets().searchBar(
+                                      searchController: _textEditingController,
+                                      isRounded: true,
+                                      focusNode: _focusNode,
+                                      hintText: plunesStrings.searchHint),
+                                  title: PlunesStrings.searchFacilities,
+                                  description: PlunesStrings.searchDesc),
                             ),
                           ),
                         ))),
@@ -675,24 +701,28 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 }
 
+// ignore: must_be_immutable
 class HomePageAppBar extends StatefulWidget {
   final Function onDrawerTap, onSetLocationTap, onSetLocationManually;
 
+  final GlobalKey<State<StatefulWidget>> two, one;
+
   HomePageAppBar(
-      this.onDrawerTap, this.onSetLocationTap, this.onSetLocationManually);
+      this.onDrawerTap, this.onSetLocationTap, this.onSetLocationManually,
+      {this.two, this.one});
 
   @override
   _HomePageAppBarState createState() => _HomePageAppBarState();
 }
 
 class _HomePageAppBarState extends State<HomePageAppBar> {
-  GlobalKey _one = GlobalKey();
-
   initState() {
-    Future.delayed(Duration(seconds: 1)).then((value) {
-      WidgetsBinding.instance.addPostFrameCallback(
-          (_) => ShowCaseWidget.of(context).startShowCase([_one]));
-    });
+//    Future.delayed(Duration(milliseconds: 900)).then((value) {
+//      if (!UserManager().getWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN)) {
+//        WidgetsBinding.instance.addPostFrameCallback(
+//            (_) => ShowCaseWidget.of(context).startShowCase([_one, _two]));
+//      }
+//    });
     super.initState();
   }
 
@@ -739,10 +769,13 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
           },
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Icon(
-              Icons.menu,
-              color: PlunesColors.BLACKCOLOR,
-            ),
+            child: CustomWidgets().getShowCase(widget.two,
+                child: Icon(
+                  Icons.menu,
+                  color: PlunesColors.BLACKCOLOR,
+                ),
+                title: PlunesStrings.menu,
+                description: PlunesStrings.menuDesc),
           ),
         ),
         Expanded(child: Container()),
@@ -768,13 +801,11 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                             width: AppConfig.horizontalBlockSize * 5,
                           ),
                           Flexible(
-                            child: Showcase(
-                              showcaseBackgroundColor: Colors.blueAccent,
-                              textColor: Colors.white,
-                              shapeBorder: CircleBorder(),
-                              key: _one,
-                              description: "Tap to change your location",
-                              title: 'Location',
+                            child: CustomWidgets().getShowCase(
+                              widget.one,
+                              description:
+                                  PlunesStrings.youCanChangeLocationFromHere,
+                              title: PlunesStrings.locationDesc,
                               child: Container(
                                 margin: EdgeInsets.only(left: 12.0),
                                 child: Tooltip(
@@ -815,13 +846,11 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                  child: Showcase(
-                                    showcaseBackgroundColor: Colors.blueAccent,
-                                    textColor: Colors.white,
-                                    shapeBorder: CircleBorder(),
-                                    key: _one,
-                                    description: "Tap to change your location",
-                                    title: 'Location',
+                                  child: CustomWidgets().getShowCase(
+                                    widget.one,
+                                    description: PlunesStrings
+                                        .youCanChangeLocationFromHere,
+                                    title: PlunesStrings.locationDesc,
                                     child: Text(
                                       locationModel.address ??
                                           PlunesStrings.enterYourLocation,

@@ -462,4 +462,12 @@ class UserManager {
       Preferences().setPreferencesString(Constants.PREF_USER_LOCATION, address);
     }
   }
+
+  bool getWidgetShownStatus(String key) {
+    return Preferences().getPreferenceBoolean(key);
+  }
+
+  setWidgetShownStatus(String key) {
+    return Preferences().setPreferencesBoolean(key, true);
+  }
 }

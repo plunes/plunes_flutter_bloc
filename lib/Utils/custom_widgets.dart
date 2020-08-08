@@ -29,6 +29,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:share/share.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'CommonMethods.dart';
 import 'app_config.dart';
 
@@ -1176,7 +1177,7 @@ class CustomWidgets {
                                             max: realInsight.userPrice
                                                 .floor()
                                                 .toDouble(),
-                                            divisions: 10,
+                                            divisions: 100,
                                             activeColor: Color(CommonMethods
                                                 .getColorHexFromStr("#F39A83")),
                                             inactiveColor: Color(CommonMethods
@@ -1678,7 +1679,7 @@ class CustomWidgets {
                                                           .toStringAsFixed(0))
                                                       .toDouble()
                                                   : 0,
-                                              divisions: 10,
+                                              divisions: 100,
                                               activeColor:
                                                   Color(CommonMethods.getColorHexFromStr("#F39A83")),
                                               inactiveColor: Color(CommonMethods.getColorHexFromStr("#F8F4FF")),
@@ -4175,6 +4176,20 @@ class CustomWidgets {
             ),
           );
         });
+  }
+
+  Widget getShowCase(GlobalKey globalKey,
+      {Widget child, String description, String title, Function onTap}) {
+    return Showcase(
+      showcaseBackgroundColor: PlunesColors.GREENCOLOR,
+      textColor: Colors.white,
+      shapeBorder: CircleBorder(),
+      key: globalKey,
+      description: description,
+      title: title,
+      showArrow: true,
+      child: child ?? Container(),
+    );
   }
 
 //  Widget getDocOrHospitalDetailWidget(
