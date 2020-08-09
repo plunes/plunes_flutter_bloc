@@ -7,6 +7,7 @@ import 'package:location/location.dart' as loc;
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -63,6 +64,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
   final doc_availability_to = new TextEditingController();
   final docNameController = new TextEditingController();
   final aboutController = new TextEditingController();
+  final fullAddressController = new TextEditingController();
 
   List<DropdownMenuItem<String>> _dropDownMenuItems;
   List<dynamic> _selectedItemId = List(),
@@ -368,13 +370,21 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               children: <Widget>[
                 widget.getSpacer(0.0, 20.0),
                 widget.createTextViews(plunesStrings.profileInformation, 18,
-                    colorsFile.black0, TextAlign.center, FontWeight.bold),
+                    colorsFile.black0, TextAlign.center, FontWeight.w500),
                 widget.getSpacer(0.0, 20.0),
                 createTextField(nameController, plunesStrings.hospitalName,
                     TextInputType.text, TextCapitalization.words, true, ''),
                 widget.getSpacer(0.0, 20.0),
                 createTextField(locationController, plunesStrings.location,
                     TextInputType.text, TextCapitalization.none, false, ''),
+                createTextField(
+                    fullAddressController,
+                    plunesStrings.fullAddress,
+                    TextInputType.text,
+                    TextCapitalization.none,
+                    true,
+                    ''),
+                widget.getSpacer(0.0, 20.0),
                 createTextField(phoneController, plunesStrings.phoneNo,
                     TextInputType.number, TextCapitalization.none, false, ''),
                 createTextField(
@@ -398,7 +408,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                 widget.getDividerRow(context, 0.0, 0.0, 0.0),
                 widget.getSpacer(0.0, 30.0),
                 widget.createTextViews(plunesStrings.addSpecialization, 18,
-                    colorsFile.black0, TextAlign.center, FontWeight.bold),
+                    colorsFile.black0, TextAlign.center, FontWeight.w500),
                 widget.getSpacer(0.0, 5.0),
                 widget.createTextViews(
                     plunesStrings.addSpecializationServices,
@@ -407,8 +417,22 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     TextAlign.center,
                     FontWeight.w100),
                 widget.getSpacer(0.0, 20.0),
-                widget.getDefaultButton(plunesStrings.add, globalWidth - 40, 42,
-                    getHospitalSpecializationData),
+                Container(
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 30,
+                      right: AppConfig.horizontalBlockSize * 30),
+                  child: InkWell(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    onTap: getHospitalSpecializationData,
+                    child: CustomWidgets().getRoundedButton(
+                        plunesStrings.add,
+                        AppConfig.horizontalBlockSize * 8,
+                        PlunesColors.GREENCOLOR,
+                        AppConfig.horizontalBlockSize * 0,
+                        AppConfig.verticalBlockSize * 1.2,
+                        PlunesColors.WHITECOLOR),
+                  ),
+                ),
                 getSpecializationRow(),
 //                widget.getSpacer(0.0, 40.0),
 //                widget.getDividerRow(context, 0.0, 0.0, 0.0),
@@ -557,7 +581,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           widget.getDividerRow(context, 0.0, 30.0, 0.0),
           widget.getSpacer(0.0, 0.0),
           widget.createTextViews(plunesStrings.manageAccount, 18,
-              colorsFile.black0, TextAlign.center, FontWeight.bold),
+              colorsFile.black0, TextAlign.center, FontWeight.w500),
           widget.getSpacer(0.0, 5.0),
           widget.createTextViews(plunesStrings.addUsers, 16,
               colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
@@ -568,7 +592,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 widget.createTextViews(plunesStrings.admin, 18,
-                    colorsFile.black0, TextAlign.left, FontWeight.bold),
+                    colorsFile.black0, TextAlign.left, FontWeight.w500),
                 widget.getSpacer(0.0, 10.0),
                 widget.createTextViews(
                     plunesStrings.addUsers.toString().substring(
@@ -594,8 +618,22 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                 progress
                     ? SpinKitThreeBounce(
                         color: Color(hexColorCode.defaultGreen), size: 30.0)
-                    : widget.getDefaultButton(plunesStrings.submit,
-                        globalWidth - 40, 42, submitRegistrationRequest),
+                    : Container(
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 30,
+                            right: AppConfig.horizontalBlockSize * 30),
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          onTap: submitRegistrationRequest,
+                          child: CustomWidgets().getRoundedButton(
+                              plunesStrings.submit,
+                              AppConfig.horizontalBlockSize * 8,
+                              PlunesColors.GREENCOLOR,
+                              AppConfig.horizontalBlockSize * 0,
+                              AppConfig.verticalBlockSize * 1.2,
+                              PlunesColors.WHITECOLOR),
+                        ),
+                      ),
                 widget.getSpacer(0.0, 30.0),
               ],
             ),
@@ -624,7 +662,6 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           widget.getSpacer(0.0, 15.0),
           createTextField(phoneController, plunesStrings.phoneNo,
               TextInputType.number, TextCapitalization.none, false, ''),
-          //widget.getSpacer(0.0, 20.0),
           _userType == Constants.doctor
               ? createTextField(
                   alternatePhoneController,
@@ -651,6 +688,16 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               ? Container()
               : createTextField(locationController, plunesStrings.location,
                   TextInputType.text, TextCapitalization.none, false, ''),
+          _userType == Constants.generalUser
+              ? Container()
+              : createTextField(
+                  fullAddressController,
+                  plunesStrings.fullAddress,
+                  TextInputType.text,
+                  TextCapitalization.none,
+                  true,
+                  ''),
+          widget.getSpacer(0.0, 15.0),
           Visibility(
               visible: isDoctor,
               child: Column(children: <Widget>[
@@ -688,8 +735,22 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           progress
               ? SpinKitThreeBounce(
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
-              : widget.getDefaultButton(plunesStrings.signUpBtn,
-                  globalWidth - 40, 42, submitRegistrationRequest),
+              : Container(
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 30,
+                      right: AppConfig.horizontalBlockSize * 30),
+                  child: InkWell(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    onTap: submitRegistrationRequest,
+                    child: CustomWidgets().getRoundedButton(
+                        plunesStrings.signUpBtn,
+                        AppConfig.horizontalBlockSize * 8,
+                        PlunesColors.GREENCOLOR,
+                        AppConfig.horizontalBlockSize * 0,
+                        AppConfig.verticalBlockSize * 1.2,
+                        PlunesColors.WHITECOLOR),
+                  ),
+                ),
           widget.getSpacer(0.0, 15.0),
           widget.getTermsOfUseRow(),
           widget.getSpacer(0.0, 30.0),
@@ -899,7 +960,8 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       body['userType'] =
           _userType == Constants.generalUser ? 'User' : _userType;
       if (_userType != Constants.generalUser) {
-        body['address'] = locationController.text;
+        body['address'] = fullAddressController.text.trim();
+        body['googleAddress'] = locationController.text.trim();
       }
       body['deviceId'] = Constants.DEVICE_TOKEN;
       if (_userType != Constants.hospital &&
@@ -983,6 +1045,10 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
             _longitude.isEmpty ||
             _longitude == "0.0")) {
       errorMessage = PlunesStrings.pleaseSelectALocation;
+      return false;
+    } else if (_userType != Constants.generalUser &&
+        (fullAddressController.text.trim().isEmpty)) {
+      errorMessage = plunesStrings.errorFullAddressRequired;
       return false;
     } else if (isDoctor && professionRegController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterProfRegNo;
@@ -1265,6 +1331,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     dobController.dispose();
     nameFocusNode.dispose();
     expFocusNode.dispose();
+    fullAddressController.dispose();
   }
 
   Widget getLabView() {
@@ -1279,13 +1346,21 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               children: <Widget>[
                 widget.getSpacer(0.0, 20.0),
                 widget.createTextViews(plunesStrings.profileInformation, 18,
-                    colorsFile.black0, TextAlign.center, FontWeight.bold),
+                    colorsFile.black0, TextAlign.center, FontWeight.w500),
                 widget.getSpacer(0.0, 20.0),
                 createTextField(nameController, plunesStrings.labName,
                     TextInputType.text, TextCapitalization.words, true, ''),
                 widget.getSpacer(0.0, 20.0),
                 createTextField(locationController, plunesStrings.location,
                     TextInputType.text, TextCapitalization.none, false, ''),
+                createTextField(
+                    fullAddressController,
+                    plunesStrings.fullAddress,
+                    TextInputType.text,
+                    TextCapitalization.none,
+                    true,
+                    ''),
+                widget.getSpacer(0.0, 20.0),
                 createTextField(phoneController, plunesStrings.phoneNo,
                     TextInputType.number, TextCapitalization.none, false, ''),
                 createTextField(
@@ -1309,7 +1384,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                 widget.getDividerRow(context, 0.0, 0.0, 0.0),
                 widget.getSpacer(0.0, 30.0),
                 widget.createTextViews(plunesStrings.addSpecialization, 18,
-                    colorsFile.black0, TextAlign.center, FontWeight.bold),
+                    colorsFile.black0, TextAlign.center, FontWeight.w500),
                 widget.getSpacer(0.0, 5.0),
                 widget.createTextViews(
                     plunesStrings.addSpecializationServices,
@@ -1318,8 +1393,22 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                     TextAlign.center,
                     FontWeight.w100),
                 widget.getSpacer(0.0, 20.0),
-                widget.getDefaultButton(plunesStrings.add, globalWidth - 40, 42,
-                    getHospitalSpecializationData),
+                Container(
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 30,
+                      right: AppConfig.horizontalBlockSize * 30),
+                  child: InkWell(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    onTap: getHospitalSpecializationData,
+                    child: CustomWidgets().getRoundedButton(
+                        plunesStrings.add,
+                        AppConfig.horizontalBlockSize * 8,
+                        PlunesColors.GREENCOLOR,
+                        AppConfig.horizontalBlockSize * 0,
+                        AppConfig.verticalBlockSize * 1.2,
+                        PlunesColors.WHITECOLOR),
+                  ),
+                ),
                 getSpecializationRow(),
               ],
             ),
@@ -1328,7 +1417,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           widget.getDividerRow(context, 0.0, 30.0, 0.0),
           widget.getSpacer(0.0, 0.0),
           widget.createTextViews(plunesStrings.manageAccount, 18,
-              colorsFile.black0, TextAlign.center, FontWeight.bold),
+              colorsFile.black0, TextAlign.center, FontWeight.w500),
           widget.getSpacer(0.0, 5.0),
           widget.createTextViews(plunesStrings.addUsers, 16,
               colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
@@ -1339,7 +1428,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 widget.createTextViews(plunesStrings.admin, 18,
-                    colorsFile.black0, TextAlign.left, FontWeight.bold),
+                    colorsFile.black0, TextAlign.left, FontWeight.w500),
                 widget.getSpacer(0.0, 10.0),
                 widget.createTextViews(
                     plunesStrings.addUsers.toString().substring(
@@ -1365,8 +1454,22 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                 progress
                     ? SpinKitThreeBounce(
                         color: Color(hexColorCode.defaultGreen), size: 30.0)
-                    : widget.getDefaultButton(plunesStrings.submit,
-                        globalWidth - 40, 42, submitRegistrationRequest),
+                    : Container(
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 30,
+                            right: AppConfig.horizontalBlockSize * 30),
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          onTap: submitRegistrationRequest,
+                          child: CustomWidgets().getRoundedButton(
+                              plunesStrings.submit,
+                              AppConfig.horizontalBlockSize * 8,
+                              PlunesColors.GREENCOLOR,
+                              AppConfig.horizontalBlockSize * 0,
+                              AppConfig.verticalBlockSize * 1.2,
+                              PlunesColors.WHITECOLOR),
+                        ),
+                      ),
                 widget.getSpacer(0.0, 30.0),
               ],
             ),

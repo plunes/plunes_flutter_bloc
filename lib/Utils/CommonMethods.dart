@@ -11,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:intro_slider/intro_slider.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -84,11 +85,12 @@ class CommonMethods {
     return isAndroid;
   }
 
-  static showLongToast(String message) {
+  static showLongToast(String message,
+      {bool centerGravity = false, Color bgColor}) {
     Fluttertoast.showToast(
         msg: message,
-        gravity: ToastGravity.BOTTOM,
-        backgroundColor: Colors.transparent,
+        gravity: centerGravity ? ToastGravity.TOP : ToastGravity.BOTTOM,
+        backgroundColor: (bgColor == null) ? Colors.transparent : bgColor,
         textColor: Colors.black,
         toastLength: Toast.LENGTH_LONG,
         timeInSecForIos: 2);
@@ -352,13 +354,7 @@ class CommonMethods {
                     child: Icon(Icons.clear),
                   ),
                 )),
-//            Center(
-//                child: Text(_title,
-//                    style: TextStyle(
-//                        fontSize: 18, color: PlunesColors.BLACKCOLOR))),
             Flexible(child: Image.asset(PlunesImages.bdSupportImage)),
-//            Expanded(child: Container()),
-//            getSpacer(0, 20),
             Container(
               height: 80,
               child: Padding(
@@ -378,25 +374,26 @@ class CommonMethods {
               textAlign: TextAlign.center,
             ),
             getSpacer(0, 22),
-            GestureDetector(
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 25,
+                  right: AppConfig.horizontalBlockSize * 25,
+                  bottom: AppConfig.verticalBlockSize * 1),
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
                 onTap: () {
                   callBack.dialogCallBackFunction('DONE');
+                  return;
                 },
-                child: Container(
-                  height: 35,
-                  width: 200,
-                  alignment: Alignment.center,
-                  margin:
-                      EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
-                  child: Text(
+                child: CustomWidgets().getRoundedButton(
                     plunesStrings.submit,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.w600),
-                  ),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      color: Color(0xff01d35a)),
-                ))
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.GREENCOLOR,
+                    AppConfig.horizontalBlockSize * 0,
+                    AppConfig.verticalBlockSize * 1.2,
+                    PlunesColors.WHITECOLOR),
+              ),
+            )
           ]),
         ),
       ),
@@ -580,7 +577,7 @@ class CommonMethods {
     String name = _name;
     String initialName = _name.substring(0, 1);
     List nameList = name.split(" ");
-    print(name + nameList.length.toString());
+//    print(name + nameList.length.toString());
     try {
       if (name.contains("Dr")) {
         if (nameList.length > 2) {

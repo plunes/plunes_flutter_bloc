@@ -91,8 +91,8 @@ class _AchievementsScreenState extends State<AchievementsScreen>
               child: progress
                   ? SpinKitThreeBounce(
                       color: Color(hexColorCode.defaultGreen), size: 30.0)
-                  : widget.getDefaultButton(
-                      plunesStrings.add, globalWidth - 100, 42, addAchievement)),
+                  : widget.getDefaultButton(plunesStrings.add,
+                      globalWidth - 100, 42, addAchievement)),
         ],
       ),
     );
@@ -191,8 +191,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
               height: 50,
               decoration: BoxDecoration(
                   image: DecorationImage(
-                    image:
-                        AssetImage(plunesImages.gradientImageArray[index]),
+                    image: AssetImage(plunesImages.gradientImageArray[index]),
                     fit: BoxFit.cover,
                   ),
                   border: Border.all(color: Colors.grey, width: 0.5),

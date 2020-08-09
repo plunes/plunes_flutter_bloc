@@ -3,15 +3,20 @@
 final plunesImages = PlunesImages();
 
 class PlunesImages {
+//  static String achievement = "assets/images/profile/achievement.png";
+  static String greenCheck = "assets/images/profile/greenCheck.png";
+  static String specialization = "assets/images/profile/specialization.png";
+  static String expert = "assets/images/profile/expert.png";
+  static String review = "assets/images/profile/review.png";
+  static String clock = "assets/images/profile/clock.png";
+  static String map = "assets/images/profile/Map.png";
+  static String noServiceAvailable = "assets/images/profile/No_service.png";
+  static String updateApp = "assets/images/update.png";
   static String errorPage = 'assets/error_page.png';
   static String splashImage = 'assets/images/splash_final.jpg';
   static String userLandingImage = 'assets/images/user_landing_map.png';
   static String userLandingGoogleIcon =
       'assets/images/locationIconUserLandingScreen.png';
-  static String actionableInsightIcon =
-      'assets/images/actinable-insights-icon.png';
-  static String realTimeInsightIcon = 'assets/images/realtime-insight-icon.png';
-  static String totalBusinessIcon = 'assets/images/totalBusiness-icon.png';
   static String consultationImage = 'assets/images/consultation-avatar.png';
   static String procedureImage = 'assets/images/procedure-avatar.png';
   static String basicImage = 'assets/images/Basic-icon.png';
@@ -58,6 +63,7 @@ class PlunesImages {
       "assets/images/biddingAddedSuccessImage.png";
   static const String plunesPlaceHolderAndErrorLogo =
       "assets/images/plunesPlaceHolderAndErrorLogo.png";
+  static const String informativeIcon = "assets/images/informativeIcon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',
@@ -138,6 +144,10 @@ class PlunesImages {
 
   get locationIcon => 'assets/images/profile/location.png';
 
+  get introduction => 'assets/images/profile/Introduction.png';
+
+//  get clockImg => 'assets/images/profile/clock.png';
+
   get calIcon => 'assets/images/profile/calIcon.png';
 
   get eduIcon => 'assets/images/profile/eduIcon.png';
@@ -149,6 +159,8 @@ class PlunesImages {
   get uniIcon => 'assets/images/profile/uniIcon.png';
 
   get achievementIcon => 'assets/images/achievments/achivement.png';
+
+  get achievement => 'assets/images/profile/achievement.png';
 
   get pathIcon => 'assets/images/profile/pathIcon.png';
 

@@ -1,6 +1,7 @@
 import 'package:plunes/models/doc_hos_models/common_models/actionable_insights_response_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/total_business_earnedLoss_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
@@ -75,13 +76,13 @@ class DocHosMainRepo {
 
   Future<RequestState> updateRealTimeInsightPrice(
       num price, String solutionId, String serviceId,
-      {bool isSuggestive = false}) async {
+      {bool isSuggestive = false, num suggestedPrice}) async {
     Map<String, dynamic> postData;
     if (isSuggestive) {
       postData = {
         "solutionId": solutionId,
         "serviceId": serviceId,
-        "price": price
+        "price": suggestedPrice
       };
     } else {
       postData = {
@@ -104,16 +105,22 @@ class DocHosMainRepo {
   }
 
   Future<RequestState> updateActionableInsightPrice(
-      num price, String serviceId, String specialityId) async {
-    var result = await DioRequester().requestMethod(
-      url: Urls.UPDATE_ACTIONABLE_INSIGHT_PRICE_URL,
+      num price, String serviceId, String specialityId,
+      {String centreId}) async {
+    Map<String, dynamic> queryParam;
+    if (centreId != null && centreId.isNotEmpty) {
+      queryParam = {};
+      queryParam["userId"] = centreId;
+    }
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
+      url: Urls.customBaseUrl + Urls.UPDATE_ACTIONABLE_INSIGHT_PRICE_URL,
       requestType: HttpRequestMethods.HTTP_PATCH,
       postData: {
         "serviceId": serviceId,
-        "services": [
-          {"specialityId": specialityId, "newPrice": price}
-        ]
+        "specialityId": specialityId,
+        "newPrice": price
       },
+      queryParameter: queryParam,
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {

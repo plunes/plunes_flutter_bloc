@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:location/location.dart' as loc;
+import 'package:package_info/package_info.dart';
 import 'package:permission/permission.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
@@ -13,6 +17,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'GuidedTour.dart';
@@ -41,6 +46,7 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   void initState() {
     _userBloc = UserBloc();
     super.initState();
+    _checkAppUpdateAvailable();
     startTime();
   }
 
@@ -129,5 +135,110 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
 //      });
 //    }
     return null;
+  }
+
+  void _checkAppUpdateAvailable() async {
+    //Get Current installed version of app
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    double currentVersion =
+        double.parse(info.version.trim().replaceAll(".", ""));
+
+    //Get Latest version info from firebase config
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+
+    try {
+      // Using default duration to force fetching from remote server.
+      await remoteConfig.fetch(expiration: const Duration(seconds: 0));
+      await remoteConfig.activateFetched();
+      remoteConfig.getString('force_update_current_version');
+      double newVersion = double.parse(remoteConfig
+          .getString('force_update_current_version')
+          .trim()
+          .replaceAll(".", ""));
+      if (newVersion > currentVersion) {
+        Future.delayed(Duration(seconds: 2)).then((value) {
+          Navigator.pushAndRemoveUntil(
+              AppConfig.getNavKey().currentState.overlay.context,
+              MaterialPageRoute(
+                  builder: (context) => Container(
+                        color: PlunesColors.LIGHTGREYCOLOR.withOpacity(0.5),
+                      )),
+              (_) => false);
+          updateAlertDialog();
+        });
+      }
+    } on FetchThrottledException catch (exception) {
+      // Fetch throttled.
+//      print(exception);
+    } catch (exception) {
+//      print('Unable to fetch remote config. Cached or default values will be '
+//          'used');
+    }
+  }
+
+  updateAlertDialog() {
+    showDialog(
+        context: AppConfig.getNavKey().currentState.overlay.context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
+            content: Container(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.only(top: 3.5),
+                      width: AppConfig.horizontalBlockSize * 30,
+                      height: AppConfig.verticalBlockSize * 15,
+                      child: Image.asset(PlunesImages.updateApp)),
+                  SizedBox(height: 10),
+                  Text(
+                    PlunesStrings.newVersionAvailable,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: PlunesColors.BLACKCOLOR),
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                    PlunesStrings.usingOlderVersion,
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
+                  ),
+                  SizedBox(height: AppConfig.verticalBlockSize * 2),
+                  FlatButton(
+                      onPressed: () {
+                        if (Platform.isIOS) {
+                          LauncherUtil.launchUrl(PlunesStrings.appleStoreUrl);
+                        } else {
+                          LauncherUtil.launchUrl(
+                              PlunesStrings.googlePlayStoreUrl);
+                        }
+                        return;
+                      },
+                      color: PlunesColors.GREENCOLOR,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Container(
+                        width: AppConfig.horizontalBlockSize * 20,
+                        child: Text(
+                          "Update",
+                          style: TextStyle(
+                              color: PlunesColors.WHITECOLOR, fontSize: 15),
+                          textAlign: TextAlign.center,
+                        ),
+                      )),
+                ],
+              ),
+            ),
+          );
+        }).then((value) {
+      SystemNavigator.pop(animated: true);
+    });
   }
 }

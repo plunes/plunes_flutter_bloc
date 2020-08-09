@@ -88,18 +88,20 @@ class DocHosMainInsightBloc extends BlocBase {
   }
 
   getUpdateRealTimeInsightPrice(num price, String solutionId, String serviceId,
-      {bool isSuggestive = false}) async {
+      {bool isSuggestive = false, num suggestedPrice}) async {
     updateRealTimeInsightPriceStream(RequestInProgress());
     updateRealTimeInsightPriceStream(await DocHosMainRepo()
         .updateRealTimeInsightPrice(price, solutionId, serviceId,
-            isSuggestive: isSuggestive));
+            isSuggestive: isSuggestive, suggestedPrice: suggestedPrice));
   }
 
   getUpdateActionableInsightPrice(
-      num price, String serviceId, String specialityId) async {
+      num price, String serviceId, String specialityId,
+      {String centreId}) async {
     addStateInActionableUpdatePriceStream(RequestInProgress());
     addStateInActionableUpdatePriceStream(await DocHosMainRepo()
-        .updateActionableInsightPrice(price, serviceId, specialityId));
+        .updateActionableInsightPrice(price, serviceId, specialityId,
+            centreId: centreId));
   }
 
   Future helpDocHosQuery(String query) async {

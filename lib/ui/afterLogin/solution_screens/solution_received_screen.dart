@@ -42,7 +42,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   BuildContext _buildContext;
   bool _isFetchingInitialData;
   String _failureCause;
-  int _solutionReceivedTime = 0;
+  int _solutionReceivedTime = 0, _expirationTimer;
   bool _shouldStartTimer, _isCrossClicked;
   StreamController _streamForTimer,
       _docExpandCollapseController,
@@ -77,6 +77,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _getDiscountAsync();
     });
     _solutionReceivedTime = DateTime.now().millisecondsSinceEpoch;
+    _expirationTimer = _solutionReceivedTime;
     _isFetchingInitialData = true;
     _searchSolutionBloc = SearchSolutionBloc();
     if (widget.searchedDocResults != null) {
@@ -242,7 +243,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       ),
       child: InkWell(
         onTap: () {
-          if (!_canGoAhead()) {
+          if (!_canNegotiate()) {
             _showSnackBar(PlunesStrings.cantNegotiateWithMoreFacilities);
             return;
           }
@@ -257,10 +258,17 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             if (value != null && value) {
               _isCrossClicked = false;
               _shouldStartTimer = true;
-              _fetchResultAndStartTimer().then((value) {
-                Future.delayed(Duration(seconds: 1)).then((value) {
-                  _setState();
-                });
+              if (DateTime.now()
+                      .difference(DateTime.fromMillisecondsSinceEpoch(
+                          _solutionReceivedTime))
+                      .inMinutes >=
+                  15) {
+                _fetchResultAndStartTimer();
+              } else {
+                _negotiate();
+              }
+              Future.delayed(Duration(seconds: 3)).then((value) {
+                _setState();
               });
             }
           });
@@ -364,6 +372,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+      _timer = timer;
       _negotiate();
     });
   }
@@ -407,7 +416,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
                                     color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.bold),
+                                    fontWeight: FontWeight.w600),
                               ),
                               Padding(
                                 padding: EdgeInsets.only(
@@ -795,7 +804,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                       Text("Hold on",
                                           style: TextStyle(
                                               fontSize: AppConfig.smallFont,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w600,
                                               color: Colors.white)),
                                       Expanded(child: Container()),
                                       InkWell(
@@ -850,13 +859,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _searchedDocResults.solution.services.forEach((service) {
         if (service.negotiating != null && service.negotiating) {
           service.negotiating = false;
-          if (service.doctors != null && service.doctors.isNotEmpty) {
-            service.doctors.forEach((doc) {
-              if (doc.negotiating != null && doc.negotiating) {
-                doc.negotiating = false;
-              }
-            });
-          }
+//          if (service.doctors != null && service.doctors.isNotEmpty) {
+//            service.doctors.forEach((doc) {
+//              if (doc.negotiating != null && doc.negotiating) {
+//                doc.negotiating = false;
+//              }
+//            });
+//          }
         }
       });
     }
@@ -876,6 +885,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     }
     bool shouldNegotiate = false;
     _solutionReceivedTime = _searchedDocResults.solution?.createdTime ?? 0;
+    _expirationTimer = _searchedDocResults.solution?.expirationTimer ?? 0;
+    if (DateTime.now()
+            .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer))
+            .inHours >=
+        1) {
+      _cancelNegotiationTimer();
+      return;
+    }
     _searchedDocResults.solution.services.forEach((service) {
       if (service.negotiating != null && service.negotiating) {
         shouldNegotiate = true;
@@ -895,9 +912,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       Widget route;
       if (service.userType.toLowerCase() ==
           Constants.doctor.toString().toLowerCase()) {
-        route = DocProfile(userId: service.professionalId);
+        route = DocProfile(
+            userId: service.professionalId,
+            rating: service.rating.toStringAsFixed(1));
       } else {
-        route = HospitalProfile(userID: service.professionalId);
+        route = HospitalProfile(
+            userID: service.professionalId,
+            rating: service.rating.toStringAsFixed(1));
       }
       Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
@@ -994,7 +1015,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   InkWell(
-                    onTap: () => _viewProfile(service),
+                    onTap: () {
+                      _viewProfile(service);
+                    },
                     onDoubleTap: () {},
                     child: (service.doctors[index].imageUrl != null &&
                             service.doctors[index].imageUrl.isNotEmpty &&
@@ -1016,24 +1039,24 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             14,
                           ),
                   ),
-                  Container(
-                    width: AppConfig.horizontalBlockSize * 14,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(
-                          Icons.star,
-                          color: PlunesColors.GREENCOLOR,
-                        ),
-                        Text(
-                          service.doctors[index].rating?.toStringAsFixed(1) ??
-                              PlunesStrings.NA,
-                          style: TextStyle(
-                              color: PlunesColors.GREYCOLOR, fontSize: 14),
-                        ),
-                      ],
-                    ),
-                  ),
+//                  Container(
+//                    width: AppConfig.horizontalBlockSize * 14,
+//                    child: Column(
+//                      crossAxisAlignment: CrossAxisAlignment.center,
+//                      children: <Widget>[
+//                        Icon(
+//                          Icons.star,
+//                          color: PlunesColors.GREENCOLOR,
+//                        ),
+//                        Text(
+//                          service.doctors[index].rating?.toStringAsFixed(1) ??
+//                              PlunesStrings.NA,
+//                          style: TextStyle(
+//                              color: PlunesColors.GREYCOLOR, fontSize: 14),
+//                        ),
+//                      ],
+//                    ),
+//                  ),
                 ],
               ),
               Expanded(
@@ -1069,15 +1092,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         Container(
                             padding: EdgeInsets.only(
                                 left: AppConfig.horizontalBlockSize * 2)),
-                        service.doctors[index].negotiating ?? false
+                        service.negotiating ?? false
                             ? Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
                                     PlunesStrings.negotiating,
                                     style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        fontWeight: FontWeight.w400),
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal,
+                                        color: PlunesColors.BLACKCOLOR),
                                   ),
                                   CustomWidgets().getLinearIndicator()
                                 ],
@@ -1168,7 +1192,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 ),
                               )
                             : Container()),
-                    service.doctors[index].negotiating ?? false
+                    service.negotiating ?? false
                         ? Container()
                         : Container(
                             padding: EdgeInsets.only(
@@ -1177,10 +1201,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                               children: <Widget>[
                                 RichText(
                                     text: TextSpan(
-                                        text: (service
-                                                    .doctors[index]?.price[0] ==
+                                        text: (service.doctors[index].price ==
+                                                    null ||
+                                                service.doctors[index].price
+                                                    .isEmpty ||
                                                 service.doctors[index]
-                                                    ?.newPrice[0])
+                                                        ?.price[0] ==
+                                                    service.doctors[index]
+                                                        ?.newPrice[0])
                                             ? ""
                                             : "\u20B9${service.doctors[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
                                         style: TextStyle(
@@ -1429,6 +1457,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   bool _canGoAhead() {
+    bool _canGoAhead = true;
+    var duration = DateTime.now()
+        .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer));
+    if (duration.inHours >= 1) {
+      _canGoAhead = false;
+    }
+    return _canGoAhead;
+  }
+
+  bool _canNegotiate() {
     bool _canGoAhead = true;
     var duration = DateTime.now()
         .difference(DateTime.fromMillisecondsSinceEpoch(_solutionReceivedTime));

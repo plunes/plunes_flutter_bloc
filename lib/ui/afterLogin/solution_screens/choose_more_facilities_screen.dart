@@ -125,8 +125,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
           color: Colors.black12.withOpacity(0.000001),
           image: DecorationImage(
               image: ExactAssetImage(PlunesImages.userLandingImage),
-              fit: BoxFit.fill,
-              alignment: Alignment.center)),
+              fit: BoxFit.cover)),
       child: Container(
         margin:
             EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 5),
@@ -221,7 +220,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: PlunesColors.BLACKCOLOR,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
                 fontSize: 16),
           ),
           Padding(padding: EdgeInsets.only(top: 3)),
@@ -258,16 +257,25 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
             maxHeight: AppConfig.verticalBlockSize * 65),
         child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Text(
-                PlunesStrings.chooseFacilities,
-                style: TextStyle(
-                    color: PlunesColors.BLACKCOLOR,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
-              ),
-            ),
+            StreamBuilder<Object>(
+                stream: _selectUnselectController.stream,
+                builder: (context, snapshot) {
+                  return Container(
+                    padding: const EdgeInsets.all(5.0),
+                    margin: EdgeInsets.only(
+                        top: (_selectedItemList == null ||
+                                _selectedItemList.isEmpty)
+                            ? AppConfig.verticalBlockSize * 1.5
+                            : 0),
+                    child: Text(
+                      PlunesStrings.chooseFacilities,
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16),
+                    ),
+                  );
+                }),
             Expanded(
               child: NotificationListener<ScrollNotification>(
                 onNotification: (scrollState) {
@@ -283,6 +291,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                   return;
                 },
                 child: ListView.builder(
+                  padding: null,
                   itemBuilder: (context, index) {
                     return Container(
                       margin: EdgeInsets.only(
@@ -410,9 +419,9 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                       AppConfig.horizontalBlockSize * 5,
                       PlunesColors.GREENCOLOR,
                       AppConfig.horizontalBlockSize * 5,
-                      AppConfig.verticalBlockSize * 1.3,
+                      AppConfig.verticalBlockSize * 1.2,
                       PlunesColors.WHITECOLOR,
-                      hasBorder: true,
+                      hasBorder: false,
                     ),
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:permission/permission.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
@@ -25,6 +26,7 @@ import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.d
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import './previous_activity_screen.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 // ignore: must_be_immutable
 class BiddingMainScreen extends BaseActivity {
@@ -47,9 +49,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   Timer _timer;
   StreamController _controller;
   BuildContext _context;
+  GlobalKey _searchKey = GlobalKey();
+  GlobalKey _one = GlobalKey();
+  GlobalKey _two = GlobalKey();
 
   @override
   void initState() {
+    _highlightSearchBar();
     _locationMessage = PlunesStrings.switchToGurLoc;
     _progressEnabled = false;
     _canGoAhead = false;
@@ -71,6 +77,19 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       }
     });
     super.initState();
+  }
+
+  _highlightSearchBar() {
+    if (!UserManager().getWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN)) {
+      Future.delayed(Duration(seconds: 1)).then((value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) =>
+            ShowCaseWidget.of(_context)
+                .startShowCase([_searchKey, _one, _two]));
+        Future.delayed(Duration(seconds: 1)).then((value) {
+          UserManager().setWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN);
+        });
+      });
+    }
   }
 
   _setLocationManually() {
@@ -126,10 +145,12 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      body: Builder(builder: (context) {
-        _context = context;
-        return _getWidgetBody();
-      }),
+      body: ShowCaseWidget(
+        builder: Builder(builder: (context) {
+          _context = context;
+          return _getWidgetBody();
+        }),
+      ),
     );
   }
 
@@ -162,8 +183,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
           ),
         ),
         Container(
-          child: HomePageAppBar(widget.func, () => _showLocationDialog(),
-              () => _setLocationManually()),
+          child: HomePageAppBar(
+            widget.func,
+            () => _showLocationDialog(),
+            () => _setLocationManually(),
+            one: _one,
+            two: _two,
+          ),
           margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
         )
       ],
@@ -202,6 +228,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                   vertical: AppConfig.verticalBlockSize * 1.5),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
                                   Text(
                                     (_prevSearchedSolution.topSearches !=
@@ -210,20 +237,21 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                         ? PlunesStrings.topSearches
                                         : PlunesStrings.previousActivities,
                                     style: TextStyle(
-                                        fontSize: AppConfig.smallFont,
-                                        fontWeight: FontWeight.w600,
-                                        decoration: (_prevSearchedSolution
-                                                        .topSearches !=
-                                                    null &&
-                                                _prevSearchedSolution
-                                                    .topSearches)
-                                            ? TextDecoration.none
-                                            : TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.solid,
-                                        decorationThickness: 5,
-                                        decorationColor:
-                                            PlunesColors.GREENCOLOR),
+                                      fontSize: AppConfig.mediumFont,
+                                      fontWeight: FontWeight.normal,
+//                                        decoration: (_prevSearchedSolution
+//                                                        .topSearches !=
+//                                                    null &&
+//                                                _prevSearchedSolution
+//                                                    .topSearches)
+//                                            ? TextDecoration.none
+//                                            : TextDecoration.underline,
+//                                        decorationStyle:
+//                                            TextDecorationStyle.solid,
+//                                        decorationThickness: 5,
+//                                        decorationColor:
+//                                            PlunesColors.GREENCOLOR
+                                    ),
                                   ),
                                   (_prevSearchedSolution.topSearches != null &&
                                           _prevSearchedSolution.topSearches)
@@ -329,11 +357,14 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                             },
                             child: IgnorePointer(
                               ignoring: true,
-                              child: CustomWidgets().searchBar(
-                                  searchController: _textEditingController,
-                                  isRounded: true,
-                                  focusNode: _focusNode,
-                                  hintText: plunesStrings.searchHint),
+                              child: CustomWidgets().getShowCase(_searchKey,
+                                  child: CustomWidgets().searchBar(
+                                      searchController: _textEditingController,
+                                      isRounded: true,
+                                      focusNode: _focusNode,
+                                      hintText: plunesStrings.searchHint),
+                                  title: PlunesStrings.searchFacilities,
+                                  description: PlunesStrings.searchDesc),
                             ),
                           ),
                         ))),
@@ -670,17 +701,31 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 }
 
+// ignore: must_be_immutable
 class HomePageAppBar extends StatefulWidget {
   final Function onDrawerTap, onSetLocationTap, onSetLocationManually;
 
+  final GlobalKey<State<StatefulWidget>> two, one;
+
   HomePageAppBar(
-      this.onDrawerTap, this.onSetLocationTap, this.onSetLocationManually);
+      this.onDrawerTap, this.onSetLocationTap, this.onSetLocationManually,
+      {this.two, this.one});
 
   @override
   _HomePageAppBarState createState() => _HomePageAppBarState();
 }
 
 class _HomePageAppBarState extends State<HomePageAppBar> {
+  initState() {
+//    Future.delayed(Duration(milliseconds: 900)).then((value) {
+//      if (!UserManager().getWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN)) {
+//        WidgetsBinding.instance.addPostFrameCallback(
+//            (_) => ShowCaseWidget.of(context).startShowCase([_one, _two]));
+//      }
+//    });
+    super.initState();
+  }
+
   Future<RequestState> _getLocationStatusForTop() async {
     RequestState _requestState;
     var user = UserManager().getUserDetails();
@@ -724,10 +769,13 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
           },
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Icon(
-              Icons.menu,
-              color: PlunesColors.BLACKCOLOR,
-            ),
+            child: CustomWidgets().getShowCase(widget.two,
+                child: Icon(
+                  Icons.menu,
+                  color: PlunesColors.BLACKCOLOR,
+                ),
+                title: PlunesStrings.menu,
+                description: PlunesStrings.menuDesc),
           ),
         ),
         Expanded(child: Container()),
@@ -753,28 +801,34 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                             width: AppConfig.horizontalBlockSize * 5,
                           ),
                           Flexible(
-                            child: Container(
-                              margin: EdgeInsets.only(left: 12.0),
-                              child: Tooltip(
-                                  message: locationModel.address,
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          AppConfig.horizontalBlockSize * 5),
-                                  preferBelow: true,
-                                  child: Text(
-                                    locationModel.address,
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.clip,
-                                    softWrap: false,
-                                    maxLines: 1,
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      decoration: TextDecoration.underline,
-                                      decorationStyle:
-                                          TextDecorationStyle.dashed,
-                                      decorationThickness: 2.0,
-                                    ),
-                                  )),
+                            child: CustomWidgets().getShowCase(
+                              widget.one,
+                              description:
+                                  PlunesStrings.youCanChangeLocationFromHere,
+                              title: PlunesStrings.locationDesc,
+                              child: Container(
+                                margin: EdgeInsets.only(left: 12.0),
+                                child: Tooltip(
+                                    message: locationModel.address,
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal:
+                                            AppConfig.horizontalBlockSize * 5),
+                                    preferBelow: true,
+                                    child: Text(
+                                      locationModel.address,
+                                      textAlign: TextAlign.center,
+                                      overflow: TextOverflow.clip,
+                                      softWrap: false,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        decoration: TextDecoration.underline,
+                                        decorationStyle:
+                                            TextDecorationStyle.dashed,
+                                        decorationThickness: 2.0,
+                                      ),
+                                    )),
+                              ),
                             ),
                           ),
                         ],
@@ -792,10 +846,16 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                             child: Row(
                               children: <Widget>[
                                 Expanded(
-                                  child: Text(
-                                    locationModel.address ??
-                                        PlunesStrings.enterYourLocation,
-                                    style: TextStyle(fontSize: 15),
+                                  child: CustomWidgets().getShowCase(
+                                    widget.one,
+                                    description: PlunesStrings
+                                        .youCanChangeLocationFromHere,
+                                    title: PlunesStrings.locationDesc,
+                                    child: Text(
+                                      locationModel.address ??
+                                          PlunesStrings.enterYourLocation,
+                                      style: TextStyle(fontSize: 15),
+                                    ),
                                   ),
                                   flex: 10,
                                 ),

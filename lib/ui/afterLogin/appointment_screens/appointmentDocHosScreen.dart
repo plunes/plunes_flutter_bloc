@@ -78,7 +78,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                     PlunesStrings.NA,
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w600,
                                     color: PlunesColors.BLACKCOLOR),
                                 children: (appointmentModel.centerLocation !=
                                             null &&
@@ -87,10 +87,10 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                     ? [
                                         TextSpan(
                                           text:
-                                              " \n${appointmentModel.centerLocation}",
+                                              "\n${appointmentModel.centerLocation?.trim()}",
                                           style: TextStyle(
                                               fontSize: AppConfig.mediumFont,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight: FontWeight.w500,
                                               color: PlunesColors.GREENCOLOR),
                                         )
                                       ]
@@ -98,7 +98,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           ),
                           SizedBox(height: 5),
                           Text(
-                            appointmentModel.userAddress ?? PlunesStrings.NA,
+                            appointmentModel.userAddress?.trim() ??
+                                PlunesStrings.NA,
                             overflow: TextOverflow.visible,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
@@ -122,12 +123,9 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                 appointmentModel.userMobileNumber ??
                                     PlunesStrings.NA,
                                 style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.bold,
-                                    decoration: TextDecoration.underline,
-                                    decorationStyle: TextDecorationStyle.solid,
-                                    decorationThickness: 2.0,
-                                    decorationColor: PlunesColors.BLACKCOLOR),
+                                  fontSize: AppConfig.mediumFont,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
@@ -143,7 +141,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                         children: <Widget>[
                           Text(_getMonthWithYear().toUpperCase(),
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight: FontWeight.w500,
                                 fontSize: AppConfig.mediumFont,
                               )),
                           Text(_getFullDate(),
@@ -162,6 +160,25 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   ),
                 ]),
           ),
+          (appointmentModel.service != null &&
+                  appointmentModel.service.doctors != null &&
+                  appointmentModel.service.doctors.isNotEmpty)
+              ? Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(top: 5),
+                  child: Text(
+                    PlunesStrings.appointmentWithText +
+                        "${CommonMethods.getStringInCamelCase(appointmentModel.service?.doctors?.first?.name) ?? PlunesStrings.NA}",
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.clip,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontSize: AppConfig.mediumFont,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                )
+              : Container(),
           Container(
             margin:
                 EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 6),
@@ -182,7 +199,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
-                                color: Colors.green)),
+                                color: PlunesColors.GREENCOLOR)),
                         onTap: () {
                           if (appointmentModel != null &&
                               appointmentModel.bookingStatus !=
@@ -366,7 +383,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             appointmentModel?.serviceName),
                         style: TextStyle(
                             fontSize: AppConfig.smallFont,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w500,
                             color: Colors.black54)),
                   ),
                 ),
@@ -375,7 +392,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                     '\u20B9 ${appointmentModel.service.newPrice.first}',
                     style: TextStyle(
                         fontSize: AppConfig.smallFont,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                         color: Colors.black54),
                   ),
                 ),
@@ -400,9 +417,10 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                 children: <Widget>[
                   Text(PlunesStrings.paymentStatus,
                       style: TextStyle(
-                          fontSize: AppConfig.mediumFont,
-                          fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline)),
+                        fontSize: AppConfig.mediumFont,
+                        fontWeight: FontWeight.w500,
+//                          decoration: TextDecoration.underline
+                      )),
                   (widget.appointmentModel.isOpened != null &&
                           UserManager().getUserDetails().userType !=
                               Constants.user)
@@ -524,9 +542,10 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   '\u20B9 ${appointmentModel.amountDue}  remaining amount to be paid',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                      fontSize: AppConfig.smallFont + 2,
-                      color: Colors.green,
-                      decoration: TextDecoration.underline)),
+                    fontSize: AppConfig.smallFont + 2,
+                    color: PlunesColors.GREENCOLOR,
+//                      decoration: TextDecoration.underline
+                  )),
           SizedBox(
             height: AppConfig.verticalBlockSize * 5,
           ),
@@ -572,7 +591,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
             style: TextStyle(
                 fontSize: AppConfig.smallFont,
                 color: Colors.blue,
-                fontWeight: FontWeight.bold)),
+                fontWeight: FontWeight.w500)),
         onTap: () {
           if (appointmentModel != null &&
               appointmentModel.appointmentTime != null &&

@@ -3,6 +3,16 @@
 final plunesStrings = PlunesStrings();
 
 class PlunesStrings {
+  static const String forAnyQueries = "For Any Queries, Call Us Now!";
+  static const String medicalRegistrationVerified =
+      "Medical Registration Verified";
+  static const String view_More = "View more";
+  static const String checkReviews = "Check Reviews";
+  static const String timing = 'Timings';
+  static const String googlePlayStoreUrl =
+      "https://play.google.com/store/apps/details?id=com.plunes&hl=en_IN/";
+  static const String appleStoreUrl =
+      "https://apps.apple.com/us/app/plunes/id1463747553/";
   static const String exceptionMsg =
       'An error occurred when converting a color';
   static const String noInternetMsg = 'No Internet';
@@ -23,6 +33,9 @@ class PlunesStrings {
 
   /////
   ///Solution strings
+  static const String usingOlderVersion =
+      "You are using an older version of the application, please update to continue using our services.";
+  static const String newVersionAvailable = "New Version Available";
   static const String solutionSearched = "Solution Searched";
   static const String negotiatedSolutions = "Negotiated Prices";
   static const String validForOneHour = "Valid for 1 hour only";
@@ -115,7 +128,7 @@ class PlunesStrings {
   static const String editVariance = "Variance";
 
   ///Insight main screen
-  static const String realTimeInsights = 'Real Time Insights';
+  static const String realTimeInsights = 'Real Time Insights  ';
   static const String realTimePrediction = 'Real Time Prediction';
   static const String noRealTimeInsights =
       "You don't have any real time insights yet";
@@ -168,7 +181,7 @@ class PlunesStrings {
   static const String emailIdText = "Email_Id";
   static const String viewOnMap = "View on map";
   static const String serviceList = "Service List";
-  static const String seeMoreDoctors = "See more Doctors";
+  static const String seeAllDoctors = "See all Doctors";
   static const String unableToLoadServices = "No Services available";
   static const String knowMore = "Know More";
 
@@ -259,9 +272,29 @@ class PlunesStrings {
   static const String enterProcedureAndTestDetails =
       "Enter Procedure & Test details";
   static const String makeSureTheDetailsText =
-      "Make sure the details are correct so that hospitals can offer you competitive bids.";
-  static const String chooseUptoText =
-      "You can choose upto 5 facilities to negotiate with.";
+      "Enter details to receive competitive bids from hospitals.";
+  static const String chooseUptoText = "Choose upto 5 facilities";
+  static const String makeSureToUpdatePrice =
+      "Make sure to Update price in the Preferred time to ensure booking";
+  static const String specialities = "Choose Speciality";
+
+  static const String actionAbleMessage =
+      "These insights are predicted by our AI so that you get maximum conversions. Make sure to act on Actionable Insights so that You increase your Revenue.";
+  static const String realTimeMessage =
+      "These are real Time requests from Patients near you who are looking for Procedures and are viewing your Profiles. Make sure to take action on the insights to achieve successful conversion.";
+  static const String appointmentWithText = "Appointment with ";
+
+  ///Highlight Desc for demo
+  static const String youCanChangeLocationFromHere =
+      "You can change your location from here.";
+
+  static const String locationDesc = "Location";
+
+  static const String menu = "Menu";
+
+  static const String menuDesc = "Tap to see menu options.";
+
+  static const String searchDesc = "Tap to search facilities.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
@@ -358,6 +391,8 @@ class PlunesStrings {
 
   get errorEmptyEmailMsg => 'Please enter email id';
 
+  get errorFullAddressRequired => 'Please enter full address';
+
   get password => 'Password*';
 
   get errorMsgPassword => 'Please enter atleast 8 character password';
@@ -389,6 +424,8 @@ class PlunesStrings {
   get errorMsgEnterDocDep => 'Please enter department';
 
   get errorMsgEnterRegNo => 'Please enter registration. no';
+
+  get fullAddress => 'Full Address*';
 
   get errorMsgEnterEducation => 'Please enter education qualification';
 

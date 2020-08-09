@@ -75,7 +75,9 @@ class UserManager {
         notificationEnabled:
             preferences.getPreferenceBoolean(Constants.NOTIFICATION_ENABLED),
         isAdmin: preferences.getPreferenceBoolean(Constants.IS_ADMIN),
-        isCentre: preferences.getPreferenceBoolean(Constants.IS_CENTRE));
+        isCentre: preferences.getPreferenceBoolean(Constants.IS_CENTRE),
+        googleLocation:
+            preferences.getPreferenceString(Constants.GOOGLE_LOCATION));
   }
 
   String getDeviceToken() {
@@ -459,5 +461,13 @@ class UserManager {
     if (address != null && address.isNotEmpty) {
       Preferences().setPreferencesString(Constants.PREF_USER_LOCATION, address);
     }
+  }
+
+  bool getWidgetShownStatus(String key) {
+    return Preferences().getPreferenceBoolean(key);
+  }
+
+  setWidgetShownStatus(String key) {
+    return Preferences().setPreferencesBoolean(key, true);
   }
 }

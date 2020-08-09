@@ -440,7 +440,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 1.2.21;
+				MARKETING_VERSION = 1.2.23;
 				PRODUCT_BUNDLE_IDENTIFIER = com.plunes.plunes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner-Bridging-Header.h";
@@ -581,7 +581,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 1.2.21;
+				MARKETING_VERSION = 1.2.23;
 				PRODUCT_BUNDLE_IDENTIFIER = com.plunes.plunes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner-Bridging-Header.h";
@@ -615,7 +615,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 1.2.21;
+				MARKETING_VERSION = 1.2.23;
 				PRODUCT_BUNDLE_IDENTIFIER = com.plunes.plunes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner-Bridging-Header.h";

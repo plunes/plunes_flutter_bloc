@@ -246,8 +246,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 margin: EdgeInsets.only(right: AppConfig.verticalBlockSize * 1),
                 child: Image.asset(
                   image,
-                  height: AppConfig.verticalBlockSize * 4,
-                  width: AppConfig.verticalBlockSize * 4,
+                  height: AppConfig.verticalBlockSize * 3.8,
+                  width: AppConfig.verticalBlockSize * 3.8,
                   color: PlunesColors.GREYCOLOR,
                 )),
             SizedBox(
@@ -316,7 +316,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                             PlunesStrings.NA,
                         style: TextStyle(
                             fontSize: AppConfig.mediumFont,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                             color: PlunesColors.BLACKCOLOR),
                       ),
                     ),
@@ -331,7 +331,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                         child: Text(
                           PlunesStrings.getDirection,
                           style: TextStyle(
-                              decoration: TextDecoration.underline,
                               fontSize: AppConfig.smallFont,
                               color: PlunesColors.GREENCOLOR),
                         ),
@@ -354,8 +353,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
                 child: RichText(
                   text: new TextSpan(
-                    // Note: Styles for TextSpans must be explicitly defined.
-                    // Child text spans will inherit styles from parent
                     style: new TextStyle(
                       color: Colors.black,
                     ),
@@ -431,12 +428,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               }
             },
             child: Container(
-//              decoration: isSelectedTimeSlot
-//                  ? BoxDecoration(
-//                      color: PlunesColors.GREENCOLOR,
-//                      borderRadius: BorderRadius.all(
-//                          Radius.circular(AppConfig.horizontalBlockSize * 8)))
-//                  : null,
               padding: EdgeInsets.all(isSelectedTimeSlot ? 10 : 3.0),
               child: Text(
                 slotName,
@@ -445,9 +436,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                         ? PlunesColors.GREENCOLOR
                         : PlunesColors.BLACKCOLOR,
                     fontSize: AppConfig.mediumFont,
-                    decoration: isSelectedTimeSlot
-                        ? TextDecoration.underline
-                        : TextDecoration.none,
+//                    decoration: isSelectedTimeSlot
+//                        ? TextDecoration.underline
+//                        : TextDecoration.none,
                     decorationThickness: 1.5),
               ),
             )),
@@ -462,23 +453,25 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 fontSize: AppConfig.mediumFont),
           ),
         ),
-        Container(
-          margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * .2,
-              right: isSelectedTimeSlot
-                  ? AppConfig.horizontalBlockSize * 26
-                  : AppConfig.horizontalBlockSize * 3,
-              left: isSelectedTimeSlot
-                  ? AppConfig.horizontalBlockSize * 26
-                  : AppConfig.horizontalBlockSize * 3),
-          width: double.infinity,
-          height: 0.8,
-          color: selectedColor != null
-              ? selectedColor
-              : isSelectedTimeSlot
-                  ? PlunesColors.GREYCOLOR
-                  : PlunesColors.GREENCOLOR,
-        )
+        isSelectedTimeSlot
+            ? Container(
+                margin: EdgeInsets.only(
+                    top: AppConfig.verticalBlockSize * .2,
+                    right: isSelectedTimeSlot
+                        ? AppConfig.horizontalBlockSize * 26
+                        : AppConfig.horizontalBlockSize * 3,
+                    left: isSelectedTimeSlot
+                        ? AppConfig.horizontalBlockSize * 26
+                        : AppConfig.horizontalBlockSize * 3),
+                width: double.infinity,
+                height: 0.8,
+                color: selectedColor != null
+                    ? selectedColor
+                    : isSelectedTimeSlot
+                        ? PlunesColors.GREYCOLOR
+                        : PlunesColors.GREENCOLOR,
+              )
+            : Container()
       ],
     );
   }
@@ -552,7 +545,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   Text(
                     _userProfileInfo.user.credits,
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       fontSize: AppConfig.smallFont,
                     ),
                   ),
@@ -690,7 +683,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                                 _appointmentTime != null)
                             ? PlunesColors.WHITECOLOR
                             : PlunesColors.BLACKCOLOR,
-                        hasBorder: true),
+                        hasBorder: (_selectedDate == _tempSelectedDateTime &&
+                                _appointmentTime != _notSelectedEntry &&
+                                _appointmentTime != null)
+                            ? false
+                            : true),
                   );
                 }),
           ),
@@ -842,12 +839,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     if (appointmentTime.contains("PM") && _selectedHour != 12) {
       _selectedHour = _selectedHour + 12;
     }
-    print(
-        "${fromDuration.toString()}appointment ${toDuration.toString()}time ${appointmentTime}");
+//    print(
+//        "${fromDuration.toString()}appointment ${toDuration.toString()}time ${appointmentTime}");
     TimeOfDay _selectedTime = TimeOfDay(
         hour: _selectedHour,
         minute: int.tryParse(_hourNMinute[1].trim().split(" ")[0]));
-    print("_selectedTime ${_selectedTime.toString()}");
+//    print("_selectedTime ${_selectedTime.toString()}");
     if (_selectedTime.hour >= fromDuration.hour &&
         _selectedTime.hour <= toDuration.hour &&
         _tempSelectedDateTime.day == _dateNow.day &&

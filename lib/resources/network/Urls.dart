@@ -22,6 +22,11 @@ class Urls {
   static const String baseUrl =
       'https://devapi.plunes.com/v5/'; // staging server
 
+//  static const String customBaseUrl =
+//      'https://api.plunes.com/'; // production server
+  static const String customBaseUrl =
+      'https://devapi.plunes.com/'; // staging server
+
   get catalogue => baseUrl + 'catalogue';
 
   get logout => baseUrl + 'user/logout';
@@ -75,8 +80,7 @@ class Urls {
   static const String GET_TOTAL_BUSINESS_EARNED_AND_LOSS_URL =
       "analytics/totalBusiness";
   static const String UPDATE_REALTIME_INSIGHT_PRICE_URL = 'solution';
-  static const String UPDATE_ACTIONABLE_INSIGHT_PRICE_URL =
-      '/analytics/cataloguePriceUpdate';
+  static const String UPDATE_ACTIONABLE_INSIGHT_PRICE_URL = 'admin/updatePrice';
   static const String GET_APPOINTMENT_URL = 'booking';
   static const String GET_CANCEL_AND_RESCHEDULE_URL = 'booking/';
   static const String GET_CONFIRM_APPOINTMENT_URL = 'booking/confirmBooking';

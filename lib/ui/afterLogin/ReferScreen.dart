@@ -79,7 +79,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
             Container(
               width: double.infinity,
               child: widget.createTextViews(plunesStrings.inviteYourFriends, 22,
-                  colorsFile.black1, TextAlign.center, FontWeight.bold),
+                  colorsFile.black1, TextAlign.center, FontWeight.w500),
             ),
             widget.getSpacer(0.0, 20.0),
             getBulletRow(plunesStrings.text1Referral),
@@ -92,13 +92,11 @@ class _ReferScreenState extends BaseState<ReferScreen> {
               child: Image.asset(
                 plunesImages.coverIcon,
                 height: AppConfig.verticalBlockSize * 30,
-//                width: AppConfig.horizontalBlockSize * 100,
                 alignment: Alignment.center,
               ),
             ),
-//            widget.getSpacer(0.0, 10.0),
             widget.createTextViews(plunesStrings.availableCredits, 14,
-                colorsFile.darkGrey1, TextAlign.start, FontWeight.bold),
+                colorsFile.darkGrey1, TextAlign.start, FontWeight.w500),
             widget.getSpacer(0.0, 10.0),
             Container(
               child: Row(
@@ -113,7 +111,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
                     width: 5,
                   ),
                   widget.createTextViews(_credit, 16, colorsFile.darkGrey1,
-                      TextAlign.start, FontWeight.bold),
+                      TextAlign.start, FontWeight.w500),
                 ],
               ),
             ),
@@ -156,22 +154,25 @@ class _ReferScreenState extends BaseState<ReferScreen> {
                 color: Color(
                     CommonMethods.getColorHexFromStr(colorsFile.lightGrey6))),
             widget.getSpacer(0.0, 30.0),
-            InkWell(
-              onTap: () {
-                Share.share(
-                    "Join me on Plunes and get upto 50% discount instantly!Use my invite code: $_referralCode and get Rs. 100/- as free referral cash.Download Plunes now: https://plunes.com");
-              },
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              child: Container(
-                height: 45,
-                alignment: Alignment.center,
-                child: widget.createTextViews(plunesStrings.inviteFriends, 18,
-                    colorsFile.white, TextAlign.center, FontWeight.normal),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(20)),
-                    color: Color(0xff01D35A)),
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 22,
+                  right: AppConfig.horizontalBlockSize * 22),
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                onTap: () {
+                  Share.share(
+                      "Join me on Plunes and get upto 50% discount instantly!Use my invite code: $_referralCode and get Rs. 100/- as free referral cash.Download Plunes now: https://plunes.com");
+                },
+                child: CustomWidgets().getRoundedButton(
+                    plunesStrings.inviteFriends,
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.GREENCOLOR,
+                    AppConfig.horizontalBlockSize * 0,
+                    AppConfig.verticalBlockSize * 1.2,
+                    PlunesColors.WHITECOLOR),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -275,7 +276,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontSize: AppConfig.extraLargeFont,
-                  fontWeight: FontWeight.w600),
+                  fontWeight: FontWeight.w500),
             ),
           ),
           Padding(
@@ -286,7 +287,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
               style: TextStyle(
                   color: PlunesColors.GREYCOLOR,
                   fontSize: AppConfig.largeFont,
-                  fontWeight: FontWeight.w600),
+                  fontWeight: FontWeight.w500),
             ),
           ),
           widget.getSpacer(0.0, AppConfig.verticalBlockSize * 8),
@@ -306,7 +307,7 @@ class _ReferScreenState extends BaseState<ReferScreen> {
                   width: 5,
                 ),
                 widget.createTextViews(_credit, 16, colorsFile.darkGrey1,
-                    TextAlign.start, FontWeight.bold),
+                    TextAlign.start, FontWeight.w500),
               ],
             ),
           ),

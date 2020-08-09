@@ -13,6 +13,8 @@ class Constants {
   static const String POST = 'Post';
   static const String PUT = 'Put';
 
+  static const String BIDDING_MAIN_SCREEN = "BIDDING_MAIN_SCREEN";
+
   static get hospital => 'Hospital';
 
   static get doctor => 'Doctor';
@@ -55,5 +57,6 @@ class Constants {
   static const String NOTIFICATION_ENABLED = "NOTIFICATION_ENABLED";
   static const String IS_ADMIN = "IS_ADMIN";
   static const String IS_CENTRE = "IS_CENTRE";
+  static const String GOOGLE_LOCATION = "GOOGLE_LOCATION";
   static const String REGION = "REGION";
 }

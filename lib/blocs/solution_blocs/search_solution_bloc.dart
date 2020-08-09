@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/blocs/base_bloc.dart';
 import 'package:plunes/models/solution_models/more_facilities_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -132,10 +133,13 @@ class SearchSolutionBloc extends BlocBase {
   }
 
   Future<RequestState> getFacilitiesForManualBidding(
-      {String searchQuery, int pageIndex}) async {
+      {String searchQuery,
+      int pageIndex,
+      LatLng latLng,
+      String specialityId}) async {
     addStateInManualBiddingStream(RequestInProgress());
-    var result = await SearchedSolutionRepo()
-        .getFacilitiesForManualBidding(searchQuery, pageIndex);
+    var result = await SearchedSolutionRepo().getFacilitiesForManualBidding(
+        searchQuery, pageIndex, latLng, specialityId);
     addStateInManualBiddingStream(result);
     return result;
   }

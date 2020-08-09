@@ -122,9 +122,9 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
         if (snapShot.data is RequestSuccess) {
           RequestSuccess _requestSuccess = snapShot.data;
           _appointmentResponse = _requestSuccess.response;
-          if (_appointmentResponse?.bookings != null &&
+          if (_appointmentResponse.bookings != null &&
               _appointmentResponse.bookings.isEmpty) {
-            _appointmentFailureCause = PlunesStrings.noAppointmentAvailable;
+//            _appointmentFailureCause = PlunesStrings.noAppointmentAvailable;
           }
           _upComingAppointments = [];
           _confirmedDocHosAppointments = [];
@@ -139,8 +139,10 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
           _appointmentFailureCause = _requestFailed.failureCause;
           _appointmentBloc.addStateInAppointmentStream(null);
         }
-        return (_appointmentResponse == null ||
-                _appointmentResponse.bookings.isEmpty)
+        return ((_appointmentResponse == null ||
+                    _appointmentResponse.bookings.isEmpty) &&
+                (_appointmentFailureCause != null &&
+                    _appointmentFailureCause.isNotEmpty))
             ? _emptyAppointmentView(_appointmentFailureCause ??
                 PlunesStrings.noAppointmentAvailable)
             : (UserManager().getUserDetails().userType == Constants.user)
@@ -488,7 +490,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
         Future.delayed(Duration(milliseconds: 1500)).then((value) {
           if (_shouldOpenPopUp != null && _shouldOpenPopUp) {
             CustomWidgets().showScrollableDialog(_context,
-                _appointmentResponse.bookings[_appointmentIndex], _bookingBloc);
+                _confirmedUserAppointments[_appointmentIndex], _bookingBloc);
             _shouldOpenPopUp = false;
           }
         });
@@ -505,7 +507,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
         Future.delayed(Duration(milliseconds: 1500)).then((value) {
           if (_shouldOpenPopUp != null && _shouldOpenPopUp) {
             CustomWidgets().showScrollableDialog(_context,
-                _appointmentResponse.bookings[_appointmentIndex], _bookingBloc);
+                _cancelledAppointments[_appointmentIndex], _bookingBloc);
             _shouldOpenPopUp = false;
           }
         });

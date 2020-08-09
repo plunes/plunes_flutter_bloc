@@ -158,6 +158,8 @@ class _FillCouponState extends BaseState<FillCoupon> {
               padding: EdgeInsets.only(
                 top: AppConfig.verticalBlockSize * 4,
               ),
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 30),
               child: StreamBuilder<RequestState>(
                   stream: _couponBloc.baseStream,
                   builder: (context, snapshot) {
@@ -186,10 +188,10 @@ class _FillCouponState extends BaseState<FillCoupon> {
                       onDoubleTap: () {},
                       child: CustomWidgets().getRoundedButton(
                           plunesStrings.submit,
-                          AppConfig.horizontalBlockSize * 6,
+                          AppConfig.horizontalBlockSize * 8,
                           PlunesColors.GREENCOLOR,
-                          AppConfig.horizontalBlockSize * 1,
-                          AppConfig.verticalBlockSize * 1.5,
+                          AppConfig.horizontalBlockSize * 0,
+                          AppConfig.verticalBlockSize * 1.2,
                           PlunesColors.WHITECOLOR),
                     );
                   }),
@@ -238,7 +240,6 @@ class _FillCouponState extends BaseState<FillCoupon> {
                       child: Image.asset(PlunesImages.couponImage)),
                   SizedBox(height: 10),
                   Text("Coupon Applied Successfully!"),
-                  SizedBox(height: 20),
                   SizedBox(height: AppConfig.verticalBlockSize * 1),
                   FlatButton(
                       onPressed: () => Navigator.pop(context, true),
@@ -253,8 +254,6 @@ class _FillCouponState extends BaseState<FillCoupon> {
                           textAlign: TextAlign.center,
                         ),
                       )),
-//                    ],
-//                  )
                 ],
               ),
             ),

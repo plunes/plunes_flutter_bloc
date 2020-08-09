@@ -17,7 +17,7 @@ class CatalogueData {
   String duration;
   int iV, createdAt;
   num maxDiscount;
-  bool isFromNotification;
+  bool isFromNotification, booked;
   String solutionId;
 
   CatalogueData(
@@ -36,7 +36,8 @@ class CatalogueData {
       this.speciality,
       this.maxDiscount,
       this.isFromNotification,
-      this.solutionId});
+      this.solutionId,
+      this.booked});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
@@ -53,6 +54,7 @@ class CatalogueData {
     maxDiscount = json['maxDiscount'];
     solutionId = json['_id'];
     iV = json['__v'];
+    booked = json['booked'];
   }
 
   Map<String, dynamic> toJson() {

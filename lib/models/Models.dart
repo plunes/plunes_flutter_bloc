@@ -176,7 +176,8 @@ class User {
       prescriptionLogoUrl,
       accessToken,
       credits,
-      region;
+      region,
+      googleLocation;
 
   List<ProcedureList> specialities = [];
   List<TimeSlotsData> timeSlots = [];
@@ -221,6 +222,7 @@ class User {
       this.isCentre,
       this.referralExpired,
       this.bankDetails,
+      this.googleLocation,
       this.region});
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -247,8 +249,9 @@ class User {
     if (lat == null || lat.isEmpty || lat == "0") {
       lat = "0.0";
     }
-    print("lat in models $lat");
-    print("long in models $long");
+    print("json['googleLocation'] ${json['googleLocation']}");
+//    print("lat in models $lat");
+//    print("long in models $long");
     return User(
         uid: json['_id'] != null ? json['_id'] : '',
         name: json['name'] != null ? json['name'] : '',
@@ -305,6 +308,7 @@ class User {
         bankDetails: json['bankDetails'] != null
             ? BankDetails.fromJson(json['bankDetails'])
             : null,
+        googleLocation: json['googleAddress'],
         referralExpired: _referralExpired);
   }
 
@@ -331,6 +335,7 @@ class User {
     data['address'] = this.address;
     data['birthDate'] = this.birthDate;
     data['biography'] = this.biography;
+    data['googleAddress'] = this.googleLocation;
     if (this.bankDetails != null) {
       data['bankDetails'] = this.bankDetails.toJson();
     }
