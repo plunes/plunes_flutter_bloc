@@ -81,7 +81,7 @@ class Preferences {
   }
 
   ///Below method is to clear the SharedPreference.
-  clearPreferences() async {
-    await sharedPreferences.clear();
+  Future<bool> clearPreferences() async {
+    return await sharedPreferences.clear();
   }
 }

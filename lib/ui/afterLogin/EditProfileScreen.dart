@@ -217,21 +217,13 @@ class _EditProfileState extends State<EditProfileScreen>
 //                  TextInputType.text, TextCapitalization.words, true, '')
 //              : Container(),
           widget.getSpacer(0.0, isDoctor ? 20.0 : 0),
-          (widget.userType != Constants.hospital &&
-                  widget.userType != Constants.labDiagnosticCenter)
+          isDoctor
               ? createTextField(collegeController, plunesStrings.college,
                   TextInputType.text, TextCapitalization.words, true, '')
               : Container(),
-          widget.getSpacer(0.0, (_user.userType != Constants.user) ? 20.0 : 0),
-          (_user.userType != Constants.user)
-              ? createTextField(
-                  manualAddressController,
-                  plunesStrings.fullAddress,
-                  TextInputType.text,
-                  TextCapitalization.none,
-                  true,
-                  '')
-              : Container(),
+          widget.getSpacer(0.0, 20.0),
+          createTextField(manualAddressController, plunesStrings.fullAddress,
+              TextInputType.text, TextCapitalization.none, true, ''),
           widget.getSpacer(0.0, 20.0),
           createTextField(locationController, plunesStrings.location,
               TextInputType.text, TextCapitalization.none, false, ''),
@@ -269,9 +261,9 @@ class _EditProfileState extends State<EditProfileScreen>
       String errorMsg) {
     return InkWell(
       onTap: () {
-        if (_user.isCentre != null && _user.isCentre) {
-          return;
-        }
+//        if (_user.isCentre != null && _user.isCentre) {
+//          return;
+//        }
         if (controller == dobController)
           CommonMethods.selectHoloTypeDate(context).then((value) {
             dobController.text = value;
@@ -295,7 +287,10 @@ class _EditProfileState extends State<EditProfileScreen>
               textCapitalization: textCapitalization,
               keyboardType: inputType,
               readOnly: (_user.isCentre != null && _user.isCentre)
-                  ? (controller == nameController) ? false : true
+                  ? (controller == nameController ||
+                          controller == manualAddressController)
+                      ? false
+                      : true
                   : false,
               textInputAction: controller == aboutController
                   ? TextInputAction.done
@@ -414,12 +409,12 @@ class _EditProfileState extends State<EditProfileScreen>
     professionRegController.text = _user.profRegistrationNumber;
     experienceController.text = _user.experience;
     aboutController.text = _user.about;
-    if (_user.userType == Constants.user) {
-      locationController.text = widget.location;
-    } else {
-      locationController.text = _user.googleLocation ?? "";
-      manualAddressController.text = widget.location;
-    }
+//    if (_user.userType == Constants.user) {
+//      locationController.text = widget.location;
+//    } else {
+    locationController.text = _user.googleLocation ?? "";
+    manualAddressController.text = widget.location;
+//    }
   }
 
   updateProfileRequest() async {
@@ -453,12 +448,8 @@ class _EditProfileState extends State<EditProfileScreen>
         longitude: (_longitude == null || _longitude == "0.0")
             ? details.longitude ?? "0.0"
             : _longitude,
-        address: (_user.userType == Constants.user)
-            ? locationController.text.trim()
-            : manualAddressController.text,
-        googleLocation: (_user.userType != Constants.user)
-            ? locationController.text.trim()
-            : "",
+        address: manualAddressController.text,
+        googleLocation: locationController.text.trim(),
         birthDate: dobController.text.trim(),
         registrationNumber: professionRegController.text.trim(),
         experience: experienceController.text.trim(),

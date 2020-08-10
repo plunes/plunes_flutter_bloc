@@ -55,9 +55,9 @@ class LocationUtil {
     String address = PlunesStrings.enterYourLocation;
     var userObj = UserManager().getUserDetails();
     if (needFullLocation &&
-        userObj.address != null &&
-        userObj.address.isNotEmpty) {
-      return userObj.address;
+        userObj.googleLocation != null &&
+        userObj.googleLocation.isNotEmpty) {
+      return userObj.googleLocation;
     }
     if (!(needFullLocation) &&
         userObj.region != null &&

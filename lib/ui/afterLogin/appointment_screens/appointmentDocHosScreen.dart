@@ -96,15 +96,21 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                       ]
                                     : null),
                           ),
-                          SizedBox(height: 5),
-                          Text(
-                            appointmentModel.userAddress?.trim() ??
-                                PlunesStrings.NA,
-                            overflow: TextOverflow.visible,
-                            style: TextStyle(
-                                fontSize: AppConfig.smallFont,
-                                color: Colors.black54),
-                          ),
+                          (appointmentModel.userAddress == null ||
+                                  appointmentModel.userAddress.trim().isEmpty)
+                              ? Container()
+                              : SizedBox(height: 5),
+                          (appointmentModel.userAddress == null ||
+                                  appointmentModel.userAddress.trim().isEmpty)
+                              ? Container()
+                              : Text(
+                                  appointmentModel.userAddress?.trim() ??
+                                      PlunesStrings.NA,
+                                  overflow: TextOverflow.visible,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.smallFont,
+                                      color: Colors.black54),
+                                ),
                           SizedBox(height: 5),
                           InkWell(
                             onTap: () {

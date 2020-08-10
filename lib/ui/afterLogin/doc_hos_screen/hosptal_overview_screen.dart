@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -118,11 +116,13 @@ class _HospitalOverviewScreenState
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        body: _isProcessing
-            ? CustomWidgets().getProgressIndicator()
-            : _failureCause != null
-                ? CustomWidgets().errorWidget(_failureCause)
-                : _getBody());
+        body: Builder(builder: (context) {
+          return _isProcessing
+              ? CustomWidgets().getProgressIndicator()
+              : _failureCause != null
+                  ? CustomWidgets().errorWidget(_failureCause)
+                  : _getBody();
+        }));
   }
 
   String _getNaString() {
@@ -1363,13 +1363,12 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
         }
         if (_prevMinValue != val) {
           _prevMinValue = val;
-          _secondVal = _secFixVal;
         }
-        _secondVal--;
         _timeValue = val.toString();
         if (_timeValue != null && _timeValue.length == 1) {
           _timeValue = "0$_timeValue";
         }
+        _secondVal = 60 - (duration.inSeconds % 60);
         if (_secondVal != null) {
           var _sec = _secondVal.toString();
           if (_sec.length == 1) {

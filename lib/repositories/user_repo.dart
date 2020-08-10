@@ -124,25 +124,12 @@ class UserManager {
           checkLocationResponse.success) {
         setIsUserInServiceLocation(checkLocationResponse.success);
         setLanLong(latitude, longitude);
-      }
-//      else if (checkLocationResponse != null &&
-//          checkLocationResponse.success != null &&
-//          !(checkLocationResponse.success) &&
-//          checkLocationResponse.coordinates != null &&
-//          checkLocationResponse.coordinates.isNotEmpty) {
-//        setIsUserInServiceLocation(true);
-//        setLanLong(checkLocationResponse.coordinates[1],
-//            checkLocationResponse.coordinates[0]);
-//      }
-      else {
+      } else {
         setIsUserInServiceLocation(false);
       }
       requestState = RequestSuccess(response: checkLocationResponse);
     } else {
       requestState = RequestFailed(failureCause: result.failureCause);
-    }
-    if (address != null && address.isNotEmpty) {
-      Preferences().setPreferencesString(Constants.PREF_USER_LOCATION, address);
     }
     setAddress(address);
     setRegion(region);
@@ -218,10 +205,10 @@ class UserManager {
       LoginPost loginPost;
       try {
         loginPost = LoginPost.fromJson(result.response.data);
-        print("user, ${loginPost.user.toString()}");
+//        print("user, ${loginPost.user.toString()}");
         Bloc().saveDataInPreferences(loginPost, null, null);
       } catch (err) {
-        print('error $err');
+//        print('error $err');
       }
       return RequestSuccess(response: loginPost);
     } else {
@@ -262,7 +249,6 @@ class UserManager {
         headerIncluded: true,
         postData: {"newToken": token, "oldToken": savedToken},
         requestType: HttpRequestMethods.HTTP_POST);
-    print("${result.failureCause} token updated ${result.isRequestSucceed}");
     if (result.isRequestSucceed) {
       setDeviceToken(token);
       return RequestSuccess();
@@ -319,7 +305,6 @@ class UserManager {
     if (result.isRequestSucceed) {
       List<CatalogueData> _serviceList = [];
       if (result.response.data['data'] != null) {
-        print(result.response.data['data'].toString());
         result.response.data['data'].forEach((v) {
           _serviceList.add(CatalogueData.fromJson(v));
         });
@@ -459,7 +444,7 @@ class UserManager {
 
   void setAddress(String address) {
     if (address != null && address.isNotEmpty) {
-      Preferences().setPreferencesString(Constants.PREF_USER_LOCATION, address);
+      Preferences().setPreferencesString(Constants.GOOGLE_LOCATION, address);
     }
   }
 
@@ -467,7 +452,7 @@ class UserManager {
     return Preferences().getPreferenceBoolean(key);
   }
 
-  setWidgetShownStatus(String key) {
-    return Preferences().setPreferencesBoolean(key, true);
+  setWidgetShownStatus(String key, {bool status = true}) {
+    return Preferences().setPreferencesBoolean(key, status);
   }
 }

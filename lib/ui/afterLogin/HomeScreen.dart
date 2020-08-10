@@ -346,10 +346,19 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     });
   }
 
-  void navigationPage() {
+  void navigationPage() async {
     UserManager().clear();
-    preferences.clearPreferences();
-    Future.delayed(Duration(milliseconds: 200), () {
+    bool BIDDING_MAIN_SCREEN =
+        UserManager().getWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN);
+    bool SOLUTION_SCREEN =
+        UserManager().getWidgetShownStatus(Constants.SOLUTION_SCREEN);
+    preferences.clearPreferences().then((value) {
+      UserManager().setWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN,
+          status: BIDDING_MAIN_SCREEN);
+      UserManager().setWidgetShownStatus(Constants.SOLUTION_SCREEN,
+          status: SOLUTION_SCREEN);
+    });
+    Future.delayed(Duration(milliseconds: 100), () {
       return Navigator.of(context)
           .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     });

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -92,6 +91,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   builder: (context) => SolutionReceivedScreen(
                         catalogueData: widget.catalogueData,
                         searchQuery: widget.searchQuery,
+                        searchedDocResults: _searchedDocResults,
                       ))).then((value) {
             if (value != null && value) {
               Navigator.of(context)
@@ -582,7 +582,6 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
           _searchedDocResults.solution == null ||
           _searchedDocResults.solution.services == null ||
           _searchedDocResults.solution.services.isEmpty) {
-        //_failureCause = PlunesStrings.oopsServiceNotAvailable;
         if (_searchedDocResults != null &&
             _searchedDocResults.msg != null &&
             _searchedDocResults.msg.isNotEmpty) {
