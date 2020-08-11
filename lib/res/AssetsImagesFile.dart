@@ -88,6 +88,24 @@ class PlunesImages {
         'assets/images/nearyou/Radiology.png'
       ];
 
+  get aboutUsUserArray => [
+        'assets/images/Refundable.png',
+        'assets/images/PrefferedTiming.png',
+        'assets/images/Lockin100.png',
+        'assets/images/MakePayement.png',
+        'assets/images/NegotiateIRealtime.png',
+        'assets/images/AutomatedAppointment.png',
+      ];
+
+  get aboutUsHospArray => [
+        'assets/images/RealTimeIns.png',
+        'assets/images/ActionableIns.png',
+        'assets/images/ExtensiveMarketing.png',
+        'assets/images/Patientfootfal.png',
+        'assets/images/BusinessPerformance.png',
+        'assets/images/CenterIntegration.png',
+      ];
+
   get gradientImageArray => [
         'assets/images/achievments/gradient/11.jpg',
         'assets/images/achievments/gradient/1.jpg',
