@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/event_bus.dart';
@@ -17,6 +18,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import '../../../Utils/custom_widgets.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 // ignore: must_be_immutable
 class HospitalDoctorOverviewScreen extends BaseActivity {
@@ -49,9 +51,12 @@ class _HospitalOverviewScreenState
   StreamController _timeUpdater;
   Timer _timer;
   ScrollController _scrollController;
+  BuildContext _context;
+  GlobalKey _realTimeInsightKey = GlobalKey();
 
   @override
   void initState() {
+    _highlightWidgets();
     _scrollController = ScrollController();
     WidgetsBinding.instance.addObserver(this);
     _timeUpdater = StreamController.broadcast();
@@ -116,13 +121,16 @@ class _HospitalOverviewScreenState
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        body: Builder(builder: (context) {
-          return _isProcessing
-              ? CustomWidgets().getProgressIndicator()
-              : _failureCause != null
-                  ? CustomWidgets().errorWidget(_failureCause)
-                  : _getBody();
-        }));
+        body: ShowCaseWidget(
+          builder: Builder(builder: (context) {
+            _context = context;
+            return _isProcessing
+                ? CustomWidgets().getProgressIndicator()
+                : _failureCause != null
+                    ? CustomWidgets().errorWidget(_failureCause)
+                    : _getBody();
+          }),
+        ));
   }
 
   String _getNaString() {
@@ -162,8 +170,30 @@ class _HospitalOverviewScreenState
                   ? Container(
                       height: AppConfig.verticalBlockSize * 30,
                       child: Center(
-                        child: Text(_reaTimeInsightFailureCause ??
-                            PlunesStrings.noRealTimeInsights),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Image.asset(
+                              PlunesImages.noRealTimeInsightIcon,
+                              height: AppConfig.verticalBlockSize * 6.5,
+                              width: AppConfig.horizontalBlockSize * 25,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1.5),
+                              child: Text(
+                                _reaTimeInsightFailureCause ??
+                                    PlunesStrings.noRealTimeInsights,
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#676767"))),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   : Container(
@@ -572,8 +602,30 @@ class _HospitalOverviewScreenState
                           width: double.infinity,
                           height: AppConfig.verticalBlockSize * 35,
                           child: Center(
-                            child: Text(_actionableInsightFailureCause ??
-                                PlunesStrings.noActionableInsightAvailable),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Image.asset(
+                                  PlunesImages.noActionableInsightIcon,
+                                  height: AppConfig.verticalBlockSize * 6.5,
+                                  width: AppConfig.horizontalBlockSize * 25,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 1.5),
+                                  child: Text(
+                                      _actionableInsightFailureCause ??
+                                          PlunesStrings
+                                              .noActionableInsightAvailable,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#676767")))),
+                                ),
+                              ],
+                            ),
                           ),
                         )
                       : Container(
@@ -951,11 +1003,16 @@ class _HospitalOverviewScreenState
                         Row(
                           children: <Widget>[
                             Flexible(
-                              child: Text(
-                                PlunesStrings.realTimeInsights,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
+                              child: CustomWidgets().getShowCase(
+                                _realTimeInsightKey,
+                                title: PlunesStrings.realTimeInsights,
+                                description: PlunesStrings.realTimeDesc,
+                                child: Text(
+                                  PlunesStrings.realTimeInsights,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
                             ),
@@ -1084,6 +1141,18 @@ class _HospitalOverviewScreenState
           0,
           CentreData(
               isAdmin: true, centerLocation: _user.name ?? "Myself", sId: ""));
+    }
+  }
+
+  void _highlightWidgets() {
+    if (!UserManager().getWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN)) {
+      Future.delayed(Duration(seconds: 1)).then((value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) =>
+            ShowCaseWidget.of(_context).startShowCase([_realTimeInsightKey]));
+        Future.delayed(Duration(seconds: 1)).then((value) {
+          UserManager().setWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN);
+        });
+      });
     }
   }
 }

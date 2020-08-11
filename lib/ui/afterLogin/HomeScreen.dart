@@ -352,11 +352,15 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         UserManager().getWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN);
     bool SOLUTION_SCREEN =
         UserManager().getWidgetShownStatus(Constants.SOLUTION_SCREEN);
+    bool INSIGHT_MAIN_SCREEN =
+        UserManager().getWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN);
     preferences.clearPreferences().then((value) {
       UserManager().setWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN,
           status: BIDDING_MAIN_SCREEN);
       UserManager().setWidgetShownStatus(Constants.SOLUTION_SCREEN,
           status: SOLUTION_SCREEN);
+      UserManager().setWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN,
+          status: INSIGHT_MAIN_SCREEN);
     });
     Future.delayed(Duration(milliseconds: 100), () {
       return Navigator.of(context)

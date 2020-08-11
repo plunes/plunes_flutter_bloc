@@ -15,6 +15,7 @@ class Constants {
 
   static const String BIDDING_MAIN_SCREEN = "BIDDING_MAIN_SCREEN";
   static const String SOLUTION_SCREEN = "SOLUTION_SCREEN";
+  static const String INSIGHT_MAIN_SCREEN = "INSIGHT_MAIN_SCREEN";
 
   static get hospital => 'Hospital';
 

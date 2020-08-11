@@ -10,6 +10,7 @@ import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -224,6 +225,22 @@ class _EditProfileState extends State<EditProfileScreen>
           widget.getSpacer(0.0, 20.0),
           createTextField(manualAddressController, plunesStrings.fullAddress,
               TextInputType.text, TextCapitalization.none, true, ''),
+          widget.getSpacer(0.0, 20.0),
+          InkWell(
+            onTap: () {
+              fetchLocation();
+              return;
+            },
+            onDoubleTap: () {},
+            child: Container(
+              height: AppConfig.verticalBlockSize * 22,
+              width: double.infinity,
+              child: Image.asset(
+                PlunesImages.map,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
           widget.getSpacer(0.0, 20.0),
           createTextField(locationController, plunesStrings.location,
               TextInputType.text, TextCapitalization.none, false, ''),

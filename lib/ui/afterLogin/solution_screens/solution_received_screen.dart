@@ -116,7 +116,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   @override
   void dispose() {
-    _timer?.cancel();
+    if (_timer != null && _timer.isActive) {
+      _timer?.cancel();
+    }
     _streamForTimer?.close();
     _timerToUpdateSolutionReceivedTime?.cancel();
     _searchController?.dispose();
@@ -396,6 +398,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       _timer = timer;
+      if (!mounted) {
+        if (_timer != null && _timer.isActive) {
+          _timer.cancel();
+        }
+        return;
+      }
       _negotiate();
     });
   }

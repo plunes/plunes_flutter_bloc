@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -124,6 +125,15 @@ class UserManager {
           checkLocationResponse.success) {
         setIsUserInServiceLocation(checkLocationResponse.success);
         setLanLong(latitude, longitude);
+        if (address == null || address.isEmpty) {
+          LocationUtil()
+              .getAddressFromLatLong(
+                  latitude?.toString(), longitude?.toString(),
+                  needFullLocation: true)
+              .then((addr) {
+            setAddress(addr);
+          });
+        }
       } else {
         setIsUserInServiceLocation(false);
       }

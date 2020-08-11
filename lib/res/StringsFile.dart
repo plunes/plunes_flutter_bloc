@@ -295,7 +295,8 @@ class PlunesStrings {
   static const String viewDetailsDesc = "Tap to view details.";
   static const String moreFacilityDesc = "Tap to choose more facilities.";
   static const String businessEarnedLostTitle = "Business Earned/Lost";
-  static const String realTimeDesc = "Change price form here.";
+  static const String realTimeDesc =
+      "Real Time requests from Patients Near you.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

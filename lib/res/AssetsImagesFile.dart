@@ -64,6 +64,10 @@ class PlunesImages {
   static const String plunesPlaceHolderAndErrorLogo =
       "assets/images/plunesPlaceHolderAndErrorLogo.png";
   static const String informativeIcon = "assets/images/informativeIcon.png";
+  static const String noActionableInsightIcon =
+      "assets/images/noActionableInsightIcon.png";
+  static const String noRealTimeInsightIcon =
+      "assets/images/noRealTimeInsightIcon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

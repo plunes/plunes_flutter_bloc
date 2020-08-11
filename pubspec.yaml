@@ -303,6 +303,8 @@ flutter:
     - assets/images/biddingAddedSuccessImage.png
     - assets/images/plunesPlaceHolderAndErrorLogo.png
     - assets/images/informativeIcon.png
+    - assets/images/noActionableInsightIcon.png
+    - assets/images/noRealTimeInsightIcon.png
 
 
 

@@ -249,7 +249,6 @@ class User {
     if (lat == null || lat.isEmpty || lat == "0") {
       lat = "0.0";
     }
-    print("json['googleLocation'] ${json['googleLocation']}");
 //    print("lat in models $lat");
 //    print("long in models $long");
     return User(
