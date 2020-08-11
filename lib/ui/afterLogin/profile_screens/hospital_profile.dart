@@ -94,7 +94,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             }
             return _profileResponse == null
                 ? CustomWidgets()
-                    .errorWidget(_failureCause ?? "Unable to get profile")
+                .errorWidget(_failureCause ?? "Unable to get profile")
                 : _getBody();
           },
           initialData: _profileResponse == null ? RequestInProgress() : null,
@@ -131,20 +131,20 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                   height: AppConfig.verticalBlockSize * 22,
                   width: double.infinity,
                   child: (_profileResponse.user.coverImageUrl == null ||
-                          _profileResponse.user.coverImageUrl.isEmpty ||
-                          !(_profileResponse.user.coverImageUrl
-                              .contains("http")))
+                      _profileResponse.user.coverImageUrl.isEmpty ||
+                      !(_profileResponse.user.coverImageUrl
+                          .contains("http")))
                       ? Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 5,
-                              horizontal: AppConfig.horizontalBlockSize * 20),
-                          child: Image.asset(PlunesImages.hospitalImage),
-                        )
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 5,
+                        horizontal: AppConfig.horizontalBlockSize * 20),
+                    child: Image.asset(PlunesImages.hospitalImage),
+                  )
                       : SizedBox.expand(
-                          child: CustomWidgets().getImageFromUrl(
-                              _profileResponse.user.coverImageUrl,
-                              boxFit: BoxFit.cover),
-                        ),
+                    child: CustomWidgets().getImageFromUrl(
+                        _profileResponse.user.coverImageUrl,
+                        boxFit: BoxFit.cover),
+                  ),
                 ),
               ),
               Positioned(
@@ -168,22 +168,22 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                       }
                     },
                     child: (_profileResponse.user != null &&
-                            _profileResponse.user.imageUrl != null &&
-                            _profileResponse.user.imageUrl.isNotEmpty &&
-                            _profileResponse.user.imageUrl.contains("http"))
+                        _profileResponse.user.imageUrl != null &&
+                        _profileResponse.user.imageUrl.isNotEmpty &&
+                        _profileResponse.user.imageUrl.contains("http"))
                         ? CircleAvatar(
-                            child: Container(
-                              height: 100,
-                              width: 100,
-                              child: ClipOval(
-                                  child: CustomWidgets().getImageFromUrl(
-                                      _profileResponse.user.imageUrl,
-                                      boxFit: BoxFit.fill)),
-                            ),
-                            radius: 40,
-                          )
+                      child: Container(
+                        height: 100,
+                        width: 100,
+                        child: ClipOval(
+                            child: CustomWidgets().getImageFromUrl(
+                                _profileResponse.user.imageUrl,
+                                boxFit: BoxFit.fill)),
+                      ),
+                      radius: 40,
+                    )
                         : CustomWidgets().getBackImageView(
-                            _profileResponse.user?.name ?? _getEmptyString())),
+                        _profileResponse.user?.name ?? _getEmptyString())),
               ),
             ]),
             Container(
@@ -230,21 +230,21 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                       plunesStrings.locationSep,
                       _profileResponse.user?.address),
                   (_profileResponse.user.latitude != null &&
-                          _profileResponse.user.longitude != null)
+                      _profileResponse.user.longitude != null)
                       ? InkWell(
-                          onTap: () => _getDirections(),
-                          onDoubleTap: () {},
-                          child: Container(
-                            height: AppConfig.verticalBlockSize * 22,
-                            width: double.infinity,
-                            padding: EdgeInsets.only(
-                                bottom: AppConfig.horizontalBlockSize * 5,
-                                top: AppConfig.horizontalBlockSize * 3),
-                            margin: EdgeInsets.only(left: 24),
-                            child: Image.asset(
-                              PlunesImages.map,
-                              fit: BoxFit.fill,
-                            ),
+                    onTap: () => _getDirections(),
+                    onDoubleTap: () {},
+                    child: Container(
+                      height: AppConfig.verticalBlockSize * 22,
+                      width: double.infinity,
+                      padding: EdgeInsets.only(
+                          bottom: AppConfig.horizontalBlockSize * 5,
+                          top: AppConfig.horizontalBlockSize * 3),
+                      margin: EdgeInsets.only(left: 24),
+                      child: Image.asset(
+                        PlunesImages.map,
+                        fit: BoxFit.fill,
+                      ),
 //                              Row(
 //                                children: <Widget>[
 //                                  Icon(
@@ -264,8 +264,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                                  ),
 //                                ],
 //                              )
-                          ),
-                        )
+                    ),
+                  )
                       : Container(),
                   _getTimings(24, 24, PlunesImages.clock, PlunesStrings.timing),
                   _getIntroductionView(
@@ -320,11 +320,11 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                             _catalogueList != null) {
                           return _catalogueList.isEmpty
                               ? Container(
-                                  height: AppConfig.verticalBlockSize * 20,
-                                  width: double.infinity,
-                                  child: CustomWidgets().errorWidget(
-                                      _serviceFailureCause ??
-                                          PlunesStrings.unableToLoadServices))
+                              height: AppConfig.verticalBlockSize * 20,
+                              width: double.infinity,
+                              child: CustomWidgets().errorWidget(
+                                  _serviceFailureCause ??
+                                      PlunesStrings.unableToLoadServices))
                               : _getServiceList();
                         }
                         return Container();
@@ -337,14 +337,19 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             Container(
               width: double.infinity,
               color: PlunesColors.GREENCOLOR,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Text(
-                  PlunesStrings.forAnyQueries,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: PlunesColors.WHITECOLOR,
-                      fontSize: AppConfig.mediumFont),
+              child: InkWell(
+                onTap: () {
+                  LauncherUtil.launchUrl("tel://7011311900");
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    PlunesStrings.forAnyQueries,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: PlunesColors.WHITECOLOR,
+                        fontSize: AppConfig.mediumFont),
+                  ),
                 ),
               ),
             ),
@@ -370,7 +375,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
               children: <Widget>[
                 Text(
                   CommonMethods.getStringInCamelCase(
-                          _profileResponse?.user?.name) ??
+                      _profileResponse?.user?.name) ??
                       _getEmptyString(),
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
@@ -437,45 +442,75 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 
   Widget _getTimings(double height, double width, String icon, String title) {
     return (_profileResponse.user == null ||
-            _profileResponse.user.timeSlots == null ||
-            _profileResponse.user.timeSlots.isEmpty)
+        _profileResponse.user.timeSlots == null ||
+        _profileResponse.user.timeSlots.isEmpty)
         ? Container()
         : Column(
-            children: <Widget>[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                      width: width,
-                      height: height,
-                      child: widget.getAssetIconWidget(
-                          icon, height, width, BoxFit.contain)),
-                  SizedBox(width: 10),
-                  Text(
-                    title,
-                    style: TextStyle(
-                        color: PlunesColors.BLACKCOLOR,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500),
-                  ),
-                ],
+      children: <Widget>[
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+                width: width,
+                height: height,
+                child: widget.getAssetIconWidget(
+                    icon, height, width, BoxFit.contain)),
+            SizedBox(width: 10),
+            Text(
+              title,
+              style: TextStyle(
+                  color: PlunesColors.BLACKCOLOR,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500),
+            ),
+          ],
+        ),
+        InkWell(
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (context) => CustomWidgets().hospitalTiming(
+                    _profileResponse.user.timeSlots, context),
+                barrierDismissible: true);
+          },
+          child: Container(
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                return _getSlotInfo(
+                    _profileResponse?.user?.timeSlots[index]);
+              },
+              itemCount: _profileResponse?.user?.timeSlots?.length ?? 0,
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+            ),
+            width: double.infinity,
+            height: AppConfig.verticalBlockSize * 10,
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (context) => CustomWidgets().hospitalTiming(
+                    _profileResponse.user.timeSlots, context),
+                barrierDismissible: true);
+          },
+          child: Container(
+            padding: EdgeInsets.only(top: 8),
+            alignment: Alignment.center,
+            child: Text(
+              "All Timings",
+              style: TextStyle(
+                color: PlunesColors.GREENCOLOR,
+                fontSize: 14,
+                decorationThickness: 2.0,
               ),
-              Container(
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return _getSlotInfo(
-                        _profileResponse?.user?.timeSlots[index]);
-                  },
-                  itemCount: _profileResponse?.user?.timeSlots?.length ?? 0,
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                ),
-                width: double.infinity,
-                height: AppConfig.verticalBlockSize * 16,
-              )
-            ],
-          );
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   Widget _getIntroductionView(double height, double width, String icon) {
@@ -512,7 +547,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
           Padding(
             padding: EdgeInsets.only(
                 top: AppConfig.verticalBlockSize * 1,
-                left: AppConfig.horizontalBlockSize * 10.5),
+                left: AppConfig.horizontalBlockSize * 8.5),
             child: Text(
               _profileResponse.user?.biography ?? _getEmptyString(),
               style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14),
@@ -609,38 +644,38 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
     return itemList == null || itemList.isEmpty
         ? Container()
         : Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          height: 0.5,
+          width: double.infinity,
+          color: PlunesColors.GREYCOLOR,
+          margin: EdgeInsets.symmetric(
+            vertical: AppConfig.verticalBlockSize * 2,
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: AppConfig.verticalBlockSize * 1.8),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
-                height: 0.5,
-                width: double.infinity,
-                color: PlunesColors.GREYCOLOR,
-                margin: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 2,
-                ),
+                  width: width,
+                  height: height,
+                  child: widget.getAssetIconWidget(
+                      icon, height, width, BoxFit.contain)),
+              SizedBox(width: 10),
+              Text(
+                title,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500),
               ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                    vertical: AppConfig.verticalBlockSize * 1.8),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                        width: width,
-                        height: height,
-                        child: widget.getAssetIconWidget(
-                            icon, height, width, BoxFit.contain)),
-                    SizedBox(width: 10),
-                    Text(
-                      title,
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
+            ],
+          ),
 //                Text(
 //                  plunesStrings.specialization,
 //                  style: TextStyle(
@@ -648,32 +683,32 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                      fontSize: 16,
 //                      fontWeight: FontWeight.w500),
 //                ),
-              ),
-              Container(
-                padding: EdgeInsets.only(
+        ),
+        Container(
+          padding: EdgeInsets.only(
 //                    horizontal: AppConfig.horizontalBlockSize * 5,
-                  top: AppConfig.verticalBlockSize * 2,
-                  bottom: AppConfig.verticalBlockSize * 1,
-                ),
-                child: DropdownButtonHideUnderline(child: dropDown),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 1.5,
-                      style: BorderStyle.solid,
-                      color: PlunesColors.GREYCOLOR,
-                    ),
-                  ),
-                ),
+            top: AppConfig.verticalBlockSize * 2,
+            bottom: AppConfig.verticalBlockSize * 1,
+          ),
+          child: DropdownButtonHideUnderline(child: dropDown),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                width: 1.5,
+                style: BorderStyle.solid,
+                color: PlunesColors.GREYCOLOR,
+              ),
+            ),
+          ),
 //                ShapeDecoration(
 //                  shape: RoundedRectangleBorder(
 //                    side: BorderSide(width: 1.0, style: BorderStyle.solid),
 //                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
 //                  ),
 //                ),
-              ),
-            ],
-          );
+        ),
+      ],
+    );
   }
 
   void _getUserDetails() {
@@ -683,18 +718,18 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   Widget _getTeamOfExpertsWidget(
       double height, double width, String icon, String title) {
     return (_profileResponse.user.doctorsData == null ||
-            _profileResponse.user.doctorsData.isEmpty)
+        _profileResponse.user.doctorsData.isEmpty)
         ? Container()
         : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                height: 0.5,
-                width: double.infinity,
-                color: PlunesColors.GREYCOLOR,
-                margin: EdgeInsets.symmetric(
-                    vertical: AppConfig.verticalBlockSize * 2),
-              ),
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          height: 0.5,
+          width: double.infinity,
+          color: PlunesColors.GREYCOLOR,
+          margin: EdgeInsets.symmetric(
+              vertical: AppConfig.verticalBlockSize * 2),
+        ),
 //              Container(
 //                padding:
 //                    EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
@@ -720,126 +755,126 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                  ],
 //                ),
 //              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                        width: width,
-                        height: height,
-                        child: widget.getAssetIconWidget(
-                            icon, height, width, BoxFit.contain)),
-                    SizedBox(width: 10),
-                    Text(
-                      plunesStrings.teamOfExperts,
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
               Container(
-                padding: EdgeInsets.symmetric(
-                    vertical: AppConfig.verticalBlockSize * 1.5),
-                height: AppConfig.verticalBlockSize * 20,
-                child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
+                  width: width,
+                  height: height,
+                  child: widget.getAssetIconWidget(
+                      icon, height, width, BoxFit.contain)),
+              SizedBox(width: 10),
+              Text(
+                plunesStrings.teamOfExperts,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.symmetric(
+              vertical: AppConfig.verticalBlockSize * 1.5),
+          height: AppConfig.verticalBlockSize * 20,
+          child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.horizontal,
 //                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
 //                      crossAxisCount: 2,
 //                      crossAxisSpacing: 4.0,
 //                      childAspectRatio: 0.8,
 //                    ),
-                    itemCount: _profileResponse.user.doctorsData.length
+              itemCount: _profileResponse.user.doctorsData.length
 //                        > 2
 //                        ? _profileResponse.user.doctorsData.length
 //                        : 2
-                    ,
-                    itemBuilder: (context, itemIndex) {
-                      return InkWell(
-                        splashColor: PlunesColors.GREENCOLOR.withOpacity(0.5),
-                        onTap: () => _openDocDetails(
-                            _profileResponse.user.doctorsData[itemIndex]),
-                        child: Container(
-                          width: AppConfig.horizontalBlockSize * 28.2,
-                          decoration: ShapeDecoration(
+              ,
+              itemBuilder: (context, itemIndex) {
+                return InkWell(
+                  splashColor: PlunesColors.GREENCOLOR.withOpacity(0.5),
+                  onTap: () => _openDocDetails(
+                      _profileResponse.user.doctorsData[itemIndex]),
+                  child: Container(
+                    width: AppConfig.horizontalBlockSize * 28.2,
+                    decoration: ShapeDecoration(
 //                            color: PlunesColors.GREYCOLOR,
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                  width: 1.0,
-                                  style: BorderStyle.solid,
-                                  color:
-                                      PlunesColors.BLACKCOLOR.withOpacity(.2)),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0)),
-                            ),
-                          ),
-                          margin: EdgeInsets.symmetric(
-                              horizontal: AppConfig.horizontalBlockSize * 1),
-                          padding: EdgeInsets.all(5),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(
-                                child: Container(
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            width: 1.0,
+                            style: BorderStyle.solid,
+                            color:
+                            PlunesColors.BLACKCOLOR.withOpacity(.2)),
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(5.0)),
+                      ),
+                    ),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 1),
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: Container(
 //                                  color:
 //                                      PlunesColors.GREENCOLOR.withOpacity(0.5),
-                                  child: (_profileResponse
-                                                  .user
-                                                  .doctorsData[itemIndex]
-                                                  .imageUrl ==
-                                              null ||
+                            child: (_profileResponse
+                                .user
+                                .doctorsData[itemIndex]
+                                .imageUrl ==
+                                null ||
+                                _profileResponse
+                                    .user
+                                    .doctorsData[itemIndex]
+                                    .imageUrl
+                                    .isEmpty ||
+                                !(_profileResponse.user
+                                    .doctorsData[itemIndex].imageUrl
+                                    .contains("http")))
+                                ? CustomWidgets().getBackImageView(
+                                _profileResponse
+                                    .user
+                                    .doctorsData[itemIndex]
+                                    .name ??
+                                    _getEmptyString(),
+                                width: 50,
+                                height: 45)
+                                : CircleAvatar(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFE0E0E0),
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(30))),
+                                child: Container(
+                                  margin: EdgeInsets.all(1.5),
+                                  height: 50,
+                                  width: 50,
+                                  child: ClipOval(
+                                      child: CustomWidgets()
+                                          .getImageFromUrl(
                                           _profileResponse
                                               .user
-                                              .doctorsData[itemIndex]
-                                              .imageUrl
-                                              .isEmpty ||
-                                          !(_profileResponse.user
-                                              .doctorsData[itemIndex].imageUrl
-                                              .contains("http")))
-                                      ? CustomWidgets().getBackImageView(
-                                          _profileResponse
-                                                  .user
-                                                  .doctorsData[itemIndex]
-                                                  .name ??
-                                              _getEmptyString(),
-                                          width: 50,
-                                          height: 10)
-                                      : CircleAvatar(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Color(0xFFE0E0E0),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(30))),
-                                            child: Container(
-                                              margin: EdgeInsets.all(1.5),
-                                              height: 45,
-                                              width: 45,
-                                              child: ClipOval(
-                                                  child: CustomWidgets()
-                                                      .getImageFromUrl(
-                                                          _profileResponse
-                                                              .user
-                                                              .doctorsData[
-                                                                  itemIndex]
-                                                              .imageUrl,
-                                                          boxFit: BoxFit.fill)),
-                                            ),
-                                          ),
-                                          radius: 23,
-                                        ),
+                                              .doctorsData[
+                                          itemIndex]
+                                              .imageUrl,
+                                          boxFit: BoxFit.fill)),
                                 ),
                               ),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
+                              radius: 30,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
 //                                  Row(
 //                                    mainAxisAlignment:
 //                                        MainAxisAlignment.spaceBetween,
@@ -854,20 +889,20 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                                            AppConfig.horizontalBlockSize *
 //                                                0.8),
 //                                    child:
-                                    Text(
-                                      CommonMethods.getStringInCamelCase(
-                                              _profileResponse
-                                                  .user
-                                                  ?.doctorsData[itemIndex]
-                                                  ?.name) ??
-                                          _getEmptyString(),
-                                      maxLines: 1,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: PlunesColors.BLACKCOLOR,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: AppConfig.verySmallFont),
-                                    ),
+                              Text(
+                                CommonMethods.getStringInCamelCase(
+                                    _profileResponse
+                                        .user
+                                        ?.doctorsData[itemIndex]
+                                        ?.name) ??
+                                    _getEmptyString(),
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: AppConfig.verySmallFont),
+                              ),
 //                                  ),
 //                                    Image.asset(PlunesImages.menuicon,
 //                                        height: 9, width: 9),
@@ -880,19 +915,19 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                                            AppConfig.horizontalBlockSize *
 //                                                0.8),
 //                                    child:
-                                    Text(
-                                      _profileResponse
-                                              .user
-                                              ?.doctorsData[itemIndex]
-                                              .designation ??
-                                          _getEmptyString(),
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          color: PlunesColors.BLACKCOLOR
-                                              .withOpacity(0.5),
-                                          fontSize: 11),
-                                    ),
+                              Text(
+                                _profileResponse
+                                    .user
+                                    ?.doctorsData[itemIndex]
+                                    .designation ??
+                                    _getEmptyString(),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR
+                                        .withOpacity(0.5),
+                                    fontSize: 11),
+                              ),
 //                                  ),
 //                                  Container(
 //                                    width: AppConfig.horizontalBlockSize * 26,
@@ -901,19 +936,19 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                                            AppConfig.horizontalBlockSize *
 //                                                0.8),
 //                                    child:
-                                    Text(
-                                      _getExpr(itemIndex) ?? _getEmptyString(),
-                                      textAlign: TextAlign.center,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          color: PlunesColors.BLACKCOLOR
-                                              .withOpacity(0.5),
-                                          fontSize: 11),
-                                    ),
-//                                  ),
-                                  ],
-                                ),
+                              Text(
+                                _getExpr(itemIndex) ?? _getEmptyString(),
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR
+                                        .withOpacity(0.5),
+                                    fontSize: 11),
                               ),
+//                                  ),
+                            ],
+                          ),
+                        ),
 //                              Padding(
 //                                padding:
 //                                    const EdgeInsets.symmetric(horizontal: 14),
@@ -925,42 +960,42 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                                  width: 0.5,
 //                                ),
 //                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+        ),
+        (_profileResponse.user.doctorsData != null &&
+            _profileResponse.user.doctorsData.isNotEmpty &&
+            _profileResponse.user.doctorsData.length > 2)
+            ? InkWell(
+          onTap: () {
+            showDialog(
+                context: context,
+                builder: (context) => CustomWidgets()
+                    .showDoctorList(
+                    _profileResponse.user.doctorsData,
+                    context,
+                    _profileResponse?.user?.name),
+                barrierDismissible: true);
+          },
+          child: Container(
+            padding: EdgeInsets.only(top: 5),
+            alignment: Alignment.center,
+            child: Text(
+              PlunesStrings.view_More,
+              style: TextStyle(
+                color: PlunesColors.GREENCOLOR,
+                fontSize: 14,
+                decorationThickness: 2.0,
               ),
-              (_profileResponse.user.doctorsData != null &&
-                      _profileResponse.user.doctorsData.isNotEmpty &&
-                      _profileResponse.user.doctorsData.length > 2)
-                  ? InkWell(
-                      onTap: () {
-                        showDialog(
-                            context: context,
-                            builder: (context) => CustomWidgets()
-                                .showDoctorList(
-                                    _profileResponse.user.doctorsData,
-                                    context,
-                                    _profileResponse?.user?.name),
-                            barrierDismissible: true);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.only(top: 5),
-                        alignment: Alignment.center,
-                        child: Text(
-                          PlunesStrings.view_More,
-                          style: TextStyle(
-                            color: PlunesColors.GREENCOLOR,
-                            fontSize: 14,
-                            decorationThickness: 2.0,
-                          ),
-                        ),
-                      ),
-                    )
-                  : Container()
-            ],
-          );
+            ),
+          ),
+        )
+            : Container()
+      ],
+    );
   }
 
   Widget _getBottomView() {
@@ -1032,18 +1067,18 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 
   void _getDirections() {
     (_profileResponse.user?.latitude == null ||
-            _profileResponse.user.latitude.isEmpty ||
-            _profileResponse.user.latitude == null ||
-            _profileResponse.user.latitude.isEmpty)
+        _profileResponse.user.latitude.isEmpty ||
+        _profileResponse.user.latitude == null ||
+        _profileResponse.user.latitude.isEmpty)
         ? widget.showInSnackBar(PlunesStrings.locationNotAvailable,
-            PlunesColors.BLACKCOLOR, scaffoldKey)
+        PlunesColors.BLACKCOLOR, scaffoldKey)
         : LauncherUtil.openMap(double.tryParse(_profileResponse.user.latitude),
-            double.tryParse(_profileResponse.user.longitude));
+        double.tryParse(_profileResponse.user.longitude));
   }
 
   String _getExpr(int itemIndex) {
     return _profileResponse.user.doctorsData[itemIndex].experience == null ||
-            _profileResponse.user.doctorsData[itemIndex].experience == "0"
+        _profileResponse.user.doctorsData[itemIndex].experience == "0"
         ? null
         : "Expr ${_profileResponse.user.doctorsData[itemIndex].experience} years";
   }
@@ -1099,8 +1134,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //            ),
             height: _isServiceListOpened
                 ? _catalogueList.length <= 8
-                    ? AppConfig.verticalBlockSize * 32
-                    : AppConfig.verticalBlockSize * 45
+                ? AppConfig.verticalBlockSize * 32
+                : AppConfig.verticalBlockSize * 45
                 : AppConfig.verticalBlockSize * 16,
             width: double.infinity,
             child: ListView.builder(
@@ -1114,7 +1149,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                       context: context,
                       builder: (BuildContext context) => CustomWidgets()
                           .buildViewMoreDialog(
-                              catalogueData: _catalogueList[index]),
+                          catalogueData: _catalogueList[index]),
                     );
                   },
                   onDoubleTap: () {},
@@ -1128,14 +1163,14 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                 vertical: AppConfig.verticalBlockSize * 0.8),
                             child: Text(
                               CommonMethods.getStringInCamelCase(
-                                      _catalogueList[index]?.service) ??
+                                  _catalogueList[index]?.service) ??
                                   _getEmptyString(),
                               maxLines: 2,
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                   fontSize: 14,
                                   color:
-                                      PlunesColors.BLACKCOLOR.withOpacity(0.7)),
+                                  PlunesColors.BLACKCOLOR.withOpacity(0.7)),
                             ),
                           ),
                           flex: 5,
@@ -1169,45 +1204,45 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
           (_catalogueList != null && _catalogueList.length <= 3)
               ? Container()
               : InkWell(
-                  onTap: () {
-                    setState(() {
-                      _isServiceListOpened = !_isServiceListOpened;
-                    });
-                  },
-                  child: Container(
-                    margin:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-                    padding: EdgeInsets.only(top: 2),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          _isServiceListOpened
-                              ? "See less Services"
-                              : "See more Services",
-                          style: TextStyle(
-                              color: PlunesColors.GREENCOLOR, fontSize: 14),
-                        ),
-                        Icon(
-                          _isServiceListOpened
-                              ? Icons.keyboard_arrow_up
-                              : Icons.keyboard_arrow_down,
-                          color: PlunesColors.GREENCOLOR,
-                        )
-                      ],
-                    ),
+            onTap: () {
+              setState(() {
+                _isServiceListOpened = !_isServiceListOpened;
+              });
+            },
+            child: Container(
+              margin:
+              EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+              padding: EdgeInsets.only(top: 2),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    _isServiceListOpened
+                        ? "See less Services"
+                        : "See more Services",
+                    style: TextStyle(
+                        color: PlunesColors.GREENCOLOR, fontSize: 14),
                   ),
-                ),
+                  Icon(
+                    _isServiceListOpened
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: PlunesColors.GREENCOLOR,
+                  )
+                ],
+              ),
+            ),
+          ),
           (_profileResponse.user.doctorsData == null ||
-                  _profileResponse.user.doctorsData.isEmpty)
+              _profileResponse.user.doctorsData.isEmpty)
               ? Container()
               : Container(
 //                  height: 0.5,
 //                  width: double.infinity,
 //                  color: PlunesColors.GREYCOLOR,
 //                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                  ),
+          ),
         ],
       ),
     );
@@ -1237,74 +1272,83 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
           right: AppConfig.horizontalBlockSize * 3),
       decoration: BoxDecoration(
         border:
-            Border.all(color: PlunesColors.GREYCOLOR, style: BorderStyle.solid),
+        Border.all(color: PlunesColors.GREYCOLOR, style: BorderStyle.solid),
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
       ),
       child: (timeSlot != null && timeSlot.closed != null && timeSlot.closed)
           ? Container(
-              color: Colors.red.withOpacity(0.6),
-              alignment: Alignment.center,
-              padding: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 7),
+        color: Colors.red.withOpacity(0.5),
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 5),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              padding:
+              EdgeInsets.only(top: 3, bottom: 2, right: 2, left: 2),
               child: Text(
-                "Closed",
+                timeSlot?.day?.toUpperCase() ?? _getEmptyString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: AppConfig.smallFont,
+                    decorationThickness: 1.5,
+                    color: PlunesColors.BLACKCOLOR),
+              ),
+            ),
+            Text(
+              "Closed",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: AppConfig.verySmallFont,
+                  color: PlunesColors.WHITECOLOR),
+            ),
+          ],
+        ),
+      )
+          : Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 3),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              padding:
+              EdgeInsets.only(top: 3, bottom: 2, right: 2, left: 2),
+              child: Text(
+                timeSlot?.day?.toUpperCase() ?? _getEmptyString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: AppConfig.smallFont,
+                    decorationThickness: 1.5,
+                    color: PlunesColors.BLACKCOLOR),
+              ),
+            ),
+//                Container(
+//                  margin:
+//                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+//                  padding: EdgeInsets.all(2),
+//                  child:
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Text(
+                (timeSlot != null &&
+                    timeSlot.slots != null &&
+                    timeSlot.slots.isNotEmpty)
+                    ? timeSlot.slots.first
+                    : _getEmptyString(),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     fontSize: AppConfig.verySmallFont,
-                    color: PlunesColors.WHITECOLOR),
+                    color: PlunesColors.GREYCOLOR),
               ),
-            )
-          : Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  padding:
-                      EdgeInsets.only(top: 4, bottom: 2, right: 2, left: 2),
-                  child: Text(
-                    timeSlot?.day?.substring(0, 3)?.toUpperCase() ??
-                        _getEmptyString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: AppConfig.mediumFont,
-                        decorationThickness: 1.5,
-                        color: PlunesColors.BLACKCOLOR),
-                  ),
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-                  padding: EdgeInsets.all(2),
-                  child: Text(
-                    (timeSlot != null &&
-                            timeSlot.slots != null &&
-                            timeSlot.slots.isNotEmpty)
-                        ? timeSlot.slots.first
-                        : _getEmptyString(),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: AppConfig.verySmallFont,
-                        color: PlunesColors.GREYCOLOR),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * .4),
-                  padding: EdgeInsets.all(2),
-                  child: Text(
-                    (timeSlot != null &&
-                            timeSlot.slots != null &&
-                            timeSlot.slots.isNotEmpty &&
-                            timeSlot.slots.length == 2)
-                        ? timeSlot.slots[1]
-                        : "",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: AppConfig.verySmallFont,
-                        color: PlunesColors.GREYCOLOR),
-                  ),
-                ),
-              ],
             ),
+//                ),
+          ],
+        ),
+      ),
     );
   }
 }

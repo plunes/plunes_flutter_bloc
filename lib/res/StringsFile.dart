@@ -275,7 +275,7 @@ class PlunesStrings {
       "Make sure to Enter your time slots accurately so that you receive bookings as per your availability and never lose a patient";
 
   static const String cantBookPriceExpired =
-      "Can't book the appointment as the prices was valid for only one hour.";
+      "Can't book the appointment as the prices are valid for only one hour.";
   static const String cantNegotiateWithMoreFacilities =
       "Can't negotitate with more facilities as the prices was valid for only one hour.";
 

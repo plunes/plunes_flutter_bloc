@@ -606,7 +606,16 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         Navigator.popAndPushNamed(context, HelpScreen.tag);
         break;
       case 6:
-        Navigator.popAndPushNamed(context, AboutUs.tag);
+        Navigator.pop(context);
+        getSharedPreferencesData();
+        await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AboutUs(userType: _userType)));
+        EventProvider()
+            .getSessionEventBus()
+            .fire(ScreenRefresher(screenName: AboutUs.tag));
+//        Navigator.popAndPushNamed(context, AboutUs.tag);
         break;
       case 7:
         Navigator.popAndPushNamed(context, ReferScreen.tag);

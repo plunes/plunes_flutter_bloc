@@ -71,7 +71,7 @@ class _DocProfileState extends BaseState<DocProfile> {
               }
               return _profileResponse == null
                   ? CustomWidgets()
-                      .errorWidget(_failureCause ?? "Unable to get profile")
+                  .errorWidget(_failureCause ?? "Unable to get profile")
                   : _getBodyView();
             },
             initialData: _profileResponse == null ? RequestInProgress() : null,
@@ -109,8 +109,8 @@ class _DocProfileState extends BaseState<DocProfile> {
                 plunesImages.clockIcon,
                 plunesStrings.expOfPractice,
                 (_profileResponse.user == null ||
-                        _profileResponse.user.experience == null ||
-                        _profileResponse.user.experience == "0")
+                    _profileResponse.user.experience == null ||
+                    _profileResponse.user.experience == "0")
                     ? _getEmptyString()
                     : _profileResponse.user.experience),
           ),
@@ -133,7 +133,11 @@ class _DocProfileState extends BaseState<DocProfile> {
             child: getProfileInfoView(22, 22, plunesImages.uniIcon,
                 plunesStrings.college, _profileResponse.user?.college),
           ),
-          _getIntroductionView(),
+          _getIntroductionView(
+            24,
+            24,
+            plunesImages.introduction,
+          ),
           _getBottomView()
         ],
       ),
@@ -163,24 +167,24 @@ class _DocProfileState extends BaseState<DocProfile> {
               }
             },
             child: (_profileResponse.user != null &&
-                    _profileResponse.user.imageUrl != null &&
-                    _profileResponse.user.imageUrl.isNotEmpty &&
-                    _profileResponse.user.imageUrl.contains("http"))
+                _profileResponse.user.imageUrl != null &&
+                _profileResponse.user.imageUrl.isNotEmpty &&
+                _profileResponse.user.imageUrl.contains("http"))
                 ? CircleAvatar(
-                    child: Container(
-                      height: 60,
-                      width: 60,
-                      child: ClipOval(
-                          child: CustomWidgets().getImageFromUrl(
-                              _profileResponse.user.imageUrl,
-                              boxFit: BoxFit.fill)),
-                    ),
-                    radius: 30,
-                  )
+              child: Container(
+                height: 60,
+                width: 60,
+                child: ClipOval(
+                    child: CustomWidgets().getImageFromUrl(
+                        _profileResponse.user.imageUrl,
+                        boxFit: BoxFit.fill)),
+              ),
+              radius: 30,
+            )
                 : CustomWidgets().getBackImageView(
-                    CommonMethods.getStringInCamelCase(
-                            _profileResponse?.user?.name) ??
-                        _getEmptyString())),
+                CommonMethods.getStringInCamelCase(
+                    _profileResponse?.user?.name) ??
+                    _getEmptyString())),
         Expanded(
           child: Padding(
             padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 5),
@@ -231,7 +235,7 @@ class _DocProfileState extends BaseState<DocProfile> {
                   icon, height, width, BoxFit.contain)),
           Padding(
               padding:
-                  EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3)),
+              EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3)),
           Expanded(
             child: RichText(
                 maxLines: 3,
@@ -256,7 +260,7 @@ class _DocProfileState extends BaseState<DocProfile> {
     );
   }
 
-  Widget _getIntroductionView() {
+  Widget _getIntroductionView(double height, double width, String icon) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
       child: Column(
@@ -268,20 +272,42 @@ class _DocProfileState extends BaseState<DocProfile> {
             color: PlunesColors.GREYCOLOR,
             margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
           ),
-          Text(
-            plunesStrings.introduction,
-            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                  width: width,
+                  height: height,
+                  child: widget.getAssetIconWidget(
+                      icon, height, width, BoxFit.contain)),
+              SizedBox(width: 10),
+              Text(
+                plunesStrings.introduction,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500),
+              ),
+            ],
           ),
+//          Text(
+//            plunesStrings.introduction,
+//            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+//          ),
           Padding(
-            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-            child: Text(_profileResponse.user?.biography ?? _getEmptyString()),
+            padding: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 1,
+                left: AppConfig.horizontalBlockSize * 8.5),
+            child: Text(_profileResponse.user?.biography ?? _getEmptyString(),
+                style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14)),
           ),
-          Container(
-            height: 0.5,
-            width: double.infinity,
-            color: PlunesColors.GREYCOLOR,
-            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
-          ),
+//          Container(
+//            height: 0.5,
+//            width: double.infinity,
+//            color: PlunesColors.GREYCOLOR,
+//            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+//          ),
         ],
       ),
     );

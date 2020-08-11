@@ -2677,7 +2677,7 @@ class CustomWidgets {
                 InkWell(
                   onTap: () => Navigator.of(context).pop(),
                   onDoubleTap: () {},
-                  child: Icon(Icons.close, size: 40),
+                  child: Icon(Icons.close, size: 30),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -2686,7 +2686,7 @@ class CustomWidgets {
                     style: TextStyle(
                         color: PlunesColors.BLACKCOLOR,
                         fontSize: AppConfig.largeFont,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
                 Container(),
@@ -2830,6 +2830,195 @@ class CustomWidgets {
     );
   }
 
+  hospitalTiming(List<TimeSlotsData> timeSlots, BuildContext context) {
+    return Material(
+      child: Container(
+        child: Column(
+          children: <Widget>[
+            Container(
+                child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                InkWell(
+                  onTap: () => Navigator.of(context).pop(),
+                  onDoubleTap: () {},
+                  child: Icon(Icons.close, size: 30),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    plunesStrings.hospitalTiming,
+                    style: TextStyle(
+                        color: PlunesColors.BLACKCOLOR,
+                        fontSize: AppConfig.largeFont,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ),
+                Container(),
+              ],
+            )),
+            Divider(height: 0.5, color: PlunesColors.GREYCOLOR),
+            Expanded(
+                child: Container(
+              margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 4,
+                left: AppConfig.horizontalBlockSize * 7,
+                right: AppConfig.horizontalBlockSize * 7,
+                bottom: AppConfig.verticalBlockSize * 4,
+//                  top: AppConfig.verticalBlockSize * 2
+              ),
+              child: ListView.builder(
+                itemBuilder: (context, itemIndex) {
+                  return (timeSlots[itemIndex] != null &&
+                          timeSlots[itemIndex].closed != null &&
+                          timeSlots[itemIndex].closed)
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(
+                                  top: 3, bottom: 2, right: 2, left: 2),
+                              child: Text(
+                                timeSlots[itemIndex]?.day?.toUpperCase() ??
+                                    _getEmptyString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    decorationThickness: 1,
+                                    color: PlunesColors.BLACKCOLOR),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 4.0),
+                              child: Container(
+//                                  margin: EdgeInsets.symmetric(
+//                                    horizontal:
+//                                        AppConfig.horizontalBlockSize * 1,
+//                                  ),
+                                padding: EdgeInsets.only(top: 3, bottom: 10),
+                                child: Text(
+                                  "CLOSED",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.smallFont,
+                                      color: PlunesColors.GREYCOLOR),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+//                  Container(
+//                          color: Colors.red.withOpacity(0.6),
+//                          alignment: Alignment.center,
+//                          padding: EdgeInsets.symmetric(
+//                              horizontal: AppConfig.horizontalBlockSize * 7),
+//                          child: Text(
+//                            "Closed",
+//                            textAlign: TextAlign.center,
+//                            style: TextStyle(
+//                                fontSize: AppConfig.verySmallFont,
+//                                color: PlunesColors.WHITECOLOR),
+//                          ),
+//                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(
+                                  top: 3, bottom: 2, right: 2, left: 2),
+                              child: Text(
+                                timeSlots[itemIndex]?.day?.toUpperCase() ??
+                                    _getEmptyString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    decorationThickness: 1,
+                                    color: PlunesColors.BLACKCOLOR),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 4.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+//                                  margin: EdgeInsets.symmetric(
+//                                    horizontal:
+//                                        AppConfig.horizontalBlockSize * 1,
+//                                  ),
+                                    padding:
+                                        EdgeInsets.only(top: 3, bottom: 10),
+                                    child: Text(
+                                      (timeSlots[itemIndex] != null &&
+                                              timeSlots[itemIndex].slots !=
+                                                  null &&
+                                              timeSlots[itemIndex]
+                                                  .slots
+                                                  .isNotEmpty)
+                                          ? timeSlots[itemIndex].slots.first
+                                          : Text(PlunesStrings.NA),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.smallFont,
+                                          color: PlunesColors.GREYCOLOR),
+                                    ),
+                                  ),
+                                  Container(
+//                                  margin: EdgeInsets.symmetric(
+//                                    horizontal:
+//                                        AppConfig.horizontalBlockSize * 1,
+//                                  ),
+                                    padding: EdgeInsets.only(
+                                        top: 3, bottom: 10, right: 5, left: 5),
+                                    child: Text(
+                                      ";",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.smallFont,
+                                          color: PlunesColors.GREYCOLOR),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.symmetric(
+                                        vertical:
+                                            AppConfig.verticalBlockSize * .4),
+//                                  padding: EdgeInsets.all(2),
+                                    padding:
+                                        EdgeInsets.only(top: 3, bottom: 10),
+                                    child: Text(
+                                      (timeSlots[itemIndex] != null &&
+                                              timeSlots[itemIndex].slots !=
+                                                  null &&
+                                              timeSlots[itemIndex]
+                                                  .slots
+                                                  .isNotEmpty &&
+                                              timeSlots[itemIndex]
+                                                      .slots
+                                                      .length ==
+                                                  2)
+                                          ? timeSlots[itemIndex].slots[1]
+                                          : "",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.smallFont,
+                                          color: PlunesColors.GREYCOLOR),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        );
+                },
+                itemCount: timeSlots?.length ?? 0,
+              ),
+            ))
+          ],
+        ),
+      ),
+    );
+  }
+
   showReviewList(List<RateAndReview> _rateAndReviewList, BuildContext context) {
     return Material(
 //      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -2849,7 +3038,7 @@ class CustomWidgets {
                 InkWell(
                   onTap: () => Navigator.of(context).pop(),
                   onDoubleTap: () {},
-                  child: Icon(Icons.close, size: 40),
+                  child: Icon(Icons.close, size: 30),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -2858,7 +3047,7 @@ class CustomWidgets {
                     style: TextStyle(
                         color: PlunesColors.BLACKCOLOR,
                         fontSize: AppConfig.largeFont,
-                        fontWeight: FontWeight.bold),
+                        fontWeight: FontWeight.w500),
                   ),
                 ),
                 Container(),
