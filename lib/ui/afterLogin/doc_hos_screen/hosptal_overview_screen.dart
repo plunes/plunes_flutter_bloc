@@ -898,7 +898,7 @@ class _HospitalOverviewScreenState
           highlightColor: PlunesColors.GREENCOLOR),
       child: Scrollbar(
         controller: _scrollController,
-        isAlwaysShown: true,
+//        isAlwaysShown: true,
         child: SingleChildScrollView(
           controller: _scrollController,
           child: Container(

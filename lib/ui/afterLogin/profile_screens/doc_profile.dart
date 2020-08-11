@@ -133,7 +133,11 @@ class _DocProfileState extends BaseState<DocProfile> {
             child: getProfileInfoView(22, 22, plunesImages.uniIcon,
                 plunesStrings.college, _profileResponse.user?.college),
           ),
-          _getIntroductionView(),
+          _getIntroductionView(
+            24,
+            24,
+            plunesImages.introduction,
+          ),
           _getBottomView()
         ],
       ),
@@ -256,7 +260,7 @@ class _DocProfileState extends BaseState<DocProfile> {
     );
   }
 
-  Widget _getIntroductionView() {
+  Widget _getIntroductionView(double height, double width, String icon) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
       child: Column(
@@ -268,20 +272,42 @@ class _DocProfileState extends BaseState<DocProfile> {
             color: PlunesColors.GREYCOLOR,
             margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
           ),
-          Text(
-            plunesStrings.introduction,
-            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                  width: width,
+                  height: height,
+                  child: widget.getAssetIconWidget(
+                      icon, height, width, BoxFit.contain)),
+              SizedBox(width: 10),
+              Text(
+                plunesStrings.introduction,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500),
+              ),
+            ],
           ),
+//          Text(
+//            plunesStrings.introduction,
+//            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+//          ),
           Padding(
-            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-            child: Text(_profileResponse.user?.biography ?? _getEmptyString()),
+            padding: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 1,
+                left: AppConfig.horizontalBlockSize * 8.5),
+            child: Text(_profileResponse.user?.biography ?? _getEmptyString(),
+                style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14)),
           ),
-          Container(
-            height: 0.5,
-            width: double.infinity,
-            color: PlunesColors.GREYCOLOR,
-            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
-          ),
+//          Container(
+//            height: 0.5,
+//            width: double.infinity,
+//            color: PlunesColors.GREYCOLOR,
+//            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+//          ),
         ],
       ),
     );

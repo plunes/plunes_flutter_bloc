@@ -303,6 +303,18 @@ flutter:
     - assets/images/biddingAddedSuccessImage.png
     - assets/images/plunesPlaceHolderAndErrorLogo.png
     - assets/images/informativeIcon.png
+    - assets/images/Refundable.png
+    - assets/images/PrefferedTiming.png
+    - assets/images/Lockin100.png
+    - assets/images/MakePayement.png
+    - assets/images/AutomatedAppointment.png
+    - assets/images/NegotiateIRealtime.png
+    - assets/images/RealTimeIns.png
+    - assets/images/ActionableIns.png
+    - assets/images/ExtensiveMarketing.png
+    - assets/images/Patientfootfal.png
+    - assets/images/BusinessPerformance.png
+    - assets/images/CenterIntegration.png
 
 
 

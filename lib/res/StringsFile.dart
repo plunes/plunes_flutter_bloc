@@ -3,7 +3,30 @@
 final plunesStrings = PlunesStrings();
 
 class PlunesStrings {
-  static const String forAnyQueries = "For Any Queries, Call Us Now!";
+//  static const String hospitalTiming = "Hospital Timing";
+  static const String realTimeDecision =
+      "Real time Insight allows you to make Real time decisions.";
+  static const String takeAction =
+      "Take action on insights with in 10 Minutes.";
+  static const String youCanProvide =
+      "You can provide best proposition to potential clients.";
+  static const String directLeadMatching =
+      "Direct leads matching your catalog.";
+  static const String saveLakhs = "Save Lakhs of rupees in Marketing cost.";
+  static const String realtimeInsights = "Real time Insights";
+  static const String weUseAI =
+      "We use Artificial intelligence and BIG DATA to offer intelligent Data Driven insights for increasing the revenue and footfall of clients to our partner facilities.";
+  static const String aboutUsHospital =
+      "PLUNES is powered by AI, offering compelling services and features to our partner Facilities.";
+  static const String seeHowItWorksHospital = "See How it Works !";
+  static const String seeHowItWorks =
+      "India's First Utility Network which enables you to Negotiate on your Medical Bills. See How it Works !";
+  static const String aboutUsDesc =
+      "Our AI will negotiate in real-time from curated doctors/hospitals & clinics nearest to you to get the best price solution. We help you find the best price solutions to all your medical concerns in just one click. Search instant solutions for all your treatments & medical procedures in Delhi NCR.";
+  static const String perksPrivileges = "Perks & Privileges";
+  static const String perksDownloading =
+      "The perks of Downloading PLUNES will include:";
+  static const String forAnyQueries = "For Any Queries, Call us at: 7011311900";
   static const String medicalRegistrationVerified =
       "Medical Registration Verified";
   static const String view_More = "View more";
@@ -306,6 +329,24 @@ class PlunesStrings {
         'Electro Therapy\n Laser Therapy\n Speech Therapy\n Neck Pain\n Back Pain\n Shoulder Pain & Frozen Shoulder\n Paralysis\n Sports Injury\n Spine Correction',
         'Cognitive Behavioural Therapy (CBT)\n De-Addiction\n Marriage Counselling\n Obsessive Compulsive Disorder (OCD)\n Mood Disorders\n Stress Management Counselling\n Psychoanalysis\n Anger Management\n Life Skill Training',
         'CT Scan\n MRI\n X-Ray\n Ultrasound\n ECG\n Colour Doppler\n ECHO\n Ultrasonography\n Carotid Ultrasound'
+      ];
+
+  get aboutUsUser => [
+        '100% Refundable\nPayment',
+        'Preferred Timing as\nPer Your Availability',
+        'Lock any procedure in\nRs. 100 only',
+        'Make Partial\nPayments',
+        'Negotiate with curated\nHospitals & Doctors\nin Real Time',
+        'Automated Appointments\n& Payments',
+      ];
+
+  get aboutUsHosp => [
+        'Real Time Insights',
+        'Actionable Insights',
+        'Extensive Marketing',
+        'Patient footfall',
+        'Get Data to track and Increase your Business Performance.',
+        'Multiple Center Integration',
       ];
 
   get healthSolSpecialistArray => [
@@ -714,6 +755,7 @@ class PlunesStrings {
 
   get text2Referral =>
       'You will get instant cash as soon as your friend registers successfully';
+  get hospitalTiming => 'Hospital Timings';
 
   static const String prePayConfirmBooking =
       "Make a payment of  300/- to confirm the booking";
