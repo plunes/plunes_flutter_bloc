@@ -225,26 +225,31 @@ class _AboutUsState extends State<AboutUs> {
                 margin: EdgeInsets.all(5),
                 child: Card(
                   elevation: 2.5,
-                  child: Container(
+                  child: Padding(
 //                    height: AppConfig.verticalBlockSize * 5,
 //                    width: double.infinity,
                     padding: EdgeInsets.all(8.0),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
-                            child: widget.getAssetIconWidget(
-                                aboutUsUser[index]['Image'],
-                                70,
-                                70,
-                                BoxFit.contain)),
+                          child: Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * .5),
+                              child: widget.getAssetIconWidget(
+                                  aboutUsUser[index]['Image'],
+                                  70,
+                                  70,
+                                  BoxFit.contain)),
+                        ),
                         Expanded(
-                            child: Container(
-                                padding: EdgeInsets.only(top: 5),
+                            child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * .5),
                                 child: widget.createTextViews(
                                     aboutUsUser[index]['Info'],
-                                    AppConfig.smallFont,
+                                    AppConfig.verySmallFont,
                                     colorsFile.black0,
                                     TextAlign.center,
                                     FontWeight.normal))),
@@ -257,9 +262,9 @@ class _AboutUsState extends State<AboutUs> {
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: AppConfig.verticalBlockSize *
-                    .8 /
+                    .5 /
                     AppConfig.horizontalBlockSize *
-                    .8)));
+                    1.42)));
   }
 
   Widget _hospitalCard() {
@@ -282,8 +287,6 @@ class _AboutUsState extends State<AboutUs> {
                 child: Card(
                   elevation: 2.5,
                   child: Container(
-//                    height: AppConfig.verticalBlockSize * 5,
-//                    width: double.infinity,
                     padding: EdgeInsets.all(8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -291,18 +294,21 @@ class _AboutUsState extends State<AboutUs> {
                       children: <Widget>[
                         Expanded(
 //                            flex: 2,
-                            child: widget.getAssetIconWidget(
-                                aboutUsHosp[index]['Image'],
-                                70,
-                                70,
-                                BoxFit.contain)),
+                            child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * .5),
+                                child: widget.getAssetIconWidget(
+                                    aboutUsHosp[index]['Image'],
+                                    70,
+                                    70,
+                                    BoxFit.contain))),
                         Expanded(
 //                          flex: 1,
-                          child: Container(
+                          child: Padding(
                               padding: EdgeInsets.only(top: 5),
                               child: widget.createTextViews(
                                   aboutUsHosp[index]['Info'],
-                                  AppConfig.smallFont,
+                                  AppConfig.verySmallFont,
                                   colorsFile.black0,
                                   TextAlign.center,
                                   FontWeight.normal)),
@@ -316,9 +322,9 @@ class _AboutUsState extends State<AboutUs> {
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 childAspectRatio: AppConfig.verticalBlockSize *
-                    .8 /
+                    .5 /
                     AppConfig.horizontalBlockSize *
-                    .8)));
+                    1.38)));
   }
 
   Widget getBulletRow(String text) {

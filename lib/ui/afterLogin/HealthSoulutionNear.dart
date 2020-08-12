@@ -1,6 +1,10 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -27,7 +31,7 @@ class _HealthSolutionNearState extends State<HealthSolutionNear> {
     CommonMethods.globalContext = context;
     return Scaffold(
       appBar: widget.getAppBar(context, plunesStrings.availUpTo, true),
-      backgroundColor: Colors.white,
+      backgroundColor: PlunesColors.WHITECOLOR,
       body: Container(
           margin: EdgeInsets.only(left: 10, right: 10, top: 20),
           child: GridView.builder(
@@ -37,59 +41,77 @@ class _HealthSolutionNearState extends State<HealthSolutionNear> {
               itemCount: healthSolDataList.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
+//                  decoration: ShapeDecoration(
+//                      color: PlunesColors.WHITECOLOR,
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius:
+//                              BorderRadius.all(Radius.elliptical(50, 50)))),
+                  color: PlunesColors.WHITECOLOR,
                   margin: EdgeInsets.all(8),
                   child: Container(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(10)),
                         border: Border.all(width: 0.5, color: Colors.grey)),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        SizedBox(
-                          height: 10,
-                        ),
-                        widget.getAssetIconWidget(
-                            healthSolDataList[index]['Image'],
-                            70,
-                            70,
-                            BoxFit.contain),
-                        SizedBox(height: 10),
-                        widget.createTextViews(
-                            healthSolDataList[index]['Specialist'],
-                            16,
-                            colorsFile.black0,
-                            TextAlign.center,
-                            FontWeight.w600),
-                        SizedBox(height: 10),
-                        Text(healthSolDataList[index]['Info'],
-                            maxLines: 4,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 13)),
                         Expanded(
+                          flex: 2,
+                          child: widget.getAssetIconWidget(
+                              healthSolDataList[index]['Image'],
+                              75,
+                              75,
+                              BoxFit.fitWidth),
+                        ),
+//                        Expanded(
+//                            child: SizedBox(
+//                                height: AppConfig.verticalBlockSize * 2)),
+                        Expanded(
+                          flex: 1,
+                          child: widget.createTextViews(
+                              healthSolDataList[index]['Specialist'],
+                              16,
+                              colorsFile.black0,
+                              TextAlign.center,
+                              FontWeight.w600),
+                        ),
+//                        Expanded(
+//                            child: SizedBox(
+//                                height: AppConfig.verticalBlockSize * 2)),
+                        Expanded(
+                          flex: 2,
+                          child: Text(healthSolDataList[index]['Info'],
+                              maxLines: 4,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 13)),
+                        ),
+                        Expanded(
+                            flex: 1,
                             child: InkWell(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (
-                                BuildContext context,
-                              ) =>
-                                  _showDialog(
-                                      context,
-                                      healthSolDataList[index]['Procedure'],
-                                      healthSolDataList[index]['Info'],
-                                      healthSolDataList[index]['Image']),
-                            );
-                          },
-                          child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: widget.createTextViews(
-                                  plunesStrings.viewMore,
-                                  13,
-                                  colorsFile.defaultGreen,
-                                  TextAlign.center,
-                                  FontWeight.normal)),
-                        ))
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (
+                                    BuildContext context,
+                                  ) =>
+                                      _showDialog(
+                                          context,
+                                          healthSolDataList[index]['Procedure'],
+                                          healthSolDataList[index]['Info'],
+                                          healthSolDataList[index]['Image']),
+                                );
+                              },
+                              child: Padding(
+                                  padding: const EdgeInsets.only(top: 8.0),
+                                  child: widget.createTextViews(
+                                      plunesStrings.viewMore,
+                                      13,
+                                      colorsFile.defaultGreen,
+                                      TextAlign.center,
+                                      FontWeight.normal)),
+                            ))
                       ],
                     ),
                   ),
