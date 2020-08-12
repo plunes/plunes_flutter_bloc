@@ -4224,11 +4224,11 @@ class CustomWidgets {
                                     padding: EdgeInsets.only(
                                         top: AppConfig.verticalBlockSize * .3),
                                     child: Text(
-                                      catalogues[index]
-                                          .experience
-                                          .toStringAsFixed(0),
+                                      "Expr ${catalogues[index].experience.toStringAsFixed(0)} years",
                                       style: TextStyle(
-                                          color: PlunesColors.BLACKCOLOR,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#5D5D5D")),
                                           fontSize: 16,
                                           fontWeight: FontWeight.normal),
                                     ),

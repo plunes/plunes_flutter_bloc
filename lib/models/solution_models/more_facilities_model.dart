@@ -59,6 +59,12 @@ class MoreFacility {
       this.professionalId});
 
   MoreFacility.fromJson(Map<String, dynamic> json) {
+    num expr = 0;
+    if (json['experience'] != null &&
+        json['experience'].runtimeType == expr.runtimeType) {
+      expr = json['experience'];
+    }
+    print(json['experience']);
     sId = json['_id'];
     imageUrl = json['imageUrl'];
     name = json['name'];
@@ -67,8 +73,7 @@ class MoreFacility {
     distance = json['distance'];
     rating = json['rating'];
     professionalId = json['_id'];
-    experience =
-        json['experience'].runtimeType is num ? json['experience'] : null;
+    experience = expr;
   }
 
   Map<String, dynamic> toJson() {

@@ -203,7 +203,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
         children: <Widget>[
           Container(
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-            color: PlunesColors.WHITECOLOR,
+            color: Colors.transparent,
             height: AppConfig.horizontalBlockSize * 14,
             width: AppConfig.horizontalBlockSize * 14,
             child: (widget.catalogueData == null ||
