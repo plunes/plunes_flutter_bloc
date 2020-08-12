@@ -468,21 +468,17 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                       widget.getDividerRow(context, 0, 0, 70.0),
                       getListTile(
                           6, plunesStrings.aboutUs, plunesImages.aboutUsIcon),
-                      (_userType != Constants.hospital &&
-                              _userType != Constants.labDiagnosticCenter)
+                      (_userType == Constants.user)
                           ? widget.getDividerRow(context, 0, 0, 70.0)
                           : Container(),
-                      (_userType != Constants.hospital &&
-                              _userType != Constants.labDiagnosticCenter)
+                      (_userType == Constants.user)
                           ? getListTile(7, plunesStrings.referAndEarn,
                               plunesImages.referIcon)
                           : Container(),
-                      (_userType != Constants.hospital &&
-                              _userType != Constants.labDiagnosticCenter)
+                      (_userType == Constants.user)
                           ? widget.getDividerRow(context, 0, 0, 70.0)
                           : Container(),
-                      (_userType != Constants.hospital &&
-                              _userType != Constants.labDiagnosticCenter)
+                      (_userType == Constants.user)
                           ? getListTile(8, plunesStrings.coupons,
                               plunesImages.navCouponIcon)
                           : Container(),

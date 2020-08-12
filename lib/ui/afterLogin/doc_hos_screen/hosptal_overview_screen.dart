@@ -259,8 +259,8 @@ class _HospitalOverviewScreenState
                                               margin: EdgeInsets.only(
                                                   left: (AppConfig
                                                               .horizontalBlockSize *
-                                                          10.5) +
-                                                      15,
+                                                          2) +
+                                                      45,
                                                   top: AppConfig
                                                           .verticalBlockSize *
                                                       2),
@@ -271,7 +271,10 @@ class _HospitalOverviewScreenState
                                                       "${_realTimeInsightsResponse.data[itemIndex].expirationMessage ?? PlunesStrings.NA}" +
                                                           " ",
                                                       style: TextStyle(
-                                                          fontSize: 15,
+                                                          fontSize: AppConfig
+                                                              .smallFont,
+                                                          fontWeight:
+                                                              FontWeight.normal,
                                                           color: Colors
                                                               .deepOrangeAccent),
                                                       maxLines: 2,
@@ -299,9 +302,9 @@ class _HospitalOverviewScreenState
                                                         .kindlyUpdateYourPrice,
                                                     AppConfig.smallFont + 2,
                                                     null,
-                                                    AppConfig
-                                                            .horizontalBlockSize *
-                                                        10.2,
+                                                    AppConfig.horizontalBlockSize *
+                                                            2 +
+                                                        45,
                                                     true,
                                                     () => _openRealTimeInsightPriceUpdateWidget(
                                                         _realTimeInsightsResponse
@@ -333,8 +336,8 @@ class _HospitalOverviewScreenState
                                               margin: EdgeInsets.only(
                                                   left: (AppConfig
                                                               .horizontalBlockSize *
-                                                          10.5) +
-                                                      15,
+                                                          2) +
+                                                      45,
                                                   top: (_realTimeInsightsResponse
                                                                       .data[
                                                                   itemIndex] !=
@@ -359,9 +362,12 @@ class _HospitalOverviewScreenState
                                                         0),
                                                 style: TextStyle(
                                                     fontSize:
-                                                        AppConfig.smallFont + 1,
-                                                    color:
-                                                        PlunesColors.GREYCOLOR),
+                                                        AppConfig.smallFont,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    color: Color(CommonMethods
+                                                        .getColorHexFromStr(
+                                                            "#171717"))),
                                               ),
                                             );
                                           })
@@ -543,8 +549,8 @@ class _HospitalOverviewScreenState
                       ),
                     ),
                     Container(
-                        height: AppConfig.verticalBlockSize * 3,
-                        width: AppConfig.horizontalBlockSize * 6.5,
+                        height: AppConfig.verticalBlockSize * 2.5,
+                        width: AppConfig.horizontalBlockSize * 5.5,
                         margin: EdgeInsets.only(
                             right: AppConfig.horizontalBlockSize * 3),
                         child: InkWell(
@@ -651,7 +657,7 @@ class _HospitalOverviewScreenState
                                             style: TextStyle(
                                                 fontSize: AppConfig.smallFont,
                                                 color: Colors.black54,
-                                                fontWeight: FontWeight.w500),
+                                                fontWeight: FontWeight.normal),
                                             children: <TextSpan>[
                                               TextSpan(
                                                   text:
@@ -672,7 +678,7 @@ class _HospitalOverviewScreenState
                                                         1,
                                                     color: Colors.black54,
                                                     fontWeight:
-                                                        FontWeight.w500),
+                                                        FontWeight.normal),
                                               ),
                                               TextSpan(
                                                   text:
@@ -694,7 +700,7 @@ class _HospitalOverviewScreenState
                                                         1,
                                                     color: Colors.black54,
                                                     fontWeight:
-                                                        FontWeight.w500),
+                                                        FontWeight.normal),
                                               )
                                             ]),
                                       )),
@@ -702,21 +708,11 @@ class _HospitalOverviewScreenState
                                       'Update here',
                                       AppConfig.smallFont + 2,
                                       null,
-                                      4,
+                                      20,
                                       true,
                                       () => _openActionableUpdatePriceWidget(
                                           _actionableInsightResponse
                                               .data[itemIndex])),
-                                  Container(
-                                    child: Text(
-                                      "45 mins ago",
-                                      style: TextStyle(
-                                          color: PlunesColors.GREYCOLOR,
-                                          fontSize: AppConfig.smallFont + 1),
-                                    ),
-                                    margin:
-                                        EdgeInsets.only(right: 20, left: 20),
-                                  ),
                                   Divider(color: Colors.black38)
                                 ],
                               );
@@ -982,7 +978,7 @@ class _HospitalOverviewScreenState
                                 maxLines: 1,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                    fontSize: 18, fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
@@ -1017,8 +1013,8 @@ class _HospitalOverviewScreenState
                               ),
                             ),
                             Container(
-                                height: AppConfig.verticalBlockSize * 3,
-                                width: AppConfig.horizontalBlockSize * 6.5,
+                                height: AppConfig.verticalBlockSize * 2.5,
+                                width: AppConfig.horizontalBlockSize * 5.5,
                                 margin: EdgeInsets.only(
                                     right: AppConfig.horizontalBlockSize * 3),
                                 child: InkWell(
@@ -1204,15 +1200,20 @@ class FlatButtonLinks extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(left: leftMargin),
-      child: FlatButton(
-          child: Text(
-            linkName,
-            style: TextStyle(
-              fontSize: AppConfig.smallFont,
-              color: PlunesColors.GREENCOLOR,
-            ),
-          ),
-          onPressed: () => onTap()),
+      child: InkWell(
+        onTap: () => onTap(),
+        onDoubleTap: () {},
+        child: Padding(
+            padding: EdgeInsets.only(top: 15, bottom: 15, right: 10),
+            child: Text(
+              linkName,
+              style: TextStyle(
+                fontSize: AppConfig.smallFont,
+                fontWeight: FontWeight.normal,
+                color: PlunesColors.GREENCOLOR,
+              ),
+            )),
+      ),
     );
   }
 }
@@ -1313,6 +1314,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                           style: TextStyle(
                             fontSize: AppConfig.smallFont + 2,
                             color: Colors.black,
+                            fontWeight: FontWeight.normal,
                           ),
                           children: (widget.centreLocation != null &&
                                   widget.centreLocation.isNotEmpty)
@@ -1330,8 +1332,10 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                   Text(
                     widget.serviceName,
                     style: TextStyle(
-                        fontSize: AppConfig.verySmallFont + 1,
-                        color: PlunesColors.GREYCOLOR.withOpacity(0.9)),
+                      fontSize: AppConfig.verySmallFont + 1,
+                      color: PlunesColors.GREYCOLOR.withOpacity(0.9),
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                 ],
               ),

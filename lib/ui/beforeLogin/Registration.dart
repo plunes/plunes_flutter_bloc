@@ -1199,7 +1199,9 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       onTap: () {
         if (controller == dobController)
           CommonMethods.selectHoloTypeDate(context).then((value) {
-            dobController.text = value;
+            if (value != null && value.isNotEmpty) {
+              dobController.text = value;
+            }
           });
         else if (controller == locationController)
           fetchLocation();
