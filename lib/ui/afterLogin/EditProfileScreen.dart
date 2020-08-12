@@ -4,6 +4,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
@@ -283,7 +284,9 @@ class _EditProfileState extends State<EditProfileScreen>
 //        }
         if (controller == dobController)
           CommonMethods.selectHoloTypeDate(context).then((value) {
-            dobController.text = value;
+            if (value != null && value.isNotEmpty) {
+              dobController.text = value;
+            }
           });
         else if (controller == locationController)
           fetchLocation();
@@ -429,8 +432,9 @@ class _EditProfileState extends State<EditProfileScreen>
 //    if (_user.userType == Constants.user) {
 //      locationController.text = widget.location;
 //    } else {
-    locationController.text = _user.googleLocation ?? "";
+    locationController.text = "";
     manualAddressController.text = widget.location;
+    _getGoogleAddress();
 //    }
   }
 
@@ -524,5 +528,23 @@ class _EditProfileState extends State<EditProfileScreen>
     if (mounted) {
       setState(() {});
     }
+  }
+
+  void _getGoogleAddress() async {
+    var details = UserManager().getUserDetails();
+    if (details.latitude != null &&
+        details.latitude.isNotEmpty &&
+        details.latitude != "0.0" &&
+        details.longitude != null &&
+        details.longitude.isNotEmpty &&
+        details.longitude != "0.0")
+      LocationUtil()
+          .getFullAddress(details.latitude, details.longitude)
+          .then((value) {
+        if (value != null && value.trim().isNotEmpty) {
+          locationController.text = value;
+          _setState();
+        }
+      });
   }
 }

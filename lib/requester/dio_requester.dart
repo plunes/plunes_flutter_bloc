@@ -101,7 +101,7 @@ class DioRequester {
   }
 
   RequestOutput _handleDioError(final DioError e) {
-    print(_dioErrorSection);
+//    print(_dioErrorSection);
     String errorDescription;
     switch (e.type) {
       case DioErrorType.CANCEL:

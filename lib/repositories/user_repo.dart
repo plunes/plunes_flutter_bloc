@@ -155,7 +155,7 @@ class UserManager {
         queryParameter: {"userId": userId});
     if (result.isRequestSucceed) {
       LoginPost _loginPost = LoginPost.fromJson(result.response.data);
-      print(_loginPost == null);
+//      print(_loginPost == null);
       if (shouldSaveInfo) {}
       return RequestSuccess(response: _loginPost);
     } else {
@@ -197,7 +197,7 @@ class UserManager {
     if (result.isRequestSucceed) {
       VerifyOtpResponse _verifyOtp =
           VerifyOtpResponse.fromJson(result.response.data);
-      print(_verifyOtp);
+//      print(_verifyOtp);
       return RequestSuccess(response: _verifyOtp);
     } else {
       return RequestFailed(response: result.failureCause);

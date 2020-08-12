@@ -92,4 +92,23 @@ class LocationUtil {
     }
     return address;
   }
+
+  Future<String> getFullAddress(String latitude, String longitude) async {
+    List<Address> addresses;
+    String address = "";
+    try {
+      final coordinates =
+          new Coordinates(double.parse(latitude), double.parse(longitude));
+      addresses =
+          await Geocoder.local.findAddressesFromCoordinates(coordinates);
+      if (addresses != null &&
+          addresses.isNotEmpty &&
+          addresses.first.addressLine != null &&
+          addresses.first.addressLine.isNotEmpty) {
+        address = addresses?.first?.addressLine;
+        UserManager().setAddress(addresses?.first?.addressLine);
+      }
+    } catch (e) {}
+    return address;
+  }
 }
