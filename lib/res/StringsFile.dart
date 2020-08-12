@@ -332,21 +332,21 @@ class PlunesStrings {
       ];
 
   get aboutUsUser => [
-        '100% Refundable\nPayment',
-        'Preferred Timing as\nPer Your Availability',
-        'Lock any procedure in\nRs. 100 only',
+        '100% \nRefundable Payment',
+        'Preferred Timing\nas Per Your\nAvailability',
+        'Lock any procedure\nin Rs. 100 only',
         'Make Partial\nPayments',
-        'Negotiate with curated\nHospitals & Doctors\nin Real Time',
-        'Automated Appointments\n& Payments',
+        'Negotiate with curated Hospitals & Doctors in Real Time',
+        'Automated Appointments & Payments',
       ];
 
   get aboutUsHosp => [
-        'Real Time Insights',
-        'Actionable Insights',
-        'Extensive Marketing',
-        'Patient footfall',
+        'Real\nTime Insights',
+        'Actionable\nInsights',
+        'Extensive\nMarketing',
+        'Patient\nFootfall',
         'Get Data to track and Increase your Business Performance.',
-        'Multiple Center Integration',
+        'Multiple Center\nIntegration',
       ];
 
   get healthSolSpecialistArray => [
