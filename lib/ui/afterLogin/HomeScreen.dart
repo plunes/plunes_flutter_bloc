@@ -346,10 +346,23 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     });
   }
 
-  void navigationPage() {
+  void navigationPage() async {
     UserManager().clear();
-    preferences.clearPreferences();
-    Future.delayed(Duration(milliseconds: 200), () {
+    bool BIDDING_MAIN_SCREEN =
+        UserManager().getWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN);
+    bool SOLUTION_SCREEN =
+        UserManager().getWidgetShownStatus(Constants.SOLUTION_SCREEN);
+    bool INSIGHT_MAIN_SCREEN =
+        UserManager().getWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN);
+    preferences.clearPreferences().then((value) {
+      UserManager().setWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN,
+          status: BIDDING_MAIN_SCREEN);
+      UserManager().setWidgetShownStatus(Constants.SOLUTION_SCREEN,
+          status: SOLUTION_SCREEN);
+      UserManager().setWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN,
+          status: INSIGHT_MAIN_SCREEN);
+    });
+    Future.delayed(Duration(milliseconds: 100), () {
       return Navigator.of(context)
           .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     });
@@ -455,21 +468,17 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                       widget.getDividerRow(context, 0, 0, 70.0),
                       getListTile(
                           6, plunesStrings.aboutUs, plunesImages.aboutUsIcon),
-                      (_userType != Constants.hospital &&
-                              _userType != Constants.labDiagnosticCenter)
+                      (_userType == Constants.user)
                           ? widget.getDividerRow(context, 0, 0, 70.0)
                           : Container(),
-                      (_userType != Constants.hospital &&
-                              _userType != Constants.labDiagnosticCenter)
+                      (_userType == Constants.user)
                           ? getListTile(7, plunesStrings.referAndEarn,
                               plunesImages.referIcon)
                           : Container(),
-                      (_userType != Constants.hospital &&
-                              _userType != Constants.labDiagnosticCenter)
+                      (_userType == Constants.user)
                           ? widget.getDividerRow(context, 0, 0, 70.0)
                           : Container(),
-                      (_userType != Constants.hospital &&
-                              _userType != Constants.labDiagnosticCenter)
+                      (_userType == Constants.user)
                           ? getListTile(8, plunesStrings.coupons,
                               plunesImages.navCouponIcon)
                           : Container(),

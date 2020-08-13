@@ -275,7 +275,7 @@ class PlunesStrings {
       "Make sure to Enter your time slots accurately so that you receive bookings as per your availability and never lose a patient";
 
   static const String cantBookPriceExpired =
-      "Can't book the appointment as the prices was valid for only one hour.";
+      "Can't book the appointment as the prices are valid for only one hour.";
   static const String cantNegotiateWithMoreFacilities =
       "Can't negotitate with more facilities as the prices was valid for only one hour.";
 
@@ -312,12 +312,14 @@ class PlunesStrings {
       "You can change your location from here.";
 
   static const String locationDesc = "Location";
-
   static const String menu = "Menu";
-
   static const String menuDesc = "Tap to see menu options.";
-
   static const String searchDesc = "Tap to search facilities.";
+  static const String viewDetailsDesc = "Tap to view details.";
+  static const String moreFacilityDesc = "Tap to choose more facilities.";
+  static const String businessEarnedLostTitle = "Business Earned/Lost";
+  static const String realTimeDesc =
+      "Real Time requests from Patients Near you.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

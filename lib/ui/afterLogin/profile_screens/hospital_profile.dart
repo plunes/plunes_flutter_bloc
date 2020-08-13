@@ -322,9 +322,35 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                               ? Container(
                                   height: AppConfig.verticalBlockSize * 20,
                                   width: double.infinity,
-                                  child: CustomWidgets().errorWidget(
-                                      _serviceFailureCause ??
-                                          PlunesStrings.unableToLoadServices))
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Image.asset(
+                                        PlunesImages.noServiceAvailable,
+                                        height:
+                                            AppConfig.verticalBlockSize * 6.5,
+                                        width:
+                                            AppConfig.horizontalBlockSize * 20,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                            top: AppConfig.verticalBlockSize *
+                                                1.5),
+                                        child: Text(
+                                          _serviceFailureCause ??
+                                              PlunesStrings
+                                                  .unableToLoadServices,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: PlunesColors.GREYCOLOR,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15),
+                                        ),
+                                      ),
+                                    ],
+                                  ))
                               : _getServiceList();
                         }
                         return Container();

@@ -92,6 +92,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   builder: (context) => SolutionReceivedScreen(
                         catalogueData: widget.catalogueData,
                         searchQuery: widget.searchQuery,
+                        searchedDocResults: _searchedDocResults,
                       ))).then((value) {
             if (value != null && value) {
               Navigator.of(context)
@@ -582,7 +583,6 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
           _searchedDocResults.solution == null ||
           _searchedDocResults.solution.services == null ||
           _searchedDocResults.solution.services.isEmpty) {
-        //_failureCause = PlunesStrings.oopsServiceNotAvailable;
         if (_searchedDocResults != null &&
             _searchedDocResults.msg != null &&
             _searchedDocResults.msg.isNotEmpty) {

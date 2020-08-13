@@ -10,6 +10,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -20,6 +21,7 @@ import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
 import '../../widgets/dialogPopScreen.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 // ignore: must_be_immutable
 class SolutionReceivedScreen extends BaseActivity {
@@ -52,6 +54,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   final double lat = 28.4594965, long = 77.0266383;
   Set<Services> _services = {};
   num _gainedDiscount = 0;
+  GlobalKey _moreFacilityKey = GlobalKey();
 
   @override
   void initState() {
@@ -89,6 +92,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         _searchedDocResults.solution.services.isNotEmpty) {
       _isFetchingInitialData = false;
       _checkShouldTimerRun();
+      _highlightSearchBar();
     } else if (_searchedDocResults != null &&
         _searchedDocResults.msg != null &&
         _searchedDocResults.msg.isNotEmpty) {
@@ -98,9 +102,23 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     super.initState();
   }
 
+  _highlightSearchBar() {
+    if (!UserManager().getWidgetShownStatus(Constants.SOLUTION_SCREEN)) {
+      Future.delayed(Duration(milliseconds: 100)).then((value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) =>
+            ShowCaseWidget.of(_buildContext).startShowCase([_moreFacilityKey]));
+        Future.delayed(Duration(seconds: 1)).then((value) {
+          UserManager().setWidgetShownStatus(Constants.SOLUTION_SCREEN);
+        });
+      });
+    }
+  }
+
   @override
   void dispose() {
-    _timer?.cancel();
+    if (_timer != null && _timer.isActive) {
+      _timer?.cancel();
+    }
     _streamForTimer?.close();
     _timerToUpdateSolutionReceivedTime?.cancel();
     _searchController?.dispose();
@@ -177,20 +195,22 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   )),
               preferredSize:
                   Size(double.infinity, AppConfig.verticalBlockSize * 8)),
-          body: Builder(builder: (context) {
-            _buildContext = context;
-            return _isFetchingInitialData
-                ? CustomWidgets().getProgressIndicator()
-                : _searchedDocResults == null ||
-                        _searchedDocResults.solution == null ||
-                        _searchedDocResults.solution.services == null ||
-                        _searchedDocResults.solution.services.isEmpty
-                    ? Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: AppConfig.horizontalBlockSize * 8),
-                        child: CustomWidgets().errorWidget(_failureCause))
-                    : _showBody();
-          }),
+          body: ShowCaseWidget(
+            builder: Builder(builder: (context) {
+              _buildContext = context;
+              return _isFetchingInitialData
+                  ? CustomWidgets().getProgressIndicator()
+                  : _searchedDocResults == null ||
+                          _searchedDocResults.solution == null ||
+                          _searchedDocResults.solution.services == null ||
+                          _searchedDocResults.solution.services.isEmpty
+                      ? Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppConfig.horizontalBlockSize * 8),
+                          child: CustomWidgets().errorWidget(_failureCause))
+                      : _showBody();
+            }),
+          ),
         ));
   }
 
@@ -279,12 +299,17 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(
-                "Negotiate with more facilities",
-                style: TextStyle(
-                    color: PlunesColors.GREENCOLOR,
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal),
+              CustomWidgets().getShowCase(
+                _moreFacilityKey,
+                title: PlunesStrings.moreFacilities,
+                description: PlunesStrings.moreFacilityDesc,
+                child: Text(
+                  "Negotiate with more facilities",
+                  style: TextStyle(
+                      color: PlunesColors.GREENCOLOR,
+                      fontSize: 15,
+                      fontWeight: FontWeight.normal),
+                ),
               ),
               Icon(
                 Icons.chevron_right,
@@ -373,6 +398,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       _timer = timer;
+      if (!mounted) {
+        if (_timer != null && _timer.isActive) {
+          _timer.cancel();
+        }
+        return;
+      }
       _negotiate();
     });
   }
@@ -384,9 +415,15 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              (_timer != null && _timer.isActive && !(_isCrossClicked))
-                  ? _getHoldOnPopup()
-                  : _getNegotiatedPriceTotalView(),
+              StreamBuilder<Object>(
+                  stream: _searchSolutionBloc.getDocHosStream(),
+                  builder: (context, snapshot) {
+                    return (_timer != null &&
+                            _timer.isActive &&
+                            !(_isCrossClicked))
+                        ? _getHoldOnPopup()
+                        : _getNegotiatedPriceTotalView();
+                  }),
               Card(
                 elevation: 4.0,
                 margin: EdgeInsets.only(

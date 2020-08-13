@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -9,10 +7,13 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:plunes/resources/network/Urls.dart';
 
 import '../../OpenMap.dart';
 
+<<<<<<< HEAD
+=======
+// ignore: must_be_immutable
+>>>>>>> newBranch
 class AboutUs extends BaseActivity {
   static const tag = '/aboutus';
   final userType;
@@ -23,13 +24,20 @@ class AboutUs extends BaseActivity {
   _AboutUsState createState() => _AboutUsState();
 }
 
+<<<<<<< HEAD
 class _AboutUsState extends State<AboutUs> {
+=======
+class _AboutUsState extends BaseState<AboutUs> {
+>>>>>>> newBranch
   List<dynamic> aboutUsUser = new List();
   List<dynamic> aboutUsHosp = new List();
 
   @override
   void initState() {
+<<<<<<< HEAD
     // TODO: implement initState
+=======
+>>>>>>> newBranch
     super.initState();
     getUserData();
     getHospData();
@@ -135,7 +143,11 @@ class _AboutUsState extends State<AboutUs> {
                 child: Column(
                   children: <Widget>[
                     Padding(
+<<<<<<< HEAD
                       padding: const EdgeInsets.all(8.0),
+=======
+                      padding: EdgeInsets.only(left: 5, right: 5, bottom: 5),
+>>>>>>> newBranch
                       child: Text(PlunesStrings.perksPrivileges,
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -260,11 +272,15 @@ class _AboutUsState extends State<AboutUs> {
               );
             },
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+<<<<<<< HEAD
                 crossAxisCount: 2,
                 childAspectRatio: AppConfig.verticalBlockSize *
                     .5 /
                     AppConfig.horizontalBlockSize *
                     1.42)));
+=======
+                crossAxisCount: 2, childAspectRatio: 1)));
+>>>>>>> newBranch
   }
 
   Widget _hospitalCard() {
@@ -320,11 +336,15 @@ class _AboutUsState extends State<AboutUs> {
               );
             },
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+<<<<<<< HEAD
                 crossAxisCount: 2,
                 childAspectRatio: AppConfig.verticalBlockSize *
                     .5 /
                     AppConfig.horizontalBlockSize *
                     1.38)));
+=======
+                crossAxisCount: 2, childAspectRatio: 1)));
+>>>>>>> newBranch
   }
 
   Widget getBulletRow(String text) {

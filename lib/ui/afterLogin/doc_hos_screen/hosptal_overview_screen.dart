@@ -1,7 +1,11 @@
 import 'dart:async';
+//<<<<<<< HEAD
 import 'dart:math';
+//=======
+//>>>>>>> newBranch
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/event_bus.dart';
@@ -18,6 +22,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import '../../../Utils/custom_widgets.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 // ignore: must_be_immutable
 class HospitalDoctorOverviewScreen extends BaseActivity {
@@ -50,9 +55,12 @@ class _HospitalOverviewScreenState
   StreamController _timeUpdater;
   Timer _timer;
   ScrollController _scrollController;
+  BuildContext _context;
+  GlobalKey _realTimeInsightKey = GlobalKey();
 
   @override
   void initState() {
+    _highlightWidgets();
     _scrollController = ScrollController();
     WidgetsBinding.instance.addObserver(this);
     _timeUpdater = StreamController.broadcast();
@@ -117,11 +125,16 @@ class _HospitalOverviewScreenState
   Widget build(BuildContext context) {
     return Scaffold(
         key: scaffoldKey,
-        body: _isProcessing
-            ? CustomWidgets().getProgressIndicator()
-            : _failureCause != null
-                ? CustomWidgets().errorWidget(_failureCause)
-                : _getBody());
+        body: ShowCaseWidget(
+          builder: Builder(builder: (context) {
+            _context = context;
+            return _isProcessing
+                ? CustomWidgets().getProgressIndicator()
+                : _failureCause != null
+                    ? CustomWidgets().errorWidget(_failureCause)
+                    : _getBody();
+          }),
+        ));
   }
 
   String _getNaString() {
@@ -161,8 +174,30 @@ class _HospitalOverviewScreenState
                   ? Container(
                       height: AppConfig.verticalBlockSize * 30,
                       child: Center(
-                        child: Text(_reaTimeInsightFailureCause ??
-                            PlunesStrings.noRealTimeInsights),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Image.asset(
+                              PlunesImages.noRealTimeInsightIcon,
+                              height: AppConfig.verticalBlockSize * 6.5,
+                              width: AppConfig.horizontalBlockSize * 25,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1.5),
+                              child: Text(
+                                _reaTimeInsightFailureCause ??
+                                    PlunesStrings.noRealTimeInsights,
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#676767"))),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   : Container(
@@ -228,8 +263,8 @@ class _HospitalOverviewScreenState
                                               margin: EdgeInsets.only(
                                                   left: (AppConfig
                                                               .horizontalBlockSize *
-                                                          10.5) +
-                                                      15,
+                                                          2) +
+                                                      45,
                                                   top: AppConfig
                                                           .verticalBlockSize *
                                                       2),
@@ -240,7 +275,10 @@ class _HospitalOverviewScreenState
                                                       "${_realTimeInsightsResponse.data[itemIndex].expirationMessage ?? PlunesStrings.NA}" +
                                                           " ",
                                                       style: TextStyle(
-                                                          fontSize: 15,
+                                                          fontSize: AppConfig
+                                                              .smallFont,
+                                                          fontWeight:
+                                                              FontWeight.normal,
                                                           color: Colors
                                                               .deepOrangeAccent),
                                                       maxLines: 2,
@@ -268,9 +306,9 @@ class _HospitalOverviewScreenState
                                                         .kindlyUpdateYourPrice,
                                                     AppConfig.smallFont + 2,
                                                     null,
-                                                    AppConfig
-                                                            .horizontalBlockSize *
-                                                        10.2,
+                                                    AppConfig.horizontalBlockSize *
+                                                            2 +
+                                                        45,
                                                     true,
                                                     () => _openRealTimeInsightPriceUpdateWidget(
                                                         _realTimeInsightsResponse
@@ -302,8 +340,8 @@ class _HospitalOverviewScreenState
                                               margin: EdgeInsets.only(
                                                   left: (AppConfig
                                                               .horizontalBlockSize *
-                                                          10.5) +
-                                                      15,
+                                                          2) +
+                                                      45,
                                                   top: (_realTimeInsightsResponse
                                                                       .data[
                                                                   itemIndex] !=
@@ -328,9 +366,12 @@ class _HospitalOverviewScreenState
                                                         0),
                                                 style: TextStyle(
                                                     fontSize:
-                                                        AppConfig.smallFont + 1,
-                                                    color:
-                                                        PlunesColors.GREYCOLOR),
+                                                        AppConfig.smallFont,
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    color: Color(CommonMethods
+                                                        .getColorHexFromStr(
+                                                            "#171717"))),
                                               ),
                                             );
                                           })
@@ -512,8 +553,8 @@ class _HospitalOverviewScreenState
                       ),
                     ),
                     Container(
-                        height: AppConfig.verticalBlockSize * 3,
-                        width: AppConfig.horizontalBlockSize * 6.5,
+                        height: AppConfig.verticalBlockSize * 2.5,
+                        width: AppConfig.horizontalBlockSize * 5.5,
                         margin: EdgeInsets.only(
                             right: AppConfig.horizontalBlockSize * 3),
                         child: InkWell(
@@ -571,8 +612,30 @@ class _HospitalOverviewScreenState
                           width: double.infinity,
                           height: AppConfig.verticalBlockSize * 35,
                           child: Center(
-                            child: Text(_actionableInsightFailureCause ??
-                                PlunesStrings.noActionableInsightAvailable),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Image.asset(
+                                  PlunesImages.noActionableInsightIcon,
+                                  height: AppConfig.verticalBlockSize * 6.5,
+                                  width: AppConfig.horizontalBlockSize * 25,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 1.5),
+                                  child: Text(
+                                      _actionableInsightFailureCause ??
+                                          PlunesStrings
+                                              .noActionableInsightAvailable,
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#676767")))),
+                                ),
+                              ],
+                            ),
                           ),
                         )
                       : Container(
@@ -598,7 +661,7 @@ class _HospitalOverviewScreenState
                                             style: TextStyle(
                                                 fontSize: AppConfig.smallFont,
                                                 color: Colors.black54,
-                                                fontWeight: FontWeight.w500),
+                                                fontWeight: FontWeight.normal),
                                             children: <TextSpan>[
                                               TextSpan(
                                                   text:
@@ -619,7 +682,7 @@ class _HospitalOverviewScreenState
                                                         1,
                                                     color: Colors.black54,
                                                     fontWeight:
-                                                        FontWeight.w500),
+                                                        FontWeight.normal),
                                               ),
                                               TextSpan(
                                                   text:
@@ -641,7 +704,7 @@ class _HospitalOverviewScreenState
                                                         1,
                                                     color: Colors.black54,
                                                     fontWeight:
-                                                        FontWeight.w500),
+                                                        FontWeight.normal),
                                               )
                                             ]),
                                       )),
@@ -649,21 +712,11 @@ class _HospitalOverviewScreenState
                                       'Update here',
                                       AppConfig.smallFont + 2,
                                       null,
-                                      4,
+                                      20,
                                       true,
                                       () => _openActionableUpdatePriceWidget(
                                           _actionableInsightResponse
                                               .data[itemIndex])),
-                                  Container(
-                                    child: Text(
-                                      "45 mins ago",
-                                      style: TextStyle(
-                                          color: PlunesColors.GREYCOLOR,
-                                          fontSize: AppConfig.smallFont + 1),
-                                    ),
-                                    margin:
-                                        EdgeInsets.only(right: 20, left: 20),
-                                  ),
                                   Divider(color: Colors.black38)
                                 ],
                               );
@@ -929,7 +982,7 @@ class _HospitalOverviewScreenState
                                 maxLines: 1,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                    fontSize: 18, fontWeight: FontWeight.w500),
                               ),
                             ),
                           ),
@@ -950,17 +1003,22 @@ class _HospitalOverviewScreenState
                         Row(
                           children: <Widget>[
                             Flexible(
-                              child: Text(
-                                PlunesStrings.realTimeInsights,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
+                              child: CustomWidgets().getShowCase(
+                                _realTimeInsightKey,
+                                title: PlunesStrings.realTimeInsights,
+                                description: PlunesStrings.realTimeDesc,
+                                child: Text(
+                                  PlunesStrings.realTimeInsights,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
                             ),
                             Container(
-                                height: AppConfig.verticalBlockSize * 3,
-                                width: AppConfig.horizontalBlockSize * 6.5,
+                                height: AppConfig.verticalBlockSize * 2.5,
+                                width: AppConfig.horizontalBlockSize * 5.5,
                                 margin: EdgeInsets.only(
                                     right: AppConfig.horizontalBlockSize * 3),
                                 child: InkWell(
@@ -1085,6 +1143,18 @@ class _HospitalOverviewScreenState
               isAdmin: true, centerLocation: _user.name ?? "Myself", sId: ""));
     }
   }
+
+  void _highlightWidgets() {
+    if (!UserManager().getWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN)) {
+      Future.delayed(Duration(seconds: 1)).then((value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) =>
+            ShowCaseWidget.of(_context).startShowCase([_realTimeInsightKey]));
+        Future.delayed(Duration(seconds: 1)).then((value) {
+          UserManager().setWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN);
+        });
+      });
+    }
+  }
 }
 
 class RealTimeInsightsWIdget extends StatelessWidget {
@@ -1134,15 +1204,20 @@ class FlatButtonLinks extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(left: leftMargin),
-      child: FlatButton(
-          child: Text(
-            linkName,
-            style: TextStyle(
-              fontSize: AppConfig.smallFont,
-              color: PlunesColors.GREENCOLOR,
-            ),
-          ),
-          onPressed: () => onTap()),
+      child: InkWell(
+        onTap: () => onTap(),
+        onDoubleTap: () {},
+        child: Padding(
+            padding: EdgeInsets.only(top: 15, bottom: 15, right: 10),
+            child: Text(
+              linkName,
+              style: TextStyle(
+                fontSize: AppConfig.smallFont,
+                fontWeight: FontWeight.normal,
+                color: PlunesColors.GREENCOLOR,
+              ),
+            )),
+      ),
     );
   }
 }
@@ -1243,6 +1318,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                           style: TextStyle(
                             fontSize: AppConfig.smallFont + 2,
                             color: Colors.black,
+                            fontWeight: FontWeight.normal,
                           ),
                           children: (widget.centreLocation != null &&
                                   widget.centreLocation.isNotEmpty)
@@ -1260,8 +1336,10 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                   Text(
                     widget.serviceName,
                     style: TextStyle(
-                        fontSize: AppConfig.verySmallFont + 1,
-                        color: PlunesColors.GREYCOLOR.withOpacity(0.9)),
+                      fontSize: AppConfig.verySmallFont + 1,
+                      color: PlunesColors.GREYCOLOR.withOpacity(0.9),
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                 ],
               ),
@@ -1362,13 +1440,12 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
         }
         if (_prevMinValue != val) {
           _prevMinValue = val;
-          _secondVal = _secFixVal;
         }
-        _secondVal--;
         _timeValue = val.toString();
         if (_timeValue != null && _timeValue.length == 1) {
           _timeValue = "0$_timeValue";
         }
+        _secondVal = 60 - (duration.inSeconds % 60);
         if (_secondVal != null) {
           var _sec = _secondVal.toString();
           if (_sec.length == 1) {

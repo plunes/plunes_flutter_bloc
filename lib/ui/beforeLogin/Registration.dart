@@ -1199,7 +1199,9 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       onTap: () {
         if (controller == dobController)
           CommonMethods.selectHoloTypeDate(context).then((value) {
-            dobController.text = value;
+            if (value != null && value.isNotEmpty) {
+              dobController.text = value;
+            }
           });
         else if (controller == locationController)
           fetchLocation();
@@ -1512,7 +1514,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         _longitude != "0.0") {
 //      _preferenceObj.setPreferencesString(Constants.LATITUDE, _latitude);
 //      _preferenceObj.setPreferencesString(Constants.LONGITUDE, _longitude);
-      print('$_latitude , $_longitude');
+//      print('$_latitude , $_longitude');
       final coordinates =
           new Coordinates(double.parse(_latitude), double.parse(_longitude));
       var addressController =

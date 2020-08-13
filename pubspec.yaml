@@ -303,6 +303,11 @@ flutter:
     - assets/images/biddingAddedSuccessImage.png
     - assets/images/plunesPlaceHolderAndErrorLogo.png
     - assets/images/informativeIcon.png
+<<<<<<< HEAD
+=======
+    - assets/images/noActionableInsightIcon.png
+    - assets/images/noRealTimeInsightIcon.png
+>>>>>>> newBranch
     - assets/images/Refundable.png
     - assets/images/PrefferedTiming.png
     - assets/images/Lockin100.png
