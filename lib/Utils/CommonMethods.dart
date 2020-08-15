@@ -339,46 +339,108 @@ class CommonMethods {
       child: SingleChildScrollView(
         reverse: true,
         child: Container(
-          height: AppConfig.verticalBlockSize * 48,
+          height: AppConfig.verticalBlockSize * 40,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(
                   Radius.circular(AppConfig.horizontalBlockSize * 7)),
               color: PlunesColors.WHITECOLOR),
           child: Column(children: <Widget>[
-            Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: InkWell(
-                    onTap: () => callBack.dialogCallBackFunction('CANCEL'),
-                    child: Icon(Icons.clear),
-                  ),
-                )),
-            Flexible(child: Image.asset(PlunesImages.bdSupportImage)),
+//            Align(
+//                alignment: Alignment.topRight,
+//                child: Container(
+//                  margin: EdgeInsets.all(10),
+//                  decoration: BoxDecoration(
+//                    color: Colors.black.withOpacity(.5),
+//                    borderRadius: BorderRadius.all(Radius.circular(50)),
+//                  ),
+//
+////                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
+//                  child: InkWell(
+//                    onTap: () => callBack.dialogCallBackFunction('CANCEL'),
+//                    child: Icon(
+//                      Icons.clear,
+//                      color: PlunesColors.WHITECOLOR,
+//                    ),
+//                  ),
+//                )),
+            Flexible(
+                child: Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+                    height: AppConfig.verticalBlockSize * 20,
+                    child: Image.asset(PlunesImages.bdSupportImage))),
             Container(
-              height: 80,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextField(
-                  controller: controller,
-                  maxLines: 1,
-                  decoration:
-                      InputDecoration(hintText: plunesStrings.description),
-                ),
+              height: AppConfig.verticalBlockSize * 8,
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 3),
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: TextField(
+                controller: controller,
+                maxLines: 1,
+                decoration:
+                    InputDecoration(hintText: plunesStrings.description),
               ),
             ),
-            getSpacer(0, 1),
-            Text(
-              PlunesStrings.ourTeamWillContactYou,
-              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 15),
-              textAlign: TextAlign.center,
+//            getSpacer(0, 1),
+            Padding(
+              padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+              child: Text(
+                PlunesStrings.ourTeamWillContactYou,
+                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 15),
+                textAlign: TextAlign.center,
+              ),
             ),
-            getSpacer(0, 22),
+            getSpacer(0, 12),
+//            Row(
+//              crossAxisAlignment: CrossAxisAlignment.center,
+////              mainAxisAlignment: MainAxisAlignment.spaceAround,
+//              children: <Widget>[
+//                Expanded(
+//                  child: InkWell(
+//                      onTap: () => callBack.dialogCallBackFunction('CANCEL'),
+//                      child: Container(
+//                          decoration: BoxDecoration(
+//                              borderRadius: BorderRadius.only(
+//                                  bottomLeft: Radius.circular(
+//                                      AppConfig.horizontalBlockSize * 4)),
+//                              color: Colors.redAccent),
+//                          padding: EdgeInsets.all(10),
+//                          margin: EdgeInsets.only(top: 10),
+//                          child: Text(
+//                            'Cancel',
+//                            textAlign: TextAlign.center,
+//                            style: TextStyle(
+//                                fontSize: AppConfig.mediumFont,
+//                                color: PlunesColors.WHITECOLOR),
+//                          ))),
+//                ),
+//                Expanded(
+//                  child: InkWell(
+//                      onTap: () => callBack.dialogCallBackFunction('DONE'),
+//                      child: Container(
+//                          decoration: BoxDecoration(
+//                            borderRadius: BorderRadius.only(
+//                                bottomRight: Radius.circular(
+//                                    AppConfig.horizontalBlockSize * 4)),
+//                            color: PlunesColors.SPARKLINGGREEN,
+//                          ),
+//                          padding: EdgeInsets.all(10),
+//                          margin: EdgeInsets.only(top: 10),
+//                          child: Text(
+//                            'Submit',
+//                            textAlign: TextAlign.center,
+//                            style: TextStyle(
+//                                fontSize: AppConfig.mediumFont,
+//                                color: PlunesColors.WHITECOLOR),
+//                          ))),
+//                ),
+//              ],
+//            )
             Container(
               margin: EdgeInsets.only(
                   left: AppConfig.horizontalBlockSize * 25,
                   right: AppConfig.horizontalBlockSize * 25,
-                  bottom: AppConfig.verticalBlockSize * 1),
+                  bottom: AppConfig.verticalBlockSize * 3),
               child: InkWell(
                 borderRadius: BorderRadius.all(Radius.circular(5)),
                 onTap: () {

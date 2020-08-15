@@ -7,13 +7,11 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+//import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../../OpenMap.dart';
 
-<<<<<<< HEAD
-=======
 // ignore: must_be_immutable
->>>>>>> newBranch
 class AboutUs extends BaseActivity {
   static const tag = '/aboutus';
   final userType;
@@ -24,23 +22,24 @@ class AboutUs extends BaseActivity {
   _AboutUsState createState() => _AboutUsState();
 }
 
-<<<<<<< HEAD
-class _AboutUsState extends State<AboutUs> {
-=======
 class _AboutUsState extends BaseState<AboutUs> {
->>>>>>> newBranch
   List<dynamic> aboutUsUser = new List();
   List<dynamic> aboutUsHosp = new List();
+  String _userVideoUrl = "https://youtu.be/QwCxu5BgJQg";
+  String _hospVideoUrl = "https://youtu.be/eEQGGzplZ7w";
+
+//  YoutubePlayerController _controller;
 
   @override
   void initState() {
-<<<<<<< HEAD
     // TODO: implement initState
-=======
->>>>>>> newBranch
-    super.initState();
+
     getUserData();
     getHospData();
+//    _controller = YoutubePlayerController(
+//        initialVideoId: YoutubePlayer.convertUrlToId(
+//            widget.userType == Constants.user ? _userVideoUrl : _hospVideoUrl));
+    super.initState();
   }
 
   @override
@@ -143,11 +142,7 @@ class _AboutUsState extends BaseState<AboutUs> {
                 child: Column(
                   children: <Widget>[
                     Padding(
-<<<<<<< HEAD
-                      padding: const EdgeInsets.all(8.0),
-=======
                       padding: EdgeInsets.only(left: 5, right: 5, bottom: 5),
->>>>>>> newBranch
                       child: Text(PlunesStrings.perksPrivileges,
                           textAlign: TextAlign.center,
                           style: TextStyle(
@@ -184,11 +179,18 @@ class _AboutUsState extends BaseState<AboutUs> {
                     fontWeight: FontWeight.w500,
                   )),
             ),
+//            Container(
+//              child: YoutubePlayer(
+//                controller: _controller,
+//                showVideoProgressIndicator: true,
+//              ),
+//            ),
+
             InkWell(
               onTap: () {
                 widget.userType == Constants.user
-                    ? LauncherUtil.launchUrl("https://youtu.be/QwCxu5BgJQg")
-                    : LauncherUtil.launchUrl("https://youtu.be/eEQGGzplZ7w");
+                    ? LauncherUtil.launchUrl(_userVideoUrl)
+                    : LauncherUtil.launchUrl(_hospVideoUrl);
               },
               child: Container(
                 margin:
@@ -272,15 +274,13 @@ class _AboutUsState extends BaseState<AboutUs> {
               );
             },
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-<<<<<<< HEAD
+//                crossAxisCount: 2,
+//                childAspectRatio: AppConfig.verticalBlockSize *
+//                    .5 /
+//                    AppConfig.horizontalBlockSize *
+//                    1.42)));
                 crossAxisCount: 2,
-                childAspectRatio: AppConfig.verticalBlockSize *
-                    .5 /
-                    AppConfig.horizontalBlockSize *
-                    1.42)));
-=======
-                crossAxisCount: 2, childAspectRatio: 1)));
->>>>>>> newBranch
+                childAspectRatio: 1)));
   }
 
   Widget _hospitalCard() {
@@ -336,15 +336,14 @@ class _AboutUsState extends BaseState<AboutUs> {
               );
             },
             gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-<<<<<<< HEAD
+
+//                crossAxisCount: 2,
+//                childAspectRatio: AppConfig.verticalBlockSize *
+//                    .5 /
+//                    AppConfig.horizontalBlockSize *
+//                    1.38)));
                 crossAxisCount: 2,
-                childAspectRatio: AppConfig.verticalBlockSize *
-                    .5 /
-                    AppConfig.horizontalBlockSize *
-                    1.38)));
-=======
-                crossAxisCount: 2, childAspectRatio: 1)));
->>>>>>> newBranch
+                childAspectRatio: 1)));
   }
 
   Widget getBulletRow(String text) {

@@ -2156,7 +2156,8 @@ class CustomWidgets {
                         },
                         onDoubleTap: () {},
                         child: Padding(
-                          padding: EdgeInsets.all(12),
+                          padding:
+                              EdgeInsets.only(top: 12, right: 12, left: 12),
                           child: Icon(
                             Icons.close,
                             color: PlunesColors.GREYCOLOR,
@@ -2173,21 +2174,51 @@ class CustomWidgets {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                Text(PlunesStrings.thankYouMessage,
-                                    style: TextStyle(
-                                        fontSize: 32,
-                                        fontWeight: FontWeight.w500,
-                                        color: PlunesColors.BLACKCOLOR)),
+                                Container(
+                                    height: AppConfig.verticalBlockSize * 15,
+                                    width: AppConfig.horizontalBlockSize * 30,
+                                    child:
+                                        Image.asset(PlunesImages.refundImage)),
+//                                Text(PlunesStrings.thankYouMessage,
+//                                    style: TextStyle(
+//                                        fontSize: 32,
+//                                        fontWeight: FontWeight.w500,
+//                                        color: PlunesColors.BLACKCOLOR)),
+//                                Padding(
+//                                  padding: EdgeInsets.only(
+//                                      ),
+//                                ),
                                 Padding(
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.horizontalBlockSize * 6),
+                                  padding: EdgeInsets.symmetric(
+                                      vertical:
+                                          AppConfig.horizontalBlockSize * 3),
+                                  child: Text(
+                                      PlunesStrings.refundSuccessMessage,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.largeFont,
+                                          fontWeight: FontWeight.w500,
+                                          color: PlunesColors.GREYCOLOR)),
                                 ),
-                                Text(PlunesStrings.refundSuccessMessage,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: AppConfig.largeFont,
-                                        fontWeight: FontWeight.w500,
-                                        color: PlunesColors.GREYCOLOR)),
+                                Container(
+                                    margin: EdgeInsets.symmetric(
+                                        horizontal:
+                                            AppConfig.horizontalBlockSize * 20,
+                                        vertical:
+                                            AppConfig.verticalBlockSize * 1),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context);
+                                        return;
+                                      },
+                                      child: CustomWidgets().getRoundedButton(
+                                          plunesStrings.ok,
+                                          AppConfig.horizontalBlockSize * 6,
+                                          PlunesColors.GREENCOLOR,
+                                          AppConfig.horizontalBlockSize * 1,
+                                          AppConfig.verticalBlockSize * 1,
+                                          PlunesColors.WHITECOLOR),
+                                    ))
                               ],
                             ),
                           )
@@ -2205,31 +2236,31 @@ class CustomWidgets {
                                         color: PlunesColors.BLACKCOLOR)),
                                 Container(
                                     margin: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 4),
+                                        top: AppConfig.verticalBlockSize * 2),
                                     height: AppConfig.verticalBlockSize * 15,
                                     width: AppConfig.horizontalBlockSize * 35,
                                     child:
                                         Image.asset(PlunesImages.refundImage)),
                                 Container(
                                     padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 4),
+                                        top: AppConfig.verticalBlockSize * 2),
                                     child: Text(
-                                        'Kindly Share the reason for your refund',
+                                        'Kindly Share the reason for your refund so our team can help you better',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontSize: AppConfig.largeFont,
                                             fontWeight: FontWeight.w500,
                                             color: PlunesColors.BLACKCOLOR))),
-                                Container(
-                                    alignment: Alignment.topLeft,
-                                    padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 4),
-                                    child: Text('Write here',
-                                        textAlign: TextAlign.start,
-                                        style: TextStyle(
-                                            fontSize: AppConfig.mediumFont,
-                                            fontWeight: FontWeight.w600,
-                                            color: PlunesColors.GREYCOLOR))),
+//                                Container(
+//                                    alignment: Alignment.topLeft,
+//                                    padding: EdgeInsets.only(
+//                                        top: AppConfig.verticalBlockSize * 3),
+//                                    child: Text('Write here',
+//                                        textAlign: TextAlign.start,
+//                                        style: TextStyle(
+//                                            fontSize: AppConfig.mediumFont,
+//                                            fontWeight: FontWeight.w600,
+//                                            color: PlunesColors.GREYCOLOR))),
                                 Row(
                                   children: <Widget>[
                                     Expanded(
@@ -2238,14 +2269,16 @@ class CustomWidgets {
                                         keyboardType: TextInputType.text,
                                         maxLines: 1,
                                         autofocus: false,
+                                        decoration: InputDecoration(
+                                            hintText: 'Write here'),
                                       ),
                                     )
                                   ],
                                 ),
                                 Container(
-                                  padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 6,
-                                  ),
+//                                  padding: EdgeInsets.only(
+//                                    top: AppConfig.verticalBlockSize * 2,
+//                                  ),
                                   margin: EdgeInsets.symmetric(
                                       horizontal:
                                           AppConfig.horizontalBlockSize * 20,

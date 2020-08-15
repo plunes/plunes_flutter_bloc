@@ -119,7 +119,7 @@ class PlunesStrings {
   static const String closed = "Closed";
   static const String reschedule = "Reschedule";
   static const String requestInvoice = "Request Invoice";
-  static const String refund = "Refund";
+  static const String refund = "Request Refund";
   static const String visitAgain = "Visit Again";
   static const String appointmentScreenError = "Appointment Screen Error";
   static const String paymentStatus = "Payment Status";
@@ -135,7 +135,7 @@ class PlunesStrings {
   static const String emptyTextFieldWarning = "Please Enter the Refund Reason";
   static const String thankYouMessage = "Thank You!";
   static const String refundSuccessMessage =
-      "Your Refund has been initiated, Amount will be credited in 3-4 business days.";
+      "We have received your refund request . Our team will get in touch with you soon regarding the same";
   static String uplaodSuccessMessage = "Report uploaded successfully!";
   static String plockrViewer = 'PLUNES PLOCKR VIEWER';
 
