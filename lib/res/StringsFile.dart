@@ -310,16 +310,19 @@ class PlunesStrings {
   ///Highlight Desc for demo
   static const String youCanChangeLocationFromHere =
       "You can change your location from here.";
-
   static const String locationDesc = "Location";
   static const String menu = "Menu";
   static const String menuDesc = "Tap to see menu options.";
-  static const String searchDesc = "Tap to search facilities.";
+  static const String searchDesc = "Tap here to search Procedures.";
   static const String viewDetailsDesc = "Tap to view details.";
   static const String moreFacilityDesc = "Tap to choose more facilities.";
   static const String businessEarnedLostTitle = "Business Earned/Lost";
   static const String realTimeDesc =
       "Real Time requests from Patients Near you.";
+  static const String enterProcedureAndTestDetailsToReceiveBids =
+      "Please enter Procedure & Test details to receive competitive bids from hospitals.";
+  static const String selectFacilityToReceiveBid =
+      "Please select facilities to receive competitive bids from hospitals.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
@@ -757,6 +760,7 @@ class PlunesStrings {
 
   get text2Referral =>
       'You will get instant cash as soon as your friend registers successfully';
+
   get hospitalTiming => 'Hospital Timings';
 
   static const String prePayConfirmBooking =

@@ -37,6 +37,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   List<MoreFacility> _catalogues, _selectedItemList;
   bool _endReached;
   String _failureCause;
+  bool _scrollParent = false;
 
   _getMoreFacilities() {
     _searchSolutionBloc.getMoreFacilities(widget.docHosSolution,
@@ -46,6 +47,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
 
   @override
   void initState() {
+    _scrollParent = false;
     _searchSolutionBloc = widget.searchSolutionBloc;
     _searchController = TextEditingController()..addListener(_onSearch);
     _streamController = StreamController.broadcast();
@@ -251,10 +253,10 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   Widget _showResultsFromBackend(AsyncSnapshot<RequestState> snapShot) {
     return Container(
         constraints: BoxConstraints(
-            minHeight: AppConfig.verticalBlockSize * 30,
+            minHeight: AppConfig.verticalBlockSize * 25,
             minWidth: double.infinity,
             maxWidth: double.infinity,
-            maxHeight: AppConfig.verticalBlockSize * 65),
+            maxHeight: AppConfig.verticalBlockSize * 55),
         child: Column(
           children: <Widget>[
             StreamBuilder<Object>(
@@ -287,28 +289,40 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                     _searchSolutionBloc.getMoreFacilities(widget.docHosSolution,
                         searchQuery: _searchController.text.trim().toString(),
                         pageIndex: pageIndex);
+                  } else if (scrollState is OverscrollNotification) {
+                    _scrollParent = true;
+                    _setState();
+                    Future.delayed(Duration(seconds: 1)).then((value) {
+                      _scrollParent = false;
+                      _setState();
+                    });
                   }
                   return;
                 },
-                child: ListView.builder(
-                  padding: null,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.only(
-                          bottom: (_catalogues != null &&
-                                  _catalogues.isNotEmpty &&
-                                  (index == _catalogues.length - 1))
-                              ? AppConfig.verticalBlockSize * 4
-                              : 0),
-                      child: CustomWidgets().getMoreFacilityWidget(
-                          _catalogues, index,
-                          onTap: () => _addRemoveFacilities(_catalogues[index],
-                              shouldAdd: true),
-                          onProfileTap: () => _viewProfile(_catalogues[index])),
-                    );
-                  },
-                  shrinkWrap: true,
-                  itemCount: _catalogues?.length ?? 0,
+                child: IgnorePointer(
+                  ignoring: _scrollParent,
+                  child: ListView.builder(
+                    padding: null,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.only(
+                            bottom: (_catalogues != null &&
+                                    _catalogues.isNotEmpty &&
+                                    (index == _catalogues.length - 1))
+                                ? AppConfig.verticalBlockSize * 4
+                                : 0),
+                        child: CustomWidgets().getMoreFacilityWidget(
+                            _catalogues, index,
+                            onTap: () => _addRemoveFacilities(
+                                _catalogues[index],
+                                shouldAdd: true),
+                            onProfileTap: () =>
+                                _viewProfile(_catalogues[index])),
+                      );
+                    },
+                    shrinkWrap: true,
+                    itemCount: _catalogues?.length ?? 0,
+                  ),
                 ),
               ),
             ),
@@ -446,5 +460,9 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
       }
       Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
   }
 }
