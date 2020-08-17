@@ -214,7 +214,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                               size: AppConfig.veryExtraLargeFont -
                                   AppConfig.extraLargeFont),
                           Text(
-                            widget.rating ?? PlunesStrings.NA,
+                            _profileResponse.user?.rating?.toStringAsFixed(1) ??
+                                PlunesStrings.NA,
                             style: TextStyle(
                                 color: PlunesColors.GREYCOLOR,
                                 fontSize: AppConfig.mediumFont),

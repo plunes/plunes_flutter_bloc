@@ -1277,7 +1277,6 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
 
   _startTimer(Timer timer) {
     if (!showShowWidget()) {
-      _calcTime();
       _setState();
     } else {
       if (timer != null && timer.isActive) {
@@ -1353,6 +1352,31 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   }
 
   Widget _getTimeWidget() {
+    if (widget.remainingTime != null && widget.remainingTime != 0) {
+      var duration = DateTime.now().difference(
+          DateTime.fromMillisecondsSinceEpoch(widget.remainingTime));
+      if (duration != null && duration.inMinutes != null) {
+        int val = _countDownValue - duration.inMinutes;
+        if (_prevMinValue == null) {
+          _prevMinValue = val;
+        }
+        if (_prevMinValue != val) {
+          _prevMinValue = val;
+        }
+        _timeValue = val.toString();
+        if (_timeValue != null && _timeValue.length == 1) {
+          _timeValue = "0$_timeValue";
+        }
+        _secondVal = 60 - (duration.inSeconds % 60);
+        if (_secondVal != null) {
+          var _sec = _secondVal.toString();
+          if (_sec.length == 1) {
+            _sec = "0$_sec";
+          }
+          _timeValue = _timeValue + ':' + _sec;
+        }
+      }
+    }
     return !showShowWidget()
         ? Column(
             children: <Widget>[
@@ -1427,33 +1451,5 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       }
       return;
     });
-  }
-
-  void _calcTime() {
-    if (widget.remainingTime != null && widget.remainingTime != 0) {
-      var duration = DateTime.now().difference(
-          DateTime.fromMillisecondsSinceEpoch(widget.remainingTime));
-      if (duration != null && duration.inMinutes != null) {
-        int val = _countDownValue - duration.inMinutes;
-        if (_prevMinValue == null) {
-          _prevMinValue = val;
-        }
-        if (_prevMinValue != val) {
-          _prevMinValue = val;
-        }
-        _timeValue = val.toString();
-        if (_timeValue != null && _timeValue.length == 1) {
-          _timeValue = "0$_timeValue";
-        }
-        _secondVal = 60 - (duration.inSeconds % 60);
-        if (_secondVal != null) {
-          var _sec = _secondVal.toString();
-          if (_sec.length == 1) {
-            _sec = "0$_sec";
-          }
-          _timeValue = _timeValue + ':' + _sec;
-        }
-      }
-    }
   }
 }

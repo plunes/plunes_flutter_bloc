@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-//import 'package:flutter_swipe_action_cell/core/swipe_action_cell.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -123,21 +122,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
       itemCount: items.posts.length,
       itemBuilder: (context, index) {
         return rowLayout(items.posts[index]);
-//          SwipeActionCell(
-//            key: ObjectKey(items.posts[index]),
-//            performsFirstActionWithFullSwipe: true,
-//            actions: <SwipeAction>[
-//              SwipeAction(
-//                  title: "Remove",
-//                  onTap: (CompletionHandler handler) async {
-//                    await handler(true);
-//                    items.posts.removeAt(index);
-//                    setState(() {});
-//                  },
-//                  color: Colors.redAccent),
-//            ],
-//            child: rowLayout(items.posts[index])
-//          );
       },
     );
   }
@@ -145,81 +129,84 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget rowLayout(PostsData result) {
     return InkWell(
       onTap: () => _onTap(result),
-      child: Container(
-        color: (result.hasSeen ?? true) ? null : PlunesColors.LIGHTGREENCOLOR,
-        margin: EdgeInsets.symmetric(
-            horizontal: AppConfig.horizontalBlockSize * 3,
-            vertical: AppConfig.verticalBlockSize * 0.4),
-        child: Column(
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        children: <Widget>[
+          Container(
+            color:
+                (result.hasSeen ?? true) ? null : PlunesColors.LIGHTGREENCOLOR,
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 3),
+            padding: EdgeInsets.all(8.0),
+            child: Column(
               children: <Widget>[
-                Container(
-                    margin: EdgeInsets.only(bottom: 0, right: 10),
-                    child: result.senderImageUrl != '' &&
-                            !result.senderImageUrl.contains("default")
-                        ? CircleAvatar(
-                            radius: AppConfig.horizontalBlockSize * 5,
-                            backgroundImage:
-                                NetworkImage(result.senderImageUrl),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                        margin: EdgeInsets.only(bottom: 0, right: 10),
+                        child: result.senderImageUrl != '' &&
+                                !result.senderImageUrl.contains("default")
+                            ? CircleAvatar(
+                                radius: AppConfig.horizontalBlockSize * 5,
+                                backgroundImage:
+                                    NetworkImage(result.senderImageUrl),
+                              )
+                            : CustomWidgets().getProfileIconWithName(
+                                result.senderName, 14, 14)),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            CommonMethods.getStringInCamelCase(
+                                result?.senderName),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: AppConfig.smallFont,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Container(
+                            width: AppConfig.horizontalBlockSize * 65,
+                            child: Text(
+                              result.notification,
+                              maxLines: null,
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: AppConfig.smallFont),
+                            ),
                           )
-                        : CustomWidgets()
-                            .getProfileIconWithName(result.senderName, 10, 10)),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        CommonMethods.getStringInCamelCase(result?.senderName),
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: AppConfig.smallFont,
-                            fontWeight: FontWeight.w600),
+                        ],
                       ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        width: AppConfig.horizontalBlockSize * 65,
-                        child: Text(
-                          result.notification,
-                          maxLines: null,
-                          style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: AppConfig.smallFont),
-                        ),
-                      )
-                    ],
-                  ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      alignment: Alignment.topRight,
+                      child: StreamBuilder<Object>(
+                          stream: _streamController.stream,
+                          builder: (context, snapshot) {
+                            return Text(
+                              CommonMethods.getDuration(result.createdTime),
+                              style: TextStyle(
+                                  fontSize: AppConfig.verySmallFont - 2),
+                            );
+                          }),
+                    )
+                  ],
                 ),
-                Container(
-                  margin: EdgeInsets.only(bottom: 20),
-                  alignment: Alignment.topRight,
-                  child: StreamBuilder<Object>(
-                      stream: _streamController.stream,
-                      builder: (context, snapshot) {
-                        return Text(
-                          CommonMethods.getDuration(result.createdTime),
-                          style:
-                              TextStyle(fontSize: AppConfig.verySmallFont - 2),
-                        );
-                      }),
-                )
               ],
             ),
-            Container(
-              padding:
-                  EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
-              margin: EdgeInsets.only(
-                top: AppConfig.verticalBlockSize * 1.5,
-              ),
-              width: double.infinity,
-              height: 0.5,
-              color: PlunesColors.GREYCOLOR,
-            ),
-          ],
-        ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 3),
+            width: double.infinity,
+            height: 0.5,
+            color: PlunesColors.GREYCOLOR,
+          ),
+        ],
       ),
     );
   }

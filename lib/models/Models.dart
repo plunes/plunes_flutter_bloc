@@ -185,6 +185,7 @@ class User {
   List<AchievementsData> achievements = [];
   bool verifiedUser, notificationEnabled, isAdmin, isCentre, referralExpired;
   BankDetails bankDetails;
+  num rating;
 
   User(
       {this.uid,
@@ -220,12 +221,18 @@ class User {
       this.notificationEnabled,
       this.isAdmin,
       this.isCentre,
+      this.rating,
       this.referralExpired,
       this.bankDetails,
       this.googleLocation,
       this.region});
 
   factory User.fromJson(Map<String, dynamic> json) {
+    num _rating = 4.0;
+    if (json["rating"] != null &&
+        json["rating"].runtimeType == _rating.runtimeType) {
+      _rating = json["rating"];
+    }
     bool _isAdmin = json['isAdmin'] ?? false;
     bool _isCenter = json['isCenter'] ?? false;
     bool _referralExpired = json['referralExpired'] ?? false;
@@ -250,7 +257,8 @@ class User {
       lat = "0.0";
     }
 //    print("lat in models $lat");
-//    print("long in models $long");
+    print(
+        "${json["rating"].runtimeType.toString()}long in ${_rating.runtimeType.toString()}models ${json["rating"]}");
     return User(
         uid: json['_id'] != null ? json['_id'] : '',
         name: json['name'] != null ? json['name'] : '',
@@ -308,7 +316,8 @@ class User {
             ? BankDetails.fromJson(json['bankDetails'])
             : null,
         googleLocation: json['googleAddress'],
-        referralExpired: _referralExpired);
+        referralExpired: _referralExpired,
+        rating: _rating);
   }
 
   Map<String, dynamic> toJson() {

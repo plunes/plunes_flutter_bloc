@@ -210,7 +210,8 @@ class _DocProfileState extends BaseState<DocProfile> {
                 color: PlunesColors.GREENCOLOR,
                 size: AppConfig.veryExtraLargeFont - AppConfig.extraLargeFont),
             Text(
-              widget.rating ?? PlunesStrings.NA,
+              _profileResponse?.user?.rating?.toStringAsFixed(1) ??
+                  PlunesStrings.NA,
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontSize: AppConfig.mediumFont),

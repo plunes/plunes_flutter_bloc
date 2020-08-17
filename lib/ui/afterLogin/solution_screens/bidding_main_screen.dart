@@ -363,7 +363,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                       isRounded: true,
                                       focusNode: _focusNode,
                                       hintText: plunesStrings.searchHint),
-                                  title: PlunesStrings.searchFacilities,
+                                  title: plunesStrings.search,
                                   description: PlunesStrings.searchDesc),
                             ),
                           ),

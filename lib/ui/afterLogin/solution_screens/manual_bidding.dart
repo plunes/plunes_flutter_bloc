@@ -44,10 +44,12 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   User _userObj;
   UserBloc _userBloc;
   String _specialitySelectedId;
+  bool _scrollParent = false;
 
   @override
   void initState() {
     _isProcessing = false;
+    _scrollParent = false;
     _userObj = UserManager().getUserDetails();
     _userBloc = UserBloc();
     if (CommonMethods.catalogueLists == null ||
@@ -331,10 +333,10 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   Widget _showResultsFromBackend(AsyncSnapshot<RequestState> snapShot) {
     return Container(
         constraints: BoxConstraints(
-            minHeight: AppConfig.verticalBlockSize * 30,
+            minHeight: AppConfig.verticalBlockSize * 25,
             minWidth: double.infinity,
             maxWidth: double.infinity,
-            maxHeight: AppConfig.verticalBlockSize * 65),
+            maxHeight: AppConfig.verticalBlockSize * 55),
         margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
         child: Column(
           children: <Widget>[
@@ -364,28 +366,40 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                       scrollState.metrics.extentAfter == 0 &&
                       !_endReached) {
                     _getMoreFacilities();
+                  } else if (scrollState is OverscrollNotification) {
+                    _scrollParent = true;
+                    _setState();
+                    Future.delayed(Duration(seconds: 1)).then((value) {
+                      _scrollParent = false;
+                      _setState();
+                    });
                   }
                   return;
                 },
-                child: ListView.builder(
-                  padding: null,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.only(
-                          bottom: (_catalogues != null &&
-                                  _catalogues.isNotEmpty &&
-                                  (index == _catalogues.length - 1))
-                              ? AppConfig.verticalBlockSize * 16
-                              : 0),
-                      child: CustomWidgets().getMoreFacilityWidget(
-                          _catalogues, index,
-                          onTap: () => _addRemoveFacilities(_catalogues[index],
-                              shouldAdd: true),
-                          onProfileTap: () => _viewProfile(_catalogues[index])),
-                    );
-                  },
-                  shrinkWrap: true,
-                  itemCount: _catalogues?.length ?? 0,
+                child: IgnorePointer(
+                  ignoring: _scrollParent,
+                  child: ListView.builder(
+                    padding: null,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.only(
+                            bottom: (_catalogues != null &&
+                                    _catalogues.isNotEmpty &&
+                                    (index == _catalogues.length - 1))
+                                ? AppConfig.verticalBlockSize * 16
+                                : 0),
+                        child: CustomWidgets().getMoreFacilityWidget(
+                            _catalogues, index,
+                            onTap: () => _addRemoveFacilities(
+                                _catalogues[index],
+                                shouldAdd: true),
+                            onProfileTap: () =>
+                                _viewProfile(_catalogues[index])),
+                      );
+                    },
+                    shrinkWrap: true,
+                    itemCount: _catalogues?.length ?? 0,
+                  ),
                 ),
               ),
             ),
@@ -522,45 +536,75 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   Widget _getSubmitButton() {
-    return StreamBuilder<Object>(
-        stream: _queryStreamController.stream,
-        builder: (context, snapshot) {
-          return Container(
-            child: StreamBuilder<Object>(
-                stream: _selectUnselectController.stream,
-                builder: (context, snapshot) {
-                  if (_textEditingController != null &&
-                      _textEditingController.text.trim().isNotEmpty &&
-                      _selectedItemList != null &&
-                      _selectedItemList.isNotEmpty) {
-                    return InkWell(
-                      onTap: () {
-                        _searchSolutionBloc.saveManualBiddingData(
-                            _textEditingController.text.trim(),
-                            _selectedItemList);
-                        return;
-                      },
-                      child: Container(
-                        color:
-                            Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-                        padding: EdgeInsets.all(10),
-                        child: Center(
-                          child: Text(
-                            plunesStrings.submit,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: PlunesColors.SPARKLINGGREEN,
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal),
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                  return Container();
-                }),
-          );
-        });
+    return InkWell(
+      onTap: () {
+        if (_textEditingController.text == null ||
+            _textEditingController.text.trim().isEmpty) {
+          _showInSnackBar(
+              PlunesStrings.enterProcedureAndTestDetailsToReceiveBids);
+          return;
+        } else if (_selectedItemList == null || _selectedItemList.isEmpty) {
+          _showInSnackBar(PlunesStrings.selectFacilityToReceiveBid);
+          return;
+        }
+        _searchSolutionBloc.saveManualBiddingData(
+            _textEditingController.text.trim(), _selectedItemList);
+        return;
+      },
+      child: Container(
+        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+        padding: EdgeInsets.all(10),
+        child: Center(
+          child: Text(
+            plunesStrings.submit,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: PlunesColors.SPARKLINGGREEN,
+                fontSize: 16,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+      ),
+    );
+//    return StreamBuilder<Object>(
+//        stream: _queryStreamController.stream,
+//        builder: (context, snapshot) {
+//          return Container(
+//            child: StreamBuilder<Object>(
+//                stream: _selectUnselectController.stream,
+//                builder: (context, snapshot) {
+//                  if (_textEditingController != null &&
+//                      _textEditingController.text.trim().isNotEmpty &&
+//                      _selectedItemList != null &&
+//                      _selectedItemList.isNotEmpty) {
+//                    return InkWell(
+//                      onTap: () {
+//                        _searchSolutionBloc.saveManualBiddingData(
+//                            _textEditingController.text.trim(),
+//                            _selectedItemList);
+//                        return;
+//                      },
+//                      child: Container(
+//                        color:
+//                            Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+//                        padding: EdgeInsets.all(10),
+//                        child: Center(
+//                          child: Text(
+//                            plunesStrings.submit,
+//                            textAlign: TextAlign.center,
+//                            style: TextStyle(
+//                                color: PlunesColors.SPARKLINGGREEN,
+//                                fontSize: 16,
+//                                fontWeight: FontWeight.normal),
+//                          ),
+//                        ),
+//                      ),
+//                    );
+//                  }
+//                  return Container();
+//                }),
+//          );
+//        });
   }
 
   _getLocation() {
