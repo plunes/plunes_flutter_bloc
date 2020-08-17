@@ -45,9 +45,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   UserBloc _userBloc;
   String _specialitySelectedId;
   bool _scrollParent = false;
+  ScrollController _scrollController;
 
   @override
   void initState() {
+    _scrollController = ScrollController();
     _isProcessing = false;
     _scrollParent = false;
     _userObj = UserManager().getUserDetails();
@@ -171,90 +173,97 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 4),
         child: Stack(
           children: <Widget>[
-            ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                _getLocationField(),
-                StreamBuilder<Object>(
-                    stream: _searchSolutionBloc.getManualBiddingStream(),
-                    builder: (context, snapshot) {
-                      return _getSpecialityDropDown();
-                    }),
-                Padding(
-                  padding:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
-                  child: _getGreenDash(),
-                ),
-                _getTextFiledWidget(),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 2),
-                  child: _getGreenDash(),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                    left: AppConfig.verticalBlockSize * 3,
-                    right: AppConfig.verticalBlockSize * 3,
-                    bottom: AppConfig.verticalBlockSize * 1.5,
+            Scrollbar(
+              isAlwaysShown: false,
+              controller: _scrollController,
+              child: ListView(
+                shrinkWrap: true,
+                controller: _scrollController,
+                children: <Widget>[
+                  _getLocationField(),
+                  StreamBuilder<Object>(
+                      stream: _searchSolutionBloc.getManualBiddingStream(),
+                      builder: (context, snapshot) {
+                        return _getSpecialityDropDown();
+                      }),
+                  Padding(
+                    padding:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                    child: _getGreenDash(),
                   ),
-                  child: Center(
-                    child: Text(
-                      PlunesStrings.chooseUptoText,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 18),
+                  _getTextFiledWidget(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 2),
+                    child: _getGreenDash(),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: AppConfig.verticalBlockSize * 3,
+                      right: AppConfig.verticalBlockSize * 3,
+                      bottom: AppConfig.verticalBlockSize * 1.5,
+                    ),
+                    child: Center(
+                      child: Text(
+                        PlunesStrings.chooseUptoText,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 18),
+                      ),
                     ),
                   ),
-                ),
-                StreamBuilder<Object>(
-                    stream: _streamController.stream,
-                    builder: (context, snapshot) {
-                      return _getSearchBar();
-                    }),
-                _getSelectedItems(),
-                StreamBuilder<RequestState>(
-                    stream: _searchSolutionBloc.getManualBiddingStream(),
-                    initialData: (_catalogues == null || _catalogues.isEmpty)
-                        ? RequestInProgress()
-                        : null,
-                    builder: (context, snapShot) {
-                      if (snapShot.data is RequestSuccess) {
-                        RequestSuccess _requestSuccessObject = snapShot.data;
-                        if (_requestSuccessObject.requestCode ==
-                            SearchSolutionBloc.initialIndex) {
-                          pageIndex = SearchSolutionBloc.initialIndex;
-                          _catalogues = [];
-                        }
-                        if (_requestSuccessObject.requestCode !=
-                                SearchSolutionBloc.initialIndex &&
-                            _requestSuccessObject.response.isEmpty) {
-                          _endReached = true;
-                        } else {
-                          _endReached = false;
-                          Set _allItems = _catalogues.toSet();
-                          _allItems.addAll(_requestSuccessObject.response);
-                          _catalogues = _allItems.toList(growable: true);
-                        }
-                        _selectedItemList.forEach((selectedItem) {
-                          if (_catalogues.contains(selectedItem)) {
-                            _catalogues.remove(selectedItem);
+                  StreamBuilder<Object>(
+                      stream: _streamController.stream,
+                      builder: (context, snapshot) {
+                        return _getSearchBar();
+                      }),
+                  _getSelectedItems(),
+                  StreamBuilder<RequestState>(
+                      stream: _searchSolutionBloc.getManualBiddingStream(),
+                      initialData: (_catalogues == null || _catalogues.isEmpty)
+                          ? RequestInProgress()
+                          : null,
+                      builder: (context, snapShot) {
+                        if (snapShot.data is RequestSuccess) {
+                          RequestSuccess _requestSuccessObject = snapShot.data;
+                          if (_requestSuccessObject.requestCode ==
+                              SearchSolutionBloc.initialIndex) {
+                            pageIndex = SearchSolutionBloc.initialIndex;
+                            _catalogues = [];
                           }
-                        });
-                        pageIndex++;
-                        _searchSolutionBloc.addStateInManualBiddingStream(null);
-                      } else if (snapShot.data is RequestFailed) {
-                        RequestFailed _requestFailed = snapShot.data;
-                        pageIndex = SearchSolutionBloc.initialIndex;
-                        _failureCause = _requestFailed.failureCause;
-                        _searchSolutionBloc.addStateInManualBiddingStream(null);
-                      }
-                      return (_catalogues == null || _catalogues.isEmpty)
-                          ? _getDefaultWidget(snapShot)
-                          : _showResultsFromBackend(snapShot);
-                    }),
-              ],
+                          if (_requestSuccessObject.requestCode !=
+                                  SearchSolutionBloc.initialIndex &&
+                              _requestSuccessObject.response.isEmpty) {
+                            _endReached = true;
+                          } else {
+                            _endReached = false;
+                            Set _allItems = _catalogues.toSet();
+                            _allItems.addAll(_requestSuccessObject.response);
+                            _catalogues = _allItems.toList(growable: true);
+                          }
+                          _selectedItemList.forEach((selectedItem) {
+                            if (_catalogues.contains(selectedItem)) {
+                              _catalogues.remove(selectedItem);
+                            }
+                          });
+                          pageIndex++;
+                          _searchSolutionBloc
+                              .addStateInManualBiddingStream(null);
+                        } else if (snapShot.data is RequestFailed) {
+                          RequestFailed _requestFailed = snapShot.data;
+                          pageIndex = SearchSolutionBloc.initialIndex;
+                          _failureCause = _requestFailed.failureCause;
+                          _searchSolutionBloc
+                              .addStateInManualBiddingStream(null);
+                        }
+                        return (_catalogues == null || _catalogues.isEmpty)
+                            ? _getDefaultWidget(snapShot)
+                            : _showResultsFromBackend(snapShot);
+                      }),
+                ],
+              ),
             ),
             Positioned(
               child: _getSubmitButton(),
@@ -274,11 +283,6 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       child: Column(
         children: <Widget>[
           Container(
-//            constraints: BoxConstraints(
-//                minHeight: AppConfig.verticalBlockSize * .1,
-//                maxHeight: AppConfig.verticalBlockSize * 44,
-//                minWidth: double.infinity,
-//                maxWidth: double.infinity),
             child: Row(
               children: <Widget>[
                 Flexible(
@@ -336,7 +340,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             minHeight: AppConfig.verticalBlockSize * 25,
             minWidth: double.infinity,
             maxWidth: double.infinity,
-            maxHeight: AppConfig.verticalBlockSize * 55),
+            maxHeight: AppConfig.verticalBlockSize * 75),
         margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
         child: Column(
           children: <Widget>[
@@ -437,10 +441,6 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       _showInSnackBar("Can't select more than 5 facilities");
       return;
     }
-//    if (_selectedItemList.contains(facility) && shouldAdd) {
-//      _showInSnackBar("Facility already selected");
-//      return;
-//    }
     if (_selectedItemList.contains(facility)) {
       _selectedItemList.remove(facility);
       if (_catalogues != null &&
@@ -505,7 +505,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                         isSelected: true,
                         onTap: () =>
                             _addRemoveFacilities(_selectedItemList[index]),
-                        onProfileTap: () => _viewProfile(_catalogues[index]));
+                        onProfileTap: () =>
+                            _viewProfile(_selectedItemList[index]));
                   },
                   shrinkWrap: true,
                   itemCount: _selectedItemList?.length ?? 0,

@@ -256,7 +256,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
             minHeight: AppConfig.verticalBlockSize * 25,
             minWidth: double.infinity,
             maxWidth: double.infinity,
-            maxHeight: AppConfig.verticalBlockSize * 55),
+            maxHeight: AppConfig.verticalBlockSize * 75),
         child: Column(
           children: <Widget>[
             StreamBuilder<Object>(
@@ -411,7 +411,8 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                         isSelected: true,
                         onTap: () =>
                             _addRemoveFacilities(_selectedItemList[index]),
-                        onProfileTap: () => _viewProfile(_catalogues[index]));
+                        onProfileTap: () =>
+                            _viewProfile(_selectedItemList[index]));
                   },
                   shrinkWrap: true,
                   itemCount: _selectedItemList?.length ?? 0,

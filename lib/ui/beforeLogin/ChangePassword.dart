@@ -46,6 +46,7 @@ class _ChangePasswordState extends State<ChangePassword>
   var globalHeight, globalWidth;
   bool progress = false;
   UserBloc _userBloc;
+  bool _currentPassVisible, _newPassVisible, _rePassVisible;
 
   @override
   void dispose() {
@@ -56,6 +57,9 @@ class _ChangePasswordState extends State<ChangePassword>
   @override
   void initState() {
     _userBloc = UserBloc();
+    _currentPassVisible = true;
+    _newPassVisible = _currentPassVisible;
+    _rePassVisible = _newPassVisible;
     getSharedPreferenceData();
     super.initState();
   }
@@ -81,9 +85,9 @@ class _ChangePasswordState extends State<ChangePassword>
 
   Widget getBodyView() {
     return Container(
-        padding:
-            EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 12),
-        margin: EdgeInsets.only(left: 25, right: 25),
+//        padding:
+//            EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 12),
+        margin: EdgeInsets.only(left: 20, right: 20),
         child: Column(
           children: <Widget>[
             Expanded(
@@ -109,7 +113,8 @@ class _ChangePasswordState extends State<ChangePassword>
                           TextInputType.text,
                           TextCapitalization.none,
                           _isValidOldPassword,
-                          plunesStrings.errorMsgPassword)
+                          plunesStrings.errorMsgPassword,
+                          obscureText: _currentPassVisible)
                       : Container(),
                   widget.getSpacer(0.0,
                       widget.from != plunesStrings.createPassword ? 20.0 : 0.0),
@@ -119,7 +124,8 @@ class _ChangePasswordState extends State<ChangePassword>
                       TextInputType.text,
                       TextCapitalization.none,
                       _isValidPassword,
-                      plunesStrings.errorMsgPassword),
+                      plunesStrings.errorMsgPassword,
+                      obscureText: _newPassVisible),
                   widget.getSpacer(0.0, 20.0),
                   createTextField(
                       newPasswordController,
@@ -127,7 +133,8 @@ class _ChangePasswordState extends State<ChangePassword>
                       TextInputType.text,
                       TextCapitalization.none,
                       _isValidNewPassword,
-                      plunesStrings.errorMsgPassword),
+                      plunesStrings.errorMsgPassword,
+                      obscureText: _rePassVisible),
                   widget.getSpacer(0.0, 30.0),
                   progress
                       ? SpinKitThreeBounce(
@@ -181,7 +188,8 @@ class _ChangePasswordState extends State<ChangePassword>
       TextInputType inputType,
       TextCapitalization textCapitalization,
       bool fieldFlag,
-      String errorMsg) {
+      String errorMsg,
+      {bool obscureText = false}) {
     return Container(
         padding: EdgeInsets.zero,
         width: MediaQuery.of(context).size.width,
@@ -208,7 +216,7 @@ class _ChangePasswordState extends State<ChangePassword>
                       text.length > 7 ? true : text.length == 0 ? true : false;
               });
             },
-            obscureText: true,
+            obscureText: obscureText,
             focusNode: setFocus(controller),
             textInputAction: controller == newPasswordController
                 ? TextInputAction.done
@@ -218,13 +226,14 @@ class _ChangePasswordState extends State<ChangePassword>
             style: TextStyle(
               fontSize: 15.0,
             ),
-            decoration: widget.myInputBoxDecoration(
+            decoration: myInputBoxDecoration(
                 colorsFile.defaultGreen,
                 colorsFile.lightGrey1,
                 placeHolder,
                 errorMsg,
                 fieldFlag,
-                controller)));
+                controller,
+                isObscureText: obscureText)));
   }
 
   FocusNode setFocus(TextEditingController controller) {
@@ -324,5 +333,50 @@ class _ChangePasswordState extends State<ChangePassword>
 
   void _setState() {
     if (mounted) setState(() {});
+  }
+
+  InputDecoration myInputBoxDecoration(
+      String focusColor,
+      String enableColor,
+      String label,
+      String errorText,
+      bool flag,
+      TextEditingController passwordController,
+      {bool isObscureText = false}) {
+    return InputDecoration(
+      labelText: label,
+      errorText: flag ? null : errorText,
+      counterText: '',
+      hintText: "",
+      suffixIcon: InkWell(
+        onTap: () {
+          setState(() {
+            if (passwordController == oldPasswordController) {
+              _currentPassVisible = !_currentPassVisible;
+            } else if (passwordController == this.passwordController) {
+              _newPassVisible = !_newPassVisible;
+            } else if (passwordController == newPasswordController) {
+              _rePassVisible = !_rePassVisible;
+            }
+          });
+        },
+        child: isObscureText
+            ? Icon(
+                Icons.visibility_off,
+                color: PlunesColors.GREYCOLOR,
+              )
+            : Icon(Icons.visibility, color: PlunesColors.BLACKCOLOR),
+      ),
+//      contentPadding: EdgeInsets.only(
+//          left: 10,
+//          right: (passwordController ==
+//                  (passwordController != null
+//                      ? passwordController
+//                      : controller))
+//              ? (controller != null) ? 40 : 10
+//              : 10,
+//          top: 5,
+//          bottom: 5),
+    );
   }
 }

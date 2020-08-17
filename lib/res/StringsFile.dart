@@ -740,7 +740,7 @@ class PlunesStrings {
 
   get coupons => 'Coupons';
 
-  get copyToClipboard => 'Copy to clipboard';
+  get copyToClipboard => 'Copied to clipboard';
 
   get inviteFriends => 'Invite Friends';
 

@@ -654,11 +654,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                         _isPaymentCompleted())
                     ? Expanded(child: Container())
                     : Container(),
-                (appointmentModel.refundStatus != null &&
-                        appointmentModel.refundStatus ==
-                            AppointmentModel.notRequested)
-                    ? InkWell(
-                        onTap: () {
+                (appointmentModel.paymentStatus != null &&
+                        appointmentModel.paymentStatus.isNotEmpty &&
+                    !(appointmentModel.paymentStatus.first.status))
+                    ? Container()
+                    : (appointmentModel.refundStatus != null &&
+                            appointmentModel.refundStatus ==
+                                AppointmentModel.notRequested)
+                        ? InkWell(
+                            onTap: () {
 //                          if (appointmentModel != null &&
 //                              appointmentModel.appointmentTime != null &&
 //                              DateTime.fromMillisecondsSinceEpoch(int.parse(
@@ -667,33 +671,34 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 //                            _showSnackBar(PlunesStrings.unableToRefund);
 //                            return;
 //                          }
-                          showDialog(
-                              context: context,
-                              builder: (context) => CustomWidgets().refundPopup(
-                                  _bookingBloc, appointmentModel)).then(
-                              (value) {
-                            _bookingBloc.addStateInRefundProvider(null);
-                            if (widget.getAppointment != null) {
-                              widget.getAppointment();
-                            }
-                          });
-                        },
-                        onDoubleTap: () {},
-                        child: Text(
-                          PlunesStrings.refund,
-                          style: TextStyle(
-                            fontSize: AppConfig.smallFont,
-                            color: Colors.black54,
+                              showDialog(
+                                      context: context,
+                                      builder: (context) => CustomWidgets()
+                                          .refundPopup(
+                                              _bookingBloc, appointmentModel))
+                                  .then((value) {
+                                _bookingBloc.addStateInRefundProvider(null);
+                                if (widget.getAppointment != null) {
+                                  widget.getAppointment();
+                                }
+                              });
+                            },
+                            onDoubleTap: () {},
+                            child: Text(
+                              PlunesStrings.refund,
+                              style: TextStyle(
+                                fontSize: AppConfig.smallFont,
+                                color: Colors.black54,
 //                              decoration: TextDecoration.underline
-                          ),
-                        ),
-                      )
-                    : Text(
-                        'Refund ${appointmentModel.refundStatus}',
-                        style: TextStyle(
-                            fontSize: AppConfig.smallFont,
-                            color: PlunesColors.GREENCOLOR),
-                      )
+                              ),
+                            ),
+                          )
+                        : Text(
+                            'Refund ${appointmentModel.refundStatus}',
+                            style: TextStyle(
+                                fontSize: AppConfig.smallFont,
+                                color: PlunesColors.GREENCOLOR),
+                          )
               ],
             ),
           ),

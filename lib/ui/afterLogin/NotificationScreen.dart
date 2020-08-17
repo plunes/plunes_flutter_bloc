@@ -118,7 +118,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   Widget buildList(final AllNotificationsPost items) {
     return ListView.builder(
-      padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+      padding: EdgeInsets.all(0),
       itemCount: items.posts.length,
       itemBuilder: (context, index) {
         return rowLayout(items.posts[index]);
@@ -133,10 +133,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
         children: <Widget>[
           Container(
             color:
-            (result.hasSeen ?? true) ? null : PlunesColors.LIGHTGREENCOLOR,
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 3),
-            padding: EdgeInsets.all(8.0),
+                (result.hasSeen ?? true) ? null : PlunesColors.LIGHTGREENCOLOR,
+            padding: EdgeInsets.all(10.0),
             child: Column(
               children: <Widget>[
                 Row(
@@ -200,8 +198,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 3),
             width: double.infinity,
             height: 0.5,
             color: PlunesColors.GREYCOLOR,
