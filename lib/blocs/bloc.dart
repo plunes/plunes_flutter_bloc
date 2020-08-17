@@ -299,6 +299,7 @@ class Bloc {
     if (_preferenceFetcher != null && !_preferenceFetcher.isClosed) {
       _preferenceFetcher.sink.add(data);
     }
+    preferences.setPreferencesString(Constants.REGION, null);
     if (_from != null) {
       preferences.setPreferencesBoolean(Constants.NOTIFICATION_ENABLED, true);
       UserManager().setDeviceToken(Constants.DEVICE_TOKEN);

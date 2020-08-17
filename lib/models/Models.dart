@@ -80,7 +80,6 @@ class _Services {
 class LoginPost {
   final bool success;
   final String message;
-
   final String token;
   User user;
 

@@ -797,13 +797,13 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: <Widget>[
         Flexible(
-          child: InkWell(
-            onTap: () => _getLocation(),
-            child: Container(
-              padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.verticalBlockSize * 2,
-                  vertical: AppConfig.horizontalBlockSize * 1.5),
+          child: Container(
+            padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.verticalBlockSize * 2,
+                vertical: AppConfig.horizontalBlockSize * 1.5),
+            child: InkWell(
+              onTap: () => _getLocation(),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.end,

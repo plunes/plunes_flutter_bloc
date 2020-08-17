@@ -323,6 +323,8 @@ class PlunesStrings {
       "Please enter Procedure & Test details to receive competitive bids from hospitals.";
   static const String selectFacilityToReceiveBid =
       "Please select facilities to receive competitive bids from hospitals.";
+  static const String refresh = "Refresh";
+  static const String startNegotiating = "Start Negotiating";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
@@ -734,7 +736,7 @@ class PlunesStrings {
 
   get addNotes => 'Add Notes';
 
-  get noRecordsFound => 'No Record(s) Found';
+  get noRecordsFound => 'No Notifications yet';
 
   get referAndEarn => 'Refer & Earn';
 

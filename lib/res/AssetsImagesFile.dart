@@ -68,6 +68,8 @@ class PlunesImages {
       "assets/images/noActionableInsightIcon.png";
   static const String noRealTimeInsightIcon =
       "assets/images/noRealTimeInsightIcon.png";
+  static const String notification_empty_screen_icon =
+      "assets/images/notification_empty_screen_icon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

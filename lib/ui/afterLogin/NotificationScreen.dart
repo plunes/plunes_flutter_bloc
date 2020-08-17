@@ -13,6 +13,7 @@ import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -97,13 +98,100 @@ class _NotificationScreenState extends State<NotificationScreen> {
               RequestFailed _failedObj = snapshot.data;
               _failedMessage = _failedObj?.failureCause;
             }
+            if (_failedMessage != null && _failedMessage.isNotEmpty) {
+              return Container(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Image.asset(
+                      PlunesImages.notification_empty_screen_icon,
+                      height: AppConfig.verticalBlockSize * 22,
+                      width: AppConfig.horizontalBlockSize * 42,
+                      alignment: Alignment.center,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.5,
+                          bottom: AppConfig.verticalBlockSize * 3.5),
+                      child: Text(
+                          _failedMessage ?? plunesStrings.noRecordsFound,
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              fontWeight: FontWeight.w600)),
+                    ),
+                    FittedBox(
+                      child: InkWell(
+                        onTap: () {
+                          _failedMessage = null;
+                          _getNotifications();
+                          return;
+                        },
+                        child: CustomWidgets().getRoundedButton(
+                            PlunesStrings.refresh,
+                            AppConfig.horizontalBlockSize * 6,
+                            PlunesColors.GREENCOLOR,
+                            AppConfig.horizontalBlockSize * 3,
+                            AppConfig.verticalBlockSize * 1,
+                            PlunesColors.WHITECOLOR),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
             if (_items != null) {
               if (_items == null ||
                   _items.posts == null ||
                   _items.posts.length == 0) {
-                return Center(
-                  child: Text(_failedMessage ?? plunesStrings.noRecordsFound,
-                      style: TextStyle(fontSize: AppConfig.smallFont)),
+                return Container(
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        PlunesImages.notification_empty_screen_icon,
+                        height: AppConfig.verticalBlockSize * 22,
+                        width: AppConfig.horizontalBlockSize * 42,
+                        alignment: Alignment.center,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 1.5,
+                            bottom: AppConfig.verticalBlockSize * 3.5),
+                        child: Text(
+                            _failedMessage ?? plunesStrings.noRecordsFound,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                fontWeight: FontWeight.w600)),
+                      ),
+                      UserManager().getUserDetails().userType == Constants.user
+                          ? FittedBox(
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => HomeScreen(
+                                              screenNo:
+                                                  Constants.homeScreenNumber)),
+                                      (_) => false);
+                                  return;
+                                },
+                                child: CustomWidgets().getRoundedButton(
+                                    PlunesStrings.startNegotiating,
+                                    AppConfig.horizontalBlockSize * 6,
+                                    PlunesColors.GREENCOLOR,
+                                    AppConfig.horizontalBlockSize * 3.2,
+                                    AppConfig.verticalBlockSize * 1,
+                                    PlunesColors.WHITECOLOR),
+                              ),
+                            )
+                          : Container()
+                    ],
+                  ),
                 );
               } else {
                 return buildList(_items);

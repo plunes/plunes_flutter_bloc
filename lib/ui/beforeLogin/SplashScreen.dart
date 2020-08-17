@@ -15,6 +15,7 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -63,10 +64,12 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
       LocationUtil().getCurrentLatLong(context);
       if (preferences.getPreferenceString(Constants.ACCESS_TOKEN) != null &&
           preferences.getPreferenceString(Constants.ACCESS_TOKEN).length > 0) {
-        await _getCurrentLocation();
+        await UserManager().getUserProfile(UserManager().getUserDetails().uid,
+            shouldSaveInfo: true);
+//        await _getCurrentLocation();
       }
     } catch (e) {}
-    await Future.delayed(Duration(milliseconds: 100));
+    await Future.delayed(Duration(milliseconds: 50));
     _userBloc.getSpeciality();
     if (preferences.getPreferenceString(Constants.ACCESS_TOKEN) != null &&
         preferences.getPreferenceString(Constants.ACCESS_TOKEN).length > 0 &&

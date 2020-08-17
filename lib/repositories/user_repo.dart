@@ -147,7 +147,7 @@ class UserManager {
   }
 
   Future<RequestState> getUserProfile(String userId,
-      {bool shouldSaveInfo}) async {
+      {bool shouldSaveInfo = false}) async {
     var result = await DioRequester().requestMethod(
         url: urls.userBaseUrl,
         headerIncluded: true,
@@ -156,7 +156,14 @@ class UserManager {
     if (result.isRequestSucceed) {
       LoginPost _loginPost = LoginPost.fromJson(result.response.data);
 //      print(_loginPost == null);
-      if (shouldSaveInfo) {}
+      if (shouldSaveInfo) {
+        if (_loginPost != null &&
+            (_loginPost.token == null || _loginPost.token.trim().isEmpty)) {
+          _loginPost = LoginPost(
+              token: getUserDetails().accessToken, user: _loginPost.user);
+        }
+        Bloc().saveDataInPreferences(_loginPost, null, null);
+      }
       return RequestSuccess(response: _loginPost);
     } else {
       return RequestFailed(failureCause: result.failureCause);
