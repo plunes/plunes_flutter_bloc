@@ -213,10 +213,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                       appointmentModel.lat.isEmpty ||
                                       appointmentModel?.long == null ||
                                       appointmentModel.long.isEmpty)
-                                  ? widget.showInSnackBar(
-                                      PlunesStrings.locationNotAvailable,
-                                      PlunesColors.BLACKCOLOR,
-                                      widget.globalKey)
+                                  ? _showSnackBar(
+                                      PlunesStrings.locationNotAvailable)
                                   : LauncherUtil.openMap(
                                       double.tryParse(appointmentModel.lat),
                                       double.tryParse(appointmentModel.long));
@@ -397,11 +395,13 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               requestFailed.requestCode == index) {
                             Future.delayed(Duration(milliseconds: 20))
                                 .then((value) async {
-                              widget.showInSnackBar(
-                                  requestFailed.failureCause ??
-                                      PlunesStrings.cancelFailedMessage,
-                                  PlunesColors.BLACKCOLOR,
-                                  widget.globalKey);
+                              _showSnackBar(requestFailed.failureCause ??
+                                  PlunesStrings.cancelFailedMessage);
+//                              widget.showInSnackBar(
+//                                  requestFailed.failureCause ??
+//                                      PlunesStrings.cancelFailedMessage,
+//                                  PlunesColors.BLACKCOLOR,
+//                                  widget.globalKey);
                             });
                             _bookingBloc.addStateInCancelProvider(null);
                           }
@@ -573,17 +573,19 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: (appointmentModel.bookingStatus != null &&
                       appointmentModel.bookingStatus ==
-                          AppointmentModel.confirmedStatus &&
-                      _isPaymentCompleted())
-                  ? MainAxisAlignment.center
+                          AppointmentModel.confirmedStatus)
+                  ? MainAxisAlignment.spaceBetween
                   : MainAxisAlignment.end,
               children: <Widget>[
                 (appointmentModel.bookingStatus != null &&
                         appointmentModel.bookingStatus ==
-                            AppointmentModel.confirmedStatus &&
-                        _isPaymentCompleted())
+                            AppointmentModel.confirmedStatus)
                     ? InkWell(
                         onTap: () {
+                          if (!_isPaymentCompleted()) {
+                            _showSnackBar(PlunesStrings.pleasePayFull);
+                            return;
+                          }
                           _bookingBloc.requestInvoice(
                               appointmentModel.bookingId, index);
                         },
@@ -628,12 +630,14 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                     requestFailed.requestCode == index) {
                                   Future.delayed(Duration(milliseconds: 20))
                                       .then((value) async {
-                                    widget.showInSnackBar(
-                                        requestFailed.failureCause ??
-                                            PlunesStrings
-                                                .unableToGenerateInvoice,
-                                        PlunesColors.BLACKCOLOR,
-                                        widget.globalKey);
+                                    _showSnackBar(requestFailed.failureCause ??
+                                        PlunesStrings.unableToGenerateInvoice);
+//                                    widget.showInSnackBar(
+//                                        requestFailed.failureCause ??
+//                                            PlunesStrings
+//                                                .unableToGenerateInvoice,
+//                                        PlunesColors.BLACKCOLOR,
+//                                        widget.globalKey);
                                   });
                                   _bookingBloc
                                       .addStateInRequestInvoiceProvider(null);
@@ -656,7 +660,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                     : Container(),
                 (appointmentModel.paymentStatus != null &&
                         appointmentModel.paymentStatus.isNotEmpty &&
-                    !(appointmentModel.paymentStatus.first.status))
+                        !(appointmentModel.paymentStatus.first.status))
                     ? Container()
                     : (appointmentModel.refundStatus != null &&
                             appointmentModel.refundStatus ==
@@ -894,11 +898,13 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               referenceID: _initPaymentResponse.referenceId))
                   .then((value) => widget.getAppointment());
             } else if (val.toString().contains("fail")) {
-              widget.showInSnackBar(
-                  "Payment Failed", PlunesColors.BLACKCOLOR, widget.globalKey);
+              _showSnackBar("Payment Failed");
+//              widget.showInSnackBar(
+//                  "Payment Failed", PlunesColors.BLACKCOLOR, widget.globalKey);
             } else if (val.toString().contains("cancel")) {
-              widget.showInSnackBar("Payment Cancelled",
-                  PlunesColors.BLACKCOLOR, widget.globalKey);
+              _showSnackBar("Payment Cancelled");
+//              widget.showInSnackBar("Payment Cancelled",
+//                  PlunesColors.BLACKCOLOR, widget.globalKey);
             }
           });
         }
@@ -928,7 +934,13 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   }
 
   _showSnackBar(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, widget.globalKey);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets().getInformativePopup(
+              globalKey: widget.globalKey, message: message);
+        });
+    //widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, widget.globalKey);
   }
 
   bool _isPaymentCompleted() {

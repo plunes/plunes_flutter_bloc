@@ -70,6 +70,10 @@ class PlunesImages {
       "assets/images/noRealTimeInsightIcon.png";
   static const String notification_empty_screen_icon =
       "assets/images/notification_empty_screen_icon.png";
+  static const String enterTestAndProcedureDetailsImage =
+      "assets/images/enterTestAndProcedureDetailsImage.png";
+  static const String testAndProcedureQuerySubmittedImage =
+      "assets/images/testAndProcedureQuerySubmittedImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

@@ -318,6 +318,8 @@ flutter:
     - assets/images/BusinessPerformance.png
     - assets/images/CenterIntegration.png
     - assets/images/notification_empty_screen_icon.png
+    - assets/images/enterTestAndProcedureDetailsImage.png
+    - assets/images/testAndProcedureQuerySubmittedImage.png
 
 
 

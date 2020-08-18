@@ -76,7 +76,7 @@ class _ChangePasswordState extends State<ChangePassword>
             widget.from == plunesStrings.createPassword
                 ? plunesStrings.createPassword
                 : plunesStrings.changePassword,
-            false),
+            true),
         backgroundColor: Colors.white,
         body: GestureDetector(
             onTap: () => CommonMethods.hideSoftKeyboard(),

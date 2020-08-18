@@ -325,6 +325,7 @@ class PlunesStrings {
       "Please select facilities to receive competitive bids from hospitals.";
   static const String refresh = "Refresh";
   static const String startNegotiating = "Start Negotiating";
+  static String pleasePayFull = "Please pay due amount to get Invoice";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

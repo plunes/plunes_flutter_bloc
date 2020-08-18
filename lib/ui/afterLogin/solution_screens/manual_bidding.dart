@@ -124,41 +124,12 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
               _specialityFailureCause.isNotEmpty) {
             return CustomWidgets().errorWidget(_specialityFailureCause);
           }
-          return _getSubmitBody();
+          return _getBody();
         }),
       ),
       top: false,
       bottom: false,
     );
-  }
-
-  Widget _getSubmitBody() {
-    return StreamBuilder<RequestState>(
-        stream: _searchSolutionBloc.getManualBiddingAdditionStream(),
-        builder: (context, snapshot) {
-          if (snapshot.data is RequestInProgress) {
-            return CustomWidgets().getProgressIndicator();
-          } else if (snapshot.data is RequestSuccess) {
-            Future.delayed(Duration(milliseconds: 10)).then((value) {
-              showDialog(
-                  context: context,
-                  builder: (context) {
-                    return CustomWidgets()
-                        .getManualBiddingSuccessWidget(scaffoldKey);
-                  }).then((value) {
-                Navigator.pop(context);
-              });
-            });
-          } else if (snapshot.data is RequestFailed) {
-            RequestFailed requestFailed = snapshot.data;
-            Future.delayed(Duration(milliseconds: 10)).then((value) {
-              _showInSnackBar(requestFailed?.failureCause ??
-                  plunesStrings.somethingWentWrong);
-            });
-            _searchSolutionBloc.addStateInManualBiddingAdditionStream(null);
-          }
-          return _getBody();
-        });
   }
 
   Widget _getBody() {
@@ -186,19 +157,20 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                       builder: (context, snapshot) {
                         return _getSpecialityDropDown();
                       }),
-                  Padding(
-                    padding:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
-                    child: _getGreenDash(),
-                  ),
-                  _getTextFiledWidget(),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 2),
-                    child: _getGreenDash(),
-                  ),
+//                  Padding(
+//                    padding:
+//                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+//                    child: _getGreenDash(),
+//                  ),
+//                  _getTextFiledWidget(),
+//                  Padding(
+//                    padding: EdgeInsets.symmetric(
+//                        vertical: AppConfig.verticalBlockSize * 2),
+//                    child: _getGreenDash(),
+//                  ),
                   Container(
                     margin: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 3.5,
                       left: AppConfig.verticalBlockSize * 3,
                       right: AppConfig.verticalBlockSize * 3,
                       bottom: AppConfig.verticalBlockSize * 1.5,
@@ -539,17 +511,22 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   Widget _getSubmitButton() {
     return InkWell(
       onTap: () {
-        if (_textEditingController.text == null ||
-            _textEditingController.text.trim().isEmpty) {
-          _showInSnackBar(
-              PlunesStrings.enterProcedureAndTestDetailsToReceiveBids);
-          return;
-        } else if (_selectedItemList == null || _selectedItemList.isEmpty) {
+        if (_selectedItemList == null || _selectedItemList.isEmpty) {
           _showInSnackBar(PlunesStrings.selectFacilityToReceiveBid);
           return;
         }
-        _searchSolutionBloc.saveManualBiddingData(
-            _textEditingController.text.trim(), _selectedItemList);
+        showDialog(
+                context: context,
+                builder: (context) {
+                  return CustomWidgets().getManualBiddingEnterDetailsPopup(
+                      scaffoldKey, _searchSolutionBloc, _selectedItemList);
+                },
+                barrierDismissible: true)
+            .then((value) {
+          if (value != null && value) {
+            Navigator.pop(context);
+          }
+        });
         return;
       },
       child: Container(
