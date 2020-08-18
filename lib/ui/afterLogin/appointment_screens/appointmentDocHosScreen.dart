@@ -299,11 +299,13 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                 requestFailed.requestCode == index) {
                               Future.delayed(Duration(milliseconds: 20))
                                   .then((value) async {
-                                widget.showInSnackBar(
-                                    requestFailed.failureCause ??
-                                        PlunesStrings.cancelFailedMessage,
-                                    PlunesColors.BLACKCOLOR,
-                                    widget.globalKey);
+                                _showErrorMessage(requestFailed.failureCause ??
+                                    PlunesStrings.cancelFailedMessage);
+//                                widget.showInSnackBar(
+//                                    requestFailed.failureCause ??
+//                                        PlunesStrings.cancelFailedMessage,
+//                                    PlunesColors.BLACKCOLOR,
+//                                    widget.globalKey);
                               });
                               _bookingBloc.addStateInCancelProvider(null);
                             }
@@ -524,7 +526,13 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
   }
 
   _showErrorMessage(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, widget.globalKey);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets().getInformativePopup(
+              globalKey: widget.globalKey, message: message);
+        });
+//    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, widget.globalKey);
   }
 
   _getPaymentData(AppointmentModel appointmentModel) {

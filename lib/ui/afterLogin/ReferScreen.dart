@@ -122,7 +122,9 @@ class _ReferScreenState extends BaseState<ReferScreen> {
             InkWell(
               onTap: () {
                 Clipboard.setData(new ClipboardData(text: _referralCode));
-                CommonMethods.showLongToast(plunesStrings.copyToClipboard);
+                CommonMethods.showLongToast(plunesStrings.copyToClipboard,
+                    centerGravity: false,
+                    bgColor: PlunesColors.LIGHTGREENCOLOR);
               },
               child: Container(
                 color: Color(0xffF9F9F9),
