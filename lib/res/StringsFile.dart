@@ -56,6 +56,11 @@ class PlunesStrings {
 
   /////
   ///Solution strings
+  static const String negotiatingWithSelectedFacility =
+      "We will be negotiating with the selected facilities on your behalf and will get in touch with you soon";
+  static const String thankYou = "Thank You!";
+  static const String thanksForContacting =
+      "Thanks for contacting us!\nWe will be in touch with you shortly";
   static const String usingOlderVersion =
       "You are using an older version of the application, please update to continue using our services.";
   static const String newVersionAvailable = "New Version Available";
@@ -119,7 +124,7 @@ class PlunesStrings {
   static const String closed = "Closed";
   static const String reschedule = "Reschedule";
   static const String requestInvoice = "Request Invoice";
-  static const String refund = "Request Refund";
+  static const String refund = "Refund Requested";
   static const String visitAgain = "Visit Again";
   static const String appointmentScreenError = "Appointment Screen Error";
   static const String paymentStatus = "Payment Status";

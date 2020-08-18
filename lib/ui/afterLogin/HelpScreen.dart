@@ -459,6 +459,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
     var result = await _docHosMainInsightBloc
         .helpDocHosQuery("$title : ${_descriptionController.text.trim()}");
     if (result is RequestSuccess && mounted) {
+      CustomWidgets().helpThankYou(context);
       widget.showInSnackBar(
           plunesStrings.success, PlunesColors.BLACKCOLOR, _scaffoldKey);
     } else if (result is RequestFailed && mounted) {

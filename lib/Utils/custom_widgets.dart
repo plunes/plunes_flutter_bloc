@@ -2147,110 +2147,112 @@ class CustomWidgets {
                 reverse: true,
                 child: Column(
                   children: <Widget>[
-                    Container(
-                      alignment: Alignment.bottomRight,
-                      child: InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                          return;
-                        },
-                        onDoubleTap: () {},
-                        child: Padding(
-                          padding:
-                              EdgeInsets.only(top: 12, right: 12, left: 12),
-                          child: Icon(
-                            Icons.close,
-                            color: PlunesColors.GREYCOLOR,
-                          ),
-                        ),
-                      ),
-                    ),
                     isSuccess
-                        ? Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: AppConfig.horizontalBlockSize * 6,
-                                vertical: AppConfig.verticalBlockSize * 2),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                    height: AppConfig.verticalBlockSize * 15,
-                                    width: AppConfig.horizontalBlockSize * 30,
-                                    child:
-                                        Image.asset(PlunesImages.refundImage)),
-//                                Text(PlunesStrings.thankYouMessage,
-//                                    style: TextStyle(
-//                                        fontSize: 32,
-//                                        fontWeight: FontWeight.w500,
-//                                        color: PlunesColors.BLACKCOLOR)),
-//                                Padding(
-//                                  padding: EdgeInsets.only(
-//                                      ),
-//                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      vertical:
-                                          AppConfig.horizontalBlockSize * 3),
-                                  child: Text(
-                                      PlunesStrings.refundSuccessMessage,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.largeFont,
-                                          fontWeight: FontWeight.w500,
-                                          color: PlunesColors.GREYCOLOR)),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal:
-                                            AppConfig.horizontalBlockSize * 20,
-                                        vertical:
-                                            AppConfig.verticalBlockSize * 1),
-                                    child: InkWell(
-                                      onTap: () {
-                                        Navigator.pop(context);
-                                        return;
-                                      },
-                                      child: CustomWidgets().getRoundedButton(
-                                          plunesStrings.ok,
-                                          AppConfig.horizontalBlockSize * 6,
-                                          PlunesColors.GREENCOLOR,
-                                          AppConfig.horizontalBlockSize * 1,
-                                          AppConfig.verticalBlockSize * 1,
-                                          PlunesColors.WHITECOLOR),
-                                    ))
-                              ],
-                            ),
-                          )
-                        : Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: AppConfig.horizontalBlockSize * 6),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(PlunesStrings.refund,
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: AppConfig.verticalBlockSize * 3,
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 6),
+                                  height: AppConfig.verticalBlockSize * 10,
+                                  child: Image.asset(PlunesImages.refundImage)),
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 5),
+                                child: Text(PlunesStrings.refundSuccessMessage,
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
-                                        fontSize: AppConfig.extraLargeFont,
-                                        fontWeight: FontWeight.w500,
-                                        color: PlunesColors.BLACKCOLOR)),
-                                Container(
-                                    margin: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 2),
-                                    height: AppConfig.verticalBlockSize * 15,
-                                    width: AppConfig.horizontalBlockSize * 35,
-                                    child:
-                                        Image.asset(PlunesImages.refundImage)),
-                                Container(
-                                    padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 2),
-                                    child: Text(
-                                        'Kindly Share the reason for your refund so our team can help you better',
+                                        fontSize: AppConfig.mediumFont,
+                                        color: PlunesColors.GREYCOLOR)),
+                              ),
+                              Container(
+                                height: 0.5,
+                                width: double.infinity,
+                                color: PlunesColors.GREYCOLOR,
+                                margin: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 5),
+                              ),
+                              FlatButton(
+                                  splashColor: PlunesColors.SPARKLINGGREEN
+                                      .withOpacity(.2),
+                                  highlightColor: PlunesColors.SPARKLINGGREEN
+                                      .withOpacity(.2),
+                                  focusColor: PlunesColors.SPARKLINGGREEN
+                                      .withOpacity(.2),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    return;
+                                  },
+                                  child: Container(
+                                      width: double.infinity,
+                                      child: Text(
+                                        'OK',
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
-                                            fontSize: AppConfig.largeFont,
-                                            fontWeight: FontWeight.w500,
-                                            color: PlunesColors.BLACKCOLOR))),
+                                            fontSize: AppConfig.mediumFont,
+                                            color: PlunesColors.SPARKLINGGREEN),
+                                      ))),
+
+//                              Container(
+//                                  margin: EdgeInsets.symmetric(
+//                                      horizontal:
+//                                          AppConfig.horizontalBlockSize * 20,
+//                                      vertical:
+//                                          AppConfig.verticalBlockSize * 1),
+//                                  child: InkWell(
+//                                    onTap: () {
+//                                      Navigator.pop(context);
+//                                      return;
+//                                    },
+//                                    child: CustomWidgets().getRoundedButton(
+//                                        plunesStrings.ok,
+//                                        AppConfig.horizontalBlockSize * 6,
+//                                        PlunesColors.GREENCOLOR,
+//                                        AppConfig.horizontalBlockSize * 1,
+//                                        AppConfig.verticalBlockSize * 1,
+//                                        PlunesColors.WHITECOLOR),
+//                                  ))
+                            ],
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                  margin: EdgeInsets.only(
+                                      right: AppConfig.horizontalBlockSize * 6,
+                                      left: AppConfig.horizontalBlockSize * 6,
+                                      top: AppConfig.verticalBlockSize * 3),
+                                  height: AppConfig.verticalBlockSize * 10,
+//                                    width: double.infinity,
+                                  child: Image.asset(PlunesImages.refundImage)),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    right: AppConfig.horizontalBlockSize * 6,
+                                    left: AppConfig.horizontalBlockSize * 6,
+                                    top: AppConfig.verticalBlockSize * 1,
+                                    bottom: AppConfig.verticalBlockSize * 2),
+                                child: Text(PlunesStrings.refund,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.largeFont,
+                                        fontWeight: FontWeight.w500,
+                                        color: PlunesColors.BLACKCOLOR)),
+                              ),
+                              Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 6),
+                                  child: Text(
+                                      'Kindly Share the reason for your refund so our team can help you better',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.smallFont,
+//                                            fontWeight: FontWeight.w500,
+                                          color: PlunesColors.GREYCOLOR))),
 //                                Container(
 //                                    alignment: Alignment.topLeft,
 //                                    padding: EdgeInsets.only(
@@ -2261,70 +2263,201 @@ class CustomWidgets {
 //                                            fontSize: AppConfig.mediumFont,
 //                                            fontWeight: FontWeight.w600,
 //                                            color: PlunesColors.GREYCOLOR))),
-                                Row(
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 6),
+                                child: TextField(
+                                  controller: textEditingController,
+                                  keyboardType: TextInputType.text,
+                                  maxLines: 1,
+                                  autofocus: false,
+                                  decoration: InputDecoration(
+                                      hintText: 'Write here',
+                                      hintStyle: TextStyle(
+                                          fontSize: AppConfig.smallFont)),
+                                ),
+                              ),
+                              Container(
+                                height: 0.5,
+                                width: double.infinity,
+                                color: PlunesColors.GREYCOLOR,
+                                margin: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 5),
+                              ),
+                              Container(
+                                height: AppConfig.verticalBlockSize * 6,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Expanded(
-                                      child: TextField(
-                                        controller: textEditingController,
-                                        keyboardType: TextInputType.text,
-                                        maxLines: 1,
-                                        autofocus: false,
-                                        decoration: InputDecoration(
-                                            hintText: 'Write here'),
-                                      ),
-                                    )
+                                      child: FlatButton(
+                                          splashColor:
+                                              Colors.redAccent.withOpacity(.2),
+                                          highlightColor:
+                                              Colors.redAccent.withOpacity(.2),
+                                          focusColor:
+                                              Colors.redAccent.withOpacity(.2),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            return;
+                                          },
+                                          child: Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  bottomLeft: Radius.circular(
+                                                      AppConfig
+                                                              .horizontalBlockSize *
+                                                          4),
+                                                ),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: AppConfig
+                                                          .verticalBlockSize *
+                                                      1.5,
+                                                  horizontal: AppConfig
+                                                          .horizontalBlockSize *
+                                                      8),
+                                              child: Text(
+                                                'Cancel',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        AppConfig.mediumFont,
+                                                    color: Colors.redAccent),
+                                              ))),
+                                    ),
+                                    Container(
+                                      height: AppConfig.verticalBlockSize * 6,
+                                      color: PlunesColors.GREYCOLOR,
+                                      width: 0.5,
+                                    ),
+                                    Expanded(
+                                      child: FlatButton(
+                                          focusColor: PlunesColors
+                                              .SPARKLINGGREEN
+                                              .withOpacity(.2),
+                                          splashColor: PlunesColors
+                                              .SPARKLINGGREEN
+                                              .withOpacity(.2),
+                                          highlightColor: PlunesColors
+                                              .SPARKLINGGREEN
+                                              .withOpacity(.2),
+                                          onPressed: () {
+                                            if (appointmentModel != null &&
+                                                textEditingController.text
+                                                    .trim()
+                                                    .isNotEmpty) {
+                                              bookingBloc.refundAppointment(
+                                                  appointmentModel.bookingId,
+                                                  textEditingController.text
+                                                      .trim());
+                                            } else if (textEditingController
+                                                .text
+                                                .trim()
+                                                .isEmpty) {
+                                              failureMessage = PlunesStrings
+                                                  .emptyTextFieldWarning;
+                                              bookingBloc
+                                                  .addStateInRefundProvider(
+                                                      null);
+                                            }
+                                          },
+                                          child: Container(
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.only(
+                                                  bottomRight: Radius.circular(
+                                                      AppConfig
+                                                              .horizontalBlockSize *
+                                                          4),
+                                                ),
+                                              ),
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: AppConfig
+                                                          .verticalBlockSize *
+                                                      1.5,
+                                                  horizontal: AppConfig
+                                                          .horizontalBlockSize *
+                                                      8),
+                                              child: Text(
+                                                'Submit',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        AppConfig.mediumFont,
+                                                    color: PlunesColors
+                                                        .SPARKLINGGREEN),
+                                              ))),
+                                    ),
                                   ],
                                 ),
-                                Container(
-//                                  padding: EdgeInsets.only(
-//                                    top: AppConfig.verticalBlockSize * 2,
+                              ),
+
+//                                Container(
+////                                  padding: EdgeInsets.only(
+////                                    top: AppConfig.verticalBlockSize * 2,
+////                                  ),
+//                                  margin: EdgeInsets.symmetric(
+//                                      horizontal:
+//                                          AppConfig.horizontalBlockSize * 20,
+//                                      vertical:
+//                                          AppConfig.verticalBlockSize * 3),
+//                                  child: InkWell(
+//                                    onTap: () {
+//                                      if (appointmentModel != null &&
+//                                          textEditingController.text
+//                                              .trim()
+//                                              .isNotEmpty) {
+//                                        bookingBloc.refundAppointment(
+//                                            appointmentModel.bookingId,
+//                                            textEditingController.text.trim());
+//                                      } else if (textEditingController.text
+//                                          .trim()
+//                                          .isEmpty) {
+//                                        failureMessage =
+//                                            PlunesStrings.emptyTextFieldWarning;
+//                                        bookingBloc
+//                                            .addStateInRefundProvider(null);
+//                                      }
+//                                    },
+//                                    onDoubleTap: () {},
+//                                    child: CustomWidgets().getRoundedButton(
+//                                        plunesStrings.submit,
+//                                        AppConfig.horizontalBlockSize * 6,
+//                                        PlunesColors.GREENCOLOR,
+//                                        AppConfig.horizontalBlockSize * 1,
+//                                        AppConfig.verticalBlockSize * 1,
+//                                        PlunesColors.WHITECOLOR),
 //                                  ),
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          AppConfig.horizontalBlockSize * 20,
-                                      vertical:
-                                          AppConfig.verticalBlockSize * 3),
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (appointmentModel != null &&
-                                          textEditingController.text
-                                              .trim()
-                                              .isNotEmpty) {
-                                        bookingBloc.refundAppointment(
-                                            appointmentModel.bookingId,
-                                            textEditingController.text.trim());
-                                      } else if (textEditingController.text
-                                          .trim()
-                                          .isEmpty) {
-                                        failureMessage =
-                                            PlunesStrings.emptyTextFieldWarning;
-                                        bookingBloc
-                                            .addStateInRefundProvider(null);
-                                      }
-                                    },
-                                    onDoubleTap: () {},
-                                    child: CustomWidgets().getRoundedButton(
-                                        plunesStrings.submit,
-                                        AppConfig.horizontalBlockSize * 6,
-                                        PlunesColors.GREENCOLOR,
-                                        AppConfig.horizontalBlockSize * 1,
-                                        AppConfig.verticalBlockSize * 1,
-                                        PlunesColors.WHITECOLOR),
-                                  ),
-                                ),
-                                failureMessage == null || failureMessage.isEmpty
-                                    ? Container()
-                                    : Container(
-                                        padding: EdgeInsets.only(
-                                            top: AppConfig.verticalBlockSize *
-                                                1),
-                                        child: Text(
-                                          failureMessage,
-                                          style: TextStyle(color: Colors.red),
+//                                ),
+                              failureMessage == null || failureMessage.isEmpty
+                                  ? Container()
+                                  : Column(
+                                      children: <Widget>[
+                                        Container(
+                                          height: 0.5,
+                                          width: double.infinity,
+                                          color: PlunesColors.GREYCOLOR,
+                                          margin: EdgeInsets.only(
+                                              bottom:
+                                                  AppConfig.verticalBlockSize *
+                                                      1),
                                         ),
-                                      ),
-                              ],
-                            ),
+                                        Container(
+//                                        padding: EdgeInsets.only(
+//                                            top: AppConfig.verticalBlockSize *
+//                                                1),
+                                          child: Text(
+                                            failureMessage,
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                            ],
                           ),
                   ],
                 ),
@@ -3800,36 +3933,153 @@ class CustomWidgets {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
       child: Container(
-        height: AppConfig.verticalBlockSize * 40,
+        height: AppConfig.verticalBlockSize * 38.1,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+//            Container(
+//              alignment: Alignment.topRight,
+//              child: InkWell(
+//                onTap: () => Navigator.of(globalKey.currentState.context).pop(),
+//                onDoubleTap: () {},
+//                child: Padding(
+//                  padding: const EdgeInsets.all(10),
+//                  child: Icon(Icons.close),
+//                ),
+//              ),
+//            ),
             Container(
-              alignment: Alignment.topRight,
-              child: InkWell(
-                onTap: () => Navigator.of(globalKey.currentState.context).pop(),
-                onDoubleTap: () {},
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Icon(Icons.close),
-                ),
-              ),
-            ),
-            Flexible(child: Image.asset(PlunesImages.invoiceSuccessImage)),
-            Flexible(
-                child: Container(
+                margin: EdgeInsets.symmetric(
+                    vertical: AppConfig.verticalBlockSize * 4,
+                    horizontal: AppConfig.horizontalBlockSize * 6),
+                height: AppConfig.verticalBlockSize * 10,
+                child: Image.asset(PlunesImages.invoiceSuccessImage)),
+            Container(
               margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 3,
-                  vertical: AppConfig.verticalBlockSize * 3),
+                  horizontal: AppConfig.horizontalBlockSize * 6),
               child: Text(
                 message,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: AppConfig.mediumFont),
               ),
-            )),
+            ),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 5),
+            ),
+            FlatButton(
+                splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                onPressed: () =>
+                    Navigator.of(globalKey.currentState.context).pop(),
+                child: Container(
+                    width: double.infinity,
+                    child: Text(
+                      'OK',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.SPARKLINGGREEN),
+                    ))),
           ],
         ),
       ),
     );
+  }
+
+  helpThankYou(BuildContext context) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
+            child: Container(
+              height: AppConfig.verticalBlockSize * 40,
+              child: Column(
+//              mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 3),
+                      height: AppConfig.verticalBlockSize * 10,
+                      child: Image.asset(PlunesImages.helpThankyou)),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 6,
+                      right: AppConfig.horizontalBlockSize * 6,
+                    ),
+                    child: Text(
+                      PlunesStrings.thankYou,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.BLACKCOLOR),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 6,
+                        vertical: AppConfig.verticalBlockSize * 2),
+                    child: Text(
+                      PlunesStrings.thanksForContacting,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.smallFont,
+                          color: PlunesColors.GREYCOLOR),
+                    ),
+                  ),
+                  Container(
+                    height: 0.5,
+                    width: double.infinity,
+                    color: PlunesColors.GREYCOLOR,
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                  ),
+                  FlatButton(
+                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      highlightColor:
+                          PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Container(
+                          width: double.infinity,
+                          child: Text(
+                            "OK",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.SPARKLINGGREEN),
+                          ))),
+
+//                  FlatButton(
+//                      onPressed: () {},
+//                      color: PlunesColors.GREENCOLOR,
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius: BorderRadius.circular(50)),
+//                      child: Container(
+//                        width: AppConfig.horizontalBlockSize * 20,
+//                        child: Text(
+//                          "Update",
+//                          style: TextStyle(color: PlunesColors.WHITECOLOR),
+//                          textAlign: TextAlign.center,
+//                        ),
+//                      )),
+//                    ],
+//                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   showScrollableDialog(BuildContext context, AppointmentModel appointmentModel,
@@ -4325,21 +4575,81 @@ class CustomWidgets {
       elevation: 0.0,
       child: Container(
         height: AppConfig.verticalBlockSize * 40,
-        child: Container(
-          alignment: Alignment.center,
-          child: InkWell(
-            onTap: () => Navigator.of(globalKey.currentState.context).pop(),
-            highlightColor: Colors.transparent,
-            onDoubleTap: () {},
-            child: SizedBox.expand(
-              child: Image.asset(
-                PlunesImages.manualBiddingSuccessImage,
-                fit: BoxFit.fill,
+        child: Column(
+//              mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+                margin: EdgeInsets.symmetric(
+                    vertical: AppConfig.verticalBlockSize * 3),
+                height: AppConfig.verticalBlockSize * 10,
+                child: Image.asset(PlunesImages.manualBiddingSuccessImage)),
+            Container(
+              margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 6,
+                right: AppConfig.horizontalBlockSize * 6,
+              ),
+              child: Text(
+                "We have received your Query",
+                style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: AppConfig.mediumFont,
+                    color: PlunesColors.BLACKCOLOR),
               ),
             ),
-          ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 6,
+                  vertical: AppConfig.verticalBlockSize * 2),
+              child: Text(
+                PlunesStrings.negotiatingWithSelectedFacility,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: AppConfig.smallFont,
+                    color: PlunesColors.GREYCOLOR),
+              ),
+            ),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+            ),
+            FlatButton(
+                splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                onPressed: () =>
+                    Navigator.of(globalKey.currentState.context).pop(),
+                child: Container(
+                    width: double.infinity,
+                    child: Text(
+                      "Ok",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.SPARKLINGGREEN),
+                    ))),
+          ],
         ),
       ),
+//      Container(
+//        height: AppConfig.verticalBlockSize * 40,
+//        child: Container(
+//          alignment: Alignment.center,
+//          child: InkWell(
+//            onTap: () => Navigator.of(globalKey.currentState.context).pop(),
+//            highlightColor: Colors.transparent,
+//            onDoubleTap: () {},
+//            child: SizedBox.expand(
+//              child: Image.asset(
+//                PlunesImages.manualBiddingSuccessImage,
+//                fit: BoxFit.fill,
+//              ),
+//            ),
+//          ),
+//        ),
+//      ),
     );
   }
 
@@ -4348,49 +4658,82 @@ class CustomWidgets {
         context: context,
         barrierDismissible: true,
         builder: (context) {
-          return AlertDialog(
+          return Dialog(
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
-            content: Container(
+            child: Container(
+              height: AppConfig.verticalBlockSize * 40,
               child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+//              mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Container(
-                      padding: EdgeInsets.only(top: 3.5),
-                      width: AppConfig.horizontalBlockSize * 30,
-                      height: AppConfig.verticalBlockSize * 15,
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 3),
+                      height: AppConfig.verticalBlockSize * 10,
                       child: Image.asset(PlunesImages.updateApp)),
-                  SizedBox(height: 10),
-                  Text(
-                    PlunesStrings.newVersionAvailable,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: PlunesColors.BLACKCOLOR),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 6,
+                      right: AppConfig.horizontalBlockSize * 6,
+                    ),
+                    child: Text(
+                      PlunesStrings.newVersionAvailable,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.BLACKCOLOR),
+                    ),
                   ),
-                  SizedBox(height: 5),
-                  Text(
-                    PlunesStrings.usingOlderVersion,
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 6,
+                        vertical: AppConfig.verticalBlockSize * 2),
+                    child: Text(
+                      PlunesStrings.usingOlderVersion,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.smallFont,
+                          color: PlunesColors.GREYCOLOR),
+                    ),
                   ),
-                  SizedBox(height: AppConfig.verticalBlockSize * 2),
+                  Container(
+                    height: 0.5,
+                    width: double.infinity,
+                    color: PlunesColors.GREYCOLOR,
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                  ),
                   FlatButton(
+                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      highlightColor:
+                          PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
                       onPressed: () {},
-                      color: PlunesColors.GREENCOLOR,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)),
                       child: Container(
-                        width: AppConfig.horizontalBlockSize * 20,
-                        child: Text(
-                          "Update",
-                          style: TextStyle(color: PlunesColors.WHITECOLOR),
-                          textAlign: TextAlign.center,
-                        ),
-                      )),
+                          width: double.infinity,
+                          child: Text(
+                            "Update",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.SPARKLINGGREEN),
+                          ))),
+
+//                  FlatButton(
+//                      onPressed: () {},
+//                      color: PlunesColors.GREENCOLOR,
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius: BorderRadius.circular(50)),
+//                      child: Container(
+//                        width: AppConfig.horizontalBlockSize * 20,
+//                        child: Text(
+//                          "Update",
+//                          style: TextStyle(color: PlunesColors.WHITECOLOR),
+//                          textAlign: TextAlign.center,
+//                        ),
+//                      )),
 //                    ],
 //                  )
                 ],

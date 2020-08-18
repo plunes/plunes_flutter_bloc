@@ -1084,39 +1084,88 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               child: Container(
                 height: AppConfig.verticalBlockSize * 44,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      alignment: Alignment.topRight,
-                      child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        onDoubleTap: () {},
-                        child: Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Icon(Icons.close),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                        child: Container(
-                            margin: EdgeInsets.symmetric(
-                                vertical: AppConfig.verticalBlockSize * 2,
-                                horizontal: AppConfig.horizontalBlockSize * 5),
-                            child: Image.asset(PlunesImages.invalidSlotImage))),
-                    Flexible(
-                        child: Container(
+                        margin: EdgeInsets.symmetric(
+                            vertical: AppConfig.verticalBlockSize * 4,
+                            horizontal: AppConfig.horizontalBlockSize * 6),
+                        height: AppConfig.verticalBlockSize * 10,
+                        child: Image.asset(PlunesImages.invalidSlotImage)),
+                    Container(
                       margin: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 3,
-                          vertical: AppConfig.verticalBlockSize * .1),
+                          horizontal: AppConfig.horizontalBlockSize * 6),
                       child: Text(
                         PlunesStrings.timeNotAvailable,
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                            color: PlunesColors.BLACKCOLOR,
+                            fontSize: AppConfig.smallFont),
                       ),
-                    )),
+                    ),
+                    Container(
+                      height: 0.5,
+                      width: double.infinity,
+                      color: PlunesColors.GREYCOLOR,
+                      margin:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 5),
+                    ),
+                    FlatButton(
+                        splashColor:
+                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                        highlightColor:
+                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                        focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Container(
+                            width: double.infinity,
+                            child: Text(
+                              'OK',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                  color: PlunesColors.SPARKLINGGREEN),
+                            ))),
                   ],
                 ),
               ),
+//              Container(
+//                height: AppConfig.verticalBlockSize * 40,
+//                child: Column(
+//                  children: <Widget>[
+////                    Container(
+////                      alignment: Alignment.topRight,
+////                      child: InkWell(
+////                        onTap: () => Navigator.of(context).pop(),
+////                        onDoubleTap: () {},
+////                        child: Padding(
+////                          padding: const EdgeInsets.all(10),
+////                          child: Icon(Icons.close),
+////                        ),
+////                      ),
+////                    ),
+//                    Expanded(
+//                        child: Container(
+//                            height: AppConfig.verticalBlockSize * 10,
+//                            margin: EdgeInsets.symmetric(
+//                                vertical: AppConfig.verticalBlockSize * 3,
+//                                horizontal: AppConfig.horizontalBlockSize * 5),
+//                            child: Image.asset(PlunesImages.invalidSlotImage))),
+//                    Expanded(
+//                        child: Container(
+//                      margin: EdgeInsets.symmetric(
+//                          horizontal: AppConfig.horizontalBlockSize * 3,
+//                          vertical: AppConfig.verticalBlockSize * .1),
+//                      child: Text(
+//                        PlunesStrings.timeNotAvailable,
+//                        textAlign: TextAlign.center,
+//                        style: TextStyle(
+//                            color: PlunesColors.BLACKCOLOR, fontSize: 16),
+//                      ),
+//                    )),
+//                  ],
+//                ),
+//              ),
             );
           });
     });

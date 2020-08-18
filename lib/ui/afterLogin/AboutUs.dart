@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -213,7 +214,14 @@ class _AboutUsState extends BaseState<AboutUs> {
                   ),
                 ),
               ),
-            )
+            ),
+//            InkWell(
+//              onTap: () => CustomWidgets().updateAlertDialog(context),
+//              child: Padding(
+//                padding: const EdgeInsets.all(20),
+//                child: Text('data'),
+//              ),
+//            )
           ],
         ),
       ),
