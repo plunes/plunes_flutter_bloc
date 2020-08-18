@@ -12,6 +12,7 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
+import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
@@ -4285,26 +4286,252 @@ class CustomWidgets {
     );
   }
 
-  Widget getManualBiddingSuccessWidget(GlobalKey<ScaffoldState> globalKey) {
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      elevation: 0.0,
+  Widget getManualBiddingEnterDetailsPopup(
+      GlobalKey<ScaffoldState> globalKey,
+      SearchSolutionBloc searchSolutionBloc,
+      List<MoreFacility> selectedItemList) {
+    TextEditingController _testDetailsController = TextEditingController();
+    String errorMessage;
+    return AnimatedContainer(
+      padding: AppConfig.getMediaQuery().viewInsets,
+      duration: const Duration(milliseconds: 300),
+      child: Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+          elevation: 0.0,
+          child: StreamBuilder<RequestState>(
+              stream: searchSolutionBloc.getManualBiddingAdditionStream(),
+              builder: (context, snapshot) {
+                if (snapshot.data is RequestInProgress) {
+                  return Container(
+                    child: getProgressIndicator(),
+                    height: AppConfig.verticalBlockSize * 40,
+                    width: double.infinity,
+                  );
+                } else if (snapshot.data is RequestSuccess) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 2,
+                              horizontal: AppConfig.horizontalBlockSize * 5),
+                          child: Image.asset(
+                            PlunesImages.enterTestAndProcedureDetailsImage,
+                            width: AppConfig.horizontalBlockSize * 42,
+                            height: AppConfig.verticalBlockSize * 12,
+                          ),
+                        ),
+                        Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 5),
+                            child: Text(
+                              "We have received your Query",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                          "#575757"))
+                                      .withOpacity(1),
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500),
+                            )),
+                        Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 2.5,
+                                horizontal: AppConfig.horizontalBlockSize * 5),
+                            child: Text(
+                              "We will be negotiating with the selected facilities on your behalf and will get in touch with you soon",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#575757")),
+                                  fontSize: 15.5,
+                                  fontWeight: FontWeight.normal),
+                            )),
+                        getSingleButtonForPopup(
+                            buttonBackground: PlunesColors.WHITECOLOR,
+                            buttonText: plunesStrings.ok,
+                            textColor: PlunesColors.GREENCOLOR,
+                            roundedValue: 16.0,
+                            onTap: () {
+                              Navigator.of(globalKey.currentState.context)
+                                  .pop(true);
+                              return;
+                            })
+                      ],
+                    ),
+                  );
+                } else if (snapshot.data is RequestFailed) {
+                  RequestFailed requestFailed = snapshot.data;
+                  errorMessage = requestFailed?.failureCause;
+                }
+                return SingleChildScrollView(
+                  reverse: true,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            vertical: AppConfig.verticalBlockSize * 2,
+                            horizontal: AppConfig.horizontalBlockSize * 5),
+                        child: Image.asset(
+                          PlunesImages.enterTestAndProcedureDetailsImage,
+                          width: AppConfig.horizontalBlockSize * 42,
+                          height: AppConfig.verticalBlockSize * 12,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 5),
+                        child: Text(
+                          PlunesStrings.makeSureTheDetailsText,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Color(CommonMethods.getColorHexFromStr(
+                                      "#575757"))
+                                  .withOpacity(1),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            vertical: AppConfig.verticalBlockSize * 2,
+                            horizontal: AppConfig.horizontalBlockSize * 5),
+                        child: Row(
+                          children: <Widget>[
+                            Flexible(
+                                child: TextField(
+                              controller: _testDetailsController,
+                              textAlign: TextAlign.start,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.normal,
+                                  color: PlunesColors.BLACKCOLOR),
+                              decoration: InputDecoration(
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4)),
+                                    borderSide:
+                                        BorderSide(width: 1, color: Colors.red),
+                                  ),
+                                  disabledBorder: UnderlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4)),
+                                    borderSide: BorderSide(
+                                        width: 1,
+                                        color: PlunesColors.GREENCOLOR),
+                                  ),
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(4)),
+                                    borderSide: BorderSide(
+                                        width: 1, color: Colors.green),
+                                  ),
+                                  border: UnderlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4)),
+                                      borderSide: BorderSide(
+                                        width: 1,
+                                      )),
+                                  errorBorder: UnderlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4)),
+                                      borderSide: BorderSide(
+                                          width: 1, color: Colors.black)),
+                                  focusedErrorBorder: UnderlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4)),
+                                      borderSide: BorderSide(
+                                          width: 1,
+                                          color: PlunesColors.GREENCOLOR)),
+                                  counterText: "",
+                                  hintText: PlunesStrings
+                                      .enterProcedureAndTestDetails,
+                                  errorText: errorMessage ?? "",
+                                  errorMaxLines: 2,
+                                  hintStyle: TextStyle(
+                                    fontSize: 15.5,
+                                    fontWeight: FontWeight.normal,
+                                    color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#333333"))
+                                        .withOpacity(0.5),
+                                  )),
+                              maxLines: null,
+                              maxLength: 400,
+                            ))
+                          ],
+                        ),
+                      ),
+                      getSingleButtonForPopup(
+                          buttonBackground: PlunesColors.WHITECOLOR,
+                          buttonText: plunesStrings.ok,
+                          textColor: PlunesColors.GREENCOLOR,
+                          roundedValue: 16.0,
+                          onTap: () {
+                            if (_testDetailsController.text.trim().isEmpty) {
+                              errorMessage = PlunesStrings
+                                  .enterProcedureAndTestDetailsToReceiveBids;
+                              searchSolutionBloc
+                                  .addStateInManualBiddingAdditionStream(null);
+                              return;
+                            }
+                            searchSolutionBloc.saveManualBiddingData(
+                                _testDetailsController.text.trim(),
+                                selectedItemList);
+                          })
+                    ],
+                  ),
+                );
+              })),
+    );
+  }
+
+  Widget getSingleButtonForPopup(
+      {Function onTap,
+      Color textColor,
+      Color buttonBackground,
+      String buttonText,
+      double roundedValue}) {
+    return InkWell(
+      onTap: onTap,
+      onDoubleTap: () {},
       child: Container(
-        height: AppConfig.verticalBlockSize * 40,
-        child: Container(
-          alignment: Alignment.center,
-          child: InkWell(
-            onTap: () => Navigator.of(globalKey.currentState.context).pop(),
-            highlightColor: Colors.transparent,
-            onDoubleTap: () {},
-            child: SizedBox.expand(
-              child: Image.asset(
-                PlunesImages.manualBiddingSuccessImage,
-                fit: BoxFit.fill,
-              ),
+        width: double.infinity,
+        decoration: BoxDecoration(
+            color: buttonBackground ?? PlunesColors.WHITECOLOR,
+            borderRadius: roundedValue != null
+                ? BorderRadius.only(
+                    bottomLeft: Radius.circular(roundedValue),
+                    bottomRight: Radius.circular(roundedValue),
+                  )
+                : null),
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
             ),
-          ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.5),
+              child: Center(
+                child: Text(
+                  buttonText ?? "Ok",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: textColor ?? PlunesColors.GREENCOLOR,
+                      fontWeight: FontWeight.normal,
+                      fontSize: 15),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -4616,4 +4843,40 @@ class CustomWidgets {
 //      ),
 //    );
 //  }
+  Widget getInformativePopup(
+      {GlobalKey<ScaffoldState> globalKey, String message}) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 5,
+                  vertical: AppConfig.verticalBlockSize * 2.5),
+              child: Text(
+                message ?? plunesStrings.somethingWentWrong,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
+            getSingleButtonForPopup(
+                textColor: PlunesColors.GREENCOLOR,
+                buttonText: plunesStrings.ok,
+                buttonBackground: PlunesColors.WHITECOLOR,
+                roundedValue: 16.0,
+                onTap: () {
+                  Navigator.of(globalKey.currentState.context).pop();
+                }),
+          ],
+        ),
+      ),
+    );
+  }
 }

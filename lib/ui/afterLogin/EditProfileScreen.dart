@@ -283,7 +283,8 @@ class _EditProfileState extends State<EditProfileScreen>
 //          return;
 //        }
         if (controller == dobController)
-          CommonMethods.selectHoloTypeDate(context).then((value) {
+          CommonMethods.selectHoloTypeDate(context, isDoc: isDoctor)
+              .then((value) {
             if (value != null && value.isNotEmpty) {
               dobController.text = value;
             }

@@ -240,9 +240,13 @@ class CommonMethods {
         : '';
   }
 
-  static Future<String> selectHoloTypeDate(BuildContext context) async {
+  static Future<String> selectHoloTypeDate(BuildContext context,
+      {bool isDoc = false}) async {
     var now = new DateTime.now();
-    DateTime twelveYearsBack = now.subtract(new Duration(days: 0));
+    DateTime twelveYearsBack = now.subtract(new Duration(days: isDoc ? 0 : 1));
+    if (isDoc) {
+      twelveYearsBack = DateTime(now.year - 22, now.month, now.day);
+    }
     final DateTime picked = await DatePicker.showSimpleDatePicker(
       context,
       initialDate: twelveYearsBack,

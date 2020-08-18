@@ -1198,7 +1198,8 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     return InkWell(
       onTap: () {
         if (controller == dobController)
-          CommonMethods.selectHoloTypeDate(context).then((value) {
+          CommonMethods.selectHoloTypeDate(context, isDoc: isDoctor)
+              .then((value) {
             if (value != null && value.isNotEmpty) {
               dobController.text = value;
             }
