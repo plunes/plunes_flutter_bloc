@@ -354,24 +354,6 @@ class CommonMethods {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-//            Align(
-//                alignment: Alignment.topRight,
-//                child: Container(
-//                  margin: EdgeInsets.all(10),
-//                  decoration: BoxDecoration(
-//                    color: Colors.black.withOpacity(.5),
-//                    borderRadius: BorderRadius.all(Radius.circular(50)),
-//                  ),
-//
-////                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-//                  child: InkWell(
-//                    onTap: () => callBack.dialogCallBackFunction('CANCEL'),
-//                    child: Icon(
-//                      Icons.clear,
-//                      color: PlunesColors.WHITECOLOR,
-//                    ),
-//                  ),
-//                )),
                 Flexible(
                     child: Container(
                         margin: EdgeInsets.only(
@@ -408,7 +390,7 @@ class CommonMethods {
                   margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 5),
                 ),
                 Container(
-                  height: AppConfig.verticalBlockSize * 8,
+                  height: AppConfig.verticalBlockSize * 6,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -441,7 +423,7 @@ class CommonMethods {
                                 ))),
                       ),
                       Container(
-                        height: AppConfig.verticalBlockSize * 8,
+                        height: AppConfig.verticalBlockSize * 6,
                         color: PlunesColors.GREYCOLOR,
                         width: 0.5,
                       ),

@@ -67,7 +67,10 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
+
             minifyEnabled false // set this to false to prevent java.lang.NoSuchFieldException
+//            shrinkResources true
+
         }
     }
 
@@ -81,7 +84,7 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation 'com.google.firebase:firebase-core:17.4.4'
+    implementation 'com.google.firebase:firebase-core:17.5.0'
 }
 apply plugin: 'io.fabric'
 apply plugin: 'com.google.gms.google-services'

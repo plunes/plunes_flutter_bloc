@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
@@ -141,103 +143,246 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                 _docHosMainInsightBloc.addStateInHelpQueryStream(null);
               }
               return isSuccess
-                  ? Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 6,
-                          vertical: AppConfig.verticalBlockSize * 2),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Text(PlunesStrings.thankYouMessage,
-                              style: TextStyle(
-                                  fontSize: 36,
-                                  fontWeight: FontWeight.w500,
-                                  color: PlunesColors.BLACKCOLOR)),
-                          Padding(
-                            padding: EdgeInsets.only(
-                                top: AppConfig.horizontalBlockSize * 6),
-                          ),
-                          Text(PlunesStrings.helpQuerySuccessMessage,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: AppConfig.extraLargeFont,
-                                  fontWeight: FontWeight.w500,
-                                  color: PlunesColors.GREYCOLOR)),
-                        ],
+                  ? Dialog(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              AppConfig.horizontalBlockSize * 5)),
+                      child: Container(
+                        height: AppConfig.verticalBlockSize * 40,
+                        child: Column(
+//              mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                                margin: EdgeInsets.symmetric(
+                                    vertical: AppConfig.verticalBlockSize * 3),
+                                height: AppConfig.verticalBlockSize * 10,
+                                child: Image.asset(PlunesImages.helpThankyou)),
+                            Container(
+                              margin: EdgeInsets.only(
+                                left: AppConfig.horizontalBlockSize * 6,
+                                right: AppConfig.horizontalBlockSize * 6,
+                              ),
+                              child: Text(
+                                PlunesStrings.thankYou,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: AppConfig.mediumFont,
+                                    color: PlunesColors.BLACKCOLOR),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: AppConfig.horizontalBlockSize * 6,
+                                  vertical: AppConfig.verticalBlockSize * 2),
+                              child: Text(
+                                PlunesStrings.thanksForContacting,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: AppConfig.smallFont,
+                                    color: PlunesColors.GREYCOLOR),
+                              ),
+                            ),
+                            Container(
+                              height: 0.5,
+                              width: double.infinity,
+                              color: PlunesColors.GREYCOLOR,
+                              margin: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 3),
+                            ),
+                            FlatButton(
+                                splashColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                highlightColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                focusColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                      "OK",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ))),
+
+//                  FlatButton(
+//                      onPressed: () {},
+//                      color: PlunesColors.GREENCOLOR,
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius: BorderRadius.circular(50)),
+//                      child: Container(
+//                        width: AppConfig.horizontalBlockSize * 20,
+//                        child: Text(
+//                          "Update",
+//                          style: TextStyle(color: PlunesColors.WHITECOLOR),
+//                          textAlign: TextAlign.center,
+//                        ),
+//                      )),
+//                    ],
+//                  )
+                          ],
+                        ),
                       ),
                     )
+//              Container(
+//                      padding: EdgeInsets.symmetric(
+//                          horizontal: AppConfig.horizontalBlockSize * 6,
+//                          vertical: AppConfig.verticalBlockSize * 2),
+//                      child: Column(
+//                        mainAxisAlignment: MainAxisAlignment.center,
+//                        crossAxisAlignment: CrossAxisAlignment.center,
+//                        children: <Widget>[
+//                          Container(
+//                              margin: EdgeInsets.symmetric(
+//                                  vertical: AppConfig.verticalBlockSize * 3),
+//                              height: AppConfig.verticalBlockSize * 25,
+//                              child: Image.asset(PlunesImages.helpThankyou)),
+//                          Center(
+//                            child: Text(PlunesStrings.thankYouMessage,
+//                                style: TextStyle(
+//                                    fontSize: AppConfig.veryExtraLargeFont,
+//                                    fontWeight: FontWeight.w500,
+//                                    color: PlunesColors.BLACKCOLOR)),
+//                          ),
+//                          Container(
+//                            margin: EdgeInsets.symmetric(
+//                                vertical: AppConfig.verticalBlockSize * 3,
+//                                horizontal: AppConfig.horizontalBlockSize * 3),
+//                            child: Text(PlunesStrings.helpQuerySuccessMessage,
+//                                textAlign: TextAlign.center,
+//                                style: TextStyle(
+//                                    fontSize: AppConfig.extraLargeFont,
+//                                    fontWeight: FontWeight.w500,
+//                                    color: PlunesColors.GREYCOLOR)),
+//                          ),
+//                        ],
+//                      ),
+//                    )
                   : Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Container(
-                          height: AppConfig.verticalBlockSize * 15,
-                          width: AppConfig.horizontalBlockSize * 50,
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 3),
+                          height: AppConfig.verticalBlockSize * 25,
+//                          width: AppConfig.horizontalBlockSize * 50,
                           child: Image.asset(PlunesImages.bdSupportImage),
                         ),
                         Container(
-                            alignment: Alignment.topLeft,
-                            padding: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 4),
-                            child: Text(PlunesStrings.writeYourConcern,
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                ))),
-                        SizedBox(
-                          height: AppConfig.verticalBlockSize * 1,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                              child: TextField(
-                                controller: _docHosQueryController,
-                                keyboardType: TextInputType.text,
-                                maxLines: 2,
-                                autofocus: true,
-                              ),
-                            )
-                          ],
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              top: AppConfig.verticalBlockSize * 2),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: AppConfig.horizontalBlockSize * 6),
                           child: Text(
                             PlunesStrings.ourTeamWillContactYou,
+                            style: TextStyle(
+                                fontSize: AppConfig.largeFont,
+                                color: PlunesColors.GREYCOLOR),
                             textAlign: TextAlign.center,
                           ),
                         ),
+//                        Container(
+//                            alignment: Alignment.topLeft,
+//                            padding: EdgeInsets.only(
+//                                top: AppConfig.verticalBlockSize * 4),
+//                            child: Text(PlunesStrings.writeYourConcern,
+//                                textAlign: TextAlign.start,
+//                                style: TextStyle(
+//                                  fontSize: AppConfig.mediumFont,
+//                                ))),
+
                         Container(
-                          padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 4,
-                          ),
                           margin: EdgeInsets.only(
-                              left: AppConfig.horizontalBlockSize * 30,
-                              right: AppConfig.horizontalBlockSize * 30),
-                          child: InkWell(
-                              onTap: () {
-                                if (_docHosQueryController.text
-                                    .trim()
-                                    .isNotEmpty) {
-                                  _docHosMainInsightBloc.helpDocHosQuery(
-                                      _docHosQueryController.text.trim());
-                                } else if (_docHosQueryController.text
-                                    .trim()
-                                    .isEmpty) {
-                                  failureMessage =
-                                      PlunesStrings.emptyQueryFieldMessage;
-                                  _docHosMainInsightBloc
-                                      .addStateInHelpQueryStream(null);
-                                }
-                              },
-                              onDoubleTap: () {},
-                              child: CustomWidgets().getRoundedButton(
-                                  plunesStrings.submit,
-                                  AppConfig.horizontalBlockSize * 8,
-                                  PlunesColors.GREENCOLOR,
-                                  AppConfig.horizontalBlockSize * 0,
-                                  AppConfig.verticalBlockSize * 1.2,
-                                  PlunesColors.WHITECOLOR)),
+                              top: AppConfig.verticalBlockSize * 2),
+                          height: AppConfig.verticalBlockSize * 10,
+                          child: TextField(
+                            style: TextStyle(fontSize: AppConfig.mediumFont),
+                            decoration: InputDecoration(
+                                alignLabelWithHint: true,
+                                hintText: plunesStrings.description,
+                                hintStyle: TextStyle(
+                                    fontSize: AppConfig.largeFont - 3,
+                                    decorationStyle: TextDecorationStyle.wavy)),
+                            controller: _docHosQueryController,
+                            keyboardType: TextInputType.text,
+                            textDirection: TextDirection.ltr,
+                            maxLines: null,
+                            expands: true,
+                            autofocus: true,
+                          ),
                         ),
+
+//                          Container(
+//                            padding: EdgeInsets.only(
+//                              top: AppConfig.verticalBlockSize * 4,
+//                            ),
+//                            margin: EdgeInsets.only(
+//                                left: AppConfig.horizontalBlockSize * 30,
+//                                right: AppConfig.horizontalBlockSize * 30),
+//                            child:
+//                            InkWell(
+//                                onTap: () {
+//                                  if (_docHosQueryController.text
+//                                      .trim()
+//                                      .isNotEmpty) {
+//                                    _docHosMainInsightBloc.helpDocHosQuery(
+//                                        _docHosQueryController.text.trim());
+//                                  } else if (_docHosQueryController.text
+//                                      .trim()
+//                                      .isEmpty) {
+//                                    failureMessage =
+//                                        PlunesStrings.emptyQueryFieldMessage;
+//                                    _docHosMainInsightBloc
+//                                        .addStateInHelpQueryStream(null);
+//                                  }
+//                                },
+//                                onDoubleTap: () {},
+//                                child: CustomWidgets().getRoundedButton(
+//                                    plunesStrings.submit,
+//                                    AppConfig.horizontalBlockSize * 8,
+//                                    PlunesColors.GREENCOLOR,
+//                                    AppConfig.horizontalBlockSize * 0,
+//                                    AppConfig.verticalBlockSize * 1.2,
+//                                    PlunesColors.WHITECOLOR)),
+//                          ),
+                        FlatButton(
+                            focusColor:
+                                PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                            splashColor:
+                                PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                            highlightColor:
+                                PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                            onPressed: () {
+                              if (_docHosQueryController.text
+                                  .trim()
+                                  .isNotEmpty) {
+                                _docHosMainInsightBloc.helpDocHosQuery(
+                                    _docHosQueryController.text.trim());
+                              } else if (_docHosQueryController.text
+                                  .trim()
+                                  .isEmpty) {
+                                failureMessage =
+                                    PlunesStrings.emptyQueryFieldMessage;
+                                _docHosMainInsightBloc
+                                    .addStateInHelpQueryStream(null);
+                              }
+                            },
+                            child: Container(
+                                width: double.infinity,
+                                padding: EdgeInsets.symmetric(
+//                                      vertical:
+//                                          AppConfig.verticalBlockSize * 1.5,
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 7),
+                                child: Text(
+                                  'Submit',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.largeFont,
+                                      fontWeight: FontWeight.w500,
+                                      color: PlunesColors.SPARKLINGGREEN),
+                                ))),
                         failureMessage == null || failureMessage.isEmpty
                             ? Container()
                             : Container(
@@ -495,9 +640,21 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),
-        child: Text('Call at: ${_helpLineNumberModel?.number ?? _helpNumber}',
-            style: TextStyle(
-                fontSize: AppConfig.mediumFont, fontWeight: FontWeight.w600)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text('Call us at: ',
+                style: TextStyle(
+                  fontSize: AppConfig.largeFont,
+                )),
+            Text(_helpLineNumberModel?.number ?? _helpNumber,
+                style: TextStyle(
+                    fontSize: AppConfig.largeFont,
+                    decoration: TextDecoration.underline,
+                    fontWeight: FontWeight.w500,
+                    color: PlunesColors.SPARKLINGGREEN)),
+          ],
+        ),
       ),
     );
   }

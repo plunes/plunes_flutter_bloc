@@ -186,7 +186,6 @@ class _AboutUsState extends BaseState<AboutUs> {
 //                showVideoProgressIndicator: true,
 //              ),
 //            ),
-
             InkWell(
               onTap: () {
                 widget.userType == Constants.user
@@ -196,13 +195,6 @@ class _AboutUsState extends BaseState<AboutUs> {
               child: Container(
                 margin:
                     EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 5),
-//                decoration: BoxDecoration(
-//                  border: Border.all(
-//                      color: PlunesColors.SPARKLINGGREEN,
-//                      style: BorderStyle.solid,
-//                      width: 1.5),
-//                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-//                ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
@@ -215,13 +207,6 @@ class _AboutUsState extends BaseState<AboutUs> {
                 ),
               ),
             ),
-//            InkWell(
-//              onTap: () => CustomWidgets().updateAlertDialog(context),
-//              child: Padding(
-//                padding: const EdgeInsets.all(20),
-//                child: Text('data'),
-//              ),
-//            )
           ],
         ),
       ),
