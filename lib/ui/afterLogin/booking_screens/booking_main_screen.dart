@@ -75,13 +75,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _appointmentTime = "00:00";
     _notSelectedEntry = _appointmentTime;
     _selectedPaymentType = _paymentTypeCoupon;
-    _getDocHosInfo();
-    _getUserInfo();
     _bookingBloc = BookingBloc();
     _currentDate = DateTime.now();
     _selectedDate = _currentDate;
-    _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
+    _getDetails();
     super.initState();
+  }
+
+  _getDetails() {
+    _getDocHosInfo();
+    _getUserInfo();
+    _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
   }
 
   @override
@@ -122,7 +126,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 child: _isFetchingDocHosInfo
                     ? CustomWidgets().getProgressIndicator()
                     : (_docProfileInfo == null || _docProfileInfo.user == null)
-                        ? CustomWidgets().errorWidget(_userFailureCause)
+                        ? CustomWidgets().errorWidget(_userFailureCause,
+                            onTap: () => _getDetails(), isSizeLess: true)
                         : _getBody());
           }),
         ));

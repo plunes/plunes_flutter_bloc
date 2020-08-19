@@ -122,7 +122,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             return CustomWidgets().getProgressIndicator();
           } else if (_specialityFailureCause != null &&
               _specialityFailureCause.isNotEmpty) {
-            return CustomWidgets().errorWidget(_specialityFailureCause);
+            return CustomWidgets().errorWidget(_specialityFailureCause,
+                onTap: () => _getSpecialities());
           }
           return _getBody();
         }),
@@ -447,8 +448,9 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                   child: CustomWidgets().getProgressIndicator(),
                 )
               : Expanded(
-                  child: CustomWidgets()
-                      .errorWidget(_failureCause ?? "Facilities not available"))
+                  child: CustomWidgets().errorWidget(
+                      _failureCause ?? "Facilities not available",
+                      onTap: () => _getMoreFacilities()))
         ],
       ),
     );

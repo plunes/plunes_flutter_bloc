@@ -78,7 +78,8 @@ class _FillCouponState extends BaseState<FillCoupon> {
                 return (_couponTextResponseModel == null ||
                         _couponTextResponseModel.success == null ||
                         !(_couponTextResponseModel.success))
-                    ? CustomWidgets().errorWidget(_failureCause)
+                    ? CustomWidgets().errorWidget(_failureCause,
+                        onTap: () => _getCouponText())
                     : _getCouponWidget();
               },
               stream: _couponBloc.couponTextStream,
@@ -315,6 +316,7 @@ class _FillCouponState extends BaseState<FillCoupon> {
   }
 
   void _getCouponText() {
+    _failureCause = null;
     _couponBloc.getCouponText();
   }
 }

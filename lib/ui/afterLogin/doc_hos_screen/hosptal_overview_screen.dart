@@ -127,7 +127,8 @@ class _HospitalOverviewScreenState
             return _isProcessing
                 ? CustomWidgets().getProgressIndicator()
                 : _failureCause != null
-                    ? CustomWidgets().errorWidget(_failureCause)
+                    ? CustomWidgets().errorWidget(_failureCause,
+                        onTap: () => _getCentresData())
                     : _getBody();
           }),
         ));
@@ -1095,6 +1096,7 @@ class _HospitalOverviewScreenState
   }
 
   _getCentresData() async {
+    _failureCause = null;
     _isProcessing = true;
     _setState();
     var result = await UserManager().getAdminSpecificData();

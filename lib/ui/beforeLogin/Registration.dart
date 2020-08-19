@@ -168,7 +168,8 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
                   ? CustomWidgets().getProgressIndicator()
                   : _failureCause == null
                       ? bodyView()
-                      : CustomWidgets().errorWidget(_failureCause));
+                      : CustomWidgets().errorWidget(_failureCause,
+                          onTap: () => _getSpecialities()));
         }));
   }
 

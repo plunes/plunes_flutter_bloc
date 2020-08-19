@@ -1,21 +1,15 @@
 import 'dart:async';
 import 'package:plunes/models/Models.dart';
-import 'dart:developer';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
-import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
-import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
-import 'package:plunes/models/Models.dart';
-import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -94,8 +88,9 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
               _userBloc.addIntoStream(null);
             }
             return _profileResponse == null
-                ? CustomWidgets()
-                    .errorWidget(_failureCause ?? "Unable to get profile")
+                ? CustomWidgets().errorWidget(
+                    _failureCause ?? "Unable to get profile",
+                    onTap: () => _getUserDetails())
                 : _getBody();
           },
           initialData: _profileResponse == null ? RequestInProgress() : null,

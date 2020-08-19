@@ -62,7 +62,8 @@ class _ReferScreenState extends BaseState<ReferScreen> {
             child: progress
                 ? CustomWidgets().getProgressIndicator()
                 : _failureCause != null
-                    ? CustomWidgets().errorWidget(_failureCause)
+                    ? CustomWidgets().errorWidget(_failureCause,
+                        onTap: () => _getCurrentCredits())
                     : _hasUsedCodeThrice
                         ? _bodyForCodeUsedThrice()
                         : getBodyView()));
@@ -225,6 +226,11 @@ class _ReferScreenState extends BaseState<ReferScreen> {
   }
 
   void _getCurrentCredits() async {
+    _failureCause = null;
+    if (!progress) {
+      progress = true;
+      _setState();
+    }
     var requestState =
         await _userBloc.getUserProfile(UserManager().getUserDetails().uid);
     if (requestState is RequestSuccess) {

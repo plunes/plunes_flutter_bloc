@@ -349,8 +349,9 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                   child: CustomWidgets().getProgressIndicator(),
                 )
               : Expanded(
-                  child: CustomWidgets()
-                      .errorWidget(_failureCause ?? "Facilities not available"))
+                  child: CustomWidgets().errorWidget(
+                      _failureCause ?? "Facilities not available",
+                      onTap: () => _getMoreFacilities()))
         ],
       ),
     );

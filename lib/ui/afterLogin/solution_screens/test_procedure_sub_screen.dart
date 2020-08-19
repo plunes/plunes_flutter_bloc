@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -117,6 +116,7 @@ class _TestProcedureSubScreenState
         child: Scaffold(
           backgroundColor: PlunesColors.WHITECOLOR,
           key: scaffoldKey,
+          resizeToAvoidBottomInset: false,
           appBar:
               widget.getAppBar(context, widget.title ?? PlunesStrings.NA, true),
           body: Builder(builder: (context) {
@@ -128,7 +128,8 @@ class _TestProcedureSubScreenState
                   ? CustomWidgets().getProgressIndicator()
                   : _defaultCatalogueList == null ||
                           _defaultCatalogueList.isEmpty
-                      ? CustomWidgets().errorWidget(_failureCause)
+                      ? CustomWidgets().errorWidget(_failureCause,
+                          onTap: () => _getInitialList())
                       : _showBody(),
             );
           }),
@@ -210,7 +211,8 @@ class _TestProcedureSubScreenState
                         SearchSolutionBloc.initialIndex
                 ? CustomWidgets().getProgressIndicator()
                 : CustomWidgets().errorWidget(
-                    _failureCause ?? PlunesStrings.noSolutionsAvailable)
+                    _failureCause ?? PlunesStrings.noSolutionsAvailable,
+                    onTap: () => _getSearchedCatalogueList())
             : Column(
                 children: <Widget>[
                   Expanded(
@@ -263,7 +265,8 @@ class _TestProcedureSubScreenState
           _searchSolutionBloc.addIntoDefaultStream(null);
         }
         return _defaultCatalogueList == null || _defaultCatalogueList.isEmpty
-            ? CustomWidgets().errorWidget(_failureCause)
+            ? CustomWidgets().errorWidget(_failureCause,
+                onTap: () => _getSearchedCatalogueList())
             : Column(
                 children: <Widget>[
                   Expanded(
