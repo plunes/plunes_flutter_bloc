@@ -173,8 +173,8 @@ class _FillCouponState extends BaseState<FillCoupon> {
                     } else if (snapshot.data is RequestFailed) {
                       RequestFailed failedObj = snapshot.data;
                       _couponBloc.addIntoStream(null);
-                      Future.delayed(Duration(milliseconds: 200)).then(
-                          (value) => _showMessages(failedObj.failureCause));
+                      Future.delayed(Duration(milliseconds: 200))
+                          .then((value) => _openFailureDialog());
                     }
                     return InkWell(
                       onTap: () {
@@ -260,6 +260,140 @@ class _FillCouponState extends BaseState<FillCoupon> {
                                 fontSize: AppConfig.mediumFont,
                                 color: PlunesColors.SPARKLINGGREEN),
                           ))),
+                ],
+              ),
+            ),
+//            Container(
+//              child: Column(
+//                mainAxisSize: MainAxisSize.min,
+//                mainAxisAlignment: MainAxisAlignment.spaceAround,
+//                children: <Widget>[
+//                  Container(
+//                    alignment: Alignment.topRight,
+//                    child: InkWell(
+//                      onTap: () => Navigator.of(context).pop(),
+//                      onDoubleTap: () {},
+//                      child: Padding(
+//                        padding: const EdgeInsets.all(10),
+//                        child: Icon(
+//                          Icons.close,
+//                          color: PlunesColors.GREYCOLOR,
+//                        ),
+//                      ),
+//                    ),
+//                  ),
+//                  Container(
+//                      width: AppConfig.horizontalBlockSize * 30,
+//                      height: AppConfig.verticalBlockSize * 15,
+//                      child: Image.asset(PlunesImages.couponImage)),
+//                  SizedBox(height: 10),
+//                  Text("Coupon Applied Successfully!"),
+//                  SizedBox(height: AppConfig.verticalBlockSize * 1),
+//                  FlatButton(
+//                      onPressed: () => Navigator.pop(context, true),
+//                      color: PlunesColors.GREENCOLOR,
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius: BorderRadius.circular(50)),
+//                      child: Container(
+//                        width: AppConfig.horizontalBlockSize * 20,
+//                        child: Text(
+//                          "Ok",
+//                          style: TextStyle(color: PlunesColors.WHITECOLOR),
+//                          textAlign: TextAlign.center,
+//                        ),
+//                      )),
+//                ],
+//              ),
+//            ),
+          );
+        }).then((value) {
+      _couponController.clear();
+    });
+  }
+
+  _openFailureDialog() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
+            child: Container(
+              height: AppConfig.verticalBlockSize * 40,
+              child: Column(
+//              mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 3),
+                      height: AppConfig.verticalBlockSize * 10,
+                      child: Image.asset(PlunesImages.cardExpired)),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 6,
+                      right: AppConfig.horizontalBlockSize * 6,
+                    ),
+                    child: Text(
+                      PlunesStrings.oops,
+                      style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.BLACKCOLOR),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 6,
+                        vertical: AppConfig.verticalBlockSize * 2),
+                    child: Text(
+                      PlunesStrings.couponExpired,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.smallFont,
+                          color: PlunesColors.GREYCOLOR),
+                    ),
+                  ),
+                  Container(
+                    height: 0.5,
+                    width: double.infinity,
+                    color: PlunesColors.GREYCOLOR,
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                  ),
+                  FlatButton(
+                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      highlightColor:
+                          PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Container(
+                          width: double.infinity,
+                          child: Text(
+                            "OK",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.SPARKLINGGREEN),
+                          ))),
+
+//                  FlatButton(
+//                      onPressed: () {},
+//                      color: PlunesColors.GREENCOLOR,
+//                      shape: RoundedRectangleBorder(
+//                          borderRadius: BorderRadius.circular(50)),
+//                      child: Container(
+//                        width: AppConfig.horizontalBlockSize * 20,
+//                        child: Text(
+//                          "Update",
+//                          style: TextStyle(color: PlunesColors.WHITECOLOR),
+//                          textAlign: TextAlign.center,
+//                        ),
+//                      )),
+//                    ],
+//                  )
                 ],
               ),
             ),

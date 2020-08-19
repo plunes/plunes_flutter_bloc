@@ -56,6 +56,9 @@ class PlunesStrings {
 
   /////
   ///Solution strings
+  static const String oops = "Oops !";
+  static const String couponExpired =
+      "Looks like this coupon has expired,\nPlease try again.";
   static const String negotiatingWithSelectedFacility =
       "We will be negotiating with the selected facilities on your behalf and will get in touch with you soon";
   static const String thankYou = "Thank You!";
