@@ -300,11 +300,14 @@ class PlunesStrings {
   static const String enterProcedureAndTestDetails =
       "Enter Procedure & Test details";
   static const String makeSureTheDetailsText =
-      "Enter details to receive competitive bids from hospitals.";
-  static const String chooseUptoText = "Choose upto 5 facilities";
+      "Enter the complete procedure details to get competitive bids from the selected facilities.";
+  static const String selectTheFacilities =
+      "Select the facilities that you want to Negotiate with";
   static const String makeSureToUpdatePrice =
       "Make sure to Update price in the Preferred time to ensure booking";
   static const String specialities = "Choose Speciality";
+  static const String enterTheSpecialityRelatedText =
+      "Enter the speciality related to the Procedure you're looking for so we can help you choosing the facilities";
 
   static const String actionAbleMessage =
       "These insights are predicted by our AI so that you get maximum conversions. Make sure to act on Actionable Insights so that You increase your Revenue.";
@@ -330,7 +333,8 @@ class PlunesStrings {
       "Please select facilities to receive competitive bids from hospitals.";
   static const String refresh = "Refresh";
   static const String startNegotiating = "Start Negotiating";
-  static String pleasePayFull = "Please pay due amount to get Invoice";
+  static const String pleasePayFull = "Please pay due amount to get Invoice";
+  static const String continueText = "Continue";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

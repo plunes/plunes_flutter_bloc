@@ -20,6 +20,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/enter_procedure_detail_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 
 // ignore: must_be_immutable
@@ -153,6 +154,23 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 controller: _scrollController,
                 children: <Widget>[
                   _getLocationField(),
+                  Container(
+                    margin: EdgeInsets.only(
+                      left: AppConfig.verticalBlockSize * 3,
+                      right: AppConfig.verticalBlockSize * 3,
+                      bottom: AppConfig.verticalBlockSize * 2.5,
+                    ),
+                    child: Center(
+                      child: Text(
+                        PlunesStrings.enterTheSpecialityRelatedText,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 18),
+                      ),
+                    ),
+                  ),
                   StreamBuilder<Object>(
                       stream: _searchSolutionBloc.getManualBiddingStream(),
                       builder: (context, snapshot) {
@@ -170,15 +188,20 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 //                    child: _getGreenDash(),
 //                  ),
                   Container(
+                    padding: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 3.5),
+                    child: _getGreenDash(),
+                  ),
+                  Container(
                     margin: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 3.5,
+//                      top: AppConfig.verticalBlockSize * 3.5,
                       left: AppConfig.verticalBlockSize * 3,
                       right: AppConfig.verticalBlockSize * 3,
                       bottom: AppConfig.verticalBlockSize * 1.5,
                     ),
                     child: Center(
                       child: Text(
-                        PlunesStrings.chooseUptoText,
+                        PlunesStrings.selectTheFacilities,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: PlunesColors.BLACKCOLOR,
@@ -430,7 +453,13 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   void _showInSnackBar(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: scaffoldKey, message: message);
+        });
+//    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
   }
 
   Widget _getDefaultWidget(AsyncSnapshot<RequestState> snapShot) {
@@ -517,14 +546,20 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
           _showInSnackBar(PlunesStrings.selectFacilityToReceiveBid);
           return;
         }
-        showDialog(
-                context: context,
-                builder: (context) {
-                  return CustomWidgets().getManualBiddingEnterDetailsPopup(
-                      scaffoldKey, _searchSolutionBloc, _selectedItemList);
-                },
-                barrierDismissible: true)
-            .then((value) {
+//        showDialog(
+//                context: context,
+//                builder: (context) {
+//                  return CustomWidgets().getManualBiddingEnterDetailsPopup(
+//                      scaffoldKey, _searchSolutionBloc, _selectedItemList);
+//                },
+//                barrierDismissible: true)
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => EnterProcedureDetailScreen(
+                      searchSolutionBloc: _searchSolutionBloc,
+                      selectedItemList: _selectedItemList,
+                    ))).then((value) {
           if (value != null && value) {
             Navigator.pop(context);
           }
@@ -536,7 +571,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         padding: EdgeInsets.all(10),
         child: Center(
           child: Text(
-            plunesStrings.submit,
+            PlunesStrings.continueText,
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: PlunesColors.SPARKLINGGREEN,
