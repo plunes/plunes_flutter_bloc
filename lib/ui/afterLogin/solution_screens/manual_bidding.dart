@@ -782,6 +782,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             child: InkWell(
               onTap: () => _getLocation(),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: <Widget>[

@@ -460,13 +460,15 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
         .helpDocHosQuery("$title : ${_descriptionController.text.trim()}");
     if (result is RequestSuccess && mounted) {
       CustomWidgets().helpThankYou(context);
-      widget.showInSnackBar(
-          plunesStrings.success, PlunesColors.BLACKCOLOR, _scaffoldKey);
     } else if (result is RequestFailed && mounted) {
-      widget.showInSnackBar(
-          result.failureCause ?? plunesStrings.somethingWentWrong,
-          PlunesColors.BLACKCOLOR,
-          _scaffoldKey);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets().getInformativePopup(
+                message:
+                    result.failureCause ?? plunesStrings.somethingWentWrong,
+                globalKey: _scaffoldKey);
+          });
     }
   }
 
