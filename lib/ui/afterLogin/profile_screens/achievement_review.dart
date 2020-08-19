@@ -201,6 +201,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
           ),
         ),
         Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Expanded(
               flex: 2,
@@ -413,17 +414,19 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                   ),
                   _user.achievements[index].title.isEmpty
                       ? Container()
-                      : Flexible(
+                      : Expanded(
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 horizontal:
                                     AppConfig.horizontalBlockSize * 0.5),
-                            child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * .5),
                               child: Text(
                                 _user.achievements[index].title,
                                 maxLines: 1,
                                 overflow: TextOverflow.clip,
-                                textAlign: TextAlign.start,
+                                textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 14),
                               ),
                             ),

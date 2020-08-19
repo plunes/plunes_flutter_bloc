@@ -23,6 +23,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/achievement_review.dart';
+import 'package:readmore/readmore.dart';
 
 // ignore: must_be_immutable
 class HospitalProfile extends BaseActivity {
@@ -196,13 +197,15 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Container(),
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            bottom: AppConfig.verticalBlockSize * 3,
-                            top: AppConfig.verticalBlockSize * 6,
+                      Expanded(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              bottom: AppConfig.verticalBlockSize * 3,
+                              top: AppConfig.verticalBlockSize * 6,
+                            ),
+                            child: _getNameView(),
                           ),
-                          child: _getNameView(),
                         ),
                       ),
                       Column(
@@ -575,8 +578,13 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             padding: EdgeInsets.only(
                 top: AppConfig.verticalBlockSize * 1,
                 left: AppConfig.horizontalBlockSize * 8.5),
-            child: Text(
+            child: ReadMoreText(
               _profileResponse.user?.biography ?? _getEmptyString(),
+              colorClickableText: PlunesColors.SPARKLINGGREEN,
+              trimLines: 10,
+              trimMode: TrimMode.Line,
+              trimCollapsedText: '  ...read more',
+              trimExpandedText: '  read less',
               style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14),
             ),
           ),

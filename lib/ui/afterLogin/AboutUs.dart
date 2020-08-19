@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -24,6 +25,10 @@ class AboutUs extends BaseActivity {
 class _AboutUsState extends BaseState<AboutUs> {
   List<dynamic> aboutUsUser = new List();
   List<dynamic> aboutUsHosp = new List();
+  String _userVideoUrl = "https://youtu.be/QwCxu5BgJQg";
+  String _hospVideoUrl = "https://youtu.be/eEQGGzplZ7w";
+
+//  YoutubePlayerController _controller;
 
   @override
   void initState() {
@@ -172,8 +177,8 @@ class _AboutUsState extends BaseState<AboutUs> {
             InkWell(
               onTap: () {
                 widget.userType == Constants.user
-                    ? LauncherUtil.launchUrl("https://youtu.be/QwCxu5BgJQg")
-                    : LauncherUtil.launchUrl("https://youtu.be/eEQGGzplZ7w");
+                    ? LauncherUtil.launchUrl(_userVideoUrl)
+                    : LauncherUtil.launchUrl(_hospVideoUrl);
               },
               child: Container(
                 margin:
