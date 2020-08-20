@@ -46,7 +46,7 @@ class _PopupChooseState extends State<PopupChoose> {
                 "${widget.services.paymentOptions[pIndex].toString()}"));
       }
     }
-    print("_paymentSelectionOptions${_paymentSelectionOptions.toString()}");
+//    print("_paymentSelectionOptions${_paymentSelectionOptions.toString()}");
     super.initState();
   }
 

@@ -87,11 +87,16 @@ class _AvailabilitySelectionScreenState
   }
 
   void getSlots() async {
-    check.clear();
-    from_1.clear();
-    from_2.clear();
-    to_1.clear();
-    to_2.clear();
+    failureCause = null;
+    if (progress != null && progress == false) {
+      progress = true;
+      _setState();
+    }
+    check = [];
+    from_1 = [];
+    from_2 = [];
+    to_1 = [];
+    to_2 = [];
     var result =
         await userBloc.getUserProfile(UserManager().getUserDetails().uid);
     if (result is RequestSuccess) {
@@ -271,6 +276,7 @@ class _AvailabilitySelectionScreenState
       child: ListView.builder(
         padding: EdgeInsets.all(0),
         itemBuilder: (context, index) {
+          print("${from_1.length}index $index");
           return Container(
             margin: EdgeInsets.only(top: 8),
             child: Row(
@@ -650,9 +656,10 @@ class _AvailabilitySelectionScreenState
                       submit
                     ],
                   )
-                : Center(
-                    child: Text(failureCause ?? "No data available!"),
-                  )));
+                : CustomWidgets().errorWidget(
+                    failureCause ?? "No data available!",
+                    onTap: () => getSlots(),
+                    isSizeLess: true)));
 
     return Scaffold(
         appBar: widget.getAppBar(context, plunesStrings.availability, true),

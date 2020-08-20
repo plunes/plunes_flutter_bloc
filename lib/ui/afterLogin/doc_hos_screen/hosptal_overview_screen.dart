@@ -127,7 +127,8 @@ class _HospitalOverviewScreenState
             return _isProcessing
                 ? CustomWidgets().getProgressIndicator()
                 : _failureCause != null
-                    ? CustomWidgets().errorWidget(_failureCause)
+                    ? CustomWidgets().errorWidget(_failureCause,
+                        onTap: () => _getCentresData())
                     : _getBody();
           }),
         ));
@@ -1095,6 +1096,7 @@ class _HospitalOverviewScreenState
   }
 
   _getCentresData() async {
+    _failureCause = null;
     _isProcessing = true;
     _setState();
     var result = await UserManager().getAdminSpecificData();
@@ -1202,6 +1204,7 @@ class FlatButtonLinks extends StatelessWidget {
       margin: EdgeInsets.only(left: leftMargin),
       child: InkWell(
         onTap: () => onTap(),
+        highlightColor: PlunesColors.LIGHTGREENCOLOR,
         onDoubleTap: () {},
         child: Padding(
             padding: EdgeInsets.only(top: 15, bottom: 15, right: 10),
@@ -1277,7 +1280,6 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     } else {
       if (timer != null && timer.isActive) {
         timer?.cancel();
-//        widget.getRealTimeInsights();
       }
     }
   }

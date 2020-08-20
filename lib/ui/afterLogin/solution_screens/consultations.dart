@@ -69,7 +69,8 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
                     return CustomWidgets().getProgressIndicator();
                   }
                   return _catalogueList == null || _catalogueList.isEmpty
-                      ? CustomWidgets().errorWidget(_failureCause)
+                      ? CustomWidgets().errorWidget(_failureCause,
+                          onTap: () => _getConsultations())
                       : _showConsultationList();
                 },
                 stream: _consultationBloc.baseStream,

@@ -1,21 +1,15 @@
 import 'dart:async';
 import 'package:plunes/models/Models.dart';
-import 'dart:developer';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
-import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
-import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
-import 'package:plunes/models/Models.dart';
-import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -23,6 +17,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/achievement_review.dart';
+import 'package:readmore/readmore.dart';
 
 // ignore: must_be_immutable
 class HospitalProfile extends BaseActivity {
@@ -93,8 +88,9 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
               _userBloc.addIntoStream(null);
             }
             return _profileResponse == null
-                ? CustomWidgets()
-                    .errorWidget(_failureCause ?? "Unable to get profile")
+                ? CustomWidgets().errorWidget(
+                    _failureCause ?? "Unable to get profile",
+                    onTap: () => _getUserDetails())
                 : _getBody();
           },
           initialData: _profileResponse == null ? RequestInProgress() : null,
@@ -196,13 +192,15 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Container(),
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            bottom: AppConfig.verticalBlockSize * 3,
-                            top: AppConfig.verticalBlockSize * 6,
+                      Expanded(
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              bottom: AppConfig.verticalBlockSize * 3,
+                              top: AppConfig.verticalBlockSize * 6,
+                            ),
+                            child: _getNameView(),
                           ),
-                          child: _getNameView(),
                         ),
                       ),
                       Column(
@@ -575,8 +573,13 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             padding: EdgeInsets.only(
                 top: AppConfig.verticalBlockSize * 1,
                 left: AppConfig.horizontalBlockSize * 8.5),
-            child: Text(
+            child: ReadMoreText(
               _profileResponse.user?.biography ?? _getEmptyString(),
+              colorClickableText: PlunesColors.SPARKLINGGREEN,
+              trimLines: 10,
+              trimMode: TrimMode.Line,
+              trimCollapsedText: '  ...read more',
+              trimExpandedText: '  read less',
               style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14),
             ),
           ),

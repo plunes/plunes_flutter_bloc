@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_swipe_action_cell/core/swipe_action_cell.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -209,7 +210,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
       padding: EdgeInsets.all(0),
       itemCount: items.posts.length,
       itemBuilder: (context, index) {
-        return rowLayout(items.posts[index]);
+        return SwipeActionCell(
+            key: ObjectKey(items.posts[index]),
+            performsFirstActionWithFullSwipe: true,
+            actions: [
+              SwipeAction(
+                  title: "remove",
+                  onTap: (CompletionHandler handler) async {
+                    items.posts.removeAt(index);
+                    setState(() {});
+                  },
+                  color: Colors.redAccent.withOpacity(.5)),
+            ],
+            child: rowLayout(items.posts[index]));
       },
     );
   }
@@ -238,7 +251,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     NetworkImage(result.senderImageUrl),
                               )
                             : CustomWidgets().getProfileIconWithName(
-                                result.senderName, 14, 14)),
+                                result.senderName, 10, 10)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

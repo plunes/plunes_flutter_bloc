@@ -56,6 +56,14 @@ class PlunesStrings {
 
   /////
   ///Solution strings
+  static const String oops = "Oops !";
+  static const String couponExpired =
+      "Looks like this coupon has expired,\nPlease try again.";
+  static const String negotiatingWithSelectedFacility =
+      "We will be negotiating with the selected facilities on your behalf and will get in touch with you soon";
+  static const String thankYou = "Thank You!";
+  static const String thanksForContacting =
+      "Thanks for contacting us!\nWe will be in touch with you shortly";
   static const String usingOlderVersion =
       "You are using an older version of the application, please update to continue using our services.";
   static const String newVersionAvailable = "New Version Available";
@@ -119,7 +127,7 @@ class PlunesStrings {
   static const String closed = "Closed";
   static const String reschedule = "Reschedule";
   static const String requestInvoice = "Request Invoice";
-  static const String refund = "Refund";
+  static const String refund = "Refund Requested";
   static const String visitAgain = "Visit Again";
   static const String appointmentScreenError = "Appointment Screen Error";
   static const String paymentStatus = "Payment Status";
@@ -135,7 +143,7 @@ class PlunesStrings {
   static const String emptyTextFieldWarning = "Please Enter the Refund Reason";
   static const String thankYouMessage = "Thank You!";
   static const String refundSuccessMessage =
-      "Your Refund has been initiated, Amount will be credited in 3-4 business days.";
+      "We have received your refund request . Our team will get in touch with you soon regarding the same";
   static String uplaodSuccessMessage = "Report uploaded successfully!";
   static String plockrViewer = 'PLUNES PLOCKR VIEWER';
 
@@ -295,11 +303,14 @@ class PlunesStrings {
   static const String enterProcedureAndTestDetails =
       "Enter Procedure & Test details";
   static const String makeSureTheDetailsText =
-      "Enter details to receive competitive bids from hospitals.";
-  static const String chooseUptoText = "Choose upto 5 facilities";
+      "Enter the complete procedure details to get competitive bids from the selected facilities.";
+  static const String selectTheFacilities =
+      "Select the facilities that you want to Negotiate with";
   static const String makeSureToUpdatePrice =
       "Make sure to Update price in the Preferred time to ensure booking";
   static const String specialities = "Choose Speciality";
+  static const String enterTheSpecialityRelatedText =
+      "Enter the speciality related to the Procedure you're looking for so we can help you choosing the facilities";
 
   static const String actionAbleMessage =
       "These insights are predicted by our AI so that you get maximum conversions. Make sure to act on Actionable Insights so that You increase your Revenue.";
@@ -325,7 +336,8 @@ class PlunesStrings {
       "Please select facilities to receive competitive bids from hospitals.";
   static const String refresh = "Refresh";
   static const String startNegotiating = "Start Negotiating";
-  static String pleasePayFull = "Please pay due amount to get Invoice";
+  static const String pleasePayFull = "Please pay due amount to get Invoice";
+  static const String continueText = "Continue";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

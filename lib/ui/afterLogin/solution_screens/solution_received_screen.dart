@@ -207,7 +207,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       ? Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: AppConfig.horizontalBlockSize * 8),
-                          child: CustomWidgets().errorWidget(_failureCause))
+                          child: CustomWidgets().errorWidget(_failureCause,
+                              onTap: (_failureCause != null &&
+                                      _failureCause.isNotEmpty &&
+                                      _failureCause == PlunesStrings.noInternet)
+                                  ? () => _fetchResultAndStartTimer()
+                                  : null,
+                              isSizeLess: true))
                       : _showBody();
             }),
           ),

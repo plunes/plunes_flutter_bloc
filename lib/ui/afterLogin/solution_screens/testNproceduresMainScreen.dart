@@ -87,7 +87,8 @@ class _TestAndProcedureScreenState extends BaseState<TestAndProcedureScreen> {
           _failureCause = _requestFailed.failureCause;
         }
         return _testAndProcedures == null || _testAndProcedures.isEmpty
-            ? CustomWidgets().errorWidget(_failureCause)
+            ? CustomWidgets().errorWidget(_failureCause,
+                onTap: () => _getDetails(), isSizeLess: true)
             : _showItems();
       },
       stream: _consultationTestProcedureBloc.baseStream,

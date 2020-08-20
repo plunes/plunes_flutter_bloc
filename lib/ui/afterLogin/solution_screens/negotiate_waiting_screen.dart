@@ -184,9 +184,10 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
                   children: <Widget>[
                     CustomWidgets().errorWidget(_failureCause),
                     Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 38,
-                          vertical: AppConfig.verticalBlockSize * 4),
+                      margin: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 38,
+                          right: AppConfig.horizontalBlockSize * 38,
+                          top: AppConfig.verticalBlockSize * 2.5),
                       child: InkWell(
                         onTap: () => Navigator.pop(context),
                         child: CustomWidgets().getRoundedButton(

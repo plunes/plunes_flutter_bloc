@@ -70,8 +70,10 @@ class _DocProfileState extends BaseState<DocProfile> {
                 _userBloc.addIntoStream(null);
               }
               return _profileResponse == null
-                  ? CustomWidgets()
-                      .errorWidget(_failureCause ?? "Unable to get profile")
+                  ? CustomWidgets().errorWidget(
+                      _failureCause ?? "Unable to get profile",
+                      onTap: () => _getUserDetails(),
+                      isSizeLess: true)
                   : _getBodyView();
             },
             initialData: _profileResponse == null ? RequestInProgress() : null,
