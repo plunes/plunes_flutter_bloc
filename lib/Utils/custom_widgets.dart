@@ -2522,39 +2522,36 @@ class CustomWidgets {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Container(
-                  alignment: Alignment.bottomRight,
-                  padding: EdgeInsets.all(12),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      return;
-                    },
-                    onDoubleTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.close,
-                        color: PlunesColors.GREYCOLOR,
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
                   padding: EdgeInsets.symmetric(
                       horizontal: AppConfig.horizontalBlockSize * 6,
-                      vertical: AppConfig.verticalBlockSize * 2),
+                      vertical: AppConfig.verticalBlockSize * 3),
                   child: Text(
                     "Sorry! your appointment has been cancelled.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: AppConfig.smallFont,
+                      fontSize: AppConfig.mediumFont,
                     ),
                   ),
                 ),
                 Container(
-                    alignment: Alignment.bottomRight,
-                    padding: EdgeInsets.all(20),
-                    child: Container()),
+                  height: 0.5,
+                  width: double.infinity,
+                  color: PlunesColors.GREYCOLOR,
+                ),
+                FlatButton(
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Container(
+                        width: double.infinity,
+                        child: Text(
+                          "OK",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              color: PlunesColors.SPARKLINGGREEN),
+                        ))),
               ]),
         ),
       ),
