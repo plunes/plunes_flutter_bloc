@@ -315,6 +315,8 @@ class _HospitalOverviewScreenState
                                                       _openRealTimeInsightPriceUpdateWidget(
                                                           _realTimeInsightsResponse
                                                               .data[itemIndex]),
+                                                  highlightColor: PlunesColors
+                                                      .LIGHTGREENCOLOR,
                                                   child: Container(
                                                     padding: EdgeInsets.only(
                                                         left: 1.0,
@@ -566,11 +568,17 @@ class _HospitalOverviewScreenState
                             PlunesImages.informativeIcon,
                           ),
                         )),
-                    Expanded(child: Container()),
+                    Expanded(
+                      child: Container(),
+                      flex: 1,
+                    ),
                     (_user.isAdmin &&
                             _centresList != null &&
                             _centresList.isNotEmpty)
-                        ? Flexible(child: _actionableDropDown(), flex: 2)
+                        ? Expanded(
+                            child: _actionableDropDown(),
+                            flex: 10,
+                          )
                         : Container(),
                   ],
                 ),

@@ -787,11 +787,23 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             value: item.id,
             child: Container(
               alignment: Alignment.center,
-              child: Text(
-                CommonMethods.getStringInCamelCase(item?.speciality) ??
-                    PlunesStrings.NA,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    CommonMethods.getStringInCamelCase(item?.speciality) ??
+                        PlunesStrings.NA,
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                  ),
+                  Container(
+//                    margin: EdgeInsets.symmetric(
+//                        horizontal: AppConfig.horizontalBlockSize * 10),
+                    width: double.infinity,
+                    height: 0.25,
+                    color: PlunesColors.GREYCOLOR,
+                  ),
+                ],
               ),
             )));
       }
