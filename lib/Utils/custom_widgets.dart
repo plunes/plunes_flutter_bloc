@@ -2320,12 +2320,13 @@ class CustomWidgets {
                                     top: AppConfig.verticalBlockSize * 5),
                               ),
                               Container(
-                                height: AppConfig.verticalBlockSize * 6,
+                                height: AppConfig.verticalBlockSize * 8,
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Expanded(
+//                                      flex: 200,
                                       child: FlatButton(
                                           splashColor:
                                               Colors.redAccent.withOpacity(.2),
@@ -2339,21 +2340,21 @@ class CustomWidgets {
                                           },
                                           child: Container(
                                               width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                  bottomLeft: Radius.circular(
-                                                      AppConfig
-                                                              .horizontalBlockSize *
-                                                          4),
-                                                ),
-                                              ),
+//                                              decoration: BoxDecoration(
+//                                                borderRadius: BorderRadius.only(
+//                                                  bottomLeft: Radius.circular(
+//                                                      AppConfig
+//                                                              .horizontalBlockSize *
+//                                                          4),
+//                                                ),
+//                                              ),
                                               padding: EdgeInsets.symmetric(
                                                   vertical: AppConfig
                                                           .verticalBlockSize *
                                                       1.5,
                                                   horizontal: AppConfig
                                                           .horizontalBlockSize *
-                                                      8),
+                                                      6),
                                               child: Text(
                                                 'Cancel',
                                                 textAlign: TextAlign.center,
@@ -2364,11 +2365,12 @@ class CustomWidgets {
                                               ))),
                                     ),
                                     Container(
-                                      height: AppConfig.verticalBlockSize * 6,
+                                      height: AppConfig.verticalBlockSize * 8,
                                       color: PlunesColors.GREYCOLOR,
                                       width: 0.5,
                                     ),
                                     Expanded(
+//                                      flex: 200,
                                       child: FlatButton(
                                           focusColor: PlunesColors
                                               .SPARKLINGGREEN
@@ -2401,21 +2403,21 @@ class CustomWidgets {
                                           },
                                           child: Container(
                                               width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                  bottomRight: Radius.circular(
-                                                      AppConfig
-                                                              .horizontalBlockSize *
-                                                          4),
-                                                ),
-                                              ),
+//                                              decoration: BoxDecoration(
+//                                                borderRadius: BorderRadius.only(
+//                                                  bottomRight: Radius.circular(
+//                                                      AppConfig
+//                                                              .horizontalBlockSize *
+//                                                          4),
+//                                                ),
+//                                              ),
                                               padding: EdgeInsets.symmetric(
                                                   vertical: AppConfig
                                                           .verticalBlockSize *
                                                       1.5,
                                                   horizontal: AppConfig
                                                           .horizontalBlockSize *
-                                                      8),
+                                                      6),
                                               child: Text(
                                                 'Submit',
                                                 textAlign: TextAlign.center,
@@ -2666,24 +2668,24 @@ class CustomWidgets {
                 bookingBloc.addStateInConfirmProvider(null);
               }
               return Column(children: <Widget>[
-                Container(
-                  alignment: Alignment.bottomRight,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      return;
-                    },
-                    onDoubleTap: () {},
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Icon(
-                        Icons.close,
-                        color: PlunesColors.GREYCOLOR,
-                        size: AppConfig.extraLargeFont,
-                      ),
-                    ),
-                  ),
-                ),
+//                Container(
+//                  alignment: Alignment.bottomRight,
+//                  child: InkWell(
+//                    onTap: () {
+//                      Navigator.pop(context);
+//                      return;
+//                    },
+//                    onDoubleTap: () {},
+//                    child: Padding(
+//                      padding: EdgeInsets.all(12),
+//                      child: Icon(
+//                        Icons.close,
+//                        color: PlunesColors.GREYCOLOR,
+//                        size: AppConfig.extraLargeFont,
+//                      ),
+//                    ),
+//                  ),
+//                ),
                 isSuccess
                     ? Container(
                         margin: EdgeInsets.symmetric(
@@ -2702,7 +2704,37 @@ class CustomWidgets {
                             style: TextStyle(fontSize: AppConfig.mediumFont)),
                       ),
                 isSuccess
-                    ? Container()
+                    ? Column(
+                        children: <Widget>[
+                          Container(
+                            height: 0.5,
+                            width: double.infinity,
+                            color: PlunesColors.GREYCOLOR,
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 5),
+                          ),
+                          FlatButton(
+                              splashColor:
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                              highlightColor:
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                              focusColor:
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                              onPressed: () {
+                                Navigator.pop(context);
+                                return;
+                              },
+                              child: Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    'OK',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont,
+                                        color: PlunesColors.SPARKLINGGREEN),
+                                  ))),
+                        ],
+                      )
                     : Container(
                         margin: EdgeInsets.only(
                             top: AppConfig.verticalBlockSize * 4,
@@ -3929,35 +3961,49 @@ class CustomWidgets {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
       child: Container(
-        height: AppConfig.verticalBlockSize * 40,
-        child: Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.topRight,
-              child: InkWell(
-                onTap: () => Navigator.of(globalKey.currentState.context).pop(),
-                onDoubleTap: () {},
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Icon(Icons.close),
-                ),
+          height: AppConfig.verticalBlockSize * 33.5,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 3,
+                      horizontal: AppConfig.horizontalBlockSize * 6),
+                  height: AppConfig.verticalBlockSize * 10,
+                  child: Image.asset(PlunesImages.bdSupportImage)),
+              Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 5),
+                child: Text(message,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: AppConfig.mediumFont,
+                        color: PlunesColors.GREYCOLOR)),
               ),
-            ),
-            Flexible(child: Image.asset(PlunesImages.bdSupportImage)),
-            Flexible(
-                child: Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 3,
-                  vertical: AppConfig.verticalBlockSize * 3),
-              child: Text(
-                message,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+              Container(
+                height: 0.5,
+                width: double.infinity,
+                color: PlunesColors.GREYCOLOR,
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
               ),
-            )),
-          ],
-        ),
-      ),
+              FlatButton(
+                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                  highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                  focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                  onPressed: () =>
+                      Navigator.of(globalKey.currentState.context).pop(),
+                  child: Container(
+                      width: double.infinity,
+                      child: Text(
+                        'OK',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: AppConfig.mediumFont,
+                            color: PlunesColors.SPARKLINGGREEN),
+                      ))),
+            ],
+          )),
     );
   }
 

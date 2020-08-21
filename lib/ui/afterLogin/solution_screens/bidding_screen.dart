@@ -128,32 +128,38 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  CustomWidgets().rectangularButtonWithPadding(
-                      buttonColor: PlunesColors.WHITECOLOR,
-                      buttonText: PlunesStrings.consultations,
-                      textColor: PlunesColors.GREYCOLOR,
-                      borderColor: PlunesColors.LIGHTGREYCOLOR,
-                      horizontalPadding: AppConfig.horizontalBlockSize * 4,
-                      verticalPadding: AppConfig.verticalBlockSize * 1,
-                      onTap: () => _onConsultationButtonClick()),
-                  CustomWidgets().rectangularButtonWithPadding(
-                      buttonColor: PlunesColors.WHITECOLOR,
-                      buttonText: PlunesStrings.tests,
-                      textColor: PlunesColors.GREYCOLOR,
-                      borderColor: PlunesColors.LIGHTGREYCOLOR,
-                      horizontalPadding: AppConfig.horizontalBlockSize * 11,
-                      verticalPadding: AppConfig.verticalBlockSize * 1,
-                      onTap: () => _onTestAndProcedureButtonClick(
-                          PlunesStrings.tests, false)),
-                  CustomWidgets().rectangularButtonWithPadding(
-                      buttonColor: PlunesColors.WHITECOLOR,
-                      buttonText: PlunesStrings.procedures,
-                      textColor: PlunesColors.GREYCOLOR,
-                      borderColor: PlunesColors.LIGHTGREYCOLOR,
-                      horizontalPadding: AppConfig.horizontalBlockSize * 5,
-                      verticalPadding: AppConfig.verticalBlockSize * 1,
-                      onTap: () => _onTestAndProcedureButtonClick(
-                          PlunesStrings.procedures, true)),
+                  Expanded(
+                    child: CustomWidgets().rectangularButtonWithPadding(
+                        buttonColor: PlunesColors.WHITECOLOR,
+                        buttonText: PlunesStrings.consultations,
+                        textColor: PlunesColors.GREYCOLOR,
+                        borderColor: PlunesColors.LIGHTGREYCOLOR,
+                        horizontalPadding: AppConfig.horizontalBlockSize * 4,
+                        verticalPadding: AppConfig.verticalBlockSize * 1,
+                        onTap: () => _onConsultationButtonClick()),
+                  ),
+                  Expanded(
+                    child: CustomWidgets().rectangularButtonWithPadding(
+                        buttonColor: PlunesColors.WHITECOLOR,
+                        buttonText: PlunesStrings.tests,
+                        textColor: PlunesColors.GREYCOLOR,
+                        borderColor: PlunesColors.LIGHTGREYCOLOR,
+                        horizontalPadding: AppConfig.horizontalBlockSize * 11,
+                        verticalPadding: AppConfig.verticalBlockSize * 1,
+                        onTap: () => _onTestAndProcedureButtonClick(
+                            PlunesStrings.tests, false)),
+                  ),
+                  Expanded(
+                    child: CustomWidgets().rectangularButtonWithPadding(
+                        buttonColor: PlunesColors.WHITECOLOR,
+                        buttonText: PlunesStrings.procedures,
+                        textColor: PlunesColors.GREYCOLOR,
+                        borderColor: PlunesColors.LIGHTGREYCOLOR,
+                        horizontalPadding: AppConfig.horizontalBlockSize * 5,
+                        verticalPadding: AppConfig.verticalBlockSize * 1,
+                        onTap: () => _onTestAndProcedureButtonClick(
+                            PlunesStrings.procedures, true)),
+                  ),
                 ],
               ),
             ),

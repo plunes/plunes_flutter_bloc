@@ -566,11 +566,17 @@ class _HospitalOverviewScreenState
                             PlunesImages.informativeIcon,
                           ),
                         )),
-                    Expanded(child: Container()),
+                    Expanded(
+                      child: Container(),
+                      flex: 1,
+                    ),
                     (_user.isAdmin &&
                             _centresList != null &&
                             _centresList.isNotEmpty)
-                        ? Flexible(child: _actionableDropDown(), flex: 2)
+                        ? Expanded(
+                            child: _actionableDropDown(),
+                            flex: 10,
+                          )
                         : Container(),
                   ],
                 ),
