@@ -64,7 +64,6 @@ class MoreFacility {
         json['experience'].runtimeType == expr.runtimeType) {
       expr = json['experience'];
     }
-    print(json['experience']);
     sId = json['_id'];
     imageUrl = json['imageUrl'];
     name = json['name'];

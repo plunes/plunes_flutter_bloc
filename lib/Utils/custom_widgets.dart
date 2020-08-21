@@ -516,21 +516,26 @@ class CustomWidgets {
   }
 
   Widget errorWidget(String failureCause,
-      {Function onTap, String buttonText, bool isSizeLess = false}) {
+      {Function onTap,
+      String buttonText,
+      bool isSizeLess = false,
+      bool shouldNotShowImage = false}) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 2.5),
-            child: Image.asset(
-              PlunesImages.noServiceAvailable,
-              height: AppConfig.verticalBlockSize * 14,
-              width: AppConfig.horizontalBlockSize * 45,
-            ),
-          ),
+          shouldNotShowImage
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 2.5),
+                  child: Image.asset(
+                    PlunesImages.noServiceAvailable,
+                    height: AppConfig.verticalBlockSize * 14,
+                    width: AppConfig.horizontalBlockSize * 45,
+                  ),
+                ),
           Text(
             failureCause ?? plunesStrings.somethingWentWrong,
             textAlign: TextAlign.center,

@@ -181,7 +181,9 @@ class SearchedSolutionRepo {
       MoreFacilityResponse _facilitiesResponse =
           MoreFacilityResponse.fromJson(serverResponse.response.data);
       return RequestSuccess(
-          response: _facilitiesResponse?.data, requestCode: pageIndex);
+          response: _facilitiesResponse?.data,
+          requestCode: pageIndex,
+          additionalData: searchQuery);
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
     }

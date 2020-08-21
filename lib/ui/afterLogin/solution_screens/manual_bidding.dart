@@ -226,8 +226,21 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                           RequestSuccess _requestSuccessObject = snapShot.data;
                           if (_requestSuccessObject.requestCode ==
                               SearchSolutionBloc.initialIndex) {
-                            pageIndex = SearchSolutionBloc.initialIndex;
-                            _catalogues = [];
+                            if (_searchController.text.trim().isEmpty) {
+                              pageIndex = SearchSolutionBloc.initialIndex;
+                              _catalogues = [];
+                            } else {
+                              if (_searchController.text.trim().isNotEmpty &&
+                                  _requestSuccessObject.additionalData !=
+                                      null &&
+                                  _requestSuccessObject.additionalData
+                                      .toString()
+                                      .trim()
+                                      .isNotEmpty) {
+                                pageIndex = SearchSolutionBloc.initialIndex;
+                                _catalogues = [];
+                              }
+                            }
                           }
                           if (_requestSuccessObject.requestCode !=
                                   SearchSolutionBloc.initialIndex &&
@@ -235,9 +248,24 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                             _endReached = true;
                           } else {
                             _endReached = false;
-                            Set _allItems = _catalogues.toSet();
-                            _allItems.addAll(_requestSuccessObject.response);
-                            _catalogues = _allItems.toList(growable: true);
+                            if (_searchController.text.trim().isEmpty) {
+                              Set _allItems = _catalogues.toSet();
+                              _allItems.addAll(_requestSuccessObject.response);
+                              _catalogues = _allItems.toList(growable: true);
+                            } else {
+                              if (_searchController.text.trim().isNotEmpty &&
+                                  _requestSuccessObject.additionalData !=
+                                      null &&
+                                  _requestSuccessObject.additionalData
+                                      .toString()
+                                      .trim()
+                                      .isNotEmpty) {
+                                Set _allItems = _catalogues.toSet();
+                                _allItems
+                                    .addAll(_requestSuccessObject.response);
+                                _catalogues = _allItems.toList(growable: true);
+                              }
+                            }
                           }
                           _selectedItemList.forEach((selectedItem) {
                             if (_catalogues.contains(selectedItem)) {
@@ -479,7 +507,12 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
               : Expanded(
                   child: CustomWidgets().errorWidget(
                       _failureCause ?? "Facilities not available",
-                      onTap: () => _getMoreFacilities()))
+                      onTap: (_failureCause != null &&
+                              _failureCause == PlunesStrings.noInternet)
+                          ? () => _getMoreFacilities()
+                          : null,
+                      shouldNotShowImage: !(_failureCause != null &&
+                          _failureCause == PlunesStrings.noInternet)))
         ],
       ),
     );

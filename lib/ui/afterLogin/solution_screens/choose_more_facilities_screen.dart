@@ -40,6 +40,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   bool _scrollParent = false;
 
   _getMoreFacilities() {
+    _failureCause = null;
     _searchSolutionBloc.getMoreFacilities(widget.docHosSolution,
         searchQuery: _searchController.text.trim().toString(),
         pageIndex: pageIndex);
@@ -351,7 +352,12 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
               : Expanded(
                   child: CustomWidgets().errorWidget(
                       _failureCause ?? "Facilities not available",
-                      onTap: () => _getMoreFacilities()))
+                      onTap: (_failureCause != null &&
+                              _failureCause == PlunesStrings.noInternet)
+                          ? () => _getMoreFacilities()
+                          : null,
+                      shouldNotShowImage: !(_failureCause != null &&
+                          _failureCause == PlunesStrings.noInternet)))
         ],
       ),
     );
