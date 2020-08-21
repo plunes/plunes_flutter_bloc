@@ -201,7 +201,7 @@ class _AboutUsState extends BaseState<AboutUs> {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -3975,48 +3975,49 @@ class CustomWidgets {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
       child: Container(
-          height: AppConfig.verticalBlockSize * 33.5,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 3,
+                        horizontal: AppConfig.horizontalBlockSize * 6),
+                    height: AppConfig.verticalBlockSize * 10,
+                    child: Image.asset(PlunesImages.bdSupportImage)),
+                Container(
                   margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 3,
-                      horizontal: AppConfig.horizontalBlockSize * 6),
-                  height: AppConfig.verticalBlockSize * 10,
-                  child: Image.asset(PlunesImages.bdSupportImage)),
-              Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 5),
-                child: Text(message,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: AppConfig.mediumFont,
-                        color: PlunesColors.GREYCOLOR)),
-              ),
-              Container(
-                height: 0.5,
-                width: double.infinity,
-                color: PlunesColors.GREYCOLOR,
-                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
-              ),
-              FlatButton(
-                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  onPressed: () =>
-                      Navigator.of(globalKey.currentState.context).pop(),
-                  child: Container(
-                      width: double.infinity,
-                      child: Text(
-                        'OK',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: AppConfig.mediumFont,
-                            color: PlunesColors.SPARKLINGGREEN),
-                      ))),
-            ],
+                      horizontal: AppConfig.horizontalBlockSize * 5),
+                  child: Text(message,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.GREYCOLOR)),
+                ),
+                Container(
+                  height: 0.5,
+                  width: double.infinity,
+                  color: PlunesColors.GREYCOLOR,
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                ),
+                FlatButton(
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    onPressed: () =>
+                        Navigator.of(globalKey.currentState.context).pop(),
+                    child: Container(
+                        width: double.infinity,
+                        child: Text(
+                          'OK',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              color: PlunesColors.SPARKLINGGREEN),
+                        ))),
+              ],
+            ),
           )),
     );
   }
