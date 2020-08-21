@@ -338,6 +338,10 @@ class PlunesStrings {
   static const String startNegotiating = "Start Negotiating";
   static const String pleasePayFull = "Please pay due amount to get Invoice";
   static const String continueText = "Continue";
+  static const String facilityNotAvailableMessage =
+      "Sorry, the facility you are searching is currently not available";
+  static const String afterFacilitySelectedText =
+      "Sorry, the facilities of selected speciality aren't available currently";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

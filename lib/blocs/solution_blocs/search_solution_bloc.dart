@@ -138,8 +138,6 @@ class SearchSolutionBloc extends BlocBase {
       int pageIndex,
       LatLng latLng,
       String specialityId}) async {
-    print("searchQuery $searchQuery");
-    print("pageIndex $pageIndex");
     addStateInManualBiddingStream(RequestInProgress());
     var result = await SearchedSolutionRepo().getFacilitiesForManualBidding(
         searchQuery, pageIndex, latLng, specialityId);

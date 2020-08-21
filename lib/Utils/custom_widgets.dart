@@ -821,33 +821,36 @@ class CustomWidgets {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                RichText(
-                                    text: TextSpan(
-                                        text: (solutions[index].price == null ||
-                                                solutions[index]
-                                                    .price
-                                                    .isEmpty ||
-                                                solutions[index]?.price[0] ==
-                                                    solutions[index]
-                                                        ?.newPrice[0])
-                                            ? ""
-                                            : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: PlunesColors.GREYCOLOR,
-                                            decoration:
-                                                TextDecoration.lineThrough),
-                                        children: <TextSpan>[
-                                      TextSpan(
-                                        text:
-                                            " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: PlunesColors.BLACKCOLOR,
-                                            fontWeight: FontWeight.w500,
-                                            decoration: TextDecoration.none),
-                                      )
-                                    ])),
+                                Flexible(
+                                  child: RichText(
+                                      text: TextSpan(
+                                          text: (solutions[index].price ==
+                                                      null ||
+                                                  solutions[index]
+                                                      .price
+                                                      .isEmpty ||
+                                                  solutions[index]?.price[0] ==
+                                                      solutions[index]
+                                                          ?.newPrice[0])
+                                              ? ""
+                                              : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: PlunesColors.GREYCOLOR,
+                                              decoration:
+                                                  TextDecoration.lineThrough),
+                                          children: <TextSpan>[
+                                        TextSpan(
+                                          text:
+                                              " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontWeight: FontWeight.w500,
+                                              decoration: TextDecoration.none),
+                                        )
+                                      ])),
+                                ),
                                 Padding(
                                     padding: EdgeInsets.only(
                                         left:
@@ -2650,27 +2653,34 @@ class CustomWidgets {
     bool isSuccess = false;
     String failureMessage;
     return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 8,
-          vertical: AppConfig.verticalBlockSize * 33),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: StreamBuilder<Object>(
-            stream: bookingBloc.confirmAppointmentByDocHosStream,
-            builder: (context, snapshot) {
-              if (snapshot.data != null && snapshot.data is RequestInProgress) {
-                return CustomWidgets().getProgressIndicator();
-              }
-              if (snapshot.data != null && snapshot.data is RequestSuccess) {
-                isSuccess = true;
-              }
-              if (snapshot.data != null && snapshot.data is RequestFailed) {
-                RequestFailed requestFailed = snapshot.data;
-                failureMessage = requestFailed.failureCause ??
-                    PlunesStrings.confirmFailedMessage;
-                bookingBloc.addStateInConfirmProvider(null);
-              }
-              return Column(children: <Widget>[
+      margin:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 8),
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          child: StreamBuilder<Object>(
+              stream: bookingBloc.confirmAppointmentByDocHosStream,
+              builder: (context, snapshot) {
+                if (snapshot.data != null &&
+                    snapshot.data is RequestInProgress) {
+                  return Container(
+                    child: CustomWidgets().getProgressIndicator(),
+                    padding: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 5),
+                  );
+                }
+                if (snapshot.data != null && snapshot.data is RequestSuccess) {
+                  isSuccess = true;
+                }
+                if (snapshot.data != null && snapshot.data is RequestFailed) {
+                  RequestFailed requestFailed = snapshot.data;
+                  failureMessage = requestFailed.failureCause ??
+                      PlunesStrings.confirmFailedMessage;
+                  bookingBloc.addStateInConfirmProvider(null);
+                }
+                return Column(children: <Widget>[
 //                Container(
 //                  alignment: Alignment.bottomRight,
 //                  child: InkWell(
@@ -2689,117 +2699,118 @@ class CustomWidgets {
 //                    ),
 //                  ),
 //                ),
-                isSuccess
-                    ? Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 2,
-                            horizontal: AppConfig.horizontalBlockSize * 4),
-                        child: Text(
-                            "Appointment has been successfully Confirmed.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: AppConfig.mediumFont)),
-                      )
-                    : Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 2),
-                        child: Text("Confirm Appointment for Patient?",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: AppConfig.mediumFont)),
-                      ),
-                isSuccess
-                    ? Column(
-                        children: <Widget>[
-                          Container(
-                            height: 0.5,
-                            width: double.infinity,
-                            color: PlunesColors.GREYCOLOR,
-                            margin: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 5),
-                          ),
-                          FlatButton(
-                              splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                              highlightColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                              focusColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                              onPressed: () {
-                                Navigator.pop(context);
-                                return;
-                              },
-                              child: Container(
-                                  width: double.infinity,
-                                  child: Text(
-                                    'OK',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        color: PlunesColors.SPARKLINGGREEN),
-                                  ))),
-                        ],
-                      )
-                    : Container(
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 4,
-                            bottom: AppConfig.verticalBlockSize * 2),
-                        child: Column(
+                  isSuccess
+                      ? Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 2,
+                              horizontal: AppConfig.horizontalBlockSize * 4),
+                          child: Text(
+                              "Appointment has been successfully Confirmed.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: AppConfig.mediumFont)),
+                        )
+                      : Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 2),
+                          child: Text("Confirm Appointment for Patient?",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: AppConfig.mediumFont)),
+                        ),
+                  isSuccess
+                      ? Column(
                           children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                InkWell(
-                                  onTap: () {
-                                    if (appointmentModel != null) {
-                                      bookingBloc.confirmAppointmentByDocHos(
-                                          appointmentModel.bookingId);
-                                    }
-                                  },
-                                  onDoubleTap: () {},
-                                  child: getRoundedButton(
-                                      "Yes",
+                            Container(
+                              height: 0.5,
+                              width: double.infinity,
+                              color: PlunesColors.GREYCOLOR,
+                              margin: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1),
+                            ),
+                            FlatButton(
+                                splashColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                highlightColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                focusColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  return;
+                                },
+                                child: Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                      'OK',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ))),
+                          ],
+                        )
+                      : Container(
+                          margin: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 1,
+                              bottom: AppConfig.verticalBlockSize * 2),
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  InkWell(
+                                    onTap: () {
+                                      if (appointmentModel != null) {
+                                        bookingBloc.confirmAppointmentByDocHos(
+                                            appointmentModel.bookingId);
+                                      }
+                                    },
+                                    onDoubleTap: () {},
+                                    child: getRoundedButton(
+                                        "Yes",
+                                        AppConfig.horizontalBlockSize * 5,
+                                        PlunesColors.GREENCOLOR,
+                                        AppConfig.horizontalBlockSize * 10,
+                                        AppConfig.verticalBlockSize * 1,
+                                        PlunesColors.WHITECOLOR),
+                                  ),
+                                  SizedBox(
+                                    width: AppConfig.horizontalBlockSize * 10,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context, "No");
+                                      return;
+                                    },
+                                    onDoubleTap: () {},
+                                    child: getRoundedButton(
+                                      "No",
                                       AppConfig.horizontalBlockSize * 5,
-                                      PlunesColors.GREENCOLOR,
+                                      PlunesColors.WHITECOLOR,
                                       AppConfig.horizontalBlockSize * 10,
                                       AppConfig.verticalBlockSize * 1,
-                                      PlunesColors.WHITECOLOR),
-                                ),
-                                SizedBox(
-                                  width: AppConfig.horizontalBlockSize * 10,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context, "No");
-                                    return;
-                                  },
-                                  onDoubleTap: () {},
-                                  child: getRoundedButton(
-                                    "No",
-                                    AppConfig.horizontalBlockSize * 5,
-                                    PlunesColors.WHITECOLOR,
-                                    AppConfig.horizontalBlockSize * 10,
-                                    AppConfig.verticalBlockSize * 1,
-                                    PlunesColors.BLACKCOLOR,
-                                    hasBorder: true,
-                                  ),
-                                )
-                              ],
-                            ),
-                            failureMessage == null || failureMessage.isEmpty
-                                ? Container()
-                                : Container(
-                                    padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 1),
-                                    child: Text(
-                                      failureMessage,
-                                      style: TextStyle(color: Colors.red),
+                                      PlunesColors.BLACKCOLOR,
+                                      hasBorder: true,
                                     ),
-                                  ),
-                          ],
+                                  )
+                                ],
+                              ),
+                              failureMessage == null || failureMessage.isEmpty
+                                  ? Container()
+                                  : Container(
+                                      padding: EdgeInsets.only(
+                                          top: AppConfig.verticalBlockSize * 1),
+                                      child: Text(
+                                        failureMessage,
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                            ],
+                          ),
                         ),
-                      ),
-              ]);
-            }),
+                ]);
+              }),
+        ),
       ),
     );
   }

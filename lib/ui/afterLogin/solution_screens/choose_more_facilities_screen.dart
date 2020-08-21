@@ -67,6 +67,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
       if (_searchController != null &&
           _searchController.text != null &&
           _searchController.text.trim().isNotEmpty) {
+        _failureCause = null;
         _searchSolutionBloc.addIntoMoreFacilitiesStream(RequestInProgress());
         _searchSolutionBloc.getMoreFacilities(widget.docHosSolution,
             searchQuery: _searchController.text.trim().toString(),
@@ -102,7 +103,8 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                     } else if (snapshot.data is RequestSuccess) {
                       Future.delayed(Duration(milliseconds: 10)).then((value) {
                         _showInSnackBar(
-                            "Congrats you have unlocked ${_selectedItemList?.length} more facilities!");
+                            "Congrats you have unlocked ${_selectedItemList?.length} more facilities!",
+                            shouldTakeBack: true);
                         Future.delayed(Duration(milliseconds: 1200))
                             .then((value) {
                           Navigator.pop(context, true);
@@ -285,6 +287,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                   if (scrollState is ScrollEndNotification &&
                       scrollState.metrics.extentAfter == 0 &&
                       !_endReached) {
+                    _failureCause = null;
                     _searchSolutionBloc
                         .addIntoMoreFacilitiesStream(RequestInProgress());
                     _searchSolutionBloc.getMoreFacilities(widget.docHosSolution,
@@ -351,7 +354,8 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                 )
               : Expanded(
                   child: CustomWidgets().errorWidget(
-                      _failureCause ?? "Facilities not available",
+                      _failureCause ??
+                          PlunesStrings.facilityNotAvailableMessage,
                       onTap: (_failureCause != null &&
                               _failureCause == PlunesStrings.noInternet)
                           ? () => _getMoreFacilities()
@@ -390,6 +394,9 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
     } else {
       _selectedItemList.add(facility);
       _catalogues.remove(facility);
+    }
+    if (_catalogues == null || _catalogues.isEmpty) {
+      _failureCause = PlunesStrings.afterFacilitySelectedText;
     }
     _selectUnselectController.add(null);
     _searchSolutionBloc.addIntoMoreFacilitiesStream(null);
@@ -453,8 +460,18 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
         });
   }
 
-  void _showInSnackBar(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+  void _showInSnackBar(String message, {bool shouldTakeBack = false}) {
+//    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(message: message, globalKey: scaffoldKey);
+        }).then((value) {
+      if (shouldTakeBack) {
+        Navigator.pop(context, shouldTakeBack);
+      }
+    });
   }
 
   _viewProfile(MoreFacility service) {

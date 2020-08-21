@@ -75,6 +75,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   _getMoreFacilities() {
+    _failureCause = null;
     _searchSolutionBloc.getFacilitiesForManualBidding(
         searchQuery: _searchController.text.trim().toString(),
         pageIndex: pageIndex,
@@ -476,6 +477,9 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       _selectedItemList.add(facility);
       _catalogues.remove(facility);
     }
+    if (_catalogues == null || _catalogues.isEmpty) {
+      _failureCause = PlunesStrings.afterFacilitySelectedText;
+    }
     _selectUnselectController.add(null);
     _searchSolutionBloc.addStateInManualBiddingStream(null);
   }
@@ -506,7 +510,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 )
               : Expanded(
                   child: CustomWidgets().errorWidget(
-                      _failureCause ?? "Facilities not available",
+                      _failureCause ??
+                          PlunesStrings.facilityNotAvailableMessage,
                       onTap: (_failureCause != null &&
                               _failureCause == PlunesStrings.noInternet)
                           ? () => _getMoreFacilities()
@@ -561,6 +566,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
           _searchController.text != null &&
           _searchController.text.trim().isNotEmpty) {
         _catalogues = [];
+        _failureCause = null;
         _searchSolutionBloc.getFacilitiesForManualBidding(
             searchQuery: _searchController.text.trim().toString(),
             pageIndex: SearchSolutionBloc.initialIndex,
