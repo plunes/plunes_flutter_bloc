@@ -86,12 +86,12 @@ class LoginPost {
   LoginPost({this.success, this.token, this.user, this.message});
 
   factory LoginPost.fromJson(Map<String, dynamic> json) {
-    if (json != null && json['user'] != null && json.containsKey('user')) {
+    if (json != null && json['success'] != null && json['success']) {
       return LoginPost(
           success: json['success'] != null ? json['success'] : false,
           message: json['message'] != null ? json['message'] : '',
           token: json['token'] != null ? json['token'] : '',
-          user: User.fromJson(json['user']));
+          user: User.fromJson(json['data']));
     } else if (json != null && json['user'] == null) {
       return LoginPost(
           success: json['success'] != null ? json['success'] : false,
@@ -499,11 +499,13 @@ class AllNotificationsPost {
     return AllNotificationsPost(
       success: json['success'] != null ? json['success'] : false,
       message: json['message'] != null ? json['message'] : '',
-      posts: json['notifications'] != null
+      posts: (json['data'] != null && json['data']['notifications'] != null)
           ? List<PostsData>.from(
-              json['notifications'].map((i) => PostsData.fromJson(i)))
+              json['data']['notifications'].map((i) => PostsData.fromJson(i)))
           : <PostsData>[],
-      unreadCount: json['count'],
+      unreadCount: (json['data'] != null && json['data']['count'] != null)
+          ? json['data']['count']
+          : 0,
     );
   }
 }

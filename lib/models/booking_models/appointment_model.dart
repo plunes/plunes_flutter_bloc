@@ -3,14 +3,16 @@ import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart'
 class AppointmentResponseModel {
   bool success;
   List<AppointmentModel> bookings;
+  String msg;
 
-  AppointmentResponseModel({this.success, this.bookings});
+  AppointmentResponseModel({this.success, this.bookings, this.msg});
 
   AppointmentResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    if (json['bookings'] != null) {
+    msg = json['msg'];
+    if (json['data'] != null && json['data']['bookings'] != null) {
       bookings = new List<AppointmentModel>();
-      json['bookings'].forEach((v) {
+      json['data']['bookings'].forEach((v) {
         bookings.add(new AppointmentModel.fromJson(v));
       });
     }

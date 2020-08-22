@@ -2,29 +2,32 @@ class PlockrResponseModel {
   bool success;
   List<UploadedReports> uploadedReports;
   List<UploadedReports> sharedReports;
-  String webviewUrl;
+  String webviewUrl, message;
 
   PlockrResponseModel(
       {this.success,
       this.uploadedReports,
       this.sharedReports,
-      this.webviewUrl});
+      this.webviewUrl,
+      this.message});
 
   PlockrResponseModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    if (json['uploadedReports'] != null) {
+    if (json['data'] != null && json['data']['uploadedReports'] != null) {
       uploadedReports = new List<UploadedReports>();
-      json['uploadedReports'].forEach((v) {
+      json['data']['uploadedReports'].forEach((v) {
         uploadedReports.add(new UploadedReports.fromJson(v));
       });
     }
-    if (json['sharedReports'] != null) {
+    if (json['data'] != null && json['data']['sharedReports'] != null) {
       sharedReports = new List<UploadedReports>();
-      json['sharedReports'].forEach((v) {
+      json['data']['sharedReports'].forEach((v) {
         sharedReports.add(new UploadedReports.fromJson(v));
       });
     }
-    webviewUrl = json['webviewUrl'];
+    webviewUrl = (json['data'] != null && json['data']['webviewUrl'] != null)
+        ? json['data']['webviewUrl']
+        : null;
   }
 
   Map<String, dynamic> toJson() {

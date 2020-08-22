@@ -23,10 +23,13 @@ class ConsultationTestProcedureRepo {
         url: Urls.GET_CONSULTATION_API);
     if (serverResponse.isRequestSucceed) {
       List<CatalogueData> _solutions = [];
-      Iterable _items = serverResponse.response.data;
-      _solutions = _items
-          .map((item) => CatalogueData.fromJson(item))
-          .toList(growable: true);
+      if (serverResponse.response.data != null &&
+          serverResponse.response.data["data"] != null) {
+        Iterable _items = serverResponse.response.data["data"];
+        _solutions = _items
+            .map((item) => CatalogueData.fromJson(item))
+            .toList(growable: true);
+      }
       return RequestSuccess(response: _solutions);
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
@@ -39,10 +42,13 @@ class ConsultationTestProcedureRepo {
         url: isProcedure ? Urls.GET_PROCEDURES_API : Urls.GET_TESTS_API);
     if (serverResponse.isRequestSucceed) {
       List<TestAndProcedureResponseModel> _solutions = [];
-      Iterable _items = serverResponse.response.data;
-      _solutions = _items
-          .map((item) => TestAndProcedureResponseModel.fromJson(item))
-          .toList(growable: true);
+      if (serverResponse.response.data != null &&
+          serverResponse.response.data["data"] != null) {
+        Iterable _items = serverResponse.response.data["data"];
+        _solutions = _items
+            .map((item) => TestAndProcedureResponseModel.fromJson(item))
+            .toList(growable: true);
+      }
       return RequestSuccess(response: _solutions);
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);

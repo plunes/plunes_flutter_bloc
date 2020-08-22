@@ -158,6 +158,7 @@ class UserManager {
 //      print(_loginPost == null);
       if (shouldSaveInfo) {
         if (_loginPost != null &&
+            _loginPost.user != null &&
             (_loginPost.token == null || _loginPost.token.trim().isEmpty)) {
           _loginPost = LoginPost(
               token: getUserDetails().accessToken, user: _loginPost.user);
@@ -444,9 +445,13 @@ class UserManager {
         headerIncluded: true);
     if (result.isRequestSucceed) {
       List<RateAndReview> _list = [];
-      Iterable items = result.response.data;
-      _list =
-          items?.map((e) => RateAndReview.fromJson(e))?.toList(growable: true);
+      if (result.response.data != null &&
+          result.response.data["data"] != null) {
+        Iterable items = result.response.data["data"];
+        _list = items
+            ?.map((e) => RateAndReview.fromJson(e))
+            ?.toList(growable: true);
+      }
       return RequestSuccess(response: _list);
     } else {
       return RequestFailed(failureCause: result.failureCause);
