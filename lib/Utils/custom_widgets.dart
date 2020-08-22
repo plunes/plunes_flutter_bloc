@@ -964,108 +964,125 @@ class CustomWidgets {
     CatalogueData catalogueData,
   ) {
     String replaceFrom = "\\n";
-    return Container(
-        height: AppConfig.verticalBlockSize * 50,
-        width: double.infinity,
+    return SingleChildScrollView(
+//        height: AppConfig.verticalBlockSize * 48,
+//        width: double.infinity,
         child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-          Container(
-            alignment: Alignment.topRight,
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              onDoubleTap: () {},
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Icon(Icons.close),
+//          Container(
+//            alignment: Alignment.topRight,
+//            child: InkWell(
+//              onTap: () => Navigator.of(context).pop(),
+//              onDoubleTap: () {},
+//              child: Padding(
+//                padding: const EdgeInsets.all(10),
+//                child: Icon(Icons.close),
+//              ),
+//            ),
+//          ),
+      Container(
+        margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
+        alignment: Alignment.center,
+        child: Text(
+          'Details',
+          style: TextStyle(
+              fontWeight: FontWeight.w500, fontSize: AppConfig.mediumFont),
+        ),
+      ),
+      Container(
+        height: AppConfig.verticalBlockSize * 30,
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 7,
+            vertical: AppConfig.verticalBlockSize * 1),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text(
+                'Definition:',
+                style: TextStyle(
+                    fontSize: AppConfig.smallFont, fontWeight: FontWeight.w600),
               ),
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text(
-              'Details',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500, fontSize: AppConfig.mediumFont),
-            ),
-          ),
-          Container(
-            height: AppConfig.verticalBlockSize * 35,
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 7,
-                vertical: AppConfig.verticalBlockSize * 1),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              Text(
+                catalogueData?.details ?? PlunesStrings.NA,
+                style: TextStyle(
+                    color: Colors.black38, fontSize: AppConfig.smallFont),
+              ),
+              Divider(
+                color: Colors.black45,
+              ),
+              Row(
                 children: <Widget>[
                   Text(
-                    'Definition:',
+                    'Duration',
                     style: TextStyle(
                         fontSize: AppConfig.smallFont,
                         fontWeight: FontWeight.w600),
                   ),
+                  SizedBox(width: 5),
                   Text(
-                    catalogueData?.details ?? PlunesStrings.NA,
+                    catalogueData?.duration ?? PlunesStrings.NA,
                     style: TextStyle(
-                        color: Colors.black38, fontSize: AppConfig.smallFont),
-                  ),
-                  Divider(
-                    color: Colors.black45,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        'Duration',
-                        style: TextStyle(
-                            fontSize: AppConfig.smallFont,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        catalogueData?.duration ?? PlunesStrings.NA,
-                        style: TextStyle(
-                            color: Colors.black45,
-                            fontSize: AppConfig.smallFont),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    color: Colors.black45,
-                  ),
-                  Row(children: <Widget>[
-                    Text(
-                      'Sittings:',
-                      style: TextStyle(
-                          fontSize: AppConfig.smallFont,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      catalogueData?.sitting ?? PlunesStrings.NA,
-                      style: TextStyle(
-                          color: Colors.black38, fontSize: AppConfig.smallFont),
-                    ),
-                  ]),
-                  Divider(
-                    color: Colors.black45,
-                  ),
-                  Text(
-                    'Do\'s and Don\'ts:',
-                    style: TextStyle(
-                        fontSize: AppConfig.smallFont,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    catalogueData?.dnd?.replaceAll(replaceFrom, "") ??
-                        PlunesStrings.NA,
-                    style: TextStyle(
-                      fontSize: AppConfig.smallFont,
-                      color: Colors.black38,
-                    ),
+                        color: Colors.black45, fontSize: AppConfig.smallFont),
                   ),
                 ],
               ),
-            ),
+              Divider(
+                color: Colors.black45,
+              ),
+              Row(children: <Widget>[
+                Text(
+                  'Sittings:',
+                  style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                      fontWeight: FontWeight.w600),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  catalogueData?.sitting ?? PlunesStrings.NA,
+                  style: TextStyle(
+                      color: Colors.black38, fontSize: AppConfig.smallFont),
+                ),
+              ]),
+              Divider(
+                color: Colors.black45,
+              ),
+              Text(
+                'Do\'s and Don\'ts:',
+                style: TextStyle(
+                    fontSize: AppConfig.smallFont, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                catalogueData?.dnd?.replaceAll(replaceFrom, "") ??
+                    PlunesStrings.NA,
+                style: TextStyle(
+                  fontSize: AppConfig.smallFont,
+                  color: Colors.black38,
+                ),
+              ),
+            ],
           ),
-        ]));
+        ),
+      ),
+      Container(
+        height: 0.5,
+        width: double.infinity,
+        color: PlunesColors.GREYCOLOR,
+      ),
+      FlatButton(
+          splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+          highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+          focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Container(
+              width: double.infinity,
+              child: Text(
+                "Close",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: AppConfig.mediumFont,
+                    color: PlunesColors.SPARKLINGGREEN),
+              ))),
+    ]));
   }
 
   // ignore: non_constant_identifier_names
@@ -3600,26 +3617,27 @@ class CustomWidgets {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
-      child: Container(
-        height: AppConfig.verticalBlockSize * 50,
+      child: SingleChildScrollView(
+//        height: AppConfig.verticalBlockSize * 50,
         child: Column(
           children: <Widget>[
-            Container(
-              alignment: Alignment.topRight,
-              child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
-                onDoubleTap: () {},
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Icon(Icons.close),
-                ),
-              ),
-            ),
+//            Container(
+//              alignment: Alignment.topRight,
+//              child: InkWell(
+//                onTap: () => Navigator.of(context).pop(),
+//                onDoubleTap: () {},
+//                child: Padding(
+//                  padding: const EdgeInsets.all(10),
+//                  child: Icon(Icons.close),
+//                ),
+//              ),
+//            ),
             Container(
                 width: double.infinity,
                 height: AppConfig.verticalBlockSize * 39,
                 margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 4.5),
+                    horizontal: AppConfig.horizontalBlockSize * 4.5,
+                    vertical: AppConfig.verticalBlockSize * 2),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -3732,10 +3750,29 @@ class CustomWidgets {
                             plunesImages.eduIcon,
                             plunesStrings.qualification,
                             doctorsData?.education ?? _getEmptyString()),
-                      )
+                      ),
                     ],
                   ),
                 )),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+            ),
+            FlatButton(
+                splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Container(
+                    width: double.infinity,
+                    child: Text(
+                      "Close",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.SPARKLINGGREEN),
+                    ))),
           ],
         ),
       ),
