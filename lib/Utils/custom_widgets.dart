@@ -2522,6 +2522,11 @@ class CustomWidgets {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Container(
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                  height: AppConfig.verticalBlockSize * 10,
+                  child: Image.asset(PlunesImages.common),
+                ),
+                Container(
                   padding: EdgeInsets.symmetric(
                       horizontal: AppConfig.horizontalBlockSize * 6,
                       vertical: AppConfig.verticalBlockSize * 3),
@@ -2562,29 +2567,29 @@ class CustomWidgets {
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: AppConfig.horizontalBlockSize * 8,
-          vertical: AppConfig.verticalBlockSize * 15),
+          vertical: AppConfig.verticalBlockSize * 16),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Column(children: <Widget>[
-          Container(
-            alignment: Alignment.bottomRight,
-            child: InkWell(
-              onTap: () => Navigator.pop(context),
-              onDoubleTap: () {},
-              child: Container(
-                padding: EdgeInsets.all(12),
-                child: Icon(
-                  Icons.close,
-                  color: PlunesColors.GREYCOLOR,
-                  size: 30,
-                ),
-              ),
-            ),
-          ),
+//          Container(
+//            alignment: Alignment.bottomRight,
+//            child: InkWell(
+//              onTap: () => Navigator.pop(context),
+//              onDoubleTap: () {},
+//              child: Container(
+//                padding: EdgeInsets.all(12),
+//                child: Icon(
+//                  Icons.close,
+//                  color: PlunesColors.GREYCOLOR,
+//                  size: 30,
+//                ),
+//              ),
+//            ),
+//          ),
           Container(
             padding: EdgeInsets.symmetric(
                 horizontal: AppConfig.horizontalBlockSize * 6,
-                vertical: AppConfig.verticalBlockSize * 2),
+                vertical: AppConfig.verticalBlockSize * 3),
             child: Text(
               "Tips for more Conversions",
               textAlign: TextAlign.center,
@@ -2600,6 +2605,7 @@ class CustomWidgets {
             alignment: Alignment.center,
             child: SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   iconWithText("Call up the Patients"),
                   iconWithText("Make Them Comfortable"),
@@ -2610,6 +2616,25 @@ class CustomWidgets {
               ),
             ),
           ),
+          Container(
+            height: 0.5,
+            width: double.infinity,
+            color: PlunesColors.GREYCOLOR,
+          ),
+          FlatButton(
+              splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Container(
+                  width: double.infinity,
+                  child: Text(
+                    "OK",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: AppConfig.mediumFont,
+                        color: PlunesColors.SPARKLINGGREEN),
+                  ))),
         ]),
       ),
     );
@@ -2617,7 +2642,7 @@ class CustomWidgets {
 
   Widget iconWithText(String textMsg) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Image.asset(
@@ -2684,21 +2709,43 @@ class CustomWidgets {
 //                  ),
 //                ),
                 isSuccess
-                    ? Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 2,
-                            horizontal: AppConfig.horizontalBlockSize * 4),
-                        child: Text(
-                            "Appointment has been successfully Confirmed.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: AppConfig.mediumFont)),
+                    ? Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 3),
+                            height: AppConfig.verticalBlockSize * 10,
+                            child: Image.asset(PlunesImages.common),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 2,
+                                horizontal: AppConfig.horizontalBlockSize * 4),
+                            child: Text(
+                                "Appointment has been successfully Confirmed.",
+                                textAlign: TextAlign.center,
+                                style:
+                                    TextStyle(fontSize: AppConfig.mediumFont)),
+                          ),
+                        ],
                       )
-                    : Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 2),
-                        child: Text("Confirm Appointment for Patient?",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: AppConfig.mediumFont)),
+                    : Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 3),
+                            height: AppConfig.verticalBlockSize * 10,
+                            child: Image.asset(PlunesImages.common),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 2),
+                            child: Text("Confirm Appointment for Patient?",
+                                textAlign: TextAlign.center,
+                                style:
+                                    TextStyle(fontSize: AppConfig.mediumFont)),
+                          ),
+                        ],
                       ),
                 isSuccess
                     ? Column(
@@ -5319,6 +5366,11 @@ class CustomWidgets {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+              height: AppConfig.verticalBlockSize * 10,
+              child: Image.asset(PlunesImages.common),
+            ),
             Container(
               margin: EdgeInsets.symmetric(
                   horizontal: AppConfig.horizontalBlockSize * 5,

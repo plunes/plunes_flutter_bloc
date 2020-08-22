@@ -151,6 +151,7 @@ flutter:
     - assets/images/login/login_logo.png
     - assets/images/plusIcon.png
     - assets/images/CardExpired.png
+    - assets/images/Common.png
 
 
     - assets/images/bottom_tabs/bid_active.png
