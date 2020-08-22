@@ -13,7 +13,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   readmore: ^1.0.0
   flutter_swipe_action_cell: ^1.0.5+1
-#  youtube_player_flutter: any
+  #  youtube_player_flutter: any
   intro_slider: ^1.2.0
   shared_preferences: ^0.5.2
   http: ^0.12.0+2
@@ -325,6 +325,7 @@ flutter:
     - assets/images/notification_empty_screen_icon.png
     - assets/images/enterTestAndProcedureDetailsImage.png
     - assets/images/testAndProcedureQuerySubmittedImage.png
+    - assets/images/Common.png
 
 
 

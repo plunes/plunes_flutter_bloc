@@ -220,8 +220,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               SwipeAction(
                   title: "remove",
                   onTap: (CompletionHandler handler) async {
-                    items.posts.removeAt(index);
-                    _removeNotification(items.posts[index]);
+                    _removeNotification(items.posts, index);
                   },
                   color: Colors.redAccent.withOpacity(.5)),
             ],
@@ -377,8 +376,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
     _notificationBloc.getNotifications();
   }
 
-  void _removeNotification(PostsData post) {
-    _notificationBloc.removeNotification(post);
+  void _removeNotification(List<PostsData> items, int index) {
+    _notificationBloc.removeNotification(items[index]);
+    items.removeAt(index);
     _setState();
   }
 
