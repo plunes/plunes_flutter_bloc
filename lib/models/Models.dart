@@ -518,7 +518,7 @@ class PostsData {
   final String senderName;
   final String notificationId;
   final String notificationScreen;
-  bool hasSeen;
+  bool hasSeen, deleted;
 
   PostsData(
       {this.senderImageUrl,
@@ -528,11 +528,13 @@ class PostsData {
       this.id,
       this.notification,
       this.senderName,
+      this.deleted,
       this.notificationId,
       this.notificationScreen,
       this.hasSeen});
 
   factory PostsData.fromJson(Map<String, dynamic> parsedJson) {
+    print("parsedJson ${parsedJson["deleted"]}");
     return new PostsData(
         senderImageUrl: parsedJson['senderImageUrl'] != null
             ? parsedJson['senderImageUrl']
@@ -557,7 +559,8 @@ class PostsData {
         notificationScreen: parsedJson['notificationScreen'] != null
             ? parsedJson['notificationScreen']
             : '',
-        hasSeen: parsedJson['read']);
+        hasSeen: parsedJson['read'],
+        deleted: parsedJson["deleted"] ?? false);
   }
 
   factory PostsData.fromJsonForPush(Map<String, dynamic> parsedJson) {

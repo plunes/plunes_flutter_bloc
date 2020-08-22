@@ -210,6 +210,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
       padding: EdgeInsets.all(0),
       itemCount: items.posts.length,
       itemBuilder: (context, index) {
+        if (items.posts[index] != null && items.posts[index].deleted) {
+          return Container();
+        }
         return SwipeActionCell(
             key: ObjectKey(items.posts[index]),
             performsFirstActionWithFullSwipe: true,
@@ -218,7 +221,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   title: "remove",
                   onTap: (CompletionHandler handler) async {
                     items.posts.removeAt(index);
-                    setState(() {});
+                    _removeNotification(items.posts[index]);
                   },
                   color: Colors.redAccent.withOpacity(.5)),
             ],
@@ -372,5 +375,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   void _getNotifications() {
     _notificationBloc.getNotifications();
+  }
+
+  void _removeNotification(PostsData post) {
+    _notificationBloc.removeNotification(post);
+    _setState();
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
   }
 }

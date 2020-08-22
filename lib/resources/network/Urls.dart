@@ -109,4 +109,6 @@ class Urls {
   static const String GET_FACILITIES_MANUAL_BIDDING = "user/getFacilities";
   static const String CREATE_MANUAL_BIDDING_URL =
       "solution/createManualBidding";
+  static const String DELETE_NOTIFICATIONS_URL =
+      "notification/deleteNotifications";
 }

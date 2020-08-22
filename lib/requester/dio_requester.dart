@@ -126,7 +126,7 @@ class DioRequester {
 //                failureCause: httpErrorModel.message));
 //            // return null;
 //          }
-          errorDescription = httpErrorModel.error ??
+          errorDescription = httpErrorModel?.error ??
               plunesStrings.somethingWentWrong + " - ${e.response.statusCode}";
           AppLog.printError("$errorDescription");
         } catch (error) {

@@ -155,23 +155,23 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 controller: _scrollController,
                 children: <Widget>[
                   _getLocationField(),
-                  Container(
-                    margin: EdgeInsets.only(
-                      left: AppConfig.verticalBlockSize * 3,
-                      right: AppConfig.verticalBlockSize * 3,
-                      bottom: AppConfig.verticalBlockSize * 2.5,
-                    ),
-                    child: Center(
-                      child: Text(
-                        PlunesStrings.enterTheSpecialityRelatedText,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 18),
-                      ),
-                    ),
-                  ),
+//                  Container(
+//                    margin: EdgeInsets.only(
+//                      left: AppConfig.verticalBlockSize * 3,
+//                      right: AppConfig.verticalBlockSize * 3,
+//                      bottom: AppConfig.verticalBlockSize * 2.5,
+//                    ),
+//                    child: Center(
+//                      child: Text(
+//                        PlunesStrings.enterTheSpecialityRelatedText,
+//                        textAlign: TextAlign.center,
+//                        style: TextStyle(
+//                            color: PlunesColors.BLACKCOLOR,
+//                            fontWeight: FontWeight.normal,
+//                            fontSize: 18),
+//                      ),
+//                    ),
+//                  ),
                   StreamBuilder<Object>(
                       stream: _searchSolutionBloc.getManualBiddingStream(),
                       builder: (context, snapshot) {
@@ -793,23 +793,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             value: item.id,
             child: Container(
               alignment: Alignment.center,
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    CommonMethods.getStringInCamelCase(item?.speciality) ??
-                        PlunesStrings.NA,
-                    textAlign: TextAlign.center,
-                    style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
-                  ),
-                  Container(
-//                    margin: EdgeInsets.symmetric(
-//                        horizontal: AppConfig.horizontalBlockSize * 10),
-                    width: double.infinity,
-                    height: 0.25,
-                    color: PlunesColors.GREYCOLOR,
-                  ),
-                ],
+              child: Text(
+                CommonMethods.getStringInCamelCase(item?.speciality) ??
+                    PlunesStrings.NA,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
               ),
             )));
       }
@@ -831,30 +819,37 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             PlunesStrings.specialities,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: PlunesColors.BLACKCOLOR,
+              color: Color(CommonMethods.getColorHexFromStr("#5D5D5D")),
               fontSize: 16,
               fontWeight: FontWeight.normal,
             ),
           ),
         ),
         items: itemList,
-        underline: Container(
-          width: double.infinity,
-          color: PlunesColors.GREYCOLOR,
-          height: 0.8,
-        ),
+        underline: Container(),
         isExpanded: true,
         elevation: 0,
       );
     }
     return itemList == null || itemList.isEmpty
         ? Container()
-        : Container(
-            padding: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 5,
-                right: AppConfig.horizontalBlockSize * 5),
-            child: dropDown //DropdownButtonHideUnderline(child: dropDown),
-            );
+        : Column(
+            children: <Widget>[
+              Container(
+                  padding: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 4,
+                      right: AppConfig.horizontalBlockSize * 4),
+                  child:
+                      dropDown //DropdownButtonHideUnderline(child: dropDown),
+                  ),
+              Container(
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.6),
+                width: double.infinity,
+                color: PlunesColors.GREYCOLOR,
+                height: 0.8,
+              ),
+            ],
+          );
   }
 
   Widget _getLocationField() {
