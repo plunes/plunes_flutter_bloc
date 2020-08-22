@@ -5,6 +5,7 @@ final plunesImages = PlunesImages();
 class PlunesImages {
 //  static String achievement = "assets/images/profile/achievement.png";
   static String cardExpired = "assets/images/CardExpired.png";
+  static String common = "assets/images/Common.png";
   static String helpThankyou = "assets/images/help/Thank you.png";
   static String greenCheck = "assets/images/profile/greenCheck.png";
   static String specialization = "assets/images/profile/specialization.png";
