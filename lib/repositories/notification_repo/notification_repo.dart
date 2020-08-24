@@ -43,4 +43,17 @@ class NotificationRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  removeNotification(PostsData post) async{
+    var result = await DioRequester().requestMethod(
+        url: Urls.DELETE_NOTIFICATIONS_URL,
+        requestType: HttpRequestMethods.HTTP_DELETE,
+        postData: {"deleteNotification":[post.id]},
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: true);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

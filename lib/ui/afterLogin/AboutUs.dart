@@ -201,6 +201,7 @@ class _AboutUsState extends BaseState<AboutUs> {
                   ),
                 ),
               ),
+<<<<<<< HEAD
             ),
 //            InkWell(
 //              onTap: () {
@@ -214,6 +215,11 @@ class _AboutUsState extends BaseState<AboutUs> {
 //                child: Text('data'),
 //              ),
 //            )
+||||||| 128aecf
+            )
+=======
+            ),
+>>>>>>> newBranch
           ],
         ),
       ),

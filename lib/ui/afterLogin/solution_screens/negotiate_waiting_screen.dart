@@ -178,28 +178,32 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
       body: _progressEnabled
           ? CustomWidgets().getProgressIndicator()
           : _failureCause != null
-              ? Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    CustomWidgets().errorWidget(_failureCause),
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: AppConfig.horizontalBlockSize * 38,
-                          right: AppConfig.horizontalBlockSize * 38,
-                          top: AppConfig.verticalBlockSize * 2.5),
-                      child: InkWell(
-                        onTap: () => Navigator.pop(context),
-                        child: CustomWidgets().getRoundedButton(
-                            "Ok",
-                            AppConfig.horizontalBlockSize * 8,
-                            PlunesColors.GREENCOLOR,
-                            AppConfig.horizontalBlockSize * 3,
-                            AppConfig.verticalBlockSize * 1,
-                            PlunesColors.WHITECOLOR),
-                      ),
-                    )
-                  ],
+              ? Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 4),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      CustomWidgets().errorWidget(_failureCause),
+                      Container(
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 38,
+                            right: AppConfig.horizontalBlockSize * 38,
+                            top: AppConfig.verticalBlockSize * 2.5),
+                        child: InkWell(
+                          onTap: () => Navigator.pop(context),
+                          child: CustomWidgets().getRoundedButton(
+                              "OK",
+                              AppConfig.horizontalBlockSize * 8,
+                              PlunesColors.GREENCOLOR,
+                              AppConfig.horizontalBlockSize * 3,
+                              AppConfig.verticalBlockSize * 1,
+                              PlunesColors.WHITECOLOR),
+                        ),
+                      )
+                    ],
+                  ),
                 )
               : Container(
                   color: Colors.black12,
