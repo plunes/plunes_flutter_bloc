@@ -15,6 +15,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/change_profile_picture_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:plunes/ui/commonView/SelectSpecialization.dart';
 
@@ -141,6 +142,7 @@ class _EditProfileState extends State<EditProfileScreen>
       child: ListView(
         shrinkWrap: true,
         children: <Widget>[
+          _getProfileWidget(),
           widget.getSpacer(0.0, 10.0),
           createTextField(
               nameController,
@@ -451,14 +453,12 @@ class _EditProfileState extends State<EditProfileScreen>
 //      return;
 //    }
     if (_user.userType == Constants.user && !(_isValidEmail)) {
-      widget.showInSnackBar(plunesStrings.errorValidEmailMsg,
-          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showInSnackBar(plunesStrings.errorValidEmailMsg);
       return;
     } else if (_user.userType != Constants.user) {
       if (manualAddressController.text.trim() == null ||
           manualAddressController.text.trim().isEmpty) {
-        widget.showInSnackBar(plunesStrings.errorFullAddressRequired,
-            PlunesColors.BLACKCOLOR, _scaffoldKey);
+        _showInSnackBar(plunesStrings.errorFullAddressRequired);
         return;
       }
     }
@@ -491,14 +491,14 @@ class _EditProfileState extends State<EditProfileScreen>
       if (_user.userType == Constants.user) {
         UserManager().setRegion(_region);
       }
-      widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
-      Future.delayed(Duration(milliseconds: 550)).then((value) {
-        Navigator.pop(context);
-      });
+      _showInSnackBar(PlunesStrings.profileUpdatedSuccessfully,
+          shouldPop: true);
+//      Future.delayed(Duration(milliseconds: 550)).then((value) {
+//        Navigator.pop(context);
+//      });
     } else if (result is RequestFailed) {
       RequestFailed requestFailed = result;
-      widget.showInSnackBar(
-          requestFailed.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showInSnackBar(requestFailed.failureCause);
     }
     progress = false;
     _setState();
@@ -547,5 +547,30 @@ class _EditProfileState extends State<EditProfileScreen>
           _setState();
         }
       });
+  }
+
+  _showInSnackBar(String message, {bool shouldPop = false}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: _scaffoldKey, message: message);
+        }).then((value) {
+      if (shouldPop) {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  _getProfileWidget() {
+    return InkWell(
+      onTap: () {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ChangeProfileScreen()));
+      },
+      child: Container(
+        child: Icon(Icons.supervised_user_circle),
+      ),
+    );
   }
 }

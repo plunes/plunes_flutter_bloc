@@ -56,7 +56,7 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
         key: _scaffoldKey,
         backgroundColor: Colors.white,
         appBar:
-            widget.getAppBar(context, plunesStrings.forgotPasswordTitle, false),
+            widget.getAppBar(context, plunesStrings.forgotPasswordTitle, true),
         body: GestureDetector(
           onTap: () => CommonMethods.hideSoftKeyboard(),
           child: getBodyView(),
@@ -66,59 +66,66 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
   Widget getBodyView() {
     return Container(
       margin: EdgeInsets.only(left: 25, right: 25, bottom: 10),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(
-              child: widget.createTextViews(plunesStrings.enterEmailOrPhone, 25,
-                  colorsFile.darkBrown, TextAlign.start, FontWeight.normal)),
-          widget.getSpacer(0.0, 30.0),
-          createTextField(
-              phoneNumberController,
-              plunesStrings.MobileNumber,
-              TextInputType.number,
-              TextCapitalization.none,
-              isValidNumber,
-              plunesStrings.enterValidNumber),
-          widget.getSpacer(0.0, 30.0),
-          progress
-              ? SpinKitThreeBounce(
-                  color: Color(hexColorCode.defaultGreen), size: 30.0)
-              : Container(
-                  margin: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 30,
-                      right: AppConfig.horizontalBlockSize * 30),
-                  child: InkWell(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    onTap: _submitForOTP,
-                    child: CustomWidgets().getRoundedButton(
-                        plunesStrings.ok,
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.GREENCOLOR,
-                        AppConfig.horizontalBlockSize * 0,
-                        AppConfig.verticalBlockSize * 1.2,
-                        PlunesColors.WHITECOLOR),
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Center(
+                child: widget.createTextViews(
+                    plunesStrings.enterEmailOrPhone,
+                    25,
+                    colorsFile.darkBrown,
+                    TextAlign.start,
+                    FontWeight.normal)),
+            widget.getSpacer(0.0, 30.0),
+            createTextField(
+                phoneNumberController,
+                plunesStrings.MobileNumber,
+                TextInputType.number,
+                TextCapitalization.none,
+                isValidNumber,
+                plunesStrings.enterValidNumber),
+            widget.getSpacer(0.0, 30.0),
+            progress
+                ? SpinKitThreeBounce(
+                    color: Color(hexColorCode.defaultGreen), size: 30.0)
+                : Container(
+                    margin: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 30,
+                        right: AppConfig.horizontalBlockSize * 30),
+                    child: InkWell(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      onTap: _submitForOTP,
+                      child: CustomWidgets().getRoundedButton(
+                          plunesStrings.ok,
+                          AppConfig.horizontalBlockSize * 8,
+                          PlunesColors.GREENCOLOR,
+                          AppConfig.horizontalBlockSize * 0,
+                          AppConfig.verticalBlockSize * 1.2,
+                          PlunesColors.WHITECOLOR),
+                    ),
                   ),
-                ),
-          widget.getSpacer(0.0, 30.0),
-          Container(
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 30,
-                right: AppConfig.horizontalBlockSize * 30),
-            child: InkWell(
-              borderRadius: BorderRadius.all(Radius.circular(5)),
-              onTap: onBackPressed,
-              child: CustomWidgets().getRoundedButton(
-                  plunesStrings.cancel,
-                  AppConfig.horizontalBlockSize * 8,
-                  PlunesColors.WHITECOLOR,
-                  AppConfig.horizontalBlockSize * 0,
-                  AppConfig.verticalBlockSize * 1.2,
-                  PlunesColors.BLACKCOLOR,
-                  hasBorder: true),
-            ),
-          )
-        ],
+            widget.getSpacer(0.0, 30.0),
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 30,
+                  right: AppConfig.horizontalBlockSize * 30),
+              child: InkWell(
+                borderRadius: BorderRadius.all(Radius.circular(5)),
+                onTap: onBackPressed,
+                child: CustomWidgets().getRoundedButton(
+                    plunesStrings.cancel,
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.WHITECOLOR,
+                    AppConfig.horizontalBlockSize * 0,
+                    AppConfig.verticalBlockSize * 1.2,
+                    PlunesColors.BLACKCOLOR,
+                    hasBorder: true),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

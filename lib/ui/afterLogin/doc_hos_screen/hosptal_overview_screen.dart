@@ -463,7 +463,7 @@ class _HospitalOverviewScreenState
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      '\u20B9 ${_totalBusinessEarnedResponse.businessGained?.toStringAsFixed(2) ?? PlunesStrings.NA}',
+                                      '\u20B9 ${_totalBusinessEarnedResponse.businessGained?.toStringAsFixed(2) ?? "0"}',
                                       style: TextStyle(
                                         color: PlunesColors.GREENCOLOR,
                                         fontSize: AppConfig.largeFont,
@@ -484,7 +484,7 @@ class _HospitalOverviewScreenState
                                 Column(
                                   children: <Widget>[
                                     Text(
-                                      '\u20B9 ${_totalBusinessEarnedResponse.businessLost?.toStringAsFixed(2) ?? PlunesStrings.NA}',
+                                      '\u20B9 ${_totalBusinessEarnedResponse.businessLost?.toStringAsFixed(2) ?? "0"}',
                                       style: TextStyle(
                                         color: Colors.yellow,
                                         fontSize: AppConfig.largeFont,

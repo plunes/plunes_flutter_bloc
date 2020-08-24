@@ -174,7 +174,7 @@ class PlunesStrings {
 
   static const String unableToOpen = "Unable to open the file!";
 
-  static const String dataNotFound = "Data is not found!";
+  static const String dataNotFound = "Data not found!";
 
   static const String unableToDelete = "Unable to delele!";
   static const String appointmentFailedMessage = "Confirmation request failed";
@@ -341,6 +341,10 @@ class PlunesStrings {
   static const String facilityNotAvailableMessage =
       "Sorry, the facility you are searching is currently not available";
   static const String afterFacilitySelectedText = "";
+  static const String profileUpdatedSuccessfully =
+      "Profile updated successfully.";
+  static const String passwordUpdatedSuccessfully =
+      "Password updated successfully.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

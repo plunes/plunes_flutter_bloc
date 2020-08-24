@@ -42,6 +42,7 @@ class AppointmentScreen extends BaseActivity {
 class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   BookingBloc _bookingBloc;
   int index;
+  String _profNumber;
 
   @override
   void initState() {
@@ -102,94 +103,16 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             ),
                           ),
                           SizedBox(height: 5),
-                          InkWell(
-                            onTap: () {
-                              if (appointmentModel.isCentre != null &&
-                                  appointmentModel.isCentre &&
-                                  appointmentModel.adminHosNumber != null &&
-                                  appointmentModel.adminHosNumber.isNotEmpty) {
-                                LauncherUtil.launchUrl(
-                                    "tel://${appointmentModel.adminHosNumber}");
-                              } else if (appointmentModel.isCentre != null &&
-                                  appointmentModel.isCentre &&
-                                  (appointmentModel.adminHosNumber == null ||
-                                      appointmentModel
-                                          .alternateNumber.isEmpty)) {
-                                return;
-                              } else if (appointmentModel
-                                          .professionalMobileNumber !=
-                                      null &&
-                                  appointmentModel
-                                      .professionalMobileNumber.isNotEmpty) {
-                                LauncherUtil.launchUrl(
-                                    "tel://${appointmentModel.professionalMobileNumber}");
-                              }
-                            },
-                            onDoubleTap: () {},
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  right: 5.0, top: 5.0, bottom: 5.0),
-                              child: Text(
-                                (appointmentModel.isCentre != null &&
-                                        appointmentModel.isCentre &&
-                                        appointmentModel.adminHosNumber !=
-                                            null &&
-                                        appointmentModel
-                                            .adminHosNumber.isNotEmpty)
-                                    ? appointmentModel.adminHosNumber
-                                    : (appointmentModel.isCentre != null &&
-                                            appointmentModel.isCentre &&
-                                            (appointmentModel.adminHosNumber ==
-                                                    null ||
-                                                appointmentModel.alternateNumber
-                                                    .isNotEmpty))
-                                        ? ""
-                                        : appointmentModel
-                                                .professionalMobileNumber ??
-                                            PlunesStrings.NA,
-                                style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.w500,
-//                                    decoration: TextDecoration.underline,
-                                    decorationStyle: TextDecorationStyle.solid,
-                                    decorationThickness: 2.0,
-                                    decorationColor: PlunesColors.BLACKCOLOR),
-                              ),
-                            ),
-                          ),
+                          _getProfessionalNumber(appointmentModel),
                           (appointmentModel.centreNumber != null &&
                                   appointmentModel.centreNumber.isNotEmpty)
                               ? SizedBox(height: 5)
                               : Container(),
                           (appointmentModel.centreNumber != null &&
-                                  appointmentModel.centreNumber.isNotEmpty)
-                              ? InkWell(
-                                  onTap: () {
-                                    if (appointmentModel.centreNumber != null &&
-                                        appointmentModel
-                                            .centreNumber.isNotEmpty) {
-                                      LauncherUtil.launchUrl(
-                                          "tel://${appointmentModel.centreNumber}");
-                                    }
-                                  },
-                                  onDoubleTap: () {},
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        right: 5.0, top: 5.0, bottom: 5.0),
-                                    child: Text(
-                                      appointmentModel.centreNumber,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.mediumFont,
-                                          fontWeight: FontWeight.w500,
-//                                          decoration: TextDecoration.underline,
-                                          decorationStyle:
-                                              TextDecorationStyle.solid,
-                                          decorationThickness: 2.0,
-                                          decorationColor:
-                                              PlunesColors.BLACKCOLOR),
-                                    ),
-                                  ),
-                                )
+                                  appointmentModel.centreNumber.isNotEmpty &&
+                                  _profNumber != null &&
+                                  _profNumber != appointmentModel.centreNumber)
+                              ? _getCentreNumber(appointmentModel)
                               : Container(),
                         ],
                       ),
@@ -1118,5 +1041,76 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
       }
     }
     return isPaymentCompleted;
+  }
+
+  Widget _getProfessionalNumber(AppointmentModel appointmentModel) {
+    _profNumber = (appointmentModel.isCentre != null &&
+            appointmentModel.isCentre &&
+            appointmentModel.adminHosNumber != null &&
+            appointmentModel.adminHosNumber.isNotEmpty)
+        ? appointmentModel.adminHosNumber
+        : (appointmentModel.isCentre != null &&
+                appointmentModel.isCentre &&
+                (appointmentModel.adminHosNumber == null ||
+                    appointmentModel.alternateNumber.isNotEmpty))
+            ? ""
+            : appointmentModel.professionalMobileNumber ?? PlunesStrings.NA;
+    return InkWell(
+      onTap: () {
+        if (appointmentModel.isCentre != null &&
+            appointmentModel.isCentre &&
+            appointmentModel.adminHosNumber != null &&
+            appointmentModel.adminHosNumber.isNotEmpty) {
+          LauncherUtil.launchUrl("tel://${appointmentModel.adminHosNumber}");
+        } else if (appointmentModel.isCentre != null &&
+            appointmentModel.isCentre &&
+            (appointmentModel.adminHosNumber == null ||
+                appointmentModel.alternateNumber.isEmpty)) {
+          return;
+        } else if (appointmentModel.professionalMobileNumber != null &&
+            appointmentModel.professionalMobileNumber.isNotEmpty) {
+          LauncherUtil.launchUrl(
+              "tel://${appointmentModel.professionalMobileNumber}");
+        }
+      },
+      onDoubleTap: () {},
+      child: Padding(
+        padding: EdgeInsets.only(right: 5.0, top: 5.0, bottom: 5.0),
+        child: Text(
+          _profNumber,
+          style: TextStyle(
+              fontSize: AppConfig.mediumFont,
+              fontWeight: FontWeight.w500,
+              decorationStyle: TextDecorationStyle.solid,
+              decorationThickness: 2.0,
+              decorationColor: PlunesColors.BLACKCOLOR),
+        ),
+      ),
+    );
+  }
+
+  Widget _getCentreNumber(AppointmentModel appointmentModel) {
+    return InkWell(
+      onTap: () {
+        if (appointmentModel.centreNumber != null &&
+            appointmentModel.centreNumber.isNotEmpty) {
+          LauncherUtil.launchUrl("tel://${appointmentModel.centreNumber}");
+        }
+      },
+      onDoubleTap: () {},
+      child: Padding(
+        padding: EdgeInsets.only(right: 5.0, top: 5.0, bottom: 5.0),
+        child: Text(
+          appointmentModel.centreNumber,
+          style: TextStyle(
+              fontSize: AppConfig.mediumFont,
+              fontWeight: FontWeight.w500,
+//                                          decoration: TextDecoration.underline,
+              decorationStyle: TextDecorationStyle.solid,
+              decorationThickness: 2.0,
+              decorationColor: PlunesColors.BLACKCOLOR),
+        ),
+      ),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -381,7 +382,8 @@ class UserManager {
     if (result.isRequestSucceed) {
       return RequestSuccess(response: result.response.data);
     } else {
-      return RequestFailed(failureCause: result.failureCause);
+      return RequestFailed(
+          failureCause: result.failureCause, requestCode: result.statusCode);
     }
   }
 
@@ -476,5 +478,17 @@ class UserManager {
 
   setWidgetShownStatus(String key, {bool status = true}) {
     return Preferences().setPreferencesBoolean(key, status);
+  }
+
+  Future<RequestState> uploadPicture(File image) async {
+    var result = await DioRequester().requestMethod(
+        url: urls.signUp,
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {});
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: LoginPost.fromJson(result.response.data));
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
   }
 }
