@@ -31,10 +31,13 @@ class SearchedSolutionRepo {
         url: Urls.SEARCH_SOLUTION_API);
     if (serverResponse.isRequestSucceed) {
       List<CatalogueData> _solutions = [];
-      Iterable _items = serverResponse.response.data;
-      _solutions = _items
-          .map((item) => CatalogueData.fromJson(item))
-          .toList(growable: true);
+      if (serverResponse.response.data != null &&
+          serverResponse.response.data['data'] != null) {
+        Iterable _items = serverResponse.response.data['data'];
+        _solutions = _items
+            .map((item) => CatalogueData.fromJson(item))
+            .toList(growable: true);
+      }
       return RequestSuccess(response: _solutions, requestCode: index);
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
@@ -57,10 +60,13 @@ class SearchedSolutionRepo {
         url: Urls.GET_TEST_AND_PROCEDURES_CATALOGUE_API);
     if (serverResponse.isRequestSucceed) {
       List<CatalogueData> _solutions = [];
-      Iterable _items = serverResponse.response.data;
-      _solutions = _items
-          .map((item) => CatalogueData.fromJson(item))
-          .toList(growable: true);
+      if (serverResponse.response.data != null &&
+          serverResponse.response.data["data"] != null) {
+        Iterable _items = serverResponse.response.data["data"];
+        _solutions = _items
+            .map((item) => CatalogueData.fromJson(item))
+            .toList(growable: true);
+      }
       return RequestSuccess(response: _solutions);
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
@@ -181,7 +187,9 @@ class SearchedSolutionRepo {
       MoreFacilityResponse _facilitiesResponse =
           MoreFacilityResponse.fromJson(serverResponse.response.data);
       return RequestSuccess(
-          response: _facilitiesResponse?.data, requestCode: pageIndex);
+          response: _facilitiesResponse?.data,
+          requestCode: pageIndex,
+          additionalData: searchQuery);
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
     }

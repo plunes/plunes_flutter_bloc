@@ -75,6 +75,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   }
 
   _getMoreFacilities() {
+    _failureCause = null;
     _searchSolutionBloc.getFacilitiesForManualBidding(
         searchQuery: _searchController.text.trim().toString(),
         pageIndex: pageIndex,
@@ -154,23 +155,23 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 controller: _scrollController,
                 children: <Widget>[
                   _getLocationField(),
-                  Container(
-                    margin: EdgeInsets.only(
-                      left: AppConfig.verticalBlockSize * 3,
-                      right: AppConfig.verticalBlockSize * 3,
-                      bottom: AppConfig.verticalBlockSize * 2.5,
-                    ),
-                    child: Center(
-                      child: Text(
-                        PlunesStrings.enterTheSpecialityRelatedText,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 18),
-                      ),
-                    ),
-                  ),
+//                  Container(
+//                    margin: EdgeInsets.only(
+//                      left: AppConfig.verticalBlockSize * 3,
+//                      right: AppConfig.verticalBlockSize * 3,
+//                      bottom: AppConfig.verticalBlockSize * 2.5,
+//                    ),
+//                    child: Center(
+//                      child: Text(
+//                        PlunesStrings.enterTheSpecialityRelatedText,
+//                        textAlign: TextAlign.center,
+//                        style: TextStyle(
+//                            color: PlunesColors.BLACKCOLOR,
+//                            fontWeight: FontWeight.normal,
+//                            fontSize: 18),
+//                      ),
+//                    ),
+//                  ),
                   StreamBuilder<Object>(
                       stream: _searchSolutionBloc.getManualBiddingStream(),
                       builder: (context, snapshot) {
@@ -226,8 +227,21 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                           RequestSuccess _requestSuccessObject = snapShot.data;
                           if (_requestSuccessObject.requestCode ==
                               SearchSolutionBloc.initialIndex) {
-                            pageIndex = SearchSolutionBloc.initialIndex;
-                            _catalogues = [];
+                            if (_searchController.text.trim().isEmpty) {
+                              pageIndex = SearchSolutionBloc.initialIndex;
+                              _catalogues = [];
+                            } else {
+                              if (_searchController.text.trim().isNotEmpty &&
+                                  _requestSuccessObject.additionalData !=
+                                      null &&
+                                  _requestSuccessObject.additionalData
+                                      .toString()
+                                      .trim()
+                                      .isNotEmpty) {
+                                pageIndex = SearchSolutionBloc.initialIndex;
+                                _catalogues = [];
+                              }
+                            }
                           }
                           if (_requestSuccessObject.requestCode !=
                                   SearchSolutionBloc.initialIndex &&
@@ -235,9 +249,24 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                             _endReached = true;
                           } else {
                             _endReached = false;
-                            Set _allItems = _catalogues.toSet();
-                            _allItems.addAll(_requestSuccessObject.response);
-                            _catalogues = _allItems.toList(growable: true);
+                            if (_searchController.text.trim().isEmpty) {
+                              Set _allItems = _catalogues.toSet();
+                              _allItems.addAll(_requestSuccessObject.response);
+                              _catalogues = _allItems.toList(growable: true);
+                            } else {
+                              if (_searchController.text.trim().isNotEmpty &&
+                                  _requestSuccessObject.additionalData !=
+                                      null &&
+                                  _requestSuccessObject.additionalData
+                                      .toString()
+                                      .trim()
+                                      .isNotEmpty) {
+                                Set _allItems = _catalogues.toSet();
+                                _allItems
+                                    .addAll(_requestSuccessObject.response);
+                                _catalogues = _allItems.toList(growable: true);
+                              }
+                            }
                           }
                           _selectedItemList.forEach((selectedItem) {
                             if (_catalogues.contains(selectedItem)) {
@@ -448,6 +477,9 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       _selectedItemList.add(facility);
       _catalogues.remove(facility);
     }
+    if (_catalogues == null || _catalogues.isEmpty) {
+      _failureCause = PlunesStrings.afterFacilitySelectedText;
+    }
     _selectUnselectController.add(null);
     _searchSolutionBloc.addStateInManualBiddingStream(null);
   }
@@ -478,8 +510,14 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 )
               : Expanded(
                   child: CustomWidgets().errorWidget(
-                      _failureCause ?? "Facilities not available",
-                      onTap: () => _getMoreFacilities()))
+                      _failureCause ??
+                          PlunesStrings.facilityNotAvailableMessage,
+                      onTap: (_failureCause != null &&
+                              _failureCause == PlunesStrings.noInternet)
+                          ? () => _getMoreFacilities()
+                          : null,
+                      shouldNotShowImage: !(_failureCause != null &&
+                          _failureCause == PlunesStrings.noInternet)))
         ],
       ),
     );
@@ -528,6 +566,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
           _searchController.text != null &&
           _searchController.text.trim().isNotEmpty) {
         _catalogues = [];
+        _failureCause = null;
         _searchSolutionBloc.getFacilitiesForManualBidding(
             searchQuery: _searchController.text.trim().toString(),
             pageIndex: SearchSolutionBloc.initialIndex,
@@ -780,30 +819,37 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             PlunesStrings.specialities,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: PlunesColors.BLACKCOLOR,
+              color: Color(CommonMethods.getColorHexFromStr("#5D5D5D")),
               fontSize: 16,
               fontWeight: FontWeight.normal,
             ),
           ),
         ),
         items: itemList,
-        underline: Container(
-          width: double.infinity,
-          color: PlunesColors.GREYCOLOR,
-          height: 0.8,
-        ),
+        underline: Container(),
         isExpanded: true,
         elevation: 0,
       );
     }
     return itemList == null || itemList.isEmpty
         ? Container()
-        : Container(
-            padding: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 5,
-                right: AppConfig.horizontalBlockSize * 5),
-            child: dropDown //DropdownButtonHideUnderline(child: dropDown),
-            );
+        : Column(
+            children: <Widget>[
+              Container(
+                  padding: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 4,
+                      right: AppConfig.horizontalBlockSize * 4),
+                  child:
+                      dropDown //DropdownButtonHideUnderline(child: dropDown),
+                  ),
+              Container(
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.6),
+                width: double.infinity,
+                color: PlunesColors.GREYCOLOR,
+                height: 0.8,
+              ),
+            ],
+          );
   }
 
   Widget _getLocationField() {

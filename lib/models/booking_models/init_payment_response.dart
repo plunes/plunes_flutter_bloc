@@ -1,5 +1,5 @@
 class InitPaymentResponse {
-  final bool success;
+  final bool success, couponUsed;
 
   @override
   String toString() {
@@ -12,15 +12,24 @@ class InitPaymentResponse {
   final String referenceId;
 
   InitPaymentResponse(
-      {this.success, this.message, this.id, this.referenceId, this.status});
+      {this.success,
+      this.message,
+      this.id,
+      this.referenceId,
+      this.status,
+      this.couponUsed});
 
   factory InitPaymentResponse.fromJson(Map<String, dynamic> json) {
     return InitPaymentResponse(
       success: json['success'] != null ? json['success'] : false,
-      id: json['id'] != null ? json['id'] : '',
-      referenceId: json['referenceId'] != null ? json['referenceId'] : '',
-      message: json['message'] != null ? json['message'] : '',
-      status: json['status'] != null ? json['status'] : '',
+      id: json["data"]['id'] != null ? json["data"]['id'] : '',
+      referenceId: json["data"]['referenceId'] != null
+          ? json["data"]['referenceId']
+          : '',
+      message: json['msg'] != null ? json['msg'] : '',
+      status: json["data"]['status'] != null ? json["data"]['status'] : '',
+      couponUsed:
+          json["data"]['couponUsed'] != null ? json["data"]['couponUsed'] : '',
     );
   }
 }

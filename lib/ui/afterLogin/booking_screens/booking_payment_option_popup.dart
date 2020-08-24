@@ -53,32 +53,35 @@ class _PopupChooseState extends State<PopupChoose> {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: Container(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: Align(
-              child: Icon(Icons.clear),
-              alignment: Alignment.topRight,
-            ),
-          ),
-        ),
-      ),
+//      title: Container(
+//        child: GestureDetector(
+//          onTap: () {
+//            Navigator.pop(context);
+//          },
+//          child: Padding(
+//            padding: const EdgeInsets.only(left: 8),
+//            child: Align(
+//              child: Icon(Icons.clear),
+//              alignment: Alignment.topRight,
+//            ),
+//          ),
+//        ),
+//      ),
       content: Container(
         child: Column(
           children: <Widget>[
-            Text(
-              "Now you can have multiple\n"
-              "telephonic consultations & one free visit!",
-              textAlign: TextAlign.left,
-              style: TextStyle(fontSize: 16.0),
+            Container(
+              margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
+              child: Text(
+                "Now you can have multiple\n"
+                "telephonic consultations & one free visit!",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16.0),
+              ),
             ),
-            SizedBox(
-              height: 20,
-            ),
+//            SizedBox(
+//              height: 20,
+//            ),
             Container(
               height: AppConfig.verticalBlockSize * 15,
               width: double.infinity,
@@ -88,7 +91,7 @@ class _PopupChooseState extends State<PopupChoose> {
                   return Card(
                     elevation: 0,
                     margin: EdgeInsets.only(
-                        bottom: AppConfig.verticalBlockSize * 3),
+                        bottom: AppConfig.verticalBlockSize * 2),
                     color: Colors.transparent,
                     child: GestureDetector(
                       onTap: () {
@@ -137,36 +140,114 @@ class _PopupChooseState extends State<PopupChoose> {
                 itemCount: _paymentSelectionOptions.length ?? 0,
               ),
             ),
-            GestureDetector(
-                onTap: () {
-                  PaymentSelector _paymentSelector;
-                  if (_paymentSelectionOptions != null &&
-                      _paymentSelectionOptions.isNotEmpty) {
-                    _paymentSelectionOptions.forEach((paymentObj) {
-                      if (paymentObj.isSelected) {
-                        _paymentSelector = paymentObj;
-                      }
-                    });
-                  }
-                  Navigator.of(context).pop(_paymentSelector);
-                },
-                child: Container(
-                  margin: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 15,
-                      right: AppConfig.horizontalBlockSize * 15),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  child: CustomWidgets().getRoundedButton(
-                      "Continue",
-                      AppConfig.horizontalBlockSize * 8,
-                      PlunesColors.GREENCOLOR,
-                      AppConfig.horizontalBlockSize * 0,
-                      AppConfig.verticalBlockSize * 1.2,
-                      PlunesColors.WHITECOLOR),
-                )),
-            SizedBox(
-              height: 5,
+
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+//              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
             ),
+            Container(
+              height: AppConfig.verticalBlockSize * 6,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: FlatButton(
+                        splashColor: Colors.redAccent.withOpacity(.2),
+                        highlightColor: Colors.redAccent.withOpacity(.2),
+                        focusColor: Colors.redAccent.withOpacity(.2),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          return;
+                        },
+                        child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 1.5,
+//                                horizontal: AppConfig.horizontalBlockSize * 4
+                            ),
+                            child: Text(
+                              'Back',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                  color: Colors.redAccent),
+                            ))),
+                  ),
+                  Container(
+                    height: AppConfig.verticalBlockSize * 6,
+                    color: PlunesColors.GREYCOLOR,
+                    width: 0.5,
+                  ),
+                  Expanded(
+//                                      flex: 200,
+                    child: FlatButton(
+                        focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                        splashColor:
+                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                        highlightColor:
+                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                        onPressed: () {
+                          PaymentSelector _paymentSelector;
+                          if (_paymentSelectionOptions != null &&
+                              _paymentSelectionOptions.isNotEmpty) {
+                            _paymentSelectionOptions.forEach((paymentObj) {
+                              if (paymentObj.isSelected) {
+                                _paymentSelector = paymentObj;
+                              }
+                            });
+                          }
+                          Navigator.of(context).pop(_paymentSelector);
+                        },
+                        child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 1.5,
+//                                horizontal: AppConfig.horizontalBlockSize * 4
+                            ),
+                            child: Text(
+                              'Continue',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                  color: PlunesColors.SPARKLINGGREEN),
+                            ))),
+                  ),
+                ],
+              ),
+            ),
+//            GestureDetector(
+//                onTap: () {
+//                  PaymentSelector _paymentSelector;
+//                  if (_paymentSelectionOptions != null &&
+//                      _paymentSelectionOptions.isNotEmpty) {
+//                    _paymentSelectionOptions.forEach((paymentObj) {
+//                      if (paymentObj.isSelected) {
+//                        _paymentSelector = paymentObj;
+//                      }
+//                    });
+//                  }
+//                  Navigator.of(context).pop(_paymentSelector);
+//                },
+//                child: Container(
+//                  margin: EdgeInsets.only(
+//                      left: AppConfig.horizontalBlockSize * 15,
+//                      right: AppConfig.horizontalBlockSize * 15),
+//                  decoration: BoxDecoration(
+//                      borderRadius: BorderRadius.all(Radius.circular(5))),
+//                  child: CustomWidgets().getRoundedButton(
+//                      "Continue",
+//                      AppConfig.horizontalBlockSize * 8,
+//                      PlunesColors.GREENCOLOR,
+//                      AppConfig.horizontalBlockSize * 0,
+//                      AppConfig.verticalBlockSize * 1.2,
+//                      PlunesColors.WHITECOLOR),
+//                )),
+//            SizedBox(
+//              height: 5,
+//            ),
           ],
         ),
       ),

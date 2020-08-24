@@ -59,7 +59,6 @@ class BookingRepo {
         headerIncluded: true,
         url: url);
     if (result.isRequestSucceed) {
-      print("result is ${result.response.data}");
       return RequestSuccess(
           response: result.response.data["msg"], requestCode: index);
     } else {

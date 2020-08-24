@@ -1,4 +1,5 @@
 import 'package:plunes/blocs/base_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/repositories/notification_repo/notification_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 
@@ -18,5 +19,9 @@ class NotificationBloc extends BlocBase {
   @override
   void addIntoStream(RequestState result) {
     super.addIntoStream(result);
+  }
+
+  removeNotification(final PostsData post) {
+    return NotificationRepo().removeNotification(post);
   }
 }

@@ -81,7 +81,6 @@ class Urls {
       "analytics/totalBusiness";
   static const String UPDATE_REALTIME_INSIGHT_PRICE_URL = 'solution';
   static const String UPDATE_ACTIONABLE_INSIGHT_PRICE_URL = 'admin/updatePrice';
-  static const String GET_APPOINTMENT_URL = 'booking';
   static const String GET_CANCEL_AND_RESCHEDULE_URL = 'booking/';
   static const String GET_CONFIRM_APPOINTMENT_URL = 'booking/confirmBooking';
   static const String GET_REFUND_URL = 'booking/refund';
@@ -109,4 +108,6 @@ class Urls {
   static const String GET_FACILITIES_MANUAL_BIDDING = "user/getFacilities";
   static const String CREATE_MANUAL_BIDDING_URL =
       "solution/createManualBidding";
+  static const String DELETE_NOTIFICATIONS_URL =
+      "notification/deleteNotifications";
 }

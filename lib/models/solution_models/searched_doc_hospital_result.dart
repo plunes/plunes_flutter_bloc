@@ -11,11 +11,11 @@ class SearchedDocResults {
 
   SearchedDocResults.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    solution = json['solution'] != null
-        ? new DocHosSolution.fromJson(json['solution'])
+    solution = (json['data'] != null && json['data']['solution'] != null)
+        ? new DocHosSolution.fromJson(json['data']['solution'])
         : null;
-    catalogueData = json['service'] != null
-        ? CatalogueData.fromJson(json['service'])
+    catalogueData = (json['data'] != null && json['data']['service'] != null)
+        ? CatalogueData.fromJson(json['data']['service'])
         : null;
     msg = json['msg'];
   }

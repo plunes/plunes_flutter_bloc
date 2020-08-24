@@ -127,19 +127,19 @@ class PlunesStrings {
   static const String closed = "Closed";
   static const String reschedule = "Reschedule";
   static const String requestInvoice = "Request Invoice";
-  static const String refund = "Refund Requested";
+  static const String refund = "Request Refund";
   static const String visitAgain = "Visit Again";
   static const String appointmentScreenError = "Appointment Screen Error";
   static const String paymentStatus = "Payment Status";
   static const String rescheduledSuccessMessage =
-      "Appointment rescheduled sucessfully!";
+      "Appointment rescheduled successfully!";
   static const String rescheduledFailedMessage =
       "Appointment rescheduled failed!";
   static const String cancelSuccessMessage =
-      "Appointment cancelled sucessfully!";
+      "Appointment cancelled successfully!";
   static const String cancelFailedMessage = "Appointment cancellation failed!";
   static const String refundFailedMessage =
-      "Refund Request has been failed! try agian Later.";
+      "Refund Request has been failed! try again Later.";
   static const String emptyTextFieldWarning = "Please Enter the Refund Reason";
   static const String thankYouMessage = "Thank You!";
   static const String refundSuccessMessage =
@@ -285,7 +285,7 @@ class PlunesStrings {
   static const String cantBookPriceExpired =
       "Can't book the appointment as the prices are valid for only one hour.";
   static const String cantNegotiateWithMoreFacilities =
-      "Can't negotitate with more facilities as the prices was valid for only one hour.";
+      "Can't negotiate with more facilities as the prices was valid for only one hour.";
 
   ///More Facilities Screen
   static const String moreFacilities = "More Facilities";
@@ -338,6 +338,9 @@ class PlunesStrings {
   static const String startNegotiating = "Start Negotiating";
   static const String pleasePayFull = "Please pay due amount to get Invoice";
   static const String continueText = "Continue";
+  static const String facilityNotAvailableMessage =
+      "Sorry, the facility you are searching is currently not available";
+  static const String afterFacilitySelectedText = "";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

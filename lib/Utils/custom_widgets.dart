@@ -516,21 +516,26 @@ class CustomWidgets {
   }
 
   Widget errorWidget(String failureCause,
-      {Function onTap, String buttonText, bool isSizeLess = false}) {
+      {Function onTap,
+      String buttonText,
+      bool isSizeLess = false,
+      bool shouldNotShowImage = false}) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 2.5),
-            child: Image.asset(
-              PlunesImages.noServiceAvailable,
-              height: AppConfig.verticalBlockSize * 14,
-              width: AppConfig.horizontalBlockSize * 45,
-            ),
-          ),
+          shouldNotShowImage
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 2.5),
+                  child: Image.asset(
+                    PlunesImages.noServiceAvailable,
+                    height: AppConfig.verticalBlockSize * 14,
+                    width: AppConfig.horizontalBlockSize * 45,
+                  ),
+                ),
           Text(
             failureCause ?? plunesStrings.somethingWentWrong,
             textAlign: TextAlign.center,
@@ -816,33 +821,36 @@ class CustomWidgets {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
-                                RichText(
-                                    text: TextSpan(
-                                        text: (solutions[index].price == null ||
-                                                solutions[index]
-                                                    .price
-                                                    .isEmpty ||
-                                                solutions[index]?.price[0] ==
-                                                    solutions[index]
-                                                        ?.newPrice[0])
-                                            ? ""
-                                            : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: PlunesColors.GREYCOLOR,
-                                            decoration:
-                                                TextDecoration.lineThrough),
-                                        children: <TextSpan>[
-                                      TextSpan(
-                                        text:
-                                            " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: PlunesColors.BLACKCOLOR,
-                                            fontWeight: FontWeight.w500,
-                                            decoration: TextDecoration.none),
-                                      )
-                                    ])),
+                                Flexible(
+                                  child: RichText(
+                                      text: TextSpan(
+                                          text: (solutions[index].price ==
+                                                      null ||
+                                                  solutions[index]
+                                                      .price
+                                                      .isEmpty ||
+                                                  solutions[index]?.price[0] ==
+                                                      solutions[index]
+                                                          ?.newPrice[0])
+                                              ? ""
+                                              : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: PlunesColors.GREYCOLOR,
+                                              decoration:
+                                                  TextDecoration.lineThrough),
+                                          children: <TextSpan>[
+                                        TextSpan(
+                                          text:
+                                              " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontWeight: FontWeight.w500,
+                                              decoration: TextDecoration.none),
+                                        )
+                                      ])),
+                                ),
                                 Padding(
                                     padding: EdgeInsets.only(
                                         left:
@@ -964,108 +972,125 @@ class CustomWidgets {
     CatalogueData catalogueData,
   ) {
     String replaceFrom = "\\n";
-    return Container(
-        height: AppConfig.verticalBlockSize * 50,
-        width: double.infinity,
+    return SingleChildScrollView(
+//        height: AppConfig.verticalBlockSize * 48,
+//        width: double.infinity,
         child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-          Container(
-            alignment: Alignment.topRight,
-            child: InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              onDoubleTap: () {},
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Icon(Icons.close),
+//          Container(
+//            alignment: Alignment.topRight,
+//            child: InkWell(
+//              onTap: () => Navigator.of(context).pop(),
+//              onDoubleTap: () {},
+//              child: Padding(
+//                padding: const EdgeInsets.all(10),
+//                child: Icon(Icons.close),
+//              ),
+//            ),
+//          ),
+      Container(
+        margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
+        alignment: Alignment.center,
+        child: Text(
+          'Details',
+          style: TextStyle(
+              fontWeight: FontWeight.w500, fontSize: AppConfig.mediumFont),
+        ),
+      ),
+      Container(
+        height: AppConfig.verticalBlockSize * 30,
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 7,
+            vertical: AppConfig.verticalBlockSize * 1),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text(
+                'Definition:',
+                style: TextStyle(
+                    fontSize: AppConfig.smallFont, fontWeight: FontWeight.w600),
               ),
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
-            child: Text(
-              'Details',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500, fontSize: AppConfig.mediumFont),
-            ),
-          ),
-          Container(
-            height: AppConfig.verticalBlockSize * 35,
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 7,
-                vertical: AppConfig.verticalBlockSize * 1),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
+              Text(
+                catalogueData?.details ?? PlunesStrings.NA,
+                style: TextStyle(
+                    color: Colors.black38, fontSize: AppConfig.smallFont),
+              ),
+              Divider(
+                color: Colors.black45,
+              ),
+              Row(
                 children: <Widget>[
                   Text(
-                    'Definition:',
+                    'Duration',
                     style: TextStyle(
                         fontSize: AppConfig.smallFont,
                         fontWeight: FontWeight.w600),
                   ),
+                  SizedBox(width: 5),
                   Text(
-                    catalogueData?.details ?? PlunesStrings.NA,
+                    catalogueData?.duration ?? PlunesStrings.NA,
                     style: TextStyle(
-                        color: Colors.black38, fontSize: AppConfig.smallFont),
-                  ),
-                  Divider(
-                    color: Colors.black45,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Text(
-                        'Duration',
-                        style: TextStyle(
-                            fontSize: AppConfig.smallFont,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(width: 5),
-                      Text(
-                        catalogueData?.duration ?? PlunesStrings.NA,
-                        style: TextStyle(
-                            color: Colors.black45,
-                            fontSize: AppConfig.smallFont),
-                      ),
-                    ],
-                  ),
-                  Divider(
-                    color: Colors.black45,
-                  ),
-                  Row(children: <Widget>[
-                    Text(
-                      'Sittings:',
-                      style: TextStyle(
-                          fontSize: AppConfig.smallFont,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(width: 5),
-                    Text(
-                      catalogueData?.sitting ?? PlunesStrings.NA,
-                      style: TextStyle(
-                          color: Colors.black38, fontSize: AppConfig.smallFont),
-                    ),
-                  ]),
-                  Divider(
-                    color: Colors.black45,
-                  ),
-                  Text(
-                    'Do\'s and Don\'ts:',
-                    style: TextStyle(
-                        fontSize: AppConfig.smallFont,
-                        fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    catalogueData?.dnd?.replaceAll(replaceFrom, "") ??
-                        PlunesStrings.NA,
-                    style: TextStyle(
-                      fontSize: AppConfig.smallFont,
-                      color: Colors.black38,
-                    ),
+                        color: Colors.black45, fontSize: AppConfig.smallFont),
                   ),
                 ],
               ),
-            ),
+              Divider(
+                color: Colors.black45,
+              ),
+              Row(children: <Widget>[
+                Text(
+                  'Sittings:',
+                  style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                      fontWeight: FontWeight.w600),
+                ),
+                SizedBox(width: 5),
+                Text(
+                  catalogueData?.sitting ?? PlunesStrings.NA,
+                  style: TextStyle(
+                      color: Colors.black38, fontSize: AppConfig.smallFont),
+                ),
+              ]),
+              Divider(
+                color: Colors.black45,
+              ),
+              Text(
+                'Do\'s and Don\'ts:',
+                style: TextStyle(
+                    fontSize: AppConfig.smallFont, fontWeight: FontWeight.w600),
+              ),
+              Text(
+                catalogueData?.dnd?.replaceAll(replaceFrom, "") ??
+                    PlunesStrings.NA,
+                style: TextStyle(
+                  fontSize: AppConfig.smallFont,
+                  color: Colors.black38,
+                ),
+              ),
+            ],
           ),
-        ]));
+        ),
+      ),
+      Container(
+        height: 0.5,
+        width: double.infinity,
+        color: PlunesColors.GREYCOLOR,
+      ),
+      FlatButton(
+          splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+          highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+          focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+          onPressed: () => Navigator.of(context).pop(),
+          child: Container(
+              width: double.infinity,
+              child: Text(
+                "Close",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: AppConfig.mediumFont,
+                    color: PlunesColors.SPARKLINGGREEN),
+              ))),
+    ]));
   }
 
   // ignore: non_constant_identifier_names
@@ -2320,9 +2345,9 @@ class CustomWidgets {
                                     top: AppConfig.verticalBlockSize * 5),
                               ),
                               Container(
-                                height: AppConfig.verticalBlockSize * 6,
+                                height: AppConfig.verticalBlockSize * 8,
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Expanded(
@@ -2339,21 +2364,21 @@ class CustomWidgets {
                                           },
                                           child: Container(
                                               width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                  bottomLeft: Radius.circular(
-                                                      AppConfig
-                                                              .horizontalBlockSize *
-                                                          4),
-                                                ),
-                                              ),
+//                                              decoration: BoxDecoration(
+//                                                borderRadius: BorderRadius.only(
+//                                                  bottomLeft: Radius.circular(
+//                                                      AppConfig
+//                                                              .horizontalBlockSize *
+//                                                          4),
+//                                                ),
+//                                              ),
                                               padding: EdgeInsets.symmetric(
                                                   vertical: AppConfig
                                                           .verticalBlockSize *
                                                       1.5,
                                                   horizontal: AppConfig
                                                           .horizontalBlockSize *
-                                                      8),
+                                                      6),
                                               child: Text(
                                                 'Cancel',
                                                 textAlign: TextAlign.center,
@@ -2364,7 +2389,7 @@ class CustomWidgets {
                                               ))),
                                     ),
                                     Container(
-                                      height: AppConfig.verticalBlockSize * 6,
+                                      height: AppConfig.verticalBlockSize * 8,
                                       color: PlunesColors.GREYCOLOR,
                                       width: 0.5,
                                     ),
@@ -2401,21 +2426,21 @@ class CustomWidgets {
                                           },
                                           child: Container(
                                               width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                  bottomRight: Radius.circular(
-                                                      AppConfig
-                                                              .horizontalBlockSize *
-                                                          4),
-                                                ),
-                                              ),
+//                                              decoration: BoxDecoration(
+//                                                borderRadius: BorderRadius.only(
+//                                                  bottomRight: Radius.circular(
+//                                                      AppConfig
+//                                                              .horizontalBlockSize *
+//                                                          4),
+//                                                ),
+//                                              ),
                                               padding: EdgeInsets.symmetric(
                                                   vertical: AppConfig
                                                           .verticalBlockSize *
                                                       1.5,
                                                   horizontal: AppConfig
                                                           .horizontalBlockSize *
-                                                      8),
+                                                      6),
                                               child: Text(
                                                 'Submit',
                                                 textAlign: TextAlign.center,
@@ -2520,39 +2545,41 @@ class CustomWidgets {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Container(
-                  alignment: Alignment.bottomRight,
-                  padding: EdgeInsets.all(12),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      return;
-                    },
-                    onDoubleTap: () {},
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.close,
-                        color: PlunesColors.GREYCOLOR,
-                      ),
-                    ),
-                  ),
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                  height: AppConfig.verticalBlockSize * 10,
+                  child: Image.asset(PlunesImages.common),
                 ),
                 Container(
                   padding: EdgeInsets.symmetric(
                       horizontal: AppConfig.horizontalBlockSize * 6,
-                      vertical: AppConfig.verticalBlockSize * 2),
+                      vertical: AppConfig.verticalBlockSize * 3),
                   child: Text(
                     "Sorry! your appointment has been cancelled.",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: AppConfig.smallFont,
+                      fontSize: AppConfig.mediumFont,
                     ),
                   ),
                 ),
                 Container(
-                    alignment: Alignment.bottomRight,
-                    padding: EdgeInsets.all(20),
-                    child: Container()),
+                  height: 0.5,
+                  width: double.infinity,
+                  color: PlunesColors.GREYCOLOR,
+                ),
+                FlatButton(
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Container(
+                        width: double.infinity,
+                        child: Text(
+                          "OK",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              color: PlunesColors.SPARKLINGGREEN),
+                        ))),
               ]),
         ),
       ),
@@ -2563,29 +2590,29 @@ class CustomWidgets {
     return Container(
       margin: EdgeInsets.symmetric(
           horizontal: AppConfig.horizontalBlockSize * 8,
-          vertical: AppConfig.verticalBlockSize * 15),
+          vertical: AppConfig.verticalBlockSize * 16),
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Column(children: <Widget>[
-          Container(
-            alignment: Alignment.bottomRight,
-            child: InkWell(
-              onTap: () => Navigator.pop(context),
-              onDoubleTap: () {},
-              child: Container(
-                padding: EdgeInsets.all(12),
-                child: Icon(
-                  Icons.close,
-                  color: PlunesColors.GREYCOLOR,
-                  size: 30,
-                ),
-              ),
-            ),
-          ),
+//          Container(
+//            alignment: Alignment.bottomRight,
+//            child: InkWell(
+//              onTap: () => Navigator.pop(context),
+//              onDoubleTap: () {},
+//              child: Container(
+//                padding: EdgeInsets.all(12),
+//                child: Icon(
+//                  Icons.close,
+//                  color: PlunesColors.GREYCOLOR,
+//                  size: 30,
+//                ),
+//              ),
+//            ),
+//          ),
           Container(
             padding: EdgeInsets.symmetric(
                 horizontal: AppConfig.horizontalBlockSize * 6,
-                vertical: AppConfig.verticalBlockSize * 2),
+                vertical: AppConfig.verticalBlockSize * 3),
             child: Text(
               "Tips for more Conversions",
               textAlign: TextAlign.center,
@@ -2611,6 +2638,25 @@ class CustomWidgets {
               ),
             ),
           ),
+          Container(
+            height: 0.5,
+            width: double.infinity,
+            color: PlunesColors.GREYCOLOR,
+          ),
+          FlatButton(
+              splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Container(
+                  width: double.infinity,
+                  child: Text(
+                    "OK",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: AppConfig.mediumFont,
+                        color: PlunesColors.SPARKLINGGREEN),
+                  ))),
         ]),
       ),
     );
@@ -2618,7 +2664,7 @@ class CustomWidgets {
 
   Widget iconWithText(String textMsg) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
         Image.asset(
@@ -2645,126 +2691,164 @@ class CustomWidgets {
     bool isSuccess = false;
     String failureMessage;
     return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 8,
-          vertical: AppConfig.verticalBlockSize * 33),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: StreamBuilder<Object>(
-            stream: bookingBloc.confirmAppointmentByDocHosStream,
-            builder: (context, snapshot) {
-              if (snapshot.data != null && snapshot.data is RequestInProgress) {
-                return CustomWidgets().getProgressIndicator();
-              }
-              if (snapshot.data != null && snapshot.data is RequestSuccess) {
-                isSuccess = true;
-              }
-              if (snapshot.data != null && snapshot.data is RequestFailed) {
-                RequestFailed requestFailed = snapshot.data;
-                failureMessage = requestFailed.failureCause ??
-                    PlunesStrings.confirmFailedMessage;
-                bookingBloc.addStateInConfirmProvider(null);
-              }
-              return Column(children: <Widget>[
-                Container(
-                  alignment: Alignment.bottomRight,
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.pop(context);
-                      return;
-                    },
-                    onDoubleTap: () {},
-                    child: Padding(
-                      padding: EdgeInsets.all(12),
-                      child: Icon(
-                        Icons.close,
-                        color: PlunesColors.GREYCOLOR,
-                        size: AppConfig.extraLargeFont,
-                      ),
-                    ),
-                  ),
-                ),
-                isSuccess
-                    ? Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 2,
-                            horizontal: AppConfig.horizontalBlockSize * 4),
-                        child: Text(
-                            "Appointment has been successfully Confirmed.",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: AppConfig.mediumFont)),
-                      )
-                    : Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 2),
-                        child: Text("Confirm Appointment for Patient?",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: AppConfig.mediumFont)),
-                      ),
-                isSuccess
-                    ? Container()
-                    : Container(
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 4,
-                            bottom: AppConfig.verticalBlockSize * 2),
-                        child: Column(
+      margin:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 8),
+      alignment: Alignment.center,
+      child: SingleChildScrollView(
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          child: StreamBuilder<Object>(
+              stream: bookingBloc.confirmAppointmentByDocHosStream,
+              builder: (context, snapshot) {
+                if (snapshot.data != null &&
+                    snapshot.data is RequestInProgress) {
+                  return Container(
+                    child: CustomWidgets().getProgressIndicator(),
+                    padding: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 5),
+                  );
+                }
+                if (snapshot.data != null && snapshot.data is RequestSuccess) {
+                  isSuccess = true;
+                }
+                if (snapshot.data != null && snapshot.data is RequestFailed) {
+                  RequestFailed requestFailed = snapshot.data;
+                  failureMessage = requestFailed.failureCause ??
+                      PlunesStrings.confirmFailedMessage;
+                  bookingBloc.addStateInConfirmProvider(null);
+                }
+                return Column(children: <Widget>[
+//                Container(
+//                  alignment: Alignment.bottomRight,
+//                  child: InkWell(
+//                    onTap: () {
+//                      Navigator.pop(context);
+//                      return;
+//                    },
+//                    onDoubleTap: () {},
+//                    child: Padding(
+//                      padding: EdgeInsets.all(12),
+//                      child: Icon(
+//                        Icons.close,
+//                        color: PlunesColors.GREYCOLOR,
+//                        size: AppConfig.extraLargeFont,
+//                      ),
+//                    ),
+//                  ),
+//                ),
+                  isSuccess
+                      ? Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 2,
+                              horizontal: AppConfig.horizontalBlockSize * 4),
+                          child: Text(
+                              "Appointment has been successfully Confirmed.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: AppConfig.mediumFont)),
+                        )
+                      : Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 2),
+                          child: Text("Confirm Appointment for Patient?",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: AppConfig.mediumFont)),
+                        ),
+                  isSuccess
+                      ? Column(
                           children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                InkWell(
-                                  onTap: () {
-                                    if (appointmentModel != null) {
-                                      bookingBloc.confirmAppointmentByDocHos(
-                                          appointmentModel.bookingId);
-                                    }
-                                  },
-                                  onDoubleTap: () {},
-                                  child: getRoundedButton(
-                                      "Yes",
+                            Container(
+                              height: 0.5,
+                              width: double.infinity,
+                              color: PlunesColors.GREYCOLOR,
+                              margin: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1),
+                            ),
+                            FlatButton(
+                                splashColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                highlightColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                focusColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  return;
+                                },
+                                child: Container(
+                                    width: double.infinity,
+                                    child: Text(
+                                      'OK',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ))),
+                          ],
+                        )
+                      : Container(
+                          margin: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 1,
+                              bottom: AppConfig.verticalBlockSize * 2),
+                          child: Column(
+                            children: <Widget>[
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  InkWell(
+                                    onTap: () {
+                                      if (appointmentModel != null) {
+                                        bookingBloc.confirmAppointmentByDocHos(
+                                            appointmentModel.bookingId);
+                                      }
+                                    },
+                                    onDoubleTap: () {},
+                                    child: getRoundedButton(
+                                        "Yes",
+                                        AppConfig.horizontalBlockSize * 5,
+                                        PlunesColors.GREENCOLOR,
+                                        AppConfig.horizontalBlockSize * 10,
+                                        AppConfig.verticalBlockSize * 1,
+                                        PlunesColors.WHITECOLOR),
+                                  ),
+                                  SizedBox(
+                                    width: AppConfig.horizontalBlockSize * 10,
+                                  ),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.pop(context, "No");
+                                      return;
+                                    },
+                                    onDoubleTap: () {},
+                                    child: getRoundedButton(
+                                      "No",
                                       AppConfig.horizontalBlockSize * 5,
-                                      PlunesColors.GREENCOLOR,
+                                      PlunesColors.WHITECOLOR,
                                       AppConfig.horizontalBlockSize * 10,
                                       AppConfig.verticalBlockSize * 1,
-                                      PlunesColors.WHITECOLOR),
-                                ),
-                                SizedBox(
-                                  width: AppConfig.horizontalBlockSize * 10,
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.pop(context, "No");
-                                    return;
-                                  },
-                                  onDoubleTap: () {},
-                                  child: getRoundedButton(
-                                    "No",
-                                    AppConfig.horizontalBlockSize * 5,
-                                    PlunesColors.WHITECOLOR,
-                                    AppConfig.horizontalBlockSize * 10,
-                                    AppConfig.verticalBlockSize * 1,
-                                    PlunesColors.BLACKCOLOR,
-                                    hasBorder: true,
-                                  ),
-                                )
-                              ],
-                            ),
-                            failureMessage == null || failureMessage.isEmpty
-                                ? Container()
-                                : Container(
-                                    padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 1),
-                                    child: Text(
-                                      failureMessage,
-                                      style: TextStyle(color: Colors.red),
+                                      PlunesColors.BLACKCOLOR,
+                                      hasBorder: true,
                                     ),
-                                  ),
-                          ],
+                                  )
+                                ],
+                              ),
+                              failureMessage == null || failureMessage.isEmpty
+                                  ? Container()
+                                  : Container(
+                                      padding: EdgeInsets.only(
+                                          top: AppConfig.verticalBlockSize * 1),
+                                      child: Text(
+                                        failureMessage,
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                    ),
+                            ],
+                          ),
                         ),
-                      ),
-              ]);
-            }),
+                ]);
+              }),
+        ),
       ),
     );
   }
@@ -3524,26 +3608,27 @@ class CustomWidgets {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
-      child: Container(
-        height: AppConfig.verticalBlockSize * 50,
+      child: SingleChildScrollView(
+//        height: AppConfig.verticalBlockSize * 50,
         child: Column(
           children: <Widget>[
-            Container(
-              alignment: Alignment.topRight,
-              child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
-                onDoubleTap: () {},
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Icon(Icons.close),
-                ),
-              ),
-            ),
+//            Container(
+//              alignment: Alignment.topRight,
+//              child: InkWell(
+//                onTap: () => Navigator.of(context).pop(),
+//                onDoubleTap: () {},
+//                child: Padding(
+//                  padding: const EdgeInsets.all(10),
+//                  child: Icon(Icons.close),
+//                ),
+//              ),
+//            ),
             Container(
                 width: double.infinity,
                 height: AppConfig.verticalBlockSize * 39,
                 margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 4.5),
+                    horizontal: AppConfig.horizontalBlockSize * 4.5,
+                    vertical: AppConfig.verticalBlockSize * 2),
                 child: SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -3656,10 +3741,29 @@ class CustomWidgets {
                             plunesImages.eduIcon,
                             plunesStrings.qualification,
                             doctorsData?.education ?? _getEmptyString()),
-                      )
+                      ),
                     ],
                   ),
                 )),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+            ),
+            FlatButton(
+                splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Container(
+                    width: double.infinity,
+                    child: Text(
+                      "Close",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.SPARKLINGGREEN),
+                    ))),
           ],
         ),
       ),
@@ -3929,35 +4033,50 @@ class CustomWidgets {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
       child: Container(
-        height: AppConfig.verticalBlockSize * 40,
-        child: Column(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.topRight,
-              child: InkWell(
-                onTap: () => Navigator.of(globalKey.currentState.context).pop(),
-                onDoubleTap: () {},
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: Icon(Icons.close),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 3,
+                        horizontal: AppConfig.horizontalBlockSize * 6),
+                    height: AppConfig.verticalBlockSize * 10,
+                    child: Image.asset(PlunesImages.bdSupportImage)),
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 5),
+                  child: Text(message,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.GREYCOLOR)),
                 ),
-              ),
+                Container(
+                  height: 0.5,
+                  width: double.infinity,
+                  color: PlunesColors.GREYCOLOR,
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                ),
+                FlatButton(
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    onPressed: () =>
+                        Navigator.of(globalKey.currentState.context).pop(),
+                    child: Container(
+                        width: double.infinity,
+                        child: Text(
+                          'OK',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              color: PlunesColors.SPARKLINGGREEN),
+                        ))),
+              ],
             ),
-            Flexible(child: Image.asset(PlunesImages.bdSupportImage)),
-            Flexible(
-                child: Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 3,
-                  vertical: AppConfig.verticalBlockSize * 3),
-              child: Text(
-                message,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
-              ),
-            )),
-          ],
-        ),
-      ),
+          )),
     );
   }
 
@@ -5276,6 +5395,11 @@ class CustomWidgets {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+              height: AppConfig.verticalBlockSize * 10,
+              child: Image.asset(PlunesImages.common),
+            ),
             Container(
               margin: EdgeInsets.symmetric(
                   horizontal: AppConfig.horizontalBlockSize * 5,

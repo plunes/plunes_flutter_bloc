@@ -6,7 +6,9 @@ class ShareableReportModel {
 
   ShareableReportModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    link = json['link'] != null ? new Link.fromJson(json['link']) : null;
+    link = (json['data'] != null && json['data']['link'] != null)
+        ? new Link.fromJson(json['data']['link'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {

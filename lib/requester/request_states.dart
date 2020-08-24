@@ -9,10 +9,10 @@ class RequestFailed implements RequestState {
 }
 
 class RequestSuccess implements RequestState {
-  final dynamic response;
+  final dynamic response, additionalData;
   final int requestCode;
 
-  const RequestSuccess({this.response, this.requestCode});
+  const RequestSuccess({this.response, this.requestCode, this.additionalData});
 }
 
 class InitialState implements RequestState {

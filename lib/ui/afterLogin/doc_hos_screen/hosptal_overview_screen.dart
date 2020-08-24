@@ -315,6 +315,8 @@ class _HospitalOverviewScreenState
                                                       _openRealTimeInsightPriceUpdateWidget(
                                                           _realTimeInsightsResponse
                                                               .data[itemIndex]),
+                                                  highlightColor: PlunesColors
+                                                      .LIGHTGREENCOLOR,
                                                   child: Container(
                                                     padding: EdgeInsets.only(
                                                         left: 1.0,
@@ -566,11 +568,17 @@ class _HospitalOverviewScreenState
                             PlunesImages.informativeIcon,
                           ),
                         )),
-                    Expanded(child: Container()),
+                    Expanded(
+                      child: Container(),
+                      flex: 1,
+                    ),
                     (_user.isAdmin &&
                             _centresList != null &&
                             _centresList.isNotEmpty)
-                        ? Flexible(child: _actionableDropDown(), flex: 2)
+                        ? Expanded(
+                            child: _actionableDropDown(),
+                            flex: 10,
+                          )
                         : Container(),
                   ],
                 ),
@@ -949,145 +957,155 @@ class _HospitalOverviewScreenState
       child: Scrollbar(
         controller: _scrollController,
 //        isAlwaysShown: true,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Container(
-            margin: EdgeInsets.only(top: 5, left: 5, right: 5),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  width: double.infinity,
-                  child: Card(
-                    elevation: 2.0,
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                            child: Image.asset(PlunesImages.labMapImage),
-                            height: AppConfig.verticalBlockSize * 4,
-                            width: AppConfig.horizontalBlockSize * 14,
-                          ),
-                          Flexible(
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: AppConfig.horizontalBlockSize * 2),
-                              child: Text(
-                                CommonMethods.getStringInCamelCase(
-                                        _user?.name) ??
-                                    _getNaString(),
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w500),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            _docHosMainInsightBloc
+                .addStateInRealTimeInsightStream(RequestInProgress());
+            _getRealTimeInsights();
+            return await Future.delayed(Duration(seconds: 1));
+          },
+          child: SingleChildScrollView(
+            controller: _scrollController,
+            child: Container(
+              margin: EdgeInsets.only(top: 5, left: 5, right: 5),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    width: double.infinity,
+                    child: Card(
+                      elevation: 2.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Row(
+//>>>>>>> f9657161aed74a0902cf1e138a53de9d7edd153f
+                          children: <Widget>[
+                            Container(
+                              child: Image.asset(PlunesImages.labMapImage),
+                              height: AppConfig.verticalBlockSize * 4,
+                              width: AppConfig.horizontalBlockSize * 14,
+                            ),
+                            Flexible(
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    left: AppConfig.horizontalBlockSize * 2),
+                                child: Text(
+                                  CommonMethods.getStringInCamelCase(
+                                          _user?.name) ??
+                                      _getNaString(),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
+                                ),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Card(
+                    elevation: 2.0,
+                    margin: EdgeInsets.only(top: 3, left: 5, right: 5),
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 2,
+                          horizontal: AppConfig.horizontalBlockSize * 4),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Flexible(
+                                child: CustomWidgets().getShowCase(
+                                  _realTimeInsightKey,
+                                  title: PlunesStrings.realTimeInsights,
+                                  description: PlunesStrings.realTimeDesc,
+                                  child: Text(
+                                    PlunesStrings.realTimeInsights,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                  height: AppConfig.verticalBlockSize * 2.5,
+                                  width: AppConfig.horizontalBlockSize * 5.5,
+                                  margin: EdgeInsets.only(
+                                      right: AppConfig.horizontalBlockSize * 3),
+                                  child: InkWell(
+                                    onTap: () {
+                                      CommonMethods.showLongToast(
+                                          PlunesStrings.realTimeMessage,
+                                          bgColor: PlunesColors.LIGHTGREENCOLOR,
+                                          centerGravity: true);
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Image.asset(
+                                      PlunesImages.informativeIcon,
+                                    ),
+                                  )),
+                            ],
+                            crossAxisAlignment: CrossAxisAlignment.center,
                           ),
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 0.8),
+                            child: Text(
+                              PlunesStrings.makeSureToUpdatePrice,
+                              textAlign: TextAlign.left,
+                              maxLines: 2,
+                              style: TextStyle(
+                                  color: PlunesColors.GREYCOLOR, fontSize: 15),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              Expanded(
+                                child: StreamBuilder<Object>(
+                                    stream: _docHosMainInsightBloc
+                                        .realTimeInsightStream,
+                                    builder: (context, snapshot) {
+                                      if (_realTimeInsightsResponse != null &&
+                                          _realTimeInsightsResponse.timer !=
+                                              null) {
+                                        return Text(
+                                          'Preferred Time : ${_realTimeInsightsResponse.timer} Min',
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              color: PlunesColors.GREYCOLOR
+                                                  .withOpacity(0.65)),
+                                        );
+                                      }
+                                      return Container();
+                                    }),
+                                flex: 2,
+                              ),
+                              Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    'Maximum Time : 1 hour',
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                        fontSize: 13,
+                                        color: PlunesColors.GREYCOLOR
+                                            .withOpacity(0.65)),
+                                  ))
+                            ],
+                          )
                         ],
                       ),
                     ),
                   ),
-                ),
-                Card(
-                  elevation: 2.0,
-                  margin: EdgeInsets.only(top: 3, left: 5, right: 5),
-                  child: Container(
-                    margin: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 2,
-                        horizontal: AppConfig.horizontalBlockSize * 4),
-                    child: Column(
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            Flexible(
-                              child: CustomWidgets().getShowCase(
-                                _realTimeInsightKey,
-                                title: PlunesStrings.realTimeInsights,
-                                description: PlunesStrings.realTimeDesc,
-                                child: Text(
-                                  PlunesStrings.realTimeInsights,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                                height: AppConfig.verticalBlockSize * 2.5,
-                                width: AppConfig.horizontalBlockSize * 5.5,
-                                margin: EdgeInsets.only(
-                                    right: AppConfig.horizontalBlockSize * 3),
-                                child: InkWell(
-                                  onTap: () {
-                                    CommonMethods.showLongToast(
-                                        PlunesStrings.realTimeMessage,
-                                        bgColor: PlunesColors.LIGHTGREENCOLOR,
-                                        centerGravity: true);
-                                  },
-                                  onDoubleTap: () {},
-                                  child: Image.asset(
-                                    PlunesImages.informativeIcon,
-                                  ),
-                                )),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                        ),
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 0.8),
-                          child: Text(
-                            PlunesStrings.makeSureToUpdatePrice,
-                            textAlign: TextAlign.left,
-                            maxLines: 2,
-                            style: TextStyle(
-                                color: PlunesColors.GREYCOLOR, fontSize: 15),
-                          ),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Expanded(
-                              child: StreamBuilder<Object>(
-                                  stream: _docHosMainInsightBloc
-                                      .realTimeInsightStream,
-                                  builder: (context, snapshot) {
-                                    if (_realTimeInsightsResponse != null &&
-                                        _realTimeInsightsResponse.timer !=
-                                            null) {
-                                      return Text(
-                                        'Preferred Time : ${_realTimeInsightsResponse.timer} Min',
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            color: PlunesColors.GREYCOLOR
-                                                .withOpacity(0.65)),
-                                      );
-                                    }
-                                    return Container();
-                                  }),
-                              flex: 2,
-                            ),
-                            Expanded(
-                                flex: 2,
-                                child: Text(
-                                  'Maximum Time : 1 hour',
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                      fontSize: 13,
-                                      color: PlunesColors.GREYCOLOR
-                                          .withOpacity(0.65)),
-                                ))
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                _getRealTimeInsightView(),
-                _getTotalBusinessWidgetForNonAdmin(),
-                _getActionableInsightWidget(),
-              ],
+                  _getRealTimeInsightView(),
+                  _getTotalBusinessWidgetForNonAdmin(),
+                  _getActionableInsightWidget(),
+                ],
+              ),
             ),
           ),
         ),
