@@ -1177,7 +1177,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
         title: new Text("Payment Success"),
-        content: Container(
+        content: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               SizedBox(

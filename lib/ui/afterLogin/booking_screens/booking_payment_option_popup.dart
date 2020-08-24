@@ -52,7 +52,9 @@ class _PopupChooseState extends State<PopupChoose> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
 //      title: Container(
 //        child: GestureDetector(
 //          onTap: () {
@@ -67,11 +69,13 @@ class _PopupChooseState extends State<PopupChoose> {
 //          ),
 //        ),
 //      ),
-      content: Container(
+      child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3,
+                  horizontal: AppConfig.horizontalBlockSize * 6),
               child: Text(
                 "Now you can have multiple\n"
                 "telephonic consultations & one free visit!",
@@ -82,28 +86,31 @@ class _PopupChooseState extends State<PopupChoose> {
 //            SizedBox(
 //              height: 20,
 //            ),
-            Container(
-              height: AppConfig.verticalBlockSize * 15,
-              width: double.infinity,
-              child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemBuilder: (context, count) {
-                  return Card(
-                    elevation: 0,
-                    margin: EdgeInsets.only(
-                        bottom: AppConfig.verticalBlockSize * 3),
-                    color: Colors.transparent,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _paymentSelectionOptions.forEach((paymentOption) {
-                            paymentOption.isSelected = false;
-                          });
-                          _paymentSelectionOptions[count].isSelected = true;
+            ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, count) {
+                return Card(
+                  elevation: 0,
+//                  margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
+                  color: Colors.transparent,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _paymentSelectionOptions.forEach((paymentOption) {
+                          paymentOption.isSelected = false;
                         });
-                      },
-                      onDoubleTap: () {},
+                        _paymentSelectionOptions[count].isSelected = true;
+                      });
+                    },
+                    onDoubleTap: () {},
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 4),
+                      height: _paymentSelectionOptions.length > 2
+                          ? AppConfig.verticalBlockSize * 8
+                          : AppConfig.verticalBlockSize * 5,
+                      width: double.infinity,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +127,7 @@ class _PopupChooseState extends State<PopupChoose> {
                                   width: 20,
                                 ),
                           SizedBox(
-                            width: 10,
+                            width: AppConfig.horizontalBlockSize * 4,
                           ),
                           Container(
                               width: 150,
@@ -136,10 +143,10 @@ class _PopupChooseState extends State<PopupChoose> {
                         ],
                       ),
                     ),
-                  );
-                },
-                itemCount: _paymentSelectionOptions.length ?? 0,
-              ),
+                  ),
+                );
+              },
+              itemCount: _paymentSelectionOptions.length ?? 0,
             ),
 
             Container(
