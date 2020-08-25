@@ -201,25 +201,7 @@ class _AboutUsState extends BaseState<AboutUs> {
                   ),
                 ),
               ),
-<<<<<<< HEAD
             ),
-//            InkWell(
-//              onTap: () {
-//                showDialog(
-//                    context: context,
-//                    builder: (BuildContext context) =>
-//                        CustomWidgets().getCancelMessagePopup(context));
-//              },
-//              child: Padding(
-//                padding: const EdgeInsets.all(8.0),
-//                child: Text('data'),
-//              ),
-//            )
-||||||| 128aecf
-            )
-=======
-            ),
->>>>>>> newBranch
           ],
         ),
       ),

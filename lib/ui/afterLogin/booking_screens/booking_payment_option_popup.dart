@@ -52,7 +52,9 @@ class _PopupChooseState extends State<PopupChoose> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoAlertDialog(
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
 //      title: Container(
 //        child: GestureDetector(
 //          onTap: () {
@@ -67,11 +69,13 @@ class _PopupChooseState extends State<PopupChoose> {
 //          ),
 //        ),
 //      ),
-      content: Container(
+      child: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3,
+                  horizontal: AppConfig.horizontalBlockSize * 3),
               child: Text(
                 "Now you can have multiple\n"
                 "telephonic consultations & one free visit!",
@@ -83,6 +87,7 @@ class _PopupChooseState extends State<PopupChoose> {
 //              height: 20,
 //            ),
             Container(
+              margin: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
               height: AppConfig.verticalBlockSize * 15,
               width: double.infinity,
               child: ListView.builder(
