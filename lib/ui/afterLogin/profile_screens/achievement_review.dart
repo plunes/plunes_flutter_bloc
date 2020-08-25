@@ -222,7 +222,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                       ? 3
                       : _user.achievements.length ?? 0,
                   scrollDirection: Axis.horizontal,
-                  physics: NeverScrollableScrollPhysics(),
+//                  physics: NeverScrollableScrollPhysics(),
                 ),
               ),
             ),
