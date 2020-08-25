@@ -74,8 +74,8 @@ class _PopupChooseState extends State<PopupChoose> {
           children: <Widget>[
             Container(
               margin: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 3,
-                  horizontal: AppConfig.horizontalBlockSize * 3),
+                  vertical: AppConfig.verticalBlockSize * 4,
+                  horizontal: AppConfig.horizontalBlockSize * 4),
               child: Text(
                 "Now you can have multiple\n"
                 "telephonic consultations & one free visit!",

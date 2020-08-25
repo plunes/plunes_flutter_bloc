@@ -973,20 +973,7 @@ class CustomWidgets {
   ) {
     String replaceFrom = "\\n";
     return SingleChildScrollView(
-//        height: AppConfig.verticalBlockSize * 48,
-//        width: double.infinity,
         child: Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-//          Container(
-//            alignment: Alignment.topRight,
-//            child: InkWell(
-//              onTap: () => Navigator.of(context).pop(),
-//              onDoubleTap: () {},
-//              child: Padding(
-//                padding: const EdgeInsets.all(10),
-//                child: Icon(Icons.close),
-//              ),
-//            ),
-//          ),
       Container(
         margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
         alignment: Alignment.center,
@@ -2745,46 +2732,33 @@ class CustomWidgets {
   }
 
   Widget getTipsConversionsPopup(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 8,
-          vertical: AppConfig.verticalBlockSize * 16),
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Column(children: <Widget>[
-//          Container(
-//            alignment: Alignment.bottomRight,
-//            child: InkWell(
-//              onTap: () => Navigator.pop(context),
-//              onDoubleTap: () {},
-//              child: Container(
-//                padding: EdgeInsets.all(12),
-//                child: Icon(
-//                  Icons.close,
-//                  color: PlunesColors.GREYCOLOR,
-//                  size: 30,
-//                ),
-//              ),
-//            ),
-//          ),
-          Container(
-            padding: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 6,
-                vertical: AppConfig.verticalBlockSize * 3),
-            child: Text(
-              "Tips for more Conversions",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  fontSize: AppConfig.mediumFont, fontWeight: FontWeight.w600),
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 8,
+            vertical: AppConfig.verticalBlockSize * 16),
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          child: Column(children: <Widget>[
+            Container(
+              padding: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 6,
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: Text(
+                "Tips for more Conversions",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    fontSize: AppConfig.mediumFont,
+                    fontWeight: FontWeight.w600),
+              ),
             ),
-          ),
-          Container(
-            height: AppConfig.verticalBlockSize * 40,
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 5,
-                vertical: AppConfig.verticalBlockSize * 2),
-            alignment: Alignment.center,
-            child: SingleChildScrollView(
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 5,
+                  right: AppConfig.horizontalBlockSize * 5,
+                  bottom: AppConfig.verticalBlockSize * 2),
+              alignment: Alignment.center,
               child: Column(
                 children: <Widget>[
                   iconWithText("Call up the Patients"),
@@ -2795,27 +2769,27 @@ class CustomWidgets {
                 ],
               ),
             ),
-          ),
-          Container(
-            height: 0.5,
-            width: double.infinity,
-            color: PlunesColors.GREYCOLOR,
-          ),
-          FlatButton(
-              splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-              highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-              focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-              onPressed: () => Navigator.of(context).pop(),
-              child: Container(
-                  width: double.infinity,
-                  child: Text(
-                    "OK",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: AppConfig.mediumFont,
-                        color: PlunesColors.SPARKLINGGREEN),
-                  ))),
-        ]),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+            ),
+            FlatButton(
+                splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                onPressed: () => Navigator.of(context).pop(),
+                child: Container(
+                    width: double.infinity,
+                    child: Text(
+                      "OK",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.SPARKLINGGREEN),
+                    ))),
+          ]),
+        ),
       ),
     );
   }
