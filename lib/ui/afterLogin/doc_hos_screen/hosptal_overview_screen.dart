@@ -460,28 +460,31 @@ class _HospitalOverviewScreenState
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Text(
-                                      '\u20B9 ${_totalBusinessEarnedResponse.businessGained?.toStringAsFixed(2) ?? "0"}',
-                                      style: TextStyle(
-                                        color: PlunesColors.GREENCOLOR,
-                                        fontSize: AppConfig.largeFont,
-                                        fontWeight: FontWeight.normal,
+                                Flexible(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        '\u20B9 ${_totalBusinessEarnedResponse.businessGained?.toStringAsFixed(2) ?? "0"}',
+                                        style: TextStyle(
+                                          color: PlunesColors.GREENCOLOR,
+                                          fontSize: AppConfig.largeFont,
+                                          fontWeight: FontWeight.normal,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      'Business Earned',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: AppConfig.verySmallFont),
-                                    )
-                                  ],
+                                      Text(
+                                        'Business Earned',
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: AppConfig.verySmallFont),
+                                      )
+                                    ],
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 10,
                                 ),
-                                Column(
+                                Flexible(
+                                    child: Column(
                                   children: <Widget>[
                                     Text(
                                       '\u20B9 ${_totalBusinessEarnedResponse.businessLost?.toStringAsFixed(2) ?? "0"}',
@@ -496,7 +499,7 @@ class _HospitalOverviewScreenState
                                             color: Colors.black54,
                                             fontSize: AppConfig.verySmallFont)),
                                   ],
-                                )
+                                ))
                               ]);
                   },
                   initialData: _totalBusinessEarnedResponse == null

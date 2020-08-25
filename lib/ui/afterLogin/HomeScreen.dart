@@ -413,18 +413,21 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                               Container(
                                 margin: EdgeInsets.only(left: 10),
                                 alignment: Alignment.center,
-                                child: CircleAvatar(
-                                  child: _imageUrl != ''
-                                      ? CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(_imageUrl),
-                                          backgroundColor: Colors.transparent,
-                                          radius: 35,
-                                        )
-                                      : Container(),
-                                  backgroundColor: PlunesColors.LIGHTGREYCOLOR,
-                                  radius: 35,
-                                ),
+                                child: _imageUrl != ''
+                                    ? CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        radius: 35,
+                                        child: Container(
+                                          height: 70,
+                                          width: 70,
+                                          child: ClipOval(
+                                            child: CustomWidgets()
+                                                .getImageFromUrl(_imageUrl,
+                                                    boxFit: BoxFit.fill),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
                               ),
                               Expanded(
                                   child: Container(
@@ -493,8 +496,14 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                       _userType == Constants.user
                           ? InkWell(
                               onTap: () {
+                                Navigator.pop(context);
                                 Navigator.pushNamed(
-                                    context, HealthSolutionNear.tag);
+                                        context, HealthSolutionNear.tag)
+                                    .then((value) {
+                                  EventProvider().getSessionEventBus().fire(
+                                      ScreenRefresher(
+                                          screenName: HealthSolutionNear.tag));
+                                });
                               },
                               child: Container(
                                 alignment: Alignment.center,

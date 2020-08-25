@@ -392,7 +392,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
       _catalogues.remove(facility);
     }
     if (_catalogues == null || _catalogues.isEmpty) {
-      _failureCause = PlunesStrings.afterFacilitySelectedText;
+      _failureCause = PlunesStrings.emptyStr;
     }
     _selectUnselectController.add(null);
     _searchSolutionBloc.addIntoMoreFacilitiesStream(null);
