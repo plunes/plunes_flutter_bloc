@@ -15,6 +15,10 @@ import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 
 // ignore: must_be_immutable
 class ChangeProfileScreen extends BaseActivity {
+  final String profileUrl;
+
+  ChangeProfileScreen({this.profileUrl});
+
   @override
   _ChangeProfileScreenState createState() => _ChangeProfileScreenState();
 }
@@ -54,8 +58,6 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
               builder: (context, snapshot) {
                 if (snapshot.data is RequestInProgress) {
                   return Center(child: CustomWidgets().getProgressIndicator());
-                } else if (snapshot.data is RequestSuccess) {
-                  _user = UserManager().getUserDetails();
                 }
                 return Container(
                   child: Stack(
@@ -65,7 +67,8 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
                           Expanded(
                               child: GridPhotoViewer(
                             photo: Photo(
-                                assetName: _user.imageUrl ??
+                                assetName: widget.profileUrl ??
+                                    _user.imageUrl ??
                                     PlunesImages.userProfileIcon),
                           )),
                         ],
@@ -108,7 +111,10 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
       _userBloc.uploadPicture(file).then((value) async {
         await Future.delayed(Duration(milliseconds: 30));
         if (value is RequestSuccess) {
-          _showMessage("Profile picture updated successfully", shouldPop: true);
+          String responseUrl = value?.response?.toString();
+          Future.delayed(Duration(milliseconds: 20)).then((value) {
+            Navigator.pop(context, responseUrl);
+          });
         } else if (value is RequestFailed) {
           _showMessage(value?.failureCause);
         }
@@ -124,7 +130,7 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
               .getInformativePopup(globalKey: scaffoldKey, message: message);
         }).then((value) {
       if (shouldPop) {
-        Navigator.pop(context, shouldPop);
+        Navigator.pop(context);
       }
     });
   }

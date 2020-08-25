@@ -390,7 +390,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                                                   .verticalBlockSize *
                                                               2.5),
                                                       child: Text(
-                                                        "Are you sure ?" ??
+                                                        "Cancel the Appointment ?" ??
                                                             plunesStrings
                                                                 .somethingWentWrong,
                                                         textAlign:

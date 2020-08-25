@@ -1087,8 +1087,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
-              child: Container(
-                height: AppConfig.verticalBlockSize * 37.5,
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -1177,7 +1176,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
         title: new Text("Payment Success"),
-        content: Container(
+        content: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               SizedBox(

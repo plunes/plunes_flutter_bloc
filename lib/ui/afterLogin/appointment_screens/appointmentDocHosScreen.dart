@@ -371,7 +371,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                                                     .verticalBlockSize *
                                                                 2.5),
                                                         child: Text(
-                                                          "cancel Appointment for patient ?" ??
+                                                          "Cancel Appointment for patient ?" ??
                                                               plunesStrings
                                                                   .somethingWentWrong,
                                                           textAlign:
