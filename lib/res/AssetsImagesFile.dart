@@ -77,6 +77,7 @@ class PlunesImages {
       "assets/images/enterTestAndProcedureDetailsImage.png";
   static const String testAndProcedureQuerySubmittedImage =
       "assets/images/testAndProcedureQuerySubmittedImage.png";
+  static const String editPencilProfile = "assets/images/editPencilProfile.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

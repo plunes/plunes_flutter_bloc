@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
@@ -35,6 +36,11 @@ class UserManager {
   setIsUserInServiceLocation(bool isInServiceLocation) {
     return Preferences().setPreferencesBoolean(
         Constants.IS_IN_SERVICE_LOCATION, isInServiceLocation);
+  }
+
+  setImageUrl(String imageUrl) {
+    return Preferences()
+        .setPreferencesString(Constants.PREF_USER_IMAGE, imageUrl);
   }
 
   setLanLong(var lat, var long) {
@@ -481,12 +487,20 @@ class UserManager {
   }
 
   Future<RequestState> uploadPicture(File image) async {
+    Map<String, dynamic> postData = {
+      "file": await MultipartFile.fromFile(image.path?.toString())
+    };
     var result = await DioRequester().requestMethod(
-        url: urls.signUp,
+        url: Urls.CHANGE_PROFILE_URL,
+        headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_POST,
-        postData: {});
+        postData: FormData.fromMap(postData));
     if (result.isRequestSucceed) {
-      return RequestSuccess(response: LoginPost.fromJson(result.response.data));
+      if (result.response.data != null &&
+          result.response.data['imageUrl'] != null) {
+        setImageUrl(result.response.data['imageUrl']?.toString());
+      }
+      return RequestSuccess();
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

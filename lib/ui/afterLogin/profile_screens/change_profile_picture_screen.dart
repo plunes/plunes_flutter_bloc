@@ -7,8 +7,10 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 
 // ignore: must_be_immutable
@@ -44,11 +46,17 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        key: scaffoldKey,
         appBar: widget.getAppBar(context, "Edit Profile", true),
         body: Builder(builder: (context) {
-          return StreamBuilder<Object>(
-              stream: null,
+          return StreamBuilder<RequestState>(
+              stream: _userBloc.profileStream,
               builder: (context, snapshot) {
+                if (snapshot.data is RequestInProgress) {
+                  return Center(child: CustomWidgets().getProgressIndicator());
+                } else if (snapshot.data is RequestSuccess) {
+                  _user = UserManager().getUserDetails();
+                }
                 return Container(
                   child: Stack(
                     children: <Widget>[
@@ -97,8 +105,27 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
   @override
   fetchImageCallBack(File file) {
     if (file != null) {
-      print("file hai bhai");
-//      _userBloc.uploadPicture(file);
+      _userBloc.uploadPicture(file).then((value) async {
+        await Future.delayed(Duration(milliseconds: 30));
+        if (value is RequestSuccess) {
+          _showMessage("Profile picture updated successfully", shouldPop: true);
+        } else if (value is RequestFailed) {
+          _showMessage(value?.failureCause);
+        }
+      });
     }
+  }
+
+  void _showMessage(String message, {bool shouldPop = false}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: scaffoldKey, message: message);
+        }).then((value) {
+      if (shouldPop) {
+        Navigator.pop(context, shouldPop);
+      }
+    });
   }
 }

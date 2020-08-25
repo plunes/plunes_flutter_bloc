@@ -563,13 +563,47 @@ class _EditProfileState extends State<EditProfileScreen>
   }
 
   _getProfileWidget() {
-    return InkWell(
-      onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => ChangeProfileScreen()));
-      },
-      child: Container(
-        child: Icon(Icons.supervised_user_circle),
+    return Container(
+      alignment: Alignment.center,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChangeProfileScreen())).then((value) {
+            if (value != null && value) {
+              _user = UserManager().getUserDetails();
+              _setState();
+            }
+          });
+        },
+        child: Stack(
+          children: <Widget>[
+            CircleAvatar(
+              child: Container(
+                height: 90,
+                width: 90,
+                child: ClipOval(
+                    child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.black, shape: BoxShape.circle),
+                  child: CustomWidgets()
+                      .getImageFromUrl(_user.imageUrl, boxFit: BoxFit.fill),
+                )),
+              ),
+              radius: 45,
+            ),
+            Positioned(
+              right: 2.0,
+              bottom: 2.0,
+              child: Image.asset(
+                PlunesImages.editPencilProfile,
+                height: 22,
+                width: 22,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
