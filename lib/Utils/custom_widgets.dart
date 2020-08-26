@@ -462,15 +462,17 @@ class CustomWidgets {
 //  }
 
   Widget getImageFromUrl(final String imageUrl,
-      {BoxFit boxFit = BoxFit.contain}) {
+      {BoxFit boxFit = BoxFit.contain, String placeHolderPath}) {
 //    print("file url is $imageUrl");
     return CachedNetworkImage(
       imageUrl: imageUrl ?? PlunesStrings.NA,
       fit: boxFit,
-      errorWidget: (_, str, sds) =>
-          Image.asset(PlunesImages.plunesPlaceHolderAndErrorLogo, fit: boxFit),
-      placeholder: (_, sds) =>
-          Image.asset(PlunesImages.plunesPlaceHolderAndErrorLogo, fit: boxFit),
+      errorWidget: (_, str, sds) => Image.asset(
+          placeHolderPath ?? PlunesImages.plunesPlaceHolderAndErrorLogo,
+          fit: boxFit),
+      placeholder: (_, sds) => Image.asset(
+          placeHolderPath ?? PlunesImages.plunesPlaceHolderAndErrorLogo,
+          fit: boxFit),
     );
   }
 
@@ -667,13 +669,22 @@ class CustomWidgets {
                           solutions[index].imageUrl.isNotEmpty &&
                           solutions[index].imageUrl.contains("http"))
                       ? CircleAvatar(
+                          backgroundColor: Colors.transparent,
                           child: Container(
                             height: AppConfig.horizontalBlockSize * 14,
                             width: AppConfig.horizontalBlockSize * 14,
                             child: ClipOval(
                                 child: getImageFromUrl(
                                     solutions[index].imageUrl,
-                                    boxFit: BoxFit.fill)),
+                                    boxFit: BoxFit.fill,
+                                    placeHolderPath: (solutions[index]
+                                                .userType
+                                                .toLowerCase() ==
+                                            Constants.doctor
+                                                .toString()
+                                                .toLowerCase())
+                                        ? PlunesImages.doc_placeholder
+                                        : PlunesImages.hospitalImage)),
                           ),
                           radius: AppConfig.horizontalBlockSize * 7,
                         )
@@ -1156,8 +1167,6 @@ class CustomWidgets {
                                   style: TextStyle(
                                       fontSize: AppConfig.extraLargeFont,
                                       color: PlunesColors.WHITECOLOR,
-//                                              decoration:
-//                                                  TextDecoration.underline,
                                       fontWeight: FontWeight.w600),
                                   textAlign: TextAlign.center),
                               Container(
@@ -1192,7 +1201,10 @@ class CustomWidgets {
                                             MainAxisAlignment.end,
                                         children: <Widget>[
                                           Text(
-                                            "${reductionInPrice?.toStringAsFixed(0)}% ",
+                                            (chancesPercent == null ||
+                                                    chancesPercent == 0)
+                                                ? '0%'
+                                                : '$chancesPercent%',
                                             style: TextStyle(
                                                 color: Colors.white70,
                                                 fontSize: AppConfig.mediumFont,
@@ -1335,14 +1347,17 @@ class CustomWidgets {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.end,
                                               children: <Widget>[
-                                                Text(
-                                                  ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
-                                                  style: TextStyle(
-                                                      color: Colors.white70,
-                                                      fontSize:
-                                                          AppConfig.largeFont,
-                                                      fontWeight:
-                                                          FontWeight.w600),
+                                                Flexible(
+                                                  flex: 2,
+                                                  child: Text(
+                                                    ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
+                                                    style: TextStyle(
+                                                        color: Colors.white70,
+                                                        fontSize:
+                                                            AppConfig.largeFont,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
                                                 ),
                                                 (realInsight.suggested !=
                                                             null &&
@@ -1355,15 +1370,15 @@ class CustomWidgets {
                                                           newState(() {});
                                                         },
                                                         child: Container(
-                                                          margin: EdgeInsets.only(
-                                                              left: AppConfig
-                                                                      .horizontalBlockSize *
-                                                                  3),
+//                                                          margin: EdgeInsets.only(
+//                                                              left: AppConfig
+//                                                                      .horizontalBlockSize *
+//                                                                  3),
                                                           padding:
                                                               EdgeInsets.all(
                                                                   5.0),
                                                           alignment: Alignment
-                                                              .bottomRight,
+                                                              .topCenter,
                                                           child: Icon(
                                                             Icons.mode_edit,
                                                             color: PlunesColors
@@ -3145,13 +3160,16 @@ class CustomWidgets {
                                       doctorsData[itemIndex].name ??
                                           PlunesStrings.NA)
                                   : CircleAvatar(
+                                      backgroundColor: Colors.transparent,
                                       child: Container(
                                         height: 60,
                                         width: 60,
                                         child: ClipOval(
                                             child: getImageFromUrl(
                                                 doctorsData[itemIndex].imageUrl,
-                                                boxFit: BoxFit.fill)),
+                                                boxFit: BoxFit.fill,
+                                                placeHolderPath: PlunesImages
+                                                    .doc_placeholder)),
                                       ),
                                       radius: 30,
                                     ),
@@ -3741,20 +3759,8 @@ class CustomWidgets {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
       child: SingleChildScrollView(
-//        height: AppConfig.verticalBlockSize * 50,
         child: Column(
           children: <Widget>[
-//            Container(
-//              alignment: Alignment.topRight,
-//              child: InkWell(
-//                onTap: () => Navigator.of(context).pop(),
-//                onDoubleTap: () {},
-//                child: Padding(
-//                  padding: const EdgeInsets.all(10),
-//                  child: Icon(Icons.close),
-//                ),
-//              ),
-//            ),
             Container(
                 width: double.infinity,
                 height: AppConfig.verticalBlockSize * 39,
@@ -3790,6 +3796,7 @@ class CustomWidgets {
                                       doctorsData.imageUrl.isNotEmpty &&
                                       doctorsData.imageUrl.contains("http"))
                                   ? CircleAvatar(
+                                      backgroundColor: Colors.transparent,
                                       child: Container(
                                         height: 60,
                                         width: 60,
@@ -3797,7 +3804,10 @@ class CustomWidgets {
                                             child: CustomWidgets()
                                                 .getImageFromUrl(
                                                     doctorsData.imageUrl,
-                                                    boxFit: BoxFit.fill)),
+                                                    boxFit: BoxFit.fill,
+                                                    placeHolderPath:
+                                                        PlunesImages
+                                                            .doc_placeholder)),
                                       ),
                                       radius: 30,
                                     )
@@ -4730,13 +4740,16 @@ class CustomWidgets {
                                 catalogues[index].imageUrl.isNotEmpty &&
                                 catalogues[index].imageUrl.contains("http"))
                             ? CircleAvatar(
+                                backgroundColor: Colors.transparent,
                                 child: Container(
                                   height: 45,
                                   width: 45,
                                   child: ClipOval(
                                       child: CustomWidgets().getImageFromUrl(
                                           catalogues[index].imageUrl,
-                                          boxFit: BoxFit.fill)),
+                                          boxFit: BoxFit.fill,
+                                          placeHolderPath:
+                                              PlunesImages.doc_placeholder)),
                                 ),
                                 radius: 22.5,
                               )

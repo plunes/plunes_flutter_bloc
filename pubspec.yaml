@@ -327,6 +327,8 @@ flutter:
     - assets/images/testAndProcedureQuerySubmittedImage.png
     - assets/images/Common.png
     - assets/images/editPencilProfile.png
+    - assets/images/doc_placeholder.png
+    - assets/images/achievement_placeholder.png
 
 
 

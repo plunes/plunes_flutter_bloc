@@ -496,12 +496,14 @@ class UserManager {
         requestType: HttpRequestMethods.HTTP_POST,
         postData: FormData.fromMap(postData));
     if (result.isRequestSucceed) {
-//      if (result.response.data != null &&
-//          result.response.data['imageUrl'] != null) {
-//        setImageUrl(result.response.data['imageUrl']?.toString());
-//      }
-      return RequestSuccess(
-          response: result.response.data['imageUrl']?.toString());
+      RequestState updateResult;
+      if (result.response.data != null &&
+          result.response.data['imageUrl'] != null) {
+        updateResult = await updateUserData(
+            User(imageUrl: result.response.data['imageUrl']?.toString())
+                .toJson());
+      }
+      return updateResult;
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

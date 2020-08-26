@@ -10,7 +10,6 @@ import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
-import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 
 // ignore: must_be_immutable
@@ -58,6 +57,8 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
               builder: (context, snapshot) {
                 if (snapshot.data is RequestInProgress) {
                   return Center(child: CustomWidgets().getProgressIndicator());
+                } else if (snapshot.data is RequestSuccess) {
+                  _user = UserManager().getUserDetails();
                 }
                 return Container(
                   child: Stack(
@@ -67,8 +68,7 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
                           Expanded(
                               child: GridPhotoViewer(
                             photo: Photo(
-                                assetName: widget.profileUrl ??
-                                    _user.imageUrl ??
+                                assetName: _user.imageUrl ??
                                     PlunesImages.userProfileIcon),
                           )),
                         ],
@@ -79,7 +79,7 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
                           bottom: AppConfig.verticalBlockSize * 10,
                           child: Container(
                             margin: EdgeInsets.symmetric(
-                                horizontal: AppConfig.horizontalBlockSize * 32),
+                                horizontal: AppConfig.horizontalBlockSize * 26),
                             child: InkWell(
                               onTap: () {
                                 imagePicker.showDialog(context);
@@ -111,9 +111,8 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
       _userBloc.uploadPicture(file).then((value) async {
         await Future.delayed(Duration(milliseconds: 30));
         if (value is RequestSuccess) {
-          String responseUrl = value?.response?.toString();
           Future.delayed(Duration(milliseconds: 20)).then((value) {
-            Navigator.pop(context, responseUrl);
+            _showMessage("Profile updated successfully", shouldPop: true);
           });
         } else if (value is RequestFailed) {
           _showMessage(value?.failureCause);
@@ -130,7 +129,7 @@ class _ChangeProfileScreenState extends BaseState<ChangeProfileScreen>
               .getInformativePopup(globalKey: scaffoldKey, message: message);
         }).then((value) {
       if (shouldPop) {
-        Navigator.pop(context);
+        Navigator.pop(context, shouldPop);
       }
     });
   }

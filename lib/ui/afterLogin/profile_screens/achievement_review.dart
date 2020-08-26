@@ -396,7 +396,9 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                         borderRadius: BorderRadius.all(
                             Radius.circular(AppConfig.horizontalBlockSize * 2)),
                         child: (_user.achievements[index] == null ||
-                                _user.achievements[index].imageUrl.isEmpty)
+                                _user.achievements[index].imageUrl.isEmpty &&
+                                    !(_user.achievements[index].imageUrl
+                                        .contains("http")))
                             ? Container(
                                 margin: EdgeInsets.symmetric(
                                     vertical: AppConfig.verticalBlockSize * 4,
@@ -407,7 +409,9 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                                 ))
                             : CustomWidgets().getImageFromUrl(
                                 _user.achievements[index].imageUrl,
-                                boxFit: BoxFit.cover),
+                                boxFit: BoxFit.fill,
+                                placeHolderPath:
+                                    PlunesImages.achievement_placeholder),
                       ),
                     ),
                     flex: 4,

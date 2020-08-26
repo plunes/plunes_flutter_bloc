@@ -168,13 +168,16 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                             _profileResponse.user.imageUrl.isNotEmpty &&
                             _profileResponse.user.imageUrl.contains("http"))
                         ? CircleAvatar(
+                            backgroundColor: Colors.transparent,
                             child: Container(
                               height: 100,
                               width: 100,
                               child: ClipOval(
                                   child: CustomWidgets().getImageFromUrl(
                                       _profileResponse.user.imageUrl,
-                                      boxFit: BoxFit.fill)),
+                                      boxFit: BoxFit.fill,
+                                      placeHolderPath:
+                                          PlunesImages.hospitalImage)),
                             ),
                             radius: 40,
                           )
@@ -876,6 +879,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                           width: 50,
                                           height: 45)
                                       : CircleAvatar(
+                                          backgroundColor: Colors.transparent,
                                           child: Container(
                                             decoration: BoxDecoration(
                                                 color: Color(0xFFE0E0E0),
@@ -893,7 +897,10 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                                               .doctorsData[
                                                                   itemIndex]
                                                               .imageUrl,
-                                                          boxFit: BoxFit.fill)),
+                                                          boxFit: BoxFit.fill,
+                                                          placeHolderPath:
+                                                              PlunesImages
+                                                                  .doc_placeholder)),
                                             ),
                                           ),
                                           radius: 30,

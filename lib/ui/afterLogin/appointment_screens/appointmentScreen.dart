@@ -102,18 +102,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   color: Colors.black54),
                             ),
                           ),
-                          SizedBox(height: 5),
-                          _getProfessionalNumber(appointmentModel),
-                          (appointmentModel.centreNumber != null &&
-                                  appointmentModel.centreNumber.isNotEmpty)
-                              ? SizedBox(height: 5)
-                              : Container(),
-                          (appointmentModel.centreNumber != null &&
-                                  appointmentModel.centreNumber.isNotEmpty &&
-                                  _profNumber != null &&
-                                  _profNumber != appointmentModel.centreNumber)
-                              ? _getCentreNumber(appointmentModel)
-                              : Container(),
                         ],
                       ),
                     ),
@@ -205,6 +193,18 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   ),
                 ]),
           ),
+          SizedBox(height: 5),
+          _getProfessionalNumber(appointmentModel),
+          (appointmentModel.centreNumber != null &&
+                  appointmentModel.centreNumber.isNotEmpty)
+              ? SizedBox(height: 5)
+              : Container(),
+          (appointmentModel.centreNumber != null &&
+                  appointmentModel.centreNumber.isNotEmpty &&
+                  _profNumber != null &&
+                  _profNumber != appointmentModel.centreNumber)
+              ? _getCentreNumber(appointmentModel)
+              : Container(),
           Container(
             margin:
                 EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 6),
@@ -1055,6 +1055,22 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                     appointmentModel.alternateNumber.isNotEmpty))
             ? ""
             : appointmentModel.professionalMobileNumber ?? PlunesStrings.NA;
+    String numb = "";
+    if (_profNumber != null && _profNumber.isNotEmpty) {
+      if (widget.appointmentModel != null &&
+          widget.appointmentModel.serviceProviderType != null &&
+          widget.appointmentModel.serviceProviderType.isNotEmpty) {
+        if (widget.appointmentModel.serviceProviderType == Constants.doctor) {
+          numb = " (Doctor Helpline Number)";
+        } else if (widget.appointmentModel.serviceProviderType ==
+            Constants.hospital) {
+          numb = " (Hospital Helpline Number)";
+        } else if (widget.appointmentModel.serviceProviderType ==
+            Constants.labDiagnosticCenter) {
+          numb = " (Lab Helpline Number)";
+        }
+      }
+    }
     return InkWell(
       onTap: () {
         if (appointmentModel.isCentre != null &&
@@ -1074,16 +1090,32 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
         }
       },
       onDoubleTap: () {},
-      child: Padding(
+      child: Container(
+        width: double.infinity,
         padding: EdgeInsets.only(right: 5.0, top: 5.0, bottom: 5.0),
-        child: Text(
-          _profNumber,
-          style: TextStyle(
-              fontSize: AppConfig.mediumFont,
-              fontWeight: FontWeight.w500,
-              decorationStyle: TextDecorationStyle.solid,
-              decorationThickness: 2.0,
-              decorationColor: PlunesColors.BLACKCOLOR),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              _profNumber,
+              style: TextStyle(
+                  fontSize: AppConfig.mediumFont,
+                  fontWeight: FontWeight.w500,
+                  decorationStyle: TextDecorationStyle.solid,
+                  decorationThickness: 2.0,
+                  decorationColor: PlunesColors.BLACKCOLOR),
+            ),
+            Text(
+              numb,
+              style: TextStyle(
+                  fontSize: AppConfig.smallFont,
+                  fontWeight: FontWeight.w500,
+                  decorationStyle: TextDecorationStyle.solid,
+                  decorationThickness: 2.0,
+                  decorationColor: PlunesColors.BLACKCOLOR),
+            ),
+          ],
         ),
       ),
     );
@@ -1098,17 +1130,32 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
         }
       },
       onDoubleTap: () {},
-      child: Padding(
-        padding: EdgeInsets.only(right: 5.0, top: 5.0, bottom: 5.0),
-        child: Text(
-          appointmentModel.centreNumber,
-          style: TextStyle(
-              fontSize: AppConfig.mediumFont,
-              fontWeight: FontWeight.w500,
-//                                          decoration: TextDecoration.underline,
-              decorationStyle: TextDecorationStyle.solid,
-              decorationThickness: 2.0,
-              decorationColor: PlunesColors.BLACKCOLOR),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(right: 5.0, top: 1.0, bottom: 5.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              appointmentModel.centreNumber,
+              style: TextStyle(
+                  fontSize: AppConfig.mediumFont,
+                  fontWeight: FontWeight.w500,
+                  decorationStyle: TextDecorationStyle.solid,
+                  decorationThickness: 2.0,
+                  decorationColor: PlunesColors.BLACKCOLOR),
+            ),
+            Text(
+              " (Centre Helpline Number)",
+              style: TextStyle(
+                  fontSize: AppConfig.smallFont,
+                  fontWeight: FontWeight.w500,
+                  decorationStyle: TextDecorationStyle.solid,
+                  decorationThickness: 2.0,
+                  decorationColor: PlunesColors.BLACKCOLOR),
+            ),
+          ],
         ),
       ),
     );

@@ -286,13 +286,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   _docProfileInfo.user.imageUrl.isNotEmpty &&
                   _docProfileInfo.user.imageUrl.contains("http"))
               ? CircleAvatar(
+                  backgroundColor: Colors.transparent,
                   child: Container(
                     height: 45,
                     width: 45,
                     child: ClipOval(
                         child: CustomWidgets().getImageFromUrl(
                             _docProfileInfo.user?.imageUrl,
-                            boxFit: BoxFit.fill)),
+                            boxFit: BoxFit.fill,
+                            placeHolderPath: (_docProfileInfo.user.userType
+                                        .toLowerCase() ==
+                                    Constants.doctor.toString().toLowerCase())
+                                ? PlunesImages.doc_placeholder
+                                : PlunesImages.hospitalImage)),
                   ),
                   radius: 23.5,
                 )

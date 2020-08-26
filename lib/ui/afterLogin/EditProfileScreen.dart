@@ -95,7 +95,6 @@ class _EditProfileState extends State<EditProfileScreen>
   UserBloc _userBloc;
   User _user;
   String _region;
-  String _profilePicture;
 
   @override
   void dispose() {
@@ -480,7 +479,7 @@ class _EditProfileState extends State<EditProfileScreen>
         biography: aboutController.text.trim(),
         qualification: educationController.text.trim(),
         college: collegeController.text.trim(),
-        imageUrl: _profilePicture ?? _user.imageUrl,
+        imageUrl: _user.imageUrl,
         practising: practisingController.text.trim(),
         email: (_user.userType == Constants.user && _isValidEmail)
             ? _emailController.text.trim()
@@ -570,15 +569,11 @@ class _EditProfileState extends State<EditProfileScreen>
       child: InkWell(
         onTap: () {
           Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ChangeProfileScreen(profileUrl: _profilePicture)))
-              .then((value) {
-            if (value != null &&
-                value.toString().isNotEmpty &&
-                value.toString() != "false") {
-              _profilePicture = value.toString();
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChangeProfileScreen())).then((value) {
+            if (value != null && value) {
+              _user = UserManager().getUserDetails();
               _setState();
             }
           });
@@ -593,9 +588,8 @@ class _EditProfileState extends State<EditProfileScreen>
                     child: Container(
                   decoration: BoxDecoration(
                       color: Colors.black, shape: BoxShape.circle),
-                  child: CustomWidgets().getImageFromUrl(
-                      _profilePicture ?? _user.imageUrl,
-                      boxFit: BoxFit.fill),
+                  child: CustomWidgets()
+                      .getImageFromUrl(_user.imageUrl, boxFit: BoxFit.fill),
                 )),
               ),
               radius: 45,

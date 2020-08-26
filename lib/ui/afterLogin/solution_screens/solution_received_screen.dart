@@ -1066,13 +1066,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             service.doctors[index].imageUrl.isNotEmpty &&
                             service.doctors[index].imageUrl.contains("http"))
                         ? CircleAvatar(
+                            backgroundColor: Colors.transparent,
                             child: Container(
                               height: AppConfig.horizontalBlockSize * 14,
                               width: AppConfig.horizontalBlockSize * 14,
                               child: ClipOval(
                                   child: CustomWidgets().getImageFromUrl(
                                       service.doctors[index].imageUrl,
-                                      boxFit: BoxFit.fill)),
+                                      boxFit: BoxFit.fill,
+                                      placeHolderPath:
+                                          PlunesImages.doc_placeholder)),
                             ),
                             radius: AppConfig.horizontalBlockSize * 7,
                           )
