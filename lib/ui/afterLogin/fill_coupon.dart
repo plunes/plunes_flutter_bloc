@@ -135,25 +135,38 @@ class _FillCouponState extends BaseState<FillCoupon> {
                   height: AppConfig.verticalBlockSize * 18,
                   child: Image.asset(PlunesImages.couponImage)),
             ),
+//            Container(
+//              margin: EdgeInsets.only(
+//                  top: AppConfig.verticalBlockSize * 8,
+//                  bottom: AppConfig.verticalBlockSize * 1),
+//              child: Text(
+//                PlunesStrings.enterYourCode,
+//                style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 20),
+//              ),
+//            ),
             Container(
               margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 8,
+                  top: AppConfig.verticalBlockSize * 5,
                   bottom: AppConfig.verticalBlockSize * 1),
-              child: Text(
-                PlunesStrings.enterYourCode,
-                style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 20),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextField(
+                      decoration: InputDecoration(
+                          hintText: PlunesStrings.enterYourCode,
+                          hintStyle: TextStyle(
+                              color: PlunesColors.GREYCOLOR,
+                              fontSize: AppConfig.largeFont)),
+                      controller: _couponController,
+                      style: TextStyle(
+                          fontSize: AppConfig.largeFont,
+                          color: PlunesColors.BLACKCOLOR),
+                      keyboardType: TextInputType.text,
+                      maxLines: 1,
+                    ),
+                  )
+                ],
               ),
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: _couponController,
-                    keyboardType: TextInputType.text,
-                    maxLines: 1,
-                  ),
-                )
-              ],
             ),
             Container(
               padding: EdgeInsets.only(
@@ -216,8 +229,7 @@ class _FillCouponState extends BaseState<FillCoupon> {
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
-            child: Container(
-              height: AppConfig.verticalBlockSize * 36,
+            child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -320,8 +332,7 @@ class _FillCouponState extends BaseState<FillCoupon> {
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
-            child: Container(
-              height: AppConfig.verticalBlockSize * 40,
+            child: SingleChildScrollView(
               child: Column(
 //              mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
