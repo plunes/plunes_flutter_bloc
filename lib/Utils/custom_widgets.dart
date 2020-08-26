@@ -4164,8 +4164,7 @@ class CustomWidgets {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
-      child: Container(
-          child: SingleChildScrollView(
+      child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -4208,7 +4207,7 @@ class CustomWidgets {
                     ))),
           ],
         ),
-      )),
+      ),
     );
   }
 
@@ -4217,8 +4216,7 @@ class CustomWidgets {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
-      child: Container(
-        height: AppConfig.verticalBlockSize * 38.1,
+      child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -4286,8 +4284,7 @@ class CustomWidgets {
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
-            child: Container(
-              height: AppConfig.verticalBlockSize * 40,
+            child: SingleChildScrollView(
               child: Column(
 //              mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
