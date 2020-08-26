@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -374,6 +375,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
     if (result is RequestSuccess) {
       LoginPost data = result.response;
       if (data.success) {
+        AnalyticsProvider().registerEvent(AnalyticsKeys.loginKey);
         await bloc.saveDataInPreferences(data, context, plunesStrings.login);
         widget.showInSnackBar(
             plunesStrings.success, PlunesColors.GREENCOLOR, _scaffoldKey);

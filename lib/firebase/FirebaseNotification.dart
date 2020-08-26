@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:facebook_app_events/facebook_app_events.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,8 @@ class FirebaseNotification {
   GlobalKey<ScaffoldState> _scaffoldKeyNotification;
   GlobalKey<NavigatorState> _navKey;
   FacebookAppEvents _facebookAppEvents;
+  FirebaseAnalytics _analytics;
+
   static const String homeScreenName = "HomeScreen";
   static const String bookingScreen = "booking"; // for all
   static const String plockrScreen = "plockr";
@@ -59,6 +62,10 @@ class FirebaseNotification {
 
   FacebookAppEvents getFbInstance() {
     return _facebookAppEvents;
+  }
+
+  FirebaseAnalytics getAnalyticsInstance() {
+    return _analytics;
   }
 
   int getNotificationCount() {
@@ -84,12 +91,13 @@ class FirebaseNotification {
   var _notificationListener = PublishSubject<int>();
 
   /// call this method to configure fireBase messaging in the app for push notification
-  setUpFireBase(BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey,
-      var key, FacebookAppEvents fbInstance) {
+  init(BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey,
+      var key, FacebookAppEvents fbInstance, FirebaseAnalytics analytics) {
     _navKey = key;
     _buildContext = context;
     _scaffoldKeyNotification = _scaffoldKey;
-    _facebookAppEvents=fbInstance;
+    _facebookAppEvents = fbInstance;
+    _analytics = analytics;
     _firebaseMessaging = FirebaseMessaging();
     var initializationSettingsAndroid =
         new AndroidInitializationSettings('mipmap/ic_launcher');

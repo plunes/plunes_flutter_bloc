@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
@@ -975,6 +976,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       InitPaymentResponse _initPaymentResponse = _requestState.response;
       if (_initPaymentResponse.success) {
         if (_initPaymentResponse.status.contains("Confirmed")) {
+          AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
           showDialog(
               context: context,
               builder: (BuildContext context) => PaymentSuccess(
@@ -991,10 +993,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       PaymentWebView(id: _initPaymentResponse.id)))
               .then((val) {
             if (val == null) {
+              AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
               _bookingBloc.cancelPayment(_initPaymentResponse.id);
               return;
             }
             if (val.toString().contains("success")) {
+              AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
               showDialog(
                       context: context,
                       builder: (
