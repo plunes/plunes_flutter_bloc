@@ -642,7 +642,6 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
             Text(_helpLineNumberModel?.number ?? _helpNumber,
                 style: TextStyle(
                     fontSize: AppConfig.largeFont,
-                    decoration: TextDecoration.underline,
                     fontWeight: FontWeight.w500,
                     color: PlunesColors.SPARKLINGGREEN)),
           ],

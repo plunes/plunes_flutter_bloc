@@ -354,24 +354,6 @@ class CommonMethods {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-//            Align(
-//                alignment: Alignment.topRight,
-//                child: Container(
-//                  margin: EdgeInsets.all(10),
-//                  decoration: BoxDecoration(
-//                    color: Colors.black.withOpacity(.5),
-//                    borderRadius: BorderRadius.all(Radius.circular(50)),
-//                  ),
-//
-////                  padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
-//                  child: InkWell(
-//                    onTap: () => callBack.dialogCallBackFunction('CANCEL'),
-//                    child: Icon(
-//                      Icons.clear,
-//                      color: PlunesColors.WHITECOLOR,
-//                    ),
-//                  ),
-//                )),
                 Flexible(
                     child: Container(
                         margin: EdgeInsets.only(
@@ -394,9 +376,14 @@ class CommonMethods {
                   child: TextField(
                     style: TextStyle(fontSize: AppConfig.smallFont),
                     controller: controller,
-                    maxLines: 1,
+                    maxLines: 2,
+                    autofocus: false,
+                    maxLength: 250,
+                    keyboardType: TextInputType.multiline,
+                    textInputAction: TextInputAction.newline,
                     decoration: InputDecoration(
                         hintText: plunesStrings.description,
+                        counterText: "",
                         hintStyle: TextStyle(fontSize: AppConfig.smallFont)),
                   ),
                 ),
@@ -566,6 +553,7 @@ class CommonMethods {
                                 },
                                 child: Container(
                                     width: double.infinity,
+                                    height: AppConfig.verticalBlockSize * 8,
                                     padding: EdgeInsets.symmetric(
                                         vertical:
                                             AppConfig.verticalBlockSize * 1.5,
@@ -598,6 +586,8 @@ class CommonMethods {
                                 },
                                 child: Container(
                                     width: double.infinity,
+                                    height: AppConfig.verticalBlockSize * 8,
+                                    alignment: Alignment.center,
                                     padding: EdgeInsets.symmetric(
                                         vertical:
                                             AppConfig.verticalBlockSize * 1.5,
