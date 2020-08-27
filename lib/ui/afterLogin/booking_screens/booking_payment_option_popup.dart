@@ -74,7 +74,7 @@ class _PopupChooseState extends State<PopupChoose> {
           children: <Widget>[
             Container(
               margin: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 4,
+                  vertical: AppConfig.verticalBlockSize * 2,
                   horizontal: AppConfig.horizontalBlockSize * 4),
               child: Text(
                 "Now you can have multiple\n"
@@ -86,64 +86,59 @@ class _PopupChooseState extends State<PopupChoose> {
 //            SizedBox(
 //              height: 20,
 //            ),
-            Container(
-              margin: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
-              height: AppConfig.verticalBlockSize * 15,
-              width: double.infinity,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemBuilder: (context, count) {
-                  return Card(
-                    elevation: 0,
-                    margin: EdgeInsets.only(
-                        bottom: AppConfig.verticalBlockSize * 2),
-                    color: Colors.transparent,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _paymentSelectionOptions.forEach((paymentOption) {
-                            paymentOption.isSelected = false;
-                          });
-                          _paymentSelectionOptions[count].isSelected = true;
+            ListView.builder(
+              shrinkWrap: true,
+              itemBuilder: (context, count) {
+                return Card(
+                  elevation: 0,
+                  margin: EdgeInsets.only(
+                    bottom: AppConfig.verticalBlockSize * 2,
+                  ),
+                  color: Colors.transparent,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _paymentSelectionOptions.forEach((paymentOption) {
+                          paymentOption.isSelected = false;
                         });
-                      },
-                      onDoubleTap: () {},
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          _paymentSelectionOptions[count].isSelected
-                              ? Image.asset(
-                                  plunesImages.checkIcon,
-                                  height: 20,
-                                  width: 20,
-                                )
-                              : Image.asset(
-                                  plunesImages.unCheckIcon,
-                                  height: 20,
-                                  width: 20,
-                                ),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Container(
-                              width: 150,
-                              child: Text(
-                                  (widget.bookInPrice != null && count == 0)
-                                      ? '${PlunesStrings.bookIn} ${_paymentSelectionOptions[count].paymentUnit}'
-                                      : count !=
-                                              _paymentSelectionOptions.length -
-                                                  1
-                                          ? 'Pay ${_paymentSelectionOptions[count].paymentUnit}%'
-                                          : 'Pay full. No Hassle',
-                                  style: TextStyle(fontSize: 16.0))),
-                        ],
-                      ),
+                        _paymentSelectionOptions[count].isSelected = true;
+                      });
+                    },
+                    onDoubleTap: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        _paymentSelectionOptions[count].isSelected
+                            ? Image.asset(
+                                plunesImages.checkIcon,
+                                height: 20,
+                                width: 20,
+                              )
+                            : Image.asset(
+                                plunesImages.unCheckIcon,
+                                height: 20,
+                                width: 20,
+                              ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                            width: 150,
+                            child: Text(
+                                (widget.bookInPrice != null && count == 0)
+                                    ? '${PlunesStrings.bookIn} ${_paymentSelectionOptions[count].paymentUnit}'
+                                    : count !=
+                                            _paymentSelectionOptions.length - 1
+                                        ? 'Pay ${_paymentSelectionOptions[count].paymentUnit}%'
+                                        : 'Pay full. No Hassle',
+                                style: TextStyle(fontSize: 16.0))),
+                      ],
                     ),
-                  );
-                },
-                itemCount: _paymentSelectionOptions.length ?? 0,
-              ),
+                  ),
+                );
+              },
+              itemCount: _paymentSelectionOptions.length ?? 0,
             ),
 
             Container(
