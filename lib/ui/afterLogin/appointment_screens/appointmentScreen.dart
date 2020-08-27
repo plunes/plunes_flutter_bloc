@@ -1065,13 +1065,13 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           widget.appointmentModel.serviceProviderType != null &&
           widget.appointmentModel.serviceProviderType.isNotEmpty) {
         if (widget.appointmentModel.serviceProviderType == Constants.doctor) {
-          numb = " (Doctor Helpline Number)";
+          numb = " (Central Helpline)";
         } else if (widget.appointmentModel.serviceProviderType ==
             Constants.hospital) {
-          numb = " (Hospital Helpline Number)";
+          numb = " (Central Helpline)";
         } else if (widget.appointmentModel.serviceProviderType ==
             Constants.labDiagnosticCenter) {
-          numb = " (Lab Helpline Number)";
+          numb = " (Central Helpline)";
         }
       }
     }
@@ -1156,7 +1156,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   decorationColor: PlunesColors.BLACKCOLOR),
             ),
             Text(
-              " (Centre Helpline Number)",
+              " (Booked Centre)",
               style: TextStyle(
                   fontSize: AppConfig.smallFont,
                   fontWeight: FontWeight.w500,
