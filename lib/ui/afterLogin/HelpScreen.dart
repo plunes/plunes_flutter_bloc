@@ -145,8 +145,7 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                               AppConfig.horizontalBlockSize * 5)),
-                      child: Container(
-                        height: AppConfig.verticalBlockSize * 40,
+                      child: SingleChildScrollView(
                         child: Column(
 //              mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,

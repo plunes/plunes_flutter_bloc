@@ -866,14 +866,18 @@ class CustomWidgets {
                                     padding: EdgeInsets.only(
                                         left:
                                             AppConfig.horizontalBlockSize * 1)),
-                                (solutions[index].price[0] ==
-                                        solutions[index].newPrice[0])
+                                ((solutions[index].price.isEmpty) ||
+                                        (solutions[index].newPrice.isEmpty) ||
+                                        solutions[index].price[0] ==
+                                            solutions[index].newPrice[0])
                                     ? Container()
                                     : Text(
                                         (solutions[index].discount == null ||
-                                                solutions[index].discount == 0)
+                                                solutions[index].discount ==
+                                                    0 ||
+                                                solutions[index].discount < 0)
                                             ? ""
-                                            : " ${PlunesStrings.save} \u20B9 ${(solutions[index].price[0] - solutions[index].newPrice[0])?.toStringAsFixed(0)}",
+                                            : " ${PlunesStrings.save} \u20B9 ${(solutions[index].price[0] - solutions[index].newPrice[0])?.toStringAsFixed(2)}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: PlunesColors.GREENCOLOR),
@@ -1370,10 +1374,6 @@ class CustomWidgets {
                                                           newState(() {});
                                                         },
                                                         child: Container(
-//                                                          margin: EdgeInsets.only(
-//                                                              left: AppConfig
-//                                                                      .horizontalBlockSize *
-//                                                                  3),
                                                           padding:
                                                               EdgeInsets.all(
                                                                   5.0),
@@ -1453,7 +1453,6 @@ class CustomWidgets {
                                     height: 0.5,
                                     width: double.infinity,
                                     color: PlunesColors.GREYCOLOR,
-//              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
                                   ),
                                   Row(
                                     crossAxisAlignment:
@@ -1582,7 +1581,6 @@ class CustomWidgets {
                                                   vertical: AppConfig
                                                           .verticalBlockSize *
                                                       1.5,
-//                                horizontal: AppConfig.horizontalBlockSize * 4
                                                 ),
                                                 child: Text(
                                                   'Apply here',
@@ -1790,7 +1788,10 @@ class CustomWidgets {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
                                       Text(
-                                        "${reductionInPrice?.toStringAsFixed(0)}% ",
+                                        (chancesPercent == null ||
+                                                chancesPercent == 0)
+                                            ? '0%'
+                                            : '$chancesPercent%',
                                         style: TextStyle(
                                             color: PlunesColors.WHITECOLOR,
                                             fontSize: AppConfig.mediumFont,
@@ -1925,13 +1926,16 @@ class CustomWidgets {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: <Widget>[
-                                              Text(
-                                                ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
-                                                style: TextStyle(
-                                                    color: Colors.white70,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w600),
+                                              Flexible(
+                                                flex: 2,
+                                                child: Text(
+                                                  ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
+                                                  style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
                                               ),
                                               Flexible(
                                                   child: InkWell(
@@ -1940,10 +1944,6 @@ class CustomWidgets {
                                                   newState(() {});
                                                 },
                                                 child: Container(
-                                                  margin: EdgeInsets.only(
-                                                      left: AppConfig
-                                                              .horizontalBlockSize *
-                                                          3),
                                                   padding: EdgeInsets.all(5.0),
                                                   alignment:
                                                       Alignment.bottomRight,
@@ -1977,7 +1977,8 @@ class CustomWidgets {
                                     child: Container(
                                       child: chancesPercent != null
                                           ? Text(
-                                              chancesPercent == 0
+                                              (chancesPercent == null ||
+                                                      chancesPercent == 0)
                                                   ? '0%'
                                                   : '$chancesPercent%',
                                               style: TextStyle(

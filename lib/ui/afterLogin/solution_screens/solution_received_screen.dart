@@ -1252,7 +1252,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                                 service.doctors[index].price
                                                     .isEmpty ||
                                                 service.doctors[index]
-                                                        ?.price[0] ==
+                                                        .price[0] ==
                                                     service.doctors[index]
                                                         ?.newPrice[0])
                                             ? ""
@@ -1277,17 +1277,23 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                     padding: EdgeInsets.only(
                                         left:
                                             AppConfig.horizontalBlockSize * 1)),
-                                (service.doctors[index].price[0] ==
-                                        service.doctors[index].newPrice[0])
+                                ((service.doctors[index].price.isEmpty) ||
+                                        (service
+                                            .doctors[index].newPrice.isEmpty) ||
+                                        service.doctors[index].price[0] ==
+                                            service.doctors[index].newPrice[0])
                                     ? Container()
                                     : Text(
                                         (service.doctors[index].discount ==
                                                     null ||
                                                 service.doctors[index]
                                                         .discount ==
+                                                    0 ||
+                                                service.doctors[index]
+                                                        .discount <
                                                     0)
                                             ? ""
-                                            : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(0)}",
+                                            : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(2)}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: PlunesColors.GREENCOLOR),

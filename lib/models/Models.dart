@@ -873,7 +873,6 @@ class RateAndReview {
       this.userImage});
 
   RateAndReview.fromJson(Map<String, dynamic> json) {
-    print("json $json");
     sId = json['_id'];
     professionalId = json['professionalId'];
     userId = json['userId'];

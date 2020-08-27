@@ -510,9 +510,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 )
               : Expanded(
                   child: CustomWidgets().errorWidget(
-                      _failureCause ?? (_specialitySelectedId != null)
-                          ? PlunesStrings.afterFacilitySelectedText
-                          : PlunesStrings.facilityNotAvailableMessage,
+                      (_failureCause == null || _failureCause.isEmpty)
+                          ? (_specialitySelectedId != null)
+                              ? PlunesStrings.afterFacilitySelectedText
+                              : PlunesStrings.facilityNotAvailableMessage
+                          : _failureCause,
                       onTap: (_failureCause != null &&
                               _failureCause == PlunesStrings.noInternet)
                           ? () => _getMoreFacilities()

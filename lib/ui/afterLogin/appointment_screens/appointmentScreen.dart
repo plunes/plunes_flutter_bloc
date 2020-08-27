@@ -196,7 +196,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           SizedBox(height: 5),
           _getProfessionalNumber(appointmentModel),
           (appointmentModel.centreNumber != null &&
-                  appointmentModel.centreNumber.isNotEmpty)
+                  appointmentModel.centreNumber.isNotEmpty &&
+                  _profNumber != null &&
+                  _profNumber != appointmentModel.centreNumber)
               ? SizedBox(height: 5)
               : Container(),
           (appointmentModel.centreNumber != null &&
@@ -601,10 +603,11 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                     ),
                     (appointmentModel.service == null ||
                             appointmentModel.service.discount == null ||
-                            appointmentModel.service.discount == 0)
+                            appointmentModel.service.discount == 0 ||
+                            appointmentModel.service.discount < 0)
                         ? Container()
                         : Text(
-                            '${appointmentModel?.service?.discount?.toStringAsFixed(0)}%',
+                            '${appointmentModel?.service?.discount?.toStringAsFixed(2)}%',
                             style: TextStyle(color: PlunesColors.GREENCOLOR))
                   ],
                 ),
@@ -902,14 +905,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                     ),
           (appointmentModel.service == null ||
                   appointmentModel.service.discount == null ||
-                  appointmentModel.service.discount == 0)
+                  appointmentModel.service.discount == 0 ||
+                  appointmentModel.service.discount < 0)
               ? Container()
               : Container(
                   margin: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 3,
                       horizontal: AppConfig.horizontalBlockSize * 3),
                   child: Text(
-                      'Please make sure that you pay through app for ${appointmentModel?.service?.discount?.toStringAsFixed(0) ?? 0}% discount to be valid',
+                      'Please make sure that you pay through app for ${appointmentModel?.service?.discount?.toStringAsFixed(2) ?? 0}% discount to be valid',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: AppConfig.verySmallFont,
@@ -1106,15 +1110,20 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   decorationThickness: 2.0,
                   decorationColor: PlunesColors.BLACKCOLOR),
             ),
-            Text(
-              numb,
-              style: TextStyle(
-                  fontSize: AppConfig.smallFont,
-                  fontWeight: FontWeight.w500,
-                  decorationStyle: TextDecorationStyle.solid,
-                  decorationThickness: 2.0,
-                  decorationColor: PlunesColors.BLACKCOLOR),
-            ),
+            (appointmentModel.centreNumber != null &&
+                    appointmentModel.centreNumber.isNotEmpty &&
+                    _profNumber != null &&
+                    _profNumber != appointmentModel.centreNumber)
+                ? Text(
+                    numb,
+                    style: TextStyle(
+                        fontSize: AppConfig.smallFont,
+                        fontWeight: FontWeight.w500,
+                        decorationStyle: TextDecorationStyle.solid,
+                        decorationThickness: 2.0,
+                        decorationColor: PlunesColors.BLACKCOLOR),
+                  )
+                : Container(),
           ],
         ),
       ),
