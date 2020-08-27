@@ -18,16 +18,16 @@ class AnalyticsProvider {
           .getAnalyticsInstance()
           .logEvent(name: eventName)
           .then((value) {
-//        print("fir== ana done");
+       // print("fir== ana done sumit");
       });
       FirebaseNotification()
           .getFbInstance()
           .logEvent(name: eventName)
           .then((value) {
-//        print("face== ana done");
+       // print("face== ana done");
       });
     } catch (e) {
-      print("error $e");
+     print("error $e");
     }
   }
 }
