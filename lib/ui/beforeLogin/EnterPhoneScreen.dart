@@ -13,6 +13,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/FontFile.dart';
+import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 
@@ -147,6 +148,11 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
         if (result is RequestSuccess) {
           getUserExistenceData(result.response);
         } else if (result is RequestFailed) {
+          if (result.requestCode != null &&
+              result.requestCode == HttpResponseCode.NOT_FOUND) {
+            _sendOtp();
+            return;
+          }
           progress = false;
           _setState();
           await Future.delayed(Duration(milliseconds: 200));
@@ -302,27 +308,31 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
             "User ID doesn't exist!", PlunesColors.BLACKCOLOR, _scaffoldKey);
         return;
       }
-      var requestState =
-          await _userBloc.getGenerateOtp(phoneNumberController.text.trim());
-      progress = false;
-      _setState();
-      await Future.delayed(Duration(milliseconds: 200));
-      if (requestState is RequestSuccess) {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    CheckOTP(phone: phoneNumberController.text, from: '')));
-      } else if (requestState is RequestFailed) {
-        widget.showInSnackBar(
-            requestState.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
-      }
+      _sendOtp();
     } else {
       progress = false;
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => Login(phone: phoneNumberController.text)));
+    }
+  }
+
+  void _sendOtp() async {
+    var requestState =
+        await _userBloc.getGenerateOtp(phoneNumberController.text.trim());
+    progress = false;
+    _setState();
+    await Future.delayed(Duration(milliseconds: 200));
+    if (requestState is RequestSuccess) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  CheckOTP(phone: phoneNumberController.text, from: '')));
+    } else if (requestState is RequestFailed) {
+      widget.showInSnackBar(
+          requestState.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
     }
   }
 }

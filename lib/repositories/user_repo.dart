@@ -1,5 +1,5 @@
-import 'dart:convert';
-
+import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
@@ -8,7 +8,6 @@ import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
-import 'package:plunes/requester/request_handler.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -34,6 +33,11 @@ class UserManager {
   setIsUserInServiceLocation(bool isInServiceLocation) {
     return Preferences().setPreferencesBoolean(
         Constants.IS_IN_SERVICE_LOCATION, isInServiceLocation);
+  }
+
+  setImageUrl(String imageUrl) {
+    return Preferences()
+        .setPreferencesString(Constants.PREF_USER_IMAGE, imageUrl);
   }
 
   setLanLong(var lat, var long) {
@@ -381,7 +385,8 @@ class UserManager {
     if (result.isRequestSucceed) {
       return RequestSuccess(response: result.response.data);
     } else {
-      return RequestFailed(failureCause: result.failureCause);
+      return RequestFailed(
+          failureCause: result.failureCause, requestCode: result.statusCode);
     }
   }
 
@@ -476,5 +481,28 @@ class UserManager {
 
   setWidgetShownStatus(String key, {bool status = true}) {
     return Preferences().setPreferencesBoolean(key, status);
+  }
+
+  Future<RequestState> uploadPicture(File image) async {
+    Map<String, dynamic> postData = {
+      "file": await MultipartFile.fromFile(image.path?.toString())
+    };
+    var result = await DioRequester().requestMethod(
+        url: Urls.CHANGE_PROFILE_URL,
+        headerIncluded: true,
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: FormData.fromMap(postData));
+    if (result.isRequestSucceed) {
+      RequestState updateResult;
+      if (result.response.data != null &&
+          result.response.data['imageUrl'] != null) {
+        updateResult = await updateUserData(
+            User(imageUrl: result.response.data['imageUrl']?.toString())
+                .toJson());
+      }
+      return updateResult;
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
   }
 }

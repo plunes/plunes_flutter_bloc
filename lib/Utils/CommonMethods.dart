@@ -518,47 +518,146 @@ class CommonMethods {
             transform: Matrix4.translationValues(0.0, curvedValue * 200, 0.0),
             child: Opacity(
               opacity: a1.value,
-              child: AlertDialog(
+              child: Dialog(
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                        AppConfig.horizontalBlockSize * 3)),
-                contentPadding: EdgeInsets.zero,
-                content: Container(
-                    margin: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 6,
-                        horizontal: AppConfig.horizontalBlockSize * 15),
-                    child: Text(
-                      action,
-                      style: TextStyle(fontSize: AppConfig.mediumFont),
-                    )),
-                actions: <Widget>[
-                  new FlatButton(
-                    child: new Text(
-                      "No",
-                      style: TextStyle(
-                          fontSize: AppConfig.mediumFont, color: Colors.grey),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(
-                          context, false); // showDialog() returns false
-                      callBack.dialogCallBackFunction('CANCEL');
-                    },
+                    borderRadius: BorderRadius.circular(16.0)),
+                elevation: 0.0,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 5,
+                            vertical: AppConfig.verticalBlockSize * 2.5),
+                        child: Text(
+                          action,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: PlunesColors.BLACKCOLOR,
+                              fontSize: 16,
+                              fontWeight: FontWeight.normal),
+                        ),
+                      ),
+                      Container(
+                        height: 0.5,
+                        width: double.infinity,
+                        color: PlunesColors.GREYCOLOR,
+//                                                      margin: EdgeInsets.only(
+//                                                          top: AppConfig
+//                                                                  .verticalBlockSize *
+//                                                              1),
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            child: FlatButton(
+                                splashColor: Colors.redAccent.withOpacity(.2),
+                                highlightColor:
+                                    Colors.redAccent.withOpacity(.2),
+                                focusColor: Colors.redAccent.withOpacity(.2),
+                                onPressed: () {
+                                  Navigator.pop(context,
+                                      false); // showDialog() returns false
+                                  callBack.dialogCallBackFunction('CANCEL');
+                                },
+                                child: Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical:
+                                            AppConfig.verticalBlockSize * 1.5,
+                                        horizontal:
+                                            AppConfig.horizontalBlockSize * 6),
+                                    child: Text(
+                                      'No',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: Colors.redAccent),
+                                    ))),
+                          ),
+                          Container(
+                            height: AppConfig.verticalBlockSize * 6,
+                            color: PlunesColors.GREYCOLOR,
+                            width: 0.5,
+                          ),
+                          Expanded(
+                            child: FlatButton(
+                                focusColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                splashColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                highlightColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  _callBack.dialogCallBackFunction('DONE');
+                                },
+                                child: Container(
+                                    width: double.infinity,
+                                    padding: EdgeInsets.symmetric(
+                                        vertical:
+                                            AppConfig.verticalBlockSize * 1.5,
+                                        horizontal:
+                                            AppConfig.horizontalBlockSize * 6),
+                                    child: Text(
+                                      'Yes',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ))),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  new FlatButton(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 4),
-                    child: new Text(
-                      "Yes",
-                      style: TextStyle(
-                          fontSize: AppConfig.mediumFont, color: Colors.black),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _callBack.dialogCallBackFunction('DONE');
-                    },
-                  ),
-                ],
+                ),
               ),
+//              AlertDialog(
+//                shape: RoundedRectangleBorder(
+//                    borderRadius: BorderRadius.circular(
+//                        AppConfig.horizontalBlockSize * 3)),
+//                contentPadding: EdgeInsets.zero,
+//                content: Container(
+//                    margin: EdgeInsets.symmetric(
+//                        vertical: AppConfig.verticalBlockSize * 6,
+//                        horizontal: AppConfig.horizontalBlockSize * 15),
+//                    child: Text(
+//                      action,
+//                      style: TextStyle(fontSize: AppConfig.mediumFont),
+//                    )),
+//                actions: <Widget>[
+//                  new FlatButton(
+//                    child: new Text(
+//                      "No",
+//                      style: TextStyle(
+//                          fontSize: AppConfig.mediumFont, color: Colors.grey),
+//                    ),
+//                    onPressed: () {
+//                      Navigator.pop(
+//                          context, false); // showDialog() returns false
+//                      callBack.dialogCallBackFunction('CANCEL');
+//                    },
+//                  ),
+//                  new FlatButton(
+//                    padding: EdgeInsets.symmetric(
+//                        horizontal: AppConfig.horizontalBlockSize * 4),
+//                    child: new Text(
+//                      "Yes",
+//                      style: TextStyle(
+//                          fontSize: AppConfig.mediumFont, color: Colors.black),
+//                    ),
+//                    onPressed: () {
+//                      Navigator.pop(context);
+//                      _callBack.dialogCallBackFunction('DONE');
+//                    },
+//                  ),
+//                ],
+//              ),
             ),
           );
         },

@@ -297,7 +297,8 @@ class _ChangePasswordState extends State<ChangePassword>
     _setState();
     await Future.delayed(Duration(milliseconds: 200));
     if (result is RequestSuccess) {
-      widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
+      widget.showInSnackBar(PlunesStrings.passwordUpdatedSuccessfully,
+          Colors.green, _scaffoldKey);
       await Future.delayed(new Duration(milliseconds: 2000));
       if (widget.from == plunesStrings.createPassword) {
         Navigator.pushNamed(context, Login.tag);

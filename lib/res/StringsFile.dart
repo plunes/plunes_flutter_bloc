@@ -174,7 +174,7 @@ class PlunesStrings {
 
   static const String unableToOpen = "Unable to open the file!";
 
-  static const String dataNotFound = "Data is not found!";
+  static const String dataNotFound = "Data not found!";
 
   static const String unableToDelete = "Unable to delele!";
   static const String appointmentFailedMessage = "Confirmation request failed";
@@ -254,10 +254,9 @@ class PlunesStrings {
       "Please fill valid Phone Number or User ID";
 
   static const String cantRescheduleForUser =
-      "Sorry, You cannot Reschedule the appointment as you have requested for cancellation";
+      "Sorry, cannot reschedule the appointment as it is requested for cancellation";
   static const String cantRescheduleForDocHos =
-      "Sorry, You cannot Reschedule the appointment as you have requested for cancellation";
-
+      "Sorry, cannot reschedule the appointment as it is requested for cancellation";
   static const String codeCanBeUsedThreeTimes =
       "Your Referral Code can be used for up to 3 times. So, ";
   static const String hurryAndRefer = "Hurry and Refer!";
@@ -340,7 +339,13 @@ class PlunesStrings {
   static const String continueText = "Continue";
   static const String facilityNotAvailableMessage =
       "Sorry, the facility you are searching is currently not available";
-  static const String afterFacilitySelectedText = "";
+  static const String emptyStr = "";
+  static const String profileUpdatedSuccessfully =
+      "Profile updated successfully.";
+  static const String passwordUpdatedSuccessfully =
+      "Password updated successfully.";
+  static const String afterFacilitySelectedText =
+      "Sorry, the facilities of selected speciality aren't available currently";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

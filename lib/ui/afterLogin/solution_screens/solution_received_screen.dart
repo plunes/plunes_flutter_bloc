@@ -1066,13 +1066,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             service.doctors[index].imageUrl.isNotEmpty &&
                             service.doctors[index].imageUrl.contains("http"))
                         ? CircleAvatar(
+                            backgroundColor: Colors.transparent,
                             child: Container(
                               height: AppConfig.horizontalBlockSize * 14,
                               width: AppConfig.horizontalBlockSize * 14,
                               child: ClipOval(
                                   child: CustomWidgets().getImageFromUrl(
                                       service.doctors[index].imageUrl,
-                                      boxFit: BoxFit.fill)),
+                                      boxFit: BoxFit.fill,
+                                      placeHolderPath:
+                                          PlunesImages.doc_placeholder)),
                             ),
                             radius: AppConfig.horizontalBlockSize * 7,
                           )
@@ -1249,7 +1252,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                                 service.doctors[index].price
                                                     .isEmpty ||
                                                 service.doctors[index]
-                                                        ?.price[0] ==
+                                                        .price[0] ==
                                                     service.doctors[index]
                                                         ?.newPrice[0])
                                             ? ""
@@ -1274,17 +1277,23 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                     padding: EdgeInsets.only(
                                         left:
                                             AppConfig.horizontalBlockSize * 1)),
-                                (service.doctors[index].price[0] ==
-                                        service.doctors[index].newPrice[0])
+                                ((service.doctors[index].price.isEmpty) ||
+                                        (service
+                                            .doctors[index].newPrice.isEmpty) ||
+                                        service.doctors[index].price[0] ==
+                                            service.doctors[index].newPrice[0])
                                     ? Container()
                                     : Text(
                                         (service.doctors[index].discount ==
                                                     null ||
                                                 service.doctors[index]
                                                         .discount ==
+                                                    0 ||
+                                                service.doctors[index]
+                                                        .discount <
                                                     0)
                                             ? ""
-                                            : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(0)}",
+                                            : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(2)}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: PlunesColors.GREENCOLOR),

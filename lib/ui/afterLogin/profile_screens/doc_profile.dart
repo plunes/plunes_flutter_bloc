@@ -173,13 +173,15 @@ class _DocProfileState extends BaseState<DocProfile> {
                     _profileResponse.user.imageUrl.isNotEmpty &&
                     _profileResponse.user.imageUrl.contains("http"))
                 ? CircleAvatar(
+                    backgroundColor: Colors.transparent,
                     child: Container(
                       height: 60,
                       width: 60,
                       child: ClipOval(
                           child: CustomWidgets().getImageFromUrl(
                               _profileResponse.user.imageUrl,
-                              boxFit: BoxFit.fill)),
+                              boxFit: BoxFit.fill,
+                              placeHolderPath: PlunesImages.doc_placeholder)),
                     ),
                     radius: 30,
                   )

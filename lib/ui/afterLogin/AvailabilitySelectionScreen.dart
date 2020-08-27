@@ -149,8 +149,7 @@ class _AvailabilitySelectionScreenState
         from_2.length != 7 ||
         to_2 == null ||
         to_2.length != 7) {
-      widget.showInSnackBar(
-          "Empty slots found", PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showSnackBar("Empty slots found");
       return;
     }
     hasSubmitted = true;
@@ -165,7 +164,7 @@ class _AvailabilitySelectionScreenState
         "closed": check[i]
       });
     }
-    print(timeslots_);
+//    print(timeslots_);
     var data;
     data = {"timeSlots": timeslots_};
     userBloc.updateUserData(data);
@@ -276,7 +275,6 @@ class _AvailabilitySelectionScreenState
       child: ListView.builder(
         padding: EdgeInsets.all(0),
         itemBuilder: (context, index) {
-          print("${from_1.length}index $index");
           return Container(
             margin: EdgeInsets.only(top: 8),
             child: Row(
@@ -476,20 +474,18 @@ class _AvailabilitySelectionScreenState
             }
             if (snapshot.data is RequestSuccess && hasSubmitted) {
               Future.delayed(Duration(milliseconds: 20)).then((value) {
-                widget.showInSnackBar("Time slots updated Sucessfully",
-                    PlunesColors.BLACKCOLOR, _scaffoldKey);
-                Future.delayed(Duration(seconds: 1)).then((value) {
-                  Navigator.pop(context);
-                });
+                _showSnackBar("Time slots updated Successfully",
+                    shouldPop: true);
+//                Future.delayed(Duration(seconds: 1)).then((value) {
+//                  Navigator.pop(context);
+//                });
               });
             }
             if (snapshot.data is RequestFailed && hasSubmitted) {
               RequestFailed requestFailed = snapshot.data;
               Future.delayed(Duration(milliseconds: 20)).then((value) {
-                widget.showInSnackBar(
-                    requestFailed.failureCause ?? "Unable to Update Slots",
-                    PlunesColors.BLACKCOLOR,
-                    _scaffoldKey);
+                _showSnackBar(
+                    requestFailed.failureCause ?? "Unable to Update Slots");
               });
               userBloc.addIntoStream(null);
             }
@@ -836,8 +832,18 @@ class _AvailabilitySelectionScreenState
     }
   }
 
-  void _showSnackBar(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, _scaffoldKey);
+  void _showSnackBar(String message, {bool shouldPop = false}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: _scaffoldKey, message: message);
+        }).then((value) {
+      if (shouldPop) {
+        Navigator.pop(context);
+      }
+    });
+//    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, _scaffoldKey);
   }
 
   void _showSubmitNextSlotPopup({bool isCompleted = false}) {

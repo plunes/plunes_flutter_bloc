@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
@@ -286,13 +287,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   _docProfileInfo.user.imageUrl.isNotEmpty &&
                   _docProfileInfo.user.imageUrl.contains("http"))
               ? CircleAvatar(
+                  backgroundColor: Colors.transparent,
                   child: Container(
                     height: 45,
                     width: 45,
                     child: ClipOval(
                         child: CustomWidgets().getImageFromUrl(
                             _docProfileInfo.user?.imageUrl,
-                            boxFit: BoxFit.fill)),
+                            boxFit: BoxFit.fill,
+                            placeHolderPath: (_docProfileInfo.user.userType
+                                        .toLowerCase() ==
+                                    Constants.doctor.toString().toLowerCase())
+                                ? PlunesImages.doc_placeholder
+                                : PlunesImages.hospitalImage)),
                   ),
                   radius: 23.5,
                 )
@@ -969,6 +976,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       InitPaymentResponse _initPaymentResponse = _requestState.response;
       if (_initPaymentResponse.success) {
         if (_initPaymentResponse.status.contains("Confirmed")) {
+          AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
           showDialog(
               context: context,
               builder: (BuildContext context) => PaymentSuccess(
@@ -985,10 +993,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       PaymentWebView(id: _initPaymentResponse.id)))
               .then((val) {
             if (val == null) {
+              AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
               _bookingBloc.cancelPayment(_initPaymentResponse.id);
               return;
             }
             if (val.toString().contains("success")) {
+              AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
               showDialog(
                       context: context,
                       builder: (
@@ -1087,8 +1097,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius:
                       BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
-              child: Container(
-                height: AppConfig.verticalBlockSize * 37.5,
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -1177,7 +1186,7 @@ class _PaymentSuccessState extends State<PaymentSuccess> {
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
         title: new Text("Payment Success"),
-        content: Container(
+        content: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               SizedBox(

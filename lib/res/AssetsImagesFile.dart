@@ -4,6 +4,7 @@ final plunesImages = PlunesImages();
 
 class PlunesImages {
 //  static String achievement = "assets/images/profile/achievement.png";
+  static String hospHelp = "assets/images/help/hospHelp.png";
   static String cardExpired = "assets/images/CardExpired.png";
   static String common = "assets/images/Common.png";
   static String helpThankyou = "assets/images/help/Thank you.png";
@@ -77,6 +78,10 @@ class PlunesImages {
       "assets/images/enterTestAndProcedureDetailsImage.png";
   static const String testAndProcedureQuerySubmittedImage =
       "assets/images/testAndProcedureQuerySubmittedImage.png";
+  static const String editPencilProfile = "assets/images/editPencilProfile.png";
+  static const String achievement_placeholder =
+      "assets/images/achievement_placeholder.png";
+  static const String doc_placeholder = "assets/images/doc_placeholder.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

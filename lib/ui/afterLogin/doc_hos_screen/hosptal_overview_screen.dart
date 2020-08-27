@@ -245,6 +245,8 @@ class _HospitalOverviewScreenState
                                               _realTimeInsightsResponse
                                                   .data[itemIndex]
                                                   .centerLocation,
+                                          imageUrl: _realTimeInsightsResponse
+                                              .data[itemIndex].imageUrl,
                                           getRealTimeInsights: () =>
                                               _getRealTimeInsights()),
                                       (_realTimeInsightsResponse
@@ -460,31 +462,34 @@ class _HospitalOverviewScreenState
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Text(
-                                      '\u20B9 ${_totalBusinessEarnedResponse.businessGained?.toStringAsFixed(2) ?? PlunesStrings.NA}',
-                                      style: TextStyle(
-                                        color: PlunesColors.GREENCOLOR,
-                                        fontSize: AppConfig.largeFont,
-                                        fontWeight: FontWeight.normal,
+                                Flexible(
+                                  child: Column(
+                                    children: <Widget>[
+                                      Text(
+                                        '\u20B9 ${_totalBusinessEarnedResponse.businessGained?.toStringAsFixed(2) ?? "0"}',
+                                        style: TextStyle(
+                                          color: PlunesColors.GREENCOLOR,
+                                          fontSize: AppConfig.largeFont,
+                                          fontWeight: FontWeight.normal,
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      'Business Earned',
-                                      style: TextStyle(
-                                          color: Colors.black54,
-                                          fontSize: AppConfig.verySmallFont),
-                                    )
-                                  ],
+                                      Text(
+                                        'Business Earned',
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: AppConfig.verySmallFont),
+                                      )
+                                    ],
+                                  ),
                                 ),
                                 SizedBox(
                                   width: 10,
                                 ),
-                                Column(
+                                Flexible(
+                                    child: Column(
                                   children: <Widget>[
                                     Text(
-                                      '\u20B9 ${_totalBusinessEarnedResponse.businessLost?.toStringAsFixed(2) ?? PlunesStrings.NA}',
+                                      '\u20B9 ${_totalBusinessEarnedResponse.businessLost?.toStringAsFixed(2) ?? "0"}',
                                       style: TextStyle(
                                         color: Colors.yellow,
                                         fontSize: AppConfig.largeFont,
@@ -496,7 +501,7 @@ class _HospitalOverviewScreenState
                                             color: Colors.black54,
                                             fontSize: AppConfig.verySmallFont)),
                                   ],
-                                )
+                                ))
                               ]);
                   },
                   initialData: _totalBusinessEarnedResponse == null
@@ -1318,8 +1323,25 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        CustomWidgets().getBackImageView(widget.patientName ?? PlunesStrings.NA,
-            width: 45, height: 45),
+        (widget.imageUrl != null &&
+                widget.imageUrl.isNotEmpty &&
+                widget.imageUrl.contains("http"))
+            ? CircleAvatar(
+                backgroundColor: Colors.transparent,
+                child: Container(
+                  height: 45,
+                  width: 45,
+                  child: ClipOval(
+                      child: CustomWidgets().getImageFromUrl(widget.imageUrl,
+                          boxFit: BoxFit.fill,
+                          placeHolderPath: PlunesImages.userProfileIcon)),
+                ),
+                radius: 23.5,
+              )
+            : CustomWidgets().getBackImageView(
+                widget.patientName ?? PlunesStrings.NA,
+                width: 45,
+                height: 45),
         Expanded(
             flex: 4,
             child: Padding(

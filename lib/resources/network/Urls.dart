@@ -110,4 +110,5 @@ class Urls {
       "solution/createManualBidding";
   static const String DELETE_NOTIFICATIONS_URL =
       "notification/deleteNotifications";
+  static const String CHANGE_PROFILE_URL = "upload/profilePicture";
 }

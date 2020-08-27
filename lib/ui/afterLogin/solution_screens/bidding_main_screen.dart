@@ -21,6 +21,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
+import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
@@ -74,6 +75,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
           event.screenName == EditProfileScreen.tag &&
           mounted) {
         _getUserDetails();
+      } else if (event != null &&
+          event.screenName == HealthSolutionNear.tag &&
+          mounted) {
+        _getPreviousSolutions();
       }
     });
     super.initState();

@@ -346,6 +346,9 @@ class User {
     if (this.bankDetails != null) {
       data['bankDetails'] = this.bankDetails.toJson();
     }
+    if (this.imageUrl != null) {
+      data['imageUrl'] = this.imageUrl;
+    }
     // data['referralCode'] = this.referralCode;
 //    if (this.tokens != null) {
 //      data['tokens'] = this.tokens.map((v) => v.toJson()).toList();
@@ -870,7 +873,6 @@ class RateAndReview {
       this.userImage});
 
   RateAndReview.fromJson(Map<String, dynamic> json) {
-    print("json $json");
     sId = json['_id'];
     professionalId = json['professionalId'];
     userId = json['userId'];
