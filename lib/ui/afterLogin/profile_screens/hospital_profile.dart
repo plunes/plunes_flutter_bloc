@@ -144,7 +144,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                 ),
               ),
               Positioned(
-                bottom: -AppConfig.verticalBlockSize * 5,
+                bottom: AppConfig.verticalBlockSize * 5.5,
                 right: 20,
                 left: 20,
                 child: InkWell(
@@ -170,8 +170,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                         ? CircleAvatar(
                             backgroundColor: Colors.transparent,
                             child: Container(
-                              height: 100,
-                              width: 100,
+                              height: 90,
+                              width: 90,
                               child: ClipOval(
                                   child: CustomWidgets().getImageFromUrl(
                                       _profileResponse.user.imageUrl,
@@ -179,7 +179,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                       placeHolderPath:
                                           PlunesImages.hospitalImage)),
                             ),
-                            radius: 40,
+                            radius: 45,
                           )
                         : CustomWidgets().getBackImageView(
                             _profileResponse.user?.name ?? _getEmptyString())),
@@ -200,7 +200,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                           child: Padding(
                             padding: EdgeInsets.only(
                               bottom: AppConfig.verticalBlockSize * 3,
-                              top: AppConfig.verticalBlockSize * 6,
+                              top: AppConfig.verticalBlockSize * 7,
                             ),
                             child: _getNameView(),
                           ),
