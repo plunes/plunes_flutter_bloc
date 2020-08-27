@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:plunes/blocs/base_bloc.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -16,6 +18,10 @@ class UserBloc extends BlocBase {
 
   Observable<RequestState> get rateAndReviewStream =>
       _reviewStreamProvider.stream;
+
+  final _profileImageProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get profileStream => _profileImageProvider.stream;
 
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
       {String address, bool isFromPopup = false, String region}) {
@@ -82,11 +88,19 @@ class UserBloc extends BlocBase {
     return result;
   }
 
+  Future<RequestState> uploadPicture(File image) async {
+    addStateInProfileStream(RequestInProgress());
+    var result = await UserManager().uploadPicture(image);
+    addStateInProfileStream(result);
+    return result;
+  }
+
   @override
   void dispose() {
     _specialityStreamProvider?.close();
     _serviceStreamProvider?.close();
     _reviewStreamProvider?.close();
+    _profileImageProvider?.close();
     super.dispose();
   }
 
@@ -138,5 +152,9 @@ class UserBloc extends BlocBase {
 
   addStateInReviewStream(RequestState data) {
     addStateInGenericStream(_reviewStreamProvider, data);
+  }
+
+  addStateInProfileStream(RequestState data) {
+    addStateInGenericStream(_profileImageProvider, data);
   }
 }

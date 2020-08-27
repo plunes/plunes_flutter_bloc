@@ -155,8 +155,8 @@ class Services {
 
   Services.fromJson(Map<String, dynamic> json) {
     price = json['price'].cast<num>();
-    newPrice = json['newPrice'].cast<num>();
-    category = json['category'].cast<String>();
+    newPrice = json['newPrice']?.cast<num>();
+    category = json['category']?.cast<String>();
     if (json['timeSlots'] != null) {
       timeSlots = new List<TimeSlots>();
       json['timeSlots'].forEach((v) {
@@ -283,8 +283,8 @@ class Doctors {
     homeCollection = json['homeCollection'];
     discount = json['discount'];
     experience = json['experience'];
-    newPrice = json['newPrice'].cast<num>();
-    category = json['category'].cast<String>();
+    newPrice = json['newPrice']?.cast<num>();
+    category = json['category']?.cast<String>();
     bookIn = json['bookIn'];
     rating = json['rating'];
     negotiating = json['negotiating'];

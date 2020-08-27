@@ -105,10 +105,6 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                         _showInSnackBar(
                             "Congrats you have unlocked ${_selectedItemList?.length} more facilities!",
                             shouldTakeBack: true);
-                        Future.delayed(Duration(milliseconds: 1200))
-                            .then((value) {
-                          Navigator.pop(context, true);
-                        });
                       });
                     } else if (snapshot.data is RequestFailed) {
                       RequestFailed requestFailed = snapshot.data;
@@ -396,7 +392,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
       _catalogues.remove(facility);
     }
     if (_catalogues == null || _catalogues.isEmpty) {
-      _failureCause = PlunesStrings.afterFacilitySelectedText;
+      _failureCause = PlunesStrings.emptyStr;
     }
     _selectUnselectController.add(null);
     _searchSolutionBloc.addIntoMoreFacilitiesStream(null);
@@ -461,7 +457,6 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   }
 
   void _showInSnackBar(String message, {bool shouldTakeBack = false}) {
-//    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
     showDialog(
         context: context,
         builder: (context) {

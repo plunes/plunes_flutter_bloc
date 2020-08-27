@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -6,7 +8,6 @@ import 'package:plunes/ui/afterLogin/AccountSettings.dart';
 import 'package:plunes/ui/afterLogin/AchievementsScreen.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
-
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
 import 'package:plunes/ui/afterLogin/HelpScreen.dart';
 import 'package:plunes/ui/afterLogin/SettingsScreen.dart';
@@ -15,7 +16,6 @@ import 'package:plunes/ui/afterLogin/payment/manage_payment.dart';
 import 'package:plunes/ui/beforeLogin/EnterPhoneScreen.dart';
 import 'package:plunes/ui/beforeLogin/GuidedTour.dart';
 import 'package:plunes/ui/beforeLogin/Registration.dart';
-
 import 'firebase/FirebaseNotification.dart';
 import 'res/ColorsFile.dart';
 import 'res/FontFile.dart';
@@ -47,13 +47,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final GlobalKey<NavigatorState> _navKey = new GlobalKey<NavigatorState>();
+  static final FirebaseAnalytics analytics = FirebaseAnalytics();
   static final facebookAppEvents = FacebookAppEvents();
+  final FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   void initState() {
     super.initState();
     FirebaseNotification()
-        .setUpFireBase(context, _scaffoldKey, _navKey, facebookAppEvents);
+        .init(context, _scaffoldKey, _navKey, facebookAppEvents, analytics);
   }
 
   ///Below method having all the routes of the application.
@@ -64,6 +67,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       key: _scaffoldKey,
       navigatorKey: _navKey,
+      navigatorObservers: <NavigatorObserver>[observer],
       theme: ThemeData(
         fontFamily: fontFile.appDefaultFont,
         accentColor: Color(hexColorCode.defaultGreen),

@@ -462,15 +462,17 @@ class CustomWidgets {
 //  }
 
   Widget getImageFromUrl(final String imageUrl,
-      {BoxFit boxFit = BoxFit.contain}) {
+      {BoxFit boxFit = BoxFit.contain, String placeHolderPath}) {
 //    print("file url is $imageUrl");
     return CachedNetworkImage(
       imageUrl: imageUrl ?? PlunesStrings.NA,
       fit: boxFit,
-      errorWidget: (_, str, sds) =>
-          Image.asset(PlunesImages.plunesPlaceHolderAndErrorLogo, fit: boxFit),
-      placeholder: (_, sds) =>
-          Image.asset(PlunesImages.plunesPlaceHolderAndErrorLogo, fit: boxFit),
+      errorWidget: (_, str, sds) => Image.asset(
+          placeHolderPath ?? PlunesImages.plunesPlaceHolderAndErrorLogo,
+          fit: boxFit),
+      placeholder: (_, sds) => Image.asset(
+          placeHolderPath ?? PlunesImages.plunesPlaceHolderAndErrorLogo,
+          fit: boxFit),
     );
   }
 
@@ -667,13 +669,22 @@ class CustomWidgets {
                           solutions[index].imageUrl.isNotEmpty &&
                           solutions[index].imageUrl.contains("http"))
                       ? CircleAvatar(
+                          backgroundColor: Colors.transparent,
                           child: Container(
                             height: AppConfig.horizontalBlockSize * 14,
                             width: AppConfig.horizontalBlockSize * 14,
                             child: ClipOval(
                                 child: getImageFromUrl(
                                     solutions[index].imageUrl,
-                                    boxFit: BoxFit.fill)),
+                                    boxFit: BoxFit.fill,
+                                    placeHolderPath: (solutions[index]
+                                                .userType
+                                                .toLowerCase() ==
+                                            Constants.doctor
+                                                .toString()
+                                                .toLowerCase())
+                                        ? PlunesImages.doc_placeholder
+                                        : PlunesImages.hospitalImage)),
                           ),
                           radius: AppConfig.horizontalBlockSize * 7,
                         )
@@ -855,14 +866,18 @@ class CustomWidgets {
                                     padding: EdgeInsets.only(
                                         left:
                                             AppConfig.horizontalBlockSize * 1)),
-                                (solutions[index].price[0] ==
-                                        solutions[index].newPrice[0])
+                                ((solutions[index].price.isEmpty) ||
+                                        (solutions[index].newPrice.isEmpty) ||
+                                        solutions[index].price[0] ==
+                                            solutions[index].newPrice[0])
                                     ? Container()
                                     : Text(
                                         (solutions[index].discount == null ||
-                                                solutions[index].discount == 0)
+                                                solutions[index].discount ==
+                                                    0 ||
+                                                solutions[index].discount < 0)
                                             ? ""
-                                            : " ${PlunesStrings.save} \u20B9 ${(solutions[index].price[0] - solutions[index].newPrice[0])?.toStringAsFixed(0)}",
+                                            : " ${PlunesStrings.save} \u20B9 ${(solutions[index].price[0] - solutions[index].newPrice[0])?.toStringAsFixed(2)}",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: PlunesColors.GREENCOLOR),
@@ -1156,8 +1171,6 @@ class CustomWidgets {
                                   style: TextStyle(
                                       fontSize: AppConfig.extraLargeFont,
                                       color: PlunesColors.WHITECOLOR,
-//                                              decoration:
-//                                                  TextDecoration.underline,
                                       fontWeight: FontWeight.w600),
                                   textAlign: TextAlign.center),
                               Container(
@@ -1192,7 +1205,10 @@ class CustomWidgets {
                                             MainAxisAlignment.end,
                                         children: <Widget>[
                                           Text(
-                                            "${reductionInPrice?.toStringAsFixed(0)}% ",
+                                            (chancesPercent == null ||
+                                                    chancesPercent == 0)
+                                                ? '0%'
+                                                : '$chancesPercent%',
                                             style: TextStyle(
                                                 color: Colors.white70,
                                                 fontSize: AppConfig.mediumFont,
@@ -1335,14 +1351,17 @@ class CustomWidgets {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.end,
                                               children: <Widget>[
-                                                Text(
-                                                  ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
-                                                  style: TextStyle(
-                                                      color: Colors.white70,
-                                                      fontSize:
-                                                          AppConfig.largeFont,
-                                                      fontWeight:
-                                                          FontWeight.w600),
+                                                Flexible(
+                                                  flex: 2,
+                                                  child: Text(
+                                                    ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
+                                                    style: TextStyle(
+                                                        color: Colors.white70,
+                                                        fontSize:
+                                                            AppConfig.largeFont,
+                                                        fontWeight:
+                                                            FontWeight.w600),
+                                                  ),
                                                 ),
                                                 (realInsight.suggested !=
                                                             null &&
@@ -1355,15 +1374,11 @@ class CustomWidgets {
                                                           newState(() {});
                                                         },
                                                         child: Container(
-                                                          margin: EdgeInsets.only(
-                                                              left: AppConfig
-                                                                      .horizontalBlockSize *
-                                                                  3),
                                                           padding:
                                                               EdgeInsets.all(
                                                                   5.0),
                                                           alignment: Alignment
-                                                              .bottomRight,
+                                                              .topCenter,
                                                           child: Icon(
                                                             Icons.mode_edit,
                                                             color: PlunesColors
@@ -1438,7 +1453,6 @@ class CustomWidgets {
                                     height: 0.5,
                                     width: double.infinity,
                                     color: PlunesColors.GREYCOLOR,
-//              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
                                   ),
                                   Row(
                                     crossAxisAlignment:
@@ -1567,7 +1581,6 @@ class CustomWidgets {
                                                   vertical: AppConfig
                                                           .verticalBlockSize *
                                                       1.5,
-//                                horizontal: AppConfig.horizontalBlockSize * 4
                                                 ),
                                                 child: Text(
                                                   'Apply here',
@@ -1775,7 +1788,10 @@ class CustomWidgets {
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: <Widget>[
                                       Text(
-                                        "${reductionInPrice?.toStringAsFixed(0)}% ",
+                                        (chancesPercent == null ||
+                                                chancesPercent == 0)
+                                            ? '0%'
+                                            : '$chancesPercent%',
                                         style: TextStyle(
                                             color: PlunesColors.WHITECOLOR,
                                             fontSize: AppConfig.mediumFont,
@@ -1910,13 +1926,16 @@ class CustomWidgets {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: <Widget>[
-                                              Text(
-                                                ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
-                                                style: TextStyle(
-                                                    color: Colors.white70,
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                        FontWeight.w600),
+                                              Flexible(
+                                                flex: 2,
+                                                child: Text(
+                                                  ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
+                                                  style: TextStyle(
+                                                      color: Colors.white70,
+                                                      fontSize: 20,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
                                               ),
                                               Flexible(
                                                   child: InkWell(
@@ -1925,10 +1944,6 @@ class CustomWidgets {
                                                   newState(() {});
                                                 },
                                                 child: Container(
-                                                  margin: EdgeInsets.only(
-                                                      left: AppConfig
-                                                              .horizontalBlockSize *
-                                                          3),
                                                   padding: EdgeInsets.all(5.0),
                                                   alignment:
                                                       Alignment.bottomRight,
@@ -1962,7 +1977,8 @@ class CustomWidgets {
                                     child: Container(
                                       child: chancesPercent != null
                                           ? Text(
-                                              chancesPercent == 0
+                                              (chancesPercent == null ||
+                                                      chancesPercent == 0)
                                                   ? '0%'
                                                   : '$chancesPercent%',
                                               style: TextStyle(
@@ -2455,29 +2471,21 @@ class CustomWidgets {
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontSize: AppConfig.smallFont,
-//                                            fontWeight: FontWeight.w500,
                                           color: PlunesColors.GREYCOLOR))),
-//                                Container(
-//                                    alignment: Alignment.topLeft,
-//                                    padding: EdgeInsets.only(
-//                                        top: AppConfig.verticalBlockSize * 3),
-//                                    child: Text('Write here',
-//                                        textAlign: TextAlign.start,
-//                                        style: TextStyle(
-//                                            fontSize: AppConfig.mediumFont,
-//                                            fontWeight: FontWeight.w600,
-//                                            color: PlunesColors.GREYCOLOR))),
                               Container(
                                 margin: EdgeInsets.symmetric(
                                     horizontal:
                                         AppConfig.horizontalBlockSize * 6),
                                 child: TextField(
                                   controller: textEditingController,
-                                  keyboardType: TextInputType.text,
-                                  maxLines: 1,
+                                  maxLines: 2,
                                   autofocus: false,
+                                  maxLength: 250,
+                                  keyboardType: TextInputType.multiline,
+                                  textInputAction: TextInputAction.newline,
                                   decoration: InputDecoration(
                                       hintText: 'Write here',
+                                      counterText: "",
                                       hintStyle: TextStyle(
                                           fontSize: AppConfig.smallFont)),
                                 ),
@@ -3145,13 +3153,16 @@ class CustomWidgets {
                                       doctorsData[itemIndex].name ??
                                           PlunesStrings.NA)
                                   : CircleAvatar(
+                                      backgroundColor: Colors.transparent,
                                       child: Container(
                                         height: 60,
                                         width: 60,
                                         child: ClipOval(
                                             child: getImageFromUrl(
                                                 doctorsData[itemIndex].imageUrl,
-                                                boxFit: BoxFit.fill)),
+                                                boxFit: BoxFit.fill,
+                                                placeHolderPath: PlunesImages
+                                                    .doc_placeholder)),
                                       ),
                                       radius: 30,
                                     ),
@@ -3741,20 +3752,8 @@ class CustomWidgets {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
       child: SingleChildScrollView(
-//        height: AppConfig.verticalBlockSize * 50,
         child: Column(
           children: <Widget>[
-//            Container(
-//              alignment: Alignment.topRight,
-//              child: InkWell(
-//                onTap: () => Navigator.of(context).pop(),
-//                onDoubleTap: () {},
-//                child: Padding(
-//                  padding: const EdgeInsets.all(10),
-//                  child: Icon(Icons.close),
-//                ),
-//              ),
-//            ),
             Container(
                 width: double.infinity,
                 height: AppConfig.verticalBlockSize * 39,
@@ -3790,6 +3789,7 @@ class CustomWidgets {
                                       doctorsData.imageUrl.isNotEmpty &&
                                       doctorsData.imageUrl.contains("http"))
                                   ? CircleAvatar(
+                                      backgroundColor: Colors.transparent,
                                       child: Container(
                                         height: 60,
                                         width: 60,
@@ -3797,7 +3797,10 @@ class CustomWidgets {
                                             child: CustomWidgets()
                                                 .getImageFromUrl(
                                                     doctorsData.imageUrl,
-                                                    boxFit: BoxFit.fill)),
+                                                    boxFit: BoxFit.fill,
+                                                    placeHolderPath:
+                                                        PlunesImages
+                                                            .doc_placeholder)),
                                       ),
                                       radius: 30,
                                     )
@@ -4878,13 +4881,16 @@ class CustomWidgets {
                                 catalogues[index].imageUrl.isNotEmpty &&
                                 catalogues[index].imageUrl.contains("http"))
                             ? CircleAvatar(
+                                backgroundColor: Colors.transparent,
                                 child: Container(
                                   height: 45,
                                   width: 45,
                                   child: ClipOval(
                                       child: CustomWidgets().getImageFromUrl(
                                           catalogues[index].imageUrl,
-                                          boxFit: BoxFit.fill)),
+                                          boxFit: BoxFit.fill,
+                                          placeHolderPath:
+                                              PlunesImages.doc_placeholder)),
                                 ),
                                 radius: 22.5,
                               )

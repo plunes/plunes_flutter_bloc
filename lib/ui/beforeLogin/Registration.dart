@@ -7,6 +7,7 @@ import 'package:location/location.dart' as loc;
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/location_util.dart';
@@ -994,6 +995,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       if (result is RequestSuccess) {
         LoginPost data = result.response;
         if (data.success) {
+          AnalyticsProvider().registerEvent(AnalyticsKeys.signUpKey);
           await bloc.saveDataInPreferences(
               data, context, plunesStrings.registration);
         } else {

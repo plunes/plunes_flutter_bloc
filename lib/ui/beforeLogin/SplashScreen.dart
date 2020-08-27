@@ -11,6 +11,7 @@ import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -46,6 +47,7 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
   @override
   void initState() {
     _userBloc = UserBloc();
+    AnalyticsProvider().registerEvent(AnalyticsKeys.sessionStartKey);
     super.initState();
     _checkAppUpdateAvailable();
     startTime();

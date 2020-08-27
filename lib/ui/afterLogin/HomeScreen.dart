@@ -413,18 +413,21 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                               Container(
                                 margin: EdgeInsets.only(left: 10),
                                 alignment: Alignment.center,
-                                child: CircleAvatar(
-                                  child: _imageUrl != ''
-                                      ? CircleAvatar(
-                                          backgroundImage:
-                                              NetworkImage(_imageUrl),
-                                          backgroundColor: Colors.transparent,
-                                          radius: 35,
-                                        )
-                                      : Container(),
-                                  backgroundColor: PlunesColors.LIGHTGREYCOLOR,
-                                  radius: 35,
-                                ),
+                                child: _imageUrl != ''
+                                    ? CircleAvatar(
+                                        backgroundColor: Colors.transparent,
+                                        radius: 35,
+                                        child: Container(
+                                          height: 70,
+                                          width: 70,
+                                          child: ClipOval(
+                                            child: CustomWidgets()
+                                                .getImageFromUrl(_imageUrl,
+                                                    boxFit: BoxFit.fill),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
                               ),
                               Expanded(
                                   child: Container(
@@ -447,13 +450,14 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                         ),
                       ),
                       _userType != Constants.user
-                          ? widget.getDividerRow(context, 10, 0, 70.0)
+                          ? widget.getDividerRow(context, 22, 0, 70.0)
                           : Container(),
                       _userType != Constants.user
                           ? getListTile(1, plunesStrings.myAvailability,
                               plunesImages.availIcon)
                           : Container(),
-                      widget.getDividerRow(context, 0, 0, 70.0),
+                      widget.getDividerRow(context,
+                          _userType == Constants.user ? 22 : 0, 0, 70.0),
                       getListTile(2, plunesStrings.appointments,
                           plunesImages.appointmentIcon),
                       (_userType != Constants.user &&
@@ -493,8 +497,14 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                       _userType == Constants.user
                           ? InkWell(
                               onTap: () {
+                                Navigator.pop(context);
                                 Navigator.pushNamed(
-                                    context, HealthSolutionNear.tag);
+                                        context, HealthSolutionNear.tag)
+                                    .then((value) {
+                                  EventProvider().getSessionEventBus().fire(
+                                      ScreenRefresher(
+                                          screenName: HealthSolutionNear.tag));
+                                });
                               },
                               child: Container(
                                 alignment: Alignment.center,
