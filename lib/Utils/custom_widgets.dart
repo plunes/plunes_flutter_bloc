@@ -1230,7 +1230,7 @@ class CustomWidgets {
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.0),
-                  color: Color(CommonMethods.getColorHexFromStr("#23407A"))),
+                  color: Color(CommonMethods.getColorHexFromStr("#00427B"))),
               child: Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
@@ -1609,6 +1609,12 @@ class CustomWidgets {
                                   ),
                                   Container(
                                     height: AppConfig.verticalBlockSize * 8,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#00427B"))),
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
@@ -1873,7 +1879,7 @@ class CustomWidgets {
             child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.0),
-                  color: Color(CommonMethods.getColorHexFromStr("#23407A"))),
+                  color: Color(CommonMethods.getColorHexFromStr("#00427B"))),
               child: Container(
                 decoration: BoxDecoration(
                     image: DecorationImage(
@@ -2208,6 +2214,12 @@ class CustomWidgets {
                                   ),
                                   Container(
                                     height: AppConfig.verticalBlockSize * 8,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(16.0),
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#00427B"))),
                                     child: Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.center,
