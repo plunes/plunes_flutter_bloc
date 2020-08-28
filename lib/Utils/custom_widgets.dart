@@ -1617,12 +1617,10 @@ class CustomWidgets {
                                       children: <Widget>[
                                         Expanded(
                                           child: FlatButton(
-                                              splashColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              highlightColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              focusColor: Colors.redAccent
-                                                  .withOpacity(.2),
+                                              focusColor: Colors.transparent,
+                                              splashColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
                                               onPressed: () {
                                                 Navigator.pop(context);
                                                 return;
@@ -1653,15 +1651,10 @@ class CustomWidgets {
                                         ),
                                         Expanded(
                                           child: FlatButton(
-                                              focusColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              splashColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              highlightColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
+                                              focusColor: Colors.transparent,
+                                              splashColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
                                               onPressed: () {
                                                 if (realInsight.suggested !=
                                                         null &&
@@ -2212,7 +2205,6 @@ class CustomWidgets {
                                     height: 0.5,
                                     width: double.infinity,
                                     color: PlunesColors.GREYCOLOR,
-//              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
                                   ),
                                   Container(
                                     height: AppConfig.verticalBlockSize * 8,
@@ -2224,12 +2216,10 @@ class CustomWidgets {
                                       children: <Widget>[
                                         Expanded(
                                           child: FlatButton(
-                                              splashColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              highlightColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              focusColor: Colors.redAccent
-                                                  .withOpacity(.2),
+                                              focusColor: Colors.transparent,
+                                              splashColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
                                               onPressed: () {
                                                 Navigator.pop(context);
                                                 return;
@@ -2239,11 +2229,7 @@ class CustomWidgets {
                                                           .verticalBlockSize *
                                                       8,
                                                   width: double.infinity,
-                                                  padding: EdgeInsets.symmetric(
-                                                    vertical: AppConfig
-                                                            .verticalBlockSize *
-                                                        1.5,
-                                                  ),
+                                                  alignment: Alignment.center,
                                                   child: Text(
                                                     'Cancel',
                                                     textAlign: TextAlign.center,
@@ -2262,15 +2248,10 @@ class CustomWidgets {
                                         ),
                                         Expanded(
                                           child: FlatButton(
-                                              focusColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              splashColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              highlightColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
+                                              focusColor: Colors.transparent,
+                                              splashColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
                                               onPressed: () {
                                                 if (shouldShowField) {
                                                   double value =
@@ -2326,11 +2307,12 @@ class CustomWidgets {
                                                           .verticalBlockSize *
                                                       8,
                                                   width: double.infinity,
-                                                  padding: EdgeInsets.symmetric(
-                                                    vertical: AppConfig
-                                                            .verticalBlockSize *
-                                                        1.5,
-                                                  ),
+                                                  alignment: Alignment.center,
+//                                                  padding: EdgeInsets.symmetric(
+//                                                    vertical: AppConfig
+//                                                            .verticalBlockSize *
+//                                                        1.5,
+//                                                  ),
                                                   child: Text(
                                                     'Apply here',
                                                     textAlign: TextAlign.center,
@@ -4092,7 +4074,7 @@ class CustomWidgets {
                     ],
                   ),
                 )),
-            CustomWidgets().getSingleCommonButton(context, 'OK')
+            CustomWidgets().getSingleCommonButton(context, 'Close')
 //            Container(
 //              height: 0.5,
 //              width: double.infinity,
