@@ -254,10 +254,9 @@ class PlunesStrings {
       "Please fill valid Phone Number or User ID";
 
   static const String cantRescheduleForUser =
-      "Sorry, You cannot Reschedule the appointment as you have requested for cancellation";
+      "Sorry, cannot reschedule the appointment as it is requested for cancellation";
   static const String cantRescheduleForDocHos =
-      "Sorry, You cannot Reschedule the appointment as you have requested for cancellation";
-
+      "Sorry, cannot reschedule the appointment as it is requested for cancellation";
   static const String codeCanBeUsedThreeTimes =
       "Your Referral Code can be used for up to 3 times. So, ";
   static const String hurryAndRefer = "Hurry and Refer!";

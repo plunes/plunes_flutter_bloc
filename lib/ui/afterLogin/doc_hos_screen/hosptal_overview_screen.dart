@@ -245,6 +245,8 @@ class _HospitalOverviewScreenState
                                               _realTimeInsightsResponse
                                                   .data[itemIndex]
                                                   .centerLocation,
+                                          imageUrl: _realTimeInsightsResponse
+                                              .data[itemIndex].imageUrl,
                                           getRealTimeInsights: () =>
                                               _getRealTimeInsights()),
                                       (_realTimeInsightsResponse
@@ -1320,8 +1322,25 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        CustomWidgets().getBackImageView(widget.patientName ?? PlunesStrings.NA,
-            width: 45, height: 45),
+        (widget.imageUrl != null &&
+                widget.imageUrl.isNotEmpty &&
+                widget.imageUrl.contains("http"))
+            ? CircleAvatar(
+                backgroundColor: Colors.transparent,
+                child: Container(
+                  height: 45,
+                  width: 45,
+                  child: ClipOval(
+                      child: CustomWidgets().getImageFromUrl(widget.imageUrl,
+                          boxFit: BoxFit.fill,
+                          placeHolderPath: PlunesImages.userProfileIcon)),
+                ),
+                radius: 23.5,
+              )
+            : CustomWidgets().getBackImageView(
+                widget.patientName ?? PlunesStrings.NA,
+                width: 45,
+                height: 45),
         Expanded(
             flex: 4,
             child: Padding(

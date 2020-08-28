@@ -8,6 +8,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+//import 'package:simple_url_preview/simple_url_preview.dart';
 
 import '../../OpenMap.dart';
 
@@ -190,15 +191,24 @@ class _AboutUsState extends BaseState<AboutUs> {
 //                      width: 1.5),
 //                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
 //                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    'Watch the Video',
-                    style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontSize: AppConfig.largeFont,
-                        color: PlunesColors.SPARKLINGGREEN),
-                  ),
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      'Watch the Video',
+                      style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontSize: AppConfig.largeFont,
+                          color: PlunesColors.SPARKLINGGREEN),
+                    ),
+//                    SimpleUrlPreview(
+//                      url: widget.userType == Constants.user
+//                          ? _userVideoUrl
+//                          : _hospVideoUrl,
+//                      textColor: Colors.white,
+//                      bgColor: PlunesColors.SPARKLINGGREEN,
+//                      isClosable: false,
+//                    ),
+                  ],
                 ),
               ),
             ),
