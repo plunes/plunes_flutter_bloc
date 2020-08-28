@@ -2672,7 +2672,7 @@ class CustomWidgets {
                           margin: EdgeInsets.only(
                               left: AppConfig.horizontalBlockSize * 6,
                               right: AppConfig.horizontalBlockSize * 6,
-                              bottom: AppConfig.verticalBlockSize * 5),
+                              bottom: AppConfig.verticalBlockSize * 1.5),
                           child: TextField(
                             controller: textEditingController,
                             maxLines: 2,

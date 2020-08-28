@@ -228,7 +228,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   onTap: (CompletionHandler handler) async {
                     _removeNotification(items.posts, index);
                   },
-                  color: Colors.redAccent.withOpacity(.5)),
+                  color: PlunesColors.SPARKLINGGREEN.withOpacity(.5)),
             ],
             child: rowLayout(items.posts[index]));
       },
