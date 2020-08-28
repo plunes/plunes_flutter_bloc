@@ -1119,9 +1119,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                             horizontal: AppConfig.horizontalBlockSize * 5),
                         child: Image.asset(PlunesImages.invalidSlotImage)),
                     Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 3,
-                          vertical: AppConfig.verticalBlockSize * .1),
+                      margin: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 3,
+                          right: AppConfig.horizontalBlockSize * 3,
+                          top: AppConfig.verticalBlockSize * .1,
+                          bottom: AppConfig.verticalBlockSize * 2),
                       child: Text(
                         PlunesStrings.timeNotAvailable,
                         textAlign: TextAlign.center,
@@ -1130,29 +1132,30 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                             fontSize: AppConfig.smallFont),
                       ),
                     ),
-                    Container(
-                      height: 0.5,
-                      width: double.infinity,
-                      color: PlunesColors.GREYCOLOR,
-                      margin:
-                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
-                    ),
-                    FlatButton(
-                        splashColor:
-                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                        highlightColor:
-                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                        focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Container(
-                            width: double.infinity,
-                            child: Text(
-                              "OK",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  color: PlunesColors.SPARKLINGGREEN),
-                            ))),
+                    CustomWidgets().getSingleCommonButton(context, 'Ok')
+//                    Container(
+//                      height: 0.5,
+//                      width: double.infinity,
+//                      color: PlunesColors.GREYCOLOR,
+//                      margin:
+//                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+//                    ),
+//                    FlatButton(
+//                        splashColor:
+//                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                        highlightColor:
+//                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                        focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                        onPressed: () => Navigator.of(context).pop(),
+//                        child: Container(
+//                            width: double.infinity,
+//                            child: Text(
+//                              "OK",
+//                              textAlign: TextAlign.center,
+//                              style: TextStyle(
+//                                  fontSize: AppConfig.mediumFont,
+//                                  color: PlunesColors.SPARKLINGGREEN),
+//                            ))),
                   ],
                 ),
               ),

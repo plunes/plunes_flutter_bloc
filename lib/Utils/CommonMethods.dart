@@ -344,7 +344,6 @@ class CommonMethods {
       child: SingleChildScrollView(
         reverse: true,
         child: Container(
-          height: AppConfig.verticalBlockSize * 37.5,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.all(
                   Radius.circular(AppConfig.horizontalBlockSize * 7)),
@@ -369,9 +368,10 @@ class CommonMethods {
                   textAlign: TextAlign.center,
                 ),
                 Container(
-//              height: AppConfig.verticalBlockSize * 8,
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 3),
+                  margin: EdgeInsets.only(
+                      right: AppConfig.horizontalBlockSize * 3,
+                      bottom: AppConfig.verticalBlockSize * 4,
+                      left: AppConfig.horizontalBlockSize * 3),
                   padding: EdgeInsets.symmetric(horizontal: 8),
                   child: TextField(
                     style: TextStyle(fontSize: AppConfig.smallFont),
@@ -392,10 +392,9 @@ class CommonMethods {
                   height: 0.5,
                   width: double.infinity,
                   color: PlunesColors.GREYCOLOR,
-                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 5),
                 ),
                 Container(
-                  height: AppConfig.verticalBlockSize * 8,
+                  height: AppConfig.verticalBlockSize * 6,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -408,6 +407,7 @@ class CommonMethods {
                             onPressed: () =>
                                 callBack.dialogCallBackFunction('CANCEL'),
                             child: Container(
+                                height: AppConfig.verticalBlockSize * 6,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -415,20 +415,22 @@ class CommonMethods {
                                         AppConfig.horizontalBlockSize * 4),
                                   ),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: AppConfig.verticalBlockSize * 1.5,
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 7),
-                                child: Text(
-                                  'Cancel',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: AppConfig.mediumFont,
-                                      color: Colors.redAccent),
+//                                padding: EdgeInsets.symmetric(
+//                                    vertical: AppConfig.verticalBlockSize * 1.5,
+//                                    horizontal:
+//                                        AppConfig.horizontalBlockSize * 7),
+                                child: Center(
+                                  child: Text(
+                                    'Cancel',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont,
+                                        color: Colors.redAccent),
+                                  ),
                                 ))),
                       ),
                       Container(
-                        height: AppConfig.verticalBlockSize * 8,
+                        height: AppConfig.verticalBlockSize * 6,
                         color: PlunesColors.GREYCOLOR,
                         width: 0.5,
                       ),
@@ -444,6 +446,7 @@ class CommonMethods {
                               callBack.dialogCallBackFunction('DONE');
                             },
                             child: Container(
+                                height: AppConfig.verticalBlockSize * 6,
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.only(
@@ -451,16 +454,14 @@ class CommonMethods {
                                         AppConfig.horizontalBlockSize * 4),
                                   ),
                                 ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: AppConfig.verticalBlockSize * 1.5,
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 7),
-                                child: Text(
-                                  'Submit',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: AppConfig.mediumFont,
-                                      color: PlunesColors.SPARKLINGGREEN),
+                                child: Center(
+                                  child: Text(
+                                    'Submit',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont,
+                                        color: PlunesColors.SPARKLINGGREEN),
+                                  ),
                                 ))),
                       ),
                     ],
@@ -527,82 +528,8 @@ class CommonMethods {
                               fontWeight: FontWeight.normal),
                         ),
                       ),
-                      Container(
-                        height: 0.5,
-                        width: double.infinity,
-                        color: PlunesColors.GREYCOLOR,
-//                                                      margin: EdgeInsets.only(
-//                                                          top: AppConfig
-//                                                                  .verticalBlockSize *
-//                                                              1),
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: FlatButton(
-                                splashColor: Colors.redAccent.withOpacity(.2),
-                                highlightColor:
-                                    Colors.redAccent.withOpacity(.2),
-                                focusColor: Colors.redAccent.withOpacity(.2),
-                                onPressed: () {
-                                  Navigator.pop(context,
-                                      false); // showDialog() returns false
-                                  callBack.dialogCallBackFunction('CANCEL');
-                                },
-                                child: Container(
-                                    width: double.infinity,
-                                    height: AppConfig.verticalBlockSize * 8,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical:
-                                            AppConfig.verticalBlockSize * 1.5,
-                                        horizontal:
-                                            AppConfig.horizontalBlockSize * 6),
-                                    child: Text(
-                                      'No',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.mediumFont,
-                                          color: Colors.redAccent),
-                                    ))),
-                          ),
-                          Container(
-                            height: AppConfig.verticalBlockSize * 6,
-                            color: PlunesColors.GREYCOLOR,
-                            width: 0.5,
-                          ),
-                          Expanded(
-                            child: FlatButton(
-                                focusColor:
-                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                                splashColor:
-                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                                highlightColor:
-                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  _callBack.dialogCallBackFunction('DONE');
-                                },
-                                child: Container(
-                                    width: double.infinity,
-                                    height: AppConfig.verticalBlockSize * 8,
-                                    alignment: Alignment.center,
-                                    padding: EdgeInsets.symmetric(
-                                        vertical:
-                                            AppConfig.verticalBlockSize * 1.5,
-                                        horizontal:
-                                            AppConfig.horizontalBlockSize * 6),
-                                    child: Text(
-                                      'Yes',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.mediumFont,
-                                          color: PlunesColors.SPARKLINGGREEN),
-                                    ))),
-                          ),
-                        ],
-                      ),
+                      CustomWidgets().getDoubleCommonButton(context, _callBack,
+                          'No', 'Yes', AppConfig.verticalBlockSize * 6)
                     ],
                   ),
                 ),

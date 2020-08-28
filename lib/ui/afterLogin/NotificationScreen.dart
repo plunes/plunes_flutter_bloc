@@ -218,7 +218,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
             performsFirstActionWithFullSwipe: true,
             actions: [
               SwipeAction(
-                  title: "remove",
+                  icon: Icon(
+                    Icons.delete,
+                    color: PlunesColors.WHITECOLOR,
+                  ),
                   onTap: (CompletionHandler handler) async {
                     _removeNotification(items.posts, index);
                   },
