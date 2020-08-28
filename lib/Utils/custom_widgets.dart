@@ -4061,7 +4061,7 @@ class CustomWidgets {
                     ],
                   ),
                 )),
-            CustomWidgets().getSingleCommonButton(context, 'OK')
+            CustomWidgets().getSingleCommonButton(context, 'Close')
 //            Container(
 //              height: 0.5,
 //              width: double.infinity,
