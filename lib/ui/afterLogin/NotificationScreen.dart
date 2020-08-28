@@ -216,8 +216,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
         return SwipeActionCell(
             key: ObjectKey(items.posts[index]),
             performsFirstActionWithFullSwipe: true,
+            closeWhenScrolling: true,
             actions: [
               SwipeAction(
+                  closeOnTap: true,
+                  backgroundRadius: 16,
                   icon: Icon(
                     Icons.delete,
                     color: PlunesColors.WHITECOLOR,
