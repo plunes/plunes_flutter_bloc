@@ -163,6 +163,7 @@ class _PopupChooseState extends State<PopupChoose> {
                           return;
                         },
                         child: Container(
+                            height: AppConfig.verticalBlockSize * 6,
                             width: double.infinity,
                             padding: EdgeInsets.symmetric(
                               vertical: AppConfig.verticalBlockSize * 1.5,
@@ -202,6 +203,7 @@ class _PopupChooseState extends State<PopupChoose> {
                           Navigator.of(context).pop(_paymentSelector);
                         },
                         child: Container(
+                            height: AppConfig.verticalBlockSize * 6,
                             width: double.infinity,
                             padding: EdgeInsets.symmetric(
                               vertical: AppConfig.verticalBlockSize * 1.5,

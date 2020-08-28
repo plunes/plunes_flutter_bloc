@@ -240,8 +240,11 @@ class _FillCouponState extends BaseState<FillCoupon> {
                       height: AppConfig.verticalBlockSize * 12,
                       child: Image.asset(PlunesImages.couponImage)),
                   Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 6),
+                    margin: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 6,
+                        right: AppConfig.horizontalBlockSize * 6,
+                        bottom: AppConfig.verticalBlockSize * 5,
+                        top: AppConfig.verticalBlockSize * 2),
                     child: Text(
                       "Coupon Applied Successfully!",
                       textAlign: TextAlign.center,
@@ -250,28 +253,29 @@ class _FillCouponState extends BaseState<FillCoupon> {
                           fontSize: AppConfig.smallFont),
                     ),
                   ),
-                  Container(
-                    height: 0.5,
-                    width: double.infinity,
-                    color: PlunesColors.GREYCOLOR,
-                    margin:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 5),
-                  ),
-                  FlatButton(
-                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                      highlightColor:
-                          PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                      focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                      onPressed: () => Navigator.pop(context, true),
-                      child: Container(
-                          width: double.infinity,
-                          child: Text(
-                            'OK',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                color: PlunesColors.SPARKLINGGREEN),
-                          ))),
+                  CustomWidgets().getSingleCommonButton(context, 'Ok')
+//                  Container(
+//                    height: 0.5,
+//                    width: double.infinity,
+//                    color: PlunesColors.GREYCOLOR,
+//                    margin:
+//                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 5),
+//                  ),
+//                  FlatButton(
+//                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                      highlightColor:
+//                          PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                      focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                      onPressed: () => Navigator.pop(context, true),
+//                      child: Container(
+//                          width: double.infinity,
+//                          child: Text(
+//                            'OK',
+//                            textAlign: TextAlign.center,
+//                            style: TextStyle(
+//                                fontSize: AppConfig.mediumFont,
+//                                color: PlunesColors.SPARKLINGGREEN),
+//                          ))),
                 ],
               ),
             ),
@@ -356,9 +360,11 @@ class _FillCouponState extends BaseState<FillCoupon> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 6,
-                        vertical: AppConfig.verticalBlockSize * 2),
+                    margin: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 3,
+                        right: AppConfig.horizontalBlockSize * 3,
+                        bottom: AppConfig.verticalBlockSize * 5,
+                        top: AppConfig.verticalBlockSize * 2),
                     child: Text(
                       PlunesStrings.couponExpired,
                       textAlign: TextAlign.center,
@@ -367,28 +373,29 @@ class _FillCouponState extends BaseState<FillCoupon> {
                           color: PlunesColors.GREYCOLOR),
                     ),
                   ),
-                  Container(
-                    height: 0.5,
-                    width: double.infinity,
-                    color: PlunesColors.GREYCOLOR,
-                    margin:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
-                  ),
-                  FlatButton(
-                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                      highlightColor:
-                          PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                      focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Container(
-                          width: double.infinity,
-                          child: Text(
-                            "OK",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                color: PlunesColors.SPARKLINGGREEN),
-                          ))),
+                  CustomWidgets().getSingleCommonButton(context, 'Ok')
+//                  Container(
+//                    height: 0.5,
+//                    width: double.infinity,
+//                    color: PlunesColors.GREYCOLOR,
+//                    margin:
+//                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+//                  ),
+//                  FlatButton(
+//                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                      highlightColor:
+//                          PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                      focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                      onPressed: () => Navigator.of(context).pop(),
+//                      child: Container(
+//                          width: double.infinity,
+//                          child: Text(
+//                            "OK",
+//                            textAlign: TextAlign.center,
+//                            style: TextStyle(
+//                                fontSize: AppConfig.mediumFont,
+//                                color: PlunesColors.SPARKLINGGREEN),
+//                          ))),
 
 //                  FlatButton(
 //                      onPressed: () {},

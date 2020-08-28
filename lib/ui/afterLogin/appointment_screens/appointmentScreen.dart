@@ -416,114 +416,121 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 //                                                                  .verticalBlockSize *
 //                                                              1),
                                                     ),
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: <Widget>[
-                                                        Expanded(
-                                                          child: FlatButton(
-                                                              splashColor: Colors
-                                                                  .redAccent
-                                                                  .withOpacity(
-                                                                      .2),
-                                                              highlightColor:
-                                                                  Colors
-                                                                      .redAccent
-                                                                      .withOpacity(
-                                                                          .2),
-                                                              focusColor: Colors
-                                                                  .redAccent
-                                                                  .withOpacity(
-                                                                      .2),
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                                return;
-                                                              },
-                                                              child: Container(
-                                                                  width: double
-                                                                      .infinity,
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      vertical:
-                                                                          AppConfig.verticalBlockSize *
-                                                                              1.5,
-                                                                      horizontal:
-                                                                          AppConfig.horizontalBlockSize *
-                                                                              6),
-                                                                  child: Text(
-                                                                    'No',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            AppConfig
-                                                                                .mediumFont,
-                                                                        color: Colors
-                                                                            .redAccent),
-                                                                  ))),
-                                                        ),
-                                                        Container(
-                                                          height: AppConfig
-                                                                  .verticalBlockSize *
-                                                              5,
-                                                          color: PlunesColors
-                                                              .GREYCOLOR,
-                                                          width: 0.5,
-                                                        ),
-                                                        Expanded(
-                                                          child: FlatButton(
-                                                              focusColor: PlunesColors
-                                                                  .SPARKLINGGREEN
-                                                                  .withOpacity(
-                                                                      .2),
-                                                              splashColor: PlunesColors
-                                                                  .SPARKLINGGREEN
-                                                                  .withOpacity(
-                                                                      .2),
-                                                              highlightColor:
-                                                                  PlunesColors
-                                                                      .SPARKLINGGREEN
-                                                                      .withOpacity(
-                                                                          .2),
-                                                              onPressed: () {
-                                                                _bookingBloc.cancelAppointment(
-                                                                    appointmentModel
-                                                                        .bookingId,
-                                                                    index);
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                                return;
-                                                              },
-                                                              child: Container(
-                                                                  width: double
-                                                                      .infinity,
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      vertical:
-                                                                          AppConfig.verticalBlockSize *
-                                                                              1.5,
-                                                                      horizontal:
-                                                                          AppConfig.horizontalBlockSize *
-                                                                              6),
-                                                                  child: Text(
-                                                                    'Yes',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            AppConfig
-                                                                                .mediumFont,
-                                                                        color: PlunesColors
-                                                                            .SPARKLINGGREEN),
-                                                                  ))),
-                                                        ),
-                                                      ],
+                                                    Container(
+                                                      height: AppConfig
+                                                              .verticalBlockSize *
+                                                          6,
+                                                      child: Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: <Widget>[
+                                                          Expanded(
+                                                            child: FlatButton(
+                                                                splashColor: Colors
+                                                                    .redAccent
+                                                                    .withOpacity(
+                                                                        .2),
+                                                                highlightColor: Colors
+                                                                    .redAccent
+                                                                    .withOpacity(
+                                                                        .2),
+                                                                focusColor: Colors
+                                                                    .redAccent
+                                                                    .withOpacity(
+                                                                        .2),
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                  return;
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                        height:
+                                                                            AppConfig.verticalBlockSize *
+                                                                                6,
+                                                                        width: double
+                                                                            .infinity,
+//                                                                        padding: EdgeInsets.symmetric(
+//                                                                            vertical: AppConfig.verticalBlockSize *
+//                                                                                1.5,
+//                                                                            horizontal: AppConfig.horizontalBlockSize *
+//                                                                                6),
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              Text(
+                                                                            'No',
+                                                                            textAlign:
+                                                                                TextAlign.center,
+                                                                            style:
+                                                                                TextStyle(fontSize: AppConfig.mediumFont, color: Colors.redAccent),
+                                                                          ),
+                                                                        ))),
+                                                          ),
+                                                          Container(
+                                                            height: AppConfig
+                                                                    .verticalBlockSize *
+                                                                6,
+                                                            color: PlunesColors
+                                                                .GREYCOLOR,
+                                                            width: 0.5,
+                                                          ),
+                                                          Expanded(
+                                                            child: FlatButton(
+                                                                focusColor: PlunesColors
+                                                                    .SPARKLINGGREEN
+                                                                    .withOpacity(
+                                                                        .2),
+                                                                splashColor:
+                                                                    PlunesColors
+                                                                        .SPARKLINGGREEN
+                                                                        .withOpacity(
+                                                                            .2),
+                                                                highlightColor:
+                                                                    PlunesColors
+                                                                        .SPARKLINGGREEN
+                                                                        .withOpacity(
+                                                                            .2),
+                                                                onPressed: () {
+                                                                  _bookingBloc.cancelAppointment(
+                                                                      appointmentModel
+                                                                          .bookingId,
+                                                                      index);
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  return;
+                                                                },
+                                                                child:
+                                                                    Container(
+                                                                        height:
+                                                                            AppConfig.verticalBlockSize *
+                                                                                6,
+                                                                        width: double
+                                                                            .infinity,
+//                                                                        padding: EdgeInsets.symmetric(
+//                                                                            vertical: AppConfig.verticalBlockSize *
+//                                                                                1.5,
+//                                                                            horizontal: AppConfig.horizontalBlockSize *
+//                                                                                6),
+                                                                        child:
+                                                                            Center(
+                                                                          child:
+                                                                              Text(
+                                                                            'Yes',
+                                                                            textAlign:
+                                                                                TextAlign.center,
+                                                                            style:
+                                                                                TextStyle(fontSize: AppConfig.mediumFont, color: PlunesColors.SPARKLINGGREEN),
+                                                                          ),
+                                                                        ))),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ],
                                                 ),
