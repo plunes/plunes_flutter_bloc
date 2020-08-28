@@ -2687,8 +2687,9 @@ class CustomWidgets {
                             decoration: InputDecoration(
                                 hintText: 'Write here',
                                 counterText: "",
-                                hintStyle:
-                                    TextStyle(fontSize: AppConfig.smallFont)),
+                                hintStyle: TextStyle(
+                                    fontSize: AppConfig.smallFont,
+                                    color: PlunesColors.GREYCOLOR)),
                           ),
                         ),
                         Container(
