@@ -115,90 +115,92 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
   Widget getBodyDocHosView() {
     bool isSuccess = false;
     String failureMessage;
-    return SingleChildScrollView(
-      child: StreamBuilder<RequestState>(
-          stream: _docHosMainInsightBloc.helpQueryDocHosStream,
-          builder: (BuildContext context, snapshot) {
-            if (snapshot.data != null && snapshot.data is RequestInProgress) {
-              return Container(
-                child: CustomWidgets().getProgressIndicator(),
-                height: AppConfig.verticalBlockSize * 70,
-                width: double.infinity,
-              );
-            }
-            if (snapshot.data != null && snapshot.data is RequestSuccess) {
-              isSuccess = true;
-            }
-            if (snapshot.data != null && snapshot.data is RequestFailed) {
-              RequestFailed requestFailed = snapshot.data;
-              failureMessage = requestFailed.failureCause ??
-                  PlunesStrings.helpQueryFailedMessage;
-              _docHosMainInsightBloc.addStateInHelpQueryStream(null);
-            }
-            return isSuccess
-                ? Dialog(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            AppConfig.horizontalBlockSize * 5)),
-                    child: SingleChildScrollView(
-                      child: Column(
+    return StreamBuilder<RequestState>(
+        stream: _docHosMainInsightBloc.helpQueryDocHosStream,
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.data != null && snapshot.data is RequestInProgress) {
+            return Container(
+              child: CustomWidgets().getProgressIndicator(),
+              height: AppConfig.verticalBlockSize * 70,
+              width: double.infinity,
+            );
+          }
+          if (snapshot.data != null && snapshot.data is RequestSuccess) {
+            isSuccess = true;
+          }
+          if (snapshot.data != null && snapshot.data is RequestFailed) {
+            RequestFailed requestFailed = snapshot.data;
+            failureMessage = requestFailed.failureCause ??
+                PlunesStrings.helpQueryFailedMessage;
+            _docHosMainInsightBloc.addStateInHelpQueryStream(null);
+          }
+          return isSuccess
+              ? Dialog(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(
+                          AppConfig.horizontalBlockSize * 5)),
+                  child: SingleChildScrollView(
+                    child: Column(
 //              mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                              margin: EdgeInsets.symmetric(
-                                  vertical: AppConfig.verticalBlockSize * 3),
-                              height: AppConfig.verticalBlockSize * 10,
-                              child: Image.asset(PlunesImages.helpThankyou)),
-                          Container(
-                            margin: EdgeInsets.only(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Container(
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 3),
+                            height: AppConfig.verticalBlockSize * 10,
+                            child: Image.asset(PlunesImages.helpThankyou)),
+                        Container(
+                          margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 6,
+                            right: AppConfig.horizontalBlockSize * 6,
+                          ),
+                          child: Text(
+                            PlunesStrings.thankYou,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: AppConfig.largeFont,
+                                color: PlunesColors.BLACKCOLOR),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(
                               left: AppConfig.horizontalBlockSize * 6,
                               right: AppConfig.horizontalBlockSize * 6,
-                            ),
-                            child: Text(
-                              PlunesStrings.thankYou,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: AppConfig.mediumFont,
-                                  color: PlunesColors.BLACKCOLOR),
-                            ),
+                              top: AppConfig.verticalBlockSize * 2,
+                              bottom: AppConfig.verticalBlockSize * 5),
+                          child: Text(
+                            PlunesStrings.thanksForContacting,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.GREYCOLOR),
                           ),
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: AppConfig.horizontalBlockSize * 6,
-                                vertical: AppConfig.verticalBlockSize * 2),
-                            child: Text(
-                              PlunesStrings.thanksForContacting,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: AppConfig.smallFont,
-                                  color: PlunesColors.GREYCOLOR),
-                            ),
-                          ),
-                          Container(
-                            height: 0.5,
-                            width: double.infinity,
-                            color: PlunesColors.GREYCOLOR,
-                            margin: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 3),
-                          ),
-                          FlatButton(
-                              splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                              highlightColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                              focusColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                              onPressed: () => Navigator.of(context).pop(),
-                              child: Container(
-                                  width: double.infinity,
-                                  child: Text(
-                                    "OK",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        color: PlunesColors.SPARKLINGGREEN),
-                                  ))),
+                        ),
+                        CustomWidgets().getSingleCommonButton(context, 'Ok')
+//                            Container(
+//                              height: 0.5,
+//                              width: double.infinity,
+//                              color: PlunesColors.GREYCOLOR,
+//                              margin: EdgeInsets.only(
+//                                  top: AppConfig.verticalBlockSize * 3),
+//                            ),
+//                            FlatButton(
+//                                splashColor:
+//                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                                highlightColor:
+//                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                                focusColor:
+//                                    PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+//                                onPressed: () => Navigator.of(context).pop(),
+//                                child: Container(
+//                                    width: double.infinity,
+//                                    child: Text(
+//                                      "OK",
+//                                      textAlign: TextAlign.center,
+//                                      style: TextStyle(
+//                                          fontSize: AppConfig.mediumFont,
+//                                          color: PlunesColors.SPARKLINGGREEN),
+//                                    ))),
 
 //                  FlatButton(
 //                      onPressed: () {},
@@ -215,10 +217,10 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
 //                      )),
 //                    ],
 //                  )
-                        ],
-                      ),
+                      ],
                     ),
-                  )
+                  ),
+                )
 //              Container(
 //                      padding: EdgeInsets.symmetric(
 //                          horizontal: AppConfig.horizontalBlockSize * 6,
@@ -253,7 +255,8 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
 //                        ],
 //                      ),
 //                    )
-                : Column(
+              : SingleChildScrollView(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Image.asset(
@@ -389,9 +392,9 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                       ),
                       _callWidget()
                     ],
-                  );
-          }),
-    );
+                  ),
+                );
+        });
   }
 
   Widget getBodyUserView() {
@@ -642,7 +645,6 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
             Text(_helpLineNumberModel?.number ?? _helpNumber,
                 style: TextStyle(
                     fontSize: AppConfig.largeFont,
-                    decoration: TextDecoration.underline,
                     fontWeight: FontWeight.w500,
                     color: PlunesColors.SPARKLINGGREEN)),
           ],

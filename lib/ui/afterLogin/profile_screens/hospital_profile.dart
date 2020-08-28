@@ -144,7 +144,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                 ),
               ),
               Positioned(
-                bottom: AppConfig.verticalBlockSize * 5.5,
+                bottom: -AppConfig.verticalBlockSize * 5.5,
                 right: 20,
                 left: 20,
                 child: InkWell(
