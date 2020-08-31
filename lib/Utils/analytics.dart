@@ -13,7 +13,6 @@ class AnalyticsProvider {
   }
 
   void registerEvent(final String eventName) {
-    return;
     try {
       FirebaseNotification()
           .getAnalyticsInstance()
@@ -28,7 +27,7 @@ class AnalyticsProvider {
 //        print("face== ana done");
       });
     } catch (e) {
-      print("error $e");
+//      print("error $e");
     }
   }
 }
