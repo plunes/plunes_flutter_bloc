@@ -18,9 +18,9 @@ class Urls {
   static const String googleApiKey = 'AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc';
 
   static const String baseUrl =
-      'https://api.plunes.com/v5/'; // production server
+      'https://api.plunes.com/v6/'; // production server
 //  static const String baseUrl =
-//      'https://devapi.plunes.com/v5/'; // staging server
+//      'https://devapi.plunes.com/v6/'; // staging server
 
   static const String customBaseUrl =
       'https://api.plunes.com/'; // production server
