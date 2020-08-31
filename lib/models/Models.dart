@@ -256,8 +256,8 @@ class User {
       lat = "0.0";
     }
 //    print("lat in models $lat");
-    print(
-        "${json["rating"].runtimeType.toString()}long in ${_rating.runtimeType.toString()}models ${json["rating"]}");
+//    print(
+//        "${json["rating"].runtimeType.toString()}long in ${_rating.runtimeType.toString()}models ${json["rating"]}");
     return User(
         uid: json['_id'] != null ? json['_id'] : '',
         name: json['name'] != null ? json['name'] : '',
@@ -539,7 +539,7 @@ class PostsData {
       this.hasSeen});
 
   factory PostsData.fromJson(Map<String, dynamic> parsedJson) {
-    print("parsedJson ${parsedJson["deleted"]}");
+//    print("parsedJson ${parsedJson["deleted"]}");
     return new PostsData(
         senderImageUrl: parsedJson['senderImageUrl'] != null
             ? parsedJson['senderImageUrl']
