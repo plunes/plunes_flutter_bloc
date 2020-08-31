@@ -149,75 +149,81 @@ class _PopupChooseState extends State<PopupChoose> {
             ),
             Container(
               height: AppConfig.verticalBlockSize * 6,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: FlatButton(
-                        splashColor: Colors.redAccent.withOpacity(.2),
-                        highlightColor: Colors.redAccent.withOpacity(.2),
-                        focusColor: Colors.redAccent.withOpacity(.2),
-                        onPressed: () {
-                          Navigator.pop(context);
-                          return;
-                        },
-                        child: Container(
-                            height: AppConfig.verticalBlockSize * 6,
-                            width: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 1.5,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: FlatButton(
+                          splashColor: Colors.redAccent.withOpacity(.2),
+                          highlightColor: Colors.redAccent.withOpacity(.2),
+                          focusColor: Colors.redAccent.withOpacity(.2),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            return;
+                          },
+                          child: Container(
+                              height: AppConfig.verticalBlockSize * 6,
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 1.5,
 //                                horizontal: AppConfig.horizontalBlockSize * 4
-                            ),
-                            child: Text(
-                              'Back',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  color: Colors.redAccent),
-                            ))),
-                  ),
-                  Container(
-                    height: AppConfig.verticalBlockSize * 6,
-                    color: PlunesColors.GREYCOLOR,
-                    width: 0.5,
-                  ),
-                  Expanded(
+                              ),
+                              child: Text(
+                                'Back',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    color: Colors.redAccent),
+                              ))),
+                    ),
+                    Container(
+                      height: AppConfig.verticalBlockSize * 6,
+                      color: PlunesColors.GREYCOLOR,
+                      width: 0.5,
+                    ),
+                    Expanded(
 //                                      flex: 200,
-                    child: FlatButton(
-                        focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                        splashColor:
-                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                        highlightColor:
-                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                        onPressed: () {
-                          PaymentSelector _paymentSelector;
-                          if (_paymentSelectionOptions != null &&
-                              _paymentSelectionOptions.isNotEmpty) {
-                            _paymentSelectionOptions.forEach((paymentObj) {
-                              if (paymentObj.isSelected) {
-                                _paymentSelector = paymentObj;
-                              }
-                            });
-                          }
-                          Navigator.of(context).pop(_paymentSelector);
-                        },
-                        child: Container(
-                            height: AppConfig.verticalBlockSize * 6,
-                            width: double.infinity,
-                            padding: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 1.5,
+                      child: FlatButton(
+                          focusColor:
+                              PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                          splashColor:
+                              PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                          highlightColor:
+                              PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                          onPressed: () {
+                            PaymentSelector _paymentSelector;
+                            if (_paymentSelectionOptions != null &&
+                                _paymentSelectionOptions.isNotEmpty) {
+                              _paymentSelectionOptions.forEach((paymentObj) {
+                                if (paymentObj.isSelected) {
+                                  _paymentSelector = paymentObj;
+                                }
+                              });
+                            }
+                            Navigator.of(context).pop(_paymentSelector);
+                          },
+                          child: Container(
+                              height: AppConfig.verticalBlockSize * 6,
+                              width: double.infinity,
+                              padding: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 1.5,
 //                                horizontal: AppConfig.horizontalBlockSize * 4
-                            ),
-                            child: Text(
-                              'Continue',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  color: PlunesColors.SPARKLINGGREEN),
-                            ))),
-                  ),
-                ],
+                              ),
+                              child: Text(
+                                'Continue',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    color: PlunesColors.SPARKLINGGREEN),
+                              ))),
+                    ),
+                  ],
+                ),
               ),
             ),
 //            GestureDetector(

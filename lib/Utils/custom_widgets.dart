@@ -520,62 +520,68 @@ class CustomWidgets {
         ),
         Container(
           height: height,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: FlatButton(
-                    splashColor: Colors.redAccent.withOpacity(.2),
-                    highlightColor: Colors.redAccent.withOpacity(.2),
-                    focusColor: Colors.redAccent.withOpacity(.2),
-                    onPressed: () {
-                      Navigator.pop(
-                          context, false); // showDialog() returns false
-                      callBack.dialogCallBackFunction('CANCEL');
-                    },
-                    child: Container(
-                        width: double.infinity,
-                        height: height,
-                        child: Center(
-                          child: Text(
-                            buttonText1,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                color: Colors.redAccent),
-                          ),
-                        ))),
-              ),
-              Container(
-                height: height,
-                color: PlunesColors.GREYCOLOR,
-                width: 0.5,
-              ),
-              Expanded(
-                child: FlatButton(
-                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      _callBack.dialogCallBackFunction('DONE');
-                    },
-                    child: Container(
-                        width: double.infinity,
-                        height: height,
-                        alignment: Alignment.center,
-                        child: Center(
-                          child: Text(
-                            buttonText2,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                color: PlunesColors.SPARKLINGGREEN),
-                          ),
-                        ))),
-              ),
-            ],
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16)),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: FlatButton(
+                      splashColor: Colors.redAccent.withOpacity(.2),
+                      highlightColor: Colors.redAccent.withOpacity(.2),
+                      focusColor: Colors.redAccent.withOpacity(.2),
+                      onPressed: () {
+                        Navigator.pop(
+                            context, false); // showDialog() returns false
+                        callBack.dialogCallBackFunction('CANCEL');
+                      },
+                      child: Container(
+                          width: double.infinity,
+                          height: height,
+                          child: Center(
+                            child: Text(
+                              buttonText1,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                  color: Colors.redAccent),
+                            ),
+                          ))),
+                ),
+                Container(
+                  height: height,
+                  color: PlunesColors.GREYCOLOR,
+                  width: 0.5,
+                ),
+                Expanded(
+                  child: FlatButton(
+                      focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      highlightColor:
+                          PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _callBack.dialogCallBackFunction('DONE');
+                      },
+                      child: Container(
+                          width: double.infinity,
+                          height: height,
+                          alignment: Alignment.center,
+                          child: Center(
+                            child: Text(
+                              buttonText2,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                  color: PlunesColors.SPARKLINGGREEN),
+                            ),
+                          ))),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -591,23 +597,28 @@ class CustomWidgets {
       ),
       Container(
         height: AppConfig.verticalBlockSize * 6,
-        child: FlatButton(
-            splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-            highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-            focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-            onPressed: () => Navigator.of(context).pop(),
-            child: Container(
-                height: AppConfig.verticalBlockSize * 6,
-                width: double.infinity,
-                child: Center(
-                  child: Text(
-                    text,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: AppConfig.mediumFont,
-                        color: PlunesColors.SPARKLINGGREEN),
-                  ),
-                ))),
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(16),
+              bottomRight: Radius.circular(16)),
+          child: FlatButton(
+              splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Container(
+                  height: AppConfig.verticalBlockSize * 6,
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.SPARKLINGGREEN),
+                    ),
+                  ))),
+        ),
       ),
     ]);
   }
@@ -1609,150 +1620,157 @@ class CustomWidgets {
                                   ),
                                   Container(
                                     height: AppConfig.verticalBlockSize * 8,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: FlatButton(
-                                              splashColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              highlightColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              focusColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                return;
-                                              },
-                                              child: Container(
-                                                  height: AppConfig
-                                                          .verticalBlockSize *
-                                                      8,
-                                                  width: double.infinity,
-                                                  child: Center(
-                                                    child: Text(
-                                                      'Cancel',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          fontSize: AppConfig
-                                                              .largeFont,
-                                                          color: PlunesColors
-                                                              .WHITECOLOR),
-                                                    ),
-                                                  ))),
-                                        ),
-                                        Container(
-                                          height:
-                                              AppConfig.verticalBlockSize * 8,
-                                          color: PlunesColors.GREYCOLOR,
-                                          width: 0.5,
-                                        ),
-                                        Expanded(
-                                          child: FlatButton(
-                                              focusColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              splashColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              highlightColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              onPressed: () {
-                                                if (realInsight.suggested !=
-                                                        null &&
-                                                    realInsight.suggested &&
-                                                    shouldShowField) {
-                                                  if (_priceController.text
-                                                          .trim()
-                                                          .isEmpty ||
-                                                      _priceController.text
-                                                              .trim()
-                                                              .substring(0) ==
-                                                          "0" ||
-                                                      (double.tryParse(
-                                                              _priceController
-                                                                  .text
-                                                                  .trim()) <
-                                                          1)) {
-                                                    failureCause =
-                                                        'Price must not be lesser than 1 or empty';
-                                                    newState(() {});
-                                                    return;
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(16),
+                                          bottomRight: Radius.circular(16)),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: FlatButton(
+                                                splashColor: Colors.redAccent
+                                                    .withOpacity(.2),
+                                                highlightColor: Colors.redAccent
+                                                    .withOpacity(.2),
+                                                focusColor: Colors.redAccent
+                                                    .withOpacity(.2),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  return;
+                                                },
+                                                child: Container(
+                                                    height: AppConfig
+                                                            .verticalBlockSize *
+                                                        8,
+                                                    width: double.infinity,
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Cancel',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontSize: AppConfig
+                                                                .largeFont,
+                                                            color: PlunesColors
+                                                                .WHITECOLOR),
+                                                      ),
+                                                    ))),
+                                          ),
+                                          Container(
+                                            height:
+                                                AppConfig.verticalBlockSize * 8,
+                                            color: PlunesColors.GREYCOLOR,
+                                            width: 0.5,
+                                          ),
+                                          Expanded(
+                                            child: FlatButton(
+                                                focusColor: PlunesColors
+                                                    .SPARKLINGGREEN
+                                                    .withOpacity(.2),
+                                                splashColor: PlunesColors
+                                                    .SPARKLINGGREEN
+                                                    .withOpacity(.2),
+                                                highlightColor: PlunesColors
+                                                    .SPARKLINGGREEN
+                                                    .withOpacity(.2),
+                                                onPressed: () {
+                                                  if (realInsight.suggested !=
+                                                          null &&
+                                                      realInsight.suggested &&
+                                                      shouldShowField) {
+                                                    if (_priceController.text
+                                                            .trim()
+                                                            .isEmpty ||
+                                                        _priceController.text
+                                                                .trim()
+                                                                .substring(0) ==
+                                                            "0" ||
+                                                        (double.tryParse(
+                                                                _priceController
+                                                                    .text
+                                                                    .trim()) <
+                                                            1)) {
+                                                      failureCause =
+                                                          'Price must not be lesser than 1 or empty';
+                                                      newState(() {});
+                                                      return;
+                                                    }
+                                                    docHosMainInsightBloc
+                                                        .updateRealTimeInsightPriceStream(
+                                                            RequestInProgress());
+                                                    docHosMainInsightBloc
+                                                        .getUpdateRealTimeInsightPrice(
+                                                            num.tryParse(
+                                                                _priceController
+                                                                    .text
+                                                                    .trim()),
+                                                            realInsight
+                                                                .solutionId,
+                                                            realInsight
+                                                                .serviceId,
+                                                            isSuggestive: true,
+                                                            suggestedPrice:
+                                                                num.tryParse(
+                                                                    _priceController
+                                                                        .text
+                                                                        .trim()));
+                                                  } else {
+                                                    if (sliderVal == null ||
+                                                        sliderVal == 0) {
+                                                      failureCause =
+                                                          'price must not be 0.';
+                                                      newState(() {});
+                                                      return;
+                                                    } else if (sliderVal ==
+                                                        realInsight.userPrice) {
+                                                      failureCause =
+                                                          'price must not be equals to original price.';
+                                                      newState(() {});
+                                                      return;
+                                                    }
+                                                    docHosMainInsightBloc
+                                                        .updateRealTimeInsightPriceStream(
+                                                            RequestInProgress());
+                                                    docHosMainInsightBloc
+                                                        .getUpdateRealTimeInsightPrice(
+                                                            chancesPercent,
+                                                            realInsight
+                                                                .solutionId,
+                                                            realInsight
+                                                                .serviceId,
+                                                            isSuggestive: (realInsight
+                                                                        .suggested !=
+                                                                    null &&
+                                                                realInsight
+                                                                    .suggested),
+                                                            suggestedPrice:
+                                                                sliderVal);
                                                   }
-                                                  docHosMainInsightBloc
-                                                      .updateRealTimeInsightPriceStream(
-                                                          RequestInProgress());
-                                                  docHosMainInsightBloc
-                                                      .getUpdateRealTimeInsightPrice(
-                                                          num.tryParse(
-                                                              _priceController
-                                                                  .text
-                                                                  .trim()),
-                                                          realInsight
-                                                              .solutionId,
-                                                          realInsight.serviceId,
-                                                          isSuggestive: true,
-                                                          suggestedPrice:
-                                                              num.tryParse(
-                                                                  _priceController
-                                                                      .text
-                                                                      .trim()));
-                                                } else {
-                                                  if (sliderVal == null ||
-                                                      sliderVal == 0) {
-                                                    failureCause =
-                                                        'price must not be 0.';
-                                                    newState(() {});
-                                                    return;
-                                                  } else if (sliderVal ==
-                                                      realInsight.userPrice) {
-                                                    failureCause =
-                                                        'price must not be equals to original price.';
-                                                    newState(() {});
-                                                    return;
-                                                  }
-                                                  docHosMainInsightBloc
-                                                      .updateRealTimeInsightPriceStream(
-                                                          RequestInProgress());
-                                                  docHosMainInsightBloc
-                                                      .getUpdateRealTimeInsightPrice(
-                                                          chancesPercent,
-                                                          realInsight
-                                                              .solutionId,
-                                                          realInsight.serviceId,
-                                                          isSuggestive: (realInsight
-                                                                      .suggested !=
-                                                                  null &&
-                                                              realInsight
-                                                                  .suggested),
-                                                          suggestedPrice:
-                                                              sliderVal);
-                                                }
-                                              },
-                                              child: Container(
-                                                  height: AppConfig
-                                                          .verticalBlockSize *
-                                                      8,
-                                                  width: double.infinity,
-                                                  child: Center(
-                                                    child: Text(
-                                                      'Apply here',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                          fontSize: AppConfig
-                                                              .largeFont,
-                                                          color: PlunesColors
-                                                              .GREENCOLOR),
-                                                    ),
-                                                  ))),
-                                        ),
-                                      ],
+                                                },
+                                                child: Container(
+                                                    height: AppConfig
+                                                            .verticalBlockSize *
+                                                        8,
+                                                    width: double.infinity,
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Apply here',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontSize: AppConfig
+                                                                .largeFont,
+                                                            color: PlunesColors
+                                                                .GREENCOLOR),
+                                                      ),
+                                                    ))),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
 
@@ -2216,136 +2234,146 @@ class CustomWidgets {
                                   ),
                                   Container(
                                     height: AppConfig.verticalBlockSize * 8,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: FlatButton(
-                                              splashColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              highlightColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              focusColor: Colors.redAccent
-                                                  .withOpacity(.2),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                return;
-                                              },
-                                              child: Container(
-                                                  height: AppConfig
-                                                          .verticalBlockSize *
-                                                      8,
-                                                  width: double.infinity,
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(16),
+                                          bottomRight: Radius.circular(16)),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: FlatButton(
+                                                splashColor: Colors.redAccent
+                                                    .withOpacity(.2),
+                                                highlightColor: Colors.redAccent
+                                                    .withOpacity(.2),
+                                                focusColor: Colors.redAccent
+                                                    .withOpacity(.2),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                  return;
+                                                },
+                                                child: Container(
+                                                    height: AppConfig
+                                                            .verticalBlockSize *
+                                                        8,
+                                                    width: double.infinity,
 //                                                  padding: EdgeInsets.symmetric(
 //                                                    vertical: AppConfig
 //                                                            .verticalBlockSize *
 //                                                        1.5,
 //                                                  ),
-                                                  child: Center(
+                                                    child: Center(
+                                                      child: Text(
+                                                        'Cancel',
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontSize: AppConfig
+                                                                .largeFont,
+                                                            color: PlunesColors
+                                                                .WHITECOLOR),
+                                                      ),
+                                                    ))),
+                                          ),
+                                          Container(
+                                            height:
+                                                AppConfig.verticalBlockSize * 8,
+                                            color: PlunesColors.GREYCOLOR,
+                                            width: 0.5,
+                                          ),
+                                          Expanded(
+//
+                                            child: FlatButton(
+                                                focusColor: PlunesColors
+                                                    .SPARKLINGGREEN
+                                                    .withOpacity(.2),
+                                                splashColor: PlunesColors
+                                                    .SPARKLINGGREEN
+                                                    .withOpacity(.2),
+                                                highlightColor: PlunesColors
+                                                    .SPARKLINGGREEN
+                                                    .withOpacity(.2),
+                                                onPressed: () {
+                                                  if (shouldShowField) {
+                                                    double value =
+                                                        double.tryParse(
+                                                            _priceController
+                                                                .text
+                                                                .trim());
+                                                    if (value == null ||
+                                                        value == 0 ||
+                                                        value < 1) {
+                                                      failureCause =
+                                                          'price must be greater than 0';
+                                                      newState(() {});
+                                                      return;
+                                                    }
+                                                    docHosMainInsightBloc
+                                                        .getUpdateActionableInsightPrice(
+                                                            value,
+                                                            actionableInsight
+                                                                .serviceId,
+                                                            actionableInsight
+                                                                .specialityId,
+                                                            centreId: centreId);
+                                                  } else {
+                                                    if (sliderVal == null ||
+                                                        sliderVal == 0) {
+                                                      failureCause =
+                                                          'price must not be 0';
+                                                      newState(() {});
+                                                      return;
+                                                    } else if (sliderVal
+                                                            .toStringAsFixed(
+                                                                0) ==
+                                                        num.parse(
+                                                                actionableInsight
+                                                                    .userPrice)
+                                                            .toStringAsFixed(
+                                                                0)) {
+                                                      failureCause =
+                                                          'price must not be equals to original price.';
+                                                      newState(() {});
+                                                      return;
+                                                    }
+                                                    docHosMainInsightBloc
+                                                        .getUpdateActionableInsightPrice(
+                                                            sliderVal,
+                                                            actionableInsight
+                                                                .serviceId,
+                                                            actionableInsight
+                                                                .specialityId,
+                                                            centreId: centreId);
+                                                  }
+                                                },
+                                                child: Container(
+                                                    height: AppConfig
+                                                            .verticalBlockSize *
+                                                        8,
+                                                    width: double.infinity,
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                      vertical: AppConfig
+                                                              .verticalBlockSize *
+                                                          1.5,
+                                                    ),
                                                     child: Text(
-                                                      'Cancel',
+                                                      'Apply here',
                                                       textAlign:
                                                           TextAlign.center,
                                                       style: TextStyle(
                                                           fontSize: AppConfig
                                                               .largeFont,
                                                           color: PlunesColors
-                                                              .WHITECOLOR),
-                                                    ),
-                                                  ))),
-                                        ),
-                                        Container(
-                                          height:
-                                              AppConfig.verticalBlockSize * 8,
-                                          color: PlunesColors.GREYCOLOR,
-                                          width: 0.5,
-                                        ),
-                                        Expanded(
-//
-                                          child: FlatButton(
-                                              focusColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              splashColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              highlightColor: PlunesColors
-                                                  .SPARKLINGGREEN
-                                                  .withOpacity(.2),
-                                              onPressed: () {
-                                                if (shouldShowField) {
-                                                  double value =
-                                                      double.tryParse(
-                                                          _priceController.text
-                                                              .trim());
-                                                  if (value == null ||
-                                                      value == 0 ||
-                                                      value < 1) {
-                                                    failureCause =
-                                                        'price must be greater than 0';
-                                                    newState(() {});
-                                                    return;
-                                                  }
-                                                  docHosMainInsightBloc
-                                                      .getUpdateActionableInsightPrice(
-                                                          value,
-                                                          actionableInsight
-                                                              .serviceId,
-                                                          actionableInsight
-                                                              .specialityId,
-                                                          centreId: centreId);
-                                                } else {
-                                                  if (sliderVal == null ||
-                                                      sliderVal == 0) {
-                                                    failureCause =
-                                                        'price must not be 0';
-                                                    newState(() {});
-                                                    return;
-                                                  } else if (sliderVal
-                                                          .toStringAsFixed(0) ==
-                                                      num.parse(
-                                                              actionableInsight
-                                                                  .userPrice)
-                                                          .toStringAsFixed(0)) {
-                                                    failureCause =
-                                                        'price must not be equals to original price.';
-                                                    newState(() {});
-                                                    return;
-                                                  }
-                                                  docHosMainInsightBloc
-                                                      .getUpdateActionableInsightPrice(
-                                                          sliderVal,
-                                                          actionableInsight
-                                                              .serviceId,
-                                                          actionableInsight
-                                                              .specialityId,
-                                                          centreId: centreId);
-                                                }
-                                              },
-                                              child: Container(
-                                                  height: AppConfig
-                                                          .verticalBlockSize *
-                                                      8,
-                                                  width: double.infinity,
-                                                  padding: EdgeInsets.symmetric(
-                                                    vertical: AppConfig
-                                                            .verticalBlockSize *
-                                                        1.5,
-                                                  ),
-                                                  child: Text(
-                                                    'Apply here',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize:
-                                                            AppConfig.largeFont,
-                                                        color: PlunesColors
-                                                            .GREENCOLOR),
-                                                  ))),
-                                        ),
-                                      ],
+                                                              .GREENCOLOR),
+                                                    ))),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
 
@@ -2699,25 +2727,30 @@ class CustomWidgets {
                         ),
                         Container(
                           height: AppConfig.verticalBlockSize * 6,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Expanded(
-                                child: FlatButton(
-                                    splashColor:
-                                        Colors.redAccent.withOpacity(.2),
-                                    highlightColor:
-                                        Colors.redAccent.withOpacity(.2),
-                                    focusColor:
-                                        Colors.redAccent.withOpacity(.2),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      return;
-                                    },
-                                    child: Container(
-                                        height: AppConfig.verticalBlockSize * 6,
-                                        width: double.infinity,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(16),
+                                bottomRight: Radius.circular(16)),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Expanded(
+                                  child: FlatButton(
+                                      splashColor:
+                                          Colors.redAccent.withOpacity(.2),
+                                      highlightColor:
+                                          Colors.redAccent.withOpacity(.2),
+                                      focusColor:
+                                          Colors.redAccent.withOpacity(.2),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        return;
+                                      },
+                                      child: Container(
+                                          height:
+                                              AppConfig.verticalBlockSize * 6,
+                                          width: double.infinity,
 //                                              decoration: BoxDecoration(
 //                                                borderRadius: BorderRadius.only(
 //                                                  bottomLeft: Radius.circular(
@@ -2726,49 +2759,53 @@ class CustomWidgets {
 //                                                          4),
 //                                                ),
 //                                              ),
-                                        child: Center(
-                                          child: Text(
-                                            'Cancel',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: AppConfig.mediumFont,
-                                                color: Colors.redAccent),
-                                          ),
-                                        ))),
-                              ),
-                              Container(
-                                height: AppConfig.verticalBlockSize * 6,
-                                color: PlunesColors.GREYCOLOR,
-                                width: 0.5,
-                              ),
-                              Expanded(
-                                child: FlatButton(
-                                    focusColor: PlunesColors.SPARKLINGGREEN
-                                        .withOpacity(.2),
-                                    splashColor: PlunesColors.SPARKLINGGREEN
-                                        .withOpacity(.2),
-                                    highlightColor: PlunesColors.SPARKLINGGREEN
-                                        .withOpacity(.2),
-                                    onPressed: () {
-                                      if (appointmentModel != null &&
-                                          textEditingController.text
-                                              .trim()
-                                              .isNotEmpty) {
-                                        bookingBloc.refundAppointment(
-                                            appointmentModel.bookingId,
-                                            textEditingController.text.trim());
-                                      } else if (textEditingController.text
-                                          .trim()
-                                          .isEmpty) {
-                                        failureMessage =
-                                            PlunesStrings.emptyTextFieldWarning;
-                                        bookingBloc
-                                            .addStateInRefundProvider(null);
-                                      }
-                                    },
-                                    child: Container(
-                                        height: AppConfig.verticalBlockSize * 6,
-                                        width: double.infinity,
+                                          child: Center(
+                                            child: Text(
+                                              'Cancel',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      AppConfig.mediumFont,
+                                                  color: Colors.redAccent),
+                                            ),
+                                          ))),
+                                ),
+                                Container(
+                                  height: AppConfig.verticalBlockSize * 6,
+                                  color: PlunesColors.GREYCOLOR,
+                                  width: 0.5,
+                                ),
+                                Expanded(
+                                  child: FlatButton(
+                                      focusColor: PlunesColors.SPARKLINGGREEN
+                                          .withOpacity(.2),
+                                      splashColor: PlunesColors.SPARKLINGGREEN
+                                          .withOpacity(.2),
+                                      highlightColor: PlunesColors
+                                          .SPARKLINGGREEN
+                                          .withOpacity(.2),
+                                      onPressed: () {
+                                        if (appointmentModel != null &&
+                                            textEditingController.text
+                                                .trim()
+                                                .isNotEmpty) {
+                                          bookingBloc.refundAppointment(
+                                              appointmentModel.bookingId,
+                                              textEditingController.text
+                                                  .trim());
+                                        } else if (textEditingController.text
+                                            .trim()
+                                            .isEmpty) {
+                                          failureMessage = PlunesStrings
+                                              .emptyTextFieldWarning;
+                                          bookingBloc
+                                              .addStateInRefundProvider(null);
+                                        }
+                                      },
+                                      child: Container(
+                                          height:
+                                              AppConfig.verticalBlockSize * 6,
+                                          width: double.infinity,
 //                                              decoration: BoxDecoration(
 //                                                borderRadius: BorderRadius.only(
 //                                                  bottomRight: Radius.circular(
@@ -2778,18 +2815,20 @@ class CustomWidgets {
 //                                                ),
 //                                              ),
 
-                                        child: Center(
-                                          child: Text(
-                                            'Submit',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize: AppConfig.mediumFont,
-                                                color: PlunesColors
-                                                    .SPARKLINGGREEN),
-                                          ),
-                                        ))),
-                              ),
-                            ],
+                                          child: Center(
+                                            child: Text(
+                                              'Submit',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      AppConfig.mediumFont,
+                                                  color: PlunesColors
+                                                      .SPARKLINGGREEN),
+                                            ),
+                                          ))),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
 
@@ -4378,24 +4417,29 @@ class CustomWidgets {
             ),
             Container(
               height: AppConfig.verticalBlockSize * 6,
-              child: FlatButton(
-                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  onPressed: () =>
-                      Navigator.of(globalKey.currentState.context).pop(),
-                  child: Container(
-                      height: AppConfig.verticalBlockSize * 6,
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'OK',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: PlunesColors.SPARKLINGGREEN),
-                        ),
-                      ))),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
+                child: FlatButton(
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    onPressed: () =>
+                        Navigator.of(globalKey.currentState.context).pop(),
+                    child: Container(
+                        height: AppConfig.verticalBlockSize * 6,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'OK',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.SPARKLINGGREEN),
+                          ),
+                        ))),
+              ),
             ),
           ],
         ),
@@ -4449,24 +4493,29 @@ class CustomWidgets {
             ),
             Container(
               height: AppConfig.verticalBlockSize * 6,
-              child: FlatButton(
-                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  onPressed: () =>
-                      Navigator.of(globalKey.currentState.context).pop(),
-                  child: Container(
-                      height: AppConfig.verticalBlockSize * 6,
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'OK',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: PlunesColors.SPARKLINGGREEN),
-                        ),
-                      ))),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
+                child: FlatButton(
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    onPressed: () =>
+                        Navigator.of(globalKey.currentState.context).pop(),
+                    child: Container(
+                        height: AppConfig.verticalBlockSize * 6,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'OK',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.SPARKLINGGREEN),
+                          ),
+                        ))),
+              ),
             ),
           ],
         ),
@@ -4812,27 +4861,32 @@ class CustomWidgets {
                               ),
                               Container(
                                 height: AppConfig.verticalBlockSize * 8,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: FlatButton(
-                                          splashColor:
-                                              Colors.redAccent.withOpacity(.2),
-                                          highlightColor:
-                                              Colors.redAccent.withOpacity(.2),
-                                          focusColor:
-                                              Colors.redAccent.withOpacity(.2),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                            return;
-                                          },
-                                          child: Container(
-                                              height:
-                                                  AppConfig.verticalBlockSize *
-                                                      8,
-                                              width: double.infinity,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(16),
+                                      bottomRight: Radius.circular(16)),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: FlatButton(
+                                            splashColor: Colors.redAccent
+                                                .withOpacity(.2),
+                                            highlightColor: Colors.redAccent
+                                                .withOpacity(.2),
+                                            focusColor: Colors.redAccent
+                                                .withOpacity(.2),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                              return;
+                                            },
+                                            child: Container(
+                                                height: AppConfig
+                                                        .verticalBlockSize *
+                                                    8,
+                                                width: double.infinity,
 //                                              decoration: BoxDecoration(
 //                                                borderRadius: BorderRadius.only(
 //                                                  bottomLeft: Radius.circular(
@@ -4848,55 +4902,56 @@ class CustomWidgets {
 //                                                  horizontal: AppConfig
 //                                                          .horizontalBlockSize *
 //                                                      6),
-                                              child: Center(
-                                                child: Text(
-                                                  'Cancel',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          AppConfig.mediumFont,
-                                                      color: Colors.redAccent),
-                                                ),
-                                              ))),
-                                    ),
-                                    Container(
-                                      height: AppConfig.verticalBlockSize * 8,
-                                      color: PlunesColors.GREYCOLOR,
-                                      width: 0.5,
-                                    ),
-                                    Expanded(
-                                      child: FlatButton(
-                                          focusColor: PlunesColors
-                                              .SPARKLINGGREEN
-                                              .withOpacity(.2),
-                                          splashColor: PlunesColors
-                                              .SPARKLINGGREEN
-                                              .withOpacity(.2),
-                                          highlightColor: PlunesColors
-                                              .SPARKLINGGREEN
-                                              .withOpacity(.2),
-                                          onPressed: () {
-                                            if (_reviewController.text
-                                                .trim()
-                                                .isEmpty) {
-                                              failureCause = PlunesStrings
-                                                  .pleaseFillYourReview;
-                                              bookingBloc
-                                                  .addStateInRateAndReviewProvider(
-                                                      null);
-                                              return;
-                                            }
-                                            bookingBloc.submitRateAndReview(
-                                                rating,
-                                                _reviewController.text.trim(),
-                                                appointmentModel
-                                                    .professionalId);
-                                          },
-                                          child: Container(
-                                              height:
-                                                  AppConfig.verticalBlockSize *
-                                                      8,
-                                              width: double.infinity,
+                                                child: Center(
+                                                  child: Text(
+                                                    'Cancel',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: AppConfig
+                                                            .mediumFont,
+                                                        color:
+                                                            Colors.redAccent),
+                                                  ),
+                                                ))),
+                                      ),
+                                      Container(
+                                        height: AppConfig.verticalBlockSize * 8,
+                                        color: PlunesColors.GREYCOLOR,
+                                        width: 0.5,
+                                      ),
+                                      Expanded(
+                                        child: FlatButton(
+                                            focusColor: PlunesColors
+                                                .SPARKLINGGREEN
+                                                .withOpacity(.2),
+                                            splashColor: PlunesColors
+                                                .SPARKLINGGREEN
+                                                .withOpacity(.2),
+                                            highlightColor: PlunesColors
+                                                .SPARKLINGGREEN
+                                                .withOpacity(.2),
+                                            onPressed: () {
+                                              if (_reviewController.text
+                                                  .trim()
+                                                  .isEmpty) {
+                                                failureCause = PlunesStrings
+                                                    .pleaseFillYourReview;
+                                                bookingBloc
+                                                    .addStateInRateAndReviewProvider(
+                                                        null);
+                                                return;
+                                              }
+                                              bookingBloc.submitRateAndReview(
+                                                  rating,
+                                                  _reviewController.text.trim(),
+                                                  appointmentModel
+                                                      .professionalId);
+                                            },
+                                            child: Container(
+                                                height: AppConfig
+                                                        .verticalBlockSize *
+                                                    8,
+                                                width: double.infinity,
 //                                              decoration: BoxDecoration(
 //                                                borderRadius: BorderRadius.only(
 //                                                  bottomRight: Radius.circular(
@@ -4910,19 +4965,20 @@ class CustomWidgets {
 //                                                        .verticalBlockSize *
 //                                                    1.5,
 //                                              ),
-                                              child: Center(
-                                                child: Text(
-                                                  'Submit',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                      fontSize:
-                                                          AppConfig.mediumFont,
-                                                      color: PlunesColors
-                                                          .SPARKLINGGREEN),
-                                                ),
-                                              ))),
-                                    ),
-                                  ],
+                                                child: Center(
+                                                  child: Text(
+                                                    'Submit',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                        fontSize: AppConfig
+                                                            .mediumFont,
+                                                        color: PlunesColors
+                                                            .SPARKLINGGREEN),
+                                                  ),
+                                                ))),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
 
@@ -5257,28 +5313,33 @@ class CustomWidgets {
                       ),
                       Container(
                         height: AppConfig.verticalBlockSize * 6,
-                        child: FlatButton(
-                            splashColor:
-                                PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                            highlightColor:
-                                PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                            focusColor:
-                                PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                            onPressed: () =>
-                                Navigator.of(globalKey.currentState.context)
-                                    .pop(),
-                            child: Container(
-                                height: AppConfig.verticalBlockSize * 6,
-                                width: double.infinity,
-                                child: Center(
-                                  child: Text(
-                                    'OK',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        color: PlunesColors.SPARKLINGGREEN),
-                                  ),
-                                ))),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(16),
+                              bottomRight: Radius.circular(16)),
+                          child: FlatButton(
+                              splashColor:
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                              highlightColor:
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                              focusColor:
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                              onPressed: () =>
+                                  Navigator.of(globalKey.currentState.context)
+                                      .pop(),
+                              child: Container(
+                                  height: AppConfig.verticalBlockSize * 6,
+                                  width: double.infinity,
+                                  child: Center(
+                                    child: Text(
+                                      'OK',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ),
+                                  ))),
+                        ),
                       ),
 //                      getSingleButtonForPopup(
 //                          buttonBackground: PlunesColors.WHITECOLOR,
@@ -5921,24 +5982,29 @@ class CustomWidgets {
             ),
             Container(
               height: AppConfig.verticalBlockSize * 6,
-              child: FlatButton(
-                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  onPressed: () =>
-                      Navigator.of(globalKey.currentState.context).pop(),
-                  child: Container(
-                      height: AppConfig.verticalBlockSize * 6,
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'OK',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: PlunesColors.SPARKLINGGREEN),
-                        ),
-                      ))),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
+                child: FlatButton(
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    onPressed: () =>
+                        Navigator.of(globalKey.currentState.context).pop(),
+                    child: Container(
+                        height: AppConfig.verticalBlockSize * 6,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'OK',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.SPARKLINGGREEN),
+                          ),
+                        ))),
+              ),
             ),
 //            getSingleButtonForPopup(
 //                textColor: PlunesColors.GREENCOLOR,
