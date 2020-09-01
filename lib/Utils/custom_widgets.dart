@@ -4605,12 +4605,14 @@ class CustomWidgets {
 //                              ),
                             Container(
                               margin: EdgeInsets.symmetric(
-                                  horizontal: AppConfig.horizontalBlockSize * 2,
+                                  horizontal: AppConfig.horizontalBlockSize * 3,
 //                                  right: AppConfig.horizontalBlockSize * 2,
                                   vertical: AppConfig.verticalBlockSize * 3),
                               child: Text(
                                 PlunesStrings.thanksForService,
-                                style: TextStyle(fontSize: 15),
+                                style:
+                                    TextStyle(fontSize: AppConfig.mediumFont),
+                                textAlign: TextAlign.center,
                               ),
                             ),
                             Container(
@@ -4806,12 +4808,13 @@ class CustomWidgets {
                                   children: <Widget>[
                                     Expanded(
                                       child: FlatButton(
-                                          splashColor:
-                                              Colors.redAccent.withOpacity(.2),
-                                          highlightColor:
-                                              Colors.redAccent.withOpacity(.2),
-                                          focusColor:
-                                              Colors.redAccent.withOpacity(.2),
+//                                          splashColor:
+//                                              Colors.grey.withOpacity(.2),
+                                          highlightColor: PlunesColors
+                                              .SPARKLINGGREEN
+                                              .withOpacity(.05),
+//                                          focusColor:
+//                                              Colors.grey.withOpacity(.2),
                                           onPressed: () {
                                             Navigator.pop(context);
                                             return;
@@ -4843,7 +4846,8 @@ class CustomWidgets {
                                                   style: TextStyle(
                                                       fontSize:
                                                           AppConfig.mediumFont,
-                                                      color: Colors.redAccent),
+                                                      color: PlunesColors
+                                                          .SPARKLINGGREEN),
                                                 ),
                                               ))),
                                     ),
@@ -4854,15 +4858,15 @@ class CustomWidgets {
                                     ),
                                     Expanded(
                                       child: FlatButton(
-                                          focusColor: PlunesColors
-                                              .SPARKLINGGREEN
-                                              .withOpacity(.2),
-                                          splashColor: PlunesColors
-                                              .SPARKLINGGREEN
-                                              .withOpacity(.2),
+//                                          focusColor: PlunesColors
+//                                              .SPARKLINGGREEN
+//                                              .withOpacity(.2),
+//                                          splashColor: PlunesColors
+//                                              .SPARKLINGGREEN
+//                                              .withOpacity(.2),
                                           highlightColor: PlunesColors
                                               .SPARKLINGGREEN
-                                              .withOpacity(.2),
+                                              .withOpacity(.05),
                                           onPressed: () {
                                             if (_reviewController.text
                                                 .trim()
