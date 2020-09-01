@@ -4581,16 +4581,12 @@ class CustomWidgets {
                       RequestFailed requestFailed = snapshot.data;
                       failureCause = requestFailed.failureCause;
                     }
-                    return Container(
-                      margin: EdgeInsets.only(
-                        bottom: MediaQuery.of(context).viewInsets.bottom,
-                      ),
-                      child: SingleChildScrollView(
-                          reverse: true,
-                          physics: AlwaysScrollableScrollPhysics(),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
+                    return SingleChildScrollView(
+                        reverse: true,
+                        physics: AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
 //                              Align(
 //                                alignment: Alignment.bottomRight,
 //                                child: InkWell(
@@ -4607,106 +4603,117 @@ class CustomWidgets {
 //                                  ),
 //                                ),
 //                              ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 3),
-                                child: Text(
-                                  PlunesStrings.thanksForService,
-                                  style: TextStyle(fontSize: 15),
-                                ),
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: AppConfig.horizontalBlockSize * 2,
+//                                  right: AppConfig.horizontalBlockSize * 2,
+                                  vertical: AppConfig.verticalBlockSize * 3),
+                              child: Text(
+                                PlunesStrings.thanksForService,
+                                style: TextStyle(fontSize: 15),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 1.5),
-                                child: (appointmentModel.service == null ||
-                                        appointmentModel.service.imageUrl ==
-                                            null ||
-                                        appointmentModel
-                                            .service.imageUrl.isEmpty)
-                                    ? CustomWidgets().getBackImageView(
-                                        appointmentModel.professionalName ??
-                                            _getEmptyString(),
-                                        width: 60,
-                                        height: 60)
-                                    : CircleAvatar(
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                left: AppConfig.horizontalBlockSize * 2,
+                                right: AppConfig.horizontalBlockSize * 2,
+                              ),
+                              child: (appointmentModel.service == null ||
+                                      appointmentModel.service.imageUrl ==
+                                          null ||
+                                      appointmentModel.service.imageUrl.isEmpty)
+                                  ? CustomWidgets().getBackImageView(
+                                      appointmentModel.professionalName ??
+                                          _getEmptyString(),
+                                      width: 60,
+                                      height: 60)
+                                  : CircleAvatar(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            color: Color(0xFFE0E0E0),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(30))),
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                              color: Color(0xFFE0E0E0),
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(30))),
-                                          child: Container(
-                                            margin: EdgeInsets.all(1.5),
-                                            height: 60,
-                                            width: 60,
-                                            child: ClipOval(
-                                                child: CustomWidgets()
-                                                    .getImageFromUrl(
-                                                        appointmentModel
-                                                            .service.imageUrl,
-                                                        boxFit: BoxFit.fill)),
-                                          ),
+                                          margin: EdgeInsets.all(1.5),
+                                          height: 60,
+                                          width: 60,
+                                          child: ClipOval(
+                                              child: CustomWidgets()
+                                                  .getImageFromUrl(
+                                                      appointmentModel
+                                                          .service.imageUrl,
+                                                      boxFit: BoxFit.fill)),
                                         ),
-                                        radius: 30,
                                       ),
+                                      radius: 30,
+                                    ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 2,
+                                  right: AppConfig.horizontalBlockSize * 2,
+                                  top: AppConfig.verticalBlockSize * 0.8),
+                              child: Text(
+                                CommonMethods.getStringInCamelCase(
+                                        appointmentModel?.professionalName) ??
+                                    _getEmptyString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: PlunesColors.BLACKCOLOR),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 0.8),
-                                child: Text(
-                                  CommonMethods.getStringInCamelCase(
-                                          appointmentModel?.professionalName) ??
-                                      _getEmptyString(),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      color: PlunesColors.BLACKCOLOR),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 2,
+                                  right: AppConfig.horizontalBlockSize * 2,
+                                  top: AppConfig.verticalBlockSize * 0.8),
+                              child: Text(
+                                CommonMethods.getStringInCamelCase(
+                                        appointmentModel?.serviceName) ??
+                                    _getEmptyString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 2,
+                                  right: AppConfig.horizontalBlockSize * 2,
+                                  top: AppConfig.verticalBlockSize * 5),
+                              child: Text(
+                                "Rate your experience",
+                                style: TextStyle(
+                                  fontSize: 15,
                                 ),
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 0.8),
-                                child: Text(
-                                  CommonMethods.getStringInCamelCase(
-                                          appointmentModel?.serviceName) ??
-                                      _getEmptyString(),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 16),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 2,
+                                  right: AppConfig.horizontalBlockSize * 2,
+                                  top: AppConfig.verticalBlockSize * 1.5),
+                              child: RatingBar(
+                                onRatingUpdate: (currentRating) {
+                                  rating = currentRating;
+                                },
+                                direction: Axis.horizontal,
+                                itemCount: 5,
+                                allowHalfRating: true,
+                                minRating: 1,
+                                initialRating: rating,
+                                maxRating: 5,
+                                itemSize: AppConfig.horizontalBlockSize * 7,
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: .7),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Colors.green,
                                 ),
+                                unratedColor: PlunesColors.GREYCOLOR,
                               ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 5),
-                                child: Text(
-                                  "Rate your experience",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 1.5),
-                                child: RatingBar(
-                                  onRatingUpdate: (currentRating) {
-                                    rating = currentRating;
-                                  },
-                                  direction: Axis.horizontal,
-                                  itemCount: 5,
-                                  allowHalfRating: true,
-                                  minRating: 1,
-                                  initialRating: rating,
-                                  maxRating: 5,
-                                  itemSize: AppConfig.horizontalBlockSize * 7,
-                                  itemPadding:
-                                      EdgeInsets.symmetric(horizontal: .7),
-                                  itemBuilder: (context, _) => Icon(
-                                    Icons.star,
-                                    color: Colors.green,
-                                  ),
-                                  unratedColor: PlunesColors.GREYCOLOR,
-                                ),
-                              ),
+                            ),
 //                              Align(
 //                                alignment: Alignment.topLeft,
 //                                child: Padding(
@@ -4721,100 +4728,99 @@ class CustomWidgets {
 //                                  ),
 //                                ),
 //                              ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 2,
-                                    bottom: AppConfig.verticalBlockSize * 3,
-                                    left: AppConfig.horizontalBlockSize * 5,
-                                    right: AppConfig.horizontalBlockSize * 5),
-                                child: TextField(
-                                  style: TextStyle(
-                                      color: PlunesColors.BLACKCOLOR,
-                                      fontSize: AppConfig.mediumFont),
-                                  decoration: InputDecoration(
-                                      hintText: "Leave your comments",
-                                      errorText: failureCause ?? "",
-                                      errorMaxLines: 2,
-                                      errorStyle: TextStyle(color: Colors.red),
-                                      focusedBorder: UnderlineInputBorder(
+                            Container(
+                              margin: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 2,
+                                  bottom: AppConfig.verticalBlockSize * 2,
+                                  left: AppConfig.horizontalBlockSize * 5,
+                                  right: AppConfig.horizontalBlockSize * 5),
+                              child: TextField(
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontSize: AppConfig.mediumFont),
+                                decoration: InputDecoration(
+                                    hintText: "Leave your comments",
+                                    errorText: failureCause ?? "",
+                                    errorMaxLines: 2,
+                                    errorStyle: TextStyle(color: Colors.red),
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4)),
+                                      borderSide: BorderSide(
+                                          width: 1, color: Colors.red),
+                                    ),
+                                    disabledBorder: UnderlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4)),
+                                      borderSide: BorderSide(
+                                          width: 1,
+                                          color: PlunesColors.GREENCOLOR),
+                                    ),
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(4)),
+                                      borderSide: BorderSide(
+                                          width: 1, color: Colors.green),
+                                    ),
+                                    border: UnderlineInputBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(4)),
                                         borderSide: BorderSide(
-                                            width: 1, color: Colors.red),
-                                      ),
-                                      disabledBorder: UnderlineInputBorder(
+                                          width: 1,
+                                        )),
+                                    errorBorder: UnderlineInputBorder(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(4)),
+                                        borderSide: BorderSide(
+                                            width: 1, color: Colors.black)),
+                                    focusedErrorBorder: UnderlineInputBorder(
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(4)),
                                         borderSide: BorderSide(
                                             width: 1,
-                                            color: PlunesColors.GREENCOLOR),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(4)),
-                                        borderSide: BorderSide(
-                                            width: 1, color: Colors.green),
-                                      ),
-                                      border: UnderlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                            width: 1,
-                                          )),
-                                      errorBorder: UnderlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1, color: Colors.black)),
-                                      focusedErrorBorder: UnderlineInputBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(4)),
-                                          borderSide: BorderSide(
-                                              width: 1,
-                                              color: PlunesColors.GREENCOLOR)),
-                                      hintStyle: TextStyle(
-                                          color: PlunesColors.GREYCOLOR,
-                                          fontSize: AppConfig.mediumFont)),
-                                  keyboardType: TextInputType.multiline,
-                                  textInputAction: TextInputAction.newline,
-                                  maxLines: 2,
-                                  controller: _reviewController,
-                                  maxLength: 150,
-                                ),
+                                            color: PlunesColors.GREENCOLOR)),
+                                    hintStyle: TextStyle(
+                                        color: PlunesColors.GREYCOLOR,
+                                        fontSize: AppConfig.mediumFont)),
+                                keyboardType: TextInputType.multiline,
+                                textInputAction: TextInputAction.newline,
+                                maxLines: 2,
+                                controller: _reviewController,
+                                maxLength: 150,
                               ),
-                              Container(
-                                height: 0.5,
-                                width: double.infinity,
-                                color: PlunesColors.GREYCOLOR,
-                              ),
-                              Container(
-                                height: AppConfig.verticalBlockSize * 8,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(16),
-                                      bottomRight: Radius.circular(16)),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Expanded(
-                                        child: FlatButton(
-                                            splashColor: Colors.redAccent
-                                                .withOpacity(.2),
-                                            highlightColor: Colors.redAccent
-                                                .withOpacity(.2),
-                                            focusColor: Colors.redAccent
-                                                .withOpacity(.2),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                              return;
-                                            },
-                                            child: Container(
-                                                height: AppConfig
-                                                        .verticalBlockSize *
-                                                    8,
-                                                width: double.infinity,
+                            ),
+                            Container(
+                              height: 0.5,
+                              width: double.infinity,
+                              color: PlunesColors.GREYCOLOR,
+                            ),
+                            Container(
+                              height: AppConfig.verticalBlockSize * 8,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(16),
+                                    bottomRight: Radius.circular(16)),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: FlatButton(
+                                          splashColor:
+                                              Colors.redAccent.withOpacity(.2),
+                                          highlightColor:
+                                              Colors.redAccent.withOpacity(.2),
+                                          focusColor:
+                                              Colors.redAccent.withOpacity(.2),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            return;
+                                          },
+                                          child: Container(
+                                              height:
+                                                  AppConfig.verticalBlockSize *
+                                                      8,
+                                              width: double.infinity,
 //                                              decoration: BoxDecoration(
 //                                                borderRadius: BorderRadius.only(
 //                                                  bottomLeft: Radius.circular(
@@ -4830,56 +4836,55 @@ class CustomWidgets {
 //                                                  horizontal: AppConfig
 //                                                          .horizontalBlockSize *
 //                                                      6),
-                                                child: Center(
-                                                  child: Text(
-                                                    'Cancel',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: AppConfig
-                                                            .mediumFont,
-                                                        color:
-                                                            Colors.redAccent),
-                                                  ),
-                                                ))),
-                                      ),
-                                      Container(
-                                        height: AppConfig.verticalBlockSize * 8,
-                                        color: PlunesColors.GREYCOLOR,
-                                        width: 0.5,
-                                      ),
-                                      Expanded(
-                                        child: FlatButton(
-                                            focusColor: PlunesColors
-                                                .SPARKLINGGREEN
-                                                .withOpacity(.2),
-                                            splashColor: PlunesColors
-                                                .SPARKLINGGREEN
-                                                .withOpacity(.2),
-                                            highlightColor: PlunesColors
-                                                .SPARKLINGGREEN
-                                                .withOpacity(.2),
-                                            onPressed: () {
-                                              if (_reviewController.text
-                                                  .trim()
-                                                  .isEmpty) {
-                                                failureCause = PlunesStrings
-                                                    .pleaseFillYourReview;
-                                                bookingBloc
-                                                    .addStateInRateAndReviewProvider(
-                                                        null);
-                                                return;
-                                              }
-                                              bookingBloc.submitRateAndReview(
-                                                  rating,
-                                                  _reviewController.text.trim(),
-                                                  appointmentModel
-                                                      .professionalId);
-                                            },
-                                            child: Container(
-                                                height: AppConfig
-                                                        .verticalBlockSize *
-                                                    8,
-                                                width: double.infinity,
+                                              child: Center(
+                                                child: Text(
+                                                  'Cancel',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          AppConfig.mediumFont,
+                                                      color: Colors.redAccent),
+                                                ),
+                                              ))),
+                                    ),
+                                    Container(
+                                      height: AppConfig.verticalBlockSize * 8,
+                                      color: PlunesColors.GREYCOLOR,
+                                      width: 0.5,
+                                    ),
+                                    Expanded(
+                                      child: FlatButton(
+                                          focusColor: PlunesColors
+                                              .SPARKLINGGREEN
+                                              .withOpacity(.2),
+                                          splashColor: PlunesColors
+                                              .SPARKLINGGREEN
+                                              .withOpacity(.2),
+                                          highlightColor: PlunesColors
+                                              .SPARKLINGGREEN
+                                              .withOpacity(.2),
+                                          onPressed: () {
+                                            if (_reviewController.text
+                                                .trim()
+                                                .isEmpty) {
+                                              failureCause = PlunesStrings
+                                                  .pleaseFillYourReview;
+                                              bookingBloc
+                                                  .addStateInRateAndReviewProvider(
+                                                      null);
+                                              return;
+                                            }
+                                            bookingBloc.submitRateAndReview(
+                                                rating,
+                                                _reviewController.text.trim(),
+                                                appointmentModel
+                                                    .professionalId);
+                                          },
+                                          child: Container(
+                                              height:
+                                                  AppConfig.verticalBlockSize *
+                                                      8,
+                                              width: double.infinity,
 //                                              decoration: BoxDecoration(
 //                                                borderRadius: BorderRadius.only(
 //                                                  bottomRight: Radius.circular(
@@ -4893,22 +4898,22 @@ class CustomWidgets {
 //                                                        .verticalBlockSize *
 //                                                    1.5,
 //                                              ),
-                                                child: Center(
-                                                  child: Text(
-                                                    'Submit',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        fontSize: AppConfig
-                                                            .mediumFont,
-                                                        color: PlunesColors
-                                                            .SPARKLINGGREEN),
-                                                  ),
-                                                ))),
-                                      ),
-                                    ],
-                                  ),
+                                              child: Center(
+                                                child: Text(
+                                                  'Submit',
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize:
+                                                          AppConfig.mediumFont,
+                                                      color: PlunesColors
+                                                          .SPARKLINGGREEN),
+                                                ),
+                                              ))),
+                                    ),
+                                  ],
                                 ),
                               ),
+                            ),
 
 //                              Container(
 //                                margin: EdgeInsets.only(
@@ -4956,7 +4961,7 @@ class CustomWidgets {
 //                                            fontSize: 14),
 //                                      ),
 //                                    )
-                              //                      Container(
+                            //                      Container(
 //                        height: AppConfig.verticalBlockSize * 20,
 //                        margin: EdgeInsets.only(
 //                            left: AppConfig.horizontalBlockSize * 5,
@@ -4979,9 +4984,8 @@ class CustomWidgets {
 //                              hintText: "", border: InputBorder.none),
 //                        ),
 //                      )
-                            ],
-                          )),
-                    );
+                          ],
+                        ));
                   }),
             ),
           );
