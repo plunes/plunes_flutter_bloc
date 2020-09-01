@@ -216,13 +216,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
         return SwipeActionCell(
             key: ObjectKey(items.posts[index]),
             performsFirstActionWithFullSwipe: true,
+            closeWhenScrolling: true,
             actions: [
               SwipeAction(
-                  title: "remove",
+                  closeOnTap: true,
+                  backgroundRadius: 16,
+                  icon: Icon(
+                    Icons.delete,
+                    color: PlunesColors.WHITECOLOR,
+                  ),
                   onTap: (CompletionHandler handler) async {
                     _removeNotification(items.posts, index);
                   },
-                  color: Colors.redAccent.withOpacity(.5)),
+                  color: PlunesColors.SPARKLINGGREEN.withOpacity(.5)),
             ],
             child: rowLayout(items.posts[index]));
       },

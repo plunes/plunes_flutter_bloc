@@ -59,7 +59,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
     return Container(
       color: (widget.bookingId != null &&
-              widget.bookingId == appointmentModel.bookingId)
+          widget.bookingId == appointmentModel.bookingId)
           ? PlunesColors.LIGHTGREENCOLOR
           : PlunesColors.WHITECOLOR,
       padding: EdgeInsets.symmetric(
@@ -82,7 +82,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             onDoubleTap: () {},
                             child: Text(
                               CommonMethods.getStringInCamelCase(
-                                      appointmentModel?.professionalName) ??
+                                  appointmentModel?.professionalName) ??
                                   PlunesStrings.NA,
                               style: TextStyle(
                                   fontSize: AppConfig.mediumFont,
@@ -121,14 +121,14 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             ),
                             onPressed: () {
                               (appointmentModel?.lat == null ||
-                                      appointmentModel.lat.isEmpty ||
-                                      appointmentModel?.long == null ||
-                                      appointmentModel.long.isEmpty)
+                                  appointmentModel.lat.isEmpty ||
+                                  appointmentModel?.long == null ||
+                                  appointmentModel.long.isEmpty)
                                   ? _showSnackBar(
-                                      PlunesStrings.locationNotAvailable)
+                                  PlunesStrings.locationNotAvailable)
                                   : LauncherUtil.openMap(
-                                      double.tryParse(appointmentModel.lat),
-                                      double.tryParse(appointmentModel.long));
+                                  double.tryParse(appointmentModel.lat),
+                                  double.tryParse(appointmentModel.long));
                             }),
                       ),
                     ),
@@ -196,20 +196,20 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           SizedBox(height: 5),
           _getProfessionalNumber(appointmentModel),
           (appointmentModel.centreNumber != null &&
-                  appointmentModel.centreNumber.isNotEmpty &&
-                  _profNumber != null &&
-                  _profNumber != appointmentModel.centreNumber)
+              appointmentModel.centreNumber.isNotEmpty &&
+              _profNumber != null &&
+              _profNumber != appointmentModel.centreNumber)
               ? SizedBox(height: 5)
               : Container(),
           (appointmentModel.centreNumber != null &&
-                  appointmentModel.centreNumber.isNotEmpty &&
-                  _profNumber != null &&
-                  _profNumber != appointmentModel.centreNumber)
+              appointmentModel.centreNumber.isNotEmpty &&
+              _profNumber != null &&
+              _profNumber != appointmentModel.centreNumber)
               ? _getCentreNumber(appointmentModel)
               : Container(),
           Container(
             margin:
-                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 6),
+            EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 6),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -235,7 +235,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             AppointmentModel.confirmedStatus &&
                         appointmentModel.appointmentTime != null &&
                         DateTime.fromMillisecondsSinceEpoch(
-                                int.parse(appointmentModel.appointmentTime))
+                            int.parse(appointmentModel.appointmentTime))
                             .isBefore(DateTime.now())) {
                       _showSnackBar(PlunesStrings.unableToProcess);
                     }
@@ -243,40 +243,40 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   onDoubleTap: () {},
                 ),
                 (appointmentModel.bookingStatus !=
-                        AppointmentModel.cancelledStatus)
+                    AppointmentModel.cancelledStatus)
                     ? InkWell(
-                        child: Text(PlunesStrings.reschedule,
-                            style: TextStyle(
-                                fontSize: AppConfig.smallFont,
-                                color: Colors.black54)),
-                        onTap: () async {
-                          if (appointmentModel != null &&
-                              appointmentModel.appointmentTime != null &&
-                              DateTime.fromMillisecondsSinceEpoch(int.parse(
-                                      appointmentModel.appointmentTime))
-                                  .isBefore(DateTime.now())) {
-                            _showSnackBar(PlunesStrings.unableToReschedule);
-                            return;
-                          } else if (appointmentModel.bookingStatus ==
-                              AppointmentModel.requestCancellation) {
-                            _showSnackBar(PlunesStrings.cantRescheduleForUser);
-                            return;
-                          }
-                          await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BookingMainScreen(
-                                        appointmentModel:
-                                            widget.appointmentModel,
-                                        profId: appointmentModel
-                                            .service.professionalId,
-                                        timeSlots:
-                                            appointmentModel.service.timeSlots,
-                                      )));
-                          widget.getAppointment();
-                        },
-                        onDoubleTap: () {},
-                      )
+                  child: Text(PlunesStrings.reschedule,
+                      style: TextStyle(
+                          fontSize: AppConfig.smallFont,
+                          color: Colors.black54)),
+                  onTap: () async {
+                    if (appointmentModel != null &&
+                        appointmentModel.appointmentTime != null &&
+                        DateTime.fromMillisecondsSinceEpoch(int.parse(
+                            appointmentModel.appointmentTime))
+                            .isBefore(DateTime.now())) {
+                      _showSnackBar(PlunesStrings.unableToReschedule);
+                      return;
+                    } else if (appointmentModel.bookingStatus ==
+                        AppointmentModel.requestCancellation) {
+                      _showSnackBar(PlunesStrings.cantRescheduleForUser);
+                      return;
+                    }
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BookingMainScreen(
+                              appointmentModel:
+                              widget.appointmentModel,
+                              profId: appointmentModel
+                                  .service.professionalId,
+                              timeSlots:
+                              appointmentModel.service.timeSlots,
+                            )));
+                    widget.getAppointment();
+                  },
+                  onDoubleTap: () {},
+                )
                     : alreadyCancelAppointment(PlunesStrings.reschedule),
                 Container(
                   child: StreamBuilder<Object>(
@@ -303,10 +303,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   builder: (context) {
                                     return CustomWidgets()
                                         .appointmentCancellationPopup(
-                                            req.response ??
-                                                PlunesStrings
-                                                    .ourTeamWillContactYouSoonOnCancel,
-                                            widget.globalKey);
+                                        req.response ??
+                                            PlunesStrings
+                                                .ourTeamWillContactYouSoonOnCancel,
+                                        widget.globalKey);
                                   });
                               widget.getAppointment();
                             });
@@ -332,28 +332,28 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                           }
                         }
                         return (appointmentModel.bookingStatus !=
-                                    AppointmentModel.cancelledStatus ||
-                                appointmentModel.bookingStatus ==
-                                    AppointmentModel.requestCancellation)
+                            AppointmentModel.cancelledStatus ||
+                            appointmentModel.bookingStatus ==
+                                AppointmentModel.requestCancellation)
                             ? InkWell(
-                                onTap: () {
-                                  if ((appointmentModel != null &&
-                                          appointmentModel.appointmentTime !=
-                                              null &&
-                                          DateTime.fromMillisecondsSinceEpoch(
-                                                  int.parse(appointmentModel
-                                                      .appointmentTime))
-                                              .isBefore(DateTime.now())) ||
-                                      (appointmentModel.bookingStatus ==
-                                          AppointmentModel
-                                              .requestCancellation)) {
-                                    Navigator.push(
-                                        widget.globalKey.currentState.context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                HelpScreen()));
-                                    return;
-                                  }
+                          onTap: () {
+                            if ((appointmentModel != null &&
+                                appointmentModel.appointmentTime !=
+                                    null &&
+                                DateTime.fromMillisecondsSinceEpoch(
+                                    int.parse(appointmentModel
+                                        .appointmentTime))
+                                    .isBefore(DateTime.now())) ||
+                                (appointmentModel.bookingStatus ==
+                                    AppointmentModel
+                                        .requestCancellation)) {
+                              Navigator.push(
+                                  widget.globalKey.currentState.context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          HelpScreen()));
+                              return;
+                            }
 //                                  if (appointmentModel.bookingStatus ==
 //                                      AppointmentModel.requestCancellation) {
 //                                    showDialog(
@@ -367,190 +367,201 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 //                                        });
 //                                    return;
 //                                  }
-                                  if (widget.appointmentModel != null) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) => Dialog(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          16.0)),
-                                              elevation: 0.0,
-                                              child: SingleChildScrollView(
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Container(
-                                                      margin: EdgeInsets.symmetric(
-                                                          horizontal: AppConfig
-                                                                  .horizontalBlockSize *
-                                                              5,
-                                                          vertical: AppConfig
-                                                                  .verticalBlockSize *
-                                                              2.5),
-                                                      child: Text(
-                                                        "Cancel the Appointment ?" ??
-                                                            plunesStrings
-                                                                .somethingWentWrong,
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            color: PlunesColors
-                                                                .BLACKCOLOR,
-                                                            fontSize: 16,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .normal),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      height: 0.5,
-                                                      width: double.infinity,
-                                                      color: PlunesColors
-                                                          .GREYCOLOR,
+                            if (widget.appointmentModel != null) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) => Dialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                        BorderRadius.circular(
+                                            16.0)),
+                                    elevation: 0.0,
+                                    child: SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: AppConfig
+                                                    .horizontalBlockSize *
+                                                    5,
+                                                vertical: AppConfig
+                                                    .verticalBlockSize *
+                                                    2.5),
+                                            child: Text(
+                                              "Cancel the Appointment ?" ??
+                                                  plunesStrings
+                                                      .somethingWentWrong,
+                                              textAlign:
+                                              TextAlign.center,
+                                              style: TextStyle(
+                                                  color: PlunesColors
+                                                      .BLACKCOLOR,
+                                                  fontSize: 16,
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .normal),
+                                            ),
+                                          ),
+                                          Container(
+                                            height: 0.5,
+                                            width: double.infinity,
+                                            color: PlunesColors
+                                                .GREYCOLOR,
 //                                                      margin: EdgeInsets.only(
 //                                                          top: AppConfig
 //                                                                  .verticalBlockSize *
 //                                                              1),
-                                                    ),
-                                                    Row(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: <Widget>[
-                                                        Expanded(
-                                                          child: FlatButton(
-                                                              splashColor: Colors
-                                                                  .redAccent
-                                                                  .withOpacity(
-                                                                      .2),
-                                                              highlightColor:
-                                                                  Colors
-                                                                      .redAccent
-                                                                      .withOpacity(
-                                                                          .2),
-                                                              focusColor: Colors
-                                                                  .redAccent
-                                                                  .withOpacity(
-                                                                      .2),
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                                return;
-                                                              },
-                                                              child: Container(
-                                                                  width: double
-                                                                      .infinity,
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      vertical:
-                                                                          AppConfig.verticalBlockSize *
-                                                                              1.5,
-                                                                      horizontal:
-                                                                          AppConfig.horizontalBlockSize *
-                                                                              6),
-                                                                  child: Text(
-                                                                    'No',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            AppConfig
-                                                                                .mediumFont,
-                                                                        color: Colors
-                                                                            .redAccent),
-                                                                  ))),
-                                                        ),
-                                                        Container(
-                                                          height: AppConfig
-                                                                  .verticalBlockSize *
-                                                              5,
-                                                          color: PlunesColors
-                                                              .GREYCOLOR,
-                                                          width: 0.5,
-                                                        ),
-                                                        Expanded(
-                                                          child: FlatButton(
-                                                              focusColor: PlunesColors
-                                                                  .SPARKLINGGREEN
-                                                                  .withOpacity(
-                                                                      .2),
-                                                              splashColor: PlunesColors
-                                                                  .SPARKLINGGREEN
-                                                                  .withOpacity(
-                                                                      .2),
-                                                              highlightColor:
-                                                                  PlunesColors
-                                                                      .SPARKLINGGREEN
-                                                                      .withOpacity(
-                                                                          .2),
-                                                              onPressed: () {
-                                                                _bookingBloc.cancelAppointment(
-                                                                    appointmentModel
-                                                                        .bookingId,
-                                                                    index);
-                                                                Navigator.of(
-                                                                        context)
-                                                                    .pop();
-                                                                return;
-                                                              },
-                                                              child: Container(
-                                                                  width: double
-                                                                      .infinity,
-                                                                  padding: EdgeInsets.symmetric(
-                                                                      vertical:
-                                                                          AppConfig.verticalBlockSize *
-                                                                              1.5,
-                                                                      horizontal:
-                                                                          AppConfig.horizontalBlockSize *
-                                                                              6),
-                                                                  child: Text(
-                                                                    'Yes',
-                                                                    textAlign:
-                                                                        TextAlign
-                                                                            .center,
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            AppConfig
-                                                                                .mediumFont,
-                                                                        color: PlunesColors
-                                                                            .SPARKLINGGREEN),
-                                                                  ))),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
+                                          ),
+                                          Container(
+                                            height: AppConfig
+                                                .verticalBlockSize *
+                                                6,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                              BorderRadius.only(
+                                                  bottomLeft: Radius
+                                                      .circular(
+                                                      16),
+                                                  bottomRight:
+                                                  Radius
+                                                      .circular(
+                                                      16)),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment
+                                                    .center,
+                                                mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .center,
+                                                children: <Widget>[
+                                                  Expanded(
+                                                    child: FlatButton(
+                                                        splashColor: Colors
+                                                            .redAccent
+                                                            .withOpacity(
+                                                            .2),
+                                                        highlightColor: Colors
+                                                            .redAccent
+                                                            .withOpacity(
+                                                            .2),
+                                                        focusColor: Colors
+                                                            .redAccent
+                                                            .withOpacity(
+                                                            .2),
+                                                        onPressed:
+                                                            () {
+                                                          Navigator.pop(
+                                                              context);
+                                                          return;
+                                                        },
+                                                        child: Container(
+                                                            height: AppConfig.verticalBlockSize * 6,
+                                                            width: double.infinity,
+//                                                                        padding: EdgeInsets.symmetric(
+//                                                                            vertical: AppConfig.verticalBlockSize *
+//                                                                                1.5,
+//                                                                            horizontal: AppConfig.horizontalBlockSize *
+//                                                                                6),
+                                                            child: Center(
+                                                              child:
+                                                              Text(
+                                                                'No',
+                                                                textAlign:
+                                                                TextAlign.center,
+                                                                style: TextStyle(
+                                                                    fontSize: AppConfig.mediumFont,
+                                                                    color: Colors.redAccent),
+                                                              ),
+                                                            ))),
+                                                  ),
+                                                  Container(
+                                                    height: AppConfig
+                                                        .verticalBlockSize *
+                                                        6,
+                                                    color: PlunesColors
+                                                        .GREYCOLOR,
+                                                    width: 0.5,
+                                                  ),
+                                                  Expanded(
+                                                    child: FlatButton(
+                                                        focusColor: PlunesColors
+                                                            .SPARKLINGGREEN
+                                                            .withOpacity(
+                                                            .2),
+                                                        splashColor: PlunesColors
+                                                            .SPARKLINGGREEN
+                                                            .withOpacity(
+                                                            .2),
+                                                        highlightColor:
+                                                        PlunesColors
+                                                            .SPARKLINGGREEN
+                                                            .withOpacity(
+                                                            .2),
+                                                        onPressed:
+                                                            () {
+                                                          _bookingBloc.cancelAppointment(
+                                                              appointmentModel
+                                                                  .bookingId,
+                                                              index);
+                                                          Navigator.of(
+                                                              context)
+                                                              .pop();
+                                                          return;
+                                                        },
+                                                        child: Container(
+                                                            height: AppConfig.verticalBlockSize * 6,
+                                                            width: double.infinity,
+//                                                                        padding: EdgeInsets.symmetric(
+//                                                                            vertical: AppConfig.verticalBlockSize *
+//                                                                                1.5,
+//                                                                            horizontal: AppConfig.horizontalBlockSize *
+//                                                                                6),
+                                                            child: Center(
+                                                              child:
+                                                              Text(
+                                                                'Yes',
+                                                                textAlign:
+                                                                TextAlign.center,
+                                                                style: TextStyle(
+                                                                    fontSize: AppConfig.mediumFont,
+                                                                    color: PlunesColors.SPARKLINGGREEN),
+                                                              ),
+                                                            ))),
+                                                  ),
+                                                ],
                                               ),
-                                            ));
-                                  }
-                                  return;
-                                },
-                                onDoubleTap: () {},
-                                child: Text(
-                                    (appointmentModel != null &&
-                                            appointmentModel.appointmentTime !=
-                                                null &&
-                                            DateTime.fromMillisecondsSinceEpoch(
-                                                    int.parse(appointmentModel
-                                                        .appointmentTime))
-                                                .isBefore(DateTime.now()))
-                                        ? plunesStrings.help
-                                        : (appointmentModel.bookingStatus ==
-                                                AppointmentModel
-                                                    .requestCancellation)
-                                            ? plunesStrings.help
-                                            : plunesStrings.cancel,
-                                    style: TextStyle(
-                                        fontSize: AppConfig.smallFont,
-                                        color: Colors.red)),
-                              )
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ));
+                            }
+                            return;
+                          },
+                          onDoubleTap: () {},
+                          child: Text(
+                              (appointmentModel != null &&
+                                  appointmentModel.appointmentTime !=
+                                      null &&
+                                  DateTime.fromMillisecondsSinceEpoch(
+                                      int.parse(appointmentModel
+                                          .appointmentTime))
+                                      .isBefore(DateTime.now()))
+                                  ? plunesStrings.help
+                                  : (appointmentModel.bookingStatus ==
+                                  AppointmentModel
+                                      .requestCancellation)
+                                  ? plunesStrings.help
+                                  : plunesStrings.cancel,
+                              style: TextStyle(
+                                  fontSize: AppConfig.smallFont,
+                                  color: Colors.red)),
+                        )
                             : alreadyCancelAppointment(plunesStrings.help);
                       }),
                 ),
@@ -580,10 +591,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                       children: <Widget>[
                         Text(
                             (appointmentModel.service.price == null ||
-                                    appointmentModel.service.price.isEmpty ||
-                                    appointmentModel.service.price.first ==
-                                        appointmentModel
-                                            ?.service?.newPrice?.first)
+                                appointmentModel.service.price.isEmpty ||
+                                appointmentModel.service.price.first ==
+                                    appointmentModel
+                                        ?.service?.newPrice?.first)
                                 ? ""
                                 : '\u20B9 ${appointmentModel.service?.price?.first?.toStringAsFixed(0)}',
                             style: TextStyle(
@@ -602,13 +613,13 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                       ],
                     ),
                     (appointmentModel.service == null ||
-                            appointmentModel.service.discount == null ||
-                            appointmentModel.service.discount == 0 ||
-                            appointmentModel.service.discount < 0)
+                        appointmentModel.service.discount == null ||
+                        appointmentModel.service.discount == 0 ||
+                        appointmentModel.service.discount < 0)
                         ? Container()
                         : Text(
-                            '${appointmentModel?.service?.discount?.toStringAsFixed(2)}%',
-                            style: TextStyle(color: PlunesColors.GREENCOLOR))
+                        '${appointmentModel?.service?.discount?.toStringAsFixed(2)}%',
+                        style: TextStyle(color: PlunesColors.GREENCOLOR))
                   ],
                 ),
               ],
@@ -619,7 +630,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               if (widget.appointmentModel.isOpened != null &&
                   UserManager().getUserDetails().userType != Constants.user) {
                 widget.appointmentModel.isOpened =
-                    !widget.appointmentModel.isOpened;
+                !widget.appointmentModel.isOpened;
                 _setState();
               }
             },
@@ -636,122 +647,122 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                         fontWeight: FontWeight.w500,
                       )),
                   (widget.appointmentModel.isOpened != null &&
-                          UserManager().getUserDetails().userType !=
-                              Constants.user)
+                      UserManager().getUserDetails().userType !=
+                          Constants.user)
                       ? Icon(widget.appointmentModel.isOpened
-                          ? Icons.keyboard_arrow_up
-                          : Icons.keyboard_arrow_down)
+                      ? Icons.keyboard_arrow_up
+                      : Icons.keyboard_arrow_down)
                       : Container()
                 ],
               ),
             ),
           ),
           (widget.appointmentModel.isOpened != null &&
-                  UserManager().getUserDetails().userType != Constants.user &&
-                  widget.appointmentModel.isOpened)
+              UserManager().getUserDetails().userType != Constants.user &&
+              widget.appointmentModel.isOpened)
               ? _getData(appointmentModel)
               : UserManager().getUserDetails().userType == Constants.user
-                  ? _getData(appointmentModel)
-                  : Container(),
+              ? _getData(appointmentModel)
+              : Container(),
           Container(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: (appointmentModel.bookingStatus != null &&
-                      appointmentModel.bookingStatus ==
-                          AppointmentModel.confirmedStatus)
+                  appointmentModel.bookingStatus ==
+                      AppointmentModel.confirmedStatus)
                   ? MainAxisAlignment.spaceBetween
                   : MainAxisAlignment.end,
               children: <Widget>[
                 (appointmentModel.bookingStatus != null &&
-                        appointmentModel.bookingStatus ==
-                            AppointmentModel.confirmedStatus)
+                    appointmentModel.bookingStatus ==
+                        AppointmentModel.confirmedStatus)
                     ? InkWell(
-                        onTap: () {
-                          if (!_isPaymentCompleted()) {
-                            _showSnackBar(PlunesStrings.pleasePayFull);
-                            return;
+                  onTap: () {
+                    if (!_isPaymentCompleted()) {
+                      _showSnackBar(PlunesStrings.pleasePayFull);
+                      return;
+                    }
+                    _bookingBloc.requestInvoice(
+                        appointmentModel.bookingId, index);
+                  },
+                  onDoubleTap: () {},
+                  child: StreamBuilder<RequestState>(
+                      stream: _bookingBloc.requestInvoiceStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.data != null &&
+                            snapshot.data is RequestInProgress) {
+                          RequestInProgress req = snapshot.data;
+                          if (req.requestCode != null &&
+                              req.requestCode == index) {
+                            return CustomWidgets().getProgressIndicator();
                           }
-                          _bookingBloc.requestInvoice(
-                              appointmentModel.bookingId, index);
-                        },
-                        onDoubleTap: () {},
-                        child: StreamBuilder<RequestState>(
-                            stream: _bookingBloc.requestInvoiceStream,
-                            builder: (context, snapshot) {
-                              if (snapshot.data != null &&
-                                  snapshot.data is RequestInProgress) {
-                                RequestInProgress req = snapshot.data;
-                                if (req.requestCode != null &&
-                                    req.requestCode == index) {
-                                  return CustomWidgets().getProgressIndicator();
-                                }
-                              }
-                              if (snapshot.data != null &&
-                                  snapshot.data is RequestSuccess) {
-                                RequestSuccess req = snapshot.data;
-                                if (req.requestCode != null &&
-                                    req.requestCode == index) {
-                                  Future.delayed(Duration(milliseconds: 20))
-                                      .then((value) async {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return CustomWidgets()
-                                              .requestInvoiceSuccessPopup(
-                                                  PlunesStrings
-                                                      .invoiceSuccessMessage,
-                                                  widget.globalKey);
-                                        });
-//                                    widget.getAppointment();
+                        }
+                        if (snapshot.data != null &&
+                            snapshot.data is RequestSuccess) {
+                          RequestSuccess req = snapshot.data;
+                          if (req.requestCode != null &&
+                              req.requestCode == index) {
+                            Future.delayed(Duration(milliseconds: 20))
+                                .then((value) async {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CustomWidgets()
+                                        .requestInvoiceSuccessPopup(
+                                        PlunesStrings
+                                            .invoiceSuccessMessage,
+                                        widget.globalKey);
                                   });
-                                  _bookingBloc
-                                      .addStateInRequestInvoiceProvider(null);
-                                }
-                              }
-                              if (snapshot.data != null &&
-                                  snapshot.data is RequestFailed) {
-                                RequestFailed requestFailed = snapshot.data;
-                                if (requestFailed.requestCode != null &&
-                                    requestFailed.requestCode == index) {
-                                  Future.delayed(Duration(milliseconds: 20))
-                                      .then((value) async {
-                                    _showSnackBar(requestFailed.failureCause ??
-                                        PlunesStrings.unableToGenerateInvoice);
+//                                    widget.getAppointment();
+                            });
+                            _bookingBloc
+                                .addStateInRequestInvoiceProvider(null);
+                          }
+                        }
+                        if (snapshot.data != null &&
+                            snapshot.data is RequestFailed) {
+                          RequestFailed requestFailed = snapshot.data;
+                          if (requestFailed.requestCode != null &&
+                              requestFailed.requestCode == index) {
+                            Future.delayed(Duration(milliseconds: 20))
+                                .then((value) async {
+                              _showSnackBar(requestFailed.failureCause ??
+                                  PlunesStrings.unableToGenerateInvoice);
 //                                    widget.showInSnackBar(
 //                                        requestFailed.failureCause ??
 //                                            PlunesStrings
 //                                                .unableToGenerateInvoice,
 //                                        PlunesColors.BLACKCOLOR,
 //                                        widget.globalKey);
-                                  });
-                                  _bookingBloc
-                                      .addStateInRequestInvoiceProvider(null);
-                                }
-                              }
-                              return Text(PlunesStrings.requestInvoice,
-                                  style: TextStyle(
-                                    fontSize: AppConfig.smallFont,
-                                    color: Colors.black54,
+                            });
+                            _bookingBloc
+                                .addStateInRequestInvoiceProvider(null);
+                          }
+                        }
+                        return Text(PlunesStrings.requestInvoice,
+                            style: TextStyle(
+                              fontSize: AppConfig.smallFont,
+                              color: Colors.black54,
 //                                      decoration: TextDecoration.underline
-                                  ));
-                            }),
-                      )
+                            ));
+                      }),
+                )
                     : Container(),
                 (appointmentModel.bookingStatus != null &&
-                        appointmentModel.bookingStatus ==
-                            AppointmentModel.confirmedStatus &&
-                        _isPaymentCompleted())
+                    appointmentModel.bookingStatus ==
+                        AppointmentModel.confirmedStatus &&
+                    _isPaymentCompleted())
                     ? Expanded(child: Container())
                     : Container(),
                 (appointmentModel.paymentStatus != null &&
-                        appointmentModel.paymentStatus.isNotEmpty &&
-                        !(appointmentModel.paymentStatus.first.status))
+                    appointmentModel.paymentStatus.isNotEmpty &&
+                    !(appointmentModel.paymentStatus.first.status))
                     ? Container()
                     : (appointmentModel.refundStatus != null &&
-                            appointmentModel.refundStatus ==
-                                AppointmentModel.notRequested)
-                        ? InkWell(
-                            onTap: () {
+                    appointmentModel.refundStatus ==
+                        AppointmentModel.notRequested)
+                    ? InkWell(
+                  onTap: () {
 //                          if (appointmentModel != null &&
 //                              appointmentModel.appointmentTime != null &&
 //                              DateTime.fromMillisecondsSinceEpoch(int.parse(
@@ -760,33 +771,33 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 //                            _showSnackBar(PlunesStrings.unableToRefund);
 //                            return;
 //                          }
-                              showDialog(
-                                      context: context,
-                                      builder: (context) => CustomWidgets()
-                                          .refundPopup(
-                                              _bookingBloc, appointmentModel))
-                                  .then((value) {
-                                _bookingBloc.addStateInRefundProvider(null);
-                                if (widget.getAppointment != null) {
-                                  widget.getAppointment();
-                                }
-                              });
-                            },
-                            onDoubleTap: () {},
-                            child: Text(
-                              PlunesStrings.refund,
-                              style: TextStyle(
-                                fontSize: AppConfig.smallFont,
-                                color: Colors.black54,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            'Refund ${appointmentModel.refundStatus}',
-                            style: TextStyle(
-                                fontSize: AppConfig.smallFont,
-                                color: PlunesColors.GREENCOLOR),
-                          )
+                    showDialog(
+                        context: context,
+                        builder: (context) => CustomWidgets()
+                            .refundPopup(
+                            _bookingBloc, appointmentModel))
+                        .then((value) {
+                      _bookingBloc.addStateInRefundProvider(null);
+                      if (widget.getAppointment != null) {
+                        widget.getAppointment();
+                      }
+                    });
+                  },
+                  onDoubleTap: () {},
+                  child: Text(
+                    PlunesStrings.refund,
+                    style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                      color: Colors.black54,
+                    ),
+                  ),
+                )
+                    : Text(
+                  'Refund ${appointmentModel.refundStatus}',
+                  style: TextStyle(
+                      fontSize: AppConfig.smallFont,
+                      color: PlunesColors.GREENCOLOR),
+                )
               ],
             ),
           ),
@@ -853,8 +864,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
     if (appointmentModel.paymentStatus != null &&
         appointmentModel.paymentStatus.isNotEmpty) {
       for (int index = 0;
-          index < appointmentModel.paymentStatus.length;
-          index++) {
+      index < appointmentModel.paymentStatus.length;
+      index++) {
         if (appointmentModel.paymentStatus[index].status != null &&
             appointmentModel.paymentStatus[index].status) {
           isPaymentCompleted = true;
@@ -874,52 +885,52 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           ),
           SizedBox(height: AppConfig.verticalBlockSize * 3),
           (appointmentModel.bookingStatus != null &&
-                  appointmentModel.bookingStatus ==
-                      AppointmentModel.cancelledStatus)
+              appointmentModel.bookingStatus ==
+                  AppointmentModel.cancelledStatus)
               ? Text(AppointmentModel.cancelledStatus)
               : isPaymentCompleted
-                  ? Text(PlunesStrings.paymentDone)
-                  : RichText(
-                      text: TextSpan(
-                          text: '${PlunesStrings.pay}',
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: Colors.black),
-                          children: appointmentModel.paymentStatus
-                                  .where((element) => !(element.status))
-                                  .map((paymentObj) {
-                                TapGestureRecognizer tapRecognizer =
-                                    TapGestureRecognizer()
-                                      ..onTap =
-                                          () => _openPaymentOption(paymentObj);
-                                return TextSpan(
-                                    text:
-                                        '      \u20B9${paymentObj.amount ?? 0}',
-                                    style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        color: PlunesColors.GREENCOLOR,
-                                        decoration: TextDecoration.none),
-                                    recognizer: tapRecognizer);
-                              }).toList() ??
-                              []),
-                    ),
+              ? Text(PlunesStrings.paymentDone)
+              : RichText(
+            text: TextSpan(
+                text: '${PlunesStrings.pay}',
+                style: TextStyle(
+                    fontSize: AppConfig.mediumFont,
+                    color: Colors.black),
+                children: appointmentModel.paymentStatus
+                    .where((element) => !(element.status))
+                    .map((paymentObj) {
+                  TapGestureRecognizer tapRecognizer =
+                  TapGestureRecognizer()
+                    ..onTap =
+                        () => _openPaymentOption(paymentObj);
+                  return TextSpan(
+                      text:
+                      '      \u20B9${paymentObj.amount ?? 0}',
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.GREENCOLOR,
+                          decoration: TextDecoration.none),
+                      recognizer: tapRecognizer);
+                }).toList() ??
+                    []),
+          ),
           (appointmentModel.service == null ||
-                  appointmentModel.service.discount == null ||
-                  appointmentModel.service.discount == 0 ||
-                  appointmentModel.service.discount < 0)
+              appointmentModel.service.discount == null ||
+              appointmentModel.service.discount == 0 ||
+              appointmentModel.service.discount < 0)
               ? Container()
               : Container(
-                  margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 3,
-                      horizontal: AppConfig.horizontalBlockSize * 3),
-                  child: Text(
-                      'Please make sure that you pay through app for ${appointmentModel?.service?.discount?.toStringAsFixed(2) ?? 0}% discount to be valid',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: AppConfig.verySmallFont,
-                        color: Colors.black87,
-                      )),
-                ),
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 3,
+                horizontal: AppConfig.horizontalBlockSize * 3),
+            child: Text(
+                'Please make sure that you pay through app for ${appointmentModel?.service?.discount?.toStringAsFixed(2) ?? 0}% discount to be valid',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: AppConfig.verySmallFont,
+                  color: Colors.black87,
+                )),
+          ),
         ],
       ),
     );
@@ -949,25 +960,25 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 
   _openPaymentOption(PaymentStatus paymentObj) async {
     var result = await _bookingBloc.payInstallment(BookingInstallment(
-            bookingId: widget.appointmentModel.bookingId,
-            creditsUsed: true,
-            paymentPercent: paymentObj.title.replaceAll("%", ""))
+        bookingId: widget.appointmentModel.bookingId,
+        creditsUsed: true,
+        paymentPercent: paymentObj.title.replaceAll("%", ""))
         .toJson());
     if (result is RequestSuccess) {
       InitPaymentResponse _initPaymentResponse = result.response;
       if (_initPaymentResponse.success) {
         if (_initPaymentResponse.status.contains("Confirmed")) {
           showDialog(
-                  context: context,
-                  builder: (BuildContext context) => PaymentSuccess(
-                      referenceID: _initPaymentResponse.referenceId))
+              context: context,
+              builder: (BuildContext context) => PaymentSuccess(
+                  referenceID: _initPaymentResponse.referenceId))
               .then((value) => widget.getAppointment());
         } else {
           Navigator.of(context)
               .push(PageRouteBuilder(
-                  opaque: false,
-                  pageBuilder: (BuildContext context, _, __) =>
-                      PaymentWebView(id: widget.appointmentModel.bookingId)))
+              opaque: false,
+              pageBuilder: (BuildContext context, _, __) =>
+                  PaymentWebView(id: widget.appointmentModel.bookingId)))
               .then((val) {
             if (val == null) {
               _bookingBloc.cancelPayment(widget.appointmentModel.bookingId);
@@ -975,12 +986,12 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
             }
             if (val.toString().contains("success")) {
               showDialog(
-                      context: context,
-                      builder: (
-                        BuildContext context,
+                  context: context,
+                  builder: (
+                      BuildContext context,
                       ) =>
-                          PaymentSuccess(
-                              referenceID: _initPaymentResponse.referenceId))
+                      PaymentSuccess(
+                          referenceID: _initPaymentResponse.referenceId))
                   .then((value) => widget.getAppointment());
             } else if (val.toString().contains("fail")) {
               _showSnackBar("Payment Failed");
@@ -1033,8 +1044,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
     if (widget.appointmentModel.paymentStatus != null &&
         widget.appointmentModel.paymentStatus.isNotEmpty) {
       for (int index = 0;
-          index < widget.appointmentModel.paymentStatus.length;
-          index++) {
+      index < widget.appointmentModel.paymentStatus.length;
+      index++) {
         if (widget.appointmentModel.paymentStatus[index].status != null &&
             widget.appointmentModel.paymentStatus[index].status) {
           isPaymentCompleted = true;
@@ -1049,16 +1060,16 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
 
   Widget _getProfessionalNumber(AppointmentModel appointmentModel) {
     _profNumber = (appointmentModel.isCentre != null &&
-            appointmentModel.isCentre &&
-            appointmentModel.adminHosNumber != null &&
-            appointmentModel.adminHosNumber.isNotEmpty)
+        appointmentModel.isCentre &&
+        appointmentModel.adminHosNumber != null &&
+        appointmentModel.adminHosNumber.isNotEmpty)
         ? appointmentModel.adminHosNumber
         : (appointmentModel.isCentre != null &&
-                appointmentModel.isCentre &&
-                (appointmentModel.adminHosNumber == null ||
-                    appointmentModel.alternateNumber.isNotEmpty))
-            ? ""
-            : appointmentModel.professionalMobileNumber ?? PlunesStrings.NA;
+        appointmentModel.isCentre &&
+        (appointmentModel.adminHosNumber == null ||
+            appointmentModel.alternateNumber.isNotEmpty))
+        ? ""
+        : appointmentModel.professionalMobileNumber ?? PlunesStrings.NA;
     String numb = "";
     if (_profNumber != null && _profNumber.isNotEmpty) {
       if (widget.appointmentModel != null &&
@@ -1111,18 +1122,18 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   decorationColor: PlunesColors.BLACKCOLOR),
             ),
             (appointmentModel.centreNumber != null &&
-                    appointmentModel.centreNumber.isNotEmpty &&
-                    _profNumber != null &&
-                    _profNumber != appointmentModel.centreNumber)
+                appointmentModel.centreNumber.isNotEmpty &&
+                _profNumber != null &&
+                _profNumber != appointmentModel.centreNumber)
                 ? Text(
-                    numb,
-                    style: TextStyle(
-                        fontSize: AppConfig.smallFont,
-                        fontWeight: FontWeight.w500,
-                        decorationStyle: TextDecorationStyle.solid,
-                        decorationThickness: 2.0,
-                        decorationColor: PlunesColors.BLACKCOLOR),
-                  )
+              numb,
+              style: TextStyle(
+                  fontSize: AppConfig.smallFont,
+                  fontWeight: FontWeight.w500,
+                  decorationStyle: TextDecorationStyle.solid,
+                  decorationThickness: 2.0,
+                  decorationColor: PlunesColors.BLACKCOLOR),
+            )
                 : Container(),
           ],
         ),

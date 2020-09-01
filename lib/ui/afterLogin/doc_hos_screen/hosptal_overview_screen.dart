@@ -317,8 +317,7 @@ class _HospitalOverviewScreenState
                                                       _openRealTimeInsightPriceUpdateWidget(
                                                           _realTimeInsightsResponse
                                                               .data[itemIndex]),
-                                                  highlightColor: PlunesColors
-                                                      .LIGHTGREENCOLOR,
+                                                  highlightColor: Colors.white,
                                                   child: Container(
                                                     padding: EdgeInsets.only(
                                                         left: 1.0,
@@ -1227,7 +1226,7 @@ class FlatButtonLinks extends StatelessWidget {
       margin: EdgeInsets.only(left: leftMargin),
       child: InkWell(
         onTap: () => onTap(),
-        highlightColor: PlunesColors.LIGHTGREENCOLOR,
+        highlightColor: Colors.white,
         onDoubleTap: () {},
         child: Padding(
             padding: EdgeInsets.only(top: 15, bottom: 15, right: 10),
