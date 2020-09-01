@@ -4583,9 +4583,8 @@ class CustomWidgets {
                     }
                     return Container(
                       margin: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom,
-                          left: AppConfig.horizontalBlockSize * 2,
-                          right: AppConfig.horizontalBlockSize * 2),
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                      ),
                       child: SingleChildScrollView(
                           reverse: true,
                           physics: AlwaysScrollableScrollPhysics(),
