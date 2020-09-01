@@ -597,23 +597,28 @@ class CustomWidgets {
       ),
       Container(
         height: AppConfig.verticalBlockSize * 6,
-        child: FlatButton(
-            splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-            highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-            focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-            onPressed: () => Navigator.of(context).pop(),
-            child: Container(
-                height: AppConfig.verticalBlockSize * 6,
-                width: double.infinity,
-                child: Center(
-                  child: Text(
-                    text,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontSize: AppConfig.mediumFont,
-                        color: PlunesColors.SPARKLINGGREEN),
-                  ),
-                ))),
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(16),
+              bottomRight: Radius.circular(16)),
+          child: FlatButton(
+              splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              onPressed: () => Navigator.of(context).pop(),
+              child: Container(
+                  height: AppConfig.verticalBlockSize * 6,
+                  width: double.infinity,
+                  child: Center(
+                    child: Text(
+                      text,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.SPARKLINGGREEN),
+                    ),
+                  ))),
+        ),
       ),
     ]);
   }
@@ -4302,24 +4307,29 @@ class CustomWidgets {
             ),
             Container(
               height: AppConfig.verticalBlockSize * 6,
-              child: FlatButton(
-                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                  onPressed: () =>
-                      Navigator.of(globalKey.currentState.context).pop(),
-                  child: Container(
-                      height: AppConfig.verticalBlockSize * 6,
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          'OK',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: PlunesColors.SPARKLINGGREEN),
-                        ),
-                      ))),
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
+                child: FlatButton(
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    onPressed: () =>
+                        Navigator.of(globalKey.currentState.context).pop(),
+                    child: Container(
+                        height: AppConfig.verticalBlockSize * 6,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'OK',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.SPARKLINGGREEN),
+                          ),
+                        ))),
+              ),
             ),
           ],
         ),
