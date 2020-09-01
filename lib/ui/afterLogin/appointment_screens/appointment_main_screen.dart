@@ -276,6 +276,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
             _bookingBloc,
             scaffoldKey,
             () => _getAppointmentDetails(),
+            _context,
             bookingId: _isDisplay ? null : widget.bookingId,
           ),
         );
@@ -298,6 +299,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
             _bookingBloc,
             scaffoldKey,
             () => _getAppointmentDetails(),
+            _context,
             bookingId: _isDisplay ? null : widget.bookingId,
           ),
         );

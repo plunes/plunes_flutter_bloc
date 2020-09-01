@@ -289,7 +289,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
               )).then((value) {
         if (value != null && value.toString().trim().isNotEmpty) {
           try {
-            widget.showInSnackBar(value, PlunesColors.BLACKCOLOR, _scaffoldKey);
+            _showMessage(value);
             _getPlockrData();
           } catch (e) {
             AppLog.printError("PlockrMainScreen Error ${e.toString()}");
@@ -380,8 +380,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
 
   void deleteReport() async {
     if (_selectedReportId == null || _selectedReportId.isEmpty) {
-      widget.showInSnackBar(
-          PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showMessage(PlunesStrings.dataNotFound);
       return;
     }
     _isDeleting = true;
@@ -399,19 +398,16 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
           _searchedList.contains(UploadedReports(sId: _selectedReportId))) {
         _searchedList.remove(UploadedReports(sId: _selectedReportId));
       }
-      widget.showInSnackBar(PlunesStrings.deleteSuccessfully,
-          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showMessage(PlunesStrings.deleteSuccessfully);
     } else if (result is RequestFailed) {
-      widget.showInSnackBar(
-          PlunesStrings.unableToDelete, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showMessage(PlunesStrings.unableToDelete);
     }
     _setState();
   }
 
   void _getShareableLink(String sId, String fileType) async {
     if (sId == null || sId.isEmpty) {
-      widget.showInSnackBar(
-          PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showMessage(PlunesStrings.dataNotFound);
       return;
     }
     if (_isSharing) {
@@ -436,12 +432,21 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
               .share("Report url :\n ${shareableReportModel.link.reportUrl}");
         }
       } else {
-        widget.showInSnackBar(
-            PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
+        _showMessage(PlunesStrings.dataNotFound);
       }
     } else if (result is RequestFailed) {
-      widget.showInSnackBar(
-          PlunesStrings.dataNotFound, PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showMessage(PlunesStrings.dataNotFound);
+    }
+  }
+
+  _showMessage(String message) {
+    if (mounted) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets()
+                .getInformativePopup(message: message, globalKey: _scaffoldKey);
+          });
     }
   }
 
@@ -532,12 +537,6 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
                       ),
                     ),
                   ),
-//                index != uploadedReports.length ?? 0
-//                    ? Container(
-//                        height: 0.3,
-//                        color: Colors.grey,
-//                        margin: EdgeInsets.only(top: 20, bottom: 20))
-//                    : Container(margin: EdgeInsets.only(bottom: 20))
                 ],
               ),
             ),
