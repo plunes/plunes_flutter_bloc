@@ -4068,7 +4068,7 @@ class CustomWidgets {
                           children: <Widget>[
                             Container(
                               margin: EdgeInsets.symmetric(
-                                  horizontal: AppConfig.horizontalBlockSize * 3,
+                                  horizontal: AppConfig.horizontalBlockSize * 2,
                                   vertical: AppConfig.verticalBlockSize * 3),
                               child: Text(
                                 PlunesStrings.thanksForService,

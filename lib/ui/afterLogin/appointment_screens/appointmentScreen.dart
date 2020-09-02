@@ -103,6 +103,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   color: Colors.black54),
                             ),
                           ),
+                          SizedBox(height: AppConfig.verticalBlockSize * 1.5),
+                          _getProfessionalNumber(appointmentModel),
+                          (appointmentModel.centreNumber != null &&
+                                  appointmentModel.centreNumber.isNotEmpty &&
+                                  _profNumber != null &&
+                                  _profNumber != appointmentModel.centreNumber)
+                              ? SizedBox(
+                                  height: AppConfig.verticalBlockSize * 1.5)
+                              : Container(),
                         ],
                       ),
                     ),
@@ -194,14 +203,14 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   ),
                 ]),
           ),
-          SizedBox(height: 5),
-          _getProfessionalNumber(appointmentModel),
-          (appointmentModel.centreNumber != null &&
-                  appointmentModel.centreNumber.isNotEmpty &&
-                  _profNumber != null &&
-                  _profNumber != appointmentModel.centreNumber)
-              ? SizedBox(height: 5)
-              : Container(),
+//          SizedBox(height: 5),
+//          _getProfessionalNumber(appointmentModel),
+//          (appointmentModel.centreNumber != null &&
+//                  appointmentModel.centreNumber.isNotEmpty &&
+//                  _profNumber != null &&
+//                  _profNumber != appointmentModel.centreNumber)
+//              ? SizedBox(height: 5)
+//              : Container(),
           (appointmentModel.centreNumber != null &&
                   appointmentModel.centreNumber.isNotEmpty &&
                   _profNumber != null &&
