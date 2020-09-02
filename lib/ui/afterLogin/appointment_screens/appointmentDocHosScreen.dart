@@ -78,7 +78,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                     PlunesStrings.NA,
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
-                                    fontWeight: FontWeight.w600,
+//                                    fontWeight: FontWeight.w600,
                                     color: PlunesColors.BLACKCOLOR),
                                 children: (appointmentModel.centerLocation !=
                                             null &&

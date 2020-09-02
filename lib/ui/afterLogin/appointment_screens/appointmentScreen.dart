@@ -86,8 +86,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                       appointmentModel?.professionalName) ??
                                   PlunesStrings.NA,
                               style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  fontWeight: FontWeight.w600),
+                                fontSize: AppConfig.mediumFont,
+//                                  fontWeight: FontWeight.w600
+                              ),
                             ),
                           ),
                           SizedBox(height: 5),
