@@ -119,10 +119,6 @@ class AppointmentModel {
       this.adminHosNumber});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
-    print("json['professionalName'] ${json['professionalName']}");
-    print("json['centerMobileNumber'] ${json['centerMobileNumber']}");
-    print("json['adminMobileNumber'] ${json['adminMobileNumber']}");
-
     professionalId = json['professionalId'];
     solutionServiceId = json['solutionServiceId'];
     serviceId = json['serviceId'];
