@@ -298,16 +298,17 @@ class _AddBankDetailsState extends BaseState<AddBankDetails> {
       title: new Text('Success'),
       content: new Text('Successfully Saved..'),
       actions: <Widget>[
-        new FlatButton(
-          onPressed: () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-          },
-          child: new Text(
-            'OK',
-            style: TextStyle(color: Color(0xff01d35a)),
-          ),
-        ),
+        CustomWidgets().getSingleCommonButton(context, "Ok")
+//        new FlatButton(
+//          onPressed: () {
+//            Navigator.pop(context);
+//            Navigator.pop(context);
+//          },
+//          child: new Text(
+//            'OK',
+//            style: TextStyle(color: Color(0xff01d35a)),
+//          ),
+//        ),
       ],
     );
   }

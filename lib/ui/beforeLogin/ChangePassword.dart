@@ -265,20 +265,24 @@ class _ChangePasswordState extends State<ChangePassword>
     if (widget.from != plunesStrings.createPassword &&
         _isValidOldPassword &&
         oldPasswordController.text.isEmpty)
-      widget.showInSnackBar(plunesStrings.emptyOldPasswordError,
-          PlunesColors.BLACKCOLOR, _scaffoldKey);
+//      widget.showInSnackBar(plunesStrings.emptyOldPasswordError,
+//          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showSnackBar(plunesStrings.emptyOldPasswordError);
     else if (_isValidPassword && passwordController.text.isEmpty)
-      widget.showInSnackBar(plunesStrings.emptyNewPasswordError,
-          PlunesColors.BLACKCOLOR, _scaffoldKey);
+//      widget.showInSnackBar(plunesStrings.emptyNewPasswordError,
+//          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showSnackBar(plunesStrings.emptyNewPasswordError);
     else if (_isValidPassword &&
         _isValidNewPassword &&
         newPasswordController.text.isEmpty)
-      widget.showInSnackBar(plunesStrings.emptyConfirmPasswordError,
-          PlunesColors.BLACKCOLOR, _scaffoldKey);
+//      widget.showInSnackBar(plunesStrings.emptyConfirmPasswordError,
+//          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showSnackBar(plunesStrings.emptyConfirmPasswordError);
     else if (_isValidOldPassword && _isValidPassword && _isValidNewPassword) {
       if (newPasswordController.text != passwordController.text)
-        widget.showInSnackBar(plunesStrings.passwordMismatchError,
-            PlunesColors.BLACKCOLOR, _scaffoldKey);
+//        widget.showInSnackBar(plunesStrings.passwordMismatchError,
+//            PlunesColors.BLACKCOLOR, _scaffoldKey);
+        _showSnackBar(plunesStrings.passwordMismatchError);
       else {
         progress = true;
         _setState();
@@ -290,6 +294,15 @@ class _ChangePasswordState extends State<ChangePassword>
         }
       }
     }
+  }
+
+  _showSnackBar(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: _scaffoldKey, message: message);
+        });
   }
 
   Future delay(RequestState result) async {
