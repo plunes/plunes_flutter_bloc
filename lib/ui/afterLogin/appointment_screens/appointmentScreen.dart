@@ -86,8 +86,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                       appointmentModel?.professionalName) ??
                                   PlunesStrings.NA,
                               style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  fontWeight: FontWeight.w600),
+                                fontSize: AppConfig.mediumFont,
+//                                  fontWeight: FontWeight.w600
+                              ),
                             ),
                           ),
                           SizedBox(height: 5),
@@ -103,6 +104,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   color: Colors.black54),
                             ),
                           ),
+                          SizedBox(height: AppConfig.verticalBlockSize * 1.5),
+                          _getProfessionalNumber(appointmentModel),
+                          (appointmentModel.centreNumber != null &&
+                                  appointmentModel.centreNumber.isNotEmpty &&
+                                  _profNumber != null &&
+                                  _profNumber != appointmentModel.centreNumber)
+                              ? SizedBox(
+                                  height: AppConfig.verticalBlockSize * 1.5)
+                              : Container(),
                         ],
                       ),
                     ),
@@ -194,14 +204,14 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   ),
                 ]),
           ),
-          SizedBox(height: 5),
-          _getProfessionalNumber(appointmentModel),
-          (appointmentModel.centreNumber != null &&
-                  appointmentModel.centreNumber.isNotEmpty &&
-                  _profNumber != null &&
-                  _profNumber != appointmentModel.centreNumber)
-              ? SizedBox(height: 5)
-              : Container(),
+//          SizedBox(height: 5),
+//          _getProfessionalNumber(appointmentModel),
+//          (appointmentModel.centreNumber != null &&
+//                  appointmentModel.centreNumber.isNotEmpty &&
+//                  _profNumber != null &&
+//                  _profNumber != appointmentModel.centreNumber)
+//              ? SizedBox(height: 5)
+//              : Container(),
           (appointmentModel.centreNumber != null &&
                   appointmentModel.centreNumber.isNotEmpty &&
                   _profNumber != null &&
@@ -441,18 +451,29 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                                           children: <Widget>[
                                                             Expanded(
                                                               child: FlatButton(
-                                                                  splashColor: Colors
-                                                                      .redAccent
+                                                                  highlightColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  hoverColor: Colors
+                                                                      .transparent,
+                                                                  splashColor: PlunesColors
+                                                                      .SPARKLINGGREEN
                                                                       .withOpacity(
-                                                                          .2),
-                                                                  highlightColor: Colors
-                                                                      .redAccent
-                                                                      .withOpacity(
-                                                                          .2),
+                                                                          .1),
                                                                   focusColor: Colors
-                                                                      .redAccent
-                                                                      .withOpacity(
-                                                                          .2),
+                                                                      .transparent,
+//                                                                  splashColor: Colors
+//                                                                      .redAccent
+//                                                                      .withOpacity(
+//                                                                          .2),
+//                                                                  highlightColor: Colors
+//                                                                      .redAccent
+//                                                                      .withOpacity(
+//                                                                          .2),
+//                                                                  focusColor: Colors
+//                                                                      .redAccent
+//                                                                      .withOpacity(
+//                                                                          .2),
                                                                   onPressed:
                                                                       () {
                                                                     Navigator.pop(
@@ -475,7 +496,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                                                               TextAlign.center,
                                                                           style: TextStyle(
                                                                               fontSize: AppConfig.mediumFont,
-                                                                              color: Colors.redAccent),
+                                                                              color: PlunesColors.SPARKLINGGREEN),
                                                                         ),
                                                                       ))),
                                                             ),
@@ -489,19 +510,30 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                                             ),
                                                             Expanded(
                                                               child: FlatButton(
-                                                                  focusColor: PlunesColors
-                                                                      .SPARKLINGGREEN
-                                                                      .withOpacity(
-                                                                          .2),
+                                                                  highlightColor:
+                                                                      Colors
+                                                                          .transparent,
+                                                                  hoverColor: Colors
+                                                                      .transparent,
                                                                   splashColor: PlunesColors
                                                                       .SPARKLINGGREEN
                                                                       .withOpacity(
-                                                                          .2),
-                                                                  highlightColor:
-                                                                      PlunesColors
-                                                                          .SPARKLINGGREEN
-                                                                          .withOpacity(
-                                                                              .2),
+                                                                          .1),
+                                                                  focusColor: Colors
+                                                                      .transparent,
+//                                                                  focusColor: PlunesColors
+//                                                                      .SPARKLINGGREEN
+//                                                                      .withOpacity(
+//                                                                          .2),
+//                                                                  splashColor: PlunesColors
+//                                                                      .SPARKLINGGREEN
+//                                                                      .withOpacity(
+//                                                                          .2),
+//                                                                  highlightColor:
+//                                                                      PlunesColors
+//                                                                          .SPARKLINGGREEN
+//                                                                          .withOpacity(
+//                                                                              .2),
                                                                   onPressed:
                                                                       () {
                                                                     _bookingBloc.cancelAppointment(

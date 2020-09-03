@@ -408,9 +408,10 @@ class CustomWidgets {
               children: <Widget>[
                 Expanded(
                   child: FlatButton(
-                      splashColor: Colors.redAccent.withOpacity(.2),
-                      highlightColor: Colors.redAccent.withOpacity(.2),
-                      focusColor: Colors.redAccent.withOpacity(.2),
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                      focusColor: Colors.transparent,
                       onPressed: () {
                         Navigator.pop(
                             context, false); // showDialog() returns false
@@ -425,7 +426,7 @@ class CustomWidgets {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   fontSize: AppConfig.mediumFont,
-                                  color: Colors.redAccent),
+                                  color: PlunesColors.SPARKLINGGREEN),
                             ),
                           ))),
                 ),
@@ -436,10 +437,10 @@ class CustomWidgets {
                 ),
                 Expanded(
                   child: FlatButton(
-                      focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                      highlightColor:
-                          PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                      focusColor: Colors.transparent,
                       onPressed: () {
                         Navigator.pop(context);
                         _callBack.dialogCallBackFunction('DONE');
@@ -480,9 +481,10 @@ class CustomWidgets {
               bottomLeft: Radius.circular(16),
               bottomRight: Radius.circular(16)),
           child: FlatButton(
-              splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-              highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-              focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+              highlightColor: Colors.transparent,
+              hoverColor: Colors.transparent,
+              splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+              focusColor: Colors.transparent,
               onPressed: () => Navigator.of(context).pop(),
               child: Container(
                   height: AppConfig.verticalBlockSize * 6,
@@ -2436,12 +2438,11 @@ class CustomWidgets {
                               children: <Widget>[
                                 Expanded(
                                   child: FlatButton(
-                                      splashColor:
-                                          Colors.redAccent.withOpacity(.2),
-                                      highlightColor:
-                                          Colors.redAccent.withOpacity(.2),
-                                      focusColor:
-                                          Colors.redAccent.withOpacity(.2),
+                                      highlightColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      splashColor: PlunesColors.SPARKLINGGREEN
+                                          .withOpacity(.1),
+                                      focusColor: Colors.transparent,
                                       onPressed: () {
                                         Navigator.pop(context);
                                         return;
@@ -2457,7 +2458,8 @@ class CustomWidgets {
                                               style: TextStyle(
                                                   fontSize:
                                                       AppConfig.mediumFont,
-                                                  color: Colors.redAccent),
+                                                  color: PlunesColors
+                                                      .SPARKLINGGREEN),
                                             ),
                                           ))),
                                 ),
@@ -2468,13 +2470,11 @@ class CustomWidgets {
                                 ),
                                 Expanded(
                                   child: FlatButton(
-                                      focusColor: PlunesColors.SPARKLINGGREEN
-                                          .withOpacity(.2),
+                                      highlightColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
                                       splashColor: PlunesColors.SPARKLINGGREEN
-                                          .withOpacity(.2),
-                                      highlightColor: PlunesColors
-                                          .SPARKLINGGREEN
-                                          .withOpacity(.2),
+                                          .withOpacity(.1),
+                                      focusColor: Colors.transparent,
                                       onPressed: () {
                                         if (appointmentModel != null &&
                                             textEditingController.text
@@ -3855,9 +3855,10 @@ class CustomWidgets {
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16)),
                 child: FlatButton(
-                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    focusColor: Colors.transparent,
                     onPressed: () =>
                         Navigator.of(globalKey.currentState.context).pop(),
                     child: Container(
@@ -3920,9 +3921,10 @@ class CustomWidgets {
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16)),
                 child: FlatButton(
-                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    focusColor: Colors.transparent,
                     onPressed: () =>
                         Navigator.of(globalKey.currentState.context).pop(),
                     child: Container(
@@ -4066,7 +4068,7 @@ class CustomWidgets {
                           children: <Widget>[
                             Container(
                               margin: EdgeInsets.symmetric(
-                                  horizontal: AppConfig.horizontalBlockSize * 3,
+                                  horizontal: AppConfig.horizontalBlockSize * 2,
                                   vertical: AppConfig.verticalBlockSize * 3),
                               child: Text(
                                 PlunesStrings.thanksForService,
@@ -4596,12 +4598,11 @@ class CustomWidgets {
                               bottomLeft: Radius.circular(16),
                               bottomRight: Radius.circular(16)),
                           child: FlatButton(
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
                               splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                              highlightColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                              focusColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              focusColor: Colors.transparent,
                               onPressed: () =>
                                   Navigator.of(globalKey.currentState.context)
                                       .pop(),
@@ -5014,9 +5015,10 @@ class CustomWidgets {
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16)),
                 child: FlatButton(
-                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                    highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                    focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    focusColor: Colors.transparent,
                     onPressed: () =>
                         Navigator.of(globalKey.currentState.context).pop(),
                     child: Container(

@@ -56,6 +56,7 @@ class BaseActivity extends StatefulWidget {
       TextAlign textAlign, FontWeight fontWeight) {
     return Text(label,
         textAlign: textAlign,
+        overflow: TextOverflow.clip,
         style: TextStyle(
             fontSize: fontSize,
             decoration: label == plunesStrings.solutionNearYouMsg
@@ -343,7 +344,7 @@ class BaseActivity extends StatefulWidget {
         iconTheme: IconThemeData(color: Colors.black),
         centerTitle: true,
         title: createTextViews(
-            title, 18, colorsFile.black, TextAlign.center, FontWeight.w500),
+            title, 18, colorsFile.black, TextAlign.start, FontWeight.w500),
         actions: <Widget>[
           isSelected
               ? IconButton(

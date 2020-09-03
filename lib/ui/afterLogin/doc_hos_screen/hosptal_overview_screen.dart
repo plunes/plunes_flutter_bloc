@@ -169,16 +169,21 @@ class _HospitalOverviewScreenState
               return (_realTimeInsightsResponse == null ||
                       _realTimeInsightsResponse.data.isEmpty)
                   ? Container(
-                      height: AppConfig.verticalBlockSize * 30,
+                      height: AppConfig.verticalBlockSize * 42,
                       child: Center(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: <Widget>[
-                            Image.asset(
-                              PlunesImages.noRealTimeInsightIcon,
-                              height: AppConfig.verticalBlockSize * 6.5,
-                              width: AppConfig.horizontalBlockSize * 25,
+                            _returnCard(),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 7.5),
+                              child: Image.asset(
+                                PlunesImages.noRealTimeInsightIcon,
+                                height: AppConfig.verticalBlockSize * 6.5,
+                                width: AppConfig.horizontalBlockSize * 25,
+                              ),
                             ),
                             Padding(
                               padding: EdgeInsets.only(
@@ -222,6 +227,10 @@ class _HospitalOverviewScreenState
                             padding: null,
                             shrinkWrap: true,
                             itemBuilder: (context, itemIndex) {
+                              if (itemIndex == 0) {
+                                return _returnCard();
+                              }
+                              itemIndex--;
                               return Card(
                                 elevation: 2.0,
                                 child: Container(
@@ -380,8 +389,11 @@ class _HospitalOverviewScreenState
                                 ),
                               );
                             },
-                            itemCount:
-                                _realTimeInsightsResponse.data?.length ?? 0,
+                            itemCount: (_realTimeInsightsResponse.data ==
+                                        null ||
+                                    _realTimeInsightsResponse.data.isEmpty)
+                                ? 0
+                                : (_realTimeInsightsResponse.data.length + 1),
                           ),
                         ),
                       ),
@@ -981,7 +993,6 @@ class _HospitalOverviewScreenState
                       child: Padding(
                         padding: const EdgeInsets.all(5.0),
                         child: Row(
-//>>>>>>> f9657161aed74a0902cf1e138a53de9d7edd153f
                           children: <Widget>[
                             Container(
                               child: Image.asset(PlunesImages.labMapImage),
@@ -1105,6 +1116,41 @@ class _HospitalOverviewScreenState
                       ),
                     ),
                   ),
+
+//                  Container(
+//                    width: double.infinity,
+//                    child: Card(
+//                      elevation: 2.0,
+//                      child: Padding(
+//                        padding: const EdgeInsets.all(5.0),
+//                        child: Row(
+//                          children: <Widget>[
+//                            Container(
+//                              child: Image.asset(PlunesImages.labMapImage),
+//                              height: AppConfig.verticalBlockSize * 4,
+//                              width: AppConfig.horizontalBlockSize * 14,
+//                            ),
+//                            Flexible(
+//                              child: Padding(
+//                                padding: EdgeInsets.only(
+//                                    left: AppConfig.horizontalBlockSize * 2),
+//                                child: Text(
+//                                  CommonMethods.getStringInCamelCase(
+//                                          _user?.name) ??
+//                                      _getNaString(),
+//                                  maxLines: 1,
+//                                  overflow: TextOverflow.clip,
+//                                  style: TextStyle(
+//                                      fontSize: 18,
+//                                      fontWeight: FontWeight.w500),
+//                                ),
+//                              ),
+//                            ),
+//                          ],
+//                        ),
+//                      ),
+//                    ),
+//                  ),
                   _getRealTimeInsightView(),
                   _getTotalBusinessWidgetForNonAdmin(),
                   _getActionableInsightWidget(),
@@ -1174,6 +1220,110 @@ class _HospitalOverviewScreenState
         });
       });
     }
+  }
+
+  Widget _returnCard() {
+    return Card(
+      elevation: 2.0,
+      margin: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 1,
+          left: 5,
+          right: 5,
+          bottom: AppConfig.verticalBlockSize * 1),
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            vertical: AppConfig.verticalBlockSize * 2,
+            horizontal: AppConfig.horizontalBlockSize * 4),
+        child: Column(
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Flexible(
+                  child: CustomWidgets().getShowCase(
+                    _realTimeInsightKey,
+                    title: PlunesStrings.realTimeInsights,
+                    description: PlunesStrings.realTimeDesc,
+                    child: Text(
+                      PlunesStrings.realTimeInsights,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                    height: AppConfig.verticalBlockSize * 2.5,
+                    width: AppConfig.horizontalBlockSize * 5.5,
+                    margin: EdgeInsets.only(
+                        right: AppConfig.horizontalBlockSize * 3),
+                    child: InkWell(
+                      onTap: () {
+                        CommonMethods.showLongToast(
+                            PlunesStrings.realTimeMessage,
+                            bgColor: PlunesColors.LIGHTGREENCOLOR,
+                            centerGravity: true);
+                      },
+                      onDoubleTap: () {},
+                      child: Image.asset(
+                        PlunesImages.informativeIcon,
+                      ),
+                    )),
+              ],
+              crossAxisAlignment: CrossAxisAlignment.center,
+            ),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 0.8),
+              child: Text(
+                PlunesStrings.makeSureToUpdatePrice,
+                textAlign: TextAlign.left,
+                maxLines: 2,
+                style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 15),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Expanded(
+                  child: StreamBuilder<Object>(
+                      stream: _docHosMainInsightBloc.realTimeInsightStream,
+                      builder: (context, snapshot) {
+//                        if (_realTimeInsightsResponse != null &&
+//                            _realTimeInsightsResponse.timer !=
+//                                null) {
+                        return (_realTimeInsightsResponse == null ||
+                                _realTimeInsightsResponse.data == null ||
+                                _realTimeInsightsResponse.data.isEmpty)
+                            ? Container()
+                            : Text(
+                                'Preferred Time : ${_realTimeInsightsResponse?.timer} Min',
+                                style: TextStyle(
+                                    fontSize: 13,
+                                    color: PlunesColors.GREYCOLOR
+                                        .withOpacity(0.65)),
+                              );
+//                        }
+//                        return Container();
+                      }),
+                  flex: 2,
+                ),
+                Expanded(
+                    flex: 2,
+                    child: Text(
+                      'Maximum Time : 1 hour',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                          fontSize: 13,
+                          color: PlunesColors.GREYCOLOR.withOpacity(0.65)),
+                    ))
+              ],
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
 

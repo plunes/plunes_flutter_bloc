@@ -113,13 +113,17 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             : widget.getHomeAppBar(
                 context,
                 _userType != Constants.user
-                    ? (_selectedIndex == 1
-                        ? plunesStrings.notifications
-                        : _selectedIndex == 3
-                            ? plunesStrings.profiles
-                            : _selectedIndex == 2
-                                ? plunesStrings.notifications
-                                : '')
+                    ? (_selectedIndex == 0
+                        ? CommonMethods.getStringInCamelCase(
+                                UserManager().getUserDetails().name) ??
+                            ""
+                        : _selectedIndex == 1
+                            ? plunesStrings.notifications
+                            : _selectedIndex == 3
+                                ? plunesStrings.profiles
+                                : _selectedIndex == 2
+                                    ? plunesStrings.notifications
+                                    : '')
                     : (_selectedIndex == 1
                         ? plunesStrings.plockr
                         : _selectedIndex == 2
