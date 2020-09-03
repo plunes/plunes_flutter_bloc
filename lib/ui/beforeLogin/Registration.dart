@@ -1539,5 +1539,9 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         .setWidgetShownStatus(Constants.SOLUTION_SCREEN, status: false);
     UserManager()
         .setWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN, status: false);
+    UserManager()
+        .setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER, status: false);
+    UserManager()
+        .setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF, status: false);
   }
 }
