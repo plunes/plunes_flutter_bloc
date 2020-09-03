@@ -53,7 +53,7 @@
 	<key>NSCalendarsUsageDescription</key>
 	<string>Plunes would like to access your calender.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>This app needs access to camera.</string>
+	<string>This app needs access to camera ṭo upload profile picture and medical reports.</string>
 	<key>NSContactsUsageDescription</key>
 	<string>This app requires contacts access to function properly.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -65,7 +65,7 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>This app needs access to mic.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app needs access to photo to upload your images.</string>
+	<string>This app needs access to photo to upload your profile picture and medical reports.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
