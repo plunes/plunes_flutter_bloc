@@ -770,8 +770,7 @@ class _HospitalOverviewScreenState
                     centreId: _selectedUserIdForActionableInsightDropDown))
         .then((value) {
       if (value != null && value) {
-        widget.showInSnackBar(PlunesStrings.priceUpdateSuccessMessage,
-            PlunesColors.BLACKCOLOR, scaffoldKey);
+        _showSnackBar(PlunesStrings.priceUpdateSuccessMessage);
         if (_user.isAdmin && _centresList != null && _centresList.isNotEmpty) {
           _getActionableInsights(
               userId: _selectedUserIdForActionableInsightDropDown);
@@ -782,6 +781,16 @@ class _HospitalOverviewScreenState
     });
   }
 
+  _showSnackBar(String message) {
+    if (mounted)
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets()
+                .getInformativePopup(globalKey: scaffoldKey, message: message);
+          });
+  }
+
   _openRealTimeInsightPriceUpdateWidget(RealInsight realInsight) {
     showDialog(
         context: context,
@@ -790,8 +799,7 @@ class _HospitalOverviewScreenState
             docHosMainInsightBloc: _docHosMainInsightBloc,
             realInsight: realInsight)).then((value) {
       if (value != null && value) {
-        widget.showInSnackBar(PlunesStrings.priceUpdateSuccessMessage,
-            PlunesColors.BLACKCOLOR, scaffoldKey);
+        _showSnackBar(PlunesStrings.priceUpdateSuccessMessage);
         _getRealTimeInsights();
       }
     });

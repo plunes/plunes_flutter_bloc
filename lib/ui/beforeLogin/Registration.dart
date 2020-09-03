@@ -15,6 +15,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -995,6 +996,7 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       if (result is RequestSuccess) {
         LoginPost data = result.response;
         if (data.success) {
+          _setShowCaseStatus();
           AnalyticsProvider().registerEvent(AnalyticsKeys.signUpKey);
           await bloc.saveDataInPreferences(
               data, context, plunesStrings.registration);
@@ -1528,5 +1530,14 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
       if (mounted) locationController.text = fullAddressController;
     }
     _setState();
+  }
+
+  void _setShowCaseStatus() {
+    UserManager()
+        .setWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN, status: false);
+    UserManager()
+        .setWidgetShownStatus(Constants.SOLUTION_SCREEN, status: false);
+    UserManager()
+        .setWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN, status: false);
   }
 }

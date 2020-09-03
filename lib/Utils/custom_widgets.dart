@@ -1202,7 +1202,7 @@ class CustomWidgets {
                                         children: <Widget>[
                                           Text(
                                             (chancesPercent == null ||
-                                                    chancesPercent == 0)
+                                                    chancesPercent == 0 || chancesPercent<0)
                                                 ? '0%'
                                                 : '$chancesPercent%',
                                             style: TextStyle(
@@ -1248,8 +1248,9 @@ class CustomWidgets {
                                             reductionInPrice =
                                                 100 - reductionInPrice;
 
-                                            chancesPercent =
-                                                (100 - val)?.toInt();
+                                            chancesPercent = double.tryParse(
+                                                (100 - val)
+                                                    ?.toStringAsFixed(1));
                                           } catch (e) {
                                             chancesPercent = 50;
                                             reductionInPrice = 50;
@@ -1418,7 +1419,6 @@ class CustomWidgets {
                                           ),
                                         )
                                       : Container(),
-//                                  SizedBox(height: 10),
                                   Container(
                                     margin: EdgeInsets.only(
                                         bottom:
@@ -1450,7 +1450,7 @@ class CustomWidgets {
                                       ),
                                       child: chancesPercent != null
                                           ? Text(
-                                              chancesPercent == 0
+                                              chancesPercent == 0 || chancesPercent<0
                                                   ? '0%'
                                                   : '$chancesPercent%',
                                               style: TextStyle(
@@ -1760,7 +1760,7 @@ class CustomWidgets {
                                         children: <Widget>[
                                           Text(
                                             (chancesPercent == null ||
-                                                    chancesPercent == 0)
+                                                    chancesPercent == 0 || chancesPercent<0)
                                                 ? '0%'
                                                 : '$chancesPercent%',
                                             style: TextStyle(
@@ -1806,8 +1806,9 @@ class CustomWidgets {
                                                           .userPrice)
                                                       .floor()
                                                       .toDouble();
-                                              chancesPercent =
-                                                  (100 - val)?.toInt();
+                                              chancesPercent = double.tryParse(
+                                                  (100 - val)
+                                                      ?.toStringAsFixed(1));
                                               reductionInPrice = ((newValue) *
                                                       100) /
                                                   num.parse(actionableInsight
@@ -1967,7 +1968,7 @@ class CustomWidgets {
                                       child: chancesPercent != null
                                           ? Text(
                                               (chancesPercent == null ||
-                                                      chancesPercent == 0)
+                                                      chancesPercent == 0 || chancesPercent<0)
                                                   ? '0%'
                                                   : '$chancesPercent%',
                                               style: TextStyle(
