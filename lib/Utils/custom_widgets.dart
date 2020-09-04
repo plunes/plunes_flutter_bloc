@@ -1202,7 +1202,8 @@ class CustomWidgets {
                                         children: <Widget>[
                                           Text(
                                             (chancesPercent == null ||
-                                                    chancesPercent == 0)
+                                                    chancesPercent == 0 ||
+                                                    chancesPercent < 0)
                                                 ? '0%'
                                                 : '$chancesPercent%',
                                             style: TextStyle(
@@ -1248,8 +1249,9 @@ class CustomWidgets {
                                             reductionInPrice =
                                                 100 - reductionInPrice;
 
-                                            chancesPercent =
-                                                (100 - val)?.toInt();
+                                            chancesPercent = double.tryParse(
+                                                (100 - val)
+                                                    ?.toStringAsFixed(1));
                                           } catch (e) {
                                             chancesPercent = 50;
                                             reductionInPrice = 50;
@@ -1418,7 +1420,6 @@ class CustomWidgets {
                                           ),
                                         )
                                       : Container(),
-//                                  SizedBox(height: 10),
                                   Container(
                                     margin: EdgeInsets.only(
                                         bottom:
@@ -1450,7 +1451,8 @@ class CustomWidgets {
                                       ),
                                       child: chancesPercent != null
                                           ? Text(
-                                              chancesPercent == 0
+                                              chancesPercent == 0 ||
+                                                      chancesPercent < 0
                                                   ? '0%'
                                                   : '$chancesPercent%',
                                               style: TextStyle(
@@ -1760,7 +1762,8 @@ class CustomWidgets {
                                         children: <Widget>[
                                           Text(
                                             (chancesPercent == null ||
-                                                    chancesPercent == 0)
+                                                    chancesPercent == 0 ||
+                                                    chancesPercent < 0)
                                                 ? '0%'
                                                 : '$chancesPercent%',
                                             style: TextStyle(
@@ -1806,8 +1809,9 @@ class CustomWidgets {
                                                           .userPrice)
                                                       .floor()
                                                       .toDouble();
-                                              chancesPercent =
-                                                  (100 - val)?.toInt();
+                                              chancesPercent = double.tryParse(
+                                                  (100 - val)
+                                                      ?.toStringAsFixed(1));
                                               reductionInPrice = ((newValue) *
                                                       100) /
                                                   num.parse(actionableInsight
@@ -1967,7 +1971,8 @@ class CustomWidgets {
                                       child: chancesPercent != null
                                           ? Text(
                                               (chancesPercent == null ||
-                                                      chancesPercent == 0)
+                                                      chancesPercent == 0 ||
+                                                      chancesPercent < 0)
                                                   ? '0%'
                                                   : '$chancesPercent%',
                                               style: TextStyle(
@@ -5033,6 +5038,113 @@ class CustomWidgets {
                                 color: PlunesColors.SPARKLINGGREEN),
                           ),
                         ))),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getVideoPopupForUser(
+      {GlobalKey<ScaffoldState> globalKey, String message}) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+              height: AppConfig.verticalBlockSize * 10,
+              child: Image.asset(PlunesImages.common),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 5,
+                  vertical: AppConfig.verticalBlockSize * 2.5),
+              child: Text(
+                message ?? plunesStrings.somethingWentWrong,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+            ),
+            Container(
+              height: AppConfig.verticalBlockSize * 6,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: FlatButton(
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          splashColor:
+                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          focusColor: Colors.transparent,
+                          onPressed: () {
+                            Navigator.of(globalKey.currentState.context).pop();
+                            return;
+                          },
+                          child: Container(
+                              height: AppConfig.verticalBlockSize * 6,
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  'Cancel',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.mediumFont,
+                                      color: PlunesColors.SPARKLINGGREEN),
+                                ),
+                              ))),
+                    ),
+                    Container(
+                      height: AppConfig.verticalBlockSize * 6,
+                      color: PlunesColors.GREYCOLOR,
+                      width: 0.5,
+                    ),
+                    Expanded(
+                      child: FlatButton(
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          splashColor:
+                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          focusColor: Colors.transparent,
+                          onPressed: () {
+                            Navigator.of(globalKey.currentState.context)
+                                .pop(PlunesStrings.watch);
+                            return;
+                          },
+                          child: Container(
+                              height: AppConfig.verticalBlockSize * 6,
+                              width: double.infinity,
+                              child: Center(
+                                child: Text(
+                                  PlunesStrings.watch,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.mediumFont,
+                                      color: PlunesColors.SPARKLINGGREEN),
+                                ),
+                              ))),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

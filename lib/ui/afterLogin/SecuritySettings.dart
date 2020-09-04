@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Preferences.dart';
+import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -100,8 +101,9 @@ class _SecuritySettingsState extends State<SecuritySettings>
       if (data != null && data['success'] != null && data['success'])
         navigationPage();
       else
-        widget.showInSnackBar(
-            plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
+        _showSnackBar(plunesStrings.somethingWentWrong);
+//        widget.showInSnackBar(
+//            plunesStrings.somethingWentWrong, Colors.red, _scaffoldKey);
     });
   }
 
@@ -112,5 +114,14 @@ class _SecuritySettingsState extends State<SecuritySettings>
       return Navigator.of(context)
           .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
     });
+  }
+
+  _showSnackBar(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: _scaffoldKey, message: message);
+        });
   }
 }
