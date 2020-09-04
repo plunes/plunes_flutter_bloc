@@ -1364,7 +1364,7 @@ class CustomWidgets {
                                                 Flexible(
                                                   flex: 2,
                                                   child: Text(
-                                                    ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
+                                                    ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
                                                     style: TextStyle(
                                                         color: Colors.white70,
                                                         fontSize:
@@ -1913,7 +1913,7 @@ class CustomWidgets {
                                               Flexible(
                                                 flex: 2,
                                                 child: Text(
-                                                  ' \u20B9 ${sliderVal.toStringAsFixed(0)}',
+                                                  ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
                                                   style: TextStyle(
                                                       color: Colors.white70,
                                                       fontSize: 20,

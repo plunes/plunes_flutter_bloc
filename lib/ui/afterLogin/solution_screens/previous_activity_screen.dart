@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
+import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:flutter/gestures.dart';
@@ -20,12 +22,15 @@ class PreviousActivity extends BaseActivity {
 class _PreviousActivityState extends BaseState<PreviousActivity> {
   PrevMissSolutionBloc _prevMissSolutionBloc;
   PrevSearchedSolution _prevSearchedSolution;
-  List<CatalogueData> _prevSolutions = [], missedSolutions = [];
+  List<CatalogueData> _prevSolutions = [], _missedSolutions = [];
+  String _failureCause;
+  bool _isProcessing;
 
   @override
   void initState() {
+    _isProcessing = true;
     _prevSolutions = [];
-    missedSolutions = [];
+    _missedSolutions = [];
     _prevMissSolutionBloc = PrevMissSolutionBloc();
     _getPreviousSolutions();
     super.initState();
@@ -41,58 +46,74 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: widget.getAppBar(context, 'Previous Activities', true),
-      body: _getWidgetBody(),
+      body: _isProcessing
+          ? CustomWidgets().getProgressIndicator()
+          : (_failureCause != null && _failureCause == PlunesStrings.noInternet)
+              ? CustomWidgets().errorWidget(_failureCause,
+                  buttonText: PlunesStrings.refresh,
+                  onTap: () => _getPreviousSolutions())
+              : _getWidgetBody(),
     );
   }
 
   Widget _getWidgetBody() {
     return Column(
       children: <Widget>[
-        Container(
-          child: _getPreviousView(),
-        ),
-        Container(
-          child: _getMissedNegotiationView(),
-        ),
+        _getPreviousView(),
+        _getMissedNegotiationView(),
       ],
     );
   }
 
   _getMissedNegotiationView() {
-    return Expanded(child: StreamBuilder<Object>(builder: (context, snapshot) {
-      return Card(
-          margin: EdgeInsets.all(0.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              (_prevSearchedSolution == null ||
-                      _prevSearchedSolution.data == null ||
-                      _prevSearchedSolution.data.isEmpty ||
-                      missedSolutions == null ||
-                      missedSolutions.isEmpty)
-                  ? Expanded(
-                      child: Center(
-                      child: Container(
-                        child: Text(
-                          "You don't have any missed negotiations",
-                          style: TextStyle(fontSize: AppConfig.smallFont),
-                        ),
-                      ),
-                    ))
-                  : Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.all(0.0),
-                        itemBuilder: (context, index) {
-                          TapGestureRecognizer tapRecognizer =
-                              TapGestureRecognizer()
-                                ..onTap = () => _onViewMoreTap(index);
-                          return Stack(
-                            children: <Widget>[
-                              CustomWidgets().getSolutionRow(
-                                  missedSolutions, index,
-                                  onButtonTap: () => _onSolutionItemTap(
-                                      missedSolutions[index]),
-                                  onViewMoreTap: tapRecognizer),
+    return Expanded(
+        child: Card(
+            margin: EdgeInsets.all(0.0),
+            child: Container(
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  (_prevSearchedSolution == null ||
+                          _prevSearchedSolution.data == null ||
+                          _prevSearchedSolution.data.isEmpty ||
+                          _missedSolutions == null ||
+                          _missedSolutions.isEmpty)
+                      ? Expanded(
+                          child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  vertical: AppConfig.verticalBlockSize * 2.5),
+                              child: Image.asset(
+                                PlunesImages.prev_missed_act_icon,
+                                height: AppConfig.verticalBlockSize * 12,
+                                width: AppConfig.horizontalBlockSize * 40,
+                              ),
+                            ),
+                            Text(
+                              "You don't have any missed negotiations",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: AppConfig.smallFont),
+                            ),
+                          ],
+                        ))
+                      : Expanded(
+                          child: ListView.builder(
+                            padding: EdgeInsets.all(0.0),
+                            itemBuilder: (context, index) {
+                              TapGestureRecognizer tapRecognizer =
+                                  TapGestureRecognizer()
+                                    ..onTap = () => _onViewMoreTap(index);
+                              return Stack(
+                                children: <Widget>[
+                                  CustomWidgets().getSolutionRow(
+                                      _missedSolutions, index,
+                                      onButtonTap: () => _onSolutionItemTap(
+                                          _missedSolutions[index]),
+                                      onViewMoreTap: tapRecognizer),
 //                              Positioned.fill(
 //                                child: Container(
 //                                  decoration: BoxDecoration(
@@ -107,87 +128,111 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 //                                  width: double.infinity,
 //                                ),
 //                              ),
-                            ],
-                          );
-                        },
-                        itemCount: missedSolutions?.length ?? 0,
-                      ),
-                    ),
-              _reminderView(),
-            ],
-          ));
-    }));
+                                ],
+                              );
+                            },
+                            itemCount: _missedSolutions?.length ?? 0,
+                          ),
+                        ),
+                  _reminderView(),
+                ],
+              ),
+            )));
   }
 
   _getPreviousView() {
     return Expanded(
         child: Card(
             margin: EdgeInsets.all(0.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                (_prevSearchedSolution == null ||
-                        _prevSearchedSolution.data == null ||
-                        _prevSearchedSolution.data.isEmpty ||
-                        _prevSolutions == null ||
-                        _prevSolutions.isEmpty)
-                    ? Expanded(
-                        child: Center(
-                        child: Container(
-                          child: Text(
-                            "You don't have any previous activities",
-                            style: TextStyle(fontSize: AppConfig.smallFont),
+            child: Container(
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  (_prevSearchedSolution == null ||
+                          _prevSearchedSolution.data == null ||
+                          _prevSearchedSolution.data.isEmpty ||
+                          _prevSolutions == null ||
+                          _prevSolutions.isEmpty)
+                      ? Expanded(
+                          child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  vertical: AppConfig.verticalBlockSize * 2.5),
+                              child: Image.asset(
+                                PlunesImages.prev_missed_act_icon,
+                                height: AppConfig.verticalBlockSize * 12,
+                                width: AppConfig.horizontalBlockSize * 40,
+                              ),
+                            ),
+                            Text(
+                              "You don't have any previous activities",
+                              style: TextStyle(fontSize: AppConfig.smallFont),
+                            ),
+                          ],
+                        ))
+                      : Expanded(
+                          child: ListView.builder(
+                            padding: EdgeInsets.all(0.0),
+                            itemBuilder: (context, index) {
+                              TapGestureRecognizer tapRecognizer =
+                                  TapGestureRecognizer()
+                                    ..onTap = () => _onViewMoreTap(index);
+                              return CustomWidgets().getSolutionRow(
+                                  _prevSolutions, index,
+                                  onButtonTap: () =>
+                                      _onSolutionItemTap(_prevSolutions[index]),
+                                  onViewMoreTap: tapRecognizer);
+                            },
+                            itemCount: _prevSolutions?.length ?? 0,
                           ),
                         ),
+                  Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 2),
+                      child: Text(
+                        'Missed Negotiations',
+                        style: TextStyle(
+                            fontSize: AppConfig.mediumFont + 2,
+                            fontWeight: FontWeight.w500),
                       ))
-                    : Expanded(
-                        child: ListView.builder(
-                          padding: EdgeInsets.all(0.0),
-                          itemBuilder: (context, index) {
-                            TapGestureRecognizer tapRecognizer =
-                                TapGestureRecognizer()
-                                  ..onTap = () => _onViewMoreTap(index);
-                            return CustomWidgets().getSolutionRow(
-                                _prevSolutions, index,
-                                onButtonTap: () =>
-                                    _onSolutionItemTap(_prevSolutions[index]),
-                                onViewMoreTap: tapRecognizer);
-                          },
-                          itemCount: _prevSolutions?.length ?? 0,
-                        ),
-                      ),
-                Container(
-                    margin: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 2),
-                    child: Text(
-                      'Missed Negotiations',
-                      style: TextStyle(
-                          fontSize: AppConfig.mediumFont + 2,
-                          fontWeight: FontWeight.w500),
-                    ))
-              ],
+                ],
+              ),
             )));
   }
 
   void _getPreviousSolutions() async {
-    var requestState = await _prevMissSolutionBloc.getPreviousSolutions();
-    if (requestState is RequestSuccess) {
-      _prevSearchedSolution = requestState.response;
+    _failureCause = null;
+    if (!_isProcessing) {
+      _isProcessing = true;
+      _setState();
     }
-    if (_prevSearchedSolution != null &&
-        _prevSearchedSolution.data != null &&
-        _prevSearchedSolution.data.isNotEmpty) {
-      _prevSolutions = [];
-      missedSolutions = [];
-      _prevSearchedSolution.data.forEach((solution) {
-        if (solution.isActive == false) {
-          missedSolutions.add(solution);
-        } else {
-          _prevSolutions.add(solution);
+    _prevMissSolutionBloc.getPreviousSolutions().then((requestState) {
+      if (requestState is RequestSuccess) {
+        _prevSearchedSolution = requestState.response;
+        if (_prevSearchedSolution != null &&
+            _prevSearchedSolution.data != null &&
+            _prevSearchedSolution.data.isNotEmpty) {
+          _prevSolutions = [];
+          _missedSolutions = [];
+          _prevSearchedSolution.data.forEach((solution) {
+            if (solution.isActive == false) {
+              _missedSolutions.add(solution);
+            } else {
+              _prevSolutions.add(solution);
+            }
+          });
         }
-      });
-    }
-    _setState();
+      } else if (requestState is RequestFailed) {
+        _failureCause =
+            requestState.failureCause ?? plunesStrings.somethingWentWrong;
+      }
+      _isProcessing = false;
+      _setState();
+    });
   }
 
   _onViewMoreTap(int index) {}
