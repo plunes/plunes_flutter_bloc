@@ -12,10 +12,13 @@ class Constants {
   static const String profile = 'Profile';
   static const String POST = 'Post';
   static const String PUT = 'Put';
-
   static const String BIDDING_MAIN_SCREEN = "BIDDING_MAIN_SCREEN";
   static const String SOLUTION_SCREEN = "SOLUTION_SCREEN";
   static const String INSIGHT_MAIN_SCREEN = "INSIGHT_MAIN_SCREEN";
+  static const String VIDEO_STATUS_FOR_PROF = "VIDEO_STATUS_FOR_PROF";
+  static const String VIDEO_STATUS_FOR_USER = "VIDEO_STATUS_FOR_USER";
+  static const String PLUNES_USER_VIDEO_DEMO =
+      "https://www.youtube.com/watch?v=sITYg1awTPE";
 
   static get hospital => 'Hospital';
 

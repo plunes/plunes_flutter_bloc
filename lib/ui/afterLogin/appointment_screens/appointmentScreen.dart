@@ -65,7 +65,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
           : PlunesColors.WHITECOLOR,
       padding: EdgeInsets.symmetric(
           horizontal: AppConfig.horizontalBlockSize * 3,
-          vertical: AppConfig.verticalBlockSize * .5),
+          vertical: AppConfig.verticalBlockSize * 2),
       child: Column(
         children: <Widget>[
           Container(
@@ -87,7 +87,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   PlunesStrings.NA,
                               style: TextStyle(
                                 fontSize: AppConfig.mediumFont,
-//                                  fontWeight: FontWeight.w600
                               ),
                             ),
                           ),
@@ -104,15 +103,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                   color: Colors.black54),
                             ),
                           ),
-                          SizedBox(height: AppConfig.verticalBlockSize * 1.5),
-                          _getProfessionalNumber(appointmentModel),
-                          (appointmentModel.centreNumber != null &&
-                                  appointmentModel.centreNumber.isNotEmpty &&
-                                  _profNumber != null &&
-                                  _profNumber != appointmentModel.centreNumber)
-                              ? SizedBox(
-                                  height: AppConfig.verticalBlockSize * 1.5)
-                              : Container(),
                         ],
                       ),
                     ),
@@ -122,7 +112,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                     flex: 1,
                     child: Container(
                       margin: EdgeInsets.only(
-                          bottom: AppConfig.verticalBlockSize * 8),
+                          bottom: AppConfig.verticalBlockSize * 1),
                       child: Center(
                         child: IconButton(
                             icon: Image.asset(
@@ -204,14 +194,14 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   ),
                 ]),
           ),
-//          SizedBox(height: 5),
-//          _getProfessionalNumber(appointmentModel),
-//          (appointmentModel.centreNumber != null &&
-//                  appointmentModel.centreNumber.isNotEmpty &&
-//                  _profNumber != null &&
-//                  _profNumber != appointmentModel.centreNumber)
-//              ? SizedBox(height: 5)
-//              : Container(),
+          SizedBox(height: AppConfig.verticalBlockSize * 1.5),
+          _getProfessionalNumber(appointmentModel),
+          (appointmentModel.centreNumber != null &&
+                  appointmentModel.centreNumber.isNotEmpty &&
+                  _profNumber != null &&
+                  _profNumber != appointmentModel.centreNumber)
+              ? SizedBox(height: AppConfig.verticalBlockSize * 1.5)
+              : Container(),
           (appointmentModel.centreNumber != null &&
                   appointmentModel.centreNumber.isNotEmpty &&
                   _profNumber != null &&
