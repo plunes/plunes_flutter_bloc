@@ -182,6 +182,7 @@ flutter:
     - assets/images/splash_final.jpg
     - assets/images/crossIcon.png
     - assets/images/whiteImage.png
+    - assets/images/PreviousAct.png
 
     - assets/images/plockr_selected.png
     - assets/images/plockr_unselected.png

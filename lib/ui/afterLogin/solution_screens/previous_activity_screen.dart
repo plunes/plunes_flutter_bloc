@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:flutter/gestures.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
@@ -60,39 +62,44 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
   _getMissedNegotiationView() {
     return Expanded(child: StreamBuilder<Object>(builder: (context, snapshot) {
-      return Card(
-          margin: EdgeInsets.all(0.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              (_prevSearchedSolution == null ||
-                      _prevSearchedSolution.data == null ||
-                      _prevSearchedSolution.data.isEmpty ||
-                      missedSolutions == null ||
-                      missedSolutions.isEmpty)
-                  ? Expanded(
-                      child: Center(
-                      child: Container(
-                        child: Text(
-                          "You don't have any missed negotiations",
-                          style: TextStyle(fontSize: AppConfig.smallFont),
-                        ),
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          (_prevSearchedSolution == null ||
+                  _prevSearchedSolution.data == null ||
+                  _prevSearchedSolution.data.isEmpty ||
+                  missedSolutions == null ||
+                  missedSolutions.isEmpty)
+              ? Expanded(
+                  child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 3),
+                        height: AppConfig.verticalBlockSize * 13,
+                        child: Image.asset(PlunesImages.previousAct)),
+                    Container(
+                      child: Text(
+                        "You don't have any missed negotiations",
+                        style: TextStyle(fontSize: AppConfig.smallFont),
                       ),
-                    ))
-                  : Expanded(
-                      child: ListView.builder(
-                        padding: EdgeInsets.all(0.0),
-                        itemBuilder: (context, index) {
-                          TapGestureRecognizer tapRecognizer =
-                              TapGestureRecognizer()
-                                ..onTap = () => _onViewMoreTap(index);
-                          return Stack(
-                            children: <Widget>[
-                              CustomWidgets().getSolutionRow(
-                                  missedSolutions, index,
-                                  onButtonTap: () => _onSolutionItemTap(
-                                      missedSolutions[index]),
-                                  onViewMoreTap: tapRecognizer),
+                    ),
+                  ],
+                ))
+              : Expanded(
+                  child: ListView.builder(
+                    padding: EdgeInsets.all(0.0),
+                    itemBuilder: (context, index) {
+                      TapGestureRecognizer tapRecognizer =
+                          TapGestureRecognizer()
+                            ..onTap = () => _onViewMoreTap(index);
+                      return Stack(
+                        children: <Widget>[
+                          CustomWidgets().getSolutionRow(missedSolutions, index,
+                              onButtonTap: () =>
+                                  _onSolutionItemTap(missedSolutions[index]),
+                              onViewMoreTap: tapRecognizer),
 //                              Positioned.fill(
 //                                child: Container(
 //                                  decoration: BoxDecoration(
@@ -107,66 +114,69 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 //                                  width: double.infinity,
 //                                ),
 //                              ),
-                            ],
-                          );
-                        },
-                        itemCount: missedSolutions?.length ?? 0,
-                      ),
-                    ),
-              _reminderView(),
-            ],
-          ));
+                        ],
+                      );
+                    },
+                    itemCount: missedSolutions?.length ?? 0,
+                  ),
+                ),
+          _reminderView(),
+        ],
+      );
     }));
   }
 
   _getPreviousView() {
     return Expanded(
-        child: Card(
-            margin: EdgeInsets.all(0.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                (_prevSearchedSolution == null ||
-                        _prevSearchedSolution.data == null ||
-                        _prevSearchedSolution.data.isEmpty ||
-                        _prevSolutions == null ||
-                        _prevSolutions.isEmpty)
-                    ? Expanded(
-                        child: Center(
-                        child: Container(
-                          child: Text(
-                            "You don't have any previous activities",
-                            style: TextStyle(fontSize: AppConfig.smallFont),
-                          ),
-                        ),
-                      ))
-                    : Expanded(
-                        child: ListView.builder(
-                          padding: EdgeInsets.all(0.0),
-                          itemBuilder: (context, index) {
-                            TapGestureRecognizer tapRecognizer =
-                                TapGestureRecognizer()
-                                  ..onTap = () => _onViewMoreTap(index);
-                            return CustomWidgets().getSolutionRow(
-                                _prevSolutions, index,
-                                onButtonTap: () =>
-                                    _onSolutionItemTap(_prevSolutions[index]),
-                                onViewMoreTap: tapRecognizer);
-                          },
-                          itemCount: _prevSolutions?.length ?? 0,
-                        ),
-                      ),
-                Container(
-                    margin: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 2),
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        (_prevSearchedSolution == null ||
+                _prevSearchedSolution.data == null ||
+                _prevSearchedSolution.data.isEmpty ||
+                _prevSolutions == null ||
+                _prevSolutions.isEmpty)
+            ? Expanded(
+                child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 3),
+                      height: AppConfig.verticalBlockSize * 13,
+                      child: Image.asset(PlunesImages.previousAct)),
+                  Container(
                     child: Text(
-                      'Missed Negotiations',
-                      style: TextStyle(
-                          fontSize: AppConfig.mediumFont + 2,
-                          fontWeight: FontWeight.w500),
-                    ))
-              ],
-            )));
+                      "You don't have any previous activities",
+                      style: TextStyle(fontSize: AppConfig.smallFont),
+                    ),
+                  ),
+                ],
+              ))
+            : Expanded(
+                child: ListView.builder(
+                  padding: EdgeInsets.all(0.0),
+                  itemBuilder: (context, index) {
+                    TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
+                      ..onTap = () => _onViewMoreTap(index);
+                    return CustomWidgets().getSolutionRow(_prevSolutions, index,
+                        onButtonTap: () =>
+                            _onSolutionItemTap(_prevSolutions[index]),
+                        onViewMoreTap: tapRecognizer);
+                  },
+                  itemCount: _prevSolutions?.length ?? 0,
+                ),
+              ),
+        Container(
+            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+            child: Text(
+              'Missed Negotiations',
+              style: TextStyle(
+                  fontSize: AppConfig.mediumFont + 2,
+                  fontWeight: FontWeight.w500),
+            ))
+      ],
+    ));
   }
 
   void _getPreviousSolutions() async {
