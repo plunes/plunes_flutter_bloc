@@ -82,6 +82,8 @@ class PlunesImages {
   static const String achievement_placeholder =
       "assets/images/achievement_placeholder.png";
   static const String doc_placeholder = "assets/images/doc_placeholder.png";
+  static const String prev_missed_act_icon =
+      "assets/images/prev_missed_act_icon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',
