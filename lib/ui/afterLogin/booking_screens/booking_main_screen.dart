@@ -155,12 +155,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             child: _getDoctorDetailsView(),
           ),
           CustomWidgets().getSeparatorLine(),
-//          Container(
-//            margin: EdgeInsets.only(
-//                top: AppConfig.verticalBlockSize * .1,
-//                bottom: AppConfig.verticalBlockSize * .1),
-//            child:,
-//          ),
           Container(
             alignment: Alignment.center,
             padding: EdgeInsets.symmetric(
@@ -448,9 +442,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                         ? PlunesColors.GREENCOLOR
                         : PlunesColors.BLACKCOLOR,
                     fontSize: AppConfig.mediumFont,
-//                    decoration: isSelectedTimeSlot
-//                        ? TextDecoration.underline
-//                        : TextDecoration.none,
                     decorationThickness: 1.5),
               ),
             )),
@@ -461,7 +452,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             style: TextStyle(
                 color: selectedColor != null
                     ? selectedColor
-                    : PlunesColors.GREENCOLOR,
+                    : PlunesColors.GREYCOLOR,
                 fontSize: AppConfig.mediumFont),
           ),
         ),
