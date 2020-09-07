@@ -688,6 +688,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
           .getWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER)) {
         Future.delayed(Duration(seconds: 1)).then((value) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER);
             _showPopupForUser();
           });
         });
@@ -697,6 +698,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
           .getWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF)) {
         Future.delayed(Duration(seconds: 1)).then((value) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF);
             _showPopupForProf();
           });
         });
@@ -713,7 +715,6 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
               globalKey: _scaffoldKey);
         }).then((value) {
       if (value != null && value.toString() == PlunesStrings.watch) {
-        UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -732,7 +733,6 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
               globalKey: _scaffoldKey);
         }).then((value) {
       if (value != null && value.toString() == PlunesStrings.watch) {
-        UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER);
         Navigator.push(
             context,
             MaterialPageRoute(
