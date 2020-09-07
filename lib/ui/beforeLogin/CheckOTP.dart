@@ -8,6 +8,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:quiver/async.dart';
+import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 import 'ChangePassword.dart';
 import 'Registration.dart';
 
@@ -32,6 +33,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
   bool progress = false, time = true, resend = false, errorMsg = false;
   int _start = 60, _current = 60;
   CountdownTimer countDownTimer;
+  TextEditingController pinPutController;
   UserBloc _userBloc;
 
   void _checkOTP(String pin, BuildContext context) async {
@@ -90,6 +92,9 @@ class _CheckOTPState extends BaseState<CheckOTP> {
     _userBloc = UserBloc();
     startTimer();
     super.initState();
+    pinPutController = TextEditingController();
+    _getAppSignature();
+    _startListeningSms();
   }
 
   void startTimer() {
@@ -119,6 +124,7 @@ class _CheckOTPState extends BaseState<CheckOTP> {
     _userBloc?.dispose();
     countDownTimer?.cancel();
     super.dispose();
+    SmsRetrieved.stopListening();
   }
 
   @override
@@ -134,48 +140,53 @@ class _CheckOTPState extends BaseState<CheckOTP> {
             child: widget.createTextViews(plunesStrings.enterYourOTPMsg, 22,
                 colorsFile.black0, TextAlign.center, FontWeight.normal),
           ),
-          Container(
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 60.0, right: 20, top: 70, bottom: 0),
-              child: Center(
-                child: PinPut(
-                  fieldsCount: 4,
-                  autoFocus: true,
-                  spaceBetween: 20,
-                  textStyle: TextStyle(
-                    color: Color(
-                        CommonMethods.getColorHexFromStr(colorsFile.black0)),
-                    fontSize: 22,
-                  ),
-                  onSubmit: (String pin) => _checkOTP(pin, context),
-                  keyboardType: TextInputType.phone,
-                  inputDecoration: InputDecoration(
-                    counterText: "",
-                    contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-                    focusedBorder: UnderlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(10.0),
+          pinPutController == null
+              ? Container(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                        left: 60.0, right: 20, top: 70, bottom: 0),
+                    child: Center(
+                      child: PinPut(
+                        fieldsCount: 4,
+                        autoFocus: true,
+                        spaceBetween: 20,
+                        textStyle: TextStyle(
+                          color: Color(CommonMethods.getColorHexFromStr(
+                              colorsFile.black0)),
+                          fontSize: 22,
+                        ),
+                        onSubmit: (String pin) => _checkOTP(pin, context),
+                        keyboardType: TextInputType.phone,
+                        inputDecoration: InputDecoration(
+                          counterText: "",
+                          contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                          focusedBorder: UnderlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                            borderSide: BorderSide(
+                                color: Color(hexColorCode.defaultGreen),
+                                width: 3.0),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                            borderSide: BorderSide(
+                                color: Color(hexColorCode.defaultGreen),
+                                width: 3.0),
+                          ),
+                        ),
+                        clearButtonIcon:
+                            Icon(Icons.clear, color: Colors.transparent),
+                        pasteButtonIcon: Icon(Icons.content_paste,
+                            color: Colors.transparent),
                       ),
-                      borderSide: BorderSide(
-                          color: Color(hexColorCode.defaultGreen), width: 3.0),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(10.0),
-                      ),
-                      borderSide: BorderSide(
-                          color: Color(hexColorCode.defaultGreen), width: 3.0),
                     ),
                   ),
-                  clearButtonIcon: Icon(Icons.clear, color: Colors.transparent),
-                  pasteButtonIcon:
-                      Icon(Icons.content_paste, color: Colors.transparent),
-                ),
-              ),
-            ),
-          ),
+                )
+              : Container(),
           Visibility(
             visible: time,
             child: Container(
@@ -240,5 +251,21 @@ class _CheckOTPState extends BaseState<CheckOTP> {
             child: form,
           )),
     );
+  }
+
+  _getAppSignature() async {
+    String signature = await SmsRetrieved.getAppSignature();
+    print("App Hash Key:  $signature");
+  }
+
+  ///Here ListeningSms
+  _startListeningSms() async {
+    String otp = await SmsRetrieved.startListeningSms();
+    if (otp.isNotEmpty || otp != null) {
+      setState(() {
+        pinPutController.text = otp.split(" ")[1];
+        _checkOTP(otp, context);
+      });
+    }
   }
 }

@@ -16,7 +16,6 @@ import 'package:plunes/res/FontFile.dart';
 import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
-
 import 'CheckOTP.dart';
 import 'Login.dart';
 import 'Registration.dart';
