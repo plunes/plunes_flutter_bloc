@@ -69,12 +69,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   bool _isFetchingDocHosInfo, _shouldUseCredit;
   LoginPost _docProfileInfo, _userProfileInfo;
   BookingBloc _bookingBloc;
+  List<String> _slotArray;
 
   @override
   void initState() {
+    _slotArray = [];
     _shouldUseCredit = false;
-    _appointmentTime = "00:00";
-    _notSelectedEntry = _appointmentTime;
+//    _appointmentTime = "00:00";
+//    _notSelectedEntry = _appointmentTime;
     _selectedPaymentType = _paymentTypeCoupon;
     _bookingBloc = BookingBloc();
     _currentDate = DateTime.now();
@@ -87,6 +89,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _getDocHosInfo();
     _getUserInfo();
     _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
+//    _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
   }
 
   @override
@@ -96,15 +99,18 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   void _getSlotsInfo(String dateAsString) {
-    _firstSlotTime = PlunesStrings.NA;
-    _secondSlotTime = _firstSlotTime;
+    _selectedTimeSlot = PlunesStrings.noSlot;
     widget.timeSlots.forEach((slot) {
       if (slot.day.toLowerCase().contains(dateAsString.toLowerCase())) {
-        if (!slot.closed) {
-          if (slot.slots.length >= 1)
-            _firstSlotTime = slot?.slots[0] ?? _firstSlotTime;
-          if (slot.slots.length >= 2)
-            _secondSlotTime = slot?.slots[1] ?? _secondSlotTime;
+        if (!slot.closed &&
+            slot.slotArray != null &&
+            slot.slotArray.isNotEmpty) {
+          _slotArray = slot.slotArray;
+          slot.slotArray.forEach((element) {
+            if (_selectedTimeSlot == PlunesStrings.noSlot) {
+              _checkSelectedSlot(element);
+            }
+          });
         }
       }
     });
@@ -137,6 +143,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   Widget _getBody() {
     return Container(
       child: ListView(
+        shrinkWrap: true,
         children: <Widget>[
           Container(
             alignment: Alignment.center,
@@ -169,10 +176,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           _getDatePicker(),
           widget.getSpacer(AppConfig.verticalBlockSize * 1.5,
               AppConfig.verticalBlockSize * .1),
-          _getSlots(),
-          widget.getSpacer(AppConfig.verticalBlockSize * 2,
+          _getSlotsArray(),
+          widget.getSpacer(AppConfig.verticalBlockSize * 1.5,
               AppConfig.verticalBlockSize * .1),
-          _getSelectedSlot(),
+//          _getSelectedSlot(),
           _getApplyCouponAndCashWidget(),
           _getPayNowWidget()
         ],
@@ -413,7 +420,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         selectionColor: PlunesColors.SPARKLINGGREEN,
         onDateChange: (DateTime selectedDateTime) {
           _selectedDate = selectedDateTime;
-          _appointmentTime = _notSelectedEntry;
+//          _appointmentTime = _notSelectedEntry;
           _getSlotsInfo(DateUtil.getDayAsString(_selectedDate));
 //          print("selected date is ${selectedDateTime.toString()}");
 //          _openTimePicker();
@@ -422,86 +429,86 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     );
   }
 
-  Widget _getSlotInfo(String slotName, String fromAndToText,
-      {bool isSelectedTimeSlot = false, Color selectedColor}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        InkWell(
-            onTap: () {
-              if (isSelectedTimeSlot) {
-                _openTimePicker();
-              }
-            },
-            child: Container(
-              padding: EdgeInsets.all(isSelectedTimeSlot ? 10 : 3.0),
-              child: Text(
-                slotName,
-                style: TextStyle(
-                    color: isSelectedTimeSlot
-                        ? PlunesColors.GREENCOLOR
-                        : PlunesColors.BLACKCOLOR,
-                    fontSize: AppConfig.mediumFont,
-                    decorationThickness: 1.5),
-              ),
-            )),
-        Padding(
-          padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-          child: Text(
-            fromAndToText,
-            style: TextStyle(
-                color: selectedColor != null
-                    ? selectedColor
-                    : PlunesColors.GREYCOLOR,
-                fontSize: AppConfig.mediumFont),
-          ),
-        ),
-        isSelectedTimeSlot
-            ? Container(
-                margin: EdgeInsets.only(
-                    top: AppConfig.verticalBlockSize * .2,
-                    right: isSelectedTimeSlot
-                        ? AppConfig.horizontalBlockSize * 26
-                        : AppConfig.horizontalBlockSize * 3,
-                    left: isSelectedTimeSlot
-                        ? AppConfig.horizontalBlockSize * 26
-                        : AppConfig.horizontalBlockSize * 3),
-                width: double.infinity,
-                height: 0.8,
-                color: selectedColor != null
-                    ? selectedColor
-                    : isSelectedTimeSlot
-                        ? PlunesColors.GREYCOLOR
-                        : PlunesColors.GREENCOLOR,
-              )
-            : Container()
-      ],
-    );
-  }
+//  Widget _getSlotInfo(String slotName, String fromAndToText,
+//      {bool isSelectedTimeSlot = false, Color selectedColor}) {
+//    return Column(
+//      crossAxisAlignment: CrossAxisAlignment.center,
+//      children: <Widget>[
+//        InkWell(
+//            onTap: () {
+//              if (isSelectedTimeSlot) {
+//                _openTimePicker();
+//              }
+//            },
+//            child: Container(
+//              padding: EdgeInsets.all(isSelectedTimeSlot ? 10 : 3.0),
+//              child: Text(
+//                slotName,
+//                style: TextStyle(
+//                    color: isSelectedTimeSlot
+//                        ? PlunesColors.GREENCOLOR
+//                        : PlunesColors.BLACKCOLOR,
+//                    fontSize: AppConfig.mediumFont,
+//                    decorationThickness: 1.5),
+//              ),
+//            )),
+//        Padding(
+//          padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+//          child: Text(
+//            fromAndToText,
+//            style: TextStyle(
+//                color: selectedColor != null
+//                    ? selectedColor
+//                    : PlunesColors.GREYCOLOR,
+//                fontSize: AppConfig.mediumFont),
+//          ),
+//        ),
+//        isSelectedTimeSlot
+//            ? Container(
+//                margin: EdgeInsets.only(
+//                    top: AppConfig.verticalBlockSize * .2,
+//                    right: isSelectedTimeSlot
+//                        ? AppConfig.horizontalBlockSize * 26
+//                        : AppConfig.horizontalBlockSize * 3,
+//                    left: isSelectedTimeSlot
+//                        ? AppConfig.horizontalBlockSize * 26
+//                        : AppConfig.horizontalBlockSize * 3),
+//                width: double.infinity,
+//                height: 0.8,
+//                color: selectedColor != null
+//                    ? selectedColor
+//                    : isSelectedTimeSlot
+//                        ? PlunesColors.GREYCOLOR
+//                        : PlunesColors.GREENCOLOR,
+//              )
+//            : Container()
+//      ],
+//    );
+//  }
 
-  Widget _getSlots() {
-    return Row(
-      children: <Widget>[
-        Expanded(child: _getSlotInfo(PlunesStrings.slot1, _firstSlotTime)),
-        Expanded(child: _getSlotInfo(PlunesStrings.slot2, _secondSlotTime)),
-      ],
-    );
-  }
+//  Widget _getSlots() {
+//    return Row(
+//      children: <Widget>[
+//        Expanded(child: _getSlotInfo(PlunesStrings.slot1, _firstSlotTime)),
+//        Expanded(child: _getSlotInfo(PlunesStrings.slot2, _secondSlotTime)),
+//      ],
+//    );
+//  }
 
-  Widget _getSelectedSlot() {
-    return Row(
-      children: <Widget>[
-        Expanded(
-          child: _getSlotInfo(PlunesStrings.appointmentTime, _appointmentTime,
-              isSelectedTimeSlot: true,
-              selectedColor: _appointmentTime == _notSelectedEntry
-                  ? PlunesColors.GREYCOLOR
-                  : PlunesColors.GREENCOLOR),
-        ),
-//        Expanded(child: Container())
-      ],
-    );
-  }
+//  Widget _getSelectedSlot() {
+//    return Row(
+//      children: <Widget>[
+//        Expanded(
+//          child: _getSlotInfo(PlunesStrings.appointmentTime, _appointmentTime,
+//              isSelectedTimeSlot: true,
+//              selectedColor: _appointmentTime == _notSelectedEntry
+//                  ? PlunesColors.GREYCOLOR
+//                  : PlunesColors.GREENCOLOR),
+//        ),
+////        Expanded(child: Container())
+//      ],
+//    );
+//  }
 
   _getApplyCouponAndCashWidget() {
     return (_userProfileInfo == null ||
@@ -660,9 +667,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   }
                   return InkWell(
                     onTap: () {
-                      (_selectedDate == _tempSelectedDateTime &&
-                              _appointmentTime != _notSelectedEntry &&
-                              _appointmentTime != null)
+                      (_selectedDate != null &&
+                              _selectedTimeSlot != null &&
+                              _selectedTimeSlot != PlunesStrings.noSlot)
                           ? _doPaymentRelatedQueries()
                           : _showErrorMessage(
                               PlunesStrings.pleaseSelectValidSlot);
@@ -674,21 +681,21 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                             ? PlunesStrings.payNow
                             : PlunesStrings.reschedule,
                         AppConfig.horizontalBlockSize * 8,
-                        (_selectedDate == _tempSelectedDateTime &&
-                                _appointmentTime != _notSelectedEntry &&
-                                _appointmentTime != null)
+                        (_selectedDate != null &&
+                                _selectedTimeSlot != null &&
+                                _selectedTimeSlot != PlunesStrings.noSlot)
                             ? PlunesColors.SPARKLINGGREEN
                             : PlunesColors.WHITECOLOR,
                         AppConfig.horizontalBlockSize * 3,
                         AppConfig.verticalBlockSize * 1,
-                        (_selectedDate == _tempSelectedDateTime &&
-                                _appointmentTime != _notSelectedEntry &&
-                                _appointmentTime != null)
+                        (_selectedDate != null &&
+                                _selectedTimeSlot != null &&
+                                _selectedTimeSlot != PlunesStrings.noSlot)
                             ? PlunesColors.WHITECOLOR
                             : PlunesColors.BLACKCOLOR,
-                        hasBorder: (_selectedDate == _tempSelectedDateTime &&
-                                _appointmentTime != _notSelectedEntry &&
-                                _appointmentTime != null)
+                        hasBorder: (_selectedDate != null &&
+                                _selectedTimeSlot != null &&
+                                _selectedTimeSlot != PlunesStrings.noSlot)
                             ? false
                             : true),
                   );
@@ -716,202 +723,202 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     if (mounted) setState(() {});
   }
 
-  void _paymentTypeOnChange(int value) {
-    _selectedPaymentType = value;
-    _setState();
-  }
+//  void _paymentTypeOnChange(int value) {
+//    _selectedPaymentType = value;
+//    _setState();
+//  }
 
-  _openTimePicker() {
-    latest.DatePicker.showTime12hPicker(context, currentTime: _selectedDate,
-        onConfirm: (date) {
-      if (date == null) {
-        return;
-      }
-      _tempSelectedDateTime = date;
-      _timeChooseCallBack();
-    });
-  }
+//  _openTimePicker() {
+//    latest.DatePicker.showTime12hPicker(context, currentTime: _selectedDate,
+//        onConfirm: (date) {
+//      if (date == null) {
+//        return;
+//      }
+//      _tempSelectedDateTime = date;
+//      _timeChooseCallBack();
+//    });
+//  }
 
-  _timeChooseCallBack() {
-//    print(
-//        "${_tempSelectedDateTime.hour} selected Date Time is $_tempSelectedDateTime");
-//    _getSlotsInfo(DateUtil.getDayAsString(_tempSelectedDateTime));
-    _checkAndValidateSelectedTime();
-    _setState();
-    _showPopupForInvalidSlotSelection();
-  }
+//  _timeChooseCallBack() {
+////    print(
+////        "${_tempSelectedDateTime.hour} selected Date Time is $_tempSelectedDateTime");
+////    _getSlotsInfo(DateUtil.getDayAsString(_tempSelectedDateTime));
+//    _checkAndValidateSelectedTime();
+//    _setState();
+//    _showPopupForInvalidSlotSelection();
+//  }
 
-  void _checkAndValidateSelectedTime() {
-    if (widget.timeSlots != null && widget.timeSlots.isNotEmpty) {
-      String selectedDay = DateUtil.getDayAsString(_tempSelectedDateTime);
-      if (selectedDay == PlunesStrings.NA) {
-        AppLog.printError(
-            "${widget.screenName} Day is not parsable day is $selectedDay");
-        return;
-      }
-      bool hasFoundEntry = false;
-      widget.timeSlots.forEach((timeSlot) {
-        if (timeSlot.day.toLowerCase().contains(selectedDay.toLowerCase()) &&
-            !timeSlot.closed) {
-          _setTime(timeSlot);
-          hasFoundEntry = true;
-        }
-      });
-      if (!hasFoundEntry) {
-        _appointmentTime = _notSelectedEntry;
-      }
-    }
-  }
+//  void _checkAndValidateSelectedTime() {
+//    if (widget.timeSlots != null && widget.timeSlots.isNotEmpty) {
+//      String selectedDay = DateUtil.getDayAsString(_tempSelectedDateTime);
+//      if (selectedDay == PlunesStrings.NA) {
+//        AppLog.printError(
+//            "${widget.screenName} Day is not parsable day is $selectedDay");
+//        return;
+//      }
+//      bool hasFoundEntry = false;
+//      widget.timeSlots.forEach((timeSlot) {
+//        if (timeSlot.day.toLowerCase().contains(selectedDay.toLowerCase()) &&
+//            !timeSlot.closed) {
+//          _setTime(timeSlot);
+//          hasFoundEntry = true;
+//        }
+//      });
+//      if (!hasFoundEntry) {
+//        _appointmentTime = _notSelectedEntry;
+//      }
+//    }
+//  }
 
-  void _setTime(TimeSlots timeSlot) {
-    if (timeSlot.slots.length == 1) {
-      widget.showInSnackBar("Oops, Invalid time slot found.",
-          PlunesColors.BLACKCOLOR, scaffoldKey);
-      return;
-    }
-//    print("timeSlot ${timeSlot.slots}");
-    List<String> _firstSlotFromTimeHourMinute =
-        timeSlot.slots[0].split("-")[0].split(" ")[0].split(":");
-    List<String> _firstSlotToTimeHourMinute =
-        timeSlot.slots[0].split("-")[1].split(" ")[0].split(":");
-    List<String> _secondSlotFromTimeHourMinute =
-        timeSlot.slots[1].split("-")[0].split(" ")[0].split(":");
-    List<String> _secondSlotToTimeHourMinute =
-        timeSlot.slots[1].split("-")[1].split(" ")[0].split(":");
-    int _fft = int.tryParse(_firstSlotFromTimeHourMinute[0]);
-    if (timeSlot.slots[0].split("-")[0].contains("PM")) {
-      _fft = _fft + 12;
-    }
-    TimeOfDay _firstFromTime = TimeOfDay(
-        hour: _fft,
-        minute: int.tryParse(_firstSlotFromTimeHourMinute[1].trim()));
-    int _ftt = int.tryParse(_firstSlotToTimeHourMinute[0]);
-    if (timeSlot.slots[1].split("-")[0].contains("PM")) {
-      _ftt = _ftt + 12;
-    }
-    TimeOfDay _firstToTime = TimeOfDay(
-        hour: _ftt, minute: int.tryParse(_firstSlotToTimeHourMinute[1].trim()));
-    int _sft = int.tryParse(_secondSlotFromTimeHourMinute[0]);
-    if (timeSlot.slots[1].split("-")[0].contains("PM")) {
-      _sft = _sft + 12;
-    }
-    TimeOfDay _secondFromTime = TimeOfDay(
-        hour: _sft,
-        minute: int.tryParse(_secondSlotFromTimeHourMinute[1].trim()));
-    int _stt = int.tryParse(_secondSlotToTimeHourMinute[0]);
-    if (timeSlot.slots[1].split("-")[1].contains("PM")) {
-      _stt = _stt + 12;
-    }
-    TimeOfDay _secondToTime = TimeOfDay(
-        hour: _stt,
-        minute: int.tryParse(_secondSlotToTimeHourMinute[1].trim()));
+//  void _setTime(TimeSlots timeSlot) {
+//    if (timeSlot.slots.length == 1) {
+//      widget.showInSnackBar("Oops, Invalid time slot found.",
+//          PlunesColors.BLACKCOLOR, scaffoldKey);
+//      return;
+//    }
+////    print("timeSlot ${timeSlot.slots}");
+//    List<String> _firstSlotFromTimeHourMinute =
+//        timeSlot.slots[0].split("-")[0].split(" ")[0].split(":");
+//    List<String> _firstSlotToTimeHourMinute =
+//        timeSlot.slots[0].split("-")[1].split(" ")[0].split(":");
+//    List<String> _secondSlotFromTimeHourMinute =
+//        timeSlot.slots[1].split("-")[0].split(" ")[0].split(":");
+//    List<String> _secondSlotToTimeHourMinute =
+//        timeSlot.slots[1].split("-")[1].split(" ")[0].split(":");
+//    int _fft = int.tryParse(_firstSlotFromTimeHourMinute[0]);
+//    if (timeSlot.slots[0].split("-")[0].contains("PM")) {
+//      _fft = _fft + 12;
+//    }
+//    TimeOfDay _firstFromTime = TimeOfDay(
+//        hour: _fft,
+//        minute: int.tryParse(_firstSlotFromTimeHourMinute[1].trim()));
+//    int _ftt = int.tryParse(_firstSlotToTimeHourMinute[0]);
+//    if (timeSlot.slots[1].split("-")[0].contains("PM")) {
+//      _ftt = _ftt + 12;
+//    }
+//    TimeOfDay _firstToTime = TimeOfDay(
+//        hour: _ftt, minute: int.tryParse(_firstSlotToTimeHourMinute[1].trim()));
+//    int _sft = int.tryParse(_secondSlotFromTimeHourMinute[0]);
+//    if (timeSlot.slots[1].split("-")[0].contains("PM")) {
+//      _sft = _sft + 12;
+//    }
+//    TimeOfDay _secondFromTime = TimeOfDay(
+//        hour: _sft,
+//        minute: int.tryParse(_secondSlotFromTimeHourMinute[1].trim()));
+//    int _stt = int.tryParse(_secondSlotToTimeHourMinute[0]);
+//    if (timeSlot.slots[1].split("-")[1].contains("PM")) {
+//      _stt = _stt + 12;
+//    }
+//    TimeOfDay _secondToTime = TimeOfDay(
+//        hour: _stt,
+//        minute: int.tryParse(_secondSlotToTimeHourMinute[1].trim()));
+//
+//    ///slots calling
+//    bool isValidEntryFilled = false;
+//    if (timeSlot.slots[0] != null && timeSlot.slots[0].isNotEmpty)
+//      isValidEntryFilled = _validateTimeSlotWise(_firstFromTime, _firstToTime);
+//    if (isValidEntryFilled) {
+//      _selectedTimeSlot = timeSlot.slots[0];
+//    }
+//    if (!isValidEntryFilled &&
+//        timeSlot.slots[1] != null &&
+//        timeSlot.slots[1].isNotEmpty) {
+//      isValidEntryFilled =
+//          _validateTimeSlotWise(_secondFromTime, _secondToTime);
+//      if (isValidEntryFilled) {
+//        _selectedTimeSlot = timeSlot.slots[1];
+//      }
+//    }
+//    if (!isValidEntryFilled) {
+//      _appointmentTime = _notSelectedEntry;
+//    } else {
+//      _selectedDate = _tempSelectedDateTime;
+//    }
+//  }
 
-    ///slots calling
-    bool isValidEntryFilled = false;
-    if (timeSlot.slots[0] != null && timeSlot.slots[0].isNotEmpty)
-      isValidEntryFilled = _validateTimeSlotWise(_firstFromTime, _firstToTime);
-    if (isValidEntryFilled) {
-      _selectedTimeSlot = timeSlot.slots[0];
-    }
-    if (!isValidEntryFilled &&
-        timeSlot.slots[1] != null &&
-        timeSlot.slots[1].isNotEmpty) {
-      isValidEntryFilled =
-          _validateTimeSlotWise(_secondFromTime, _secondToTime);
-      if (isValidEntryFilled) {
-        _selectedTimeSlot = timeSlot.slots[1];
-      }
-    }
-    if (!isValidEntryFilled) {
-      _appointmentTime = _notSelectedEntry;
-    } else {
-      _selectedDate = _tempSelectedDateTime;
-    }
-  }
-
-  bool _validateTimeSlotWise(TimeOfDay fromDuration, TimeOfDay toDuration) {
-    bool isValidEntryFilled = false;
-    var _dateNow = DateTime.now();
-    String appointmentTime =
-        DateUtil.getTimeWithAmAndPmFormat(_tempSelectedDateTime);
-    List<String> _hourNMinute = appointmentTime.split(":");
-    int _selectedHour = int.tryParse(_hourNMinute[0]);
-    if (_selectedHour == 12 && appointmentTime.contains("AM")) {
-      return isValidEntryFilled;
-    }
-    if (appointmentTime.contains("PM") && _selectedHour != 12) {
-      _selectedHour = _selectedHour + 12;
-    }
-//    print(
-//        "${fromDuration.toString()}appointment ${toDuration.toString()}time ${appointmentTime}");
-    TimeOfDay _selectedTime = TimeOfDay(
-        hour: _selectedHour,
-        minute: int.tryParse(_hourNMinute[1].trim().split(" ")[0]));
-//    print("_selectedTime ${_selectedTime.toString()}");
-    if (_selectedTime.hour >= fromDuration.hour &&
-        _selectedTime.hour <= toDuration.hour &&
-        _tempSelectedDateTime.day == _dateNow.day &&
-        _selectedTime.hour >= _dateNow.hour) {
-      //same day same hour case handled
-      if (_selectedTime.hour == _dateNow.hour &&
-          _selectedTime.minute >= _dateNow.minute) {
-        //make it true
-        ///repeated ///
-        if (_selectedTime.hour == toDuration.hour) {
-          if (_selectedTime.minute <= toDuration.minute) {
-            _appointmentTime = appointmentTime;
-            isValidEntryFilled = true;
-          }
-        } else if (_selectedTime.hour == fromDuration.hour) {
-          if (_selectedTime.minute >= fromDuration.minute) {
-            _appointmentTime = appointmentTime;
-            isValidEntryFilled = true;
-          }
-        } else {
-          _appointmentTime = appointmentTime;
-          isValidEntryFilled = true;
-        }
-      } else if (_selectedTime.hour > _dateNow.hour) {
-        //success
-        ///repeated ///
-        if (_selectedTime.hour == toDuration.hour) {
-          if (_selectedTime.minute <= toDuration.minute) {
-            _appointmentTime = appointmentTime;
-            isValidEntryFilled = true;
-          }
-        } else if (_selectedTime.hour == fromDuration.hour) {
-          if (_selectedTime.minute >= fromDuration.minute) {
-            _appointmentTime = appointmentTime;
-            isValidEntryFilled = true;
-          }
-        } else {
-          _appointmentTime = appointmentTime;
-          isValidEntryFilled = true;
-        }
-
-        ///repeated ///
-      }
-    } else if (_tempSelectedDateTime.day != _dateNow.day &&
-        _selectedTime.hour >= fromDuration.hour &&
-        _selectedTime.hour <= toDuration.hour) {
-      if (_selectedTime.hour == toDuration.hour) {
-        if (_selectedTime.minute <= toDuration.minute) {
-          _appointmentTime = appointmentTime;
-          isValidEntryFilled = true;
-        }
-      } else if (_selectedTime.hour == fromDuration.hour) {
-        if (_selectedTime.minute >= fromDuration.minute) {
-          _appointmentTime = appointmentTime;
-          isValidEntryFilled = true;
-        }
-      } else {
-        _appointmentTime = appointmentTime;
-        isValidEntryFilled = true;
-      }
-      //success
-    }
-    return isValidEntryFilled;
-  }
+//  bool _validateTimeSlotWise(TimeOfDay fromDuration, TimeOfDay toDuration) {
+//    bool isValidEntryFilled = false;
+//    var _dateNow = DateTime.now();
+//    String appointmentTime =
+//        DateUtil.getTimeWithAmAndPmFormat(_tempSelectedDateTime);
+//    List<String> _hourNMinute = appointmentTime.split(":");
+//    int _selectedHour = int.tryParse(_hourNMinute[0]);
+//    if (_selectedHour == 12 && appointmentTime.contains("AM")) {
+//      return isValidEntryFilled;
+//    }
+//    if (appointmentTime.contains("PM") && _selectedHour != 12) {
+//      _selectedHour = _selectedHour + 12;
+//    }
+////    print(
+////        "${fromDuration.toString()}appointment ${toDuration.toString()}time ${appointmentTime}");
+//    TimeOfDay _selectedTime = TimeOfDay(
+//        hour: _selectedHour,
+//        minute: int.tryParse(_hourNMinute[1].trim().split(" ")[0]));
+////    print("_selectedTime ${_selectedTime.toString()}");
+//    if (_selectedTime.hour >= fromDuration.hour &&
+//        _selectedTime.hour <= toDuration.hour &&
+//        _tempSelectedDateTime.day == _dateNow.day &&
+//        _selectedTime.hour >= _dateNow.hour) {
+//      //same day same hour case handled
+//      if (_selectedTime.hour == _dateNow.hour &&
+//          _selectedTime.minute >= _dateNow.minute) {
+//        //make it true
+//        ///repeated ///
+//        if (_selectedTime.hour == toDuration.hour) {
+//          if (_selectedTime.minute <= toDuration.minute) {
+//            _appointmentTime = appointmentTime;
+//            isValidEntryFilled = true;
+//          }
+//        } else if (_selectedTime.hour == fromDuration.hour) {
+//          if (_selectedTime.minute >= fromDuration.minute) {
+//            _appointmentTime = appointmentTime;
+//            isValidEntryFilled = true;
+//          }
+//        } else {
+//          _appointmentTime = appointmentTime;
+//          isValidEntryFilled = true;
+//        }
+//      } else if (_selectedTime.hour > _dateNow.hour) {
+//        //success
+//        ///repeated ///
+//        if (_selectedTime.hour == toDuration.hour) {
+//          if (_selectedTime.minute <= toDuration.minute) {
+//            _appointmentTime = appointmentTime;
+//            isValidEntryFilled = true;
+//          }
+//        } else if (_selectedTime.hour == fromDuration.hour) {
+//          if (_selectedTime.minute >= fromDuration.minute) {
+//            _appointmentTime = appointmentTime;
+//            isValidEntryFilled = true;
+//          }
+//        } else {
+//          _appointmentTime = appointmentTime;
+//          isValidEntryFilled = true;
+//        }
+//
+//        ///repeated ///
+//      }
+//    } else if (_tempSelectedDateTime.day != _dateNow.day &&
+//        _selectedTime.hour >= fromDuration.hour &&
+//        _selectedTime.hour <= toDuration.hour) {
+//      if (_selectedTime.hour == toDuration.hour) {
+//        if (_selectedTime.minute <= toDuration.minute) {
+//          _appointmentTime = appointmentTime;
+//          isValidEntryFilled = true;
+//        }
+//      } else if (_selectedTime.hour == fromDuration.hour) {
+//        if (_selectedTime.minute >= fromDuration.minute) {
+//          _appointmentTime = appointmentTime;
+//          isValidEntryFilled = true;
+//        }
+//      } else {
+//        _appointmentTime = appointmentTime;
+//        isValidEntryFilled = true;
+//      }
+//      //success
+//    }
+//    return isValidEntryFilled;
+//  }
 
   void _getDocHosInfo() async {
     _isFetchingDocHosInfo = true;
@@ -938,7 +945,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   ///payment methods
   _initPayment(PaymentSelector paymentSelector) async {
-//    print(paymentSelector.toString());
+//    print("$_selectedTimeSlot _selectedTimeSlot _selectedDate $_selectedDate");
 //    print(DateUtil.getTimeWithAmAndPmFormat(_selectedDate));
     InitPayment _initPayment = InitPayment(
         appointmentTime:
@@ -1076,9 +1083,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   void _showPopupForInvalidSlotSelection() {
-    if (_appointmentTime != _notSelectedEntry) {
-      return;
-    }
+//    if (_appointmentTime != _notSelectedEntry) {
+//      return;
+//    }
     Future.delayed(Duration(milliseconds: 300)).then((value) {
       showDialog(
           context: context,
@@ -1092,17 +1099,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-//                    Container(
-//                      alignment: Alignment.topRight,
-//                      child: InkWell(
-//                        onTap: () => Navigator.of(context).pop(),
-//                        onDoubleTap: () {},
-//                        child: Padding(
-//                          padding: const EdgeInsets.all(10),
-//                          child: Icon(Icons.close),
-//                        ),
-//                      ),
-//                    ),
                     Container(
                         height: AppConfig.verticalBlockSize * 10,
                         margin: EdgeInsets.symmetric(
@@ -1124,35 +1120,192 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       ),
                     ),
                     CustomWidgets().getSingleCommonButton(context, 'Ok')
-//                    Container(
-//                      height: 0.5,
-//                      width: double.infinity,
-//                      color: PlunesColors.GREYCOLOR,
-//                      margin:
-//                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
-//                    ),
-//                    FlatButton(
-//                        splashColor:
-//                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-//                        highlightColor:
-//                            PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-//                        focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-//                        onPressed: () => Navigator.of(context).pop(),
-//                        child: Container(
-//                            width: double.infinity,
-//                            child: Text(
-//                              "OK",
-//                              textAlign: TextAlign.center,
-//                              style: TextStyle(
-//                                  fontSize: AppConfig.mediumFont,
-//                                  color: PlunesColors.SPARKLINGGREEN),
-//                            ))),
                   ],
                 ),
               ),
             );
           });
     });
+  }
+
+  Widget _getSlotsArray() {
+    return Container(
+        height: AppConfig.verticalBlockSize * 12,
+        child: (_selectedTimeSlot == null ||
+                _selectedTimeSlot == PlunesStrings.noSlot)
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 1),
+                        child: Image.asset(
+                          PlunesImages.noSlotAvailableImage,
+                        )),
+                  ),
+                  Text(
+                    "Closed",
+                    style: TextStyle(
+                        color: PlunesColors.GREYCOLOR,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500),
+                  ),
+                ],
+              )
+            : Row(
+                children: <Widget>[
+                  Padding(
+                    child: Icon(
+                      Icons.navigate_before,
+                      color: PlunesColors.GREYCOLOR,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 2),
+                  ),
+                  Expanded(
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio: 0.5,
+                          mainAxisSpacing: 5,
+                          crossAxisSpacing: 5),
+                      itemBuilder: (_, index) {
+                        return InkWell(
+                          onTap: () {
+                            _checkSelectedSlot(_slotArray[index],
+                                shouldShowPopup: true);
+                            _setState();
+                            return;
+                          },
+                          child: _getTimeBoxWidget(_slotArray[index],
+                              _slotArray[index] == _selectedTimeSlot),
+                        );
+                      },
+                      itemCount: _slotArray?.length ?? 0,
+                    ),
+                  ),
+                  Padding(
+                    child: Icon(
+                      Icons.navigate_next,
+                      color: PlunesColors.GREYCOLOR,
+                    ),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 2),
+                  ),
+                ],
+              ));
+  }
+
+  Widget _getTimeBoxWidget(String time, bool isSelected) {
+    return Container(
+      decoration: BoxDecoration(
+          color: PlunesColors.WHITECOLOR,
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          border: Border.all(
+              color:
+                  isSelected ? PlunesColors.GREENCOLOR : PlunesColors.GREYCOLOR,
+              width: 1)),
+      child: Center(
+          child: Text(
+        time ?? "",
+        style: TextStyle(
+            color:
+                isSelected ? PlunesColors.GREENCOLOR : PlunesColors.GREYCOLOR,
+            fontWeight: FontWeight.normal,
+            fontSize: 12),
+      )),
+    );
+  }
+
+  _checkSelectedSlot(String selectedTime, {bool shouldShowPopup = false}) {
+    try {
+      var _currentDateTime = DateTime.now();
+      List<String> splitTime = selectedTime.split(":");
+      int _pmTime = 0;
+      if (selectedTime.contains("PM") && splitTime.first != "12") {
+//        print("contains pm");
+        _pmTime = 12;
+      }
+      if (_selectedDate != null &&
+          (_selectedDate.year == _currentDateTime.year &&
+              _selectedDate.month == _currentDateTime.month &&
+              _selectedDate.day == _currentDateTime.day)) {
+        List<String> lastTimeOfBooking =
+            _slotArray[_slotArray.length - 1].split(":");
+        List<String> _currentTimeOfBooking =
+            DateUtil.getTimeWithAmAndPmFormat(_currentDateTime).split(":");
+        _currentDateTime = DateTime(
+            _currentDateTime.year,
+            _currentDateTime.month,
+            _currentDateTime.day,
+            int.tryParse(_currentTimeOfBooking.first),
+            int.tryParse(_currentTimeOfBooking[1]
+                .substring(0, _currentTimeOfBooking[1].indexOf(" "))));
+//        print("$lastTimeOfBooking lastTimeOfBooking hello $splitTime");
+        var _selectedDateTime = DateTime(
+            _currentDateTime.year,
+            _currentDateTime.month,
+            _currentDateTime.day,
+            int.tryParse(splitTime.first),
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+        var _todayLatBookingDateTime = DateTime(
+            _currentDateTime.year,
+            _currentDateTime.month,
+            _currentDateTime.day,
+            int.tryParse(lastTimeOfBooking.first),
+            int.tryParse(lastTimeOfBooking[1]
+                .substring(0, lastTimeOfBooking[1].indexOf(" "))));
+        if ((_selectedDateTime.isAfter(_currentDateTime) ||
+                (_selectedDateTime.difference(_currentDateTime)).inMinutes ==
+                    0) &&
+            _selectedDateTime.isBefore(_todayLatBookingDateTime)) {
+          _selectedTimeSlot = selectedTime;
+          _selectedDate = DateTime(
+              _selectedDate.year,
+              _selectedDate.month,
+              _selectedDate.day,
+              (_pmTime + int.tryParse(splitTime.first)),
+              int.tryParse(
+                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+//          print("valid");
+        } else if ((_selectedDateTime.isBefore(_todayLatBookingDateTime) ||
+                (_selectedDateTime.difference(_todayLatBookingDateTime))
+                        .inMinutes ==
+                    0) &&
+            (_selectedDateTime.isAfter(_currentDateTime))) {
+          _selectedTimeSlot = selectedTime;
+          _selectedDate = DateTime(
+              _selectedDate.year,
+              _selectedDate.month,
+              _selectedDate.day,
+              (_pmTime + int.tryParse(splitTime.first)),
+              int.tryParse(
+                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+//          print("valid");
+        } else {
+          if (shouldShowPopup) {
+            _showPopupForInvalidSlotSelection();
+          }
+//          print("invalid slot");
+        }
+      } else {
+//        print("else part");
+        _selectedTimeSlot = selectedTime;
+        _selectedDate = DateTime(
+            _selectedDate.year,
+            _selectedDate.month,
+            _selectedDate.day,
+            (_pmTime + int.tryParse(splitTime.first)),
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+      }
+    } catch (e, s) {
+//      print("error hai $s");
+    }
   }
 }
 

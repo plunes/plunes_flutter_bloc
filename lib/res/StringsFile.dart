@@ -349,6 +349,7 @@ class PlunesStrings {
       "Sorry, the facilities of selected speciality aren't available currently";
   static const String reviewYourExpr = "Review your experience";
   static const String watch = "Watch";
+  static const String noSlot = "No slot";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

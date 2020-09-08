@@ -219,19 +219,20 @@ class Services {
 }
 
 class TimeSlots {
-  List<String> slots;
+  List<String> slots, slotArray;
   String day;
   bool closed;
 
   @override
   String toString() {
-    return 'TimeSlots{slots: $slots, day: $day, closed: $closed}';
+    return 'TimeSlots{slots: $slots, day: $day, closed: $closed slotArray: $slotArray}';
   }
 
-  TimeSlots({this.slots, this.day, this.closed});
+  TimeSlots({this.slots, this.day, this.closed, this.slotArray});
 
   TimeSlots.fromJson(Map<String, dynamic> json) {
-    slots = json['slots'].cast<String>();
+    slots = json['slots']?.cast<String>();
+    slotArray = json['slotArray']?.cast<String>();
     day = json['day'];
     closed = json['closed'];
   }
