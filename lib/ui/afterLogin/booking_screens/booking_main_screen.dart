@@ -70,11 +70,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   LoginPost _docProfileInfo, _userProfileInfo;
   BookingBloc _bookingBloc;
   List<String> _slotArray;
+  ScrollController _scrollController;
 
   @override
   void initState() {
     _slotArray = [];
     _shouldUseCredit = false;
+    _scrollController = ScrollController();
 //    _appointmentTime = "00:00";
 //    _notSelectedEntry = _appointmentTime;
     _selectedPaymentType = _paymentTypeCoupon;
@@ -174,11 +176,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             ),
           ),
           _getDatePicker(),
-          widget.getSpacer(AppConfig.verticalBlockSize * 1.5,
-              AppConfig.verticalBlockSize * .1),
+          widget.getSpacer(AppConfig.verticalBlockSize * 1.8,
+              AppConfig.verticalBlockSize * 1.8),
           _getSlotsArray(),
-          widget.getSpacer(AppConfig.verticalBlockSize * 1.5,
-              AppConfig.verticalBlockSize * .1),
+          widget.getSpacer(
+              AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
 //          _getSelectedSlot(),
           _getApplyCouponAndCashWidget(),
           _getPayNowWidget()
@@ -398,8 +400,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             _docProfileInfo.user.latitude.isEmpty ||
             _docProfileInfo.user.latitude == null ||
             _docProfileInfo.user.latitude.isEmpty)
-        ? widget.showInSnackBar(PlunesStrings.locationNotAvailable,
-            PlunesColors.BLACKCOLOR, scaffoldKey)
+        ? _showInSnackBar(PlunesStrings.locationNotAvailable)
         : LauncherUtil.openMap(double.tryParse(_docProfileInfo.user.latitude),
             double.tryParse(_docProfileInfo.user.longitude));
   }
@@ -645,23 +646,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       snapshot.data is RequestSuccess) {
                     Future.delayed(Duration(milliseconds: 20))
                         .then((value) async {
-                      widget.showInSnackBar(
-                          PlunesStrings.rescheduledSuccessMessage,
-                          PlunesColors.BLACKCOLOR,
-                          scaffoldKey);
-                      await Future.delayed(Duration(milliseconds: 250));
-                      Navigator.pop(context);
+                      _showInSnackBar(PlunesStrings.rescheduledSuccessMessage,
+                          shouldPop: true);
                     });
                   }
                   if (snapshot.data != null && snapshot.data is RequestFailed) {
                     RequestFailed requestFailed = snapshot.data;
                     Future.delayed(Duration(milliseconds: 20))
                         .then((value) async {
-                      widget.showInSnackBar(
-                          requestFailed.failureCause ??
-                              PlunesStrings.rescheduledFailedMessage,
-                          PlunesColors.BLACKCOLOR,
-                          scaffoldKey);
+                      _showInSnackBar(requestFailed.failureCause ??
+                          PlunesStrings.rescheduledFailedMessage);
                     });
                     _bookingBloc.addStateInRescheduledProvider(null);
                   }
@@ -671,7 +665,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                               _selectedTimeSlot != null &&
                               _selectedTimeSlot != PlunesStrings.noSlot)
                           ? _doPaymentRelatedQueries()
-                          : _showErrorMessage(
+                          : _showInSnackBar(
                               PlunesStrings.pleaseSelectValidSlot);
                       return;
                     },
@@ -1009,21 +1003,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 Navigator.pop(context, "pop");
               });
             } else if (val.toString().contains("fail")) {
-              widget.showInSnackBar(
-                  "Payment Failed", PlunesColors.BLACKCOLOR, scaffoldKey);
+              _showInSnackBar("Payment Failed");
             } else if (val.toString().contains("cancel")) {
-              widget.showInSnackBar(
-                  "Payment Cancelled", PlunesColors.BLACKCOLOR, scaffoldKey);
+              _showInSnackBar("Payment Cancelled");
             }
           });
         }
       } else {
-        widget.showInSnackBar(
-            _initPaymentResponse.message, Colors.red, scaffoldKey);
+        _showInSnackBar(_initPaymentResponse.message);
       }
     } else if (_requestState is RequestFailed) {
-      widget.showInSnackBar(
-          _requestState.failureCause, PlunesColors.BLACKCOLOR, scaffoldKey);
+      _showInSnackBar(_requestState.failureCause);
     }
   }
 
@@ -1052,7 +1042,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   ///payment methods end
   _showErrorMessage(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+    _showInSnackBar(message);
   }
 
   _calcPriceToShow() {
@@ -1130,7 +1120,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   Widget _getSlotsArray() {
     return Container(
-        height: AppConfig.verticalBlockSize * 12,
+//      color: Colors.redAccent,
+        height: AppConfig.verticalBlockSize * 10.5,
         child: (_selectedTimeSlot == null ||
                 _selectedTimeSlot == PlunesStrings.noSlot)
             ? Column(
@@ -1148,31 +1139,42 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   Text(
                     "Closed",
                     style: TextStyle(
-                        color: PlunesColors.GREYCOLOR,
-                        fontSize: 15,
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#434343")),
+                        fontSize: AppConfig.smallFont,
                         fontWeight: FontWeight.w500),
                   ),
                 ],
               )
             : Row(
                 children: <Widget>[
-                  Padding(
-                    child: Icon(
-                      Icons.navigate_before,
-                      color: PlunesColors.GREYCOLOR,
+                  InkWell(
+                    onTap: () {
+                      _scrollController
+                          .jumpTo(_scrollController.position.minScrollExtent);
+                      return;
+                    },
+                    child: Padding(
+                      child: Icon(
+                        Icons.navigate_before,
+                        color: PlunesColors.GREYCOLOR,
+                      ),
+                      padding: EdgeInsets.only(
+                          right: AppConfig.horizontalBlockSize * 2,
+                          top: AppConfig.horizontalBlockSize * 2,
+                          bottom: AppConfig.horizontalBlockSize * 2),
                     ),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 2),
                   ),
                   Expanded(
                     child: GridView.builder(
                       shrinkWrap: true,
                       scrollDirection: Axis.horizontal,
+                      controller: _scrollController,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.5,
-                          mainAxisSpacing: 5,
-                          crossAxisSpacing: 5),
+                          childAspectRatio: 0.65,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8),
                       itemBuilder: (_, index) {
                         return InkWell(
                           onTap: () {
@@ -1188,13 +1190,22 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       itemCount: _slotArray?.length ?? 0,
                     ),
                   ),
-                  Padding(
-                    child: Icon(
-                      Icons.navigate_next,
-                      color: PlunesColors.GREYCOLOR,
+                  InkWell(
+                    onTap: () {
+                      _scrollController
+                          .jumpTo(_scrollController.position.maxScrollExtent);
+                      return;
+                    },
+                    child: Padding(
+                      child: Icon(
+                        Icons.navigate_next,
+                        color: PlunesColors.GREYCOLOR,
+                      ),
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 2,
+                          top: AppConfig.horizontalBlockSize * 2,
+                          bottom: AppConfig.horizontalBlockSize * 2),
                     ),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 2),
                   ),
                 ],
               ));
@@ -1205,19 +1216,22 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       decoration: BoxDecoration(
           color: PlunesColors.WHITECOLOR,
           shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: BorderRadius.all(Radius.circular(5)),
           border: Border.all(
-              color:
-                  isSelected ? PlunesColors.GREENCOLOR : PlunesColors.GREYCOLOR,
+              color: isSelected
+                  ? PlunesColors.GREENCOLOR
+                  : Color(CommonMethods.getColorHexFromStr("#D2D2D2")),
               width: 1)),
       child: Center(
           child: Text(
         time ?? "",
+        textAlign: TextAlign.center,
         style: TextStyle(
-            color:
-                isSelected ? PlunesColors.GREENCOLOR : PlunesColors.GREYCOLOR,
+            color: isSelected
+                ? PlunesColors.GREENCOLOR
+                : Color(CommonMethods.getColorHexFromStr("#9C9C9C")),
             fontWeight: FontWeight.normal,
-            fontSize: 12),
+            fontSize: 10),
       )),
     );
   }
@@ -1306,6 +1320,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     } catch (e, s) {
 //      print("error hai $s");
     }
+  }
+
+  void _showInSnackBar(String message, {bool shouldPop = false}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: scaffoldKey, message: message);
+        }).then((value) {
+      if (shouldPop) {
+        Navigator.pop(context);
+      }
+    });
   }
 }
 
