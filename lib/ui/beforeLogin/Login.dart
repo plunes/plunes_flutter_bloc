@@ -331,13 +331,49 @@ class _LoginState extends State<Login> implements DialogCallBack {
             title: new Text('Are you sure?'),
             content: new Text('Do you want to exit'),
             actions: <Widget>[
-              new FlatButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: new Text('No'),
+              Container(
+                height: AppConfig.verticalBlockSize * 6,
+                child: new FlatButton(
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                  focusColor: Colors.transparent,
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: Container(
+                      height: AppConfig.verticalBlockSize * 6,
+                      width: double.infinity,
+                      child: Center(
+                        child: new Text(
+                          'No',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              color: PlunesColors.SPARKLINGGREEN),
+                        ),
+                      )),
+                ),
               ),
-              new FlatButton(
-                onPressed: () => SystemNavigator.pop(),
-                child: new Text('Yes'),
+              Container(
+                height: AppConfig.verticalBlockSize * 6,
+                child: new FlatButton(
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                  focusColor: Colors.transparent,
+                  onPressed: () => SystemNavigator.pop(),
+                  child: Container(
+                      height: AppConfig.verticalBlockSize * 6,
+                      width: double.infinity,
+                      child: Center(
+                        child: new Text(
+                          'Yes',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: AppConfig.mediumFont,
+                              color: PlunesColors.SPARKLINGGREEN),
+                        ),
+                      )),
+                ),
               ),
             ],
           ),

@@ -158,9 +158,11 @@ class _PopupChooseState extends State<PopupChoose> {
                   children: <Widget>[
                     Expanded(
                       child: FlatButton(
-                          splashColor: Colors.redAccent.withOpacity(.2),
-                          highlightColor: Colors.redAccent.withOpacity(.2),
-                          focusColor: Colors.redAccent.withOpacity(.2),
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          splashColor:
+                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          focusColor: Colors.transparent,
                           onPressed: () {
                             Navigator.pop(context);
                             return;
@@ -177,7 +179,7 @@ class _PopupChooseState extends State<PopupChoose> {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
-                                    color: Colors.redAccent),
+                                    color: PlunesColors.SPARKLINGGREEN),
                               ))),
                     ),
                     Container(
@@ -188,12 +190,11 @@ class _PopupChooseState extends State<PopupChoose> {
                     Expanded(
 //                                      flex: 200,
                       child: FlatButton(
-                          focusColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
                           splashColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-                          highlightColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.2),
+                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          focusColor: Colors.transparent,
                           onPressed: () {
                             PaymentSelector _paymentSelector;
                             if (_paymentSelectionOptions != null &&

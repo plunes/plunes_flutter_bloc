@@ -270,7 +270,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       child: InkWell(
         onTap: () {
           if (!_canNegotiate()) {
-            _showSnackBar(PlunesStrings.cantNegotiateWithMoreFacilities);
+            _showSnackBar(PlunesStrings.cantNegotiateWithMoreFacilities,
+                shouldPop: true);
             return;
           }
           Navigator.push(
@@ -339,7 +340,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   _onBookingTap(Services service, int index) {
     if (!_canGoAhead()) {
-      _showSnackBar(PlunesStrings.cantBookPriceExpired);
+      _showSnackBar(PlunesStrings.cantBookPriceExpired, shouldPop: true);
       return;
     }
     _solution = _searchedDocResults.solution;
@@ -1156,7 +1157,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 onTap: () {
                                   if (!_canGoAhead()) {
                                     _showSnackBar(
-                                        PlunesStrings.cantBookPriceExpired);
+                                        PlunesStrings.cantBookPriceExpired,
+                                        shouldPop: true);
                                     return;
                                   }
                                   _solution = _searchedDocResults.solution;
@@ -1528,7 +1530,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     return _canGoAhead;
   }
 
-  void _showSnackBar(String message) {
-    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, scaffoldKey);
+  void _showSnackBar(String message, {bool shouldPop = false}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: scaffoldKey, message: message);
+        }).then((value) {
+      if (shouldPop) {
+        Navigator.pop(context);
+      }
+    });
   }
 }

@@ -263,7 +263,8 @@ class PlunesStrings {
   static const String looksLikeReferralCodeIsExpired =
       "Looks like Your Referral Code is expired !";
   static const String writeYourConcern = "Write your Concern";
-  static const String thanksForService = "Thanks for availing service from";
+  static const String thanksForService =
+      "We would like to know your review,\nSubmit your review to help us improve\nyour experience with us";
   static const String pleaseFillYourReview = "Please write your review.";
 
   static const String thankYouForValuableFeedback =
@@ -284,7 +285,7 @@ class PlunesStrings {
   static const String cantBookPriceExpired =
       "Can't book the appointment as the prices are valid for only one hour.";
   static const String cantNegotiateWithMoreFacilities =
-      "Can't negotiate with more facilities as the prices was valid for only one hour.";
+      "Can't negotiate with more facilities as the prices are valid for only one hour.";
 
   ///More Facilities Screen
   static const String moreFacilities = "More Facilities";
@@ -346,6 +347,9 @@ class PlunesStrings {
       "Password updated successfully.";
   static const String afterFacilitySelectedText =
       "Sorry, the facilities of selected speciality aren't available currently";
+  static const String reviewYourExpr = "Review your experience";
+  static const String watch = "Watch";
+  static const String noSlot = "No slot";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

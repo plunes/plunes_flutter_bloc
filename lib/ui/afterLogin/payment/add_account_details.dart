@@ -297,18 +297,7 @@ class _AddBankDetailsState extends BaseState<AddBankDetails> {
     return new CupertinoAlertDialog(
       title: new Text('Success'),
       content: new Text('Successfully Saved..'),
-      actions: <Widget>[
-        new FlatButton(
-          onPressed: () {
-            Navigator.pop(context);
-            Navigator.pop(context);
-          },
-          child: new Text(
-            'OK',
-            style: TextStyle(color: Color(0xff01d35a)),
-          ),
-        ),
-      ],
+      actions: <Widget>[CustomWidgets().getSingleCommonButton(context, "Ok")],
     );
   }
 

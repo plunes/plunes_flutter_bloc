@@ -8,6 +8,7 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/location_util.dart';
+import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
@@ -113,13 +114,17 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             : widget.getHomeAppBar(
                 context,
                 _userType != Constants.user
-                    ? (_selectedIndex == 1
-                        ? plunesStrings.notifications
-                        : _selectedIndex == 3
-                            ? plunesStrings.profiles
-                            : _selectedIndex == 2
-                                ? plunesStrings.notifications
-                                : '')
+                    ? (_selectedIndex == 0
+                        ? CommonMethods.getStringInCamelCase(
+                                UserManager().getUserDetails().name) ??
+                            ""
+                        : _selectedIndex == 1
+                            ? plunesStrings.notifications
+                            : _selectedIndex == 3
+                                ? plunesStrings.profiles
+                                : _selectedIndex == 2
+                                    ? plunesStrings.notifications
+                                    : '')
                     : (_selectedIndex == 1
                         ? plunesStrings.plockr
                         : _selectedIndex == 2
@@ -266,6 +271,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     preferences = Preferences();
     getSharedPreferencesData();
     _userType = preferences.getPreferenceString(Constants.PREF_USER_TYPE);
+    _checkShouldPlayVideo();
     if (_userType == Constants.user) {
       switch (widget.screenNo) {
         case Constants.homeScreenNumber:
@@ -354,6 +360,12 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         UserManager().getWidgetShownStatus(Constants.SOLUTION_SCREEN);
     bool INSIGHT_MAIN_SCREEN =
         UserManager().getWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN);
+
+    bool VIDEO_STATUS_FOR_USER =
+        UserManager().getWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER);
+    bool VIDEO_STATUS_FOR_PROF =
+        UserManager().getWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF);
+
     preferences.clearPreferences().then((value) {
       UserManager().setWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN,
           status: BIDDING_MAIN_SCREEN);
@@ -361,6 +373,10 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
           status: SOLUTION_SCREEN);
       UserManager().setWidgetShownStatus(Constants.INSIGHT_MAIN_SCREEN,
           status: INSIGHT_MAIN_SCREEN);
+      UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER,
+          status: VIDEO_STATUS_FOR_USER);
+      UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF,
+          status: VIDEO_STATUS_FOR_PROF);
     });
     Future.delayed(Duration(milliseconds: 100), () {
       return Navigator.of(context)
@@ -664,5 +680,65 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   void _getNotifications() async {
     await Future.delayed(Duration(milliseconds: 400));
     NotificationBloc().getNotifications(shouldNotify: true);
+  }
+
+  void _checkShouldPlayVideo() {
+    if (_userType == Constants.user) {
+      if (!UserManager()
+          .getWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER)) {
+        Future.delayed(Duration(seconds: 1)).then((value) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER);
+            _showPopupForUser();
+          });
+        });
+      }
+    } else {
+      if (!UserManager()
+          .getWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF)) {
+        Future.delayed(Duration(seconds: 1)).then((value) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF);
+            _showPopupForProf();
+          });
+        });
+      }
+    }
+  }
+
+  void _showPopupForProf() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets().getVideoPopupForUser(
+              message: "Would like to see how Plunes work?",
+              globalKey: _scaffoldKey);
+        }).then((value) {
+      if (value != null && value.toString() == PlunesStrings.watch) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    YoutubePlayerProvider(Constants.PLUNES_USER_VIDEO_DEMO)));
+      }
+    });
+  }
+
+  void _showPopupForUser() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets().getVideoPopupForUser(
+              message: "Would like to see how Plunes work?",
+              globalKey: _scaffoldKey);
+        }).then((value) {
+      if (value != null && value.toString() == PlunesStrings.watch) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    YoutubePlayerProvider(Constants.PLUNES_USER_VIDEO_DEMO)));
+      }
+    });
   }
 }
