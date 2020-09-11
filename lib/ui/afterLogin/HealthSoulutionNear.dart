@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -28,6 +29,9 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
   ConsultationTestProcedureBloc _consultationTestProcedureBloc;
   List<TestAndProcedureResponseModel> _testAndProcedures;
   String _failureCause;
+
+  final _pageController = PageController();
+  final _currentPageNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -93,7 +97,320 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
       key: scaffoldKey,
       appBar: widget.getAppBar(context, plunesStrings.availUpTo, true),
       backgroundColor: PlunesColors.WHITECOLOR,
-      body: _renderTestAndProcedures(),
+      body: _getBody(),
+    );
+  }
+
+  _getBody() {
+    return SingleChildScrollView(
+      child: Container(
+        margin:
+            EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: Text(
+                "Our Partners",
+                style: TextStyle(
+                  fontSize: AppConfig.extraLargeFont,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+            _hospitaList(),
+            _labsList(),
+            _doctorsList(),
+            _mostBookedServices(),
+            _renderTestAndProcedures(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _hospitaList() {
+    return Column(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Text(
+                "Hospitals",
+                style: TextStyle(fontSize: AppConfig.largeFont),
+              ),
+              SizedBox(
+                width: AppConfig.horizontalBlockSize * 23,
+              ),
+              InkWell(
+                onTap: () {},
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+                  child: Text(
+                    "See all",
+                    style: TextStyle(
+                      color: PlunesColors.SPARKLINGGREEN,
+                      fontSize: AppConfig.smallFont,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          height: AppConfig.verticalBlockSize * 10,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 6,
+            itemBuilder: (context, itemIndex) {
+              return InkWell(
+                onTap: () {},
+                child: Container(
+                  width: AppConfig.horizontalBlockSize * 28.2,
+                  decoration: ShapeDecoration(
+//                            color: PlunesColors.GREYCOLOR,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                          width: 1.0,
+                          style: BorderStyle.solid,
+                          color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                  ),
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 1),
+                  padding: EdgeInsets.all(5),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  _labsList() {
+    return Column(
+      children: <Widget>[
+        Container(
+          height: 0.5,
+          width: double.infinity,
+          color: PlunesColors.GREYCOLOR,
+          margin:
+              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+        ),
+        Container(
+          margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Text(
+                "Diagnostic Labs",
+                style: TextStyle(fontSize: AppConfig.largeFont),
+              ),
+              SizedBox(
+                width: AppConfig.horizontalBlockSize * 15,
+              ),
+              InkWell(
+                onTap: () {},
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+                  child: Text(
+                    "See all",
+                    style: TextStyle(
+                      color: PlunesColors.SPARKLINGGREEN,
+                      fontSize: AppConfig.smallFont,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          height: AppConfig.verticalBlockSize * 10,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 6,
+            itemBuilder: (context, itemIndex) {
+              return InkWell(
+                onTap: () {},
+                child: Container(
+                  width: AppConfig.horizontalBlockSize * 28.2,
+                  decoration: ShapeDecoration(
+//                            color: PlunesColors.GREYCOLOR,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                          width: 1.0,
+                          style: BorderStyle.solid,
+                          color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                  ),
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 1),
+                  padding: EdgeInsets.all(5),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  _doctorsList() {
+    return Column(
+      children: <Widget>[
+        Container(
+          height: 0.5,
+          width: double.infinity,
+          color: PlunesColors.GREYCOLOR,
+          margin:
+              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+        ),
+        Container(
+          margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              Text(
+                "Doctors",
+                style: TextStyle(fontSize: AppConfig.largeFont),
+              ),
+              SizedBox(
+                width: AppConfig.horizontalBlockSize * 25,
+              ),
+              InkWell(
+                onTap: () {},
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+                  child: Text(
+                    "See all",
+                    style: TextStyle(
+                      color: PlunesColors.SPARKLINGGREEN,
+                      fontSize: AppConfig.smallFont,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 8),
+          height: AppConfig.verticalBlockSize * 15,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 6,
+            itemBuilder: (context, itemIndex) {
+              return InkWell(
+                onTap: () {},
+                child: Container(
+                  width: AppConfig.horizontalBlockSize * 28.2,
+                  decoration: ShapeDecoration(
+//                            color: PlunesColors.GREYCOLOR,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                          width: 1.0,
+                          style: BorderStyle.solid,
+                          color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    ),
+                  ),
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 1),
+                  padding: EdgeInsets.all(5),
+                ),
+              );
+            },
+          ),
+        ),
+        Container(
+          height: 0.5,
+          width: double.infinity,
+          color: PlunesColors.GREYCOLOR,
+          margin:
+              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+        ),
+      ],
+    );
+  }
+
+  _mostBookedServices() {
+    return Column(
+      children: <Widget>[_pageBookedServices(), _pageCircleIndicator()],
+    );
+  }
+
+  _pageBookedServices() {
+    return Container(
+      margin: EdgeInsets.only(
+          left: 8,
+          right: 8,
+          top: AppConfig.verticalBlockSize * 4,
+          bottom: AppConfig.verticalBlockSize * .5),
+      height: AppConfig.verticalBlockSize * 20,
+      child: PageView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: 3,
+        controller: _pageController,
+        itemBuilder: (BuildContext context, int index) {
+          return InkWell(
+            onTap: () {},
+            child: Container(
+              decoration: ShapeDecoration(
+//                            color: PlunesColors.GREYCOLOR,
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(
+                      width: 1.0,
+                      style: BorderStyle.solid,
+                      color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+              ),
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 1),
+              padding: EdgeInsets.all(5),
+            ),
+          );
+        },
+        onPageChanged: (int index) {
+          _currentPageNotifier.value = index;
+        },
+      ),
+    );
+  }
+
+  _pageCircleIndicator() {
+    return Positioned(
+      left: 0.0,
+      right: 0.0,
+      bottom: 0.0,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CirclePageIndicator(
+          dotColor: PlunesColors.GREYCOLOR,
+          selectedDotColor: PlunesColors.SPARKLINGGREEN,
+          itemCount: 3,
+          currentPageNotifier: _currentPageNotifier,
+        ),
+      ),
     );
   }
 
@@ -157,43 +474,66 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
   }
 
   Widget _showItems() {
-    return Container(
-        margin: EdgeInsets.only(left: 10, right: 10, top: 20),
-        child: GridView.builder(
-            physics: ScrollPhysics(),
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            itemCount: _testAndProcedures?.length ?? 0,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
-                color: PlunesColors.WHITECOLOR,
-                margin: EdgeInsets.all(8),
-                child: InkWell(
-                  onTap: () => onTap(_testAndProcedures[index]),
-                  child: Container(
-                    padding: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        border: Border.all(width: 0.5, color: Colors.grey)),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          flex: 4,
-                          child: CustomWidgets().getImageFromUrl(
-                              "https://specialities.s3.ap-south-1.amazonaws.com/${_testAndProcedures[index].sId}.png",
-                              boxFit: BoxFit.contain),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: widget.createTextViews(
-                              _testAndProcedures[index].sId,
-                              16,
-                              colorsFile.black0,
-                              TextAlign.center,
-                              FontWeight.w600),
-                        ),
+    return Column(
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 4,
+              bottom: AppConfig.verticalBlockSize * 1),
+          child: Text(
+            "Explore More",
+            style: TextStyle(
+              fontSize: AppConfig.extraLargeFont,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
+          child: Text(
+            PlunesStrings.exploreSpecialities,
+            style: TextStyle(
+                fontSize: AppConfig.mediumFont, color: PlunesColors.GREYCOLOR),
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Container(
+            // margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+            child: GridView.builder(
+                physics: ScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: _testAndProcedures?.length ?? 0,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    color: PlunesColors.WHITECOLOR,
+                    margin: EdgeInsets.all(8),
+                    child: InkWell(
+                      onTap: () => onTap(_testAndProcedures[index]),
+                      child: Container(
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            border: Border.all(width: 0.5, color: Colors.grey)),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              flex: 4,
+                              child: CustomWidgets().getImageFromUrl(
+                                  "https://specialities.s3.ap-south-1.amazonaws.com/${_testAndProcedures[index].sId}.png",
+                                  boxFit: BoxFit.contain),
+                            ),
+                            Expanded(
+                              flex: 2,
+                              child: widget.createTextViews(
+                                  _testAndProcedures[index].sId,
+                                  16,
+                                  colorsFile.black0,
+                                  TextAlign.center,
+                                  FontWeight.w600),
+                            ),
 //                        Expanded(
 //                          flex: 2,
 //                          child: Text("healthSolDataList[index]['Info']",
@@ -201,23 +541,25 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
 //                              textAlign: TextAlign.center,
 //                              style: TextStyle(fontSize: 13)),
 //                        ),
-                        Expanded(
-                            flex: 1,
-                            child: Padding(
-                                padding: const EdgeInsets.only(top: 1.0),
-                                child: widget.createTextViews(
-                                    plunesStrings.viewMore,
-                                    13,
-                                    colorsFile.defaultGreen,
-                                    TextAlign.center,
-                                    FontWeight.normal)))
-                      ],
+                            Expanded(
+                                flex: 1,
+                                child: Padding(
+                                    padding: const EdgeInsets.only(top: 1.0),
+                                    child: widget.createTextViews(
+                                        plunesStrings.viewMore,
+                                        13,
+                                        colorsFile.defaultGreen,
+                                        TextAlign.center,
+                                        FontWeight.normal)))
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              );
-            },
-            gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, childAspectRatio: 1.0 / 1.0)));
+                  );
+                },
+                gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2, childAspectRatio: 1.0 / 1.0))),
+      ],
+    );
   }
 }

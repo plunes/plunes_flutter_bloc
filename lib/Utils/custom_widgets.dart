@@ -2856,10 +2856,14 @@ class CustomWidgets {
                 InkWell(
                   onTap: () => Navigator.of(context).pop(),
                   onDoubleTap: () {},
-                  child: Icon(Icons.close, size: 30),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    child: Icon(Icons.close, size: 30),
+                  ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     plunesStrings.teamOfExperts,
                     style: TextStyle(
@@ -2868,7 +2872,10 @@ class CustomWidgets {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                Container(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                ),
               ],
             )),
             Divider(height: 0.5, color: PlunesColors.GREYCOLOR),
@@ -3023,10 +3030,14 @@ class CustomWidgets {
                 InkWell(
                   onTap: () => Navigator.of(context).pop(),
                   onDoubleTap: () {},
-                  child: Icon(Icons.close, size: 30),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    child: Icon(Icons.close, size: 30),
+                  ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     plunesStrings.hospitalTiming,
                     style: TextStyle(
@@ -3035,7 +3046,10 @@ class CustomWidgets {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                Container(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                ),
               ],
             )),
             Divider(height: 0.5, color: PlunesColors.GREYCOLOR),
@@ -3048,6 +3062,7 @@ class CustomWidgets {
                 bottom: AppConfig.verticalBlockSize * 4,
               ),
               child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, itemIndex) {
                   return (timeSlots[itemIndex] != null &&
                           timeSlots[itemIndex].closed != null &&

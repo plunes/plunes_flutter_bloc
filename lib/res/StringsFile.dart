@@ -4,6 +4,8 @@ final plunesStrings = PlunesStrings();
 
 class PlunesStrings {
 //  static const String hospitalTiming = "Hospital Timing";
+  static const String exploreSpecialities =
+      "Explore all our Specialities and try Negotiating. Save Thousands of Rupees in a click";
   static const String realTimeDecision =
       "Real time Insight allows you to make Real time decisions.";
   static const String takeAction =
