@@ -1346,6 +1346,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
 
   @override
   Widget build(BuildContext context) {
+    print("_timeValue $_timeValue");
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -1462,7 +1463,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                 ),
               ),
               Text(
-                'Min',
+                'Mins',
                 style: TextStyle(fontSize: AppConfig.verySmallFont),
               )
             ],
@@ -1487,7 +1488,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                 ),
               ),
               Text(
-                'Min',
+                'Mins',
                 style: TextStyle(fontSize: AppConfig.verySmallFont),
               )
             ],
