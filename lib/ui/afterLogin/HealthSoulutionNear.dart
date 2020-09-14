@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -126,14 +127,14 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
 
   _getBody() {
     return SingleChildScrollView(
-      child: Container(
-        margin:
-            EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
-        child: Column(
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 3),
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            color: PlunesColors.LIGHTGREYCOLOR,
+            padding:
+                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+            child: Center(
               child: Text(
                 "Our Partners",
                 style: TextStyle(
@@ -142,244 +143,237 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
                 ),
               ),
             ),
-            _hospitaList(),
-            _labsList(),
-            _doctorsList(),
-            _mostBookedServices(),
-            _renderTestAndProcedures(),
-          ],
-        ),
+          ),
+          _hospitaList(),
+          Container(
+            height: AppConfig.verticalBlockSize * 1,
+            width: double.infinity,
+            color: PlunesColors.LIGHTGREYCOLOR,
+            // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+          ),
+          _labsList(),
+          Container(
+            height: AppConfig.verticalBlockSize * 1,
+            width: double.infinity,
+            color: PlunesColors.LIGHTGREYCOLOR,
+            // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+          ),
+          _doctorsList(),
+          _mostBookedServices(),
+          _renderTestAndProcedures(),
+        ],
       ),
     );
   }
 
   _hospitaList() {
-    return Column(
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Text(
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 1.5),
+            child: Center(
+              child: Text(
                 "Hospitals",
                 style: TextStyle(fontSize: AppConfig.largeFont),
               ),
-              SizedBox(
-                width: AppConfig.horizontalBlockSize * 23,
-              ),
-              InkWell(
-                onTap: () {},
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-                  child: Text(
-                    "See all",
-                    style: TextStyle(
-                      color: PlunesColors.SPARKLINGGREEN,
-                      fontSize: AppConfig.smallFont,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              )
-            ],
+            ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          height: AppConfig.verticalBlockSize * 10,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: _hospImgUrl.length,
-            itemBuilder: (context, itemIndex) {
-              return InkWell(
-                onTap: () {},
-                child: Container(
-                  width: AppConfig.horizontalBlockSize * 28.2,
-                  decoration: ShapeDecoration(
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            height: AppConfig.verticalBlockSize * 10,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _hospImgUrl.length,
+              itemBuilder: (context, itemIndex) {
+                return InkWell(
+                  onTap: () {},
+                  child: Container(
+                    width: AppConfig.horizontalBlockSize * 28.2,
+                    decoration: ShapeDecoration(
 //                            color: PlunesColors.GREYCOLOR,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          width: 1.0,
-                          style: BorderStyle.solid,
-                          color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            width: 1.0,
+                            style: BorderStyle.solid,
+                            color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
                     ),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 1),
+                    child: _hospImgUrl[itemIndex],
+                    padding: EdgeInsets.all(5),
                   ),
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 1),
-                  child: _hospImgUrl[itemIndex],
-                  padding: EdgeInsets.all(5),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+          InkWell(
+            onTap: () {},
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.5),
+              child: Center(
+                child: Text(
+                  "View all",
+                  style: TextStyle(
+                    color: PlunesColors.GREENCOLOR,
+                    fontSize: AppConfig.smallFont,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
   _labsList() {
-    return Column(
-      children: <Widget>[
-        Container(
-          height: 0.5,
-          width: double.infinity,
-          color: PlunesColors.GREYCOLOR,
-          margin:
-              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
-        ),
-        Container(
-          margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Text(
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 1.5),
+            child: Center(
+              child: Text(
                 "Diagnostic Labs",
                 style: TextStyle(fontSize: AppConfig.largeFont),
               ),
-              SizedBox(
-                width: AppConfig.horizontalBlockSize * 15,
-              ),
-              InkWell(
-                onTap: () {},
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-                  child: Text(
-                    "See all",
-                    style: TextStyle(
-                      color: PlunesColors.SPARKLINGGREEN,
-                      fontSize: AppConfig.smallFont,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              )
-            ],
+            ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          height: AppConfig.verticalBlockSize * 10,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: _labsImgUrl.length,
-            itemBuilder: (context, itemIndex) {
-              return InkWell(
-                onTap: () {},
-                child: Container(
-                  width: AppConfig.horizontalBlockSize * 28.2,
-                  decoration: ShapeDecoration(
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            height: AppConfig.verticalBlockSize * 10,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: _labsImgUrl.length,
+              itemBuilder: (context, itemIndex) {
+                return InkWell(
+                  onTap: () {},
+                  child: Container(
+                    width: AppConfig.horizontalBlockSize * 28.2,
+                    decoration: ShapeDecoration(
 //                            color: PlunesColors.GREYCOLOR,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          width: 1.0,
-                          style: BorderStyle.solid,
-                          color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            width: 1.0,
+                            style: BorderStyle.solid,
+                            color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
                     ),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 1),
+                    padding: EdgeInsets.all(5),
+                    child: _labsImgUrl[itemIndex],
                   ),
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 1),
-                  padding: EdgeInsets.all(5),
-                  child: _labsImgUrl[itemIndex],
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-      ],
+          InkWell(
+            onTap: () {},
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.5),
+              child: Text(
+                "View all",
+                style: TextStyle(
+                  color: PlunesColors.GREENCOLOR,
+                  fontSize: AppConfig.smallFont,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   _doctorsList() {
-    return Column(
-      children: <Widget>[
-        Container(
-          height: 0.5,
-          width: double.infinity,
-          color: PlunesColors.GREYCOLOR,
-          margin:
-              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
-        ),
-        Container(
-          margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
-              Text(
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 1.5),
+            child: Center(
+              child: Text(
                 "Doctors",
                 style: TextStyle(fontSize: AppConfig.largeFont),
               ),
-              SizedBox(
-                width: AppConfig.horizontalBlockSize * 25,
-              ),
-              InkWell(
-                onTap: () {},
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-                  child: Text(
-                    "See all",
-                    style: TextStyle(
-                      color: PlunesColors.SPARKLINGGREEN,
-                      fontSize: AppConfig.smallFont,
-                      decoration: TextDecoration.underline,
-                    ),
-                  ),
-                ),
-              )
-            ],
+            ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 8),
-          height: AppConfig.verticalBlockSize * 15,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: 6,
-            itemBuilder: (context, itemIndex) {
-              return InkWell(
-                onTap: () {},
-                child: Container(
-                  width: AppConfig.horizontalBlockSize * 28.2,
-                  decoration: ShapeDecoration(
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8),
+            height: AppConfig.verticalBlockSize * 15,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 6,
+              itemBuilder: (context, itemIndex) {
+                return InkWell(
+                  onTap: () {},
+                  child: Container(
+                    width: AppConfig.horizontalBlockSize * 28.2,
+                    decoration: ShapeDecoration(
 //                            color: PlunesColors.GREYCOLOR,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          width: 1.0,
-                          style: BorderStyle.solid,
-                          color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
-                      borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            width: 1.0,
+                            style: BorderStyle.solid,
+                            color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                      ),
                     ),
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 1),
+                    padding: EdgeInsets.all(5),
                   ),
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 1),
-                  padding: EdgeInsets.all(5),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-        ),
-        Container(
-          height: 0.5,
-          width: double.infinity,
-          color: PlunesColors.GREYCOLOR,
-          margin:
-              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
-        ),
-      ],
+          InkWell(
+            onTap: () {},
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.5),
+              child: Text(
+                "View all",
+                style: TextStyle(
+                  color: PlunesColors.GREENCOLOR,
+                  fontSize: AppConfig.smallFont,
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
   _mostBookedServices() {
-    return Column(
-      children: <Widget>[_pageBookedServices(), _pageCircleIndicator()],
+    return Container(
+      width: double.infinity,
+      color: PlunesColors.LIGHTGREYCOLOR,
+      padding: EdgeInsets.only(
+        left: AppConfig.horizontalBlockSize * 3,
+        right: AppConfig.horizontalBlockSize * 3,
+      ),
+      child: Column(
+        children: <Widget>[_pageBookedServices(), _pageCircleIndicator()],
+      ),
     );
   }
 
@@ -400,7 +394,7 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
             onTap: () {},
             child: Container(
               decoration: ShapeDecoration(
-//                            color: PlunesColors.GREYCOLOR,
+                color: PlunesColors.WHITECOLOR,
                 shape: RoundedRectangleBorder(
                   side: BorderSide(
                       width: 1.0,
@@ -423,18 +417,15 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
   }
 
   _pageCircleIndicator() {
-    return Positioned(
-      left: 0.0,
-      right: 0.0,
-      bottom: 0.0,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: CirclePageIndicator(
-          dotColor: PlunesColors.GREYCOLOR,
-          selectedDotColor: PlunesColors.SPARKLINGGREEN,
-          itemCount: 3,
-          currentPageNotifier: _currentPageNotifier,
-        ),
+    return Container(
+      padding: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 1,
+          bottom: AppConfig.verticalBlockSize * 5),
+      child: CirclePageIndicator(
+        dotColor: PlunesColors.GREYCOLOR,
+        selectedDotColor: PlunesColors.SPARKLINGGREEN,
+        itemCount: 3,
+        currentPageNotifier: _currentPageNotifier,
       ),
     );
   }
@@ -499,70 +490,76 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
   }
 
   Widget _showItems() {
-    return Column(
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 4,
-              bottom: AppConfig.verticalBlockSize * 1),
-          child: Text(
-            "Explore More",
-            style: TextStyle(
-              fontSize: AppConfig.largeFont,
-              fontWeight: FontWeight.w500,
+    return Container(
+      margin:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 3,
+                bottom: AppConfig.verticalBlockSize * 1),
+            child: Text(
+              "Explore More",
+              style: TextStyle(
+                fontSize: AppConfig.largeFont,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-        ),
-        Container(
-          margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
-          child: Text(
-            PlunesStrings.exploreSpecialities,
-            style: TextStyle(
-                fontSize: AppConfig.mediumFont, color: PlunesColors.GREYCOLOR),
-            textAlign: TextAlign.center,
+          Container(
+            margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
+            child: Text(
+              PlunesStrings.exploreSpecialities,
+              style: TextStyle(
+                  fontSize: AppConfig.mediumFont,
+                  color: PlunesColors.GREYCOLOR),
+              textAlign: TextAlign.center,
+            ),
           ),
-        ),
-        Container(
-            margin: EdgeInsets.symmetric(horizontal: 8),
-            child: GridView.builder(
-                physics: ScrollPhysics(),
-                shrinkWrap: true,
-                padding: EdgeInsets.zero,
-                itemCount: _testAndProcedures?.length ?? 0,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    color: PlunesColors.WHITECOLOR,
-                    margin: EdgeInsets.all(8),
-                    child: InkWell(
-                      onTap: () => onTap(_testAndProcedures[index]),
-                      child: Container(
-                        padding: EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            border: Border.all(width: 0.5, color: Colors.grey)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Expanded(
-                              flex: 3,
-                              child: Container(
-                                padding: EdgeInsets.all(8),
-                                child: CustomWidgets().getImageFromUrl(
-                                  "https://specialities.s3.ap-south-1.amazonaws.com/${_testAndProcedures[index].sId}.png",
-                                  boxFit: BoxFit.contain,
+          Container(
+              margin: EdgeInsets.symmetric(horizontal: 8),
+              child: GridView.builder(
+                  physics: ScrollPhysics(),
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  itemCount: _testAndProcedures?.length ?? 0,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      color: PlunesColors.WHITECOLOR,
+                      margin: EdgeInsets.all(8),
+                      child: InkWell(
+                        onTap: () => onTap(_testAndProcedures[index]),
+                        child: Container(
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              border:
+                                  Border.all(width: 0.5, color: Colors.grey)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  child: CustomWidgets().getImageFromUrl(
+                                    "https://specialities.s3.ap-south-1.amazonaws.com/${_testAndProcedures[index].sId}.png",
+                                    boxFit: BoxFit.fitHeight,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: widget.createTextViews(
-                                  _testAndProcedures[index].sId,
-                                  AppConfig.smallFont,
-                                  colorsFile.black0,
-                                  TextAlign.center,
-                                  FontWeight.w500),
-                            ),
+                              Expanded(
+                                flex: 1,
+                                child: widget.createTextViews(
+                                    _testAndProcedures[index].sId,
+                                    AppConfig.smallFont,
+                                    colorsFile.black0,
+                                    TextAlign.center,
+                                    FontWeight.w500),
+                              ),
 //                        Expanded(
 //                          flex: 2,
 //                          child: Text("healthSolDataList[index]['Info']",
@@ -580,15 +577,16 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
 //                                         colorsFile.defaultGreen,
 //                                         TextAlign.center,
 //                                         FontWeight.normal)))
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-                gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, childAspectRatio: 1.2))),
-      ],
+                    );
+                  },
+                  gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, childAspectRatio: 1.2))),
+        ],
+      ),
     );
   }
 }
