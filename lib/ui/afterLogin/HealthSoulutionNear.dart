@@ -129,37 +129,37 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
-          Container(
-            width: double.infinity,
-            color: PlunesColors.LIGHTGREYCOLOR,
-            padding:
-                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
-            child: Center(
-              child: Text(
-                "Our Partners",
-                style: TextStyle(
-                  fontSize: AppConfig.extraLargeFont,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-          // _hospitaList(),
           // Container(
-          //   height: AppConfig.verticalBlockSize * 1,
           //   width: double.infinity,
           //   color: PlunesColors.LIGHTGREYCOLOR,
-          //   // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+          //   padding:
+          //       EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+          //   child: Center(
+          //     child: Text(
+          //       "Our Partners",
+          //       style: TextStyle(
+          //         fontSize: AppConfig.extraLargeFont,
+          //         fontWeight: FontWeight.w500,
+          //       ),
+          //     ),
+          //   ),
           // ),
-          // _labsList(),
-          // Container(
-          //   height: AppConfig.verticalBlockSize * 1,
-          //   width: double.infinity,
-          //   color: PlunesColors.LIGHTGREYCOLOR,
-          //   // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
-          // ),
-          // _doctorsList(),
-          _mostBookedServices(),
+          // // _hospitaList(),
+          // // Container(
+          // //   height: AppConfig.verticalBlockSize * 1,
+          // //   width: double.infinity,
+          // //   color: PlunesColors.LIGHTGREYCOLOR,
+          // //   // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+          // // ),
+          // // _labsList(),
+          // // Container(
+          // //   height: AppConfig.verticalBlockSize * 1,
+          // //   width: double.infinity,
+          // //   color: PlunesColors.LIGHTGREYCOLOR,
+          // //   // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+          // // ),
+          // // _doctorsList(),
+          // _mostBookedServices(),
           _renderTestAndProcedures(),
         ],
       ),

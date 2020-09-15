@@ -5100,6 +5100,85 @@ class CustomWidgets {
     );
   }
 
+  Widget payMentStatusPopup(String text, String message, String icon) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 5,
+                  vertical: AppConfig.verticalBlockSize * 1.5),
+              child: Text(
+                text ?? plunesStrings.somethingWentWrong,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: AppConfig.mediumFont,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+            Container(
+              // margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+              height: AppConfig.verticalBlockSize * 10,
+              child: Image.asset(icon),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 5,
+                  right: AppConfig.horizontalBlockSize * 5,
+                  top: AppConfig.verticalBlockSize * 1.5,
+                  bottom: AppConfig.verticalBlockSize * 2.5),
+              child: Text(
+                message ?? plunesStrings.somethingWentWrong,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: AppConfig.mediumFont,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+            ),
+            Container(
+              height: AppConfig.verticalBlockSize * 6,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
+                child: FlatButton(
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                    focusColor: Colors.transparent,
+                    onPressed: () {},
+                    child: Container(
+                        height: AppConfig.verticalBlockSize * 6,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'OK',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.SPARKLINGGREEN),
+                          ),
+                        ))),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget getVideoPopupForUser(
       {GlobalKey<ScaffoldState> globalKey, String message}) {
     return Dialog(
