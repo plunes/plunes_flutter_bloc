@@ -3018,6 +3018,45 @@ class CustomWidgets {
     );
   }
 
+  // exploreHospitalList(List<Doctors> doctorData, BuildContext context) {
+  //   return Material(
+  //     child: Column(
+  //       children: <Widget>[
+  //         Container(
+  //             child: Row(
+  //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //           children: <Widget>[
+  //             InkWell(
+  //               onTap: () => Navigator.of(context).pop(),
+  //               onDoubleTap: () {},
+  //               child: Padding(
+  //                 padding:
+  //                     const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+  //                 child: Icon(Icons.close, size: 30),
+  //               ),
+  //             ),
+  //             Padding(
+  //               padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //               child: Text(
+  //                 PlunesStrings.hospitals,
+  //                 style: TextStyle(
+  //                     color: PlunesColors.BLACKCOLOR,
+  //                     fontSize: AppConfig.largeFont,
+  //                     fontWeight: FontWeight.w500),
+  //               ),
+  //             ),
+  //             Container(
+  //               padding:
+  //                   const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+  //             ),
+  //           ],
+  //         )),
+  //         Divider(height: 0.5, color: PlunesColors.GREYCOLOR),
+  //       ],
+  //     ),
+  //   );
+  // }
+
   hospitalTiming(List<TimeSlotsData> timeSlots, BuildContext context) {
     return Material(
       child: Container(

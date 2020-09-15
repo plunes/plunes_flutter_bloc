@@ -33,29 +33,29 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
 
   final _pageController = PageController();
   final _currentPageNotifier = ValueNotifier<int>(0);
-  final _hospImgUrl = [
-    CustomWidgets().getImageFromUrl(
-        "https://www.polarishospitals.com/wp-content/uploads/2019/12/Polaris-Logo_2-1.png",
-        boxFit: BoxFit.contain),
-    CustomWidgets().getImageFromUrl(
-        "https://www.neelkanthhospital.com/images/logo.png",
-        boxFit: BoxFit.fill),
-    CustomWidgets().getImageFromUrl(
-        "https://lh3.googleusercontent.com/proxy/qJRCgwv_Z0oGUbm8m6Ei4woYuwcIclMjlUhXldGnWpgXzRiHVHUoODC7rf9raFJqxTYkwvBTfnLbEnwE9pMyYVz6j_jNiUnPzSTMD8hNQi2aKPYjNBruNc1r0C8eZ1COgnoiAFAu5Qu75i9ojLxjuwUyRupMItFPWf1pw7K6e5LADFpJY3t8",
-        boxFit: BoxFit.fill)
-  ];
-
-  final _labsImgUrl = [
-    CustomWidgets().getImageFromUrl(
-        "https://lims.maxlab.co.in/Maxlab_web/App_Themes/WinXP_Silver/Images/Max_Lab_Logo.png",
-        boxFit: BoxFit.contain),
-    CustomWidgets().getImageFromUrl(
-        "https://assets.lybrate.com/q_auto,f_auto,w_400,h_300,c_fill,g_auto/imgs/ps/cl/8f56b6ebcb0dac350b4ff23918154fc7/deb1f81ba89f012ddd7714163b0c4da2/Kaya-Skin-Clinic-C.G.Road-Ahmedabad-62faa8.jpg",
-        boxFit: BoxFit.contain),
-    CustomWidgets().getImageFromUrl(
-        "https://img4.nbstatic.in/tr:w-500/5f2bd3a4c9e77c000b0e1479.jpg",
-        boxFit: BoxFit.contain),
-  ];
+  // final _hospImgUrl = [
+  //   CustomWidgets().getImageFromUrl(
+  //       "https://www.polarishospitals.com/wp-content/uploads/2019/12/Polaris-Logo_2-1.png",
+  //       boxFit: BoxFit.contain),
+  //   CustomWidgets().getImageFromUrl(
+  //       "https://www.neelkanthhospital.com/images/logo.png",
+  //       boxFit: BoxFit.fill),
+  //   CustomWidgets().getImageFromUrl(
+  //       "https://lh3.googleusercontent.com/proxy/qJRCgwv_Z0oGUbm8m6Ei4woYuwcIclMjlUhXldGnWpgXzRiHVHUoODC7rf9raFJqxTYkwvBTfnLbEnwE9pMyYVz6j_jNiUnPzSTMD8hNQi2aKPYjNBruNc1r0C8eZ1COgnoiAFAu5Qu75i9ojLxjuwUyRupMItFPWf1pw7K6e5LADFpJY3t8",
+  //       boxFit: BoxFit.fill)
+  // ];
+  //
+  // final _labsImgUrl = [
+  //   CustomWidgets().getImageFromUrl(
+  //       "https://lims.maxlab.co.in/Maxlab_web/App_Themes/WinXP_Silver/Images/Max_Lab_Logo.png",
+  //       boxFit: BoxFit.contain),
+  //   CustomWidgets().getImageFromUrl(
+  //       "https://assets.lybrate.com/q_auto,f_auto,w_400,h_300,c_fill,g_auto/imgs/ps/cl/8f56b6ebcb0dac350b4ff23918154fc7/deb1f81ba89f012ddd7714163b0c4da2/Kaya-Skin-Clinic-C.G.Road-Ahmedabad-62faa8.jpg",
+  //       boxFit: BoxFit.contain),
+  //   CustomWidgets().getImageFromUrl(
+  //       "https://img4.nbstatic.in/tr:w-500/5f2bd3a4c9e77c000b0e1479.jpg",
+  //       boxFit: BoxFit.contain),
+  // ];
 
   @override
   void initState() {
@@ -144,21 +144,21 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
               ),
             ),
           ),
-          _hospitaList(),
-          Container(
-            height: AppConfig.verticalBlockSize * 1,
-            width: double.infinity,
-            color: PlunesColors.LIGHTGREYCOLOR,
-            // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
-          ),
-          _labsList(),
-          Container(
-            height: AppConfig.verticalBlockSize * 1,
-            width: double.infinity,
-            color: PlunesColors.LIGHTGREYCOLOR,
-            // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
-          ),
-          _doctorsList(),
+          // _hospitaList(),
+          // Container(
+          //   height: AppConfig.verticalBlockSize * 1,
+          //   width: double.infinity,
+          //   color: PlunesColors.LIGHTGREYCOLOR,
+          //   // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+          // ),
+          // _labsList(),
+          // Container(
+          //   height: AppConfig.verticalBlockSize * 1,
+          //   width: double.infinity,
+          //   color: PlunesColors.LIGHTGREYCOLOR,
+          //   // margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+          // ),
+          // _doctorsList(),
           _mostBookedServices(),
           _renderTestAndProcedures(),
         ],
@@ -166,202 +166,202 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
     );
   }
 
-  _hospitaList() {
-    return Container(
-      margin:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 1.5),
-            child: Center(
-              child: Text(
-                "Hospitals",
-                style: TextStyle(fontSize: AppConfig.largeFont),
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 8),
-            height: AppConfig.verticalBlockSize * 10,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _hospImgUrl.length,
-              itemBuilder: (context, itemIndex) {
-                return InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: AppConfig.horizontalBlockSize * 28.2,
-                    decoration: ShapeDecoration(
-//                            color: PlunesColors.GREYCOLOR,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                            width: 1.0,
-                            style: BorderStyle.solid,
-                            color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                    ),
-                    margin: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 1),
-                    child: _hospImgUrl[itemIndex],
-                    padding: EdgeInsets.all(5),
-                  ),
-                );
-              },
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 1.5),
-              child: Center(
-                child: Text(
-                  "View all",
-                  style: TextStyle(
-                    color: PlunesColors.GREENCOLOR,
-                    fontSize: AppConfig.smallFont,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  _labsList() {
-    return Container(
-      margin:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 1.5),
-            child: Center(
-              child: Text(
-                "Diagnostic Labs",
-                style: TextStyle(fontSize: AppConfig.largeFont),
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 8),
-            height: AppConfig.verticalBlockSize * 10,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _labsImgUrl.length,
-              itemBuilder: (context, itemIndex) {
-                return InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: AppConfig.horizontalBlockSize * 28.2,
-                    decoration: ShapeDecoration(
-//                            color: PlunesColors.GREYCOLOR,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                            width: 1.0,
-                            style: BorderStyle.solid,
-                            color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                    ),
-                    margin: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 1),
-                    padding: EdgeInsets.all(5),
-                    child: _labsImgUrl[itemIndex],
-                  ),
-                );
-              },
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 1.5),
-              child: Text(
-                "View all",
-                style: TextStyle(
-                  color: PlunesColors.GREENCOLOR,
-                  fontSize: AppConfig.smallFont,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  _doctorsList() {
-    return Container(
-      margin:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 1.5),
-            child: Center(
-              child: Text(
-                "Doctors",
-                style: TextStyle(fontSize: AppConfig.largeFont),
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 8),
-            height: AppConfig.verticalBlockSize * 15,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 6,
-              itemBuilder: (context, itemIndex) {
-                return InkWell(
-                  onTap: () {},
-                  child: Container(
-                    width: AppConfig.horizontalBlockSize * 28.2,
-                    decoration: ShapeDecoration(
-//                            color: PlunesColors.GREYCOLOR,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                            width: 1.0,
-                            style: BorderStyle.solid,
-                            color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                      ),
-                    ),
-                    margin: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 1),
-                    padding: EdgeInsets.all(5),
-                  ),
-                );
-              },
-            ),
-          ),
-          InkWell(
-            onTap: () {},
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 1.5),
-              child: Text(
-                "View all",
-                style: TextStyle(
-                  color: PlunesColors.GREENCOLOR,
-                  fontSize: AppConfig.smallFont,
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
+//   _hospitaList() {
+//     return Container(
+//       margin:
+//           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+//       child: Column(
+//         children: <Widget>[
+//           Container(
+//             margin: EdgeInsets.symmetric(
+//                 vertical: AppConfig.verticalBlockSize * 1.5),
+//             child: Center(
+//               child: Text(
+//                 "Hospitals",
+//                 style: TextStyle(fontSize: AppConfig.largeFont),
+//               ),
+//             ),
+//           ),
+//           Container(
+//             margin: EdgeInsets.symmetric(horizontal: 8),
+//             height: AppConfig.verticalBlockSize * 10,
+//             child: ListView.builder(
+//               scrollDirection: Axis.horizontal,
+//               itemCount: _hospImgUrl.length,
+//               itemBuilder: (context, itemIndex) {
+//                 return InkWell(
+//                   onTap: () {},
+//                   child: Container(
+//                     width: AppConfig.horizontalBlockSize * 28.2,
+//                     decoration: ShapeDecoration(
+// //                            color: PlunesColors.GREYCOLOR,
+//                       shape: RoundedRectangleBorder(
+//                         side: BorderSide(
+//                             width: 1.0,
+//                             style: BorderStyle.solid,
+//                             color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+//                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
+//                       ),
+//                     ),
+//                     margin: EdgeInsets.symmetric(
+//                         horizontal: AppConfig.horizontalBlockSize * 1),
+//                     child: _hospImgUrl[itemIndex],
+//                     padding: EdgeInsets.all(5),
+//                   ),
+//                 );
+//               },
+//             ),
+//           ),
+//           InkWell(
+//             onTap: () {},
+//             child: Container(
+//               padding: EdgeInsets.symmetric(
+//                   vertical: AppConfig.verticalBlockSize * 1.5),
+//               child: Center(
+//                 child: Text(
+//                   "View all",
+//                   style: TextStyle(
+//                     color: PlunesColors.GREENCOLOR,
+//                     fontSize: AppConfig.smallFont,
+//                     fontWeight: FontWeight.w500,
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+//
+//   _labsList() {
+//     return Container(
+//       margin:
+//           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+//       child: Column(
+//         children: <Widget>[
+//           Container(
+//             margin: EdgeInsets.symmetric(
+//                 vertical: AppConfig.verticalBlockSize * 1.5),
+//             child: Center(
+//               child: Text(
+//                 "Diagnostic Labs",
+//                 style: TextStyle(fontSize: AppConfig.largeFont),
+//               ),
+//             ),
+//           ),
+//           Container(
+//             margin: EdgeInsets.symmetric(horizontal: 8),
+//             height: AppConfig.verticalBlockSize * 10,
+//             child: ListView.builder(
+//               scrollDirection: Axis.horizontal,
+//               itemCount: _labsImgUrl.length,
+//               itemBuilder: (context, itemIndex) {
+//                 return InkWell(
+//                   onTap: () {},
+//                   child: Container(
+//                     width: AppConfig.horizontalBlockSize * 28.2,
+//                     decoration: ShapeDecoration(
+// //                            color: PlunesColors.GREYCOLOR,
+//                       shape: RoundedRectangleBorder(
+//                         side: BorderSide(
+//                             width: 1.0,
+//                             style: BorderStyle.solid,
+//                             color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+//                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
+//                       ),
+//                     ),
+//                     margin: EdgeInsets.symmetric(
+//                         horizontal: AppConfig.horizontalBlockSize * 1),
+//                     padding: EdgeInsets.all(5),
+//                     child: _labsImgUrl[itemIndex],
+//                   ),
+//                 );
+//               },
+//             ),
+//           ),
+//           InkWell(
+//             onTap: () {},
+//             child: Container(
+//               padding: EdgeInsets.symmetric(
+//                   vertical: AppConfig.verticalBlockSize * 1.5),
+//               child: Text(
+//                 "View all",
+//                 style: TextStyle(
+//                   color: PlunesColors.GREENCOLOR,
+//                   fontSize: AppConfig.smallFont,
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+//
+//   _doctorsList() {
+//     return Container(
+//       margin:
+//           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+//       child: Column(
+//         children: <Widget>[
+//           Container(
+//             margin: EdgeInsets.symmetric(
+//                 vertical: AppConfig.verticalBlockSize * 1.5),
+//             child: Center(
+//               child: Text(
+//                 "Doctors",
+//                 style: TextStyle(fontSize: AppConfig.largeFont),
+//               ),
+//             ),
+//           ),
+//           Container(
+//             margin: EdgeInsets.symmetric(horizontal: 8),
+//             height: AppConfig.verticalBlockSize * 15,
+//             child: ListView.builder(
+//               scrollDirection: Axis.horizontal,
+//               itemCount: 6,
+//               itemBuilder: (context, itemIndex) {
+//                 return InkWell(
+//                   onTap: () {},
+//                   child: Container(
+//                     width: AppConfig.horizontalBlockSize * 28.2,
+//                     decoration: ShapeDecoration(
+// //                            color: PlunesColors.GREYCOLOR,
+//                       shape: RoundedRectangleBorder(
+//                         side: BorderSide(
+//                             width: 1.0,
+//                             style: BorderStyle.solid,
+//                             color: PlunesColors.BLACKCOLOR.withOpacity(.2)),
+//                         borderRadius: BorderRadius.all(Radius.circular(5.0)),
+//                       ),
+//                     ),
+//                     margin: EdgeInsets.symmetric(
+//                         horizontal: AppConfig.horizontalBlockSize * 1),
+//                     padding: EdgeInsets.all(5),
+//                   ),
+//                 );
+//               },
+//             ),
+//           ),
+//           InkWell(
+//             onTap: () {},
+//             child: Container(
+//               padding: EdgeInsets.symmetric(
+//                   vertical: AppConfig.verticalBlockSize * 1.5),
+//               child: Text(
+//                 "View all",
+//                 style: TextStyle(
+//                   color: PlunesColors.GREENCOLOR,
+//                   fontSize: AppConfig.smallFont,
+//                 ),
+//               ),
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
 
   _mostBookedServices() {
     return Container(
@@ -382,7 +382,7 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
       margin: EdgeInsets.only(
           left: 8,
           right: 8,
-          top: AppConfig.verticalBlockSize * 4,
+          // top: AppConfig.verticalBlockSize * 4,
           bottom: AppConfig.verticalBlockSize * .5),
       height: AppConfig.verticalBlockSize * 20,
       child: PageView.builder(
