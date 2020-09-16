@@ -11,6 +11,7 @@ import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -1014,10 +1015,15 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
       if (_initPaymentResponse.success) {
         if (_initPaymentResponse.status.contains("Confirmed")) {
           showDialog(
-                  context: context,
-                  builder: (BuildContext context) => PaymentSuccess(
-                      referenceID: _initPaymentResponse.referenceId))
-              .then((value) => widget.getAppointment());
+              context: context,
+              builder: (BuildContext context) => CustomWidgets()
+                  .paymentStatusPopup(
+                      "Payment Success",
+                      "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                      plunesImages.checkIcon,
+                      context,
+                      bookingId:
+                          null)).then((value) => widget.getAppointment());
         } else {
           Navigator.of(context)
               .push(PageRouteBuilder(
@@ -1031,13 +1037,17 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
             }
             if (val.toString().contains("success")) {
               showDialog(
-                      context: context,
-                      builder: (
-                        BuildContext context,
-                      ) =>
-                          PaymentSuccess(
-                              referenceID: _initPaymentResponse.referenceId))
-                  .then((value) => widget.getAppointment());
+                  context: context,
+                  builder: (
+                    BuildContext context,
+                  ) =>
+                      CustomWidgets().paymentStatusPopup(
+                          "Payment Success",
+                          "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                          plunesImages.checkIcon,
+                          context,
+                          bookingId:
+                              null)).then((value) => widget.getAppointment());
             } else if (val.toString().contains("fail")) {
               _showSnackBar("Payment Failed");
             } else if (val.toString().contains("cancel")) {

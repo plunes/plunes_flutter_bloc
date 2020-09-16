@@ -503,7 +503,6 @@ class CommonMethods {
   static confirmationDialog(
       BuildContext context, String action, DialogCallBack _callBack) {
     DialogCallBack callBack = _callBack;
-
     return showGeneralDialog<bool>(
         barrierColor: Colors.black.withOpacity(0.3),
         transitionBuilder: (context, a1, a2, widget) {
