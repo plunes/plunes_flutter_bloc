@@ -67,7 +67,7 @@ class _AboutUsState extends BaseState<AboutUs> {
   Widget _getBody() {
     return SingleChildScrollView(
       child: Container(
-        color: PlunesColors.WHITECOLOR,
+        color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
@@ -80,7 +80,6 @@ class _AboutUsState extends BaseState<AboutUs> {
                 widget.userType == Constants.user
                     ? PlunesStrings.aboutUsDesc
                     : PlunesStrings.aboutUsHospital,
-//                maxLines: 5,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: AppConfig.smallFont),
               ),
@@ -184,13 +183,6 @@ class _AboutUsState extends BaseState<AboutUs> {
               child: Container(
                 margin:
                     EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 5),
-//                decoration: BoxDecoration(
-//                  border: Border.all(
-//                      color: PlunesColors.SPARKLINGGREEN,
-//                      style: BorderStyle.solid,
-//                      width: 1.5),
-//                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-//                ),
                 child: Column(
                   children: <Widget>[
                     Text(
@@ -200,14 +192,6 @@ class _AboutUsState extends BaseState<AboutUs> {
                           fontSize: AppConfig.largeFont,
                           color: PlunesColors.SPARKLINGGREEN),
                     ),
-//                    SimpleUrlPreview(
-//                      url: widget.userType == Constants.user
-//                          ? _userVideoUrl
-//                          : _hospVideoUrl,
-//                      textColor: Colors.white,
-//                      bgColor: PlunesColors.SPARKLINGGREEN,
-//                      isClosable: false,
-//                    ),
                   ],
                 ),
               ),
@@ -228,18 +212,11 @@ class _AboutUsState extends BaseState<AboutUs> {
             itemCount: 6,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-//                  decoration: ShapeDecoration(
-//                      color: PlunesColors.WHITECOLOR,
-//                      shape: RoundedRectangleBorder(
-//                          borderRadius:
-//                              BorderRadius.all(Radius.elliptical(50, 50)))),
                 color: PlunesColors.WHITECOLOR,
                 margin: EdgeInsets.all(5),
                 child: Card(
                   elevation: 2.5,
                   child: Padding(
-//                    height: AppConfig.verticalBlockSize * 5,
-//                    width: double.infinity,
                     padding: EdgeInsets.all(8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -285,11 +262,6 @@ class _AboutUsState extends BaseState<AboutUs> {
             itemCount: 6,
             itemBuilder: (BuildContext context, int index) {
               return Container(
-//                  decoration: ShapeDecoration(
-//                      color: PlunesColors.WHITECOLOR,
-//                      shape: RoundedRectangleBorder(
-//                          borderRadius:
-//                              BorderRadius.all(Radius.elliptical(50, 50)))),
                 color: PlunesColors.WHITECOLOR,
                 margin: EdgeInsets.all(5),
                 child: Card(
@@ -301,7 +273,6 @@ class _AboutUsState extends BaseState<AboutUs> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
-//                            flex: 2,
                             child: Padding(
                                 padding: EdgeInsets.only(
                                     top: AppConfig.verticalBlockSize * .5),
@@ -311,7 +282,6 @@ class _AboutUsState extends BaseState<AboutUs> {
                                     70,
                                     BoxFit.contain))),
                         Expanded(
-//                          flex: 1,
                           child: Padding(
                               padding: EdgeInsets.only(top: 5),
                               child: widget.createTextViews(
