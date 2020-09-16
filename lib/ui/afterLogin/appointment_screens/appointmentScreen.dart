@@ -809,7 +809,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               ],
             ),
           ),
-          _isPaymentCompleted()
+          (_isPaymentCompleted() &&
+                  appointmentModel.bookingStatus ==
+                      AppointmentModel.confirmedStatus)
               ? Container(
                   margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
                   child: InkWell(

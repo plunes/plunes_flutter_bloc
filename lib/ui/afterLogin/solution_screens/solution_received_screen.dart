@@ -20,6 +20,7 @@ import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import '../../widgets/dialogPopScreen.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -55,9 +56,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   Set<Services> _services = {};
   num _gainedDiscount = 0;
   GlobalKey _moreFacilityKey = GlobalKey();
+  ScrollController _scrollController;
+  Key _visibilityKey = Key("ItsVisibilityKey");
 
   @override
   void initState() {
+    _scrollController = ScrollController();
     _isCrossClicked = false;
     _focusNode = FocusNode()
       ..addListener(() {
@@ -92,7 +96,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         _searchedDocResults.solution.services.isNotEmpty) {
       _isFetchingInitialData = false;
       _checkShouldTimerRun();
-      _highlightSearchBar();
+//      _highlightSearchBar();
     } else if (_searchedDocResults != null &&
         _searchedDocResults.msg != null &&
         _searchedDocResults.msg.isNotEmpty) {
@@ -104,10 +108,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   _highlightSearchBar() {
     if (!UserManager().getWidgetShownStatus(Constants.SOLUTION_SCREEN)) {
-      Future.delayed(Duration(milliseconds: 100)).then((value) {
+      Future.delayed(Duration(milliseconds: 20)).then((value) {
         WidgetsBinding.instance.addPostFrameCallback((_) =>
             ShowCaseWidget.of(_buildContext).startShowCase([_moreFacilityKey]));
-        Future.delayed(Duration(seconds: 1)).then((value) {
+        Future.delayed(Duration(milliseconds: 50)).then((value) {
           UserManager().setWidgetShownStatus(Constants.SOLUTION_SCREEN);
         });
       });
@@ -119,6 +123,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     if (_timer != null && _timer.isActive) {
       _timer?.cancel();
     }
+    _scrollController?.dispose();
     _streamForTimer?.close();
     _timerToUpdateSolutionReceivedTime?.cancel();
     _searchController?.dispose();
@@ -223,6 +228,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   Widget _showContent() {
     return ListView.builder(
         shrinkWrap: true,
+        controller: _scrollController,
         padding: EdgeInsets.all(0),
         itemBuilder: (context, index) {
           if (_searchedDocResults.solution.showAdditionalFacilities != null &&
@@ -261,68 +267,75 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Widget _getViewMoreFacilityWidget() {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.symmetric(
-        horizontal: AppConfig.horizontalBlockSize * 12,
-        vertical: AppConfig.verticalBlockSize * 1,
-      ),
-      child: InkWell(
-        onTap: () {
-          if (!_canNegotiate()) {
-            _showSnackBar(PlunesStrings.cantNegotiateWithMoreFacilities,
-                shouldPop: true);
-            return;
-          }
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MoreFacilityScreen(
-                        searchSolutionBloc: _searchSolutionBloc,
-                        docHosSolution: _searchedDocResults?.solution,
-                        catalogueData: _searchedDocResults?.catalogueData,
-                      ))).then((value) {
-            if (value != null && value) {
-              _isCrossClicked = false;
-              _shouldStartTimer = true;
-              if (DateTime.now()
-                      .difference(DateTime.fromMillisecondsSinceEpoch(
-                          _solutionReceivedTime))
-                      .inMinutes >=
-                  15) {
-                _fetchResultAndStartTimer();
-              } else {
-                _negotiate();
-              }
-              Future.delayed(Duration(seconds: 3)).then((value) {
-                _setState();
-              });
+    return VisibilityDetector(
+      key: _visibilityKey,
+      onVisibilityChanged: (visibility) {
+        if (visibility != null &&
+            visibility.visibleFraction != null &&
+            visibility.visibleFraction.toInt() == 1 &&
+            mounted) {
+          _highlightSearchBar();
+        }
+      },
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 12,
+          vertical: AppConfig.verticalBlockSize * 1,
+        ),
+        child: InkWell(
+          onTap: () {
+            if (!_canNegotiate()) {
+              _showSnackBar(PlunesStrings.cantNegotiateWithMoreFacilities,
+                  shouldPop: true);
+              return;
             }
-          });
-        },
-        child: Padding(
-          padding: EdgeInsets.all(5),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              CustomWidgets().getShowCase(
-                _moreFacilityKey,
-                title: PlunesStrings.moreFacilities,
-                description: PlunesStrings.moreFacilityDesc,
-                child: Text(
-                  "Negotiate with more facilities",
-                  style: TextStyle(
-                      color: PlunesColors.GREENCOLOR,
-                      fontSize: 15,
-                      fontWeight: FontWeight.normal),
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MoreFacilityScreen(
+                          searchSolutionBloc: _searchSolutionBloc,
+                          docHosSolution: _searchedDocResults?.solution,
+                          catalogueData: _searchedDocResults?.catalogueData,
+                        ))).then((value) {
+              if (value != null && value) {
+                _isCrossClicked = false;
+                _shouldStartTimer = true;
+                if (_timer != null && _timer.isActive) {
+                  _negotiate();
+                } else {
+                  _fetchResultAndStartTimer();
+                }
+//              Future.delayed(Duration(seconds: 3)).then((value) {
+//                _setState();
+//              });
+              }
+            });
+          },
+          child: Padding(
+            padding: EdgeInsets.all(5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CustomWidgets().getShowCase(
+                  _moreFacilityKey,
+                  title: PlunesStrings.moreFacilities,
+                  description: PlunesStrings.moreFacilityDesc,
+                  child: Text(
+                    "Negotiate with more facilities",
+                    style: TextStyle(
+                        color: PlunesColors.GREENCOLOR,
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal),
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.chevron_right,
-                color: PlunesColors.GREENCOLOR,
-              )
-            ],
+                Icon(
+                  Icons.chevron_right,
+                  color: PlunesColors.GREENCOLOR,
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -889,12 +902,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     );
   }
 
-  Future<void> _fetchResultAndStartTimer() async {
-    await _negotiate();
-    if (_shouldStartTimer) {
-      _startTimer();
-    }
-    return null;
+  void _fetchResultAndStartTimer() {
+    _negotiate().then((value) {
+      if (_shouldStartTimer) {
+        _startTimer();
+      }
+    });
+    return;
   }
 
   _cancelNegotiationTimer() {
@@ -903,13 +917,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       _searchedDocResults.solution.services.forEach((service) {
         if (service.negotiating != null && service.negotiating) {
           service.negotiating = false;
-//          if (service.doctors != null && service.doctors.isNotEmpty) {
-//            service.doctors.forEach((doc) {
-//              if (doc.negotiating != null && doc.negotiating) {
-//                doc.negotiating = false;
-//              }
-//            });
-//          }
         }
       });
     }

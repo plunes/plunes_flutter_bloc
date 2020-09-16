@@ -248,8 +248,20 @@ class _HospitalOverviewScreenState
                                           serviceName: "is looking for " +
                                               "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
                                           remainingTime:
-                                              _realTimeInsightsResponse
-                                                  .data[itemIndex].createdAt,
+                                              (_realTimeInsightsResponse.data[
+                                                              itemIndex] !=
+                                                          null &&
+                                                      _realTimeInsightsResponse
+                                                              .data[itemIndex]
+                                                              .booked !=
+                                                          null &&
+                                                      _realTimeInsightsResponse
+                                                          .data[itemIndex]
+                                                          .booked)
+                                                  ? 0
+                                                  : _realTimeInsightsResponse
+                                                      .data[itemIndex]
+                                                      .createdAt,
                                           centreLocation:
                                               _realTimeInsightsResponse
                                                   .data[itemIndex]
@@ -258,15 +270,25 @@ class _HospitalOverviewScreenState
                                               .data[itemIndex].imageUrl,
                                           getRealTimeInsights: () =>
                                               _getRealTimeInsights()),
-                                      (_realTimeInsightsResponse
-                                                      .data[itemIndex] !=
-                                                  null &&
-                                              _realTimeInsightsResponse
+                                      ((_realTimeInsightsResponse
+                                                          .data[itemIndex] !=
+                                                      null &&
+                                                  _realTimeInsightsResponse
+                                                          .data[itemIndex]
+                                                          .expired !=
+                                                      null &&
+                                                  _realTimeInsightsResponse
                                                       .data[itemIndex]
-                                                      .expired !=
-                                                  null &&
-                                              _realTimeInsightsResponse
-                                                  .data[itemIndex].expired)
+                                                      .expired) ||
+                                              (_realTimeInsightsResponse
+                                                          .data[itemIndex] !=
+                                                      null &&
+                                                  _realTimeInsightsResponse
+                                                          .data[itemIndex]
+                                                          .booked !=
+                                                      null &&
+                                                  _realTimeInsightsResponse
+                                                      .data[itemIndex].booked))
                                           ? Container(
                                               margin: EdgeInsets.only(
                                                   left: (AppConfig
@@ -277,6 +299,8 @@ class _HospitalOverviewScreenState
                                                           .verticalBlockSize *
                                                       2),
                                               child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
                                                 children: <Widget>[
                                                   Flexible(
                                                     child: Text(
@@ -800,8 +824,8 @@ class _HospitalOverviewScreenState
             realInsight: realInsight)).then((value) {
       if (value != null && value) {
         _showSnackBar(PlunesStrings.priceUpdateSuccessMessage);
-        _getRealTimeInsights();
       }
+      _getRealTimeInsights();
     });
   }
 
@@ -1572,57 +1596,60 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
         }
       }
     }
-    return !showShowWidget()
-        ? Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(
-                    vertical: AppConfig.verticalBlockSize * 0.5),
-                decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    border:
-                        Border.all(color: PlunesColors.GREYCOLOR, width: 0.5),
-                    borderRadius: BorderRadius.circular(8.0)),
-                child: Center(
-                  child: Text(
-                    _timeValue,
-                    style: TextStyle(
-                        color: PlunesColors.GREENCOLOR,
-                        fontSize: AppConfig.verySmallFont + 2),
+    return Container(
+      padding: EdgeInsets.only(left: 2),
+      child: !showShowWidget()
+          ? Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 0.5),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border:
+                          Border.all(color: PlunesColors.GREYCOLOR, width: 0.5),
+                      borderRadius: BorderRadius.circular(8.0)),
+                  child: Center(
+                    child: Text(
+                      _timeValue,
+                      style: TextStyle(
+                          color: PlunesColors.GREENCOLOR,
+                          fontSize: AppConfig.verySmallFont + 2),
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                'Min',
-                style: TextStyle(fontSize: AppConfig.verySmallFont),
-              )
-            ],
-          )
-        : Column(
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(
-                    vertical: AppConfig.verticalBlockSize * 0.5),
-                decoration: BoxDecoration(
-                    shape: BoxShape.rectangle,
-                    border:
-                        Border.all(color: PlunesColors.GREYCOLOR, width: 0.5),
-                    borderRadius: BorderRadius.circular(8.0)),
-                child: Center(
-                  child: Text(
-                    "00:00",
-                    style: TextStyle(
-                        color: PlunesColors.GREENCOLOR,
-                        fontSize: AppConfig.verySmallFont + 2),
+                Text(
+                  'Mins',
+                  style: TextStyle(fontSize: AppConfig.verySmallFont),
+                )
+              ],
+            )
+          : Column(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 0.5),
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      border:
+                          Border.all(color: PlunesColors.GREYCOLOR, width: 0.5),
+                      borderRadius: BorderRadius.circular(8.0)),
+                  child: Center(
+                    child: Text(
+                      "00:00",
+                      style: TextStyle(
+                          color: PlunesColors.GREENCOLOR,
+                          fontSize: AppConfig.verySmallFont + 2),
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                'Min',
-                style: TextStyle(fontSize: AppConfig.verySmallFont),
-              )
-            ],
-          );
+                Text(
+                  'Mins',
+                  style: TextStyle(fontSize: AppConfig.verySmallFont),
+                )
+              ],
+            ),
+    );
   }
 
   void _setState() {

@@ -554,7 +554,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                         right: AppConfig.horizontalBlockSize * 2),
                   ),
                   Text(
-                    _userProfileInfo.user.credits,
+                    double.tryParse(_userProfileInfo.user.credits)
+                        .toStringAsFixed(1),
                     style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: AppConfig.smallFont,
@@ -1212,6 +1213,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   Widget _getTimeBoxWidget(String time, bool isSelected) {
+    bool _isSlotTimeExpire = _isSlotTimeExpired(time);
+    double opacity = 1.0;
+    if (_isSlotTimeExpire) {
+      opacity = 0.5;
+    }
     return Container(
       decoration: BoxDecoration(
           color: PlunesColors.WHITECOLOR,
@@ -1220,7 +1226,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           border: Border.all(
               color: isSelected
                   ? PlunesColors.GREENCOLOR
-                  : Color(CommonMethods.getColorHexFromStr("#D2D2D2")),
+                  : Color(CommonMethods.getColorHexFromStr("#D2D2D2"))
+                      .withOpacity(opacity),
               width: 1)),
       child: Center(
           child: Text(
@@ -1229,7 +1236,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         style: TextStyle(
             color: isSelected
                 ? PlunesColors.GREENCOLOR
-                : Color(CommonMethods.getColorHexFromStr("#9C9C9C")),
+                : Color(CommonMethods.getColorHexFromStr("#9C9C9C"))
+                    .withOpacity(opacity),
             fontWeight: FontWeight.normal,
             fontSize: 10),
       )),
@@ -1237,6 +1245,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   _checkSelectedSlot(String selectedTime, {bool shouldShowPopup = false}) {
+    //        print("contains pm");
     try {
       var _currentDateTime = DateTime.now();
       List<String> splitTime = selectedTime.split(":");
@@ -1244,15 +1253,31 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       if (selectedTime.contains("PM") && splitTime.first != "12") {
 //        print("contains pm");
         _pmTime = 12;
+        splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+      }
+      List<String> lastTimeOfBooking =
+          _slotArray[_slotArray.length - 1].split(":");
+      int _pmTimeLastSlot = 0;
+      if (_slotArray[_slotArray.length - 1].contains("PM") &&
+          lastTimeOfBooking.first != "12") {
+        _pmTimeLastSlot = 12;
+        lastTimeOfBooking.first =
+            "${_pmTimeLastSlot + int.parse(lastTimeOfBooking.first)}";
       }
       if (_selectedDate != null &&
           (_selectedDate.year == _currentDateTime.year &&
               _selectedDate.month == _currentDateTime.month &&
               _selectedDate.day == _currentDateTime.day)) {
-        List<String> lastTimeOfBooking =
-            _slotArray[_slotArray.length - 1].split(":");
         List<String> _currentTimeOfBooking =
             DateUtil.getTimeWithAmAndPmFormat(_currentDateTime).split(":");
+        int _pmSlotForCurrentTime = 0;
+        if (DateUtil.getTimeWithAmAndPmFormat(_currentDateTime)
+                .contains("PM") &&
+            _currentTimeOfBooking.first != "12") {
+          _pmSlotForCurrentTime = 12;
+          _currentTimeOfBooking.first =
+              "${_pmSlotForCurrentTime + int.parse(_currentTimeOfBooking.first)}";
+        }
         _currentDateTime = DateTime(
             _currentDateTime.year,
             _currentDateTime.month,
@@ -1274,6 +1299,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             int.tryParse(lastTimeOfBooking.first),
             int.tryParse(lastTimeOfBooking[1]
                 .substring(0, lastTimeOfBooking[1].indexOf(" "))));
+//        print(
+//            "_selectedDateTime $_selectedDateTime  _currentDateTime $_currentDateTime _todayLatBookingDateTime $_todayLatBookingDateTime");
+//        print(
+//            "sdsdsdsds ${((_selectedDateTime.isAfter(_currentDateTime) || (_selectedDateTime.difference(_currentDateTime)).inMinutes == 0) && _selectedDateTime.isBefore(_todayLatBookingDateTime))}");
         if ((_selectedDateTime.isAfter(_currentDateTime) ||
                 (_selectedDateTime.difference(_currentDateTime)).inMinutes ==
                     0) &&
@@ -1283,7 +1312,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               _selectedDate.year,
               _selectedDate.month,
               _selectedDate.day,
-              (_pmTime + int.tryParse(splitTime.first)),
+              (int.tryParse(splitTime.first)),
               int.tryParse(
                   splitTime[1].substring(0, splitTime[1].indexOf(" "))));
 //          print("valid");
@@ -1297,7 +1326,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               _selectedDate.year,
               _selectedDate.month,
               _selectedDate.day,
-              (_pmTime + int.tryParse(splitTime.first)),
+              (int.tryParse(splitTime.first)),
               int.tryParse(
                   splitTime[1].substring(0, splitTime[1].indexOf(" "))));
 //          print("valid");
@@ -1314,7 +1343,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             _selectedDate.year,
             _selectedDate.month,
             _selectedDate.day,
-            (_pmTime + int.tryParse(splitTime.first)),
+            (int.tryParse(splitTime.first)),
             int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
       }
     } catch (e, s) {
@@ -1333,6 +1362,65 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         Navigator.pop(context);
       }
     });
+  }
+
+  bool _isSlotTimeExpired(String time) {
+    bool isSlotTimeExpired = true;
+    try {
+      var _currentDateTime = DateTime.now();
+      if (_selectedDate != null &&
+          (_selectedDate.year == _currentDateTime.year &&
+              _selectedDate.month == _currentDateTime.month &&
+              _selectedDate.day == _currentDateTime.day)) {
+        List<String> splitTime = time.split(":");
+        int _pmTime = 0;
+        if (time.contains("PM") && splitTime.first != "12") {
+          _pmTime = 12;
+          splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+        }
+        List<String> lastTimeOfBooking =
+            _slotArray[_slotArray.length - 1].split(":");
+        int _pmTimeLastSlot = 0;
+        if (_slotArray[_slotArray.length - 1].contains("PM") &&
+            lastTimeOfBooking.first != "12") {
+          _pmTimeLastSlot = 12;
+          lastTimeOfBooking.first =
+              "${_pmTimeLastSlot + int.parse(lastTimeOfBooking.first)}";
+        }
+        List<String> _currentTimeOfBooking =
+            DateUtil.getTimeWithAmAndPmFormat(_currentDateTime).split(":");
+        int _pmSlotForCurrentTime = 0;
+        if (DateUtil.getTimeWithAmAndPmFormat(_currentDateTime)
+                .contains("PM") &&
+            _currentTimeOfBooking.first != "12") {
+          _pmSlotForCurrentTime = 12;
+          _currentTimeOfBooking.first =
+              "${_pmSlotForCurrentTime + int.parse(_currentTimeOfBooking.first)}";
+        }
+        _currentDateTime = DateTime(
+            _currentDateTime.year,
+            _currentDateTime.month,
+            _currentDateTime.day,
+            int.tryParse(_currentTimeOfBooking.first),
+            int.tryParse(_currentTimeOfBooking[1]
+                .substring(0, _currentTimeOfBooking[1].indexOf(" "))));
+        var _selectedDateTime = DateTime(
+            _currentDateTime.year,
+            _currentDateTime.month,
+            _currentDateTime.day,
+            int.tryParse(splitTime.first),
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+        if (_selectedDateTime.isAfter(_currentDateTime) ||
+            (_selectedDateTime.difference(_currentDateTime)).inMinutes == 0) {
+          isSlotTimeExpired = false;
+        }
+      } else {
+        isSlotTimeExpired = false;
+      }
+    } catch (e) {
+//      print("error" + e);
+    }
+    return isSlotTimeExpired;
   }
 }
 
