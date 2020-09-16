@@ -5100,7 +5100,7 @@ class CustomWidgets {
     );
   }
 
-  Widget payMentStatusPopup(String text, String message, String icon) {
+  Widget paymentStatusPopup(String text, String message, String icon) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 0.0,
