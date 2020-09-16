@@ -689,7 +689,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         Future.delayed(Duration(seconds: 1)).then((value) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_USER);
-            _showPopupForUser();
+//            _showPopupForUser();
           });
         });
       }
@@ -699,7 +699,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         Future.delayed(Duration(seconds: 1)).then((value) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             UserManager().setWidgetShownStatus(Constants.VIDEO_STATUS_FOR_PROF);
-            _showPopupForProf();
+//            _showPopupForProf();
           });
         });
       }
