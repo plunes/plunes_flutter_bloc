@@ -972,10 +972,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
           showDialog(
               context: context,
-              builder: (BuildContext context) => PaymentSuccess(
-                    referenceID: _initPaymentResponse.referenceId,
-                    bookingId: _initPaymentResponse.referenceId,
-                  )).then((value) {
+              builder: (BuildContext context) => CustomWidgets()
+                  .paymentStatusPopup(
+                      "Payment Success",
+                      "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                      plunesImages.checkIcon,
+                      context,
+                      bookingId: _initPaymentResponse.referenceId)
+//                  PaymentSuccess(
+//                    referenceID: _initPaymentResponse.referenceId,
+//                    bookingId: _initPaymentResponse.referenceId,
+//                  )
+
+              ).then((value) {
             Navigator.pop(context, "pop");
           });
         } else {
@@ -993,14 +1002,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             if (val.toString().contains("success")) {
               AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
               showDialog(
-                      context: context,
-                      builder: (
-                        BuildContext context,
-                      ) =>
-                          PaymentSuccess(
-                              referenceID: _initPaymentResponse.referenceId,
-                              bookingId: _initPaymentResponse.referenceId))
-                  .then((value) {
+                  context: context,
+                  builder: (
+                    BuildContext context,
+                  ) =>
+                      CustomWidgets().paymentStatusPopup(
+                          "Payment Success",
+                          "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                          plunesImages.checkIcon,
+                          context,
+                          bookingId: _initPaymentResponse.referenceId)).then(
+                  (value) {
                 Navigator.pop(context, "pop");
               });
             } else if (val.toString().contains("fail")) {
@@ -1173,7 +1185,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       controller: _scrollController,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.65,
+                          childAspectRatio: 0.6,
                           mainAxisSpacing: 8,
                           crossAxisSpacing: 8),
                       itemBuilder: (_, index) {
@@ -1216,7 +1228,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     bool _isSlotTimeExpire = _isSlotTimeExpired(time);
     double opacity = 1.0;
     if (_isSlotTimeExpire) {
-      opacity = 0.5;
+      opacity = 0.3;
     }
     return Container(
       decoration: BoxDecoration(
@@ -1229,8 +1241,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   : Color(CommonMethods.getColorHexFromStr("#D2D2D2"))
                       .withOpacity(opacity),
               width: 1)),
-      child: Center(
-          child: Text(
+      alignment: Alignment.center,
+      child: Text(
         time ?? "",
         textAlign: TextAlign.center,
         style: TextStyle(
@@ -1239,8 +1251,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 : Color(CommonMethods.getColorHexFromStr("#9C9C9C"))
                     .withOpacity(opacity),
             fontWeight: FontWeight.normal,
-            fontSize: 10),
-      )),
+            fontSize: AppConfig.smallFont - 1),
+      ),
     );
   }
 

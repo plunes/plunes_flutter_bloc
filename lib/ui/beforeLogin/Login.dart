@@ -327,55 +327,162 @@ class _LoginState extends State<Login> implements DialogCallBack {
   Future<bool> _onWillPop() {
     return showDialog(
           context: context,
-          builder: (context) => new CupertinoAlertDialog(
-            title: new Text('Are you sure?'),
-            content: new Text('Do you want to exit'),
-            actions: <Widget>[
-              Container(
-                height: AppConfig.verticalBlockSize * 6,
-                child: new FlatButton(
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                  focusColor: Colors.transparent,
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: Container(
-                      height: AppConfig.verticalBlockSize * 6,
-                      width: double.infinity,
-                      child: Center(
-                        child: new Text(
-                          'No',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: PlunesColors.SPARKLINGGREEN),
-                        ),
-                      )),
-                ),
+          builder: (context) => Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0)),
+            elevation: 0.0,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 5,
+                        right: AppConfig.horizontalBlockSize * 5,
+                        top: AppConfig.verticalBlockSize * 2.5),
+                    child: Center(
+                      child: Text(
+                        'Are you sure ?',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontSize: AppConfig.mediumFont,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 5,
+                        right: AppConfig.horizontalBlockSize * 5,
+                        bottom: AppConfig.verticalBlockSize * 2.5),
+                    child: Center(
+                      child: Text(
+                        'Do you want to exit',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontSize: AppConfig.mediumFont - 2,
+                            fontWeight: FontWeight.normal),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 0.5,
+                    width: double.infinity,
+                    color: PlunesColors.GREYCOLOR,
+                  ),
+                  Container(
+                    height: AppConfig.verticalBlockSize * 6,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(16),
+                          bottomRight: Radius.circular(16)),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            child: FlatButton(
+                                highlightColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                splashColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                focusColor: Colors.transparent,
+                                onPressed: () =>
+                                    Navigator.of(context).pop(false),
+                                child: Container(
+                                    width: double.infinity,
+                                    height: AppConfig.verticalBlockSize * 6,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'No',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ))),
+                          ),
+                          Container(
+                            height: AppConfig.verticalBlockSize * 6,
+                            color: PlunesColors.GREYCOLOR,
+                            width: 0.5,
+                          ),
+                          Expanded(
+                            child: FlatButton(
+                                highlightColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                splashColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                focusColor: Colors.transparent,
+                                onPressed: () => SystemNavigator.pop(),
+                                child: Container(
+                                    width: double.infinity,
+                                    height: AppConfig.verticalBlockSize * 6,
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      'Yes',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ))),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Container(
-                height: AppConfig.verticalBlockSize * 6,
-                child: new FlatButton(
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                  focusColor: Colors.transparent,
-                  onPressed: () => SystemNavigator.pop(),
-                  child: Container(
-                      height: AppConfig.verticalBlockSize * 6,
-                      width: double.infinity,
-                      child: Center(
-                        child: new Text(
-                          'Yes',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: PlunesColors.SPARKLINGGREEN),
-                        ),
-                      )),
-                ),
-              ),
-            ],
+            ),
+            // title: new Text('Are you sure?'),
+            // content: new Text('Do you want to exit'),
+            // actions: <Widget>[
+            //   Container(
+            //     height: AppConfig.verticalBlockSize * 6,
+            //     child: new FlatButton(
+            //       highlightColor: Colors.transparent,
+            //       hoverColor: Colors.transparent,
+            //       splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+            //       focusColor: Colors.transparent,
+            //       onPressed: () => Navigator.of(context).pop(false),
+            //       child: Container(
+            //           height: AppConfig.verticalBlockSize * 6,
+            //           width: double.infinity,
+            //           child: Center(
+            //             child: new Text(
+            //               'No',
+            //               textAlign: TextAlign.center,
+            //               style: TextStyle(
+            //                   fontSize: AppConfig.mediumFont,
+            //                   color: PlunesColors.SPARKLINGGREEN),
+            //             ),
+            //           )),
+            //     ),
+            //   ),
+            //   Container(
+            //     height: AppConfig.verticalBlockSize * 6,
+            //     child: new FlatButton(
+            //       highlightColor: Colors.transparent,
+            //       hoverColor: Colors.transparent,
+            //       splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+            //       focusColor: Colors.transparent,
+            //       onPressed: () => SystemNavigator.pop(),
+            //       child: Container(
+            //           height: AppConfig.verticalBlockSize * 6,
+            //           width: double.infinity,
+            //           child: Center(
+            //             child: new Text(
+            //               'Yes',
+            //               textAlign: TextAlign.center,
+            //               style: TextStyle(
+            //                   fontSize: AppConfig.mediumFont,
+            //                   color: PlunesColors.SPARKLINGGREEN),
+            //             ),
+            //           )),
+            //     ),
+            //   ),
           ),
         ) ??
         false;

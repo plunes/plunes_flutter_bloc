@@ -319,8 +319,18 @@ class _HospitalOverviewScreenState
                                                     ),
                                                   ),
                                                   Image.asset(
-                                                    PlunesImages
-                                                        .bookingLostEmoji,
+                                                    (_realTimeInsightsResponse
+                                                                    .data[
+                                                                        itemIndex]
+                                                                    .professionalBooked !=
+                                                                null &&
+                                                            _realTimeInsightsResponse
+                                                                .data[itemIndex]
+                                                                .professionalBooked)
+                                                        ? PlunesImages
+                                                            .happyEmoji
+                                                        : PlunesImages
+                                                            .bookingLostEmoji,
                                                     height: AppConfig
                                                             .verticalBlockSize *
                                                         2.6,
@@ -1199,7 +1209,7 @@ class _HospitalOverviewScreenState
                                 _realTimeInsightsResponse.data.isEmpty)
                             ? Container()
                             : Text(
-                                'Preferred Time : ${_realTimeInsightsResponse?.timer} Min',
+                                'Preferred Time : ${_realTimeInsightsResponse?.timer} Mins',
                                 style: TextStyle(
                                     fontSize: 13,
                                     color: PlunesColors.GREYCOLOR

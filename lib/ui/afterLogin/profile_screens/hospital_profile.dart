@@ -876,8 +876,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                                   .doctorsData[itemIndex]
                                                   .name ??
                                               _getEmptyString(),
-                                          width: 50,
-                                          height: 45)
+                                        )
                                       : CircleAvatar(
                                           backgroundColor: Colors.transparent,
                                           child: Container(
@@ -887,8 +886,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                                     Radius.circular(30))),
                                             child: Container(
                                               margin: EdgeInsets.all(1.5),
-                                              height: 50,
-                                              width: 50,
+                                              height: 60,
+                                              width: 60,
                                               child: ClipOval(
                                                   child: CustomWidgets()
                                                       .getImageFromUrl(
@@ -903,7 +902,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                                                   .doc_placeholder)),
                                             ),
                                           ),
-                                          radius: 30,
+                                          radius: 50,
                                         ),
                                 ),
                               ),
