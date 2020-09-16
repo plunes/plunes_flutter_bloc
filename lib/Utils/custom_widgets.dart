@@ -1130,7 +1130,79 @@ class CustomWidgets {
                       }
                       if (snapShot.data is RequestFailed) {
                         RequestFailed requestFailed = snapShot.data;
-                        failureCause = requestFailed.failureCause;
+                        String failureCause = requestFailed.failureCause;
+                        return SingleChildScrollView(
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#00427B")),
+                                borderRadius: BorderRadius.circular(16.0)),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 3),
+                                  height: AppConfig.verticalBlockSize * 10,
+                                  child: Image.asset(PlunesImages.common),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      vertical:
+                                          AppConfig.verticalBlockSize * 2.5),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 3),
+                                  child: Text(
+                                    failureCause ??
+                                        plunesStrings.somethingWentWrong,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: PlunesColors.WHITECOLOR,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                ),
+                                Container(
+                                  height: 0.5,
+                                  width: double.infinity,
+                                  color: PlunesColors.GREYCOLOR,
+                                ),
+                                Container(
+                                  height: AppConfig.verticalBlockSize * 6,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(16),
+                                        bottomRight: Radius.circular(16)),
+                                    child: FlatButton(
+                                        highlightColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        splashColor: PlunesColors.SPARKLINGGREEN
+                                            .withOpacity(.1),
+                                        focusColor: Colors.transparent,
+                                        onPressed: () => Navigator.pop(context),
+                                        child: Container(
+                                            height:
+                                                AppConfig.verticalBlockSize * 6,
+                                            width: double.infinity,
+                                            child: Center(
+                                              child: Text(
+                                                'OK',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize:
+                                                        AppConfig.mediumFont,
+                                                    color: PlunesColors
+                                                        .SPARKLINGGREEN),
+                                              ),
+                                            ))),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
                       }
                       return SingleChildScrollView(
                         controller: _scrollController,
@@ -2856,10 +2928,14 @@ class CustomWidgets {
                 InkWell(
                   onTap: () => Navigator.of(context).pop(),
                   onDoubleTap: () {},
-                  child: Icon(Icons.close, size: 30),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    child: Icon(Icons.close, size: 30),
+                  ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     plunesStrings.teamOfExperts,
                     style: TextStyle(
@@ -2868,7 +2944,10 @@ class CustomWidgets {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                Container(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                ),
               ],
             )),
             Divider(height: 0.5, color: PlunesColors.GREYCOLOR),
@@ -3023,10 +3102,14 @@ class CustomWidgets {
                 InkWell(
                   onTap: () => Navigator.of(context).pop(),
                   onDoubleTap: () {},
-                  child: Icon(Icons.close, size: 30),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    child: Icon(Icons.close, size: 30),
+                  ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: Text(
                     plunesStrings.hospitalTiming,
                     style: TextStyle(
@@ -3035,7 +3118,10 @@ class CustomWidgets {
                         fontWeight: FontWeight.w500),
                   ),
                 ),
-                Container(),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                ),
               ],
             )),
             Divider(height: 0.5, color: PlunesColors.GREYCOLOR),
@@ -3048,6 +3134,7 @@ class CustomWidgets {
                 bottom: AppConfig.verticalBlockSize * 4,
               ),
               child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, itemIndex) {
                   return (timeSlots[itemIndex] != null &&
                           timeSlots[itemIndex].closed != null &&

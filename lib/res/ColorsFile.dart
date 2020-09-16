@@ -74,6 +74,8 @@ class PlunesColors {
   static const Color WHITECOLOR = Colors.white;
   static final Color SPARKLINGGREEN =
       Color(CommonMethods.getColorHexFromStr("#01D35A"));
+  static final Color LIGHTESTGREYCOLOR =
+      Color(CommonMethods.getColorHexFromStr("#EFEFEF"));
 }
 
 final hexColorCode = HexColorCode();
