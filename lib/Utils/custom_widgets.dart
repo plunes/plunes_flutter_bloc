@@ -1279,7 +1279,7 @@ class CustomWidgets {
                                                     chancesPercent == 0 ||
                                                     chancesPercent < 0)
                                                 ? '0%'
-                                                : '$chancesPercent%',
+                                                : '${chancesPercent.toStringAsFixed(0)}%',
                                             style: TextStyle(
                                                 color: Colors.white70,
                                                 fontSize: AppConfig.mediumFont,
@@ -1528,7 +1528,7 @@ class CustomWidgets {
                                               chancesPercent == 0 ||
                                                       chancesPercent < 0
                                                   ? '0%'
-                                                  : '$chancesPercent%',
+                                                  : '${chancesPercent.toStringAsFixed(0)}%',
                                               style: TextStyle(
                                                   color: Colors.white70,
                                                   fontSize:
@@ -1839,7 +1839,7 @@ class CustomWidgets {
                                                     chancesPercent == 0 ||
                                                     chancesPercent < 0)
                                                 ? '0%'
-                                                : '$chancesPercent%',
+                                                : '${chancesPercent.toStringAsFixed(0)}%',
                                             style: TextStyle(
                                                 color: PlunesColors.WHITECOLOR,
                                                 fontSize: AppConfig.mediumFont,
@@ -2048,7 +2048,7 @@ class CustomWidgets {
                                                       chancesPercent == 0 ||
                                                       chancesPercent < 0)
                                                   ? '0%'
-                                                  : '$chancesPercent%',
+                                                  : '${chancesPercent.toStringAsFixed(0)}%',
                                               style: TextStyle(
                                                   color: Colors.white70,
                                                   fontSize:

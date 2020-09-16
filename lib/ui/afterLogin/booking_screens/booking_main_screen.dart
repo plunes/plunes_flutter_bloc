@@ -1002,18 +1002,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             if (val.toString().contains("success")) {
               AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
               showDialog(
-                      context: context,
-                      builder: (
-                        BuildContext context,
-                      ) =>
-                          CustomWidgets()
-                              .paymentStatusPopup(
-                              "Payment Success",
-                              "Your Booking ID is ${_initPaymentResponse.referenceId}",
-                              plunesImages.checkIcon,
-                              context,
-                              bookingId: _initPaymentResponse.referenceId))
-                  .then((value) {
+                  context: context,
+                  builder: (
+                    BuildContext context,
+                  ) =>
+                      CustomWidgets().paymentStatusPopup(
+                          "Payment Success",
+                          "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                          plunesImages.checkIcon,
+                          context,
+                          bookingId: _initPaymentResponse.referenceId)).then(
+                  (value) {
                 Navigator.pop(context, "pop");
               });
             } else if (val.toString().contains("fail")) {
