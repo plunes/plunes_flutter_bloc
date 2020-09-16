@@ -1802,7 +1802,7 @@ class CustomWidgets {
                                 margin: EdgeInsets.symmetric(
                                     horizontal:
                                         AppConfig.horizontalBlockSize * 3,
-                                    vertical: AppConfig.verticalBlockSize * 2),
+                                    vertical: AppConfig.verticalBlockSize * 3),
                                 child: Text(
                                   'Update Price in your Catalogue for maximum Bookings',
                                   style: TextStyle(
@@ -1835,6 +1835,7 @@ class CustomWidgets {
                                           right:
                                               AppConfig.horizontalBlockSize * 3,
                                           top: AppConfig.verticalBlockSize * 3),
+                                      alignment: Alignment.topRight,
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
@@ -1846,7 +1847,7 @@ class CustomWidgets {
                                                 ? '0%'
                                                 : '$chancesPercent%',
                                             style: TextStyle(
-                                                color: PlunesColors.WHITECOLOR,
+                                                color: Colors.white70,
                                                 fontSize: AppConfig.mediumFont,
                                                 fontWeight: FontWeight.w600),
                                           ),
@@ -2007,7 +2008,7 @@ class CustomWidgets {
                                                   padding: EdgeInsets.only(
                                                       left: AppConfig
                                                               .horizontalBlockSize *
-                                                          1.5),
+                                                          1),
                                                   child: InkWell(
                                                     onTap: () {
                                                       shouldShowField = true;
