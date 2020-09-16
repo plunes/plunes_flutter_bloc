@@ -1224,7 +1224,7 @@ class CustomWidgets {
                                         AppConfig.horizontalBlockSize * 3),
                                 child: Text(PlunesStrings.realTimePrediction,
                                     style: TextStyle(
-                                        fontSize: AppConfig.extraLargeFont,
+                                        fontSize: AppConfig.largeFont,
                                         color: PlunesColors.WHITECOLOR,
                                         fontWeight: FontWeight.w600),
                                     textAlign: TextAlign.center),
@@ -1233,11 +1233,11 @@ class CustomWidgets {
                                 margin: EdgeInsets.symmetric(
                                     horizontal:
                                         AppConfig.horizontalBlockSize * 3),
-                                padding: EdgeInsets.only(
-                                    left: AppConfig.horizontalBlockSize * 3,
-                                    right: AppConfig.horizontalBlockSize * 3,
-                                    top: AppConfig.verticalBlockSize * 4.0,
-                                    bottom: AppConfig.verticalBlockSize * 2),
+                                padding: EdgeInsets.symmetric(
+                                    // left: AppConfig.horizontalBlockSize * 3,
+                                    // right: AppConfig.horizontalBlockSize * 3,
+                                    // top: AppConfig.verticalBlockSize * ,
+                                    vertical: AppConfig.verticalBlockSize * 3),
                                 child: Text(
                                   'Update your best price for maximum bookings',
                                   style: TextStyle(
@@ -1256,34 +1256,29 @@ class CustomWidgets {
                                       realInsight?.serviceName ??
                                           PlunesStrings.NA,
                                       style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: AppConfig.mediumFont,
+                                        color: Colors.white70,
+                                        fontSize: AppConfig.largeFont,
                                       ),
                                     ),
                                   ),
                                   Container(
                                       margin: EdgeInsets.only(
-                                          top: AppConfig.verticalBlockSize * 2,
+                                          top: AppConfig.verticalBlockSize * 3,
                                           left:
                                               AppConfig.horizontalBlockSize * 3,
                                           right: AppConfig.horizontalBlockSize *
                                               3),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: <Widget>[
-                                          Text(
-                                            (chancesPercent == null ||
-                                                    chancesPercent == 0 ||
-                                                    chancesPercent < 0)
-                                                ? '0%'
-                                                : '$chancesPercent%',
-                                            style: TextStyle(
-                                                color: Colors.white70,
-                                                fontSize: AppConfig.mediumFont,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                        ],
+                                      alignment: Alignment.topRight,
+                                      child: Text(
+                                        (chancesPercent == null ||
+                                                chancesPercent == 0 ||
+                                                chancesPercent < 0)
+                                            ? '0%'
+                                            : '$chancesPercent%',
+                                        style: TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: AppConfig.mediumFont,
+                                            fontWeight: FontWeight.w600),
                                       )),
                                   Container(
                                     margin: EdgeInsets.symmetric(
@@ -1395,7 +1390,7 @@ class CustomWidgets {
                                                             .bottom,
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
-                                                      color: Colors.white70,
+                                                      color: Colors.white,
                                                     ),
                                                   ),
                                                 ),
@@ -1438,7 +1433,7 @@ class CustomWidgets {
                                                   child: Text(
                                                     ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
                                                     style: TextStyle(
-                                                        color: Colors.white70,
+                                                        color: Colors.white,
                                                         fontSize:
                                                             AppConfig.largeFont,
                                                         fontWeight:
@@ -1581,17 +1576,16 @@ class CustomWidgets {
                                                             .verticalBlockSize *
                                                         8,
                                                     width: double.infinity,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Cancel',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: AppConfig
-                                                                .largeFont,
-                                                            color: PlunesColors
-                                                                .WHITECOLOR),
-                                                      ),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      'Cancel',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: AppConfig
+                                                              .mediumFont,
+                                                          color: PlunesColors
+                                                              .WHITECOLOR),
                                                     ))),
                                           ),
                                           Container(
@@ -1685,17 +1679,16 @@ class CustomWidgets {
                                                             .verticalBlockSize *
                                                         8,
                                                     width: double.infinity,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Apply here',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: AppConfig
-                                                                .largeFont,
-                                                            color: PlunesColors
-                                                                .GREENCOLOR),
-                                                      ),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      'Apply here',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: AppConfig
+                                                              .mediumFont,
+                                                          color: PlunesColors
+                                                              .GREENCOLOR),
                                                     ))),
                                           ),
                                         ],
@@ -1798,11 +1791,23 @@ class CustomWidgets {
                                 margin: EdgeInsets.symmetric(
                                     horizontal:
                                         AppConfig.horizontalBlockSize * 3),
+                                child: Text(PlunesStrings.realTimePrediction,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.largeFont,
+                                        color: PlunesColors.WHITECOLOR,
+                                        fontWeight: FontWeight.w600),
+                                    textAlign: TextAlign.center),
+                              ),
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 3,
+                                    vertical: AppConfig.verticalBlockSize * 2),
                                 child: Text(
                                   'Update Price in your Catalogue for maximum Bookings',
                                   style: TextStyle(
-                                      fontSize: AppConfig.largeFont,
-                                      color: PlunesColors.WHITECOLOR),
+                                      fontSize: AppConfig.mediumFont,
+                                      color: Colors.white70),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -1810,24 +1815,26 @@ class CustomWidgets {
                                 children: <Widget>[
                                   Container(
                                     margin: EdgeInsets.symmetric(
-                                      vertical: AppConfig.verticalBlockSize * 2,
+                                      // vertical: AppConfig.verticalBlockSize * 2,
                                       horizontal:
-                                          AppConfig.horizontalBlockSize * 3,
+                                          AppConfig.horizontalBlockSize * 4,
                                     ),
                                     child: Text(
                                       actionableInsight?.serviceName ??
                                           PlunesStrings.NA,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: AppConfig.mediumFont,
+                                          fontSize: AppConfig.largeFont,
                                           color: Colors.white70),
                                     ),
                                   ),
                                   Container(
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal:
-                                              AppConfig.horizontalBlockSize *
-                                                  3),
+                                      margin: EdgeInsets.only(
+                                          left:
+                                              AppConfig.horizontalBlockSize * 3,
+                                          right:
+                                              AppConfig.horizontalBlockSize * 3,
+                                          top: AppConfig.verticalBlockSize * 3),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
@@ -1903,19 +1910,21 @@ class CustomWidgets {
                                         horizontal:
                                             AppConfig.horizontalBlockSize * 3),
                                     child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         Text(
                                           ' \u20B9 ${(num.parse(actionableInsight.userPrice).floor() / 2)?.toStringAsFixed(0)}',
                                           style: TextStyle(
                                               color: Colors.white70,
-                                              fontSize: 20,
+                                              fontSize: AppConfig.mediumFont,
                                               fontWeight: FontWeight.w600),
                                         ),
-                                        Expanded(child: Container()),
+                                        // Expanded(child: Container()),
                                         Text(
                                           ' \u20B9 ${num.parse(actionableInsight.userPrice)?.toStringAsFixed(0)}',
                                           style: TextStyle(
-                                              fontSize: 20,
+                                              fontSize: AppConfig.mediumFont,
                                               color: Colors.white70,
                                               fontWeight: FontWeight.w600),
                                         ),
@@ -1927,7 +1936,7 @@ class CustomWidgets {
                                         vertical:
                                             AppConfig.verticalBlockSize * 3,
                                         horizontal:
-                                            AppConfig.horizontalBlockSize * 17),
+                                            AppConfig.horizontalBlockSize * 15),
                                     child: shouldShowField
                                         ? Row(
                                             mainAxisAlignment:
@@ -1982,34 +1991,40 @@ class CustomWidgets {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: <Widget>[
-                                              Flexible(
-                                                flex: 2,
+                                              Container(
+                                                // flex: 2,
                                                 child: Text(
                                                   ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
                                                   style: TextStyle(
-                                                      color: Colors.white70,
-                                                      fontSize: 20,
+                                                      color: Colors.white,
+                                                      fontSize:
+                                                          AppConfig.largeFont,
                                                       fontWeight:
                                                           FontWeight.w600),
                                                 ),
                                               ),
-                                              Flexible(
+                                              Container(
+                                                  padding: EdgeInsets.only(
+                                                      left: AppConfig
+                                                              .horizontalBlockSize *
+                                                          1.5),
                                                   child: InkWell(
-                                                onTap: () {
-                                                  shouldShowField = true;
-                                                  newState(() {});
-                                                },
-                                                child: Container(
-                                                  padding: EdgeInsets.all(5.0),
-                                                  alignment:
-                                                      Alignment.bottomRight,
-                                                  child: Icon(
-                                                    Icons.mode_edit,
-                                                    color:
-                                                        PlunesColors.WHITECOLOR,
-                                                  ),
-                                                ),
-                                              ))
+                                                    onTap: () {
+                                                      shouldShowField = true;
+                                                      newState(() {});
+                                                    },
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.bottomRight,
+                                                      child: Icon(
+                                                        Icons.mode_edit,
+                                                        size:
+                                                            AppConfig.largeFont,
+                                                        color: PlunesColors
+                                                            .WHITECOLOR,
+                                                      ),
+                                                    ),
+                                                  ))
                                             ],
                                           ),
                                   ),
@@ -2018,7 +2033,9 @@ class CustomWidgets {
                                           margin: EdgeInsets.only(
                                               bottom:
                                                   AppConfig.verticalBlockSize *
-                                                      2,
+                                                      2.5,
+                                              top: AppConfig.verticalBlockSize *
+                                                  1.5,
                                               left: AppConfig
                                                       .horizontalBlockSize *
                                                   3,
@@ -2120,17 +2137,16 @@ class CustomWidgets {
                                                             .verticalBlockSize *
                                                         8,
                                                     width: double.infinity,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Cancel',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: AppConfig
-                                                                .largeFont,
-                                                            color: PlunesColors
-                                                                .WHITECOLOR),
-                                                      ),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      'Cancel',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: AppConfig
+                                                              .mediumFont,
+                                                          color: PlunesColors
+                                                              .WHITECOLOR),
                                                     ))),
                                           ),
                                           Container(
@@ -2203,17 +2219,16 @@ class CustomWidgets {
                                                             .verticalBlockSize *
                                                         8,
                                                     width: double.infinity,
-                                                    child: Center(
-                                                      child: Text(
-                                                        'Apply here',
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: TextStyle(
-                                                            fontSize: AppConfig
-                                                                .largeFont,
-                                                            color: PlunesColors
-                                                                .GREENCOLOR),
-                                                      ),
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      'Apply here',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          fontSize: AppConfig
+                                                              .mediumFont,
+                                                          color: PlunesColors
+                                                              .GREENCOLOR),
                                                     ))),
                                           ),
                                         ],
