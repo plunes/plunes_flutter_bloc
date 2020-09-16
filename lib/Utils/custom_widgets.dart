@@ -1145,7 +1145,8 @@ class CustomWidgets {
                                   margin: EdgeInsets.only(
                                       top: AppConfig.verticalBlockSize * 3),
                                   height: AppConfig.verticalBlockSize * 10,
-                                  child: Image.asset(PlunesImages.common),
+                                  child: Image.asset(
+                                      PlunesImages.plunesCommonGreenBgImage),
                                 ),
                                 Container(
                                   margin: EdgeInsets.symmetric(

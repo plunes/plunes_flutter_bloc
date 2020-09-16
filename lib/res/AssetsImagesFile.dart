@@ -86,6 +86,9 @@ class PlunesImages {
       "assets/images/prev_missed_act_icon.png";
   static const String noSlotAvailableImage =
       "assets/images/noSlotAvailableImage.png";
+  static const String plunesCommonGreenBgImage =
+      "assets/images/plunesCommonGreenBgImage.png";
+  static const String happyEmoji = "assets/images/happyEmoji.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',
