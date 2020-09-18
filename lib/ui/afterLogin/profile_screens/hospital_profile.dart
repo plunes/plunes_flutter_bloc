@@ -124,7 +124,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                   }
                 },
                 child: Container(
-                  color: PlunesColors.LIGHTESTGREYCOLOR,
+                  color: PlunesColors.LIGHTESTGREYCOLOR.withOpacity(.5),
                   height: AppConfig.verticalBlockSize * 22,
                   width: double.infinity,
                   child: (_profileResponse.user.coverImageUrl == null ||
@@ -133,7 +133,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                               .contains("http")))
                       ? Container(
                           margin:
-                              EdgeInsets.all(AppConfig.verticalBlockSize * 7),
+                              EdgeInsets.all(AppConfig.verticalBlockSize * 7.5),
                           // margin: EdgeInsets.symmetric(
                           //     vertical: AppConfig.verticalBlockSize * 5,
                           //     horizontal: AppConfig.horizontalBlockSize * 20),
