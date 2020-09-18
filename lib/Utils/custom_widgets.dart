@@ -467,7 +467,10 @@ class CustomWidgets {
     );
   }
 
-  Widget getSingleCommonButton(BuildContext context, String text) {
+  Widget getSingleCommonButton(
+    BuildContext context,
+    String text,
+  ) {
     return Column(children: <Widget>[
       Container(
         height: 0.5,
@@ -1787,27 +1790,28 @@ class CustomWidgets {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
+                              // Container(
+                              //   margin: EdgeInsets.symmetric(
+                              //       horizontal:
+                              //           AppConfig.horizontalBlockSize * 3),
+                              //   child: Text(PlunesStrings.realTimePrediction,
+                              //       style: TextStyle(
+                              //           fontSize: AppConfig.largeFont,
+                              //           color: PlunesColors.WHITECOLOR,
+                              //           fontWeight: FontWeight.w600),
+                              //       textAlign: TextAlign.center),
+                              // ),
                               Container(
-                                margin: EdgeInsets.symmetric(
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 3),
-                                child: Text(PlunesStrings.realTimePrediction,
-                                    style: TextStyle(
-                                        fontSize: AppConfig.largeFont,
-                                        color: PlunesColors.WHITECOLOR,
-                                        fontWeight: FontWeight.w600),
-                                    textAlign: TextAlign.center),
-                              ),
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 3,
-                                    vertical: AppConfig.verticalBlockSize * 3),
+                                margin: EdgeInsets.only(
+                                    right: AppConfig.horizontalBlockSize * 3,
+                                    left: AppConfig.horizontalBlockSize * 3,
+                                    bottom: AppConfig.verticalBlockSize * 3),
                                 child: Text(
                                   'Update Price in your Catalogue for maximum Bookings',
                                   style: TextStyle(
                                       fontSize: AppConfig.mediumFont,
-                                      color: Colors.white70),
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white),
                                   textAlign: TextAlign.center,
                                 ),
                               ),

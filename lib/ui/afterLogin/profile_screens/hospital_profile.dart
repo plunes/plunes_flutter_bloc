@@ -124,6 +124,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                   }
                 },
                 child: Container(
+                  color: PlunesColors.LIGHTESTGREYCOLOR,
                   height: AppConfig.verticalBlockSize * 22,
                   width: double.infinity,
                   child: (_profileResponse.user.coverImageUrl == null ||
@@ -131,10 +132,16 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                           !(_profileResponse.user.coverImageUrl
                               .contains("http")))
                       ? Container(
-                          margin: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 5,
-                              horizontal: AppConfig.horizontalBlockSize * 20),
-                          child: Image.asset(PlunesImages.hospitalImage),
+                          margin:
+                              EdgeInsets.all(AppConfig.verticalBlockSize * 7),
+                          // margin: EdgeInsets.symmetric(
+                          //     vertical: AppConfig.verticalBlockSize * 5,
+                          //     horizontal: AppConfig.horizontalBlockSize * 20),
+                          child: Image.asset(
+                            PlunesImages.defaultHosBac,
+                            alignment: Alignment.center,
+                            fit: BoxFit.scaleDown,
+                          ),
                         )
                       : SizedBox.expand(
                           child: CustomWidgets().getImageFromUrl(

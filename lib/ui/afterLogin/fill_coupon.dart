@@ -1,3 +1,4 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -22,11 +23,15 @@ class _FillCouponState extends BaseState<FillCoupon> {
   CouponBloc _couponBloc;
   CouponTextResponseModel _couponTextResponseModel;
   String _failureCause;
+  ConfettiController _confettiController;
 
   @override
   void initState() {
     _couponBloc = CouponBloc();
     _getCouponText();
+    _confettiController = ConfettiController(
+      duration: const Duration(microseconds: 2),
+    );
     _couponController = TextEditingController();
     super.initState();
   }
@@ -34,6 +39,7 @@ class _FillCouponState extends BaseState<FillCoupon> {
   @override
   void dispose() {
     _couponBloc?.dispose();
+    _confettiController.dispose();
     super.dispose();
   }
 
@@ -177,8 +183,10 @@ class _FillCouponState extends BaseState<FillCoupon> {
                     } else if (snapshot.data is RequestFailed) {
                       RequestFailed failedObj = snapshot.data;
                       _couponBloc.addIntoStream(null);
-                      Future.delayed(Duration(milliseconds: 200))
-                          .then((value) => _openFailureDialog());
+                      Future.delayed(Duration(milliseconds: 200)).then((value) {
+                        _openFailureDialog();
+                        // _confettiController.play();
+                      });
                     }
                     return InkWell(
                       onTap: () {
@@ -220,28 +228,83 @@ class _FillCouponState extends BaseState<FillCoupon> {
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.circular(AppConfig.horizontalBlockSize * 5)),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.symmetric(
-                          vertical: AppConfig.verticalBlockSize * 4,
-                          horizontal: AppConfig.horizontalBlockSize * 6),
-                      height: AppConfig.verticalBlockSize * 12,
-                      child: Image.asset(PlunesImages.couponImage)),
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 6),
-                    child: Text(
-                      "Coupon Applied Successfully!",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR,
-                          fontSize: AppConfig.smallFont),
-                    ),
-                  ),
-                  CustomWidgets().getSingleCommonButton(context, 'Ok')
+            child: Stack(
+              children: <Widget>[
+                // ConfettiWidget(
+                //   confettiController: _confettiController,
+                //   numberOfParticles: 10,
+                //   // blastDirection: 5,
+                //   blastDirectionality: BlastDirectionality.explosive,
+                //   shouldLoop: true,
+                //   colors: const [
+                //     Colors.green,
+                //     Colors.blue,
+                //     Colors.red,
+                //     Colors.amber,
+                //     Colors.purple,
+                //     Colors.pink,
+                //     Colors.orange
+                //   ],
+                // ),
+                SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 4,
+                              horizontal: AppConfig.horizontalBlockSize * 6),
+                          height: AppConfig.verticalBlockSize * 12,
+                          child: Image.asset(PlunesImages.couponImage)),
+                      Container(
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 3,
+                            left: AppConfig.horizontalBlockSize * 6,
+                            right: AppConfig.horizontalBlockSize * 6),
+                        child: Text(
+                          "Coupon Applied Successfully!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: PlunesColors.BLACKCOLOR,
+                              fontSize: AppConfig.smallFont),
+                        ),
+                      ),
+                      Container(
+                        height: 0.5,
+                        width: double.infinity,
+                        color: PlunesColors.GREYCOLOR,
+                      ),
+                      Container(
+                        height: AppConfig.verticalBlockSize * 6,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(16),
+                              bottomRight: Radius.circular(16)),
+                          child: FlatButton(
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              splashColor:
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              focusColor: Colors.transparent,
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                // _confettiController.stop();
+                              },
+                              child: Container(
+                                  height: AppConfig.verticalBlockSize * 6,
+                                  width: double.infinity,
+                                  child: Center(
+                                    child: Text(
+                                      "OK",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ),
+                                  ))),
+                        ),
+                      ),
+                      // CustomWidgets().getSingleCommonButton(context, 'Ok')
 //                  Container(
 //                    height: 0.5,
 //                    width: double.infinity,
@@ -264,8 +327,10 @@ class _FillCouponState extends BaseState<FillCoupon> {
 //                                fontSize: AppConfig.mediumFont,
 //                                color: PlunesColors.SPARKLINGGREEN),
 //                          ))),
-                ],
-              ),
+                    ],
+                  ),
+                ),
+              ],
             ),
 //            Container(
 //              child: Column(
@@ -336,9 +401,9 @@ class _FillCouponState extends BaseState<FillCoupon> {
                       child: Image.asset(PlunesImages.cardExpired)),
                   Container(
                     margin: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 6,
-                      right: AppConfig.horizontalBlockSize * 6,
-                    ),
+                        left: AppConfig.horizontalBlockSize * 6,
+                        right: AppConfig.horizontalBlockSize * 6,
+                        bottom: AppConfig.verticalBlockSize * 3),
                     child: Text(
                       PlunesStrings.oops,
                       style: TextStyle(
