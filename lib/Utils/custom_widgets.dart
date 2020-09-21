@@ -5334,4 +5334,194 @@ class CustomWidgets {
       ),
     );
   }
+
+  Widget turnOffNotificationPopup(GlobalKey globalKey, RealInsight realInsight,
+      DocHosMainInsightBloc docHosMainInsightBloc) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      child: SingleChildScrollView(
+        child: StreamBuilder<RequestState>(
+            stream: docHosMainInsightBloc.realTimeInsightStopNotificationStream,
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestFailed) {
+                RequestFailed requestFailed = snapshot.data;
+                return getInformativeWidget(
+                    globalKey, requestFailed?.failureCause);
+              } else if (snapshot.data is RequestInProgress) {
+                return Container(
+                  child: getProgressIndicator(),
+                  height: AppConfig.verticalBlockSize * 34,
+                );
+              } else if (snapshot.data is RequestSuccess) {
+                return getInformativeWidget(
+                    globalKey, PlunesStrings.notificationDisabled);
+              }
+              return Container(
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(16.0)),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 25,
+                            vertical: AppConfig.verticalBlockSize * 3),
+                        child: Image.asset(PlunesImages.turnOffNotification)),
+                    Container(
+                      padding: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 3),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 15),
+                      child: Text(
+                        PlunesStrings.doNotNotifyForThisService,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15),
+                      ),
+                    ),
+                    Container(
+                      height: 0.5,
+                      width: double.infinity,
+                      color: PlunesColors.GREYCOLOR,
+                    ),
+                    Container(
+                      height: AppConfig.verticalBlockSize * 6,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              child: FlatButton(
+                                  highlightColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  splashColor: PlunesColors.SPARKLINGGREEN
+                                      .withOpacity(.1),
+                                  focusColor: Colors.transparent,
+                                  onPressed: () {
+                                    Navigator.of(globalKey.currentState.context)
+                                        .pop();
+                                    return;
+                                  },
+                                  child: Container(
+                                      height: AppConfig.verticalBlockSize * 6,
+                                      width: double.infinity,
+                                      child: Center(
+                                        child: Text(
+                                          PlunesStrings.no,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: AppConfig.mediumFont,
+                                              color:
+                                                  PlunesColors.SPARKLINGGREEN),
+                                        ),
+                                      ))),
+                            ),
+                            Container(
+                              height: AppConfig.verticalBlockSize * 6,
+                              color: PlunesColors.GREYCOLOR,
+                              width: 0.5,
+                            ),
+                            Expanded(
+                              child: FlatButton(
+                                  highlightColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  splashColor: PlunesColors.SPARKLINGGREEN
+                                      .withOpacity(.1),
+                                  focusColor: Colors.transparent,
+                                  onPressed: () {
+                                    docHosMainInsightBloc
+                                        .stopNotificationsForSuggestedInsight(
+                                            realInsight.serviceId);
+                                    return;
+                                  },
+                                  child: Container(
+                                      height: AppConfig.verticalBlockSize * 6,
+                                      width: double.infinity,
+                                      child: Center(
+                                        child: Text(
+                                          PlunesStrings.yes,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: AppConfig.mediumFont,
+                                              color:
+                                                  PlunesColors.SPARKLINGGREEN),
+                                        ),
+                                      ))),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+      ),
+    );
+  }
+
+  Widget getInformativeWidget(GlobalKey globalKey, String message) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+          height: AppConfig.verticalBlockSize * 10,
+          child: Image.asset(PlunesImages.common),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(
+              horizontal: AppConfig.horizontalBlockSize * 5,
+              vertical: AppConfig.verticalBlockSize * 2.5),
+          child: Text(
+            message ?? plunesStrings.somethingWentWrong,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: PlunesColors.BLACKCOLOR,
+                fontSize: 16,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        Container(
+          height: 0.5,
+          width: double.infinity,
+          color: PlunesColors.GREYCOLOR,
+        ),
+        Container(
+          height: AppConfig.verticalBlockSize * 6,
+          child: ClipRRect(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16)),
+            child: FlatButton(
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                focusColor: Colors.transparent,
+                onPressed: () =>
+                    Navigator.of(globalKey.currentState.context).pop(),
+                child: Container(
+                    height: AppConfig.verticalBlockSize * 6,
+                    width: double.infinity,
+                    child: Center(
+                      child: Text(
+                        'OK',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: AppConfig.mediumFont,
+                            color: PlunesColors.SPARKLINGGREEN),
+                      ),
+                    ))),
+          ),
+        ),
+      ],
+    );
+  }
 }

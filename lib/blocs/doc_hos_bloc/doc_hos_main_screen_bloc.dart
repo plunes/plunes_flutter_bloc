@@ -35,6 +35,12 @@ class DocHosMainInsightBloc extends BlocBase {
   Observable<RequestState> get helpQueryDocHosStream =>
       _helpQueryDocHosProvider.stream;
 
+  final _stopNotificationForSuggestedInsightProvider =
+      PublishSubject<RequestState>();
+
+  Observable<RequestState> get realTimeInsightStopNotificationStream =>
+      _stopNotificationForSuggestedInsightProvider.stream;
+
   addStateInRealTimeInsightStream(RequestState state) {
     super.addStateInGenericStream(_realTimeProvider, state);
   }
@@ -59,6 +65,11 @@ class DocHosMainInsightBloc extends BlocBase {
     super.addStateInGenericStream(_helpQueryDocHosProvider, state);
   }
 
+  addStateInDoNotDisturbStream(RequestState state) {
+    super.addStateInGenericStream(
+        _stopNotificationForSuggestedInsightProvider, state);
+  }
+
   @override
   void dispose() {
     _realTimeProvider?.close();
@@ -67,6 +78,7 @@ class DocHosMainInsightBloc extends BlocBase {
     _businessDataProvider?.close();
     _actionablePriceUpdateProvider.close();
     _helpQueryDocHosProvider.close();
+    _stopNotificationForSuggestedInsightProvider?.close();
     super.dispose();
   }
 
@@ -108,6 +120,14 @@ class DocHosMainInsightBloc extends BlocBase {
     addStateInHelpQueryStream(RequestInProgress());
     var result = await DocHosMainRepo().helpQuery(query);
     addStateInHelpQueryStream(result);
+    return result;
+  }
+
+  Future stopNotificationsForSuggestedInsight(String serviceId) async {
+    addStateInDoNotDisturbStream(RequestInProgress());
+    var result =
+        await DocHosMainRepo().stopNotificationsForSuggestedInsight(serviceId);
+    addStateInDoNotDisturbStream(result);
     return result;
   }
 }

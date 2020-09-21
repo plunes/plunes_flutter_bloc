@@ -340,7 +340,8 @@ flutter:
     - assets/images/noSlotAvailableImage.png
     - assets/images/plunesCommonGreenBgImage.png
     - assets/images/happyEmoji.png
-
+    - assets/images/turnOffNotification.png
+    - assets/images/disableServiceIcon.png
 
 
 

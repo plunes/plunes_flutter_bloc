@@ -353,6 +353,13 @@ class PlunesStrings {
   static const String reviewYourExpr = "Review your experience";
   static const String watch = "Watch";
   static const String noSlot = "No slot";
+  static const String doNotNotifyForThisService =
+      "Do not notify for this Service?";
+  static const String yes = "Yes";
+  static const String no = "No";
+  static const String serviceNotAvailableText = "Service Not Available";
+  static const String notificationDisabled =
+      "We have received you request.You won't be notified for this service any more!";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

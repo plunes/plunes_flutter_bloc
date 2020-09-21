@@ -311,8 +311,19 @@ class _HospitalOverviewScreenState
                                                               .smallFont,
                                                           fontWeight:
                                                               FontWeight.normal,
-                                                          color: Colors
-                                                              .deepOrangeAccent),
+                                                          color: (_realTimeInsightsResponse
+                                                                          .data[
+                                                                              itemIndex]
+                                                                          .professionalBooked !=
+                                                                      null &&
+                                                                  _realTimeInsightsResponse
+                                                                      .data[
+                                                                          itemIndex]
+                                                                      .professionalBooked)
+                                                              ? PlunesColors
+                                                                  .GREENCOLOR
+                                                              : Colors
+                                                                  .deepOrangeAccent),
                                                       maxLines: 2,
                                                       overflow:
                                                           TextOverflow.ellipsis,
@@ -417,7 +428,96 @@ class _HospitalOverviewScreenState
                                                             "#171717"))),
                                               ),
                                             );
-                                          })
+                                          }),
+                                      (_realTimeInsightsResponse.data[itemIndex]
+                                                      .suggested !=
+                                                  null &&
+                                              _realTimeInsightsResponse
+                                                  .data[itemIndex].suggested)
+                                          ? Container(
+                                              margin: EdgeInsets.only(
+                                                  left: AppConfig
+                                                              .horizontalBlockSize *
+                                                          2 +
+                                                      45,
+                                                  top: AppConfig
+                                                          .verticalBlockSize *
+                                                      1),
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(5)),
+                                                  border: Border.all(
+                                                      color: Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#FFE1F6")))),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return CustomWidgets()
+                                                            .turnOffNotificationPopup(
+                                                                scaffoldKey,
+                                                                _realTimeInsightsResponse
+                                                                        .data[
+                                                                    itemIndex],
+                                                                _docHosMainInsightBloc);
+                                                      }).then((value) {
+                                                    _docHosMainInsightBloc
+                                                        .addStateInDoNotDisturbStream(
+                                                            null);
+                                                    _getRealTimeInsights();
+                                                  });
+                                                  return;
+                                                },
+                                                splashColor: Colors.transparent,
+                                                highlightColor:
+                                                    Colors.transparent,
+                                                child: Container(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: AppConfig
+                                                              .horizontalBlockSize *
+                                                          1.2,
+                                                      vertical: AppConfig
+                                                              .verticalBlockSize *
+                                                          0.6),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
+                                                    children: <Widget>[
+                                                      Image.asset(
+                                                        PlunesImages
+                                                            .disableServiceIcon,
+                                                        height: AppConfig
+                                                                .verticalBlockSize *
+                                                            2.6,
+                                                        width: AppConfig
+                                                                .horizontalBlockSize *
+                                                            8,
+                                                      ),
+                                                      Text(
+                                                        PlunesStrings
+                                                            .serviceNotAvailableText,
+                                                        style: TextStyle(
+                                                          color: PlunesColors
+                                                              .GREYCOLOR
+                                                              .withOpacity(0.9),
+                                                          fontSize: AppConfig
+                                                              .smallFont,
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )
+                                          : Container()
                                     ],
                                   ),
                                 ),

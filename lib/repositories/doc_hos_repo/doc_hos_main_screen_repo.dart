@@ -142,4 +142,17 @@ class DocHosMainRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  Future<RequestState> stopNotificationsForSuggestedInsight(
+      String serviceId) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_PUT,
+        headerIncluded: true,
+        url: Urls.SERVICE_NOTIFICATION_DISABLE_URL + serviceId);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: result.isRequestSucceed);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }
