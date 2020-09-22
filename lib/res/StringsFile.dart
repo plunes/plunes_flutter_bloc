@@ -4,7 +4,7 @@ final plunesStrings = PlunesStrings();
 
 class PlunesStrings {
 //  static const String hospitalTiming = "Hospital Timing";
-
+  static const String savePriceInCataloge = "Save the price in your Catalog ?";
   static const String exploreSpecialities =
       "Explore all our Specialities and try Negotiating. Save Thousands of Rupees in a click";
   static const String hospitals = "Hospitals";

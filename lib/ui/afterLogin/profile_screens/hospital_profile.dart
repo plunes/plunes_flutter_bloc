@@ -140,7 +140,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                           child: Image.asset(
                             PlunesImages.defaultHosBac,
                             alignment: Alignment.center,
-                            fit: BoxFit.scaleDown,
+                            fit: BoxFit.contain,
                           ),
                         )
                       : SizedBox.expand(
