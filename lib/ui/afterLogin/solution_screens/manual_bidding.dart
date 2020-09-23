@@ -22,6 +22,7 @@ import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/enter_procedure_detail_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
+import 'package:searchable_dropdown/searchable_dropdown.dart';
 
 // ignore: must_be_immutable
 class ManualBidding extends BaseActivity {
@@ -793,9 +794,9 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
     CommonMethods.catalogueLists.toSet().forEach((item) {
       if (item != null && item.id != null && item.id.isNotEmpty) {
         itemList.add(DropdownMenuItem(
-            value: item.id,
+            value: CommonMethods.getStringInCamelCase(item?.speciality),
             child: Container(
-              alignment: Alignment.center,
+              alignment: Alignment.topLeft,
               child: Text(
                 CommonMethods.getStringInCamelCase(item?.speciality) ??
                     PlunesStrings.NA,
@@ -805,55 +806,153 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             )));
       }
     });
-    Widget dropDown;
-    if (itemList != null && itemList.isNotEmpty) {
-      dropDown = DropdownButton<String>(
-        isDense: true,
-        onChanged: (itemId) {
-          _specialitySelectedId = itemId;
-          _catalogues = [];
-          pageIndex = SearchSolutionBloc.initialIndex;
-          _getMoreFacilities();
-        },
-        value: _specialitySelectedId,
-        hint: Container(
-          alignment: Alignment.center,
-          child: Text(
-            PlunesStrings.specialities,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Color(CommonMethods.getColorHexFromStr("#5D5D5D")),
-              fontSize: 16,
-              fontWeight: FontWeight.normal,
-            ),
-          ),
-        ),
-        items: itemList,
-        underline: Container(),
-        isExpanded: true,
-        elevation: 0,
-      );
-    }
     return itemList == null || itemList.isEmpty
         ? Container()
-        : Column(
-            children: <Widget>[
-              Container(
-                  padding: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 4,
-                      right: AppConfig.horizontalBlockSize * 4),
-                  child:
-                      dropDown //DropdownButtonHideUnderline(child: dropDown),
+        : SearchableDropdown.single(
+            onChanged: (value) {
+//              print("value hai $value");
+              CommonMethods.catalogueLists.toSet().forEach((item) {
+                if (item != null &&
+                    item.id != null &&
+                    item.id.isNotEmpty &&
+                    value != null &&
+                    value.toString().isNotEmpty &&
+                    item.speciality != null &&
+                    item.speciality.isNotEmpty &&
+                    value.toString() ==
+                        CommonMethods.getStringInCamelCase(item.speciality)) {
+//                  print(
+//                      "${CommonMethods.getStringInCamelCase(item.speciality)} equal hai $value");
+//                  print("id is ${item.id}");
+                  _specialitySelectedId = item.id;
+                  _catalogues = [];
+                  pageIndex = SearchSolutionBloc.initialIndex;
+                  _getMoreFacilities();
+                }
+              });
+            },
+            isExpanded: true,
+            isCaseSensitiveSearch: false,
+            onClear: () {
+              _specialitySelectedId = null;
+              _catalogues = [];
+              pageIndex = SearchSolutionBloc.initialIndex;
+              _getMoreFacilities();
+            },
+            hint: Container(
+              width: double.infinity,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.close,
+                    color: Colors.transparent,
                   ),
-              Container(
-                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.6),
-                width: double.infinity,
-                color: PlunesColors.GREYCOLOR,
-                height: 0.8,
+                  Text(
+                    PlunesStrings.specialities,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(CommonMethods.getColorHexFromStr("#5D5D5D")),
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
+            selectedValueWidgetFn: (item) {
+              return Container(
+                width: double.infinity,
+                padding: EdgeInsets.only(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.close,
+                      color: Colors.transparent,
+                    ),
+                    Expanded(
+                      child: Text(
+                        item,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+            items: itemList,
           );
   }
+
+//  Widget _getSpecialityDropDown() {
+//    List<DropdownMenuItem<String>> itemList = [];
+//    CommonMethods.catalogueLists.toSet().forEach((item) {
+//      if (item != null && item.id != null && item.id.isNotEmpty) {
+//        itemList.add(DropdownMenuItem(
+//            value: item.id,
+//            child: Container(
+//              alignment: Alignment.center,
+//              child: Text(
+//                CommonMethods.getStringInCamelCase(item?.speciality) ??
+//                    PlunesStrings.NA,
+//                textAlign: TextAlign.center,
+//                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+//              ),
+//            )));
+//      }
+//    });
+//    Widget dropDown;
+//    if (itemList != null && itemList.isNotEmpty) {
+//      dropDown = DropdownButton<String>(
+//        isDense: true,
+//        onChanged: (itemId) {
+//          _specialitySelectedId = itemId;
+//          _catalogues = [];
+//          pageIndex = SearchSolutionBloc.initialIndex;
+//          _getMoreFacilities();
+//        },
+//        value: _specialitySelectedId,
+//        hint: Container(
+//          alignment: Alignment.center,
+//          child: Text(
+//            PlunesStrings.specialities,
+//            textAlign: TextAlign.center,
+//            style: TextStyle(
+//              color: Color(CommonMethods.getColorHexFromStr("#5D5D5D")),
+//              fontSize: 16,
+//              fontWeight: FontWeight.normal,
+//            ),
+//          ),
+//        ),
+//        items: itemList,
+//        underline: Container(),
+//        isExpanded: true,
+//        elevation: 0,
+//      );
+//    }
+//    return itemList == null || itemList.isEmpty
+//        ? Container()
+//        : Column(
+//            children: <Widget>[
+//              Container(
+//                  padding: EdgeInsets.only(
+//                      left: AppConfig.horizontalBlockSize * 4,
+//                      right: AppConfig.horizontalBlockSize * 4),
+//                  child:
+//                      dropDown //DropdownButtonHideUnderline(child: dropDown),
+//                  ),
+//              Container(
+//                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.6),
+//                width: double.infinity,
+//                color: PlunesColors.GREYCOLOR,
+//                height: 0.8,
+//              ),
+//            ],
+//          );
+//  }
 
   Widget _getLocationField() {
     return Row(

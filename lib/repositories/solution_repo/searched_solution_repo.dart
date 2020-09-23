@@ -9,6 +9,7 @@ import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
+import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class SearchedSolutionRepo {
@@ -100,7 +101,7 @@ class SearchedSolutionRepo {
         "notification": catalogueData.isFromNotification,
       };
     } else {
-      String _loc = "NA";
+      String _loc = "";
       if (lat != null && long != null && lat != 0.0 && long != 0.0) {
         _loc = await LocationUtil().getAddressFromLatLong(
             lat.toString(), long.toString(),
@@ -111,7 +112,7 @@ class SearchedSolutionRepo {
         "latitude": lat,
         "longitude": long,
         "searchQuery": searchQuery,
-        "geoLocationName": _loc
+        "geoLocationName": _loc == PlunesStrings.enterYourLocation ? "" : _loc
       };
     }
     var result = await DioRequester().requestMethod(
