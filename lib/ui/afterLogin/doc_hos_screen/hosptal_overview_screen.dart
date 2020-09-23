@@ -925,7 +925,7 @@ class _HospitalOverviewScreenState
           });
   }
 
-  _openRealTimeInsightPriceUpdateWidget(RealInsight realInsight) {
+  _openRealTimeInsightPriceUpdateWidget(final RealInsight realInsight) {
     showDialog(
         context: context,
         barrierDismissible: false,
@@ -933,7 +933,18 @@ class _HospitalOverviewScreenState
             docHosMainInsightBloc: _docHosMainInsightBloc,
             realInsight: realInsight)).then((value) {
       if (value != null && value) {
-        _showSnackBar(PlunesStrings.priceUpdateSuccessMessage);
+        if (realInsight.suggested != null && realInsight.suggested) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return CustomWidgets().savePriceInCatalogue(
+                    realInsight, scaffoldKey, _docHosMainInsightBloc);
+              }).then((value) {
+            _docHosMainInsightBloc.addStatePriceUpdationInCatalogueStream(null);
+          });
+        } else {
+          _showSnackBar(PlunesStrings.priceUpdateSuccessMessage);
+        }
       }
       _getRealTimeInsights();
     });

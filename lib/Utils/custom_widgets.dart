@@ -5069,6 +5069,190 @@ class CustomWidgets {
 //      ),
 //    );
 //  }
+
+  Widget savePriceInCatalogue(RealInsight realInsight, GlobalKey globalKey,
+      DocHosMainInsightBloc docHosMainInsightBloc) {
+    TextEditingController _priceController = TextEditingController();
+//    bool shouldShowField = false;
+    String error;
+    return StatefulBuilder(builder: (context, newState) {
+      return Dialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        elevation: 0.0,
+        child: SingleChildScrollView(
+          child: StreamBuilder<RequestState>(
+              stream: docHosMainInsightBloc
+                  .updatePriceInCatalogueFromRealInsightStream,
+              builder: (context, snapshot) {
+                if (snapshot.data is RequestFailed) {
+                  RequestFailed requestFailed = snapshot.data;
+                  return getInformativeWidget(
+                      globalKey, requestFailed?.failureCause);
+                } else if (snapshot.data is RequestInProgress) {
+                  return Container(
+                    child: getProgressIndicator(),
+                    height: AppConfig.verticalBlockSize * 34,
+                  );
+                } else if (snapshot.data is RequestSuccess) {
+                  return getInformativeWidget(
+                      globalKey, PlunesStrings.priceUpdateSuccessMessage);
+                }
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                      height: AppConfig.verticalBlockSize * 10,
+                      child: Image.asset(PlunesImages.common),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 5,
+                          right: AppConfig.horizontalBlockSize * 5,
+                          top: AppConfig.verticalBlockSize * 2.5),
+                      child: Text(
+                        PlunesStrings.savePriceInCataloge,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal),
+                      ),
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 2,
+                            left: AppConfig.horizontalBlockSize * 3,
+                            right: AppConfig.horizontalBlockSize * 3),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 15),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              bottom: AppConfig.verticalBlockSize * 1.5),
+                          child: SizedBox(
+                            width: AppConfig.horizontalBlockSize * 15,
+                            child: TextField(
+                              controller: _priceController,
+                              inputFormatters: [
+                                WhitelistingTextInputFormatter.digitsOnly
+                              ],
+                              maxLines: 1,
+                              autofocus: true,
+                              keyboardType: TextInputType.number,
+                              textAlignVertical: TextAlignVertical.bottom,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                              ),
+                            ),
+                          ),
+                        )),
+                    error == null
+                        ? Container()
+                        : Container(
+                            width: double.infinity,
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.symmetric(vertical: 3),
+                            child: Text(error,
+                                style:
+                                    TextStyle(fontSize: 14, color: Colors.red)),
+                          ),
+                    Container(
+                      height: 0.5,
+                      width: double.infinity,
+                      color: PlunesColors.GREYCOLOR,
+                    ),
+                    Container(
+                      height: AppConfig.verticalBlockSize * 6,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16)),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              child: FlatButton(
+                                  highlightColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  splashColor: PlunesColors.SPARKLINGGREEN
+                                      .withOpacity(.1),
+                                  focusColor: Colors.transparent,
+                                  onPressed: () {
+                                    Navigator.pop(context,
+                                        false); // showDialog() returns false
+                                  },
+                                  child: Container(
+                                      width: double.infinity,
+                                      height: AppConfig.verticalBlockSize * 6,
+                                      child: Center(
+                                        child: Text(
+                                          "No",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: AppConfig.mediumFont,
+                                              color:
+                                                  PlunesColors.SPARKLINGGREEN),
+                                        ),
+                                      ))),
+                            ),
+                            Container(
+                              height: AppConfig.verticalBlockSize * 6,
+                              color: PlunesColors.GREYCOLOR,
+                              width: 0.5,
+                            ),
+                            Expanded(
+                              child: FlatButton(
+                                  highlightColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  splashColor: PlunesColors.SPARKLINGGREEN
+                                      .withOpacity(.1),
+                                  focusColor: Colors.transparent,
+                                  onPressed: () {
+                                    double value = double.tryParse(
+                                        _priceController.text.trim());
+                                    if (value == null ||
+                                        value == 0 ||
+                                        value < 1) {
+                                      error = 'Price must be greater than 0';
+                                      newState(() {});
+                                      return;
+                                    }
+                                    docHosMainInsightBloc
+                                        .updatePriceInCatalogueFromRealInsight(
+                                            realInsight.serviceId, value);
+                                  },
+                                  child: Container(
+                                      width: double.infinity,
+                                      height: AppConfig.verticalBlockSize * 6,
+                                      alignment: Alignment.center,
+                                      child: Center(
+                                        child: Text(
+                                          "Yes",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: AppConfig.mediumFont,
+                                              color:
+                                                  PlunesColors.SPARKLINGGREEN),
+                                        ),
+                                      ))),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }),
+        ),
+      );
+    });
+  }
+
   Widget getInformativePopup(
       {GlobalKey<ScaffoldState> globalKey, String message}) {
     return Dialog(

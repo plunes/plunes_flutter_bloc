@@ -33,7 +33,6 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
 
   final _pageController = PageController();
   final _currentPageNotifier = ValueNotifier<int>(0);
-
   // final _hospImgUrl = [
   //   CustomWidgets().getImageFromUrl(
   //       "https://www.polarishospitals.com/wp-content/uploads/2019/12/Polaris-Logo_2-1.png",
@@ -496,28 +495,28 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
       child: Column(
         children: <Widget>[
-//          Container(
-//            margin: EdgeInsets.only(
-//                top: AppConfig.verticalBlockSize * 3,
-//                bottom: AppConfig.verticalBlockSize * 1),
-//            child: Text(
-//              "Explore More",
-//              style: TextStyle(
-//                fontSize: AppConfig.largeFont,
-//                fontWeight: FontWeight.w500,
-//              ),
-//            ),
-//          ),
-//          Container(
-//            margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
-//            child: Text(
-//              PlunesStrings.exploreSpecialities,
-//              style: TextStyle(
-//                  fontSize: AppConfig.mediumFont,
-//                  color: PlunesColors.GREYCOLOR),
-//              textAlign: TextAlign.center,
-//            ),
-//          ),
+          Container(
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 3,
+                bottom: AppConfig.verticalBlockSize * 1),
+            child: Text(
+              "Explore More",
+              style: TextStyle(
+                fontSize: AppConfig.largeFont,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
+            child: Text(
+              PlunesStrings.exploreSpecialities,
+              style: TextStyle(
+                  fontSize: AppConfig.mediumFont,
+                  color: PlunesColors.GREYCOLOR),
+              textAlign: TextAlign.center,
+            ),
+          ),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 8),
               child: GridView.builder(
@@ -568,16 +567,16 @@ class _HealthSolutionNearState extends BaseState<HealthSolutionNear> {
 //                              textAlign: TextAlign.center,
 //                              style: TextStyle(fontSize: 13)),
 //                        ),
-                              Expanded(
-                                  flex: 1,
-                                  child: Padding(
-                                      padding: const EdgeInsets.only(top: 1.0),
-                                      child: widget.createTextViews(
-                                          plunesStrings.viewMore,
-                                          AppConfig.verySmallFont - 1,
-                                          colorsFile.defaultGreen,
-                                          TextAlign.center,
-                                          FontWeight.normal)))
+//                             Expanded(
+//                                 flex: 1,
+//                                 child: Padding(
+//                                     padding: const EdgeInsets.only(top: 1.0),
+//                                     child: widget.createTextViews(
+//                                         plunesStrings.viewMore,
+//                                         AppConfig.verySmallFont - 1,
+//                                         colorsFile.defaultGreen,
+//                                         TextAlign.center,
+//                                         FontWeight.normal)))
                             ],
                           ),
                         ),

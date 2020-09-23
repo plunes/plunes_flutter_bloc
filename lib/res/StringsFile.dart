@@ -4,6 +4,7 @@ final plunesStrings = PlunesStrings();
 
 class PlunesStrings {
 //  static const String hospitalTiming = "Hospital Timing";
+  static const String savePriceInCataloge = "Save the price in your Catalog ?";
   static const String exploreSpecialities =
       "Explore all our Specialities and try Negotiating. Save Thousands of Rupees in a click";
   static const String hospitals = "Hospitals";
@@ -170,42 +171,28 @@ class PlunesStrings {
   static const String kindlyUpdateYourPrice = 'Kindly Update your price';
   static const String noActionableInsightAvailable =
       "No Actionable insights yet";
-
   static const String noReportAvailabelMessage =
       "You don't have any reports yet";
   static const String noMatchReport = "No Match Found!";
-
   static const String unableToOpen = "Unable to open the file!";
-
   static const String dataNotFound = "Data not found!";
-
   static const String unableToDelete = "Unable to delele!";
   static const String appointmentFailedMessage = "Confirmation request failed";
-
   static const String deleteSuccessfully = "Deleted Successfully!";
-
   static const String priceUpdateSuccessMessage = "Price updated successfully!";
-
   static const String noAppointmentAvailable =
       "You don't have appointment yet!";
   static const String noConfirmedAppointments = "No Confirmed appointments";
   static const String noCancelledAppointments = "No Cancelled appointments";
   static const String noNewAppointments = "No New appointments";
-
   static const String invalidOtp = "Invalid OTP";
-
   static const String confirmFailedMessage = 'booking confirmation failed';
-
   static const String pleaseSelectALocation = "Please select a valid location.";
-
   static const String pay = "Pay";
-
   static const String paymentDone = "Payment Done!";
-
   static const String helpQueryFailedMessage =
       "Query submission has been failed! Try Again";
   static const String emptyQueryFieldMessage = "Please Enter your query";
-
   static const String helpQuerySuccessMessage =
       "Thanks for contacting us! We will be in touch with you shortly.";
   static const String timeNotAvailable =

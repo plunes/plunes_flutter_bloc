@@ -20,7 +20,7 @@ class Urls {
 //  static const String baseUrl =
 //      'https://api.plunes.com/v61/'; // production server
   static const String baseUrl =
-      'https://devapi.plunes.com/v5/'; // staging server
+      'https://devapi.plunes.com/v61/'; // staging server
 
 //  static const String customBaseUrl =
 //      'https://api.plunes.com/'; // production server
@@ -113,4 +113,6 @@ class Urls {
   static const String CHANGE_PROFILE_URL = "upload/profilePicture";
   static const String SERVICE_NOTIFICATION_DISABLE_URL =
       "user/serviceNotificationException/";
+  static const String UPDATE_PRICE_IN_CATALOGUE_FROM_REAL_INSIGHT =
+      "user/addServiceToCatalogue";
 }

@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
+  confetti: any
   readmore: ^1.0.0
   page_view_indicators: ^1.3.1
   flutter_swipe_action_cell: ^1.0.5+1
@@ -246,6 +247,7 @@ flutter:
     - assets/images/profile/expert.png
     - assets/images/profile/specialization.png
     - assets/images/profile/greenCheck.png
+    - assets/images/profile/defaulHosIcon.png
 
     - assets/images/bid/location.png
     - assets/images/bid/add_image.png

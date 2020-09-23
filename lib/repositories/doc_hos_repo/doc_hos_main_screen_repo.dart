@@ -155,4 +155,18 @@ class DocHosMainRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  Future<RequestState> updatePriceInCatalogueFromRealInsight(
+      String serviceId, num price) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_PUT,
+        headerIncluded: true,
+        postData: {"serviceId": serviceId, "price": price},
+        url: Urls.UPDATE_PRICE_IN_CATALOGUE_FROM_REAL_INSIGHT);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: result.isRequestSucceed);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

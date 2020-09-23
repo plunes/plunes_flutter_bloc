@@ -41,6 +41,12 @@ class DocHosMainInsightBloc extends BlocBase {
   Observable<RequestState> get realTimeInsightStopNotificationStream =>
       _stopNotificationForSuggestedInsightProvider.stream;
 
+  final _updatePriceInCatalogueFromRealInsightProvider =
+      PublishSubject<RequestState>();
+
+  Observable<RequestState> get updatePriceInCatalogueFromRealInsightStream =>
+      _updatePriceInCatalogueFromRealInsightProvider.stream;
+
   addStateInRealTimeInsightStream(RequestState state) {
     super.addStateInGenericStream(_realTimeProvider, state);
   }
@@ -70,6 +76,11 @@ class DocHosMainInsightBloc extends BlocBase {
         _stopNotificationForSuggestedInsightProvider, state);
   }
 
+  addStatePriceUpdationInCatalogueStream(RequestState state) {
+    super.addStateInGenericStream(
+        _updatePriceInCatalogueFromRealInsightProvider, state);
+  }
+
   @override
   void dispose() {
     _realTimeProvider?.close();
@@ -79,6 +90,7 @@ class DocHosMainInsightBloc extends BlocBase {
     _actionablePriceUpdateProvider.close();
     _helpQueryDocHosProvider.close();
     _stopNotificationForSuggestedInsightProvider?.close();
+    _updatePriceInCatalogueFromRealInsightProvider?.close();
     super.dispose();
   }
 
@@ -128,6 +140,15 @@ class DocHosMainInsightBloc extends BlocBase {
     var result =
         await DocHosMainRepo().stopNotificationsForSuggestedInsight(serviceId);
     addStateInDoNotDisturbStream(result);
+    return result;
+  }
+
+  Future updatePriceInCatalogueFromRealInsight(
+      String serviceId, num price) async {
+    addStatePriceUpdationInCatalogueStream(RequestInProgress());
+    var result = await DocHosMainRepo()
+        .updatePriceInCatalogueFromRealInsight(serviceId, price);
+    addStatePriceUpdationInCatalogueStream(result);
     return result;
   }
 }
