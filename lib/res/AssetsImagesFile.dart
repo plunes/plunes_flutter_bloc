@@ -94,6 +94,8 @@ class PlunesImages {
       "assets/images/turnOffNotification.png";
   static const String disableServiceIcon =
       "assets/images/disableServiceIcon.png";
+  static const String savePriceInCatalogueImage =
+      "assets/images/savePriceInCatalogueImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

@@ -1546,13 +1546,22 @@ class CustomWidgets {
                                     ),
                                   ),
                                   failureCause != null
-                                      ? Text(
-                                    failureCause,
-                                    style: TextStyle(
-                                        fontSize: AppConfig.smallFont,
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w600),
-                                  )
+                                      ? Container(
+                                          child: Text(
+                                            failureCause,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: AppConfig.smallFont,
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#FF9194")),
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          alignment: Alignment.center,
+                                          margin: EdgeInsets.only(
+                                              bottom:
+                                                  AppConfig.verticalBlockSize *
+                                                      3))
                                       : Container(),
                                   Container(
                                     height: 0.5,
@@ -2085,13 +2094,22 @@ class CustomWidgets {
                                         AppConfig.horizontalBlockSize * 3),
                                   ),
                                   failureCause != null
-                                      ? Text(
-                                    failureCause,
-                                    style: TextStyle(
-                                        fontSize: AppConfig.smallFont,
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.w600),
-                                  )
+                                      ? Container(
+                                          child: Text(
+                                            failureCause,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: AppConfig.smallFont,
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#FF9194")),
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                          alignment: Alignment.center,
+                                          margin: EdgeInsets.only(
+                                              bottom:
+                                                  AppConfig.verticalBlockSize *
+                                                      3))
                                       : Container(),
                                   Container(
                                     height: 0.5,
@@ -2167,7 +2185,7 @@ class CustomWidgets {
                                                         value == 0 ||
                                                         value < 1) {
                                                       failureCause =
-                                                          'price must be greater than 0';
+                                                          'Price must be greater than 0';
                                                       newState(() {});
                                                       return;
                                                     }
@@ -5073,7 +5091,6 @@ class CustomWidgets {
   Widget savePriceInCatalogue(RealInsight realInsight, GlobalKey globalKey,
       DocHosMainInsightBloc docHosMainInsightBloc) {
     TextEditingController _priceController = TextEditingController();
-//    bool shouldShowField = false;
     String error;
     return StatefulBuilder(builder: (context, newState) {
       return Dialog(
@@ -5106,19 +5123,20 @@ class CustomWidgets {
                       margin:
                           EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
                       height: AppConfig.verticalBlockSize * 10,
-                      child: Image.asset(PlunesImages.common),
+                      child: Image.asset(PlunesImages.savePriceInCatalogueImage,
+                          fit: BoxFit.fitHeight),
                     ),
                     Container(
                       margin: EdgeInsets.only(
-                          left: AppConfig.horizontalBlockSize * 5,
-                          right: AppConfig.horizontalBlockSize * 5,
+                          left: AppConfig.horizontalBlockSize * 2,
+                          right: AppConfig.horizontalBlockSize * 2,
                           top: AppConfig.verticalBlockSize * 2.5),
                       child: Text(
                         PlunesStrings.savePriceInCataloge,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                             color: PlunesColors.BLACKCOLOR,
-                            fontSize: 16,
+                            fontSize: 18,
                             fontWeight: FontWeight.normal),
                       ),
                     ),
@@ -5552,9 +5570,9 @@ class CustomWidgets {
                         child: Image.asset(PlunesImages.turnOffNotification)),
                     Container(
                       padding: EdgeInsets.only(
-                          bottom: AppConfig.verticalBlockSize * 3),
+                          bottom: AppConfig.verticalBlockSize * 1.5),
                       margin: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 15),
+                          horizontal: AppConfig.horizontalBlockSize * 10),
                       child: Text(
                         PlunesStrings.serviceNotAvailableAtFacility,
                         textAlign: TextAlign.center,
@@ -5569,13 +5587,14 @@ class CustomWidgets {
                       padding: EdgeInsets.only(
                           bottom: AppConfig.verticalBlockSize * 3),
                       margin: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 15),
+                          horizontal: AppConfig.horizontalBlockSize * 13),
                       child: Text(
                         PlunesStrings.doNotNotifyForThisService,
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         style: TextStyle(
-                            color: Color(CommonMethods.getColorHexFromStr("Do not notify for this in future")),
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#575757")),
                             fontWeight: FontWeight.w500,
                             fontSize: 13),
                       ),

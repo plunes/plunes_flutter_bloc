@@ -66,16 +66,21 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       _selectedTimeSlot,
       _notSelectedEntry,
       _userFailureCause;
-  bool _isFetchingDocHosInfo, _shouldUseCredit;
+  bool _isFetchingDocHosInfo, _shouldUseCredit, _hasScrolledOnce, _hasGotSize;
   LoginPost _docProfileInfo, _userProfileInfo;
   BookingBloc _bookingBloc;
   List<String> _slotArray;
+  double _widgetSize = 0;
   ScrollController _scrollController;
+  GlobalKey _selectedTimeSlotKey;
 
   @override
   void initState() {
+    _hasGotSize = false;
+    _selectedTimeSlotKey = GlobalKey(debugLabel: "GlobalKey");
     _slotArray = [];
     _shouldUseCredit = false;
+    _hasScrolledOnce = false;
     _scrollController = ScrollController();
 //    _appointmentTime = "00:00";
 //    _notSelectedEntry = _appointmentTime;
@@ -420,6 +425,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         monthTextStyle: TextStyle(color: PlunesColors.BLACKCOLOR),
         selectionColor: PlunesColors.SPARKLINGGREEN,
         onDateChange: (DateTime selectedDateTime) {
+          _hasScrolledOnce = false;
           _selectedDate = selectedDateTime;
 //          _appointmentTime = _notSelectedEntry;
           _getSlotsInfo(DateUtil.getDayAsString(_selectedDate));
@@ -1189,7 +1195,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                           mainAxisSpacing: 8,
                           crossAxisSpacing: 8),
                       itemBuilder: (_, index) {
+                        if (!_hasScrolledOnce) {
+                          _hasScrolledOnce = true;
+                          _doScroll();
+                        }
                         return InkWell(
+                          key: (index == 0 && !_hasGotSize)
+                              ? _selectedTimeSlotKey
+                              : null,
                           onTap: () {
                             _checkSelectedSlot(_slotArray[index],
                                 shouldShowPopup: true);
@@ -1433,6 +1446,28 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 //      print("error" + e);
     }
     return isSlotTimeExpired;
+  }
+
+  void _doScroll() {
+    if ((_selectedTimeSlot != null &&
+        _selectedTimeSlot != PlunesStrings.noSlot)) {
+      Future.delayed(Duration(milliseconds: 500)).then((value) {
+        if (_slotArray != null &&
+            _slotArray.isNotEmpty &&
+            _slotArray.contains(_selectedTimeSlot)) {
+          if (!_hasGotSize) {
+            _hasGotSize = true;
+            var _context = _selectedTimeSlotKey.currentContext;
+            _widgetSize = _context.size.height;
+          }
+          int index = _slotArray.indexOf(_selectedTimeSlot);
+          if (index != null && index >= 0) {
+            _scrollController.animateTo(_widgetSize * index.toDouble(),
+                duration: Duration(milliseconds: 50), curve: Curves.easeInOut);
+          }
+        }
+      });
+    }
   }
 }
 
