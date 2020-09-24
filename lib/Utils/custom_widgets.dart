@@ -1545,6 +1545,15 @@ class CustomWidgets {
                                                   "#23407A"))),
                                     ),
                                   ),
+                                  failureCause != null
+                                      ? Text(
+                                    failureCause,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.smallFont,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w600),
+                                  )
+                                      : Container(),
                                   Container(
                                     height: 0.5,
                                     width: double.infinity,
@@ -1653,13 +1662,13 @@ class CustomWidgets {
                                                     if (sliderVal == null ||
                                                         sliderVal == 0) {
                                                       failureCause =
-                                                          'price must not be 0.';
+                                                          'Price must not be 0.';
                                                       newState(() {});
                                                       return;
                                                     } else if (sliderVal ==
                                                         realInsight.userPrice) {
                                                       failureCause =
-                                                          'price must not be equals to original price.';
+                                                          'Sorry, Make sure Updated Price is not equal to Original Price !';
                                                       newState(() {});
                                                       return;
                                                     }
@@ -1704,15 +1713,6 @@ class CustomWidgets {
                                       ),
                                     ),
                                   ),
-                                  failureCause != null
-                                      ? Text(
-                                          failureCause,
-                                          style: TextStyle(
-                                              fontSize: AppConfig.smallFont,
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.w600),
-                                        )
-                                      : Container(),
                                 ],
                               ),
                             ],
@@ -2084,6 +2084,15 @@ class CustomWidgets {
                                     padding: EdgeInsets.all(
                                         AppConfig.horizontalBlockSize * 3),
                                   ),
+                                  failureCause != null
+                                      ? Text(
+                                    failureCause,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.smallFont,
+                                        color: Colors.red,
+                                        fontWeight: FontWeight.w600),
+                                  )
+                                      : Container(),
                                   Container(
                                     height: 0.5,
                                     width: double.infinity,
@@ -2174,7 +2183,7 @@ class CustomWidgets {
                                                     if (sliderVal == null ||
                                                         sliderVal == 0) {
                                                       failureCause =
-                                                          'price must not be 0';
+                                                          'Price must not be 0';
                                                       newState(() {});
                                                       return;
                                                     } else if (sliderVal
@@ -2186,7 +2195,7 @@ class CustomWidgets {
                                                             .toStringAsFixed(
                                                                 0)) {
                                                       failureCause =
-                                                          'price must not be equals to original price.';
+                                                          'Sorry, Make sure Updated Price is not equal to Original Price !';
                                                       newState(() {});
                                                       return;
                                                     }
@@ -2222,15 +2231,6 @@ class CustomWidgets {
                                       ),
                                     ),
                                   ),
-                                  failureCause != null
-                                      ? Text(
-                                          failureCause,
-                                          style: TextStyle(
-                                              fontSize: AppConfig.smallFont,
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.w600),
-                                        )
-                                      : Container(),
                                 ],
                               ),
                             ],
@@ -5556,13 +5556,28 @@ class CustomWidgets {
                       margin: EdgeInsets.symmetric(
                           horizontal: AppConfig.horizontalBlockSize * 15),
                       child: Text(
-                        PlunesStrings.doNotNotifyForThisService,
+                        PlunesStrings.serviceNotAvailableAtFacility,
                         textAlign: TextAlign.center,
                         maxLines: 2,
                         style: TextStyle(
                             color: PlunesColors.BLACKCOLOR,
                             fontWeight: FontWeight.w500,
                             fontSize: 15),
+                      ),
+                    ),
+                    Container(
+                      padding: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 3),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 15),
+                      child: Text(
+                        PlunesStrings.doNotNotifyForThisService,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        style: TextStyle(
+                            color: Color(CommonMethods.getColorHexFromStr("Do not notify for this in future")),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 13),
                       ),
                     ),
                     Container(

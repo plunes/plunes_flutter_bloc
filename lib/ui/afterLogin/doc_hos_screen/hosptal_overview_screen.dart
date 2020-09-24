@@ -482,6 +482,7 @@ class _HospitalOverviewScreenState
                                                       vertical: AppConfig
                                                               .verticalBlockSize *
                                                           0.6),
+                                                  color: Color(CommonMethods.getColorHexFromStr("#FFEFEF")),
                                                   child: Row(
                                                     mainAxisAlignment:
                                                         MainAxisAlignment.start,
@@ -503,9 +504,7 @@ class _HospitalOverviewScreenState
                                                         PlunesStrings
                                                             .serviceNotAvailableText,
                                                         style: TextStyle(
-                                                          color: PlunesColors
-                                                              .GREYCOLOR
-                                                              .withOpacity(0.9),
+                                                          color: Color(CommonMethods.getColorHexFromStr("#FF00C3")),
                                                           fontSize: AppConfig
                                                               .smallFont,
                                                           fontWeight:
