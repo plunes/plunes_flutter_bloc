@@ -95,6 +95,7 @@ class DocHosMainInsightBloc extends BlocBase {
   }
 
   getRealTimeInsights() async {
+    addStateInRealTimeInsightStream(RequestInProgress());
     addStateInRealTimeInsightStream(
         await DocHosMainRepo().getRealTimeInsights());
   }
@@ -144,10 +145,10 @@ class DocHosMainInsightBloc extends BlocBase {
   }
 
   Future updatePriceInCatalogueFromRealInsight(
-      String serviceId, num price) async {
+      String serviceId, num price, String profId) async {
     addStatePriceUpdationInCatalogueStream(RequestInProgress());
     var result = await DocHosMainRepo()
-        .updatePriceInCatalogueFromRealInsight(serviceId, price);
+        .updatePriceInCatalogueFromRealInsight(serviceId, price, profId);
     addStatePriceUpdationInCatalogueStream(result);
     return result;
   }

@@ -5242,7 +5242,9 @@ class CustomWidgets {
                                     }
                                     docHosMainInsightBloc
                                         .updatePriceInCatalogueFromRealInsight(
-                                            realInsight.serviceId, value);
+                                            realInsight.serviceId,
+                                            value,
+                                            realInsight.professionalId);
                                   },
                                   child: Container(
                                       width: double.infinity,

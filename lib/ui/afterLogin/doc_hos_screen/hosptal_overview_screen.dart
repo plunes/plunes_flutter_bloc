@@ -960,12 +960,13 @@ class _HospitalOverviewScreenState
                     realInsight, scaffoldKey, _docHosMainInsightBloc);
               }).then((value) {
             _docHosMainInsightBloc.addStatePriceUpdationInCatalogueStream(null);
+            _getRealTimeInsights();
           });
         } else {
           _showSnackBar(PlunesStrings.priceUpdateSuccessMessage);
+          _getRealTimeInsights();
         }
       }
-      _getRealTimeInsights();
     });
   }
 

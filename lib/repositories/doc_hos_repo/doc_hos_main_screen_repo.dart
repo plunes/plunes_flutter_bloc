@@ -157,11 +157,15 @@ class DocHosMainRepo {
   }
 
   Future<RequestState> updatePriceInCatalogueFromRealInsight(
-      String serviceId, num price) async {
+      String serviceId, num price, String profId) async {
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true,
-        postData: {"serviceId": serviceId, "price": price},
+        postData: {
+          "serviceId": serviceId,
+          "price": price,
+          "professionalId": profId
+        },
         url: Urls.UPDATE_PRICE_IN_CATALOGUE_FROM_REAL_INSIGHT);
     if (result.isRequestSucceed) {
       return RequestSuccess(response: result.isRequestSucceed);

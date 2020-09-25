@@ -31,8 +31,8 @@ class RealInsight {
   String serviceId;
   String userName;
   String profName, centerLocation;
-  String serviceName, expirationMessage, imageUrl;
-  bool negotiating, expired, booked, professionalBooked;
+  String serviceName, expirationMessage, imageUrl, professionalId;
+  bool negotiating, expired, booked, professionalBooked, priceUpdated;
   int timeRemaining;
   num userPrice;
   int createdAt;
@@ -60,6 +60,8 @@ class RealInsight {
       this.booked,
       this.imageUrl,
       this.professionalBooked,
+      this.professionalId,
+      this.priceUpdated,
       this.suggested});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
@@ -79,6 +81,8 @@ class RealInsight {
     imageUrl = json['imageUrl'];
     booked = json['booked'];
     professionalBooked = json['professionalBooked'];
+    priceUpdated = json['priceUpdated'];
+    professionalId = json['professionalId'];
   }
 
   Map<String, dynamic> toJson() {
