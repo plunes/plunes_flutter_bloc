@@ -11,6 +11,7 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.2
+  flutter_gifimage:
   confetti: any
   readmore: ^1.0.0
   page_view_indicators: ^1.3.1
@@ -100,6 +101,7 @@ flutter:
 
   assets:
     - assets/send.png
+    - assets/gif/increament.gif
     - assets/gif/loading.gif
     - assets/send_active.png
     - assets/fb.png

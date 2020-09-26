@@ -28,7 +28,7 @@ class HospitalDoctorOverviewScreen extends BaseActivity {
 
 class _HospitalOverviewScreenState
     extends BaseState<HospitalDoctorOverviewScreen>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   User _user;
   DocHosMainInsightBloc _docHosMainInsightBloc;
   List<CentreData> _centresList = [];
@@ -102,6 +102,7 @@ class _HospitalOverviewScreenState
 
   @override
   void dispose() {
+    // controller.dispose();
     _timeUpdater?.close();
     _timer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
@@ -331,39 +332,120 @@ class _HospitalOverviewScreenState
                                                 ],
                                               ),
                                             )
-                                          : Row(
+                                          : Column(
                                               children: <Widget>[
-                                                FlatButtonLinks(
-                                                    PlunesStrings
-                                                        .kindlyUpdateYourPrice,
-                                                    AppConfig.smallFont + 2,
-                                                    null,
-                                                    AppConfig.horizontalBlockSize *
-                                                            2 +
-                                                        45,
-                                                    true,
-                                                    () => _openRealTimeInsightPriceUpdateWidget(
-                                                        _realTimeInsightsResponse
-                                                            .data[itemIndex])),
-                                                InkWell(
-                                                  onTap: () =>
-                                                      _openRealTimeInsightPriceUpdateWidget(
-                                                          _realTimeInsightsResponse
-                                                              .data[itemIndex]),
-                                                  highlightColor: Colors.white,
-                                                  child: Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 1.0,
-                                                        right: 6.0,
-                                                        top: 6.0,
-                                                        bottom: 6.0),
-                                                    child: Icon(
-                                                      Icons.arrow_forward,
-                                                      color: PlunesColors
-                                                          .GREENCOLOR,
-                                                    ),
+                                                Container(
+                                                  margin: EdgeInsets.only(
+                                                      top: AppConfig
+                                                              .verticalBlockSize *
+                                                          1,
+                                                      left: AppConfig
+                                                                  .horizontalBlockSize *
+                                                              2 +
+                                                          45),
+                                                  height: AppConfig
+                                                          .verticalBlockSize *
+                                                      4.5,
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Image.asset(
+                                                          PlunesImages
+                                                              .increamentGif,
+                                                          height: AppConfig
+                                                                  .verticalBlockSize *
+                                                              4,
+                                                        ),
+                                                        alignment:
+                                                            AlignmentDirectional
+                                                                .bottomStart,
+                                                      ),
+                                                      Container(
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: AppConfig
+                                                                    .horizontalBlockSize *
+                                                                .5),
+                                                        child: Text(
+                                                          "23%",
+                                                          style: TextStyle(
+                                                              color: PlunesColors
+                                                                  .SPARKLINGGREEN,
+                                                              fontSize: AppConfig
+                                                                      .mediumFont -
+                                                                  2.5,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                        ),
+                                                        alignment:
+                                                            Alignment.topLeft,
+                                                      ),
+                                                      Container(
+                                                        alignment:
+                                                            Alignment.topLeft,
+                                                        margin: EdgeInsets.only(
+                                                            left: AppConfig
+                                                                    .horizontalBlockSize *
+                                                                .5,
+                                                            right: AppConfig
+                                                                    .horizontalBlockSize *
+                                                                .5,
+                                                            top: AppConfig
+                                                                    .verticalBlockSize *
+                                                                1),
+                                                        child: Text(
+                                                          "Higher than competition price",
+                                                          style: TextStyle(
+                                                              color: PlunesColors
+                                                                  .GREYCOLOR,
+                                                              fontSize: AppConfig
+                                                                      .smallFont -
+                                                                  1.5),
+                                                        ),
+                                                      )
+                                                    ],
                                                   ),
-                                                )
+                                                ),
+                                                Row(
+                                                  children: <Widget>[
+                                                    FlatButtonLinks(
+                                                        PlunesStrings
+                                                            .kindlyUpdateYourPrice,
+                                                        AppConfig.smallFont + 2,
+                                                        null,
+                                                        AppConfig.horizontalBlockSize *
+                                                                2 +
+                                                            45,
+                                                        7,
+                                                        true,
+                                                        () => _openRealTimeInsightPriceUpdateWidget(
+                                                            _realTimeInsightsResponse
+                                                                    .data[
+                                                                itemIndex])),
+                                                    InkWell(
+                                                      onTap: () =>
+                                                          _openRealTimeInsightPriceUpdateWidget(
+                                                              _realTimeInsightsResponse
+                                                                      .data[
+                                                                  itemIndex]),
+                                                      highlightColor:
+                                                          Colors.white,
+                                                      child: Container(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                left: 1.0,
+                                                                right: 6.0,
+                                                                // top: 6.0,
+                                                                bottom: 6.0),
+                                                        child: Icon(
+                                                          Icons.arrow_forward,
+                                                          color: PlunesColors
+                                                              .GREENCOLOR,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
                                               ],
                                             ),
                                       StreamBuilder<Object>(
@@ -758,6 +840,7 @@ class _HospitalOverviewScreenState
                                       AppConfig.smallFont + 2,
                                       null,
                                       20,
+                                      10,
                                       true,
                                       () => _openActionableUpdatePriceWidget(
                                           _actionableInsightResponse
@@ -1148,7 +1231,6 @@ class _HospitalOverviewScreenState
                       ),
                     ),
                   ),
-
 //                  Container(
 //                    width: double.infinity,
 //                    child: Card(
@@ -1395,12 +1477,13 @@ class FlatButtonLinks extends StatelessWidget {
   final String linkName;
   final String onTapFunc;
   double leftMargin;
+  double topMargin;
   bool isUnderline;
   double fontSize;
   Function onTap;
 
   FlatButtonLinks(this.linkName, this.fontSize, this.onTapFunc, this.leftMargin,
-      this.isUnderline, this.onTap);
+      this.topMargin, this.isUnderline, this.onTap);
 
   @override
   Widget build(BuildContext context) {
@@ -1411,7 +1494,7 @@ class FlatButtonLinks extends StatelessWidget {
         highlightColor: Colors.white,
         onDoubleTap: () {},
         child: Padding(
-            padding: EdgeInsets.only(top: 15, bottom: 15, right: 10),
+            padding: EdgeInsets.only(top: topMargin, bottom: 15, right: 10),
             child: Text(
               linkName,
               style: TextStyle(
