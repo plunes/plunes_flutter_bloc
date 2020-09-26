@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class RealTimeInsightsResponse {
   bool success;
   List<RealInsight> data;
@@ -33,7 +35,7 @@ class RealInsight {
   String profName, centerLocation;
   String serviceName, expirationMessage, imageUrl, professionalId;
   bool negotiating, expired, booked, professionalBooked, priceUpdated;
-  int timeRemaining;
+  int timeRemaining, expirationTimer;
   num userPrice;
   int createdAt;
 
@@ -61,6 +63,7 @@ class RealInsight {
       this.imageUrl,
       this.professionalBooked,
       this.professionalId,
+      this.expirationTimer,
       this.priceUpdated,
       this.suggested});
 
@@ -82,6 +85,7 @@ class RealInsight {
     booked = json['booked'];
     professionalBooked = json['professionalBooked'];
     priceUpdated = json['priceUpdated'];
+    expirationTimer = json['expirationTimer'];
     professionalId = json['professionalId'];
   }
 

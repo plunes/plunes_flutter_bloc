@@ -261,7 +261,7 @@ class _HospitalOverviewScreenState
                                                   ? 0
                                                   : _realTimeInsightsResponse
                                                       .data[itemIndex]
-                                                      .createdAt,
+                                                      .expirationTimer,
                                           centreLocation:
                                               _realTimeInsightsResponse
                                                   .data[itemIndex]
@@ -416,7 +416,7 @@ class _HospitalOverviewScreenState
                                                 DateUtil.getDuration(
                                                     _realTimeInsightsResponse
                                                             .data[itemIndex]
-                                                            ?.createdAt ??
+                                                            ?.expirationTimer ??
                                                         0),
                                                 style: TextStyle(
                                                     fontSize:
@@ -1479,8 +1479,8 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     if (widget.timer != null) {
       _countDownValue = widget.timer - 1;
     }
-    _runSolutionExpireTimer();
     if (!showShowWidget()) {
+      _runSolutionExpireTimer();
       _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
         _startTimer(_timer);
       });
@@ -1621,7 +1621,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       borderRadius: BorderRadius.circular(8.0)),
                   child: Center(
                     child: Text(
-                      _timeValue,
+                      showShowWidget() ? "00:00" : _timeValue,
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,
                           fontSize: AppConfig.verySmallFont + 2),
@@ -1671,13 +1671,13 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   void _runSolutionExpireTimer() {
     _timerForSolutionExpire = Timer.periodic(Duration(seconds: 30), (timer) {
       _timerForSolutionExpire = timer;
-      if ((widget.remainingTime == null ||
-          widget.remainingTime == 0 ||
-          DateTime.now()
-                  .difference(
-                      DateTime.fromMillisecondsSinceEpoch(widget.remainingTime))
-                  .inHours >
-              1)) {
+      if (widget.remainingTime == null || widget.remainingTime == 0) {
+        timer.cancel();
+      } else if (DateTime.now()
+              .difference(
+                  DateTime.fromMillisecondsSinceEpoch(widget.remainingTime))
+              .inMinutes >=
+          60) {
         widget.getRealTimeInsights();
         timer.cancel();
       }
