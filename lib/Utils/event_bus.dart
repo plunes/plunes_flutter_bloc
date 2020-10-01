@@ -23,6 +23,7 @@ class EventProvider {
 
 class ScreenRefresher {
   String screenName;
+  dynamic data;
 
-  ScreenRefresher({this.screenName});
+  ScreenRefresher({this.screenName, this.data});
 }

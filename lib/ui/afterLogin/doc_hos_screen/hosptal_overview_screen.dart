@@ -5,6 +5,7 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/event_bus.dart';
+import 'package:plunes/Utils/socket_io_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
@@ -53,6 +54,7 @@ class _HospitalOverviewScreenState
   ScrollController _scrollController;
   BuildContext _context;
   GlobalKey _realTimeInsightKey = GlobalKey();
+  SocketIoUtil _socketIoUtil;
 
   @override
   void initState() {
@@ -68,6 +70,8 @@ class _HospitalOverviewScreenState
     _scrollParent = false;
     _isProcessing = false;
     _user = UserManager().getUserDetails();
+    _socketIoUtil = SocketIoUtil();
+    _socketIoUtil.initSocket();
     _docHosMainInsightBloc = DocHosMainInsightBloc();
     if (_user.isAdmin && (UserManager().centreData == null)) {
       _getCentresData();
@@ -81,6 +85,14 @@ class _HospitalOverviewScreenState
       if (event != null &&
           event.screenName == FirebaseNotification.insightScreen &&
           mounted) {
+        _getRealTimeInsights();
+      }
+    });
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == SocketIoUtil.insightTopic &&
+          mounted) {
+        print("getting insight");
         _getRealTimeInsights();
       }
     });
@@ -104,6 +116,7 @@ class _HospitalOverviewScreenState
   void dispose() {
     _timeUpdater?.close();
     _timer?.cancel();
+    _socketIoUtil?.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _docHosMainInsightBloc?.dispose();
     super.dispose();
