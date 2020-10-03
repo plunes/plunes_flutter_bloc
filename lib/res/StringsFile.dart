@@ -341,7 +341,7 @@ class PlunesStrings {
   static const String watch = "Watch";
   static const String noSlot = "No slot";
   static const String doNotNotifyForThisService =
-      "Do not notify for this in future";
+      "Do you want to be Notified in Future for this service ?";
   static const String serviceNotAvailableAtFacility =
       "Service not available at facility";
   static const String yes = "Yes";
