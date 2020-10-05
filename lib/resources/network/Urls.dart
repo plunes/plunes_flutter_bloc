@@ -27,6 +27,10 @@ class Urls {
   static const String customBaseUrl =
       'https://devapi.plunes.com/'; // staging server
 
+  //  static const String socketUrl =
+//      'https://api.plunes.com'; // production server
+  static const String socketUrl = 'https://devapi.plunes.com'; // staging server
+
   get catalogue => baseUrl + 'catalogue';
 
   get logout => baseUrl + 'user/logout';
