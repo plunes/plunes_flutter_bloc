@@ -416,47 +416,47 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                     ),
                     flex: 4,
                   ),
-                  _user.achievements[index].title.isEmpty
-                      ? Container()
-                      : Expanded(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    AppConfig.horizontalBlockSize * 0.5),
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * .5),
-                              child: Text(
-                                _user.achievements[index].title,
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            ),
-                            width: AppConfig.horizontalBlockSize * 40,
-                          ),
-                        ),
-                  _user.achievements[index].achievement.isEmpty
-                      ? Container()
-                      : Flexible(
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    AppConfig.horizontalBlockSize * 0.5),
-                            child: Center(
-                              child: Text(
-                                _user.achievements[index]?.achievement,
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                textAlign: TextAlign.start,
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            ),
-                            width: AppConfig.horizontalBlockSize * 40,
-                          ),
-                          flex: 1,
-                        ),
+                  // _user.achievements[index].title.isEmpty
+                  //     ? Container()
+                  //     : Expanded(
+                  //         child: Container(
+                  //           padding: EdgeInsets.symmetric(
+                  //               horizontal:
+                  //                   AppConfig.horizontalBlockSize * 0.5),
+                  //           child: Padding(
+                  //             padding: EdgeInsets.only(
+                  //                 top: AppConfig.verticalBlockSize * .5),
+                  //             child: Text(
+                  //               _user.achievements[index].title,
+                  //               maxLines: 1,
+                  //               overflow: TextOverflow.clip,
+                  //               textAlign: TextAlign.center,
+                  //               style: TextStyle(fontSize: 14),
+                  //             ),
+                  //           ),
+                  //           width: AppConfig.horizontalBlockSize * 40,
+                  //         ),
+                  //       ),
+                  // _user.achievements[index].achievement.isEmpty
+                  //     ? Container()
+                  //     : Flexible(
+                  //         child: Container(
+                  //           padding: EdgeInsets.symmetric(
+                  //               horizontal:
+                  //                   AppConfig.horizontalBlockSize * 0.5),
+                  //           child: Center(
+                  //             child: Text(
+                  //               _user.achievements[index]?.achievement,
+                  //               maxLines: 1,
+                  //               overflow: TextOverflow.clip,
+                  //               textAlign: TextAlign.start,
+                  //               style: TextStyle(fontSize: 14),
+                  //             ),
+                  //           ),
+                  //           width: AppConfig.horizontalBlockSize * 40,
+                  //         ),
+                  //         flex: 1,
+                  //       ),
                 ],
               ),
             ),

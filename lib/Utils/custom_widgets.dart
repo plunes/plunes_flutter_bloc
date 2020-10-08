@@ -822,7 +822,29 @@ class CustomWidgets {
                       ),
                     ),
                     solutions[index].negotiating
-                        ? Container()
+                        ? Container(
+                      // padding: EdgeInsets.only(
+                      //     top: AppConfig.verticalBlockSize * 1),
+                      // child: Row(
+                      //   mainAxisAlignment: MainAxisAlignment.start,
+                      //   children: <Widget>[
+                      //     Text( "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
+                      //     style: TextStyle(
+                      //         fontSize: AppConfig.extraLargeFont,
+                      //         color: PlunesColors.GREYCOLOR,
+                      //         fontWeight: FontWeight.w600),),
+                      //     SizedBox(width: AppConfig.horizontalBlockSize*3,),
+                      //     Text(
+                      //           PlunesStrings.negotiating,
+                      //           style: TextStyle(
+                      //               fontSize: 15,
+                      //               fontWeight: FontWeight.normal,
+                      //               color: PlunesColors.SPARKLINGGREEN),
+                      //         ),
+                      //         getLinearIndicator()
+                      //   ],
+                      // )
+                    )
                         : Padding(
                             padding: EdgeInsets.only(
                                 top: AppConfig.verticalBlockSize * 1),
