@@ -365,7 +365,8 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                   child: Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Text(
-                  "${_user.achievements.length - 2} More Photos",
+                  "View more",
+                  // "${_user.achievements.length - 2} More Photos",
                   maxLines: 2,
                   textAlign: TextAlign.center,
                   style: TextStyle(
