@@ -82,6 +82,7 @@ dependencies:
   searchable_dropdown: ^1.1.3
   adhara_socket_io: ^0.4.2+1
   socket_io_client: ^0.9.11
+  syncfusion_flutter_gauges: ^18.3.38
   permission:
     git:
       url: https://github.com/plunes/permission.git
@@ -348,6 +349,7 @@ flutter:
     - assets/images/turnOffNotification.png
     - assets/images/disableServiceIcon.png
     - assets/images/savePriceInCatalogueImage.png
+    - assets/images/insight_bg_img.png
 
 
 

@@ -18,6 +18,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/hos_popup_scr/real_insight_popup_scr.dart';
 import '../../../Utils/custom_widgets.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -284,7 +285,7 @@ class _HospitalOverviewScreenState
                                           getRealTimeInsights: () =>
                                               _getRealTimeInsights()),
                                       ((_realTimeInsightsResponse
-                                                          .data[itemIndex] !=
+                                                          .data[itemIndex] ==
                                                       null &&
                                                   _realTimeInsightsResponse
                                                           .data[itemIndex]
@@ -961,9 +962,17 @@ class _HospitalOverviewScreenState
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (BuildContext context) => CustomWidgets().updatePricePopUp(
-            docHosMainInsightBloc: _docHosMainInsightBloc,
-            realInsight: realInsight)).then((value) {
+        builder: (BuildContext context) => Dialog(
+            insetPadding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 5),
+            child: RealInsightPopup(
+                docHosMainInsightBloc: _docHosMainInsightBloc,
+                realInsight: realInsight))
+//            CustomWidgets().updatePricePopUp(
+//            docHosMainInsightBloc: _docHosMainInsightBloc,
+//            realInsight: realInsight)
+
+        ).then((value) {
       if (value != null && value) {
         if (realInsight.suggested != null && realInsight.suggested) {
           showDialog(
