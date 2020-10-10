@@ -10,6 +10,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/graphs/real_insight_graph.dart';
 import 'dart:math' as math;
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -689,6 +690,11 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                     ),
                                   ],
                                 ),
+                              ),
+                              SizedBox(
+                                height: AppConfig.verticalBlockSize * 20,
+                                width: double.infinity,
+                                child: StackedAreaLineChart.withSampleData(),
                               ),
                               failureCause != null
                                   ? Container(
