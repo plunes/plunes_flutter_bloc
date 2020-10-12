@@ -36,12 +36,13 @@ class RealInsight {
   String serviceName, expirationMessage, imageUrl, professionalId;
   bool negotiating, expired, booked, professionalBooked, priceUpdated;
   int timeRemaining, expirationTimer;
-  num userPrice;
+  num userPrice, compRate;
   int createdAt;
+  List<DataPoint> dataPoints;
 
   @override
   String toString() {
-    return 'RealInsight{solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, centerLocation: $centerLocation, serviceName: $serviceName, expirationMessage: $expirationMessage, negotiating: $negotiating, expired: $expired, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt, suggested: $suggested, booked: $booked, professionalBooked: $professionalBooked}';
+    return 'RealInsight{solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, centerLocation: $centerLocation, serviceName: $serviceName, expirationMessage: $expirationMessage, negotiating: $negotiating, expired: $expired, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt, suggested: $suggested, booked: $booked, professionalBooked: $professionalBooked, dataPoints: $dataPoints, compRate: $compRate}';
   }
 
   bool suggested;
@@ -65,7 +66,9 @@ class RealInsight {
       this.professionalId,
       this.expirationTimer,
       this.priceUpdated,
-      this.suggested});
+      this.suggested,
+      this.dataPoints,
+      this.compRate});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
     solutionId = json['solutionId'];
@@ -87,6 +90,13 @@ class RealInsight {
     priceUpdated = json['priceUpdated'];
     expirationTimer = json['expirationTimer'];
     professionalId = json['professionalId'];
+    if (json['dataPoints'] != null) {
+      dataPoints = [];
+      json['dataPoints'].forEach((v) {
+        dataPoints.add(new DataPoint.fromJson(v));
+      });
+    }
+    compRate = json['competitionRate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -102,5 +112,18 @@ class RealInsight {
     data['createdAt'] = this.createdAt;
     data['suggested'] = this.suggested;
     return data;
+  }
+}
+
+class DataPoint {
+//  String id;
+  num x, y;
+
+  DataPoint({this.x, this.y});
+
+  DataPoint.fromJson(Map<String, dynamic> json) {
+//    id = json['solutionId'];
+    x = json['x'];
+    y = json['y'];
   }
 }

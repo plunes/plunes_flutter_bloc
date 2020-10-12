@@ -19,19 +19,19 @@ class CustomCircleSymbolRenderer extends CircleSymbolRenderer {
         strokeColor: strokeColor,
         strokeWidthPx: strokeWidthPx);
     var textStyle = style.TextStyle();
-    textStyle.color = Color.black;
+    textStyle.color = Color.white;
     textStyle.fontSize = 13;
     var t = tseee.TextElement(
       "You are here",
       style: textStyle,
     );
-    canvas.drawRect(
-        Rectangle(
-            bounds.left - 34,
-            bounds.top - 30,
-            bounds.width + t.measurement.horizontalSliceWidth,
-            bounds.height + 10),
-        fill: Color.white);
+//    canvas.drawRect(
+//        Rectangle(
+//            bounds.left - 34,
+//            bounds.top - 30,
+//            bounds.width + t.measurement.horizontalSliceWidth,
+//            bounds.height + 10),
+//        fill: Color.white);
     canvas.drawText(
         tseee.TextElement(
           "You are here",

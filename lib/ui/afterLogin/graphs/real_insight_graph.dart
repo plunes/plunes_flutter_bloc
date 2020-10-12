@@ -2,18 +2,22 @@
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/ui/afterLogin/graphs/circle_rend.dart';
 
 class StackedAreaLineChart extends StatelessWidget {
   final List<charts.Series> seriesList;
   final bool animate;
+  static num _userPrice;
 
   StackedAreaLineChart(this.seriesList, {this.animate});
 
   /// Creates a [LineChart] with sample data and no transition.
-  factory StackedAreaLineChart.withSampleData() {
+  factory StackedAreaLineChart.withSampleData(
+      List<DataPoint> points, num userPrice) {
+    _userPrice = userPrice;
     return new StackedAreaLineChart(
-      _createSampleData(),
+      _createSampleData(points),
       // Disable animations for image tests.
       animate: false,
     );
@@ -61,7 +65,7 @@ class StackedAreaLineChart extends StatelessWidget {
         ],
         behaviors: [
           new charts.InitialSelection(selectedDataConfig: [
-            new charts.SeriesDatumConfig<int>('Graph', 2)
+            new charts.SeriesDatumConfig<int>('Graph', _userPrice)
           ]),
           new charts.LinePointHighlighter(
               symbolRenderer: CustomCircleSymbolRenderer()),
@@ -85,22 +89,27 @@ class StackedAreaLineChart extends StatelessWidget {
   }
 
   /// Create one series with sample hard coded data.
-  static List<charts.Series<LinearSales, int>> _createSampleData() {
-    var myFakeMobileData = [
-      new LinearSales(0, 15),
-      new LinearSales(1, 75),
-      new LinearSales(2, 300),
-      new LinearSales(3, 225),
-    ];
-
+  static List<charts.Series<LinearSales, int>> _createSampleData(
+      List<DataPoint> points) {
+    points.sort((a, b) => a.x.compareTo(b.x));
+    List<LinearSales> _dataSeries = [];
+//    LinearSales(30,1),
+//    LinearSales(46,2),
+//    LinearSales(40,3),
+//    LinearSales(68,4),
+//    LinearSales(57,5)];
+    points.forEach((element) {
+      print("element.x ${element.x}");
+      _dataSeries.add(LinearSales(element.x, element.y));
+    });
     return [
       new charts.Series<LinearSales, int>(
           id: 'Graph',
-          colorFn: (_, __) => charts.ColorUtil.fromDartColor(
-              Color(CommonMethods.getColorHexFromStr("#002448"))),
+          colorFn: (_, __) =>
+              charts.ColorUtil.fromDartColor(Colors.white.withOpacity(0.6)),
           domainFn: (LinearSales sales, _) => sales.user,
           measureFn: (LinearSales sales, _) => sales.price,
-          data: myFakeMobileData,
+          data: _dataSeries,
           displayName: "Display name",
           areaColorFn: (_, s) => charts.ColorUtil.fromDartColor(
               Color(CommonMethods.getColorHexFromStr("#FFFFF"))
@@ -115,8 +124,8 @@ class StackedAreaLineChart extends StatelessWidget {
 
 /// Sample linear data type.
 class LinearSales {
-  final int user;
-  final int price;
+  final num user;
+  final num price;
 
   LinearSales(this.user, this.price);
 }

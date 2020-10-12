@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -36,10 +38,14 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   bool shouldShowField = false;
   RealInsight _realInsight;
   DocHosMainInsightBloc _docHosMainInsightBloc;
+  Timer _timer;
+  double _topMargin = 0;
+  StreamController _streamForIcon;
 
   @override
   void initState() {
     _realInsight = widget.realInsight;
+    _streamForIcon = StreamController.broadcast();
     _docHosMainInsightBloc = widget.docHosMainInsightBloc;
     sliderVal = (_realInsight.userPrice.toDouble() / 2) +
         (((_realInsight.userPrice.toDouble() / 2)) / 2);
@@ -51,11 +57,21 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       chancesPercent = 0;
       reductionInPrice = 0;
     }
+    _timer = Timer.periodic(Duration(milliseconds: 1200), (timer) {
+      if (_topMargin == 0) {
+        _topMargin = 3;
+      } else {
+        _topMargin = 0;
+      }
+      _streamForIcon.add(null);
+    });
     super.initState();
   }
 
   @override
   void dispose() {
+    _timer?.cancel();
+    _streamForIcon?.close();
     _priceController?.dispose();
     super.dispose();
   }
@@ -73,7 +89,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
           builder: (context, snapShot) {
             if (snapShot.data is RequestInProgress) {
               return Container(
-                  height: AppConfig.verticalBlockSize * 60,
+//                  height: AppConfig.verticalBlockSize * 60,
                   margin: EdgeInsets.only(
                       left: AppConfig.horizontalBlockSize * 5.5,
                       right: AppConfig.horizontalBlockSize * 5.5,
@@ -88,67 +104,64 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
             if (snapShot.data is RequestFailed) {
               RequestFailed requestFailed = snapShot.data;
               String failureCause = requestFailed.failureCause;
-              return SingleChildScrollView(
-                child: Container(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 3),
-                        height: AppConfig.verticalBlockSize * 10,
-                        child:
-                            Image.asset(PlunesImages.plunesCommonGreenBgImage),
+              return Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                      height: AppConfig.verticalBlockSize * 10,
+                      child: Image.asset(PlunesImages.plunesCommonGreenBgImage),
+                    ),
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 2.5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 3),
+                      child: Text(
+                        failureCause ?? plunesStrings.somethingWentWrong,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.WHITECOLOR,
+                            fontSize: 16,
+                            fontWeight: FontWeight.normal),
                       ),
-                      Container(
-                        margin: EdgeInsets.symmetric(
-                            vertical: AppConfig.verticalBlockSize * 2.5),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: AppConfig.horizontalBlockSize * 3),
-                        child: Text(
-                          failureCause ?? plunesStrings.somethingWentWrong,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              color: PlunesColors.WHITECOLOR,
-                              fontSize: 16,
-                              fontWeight: FontWeight.normal),
-                        ),
+                    ),
+//                    Container(
+//                      height: 0.5,
+//                      width: double.infinity,
+//                      color: PlunesColors.GREYCOLOR,
+//                    ),
+                    Container(
+                      height: AppConfig.verticalBlockSize * 6,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16)),
+                        child: FlatButton(
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            splashColor:
+                                PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                            focusColor: Colors.transparent,
+                            onPressed: () => Navigator.pop(context),
+                            child: Container(
+                                height: AppConfig.verticalBlockSize * 6,
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    'OK',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont,
+                                        color: PlunesColors.SPARKLINGGREEN),
+                                  ),
+                                ))),
                       ),
-                      Container(
-                        height: 0.5,
-                        width: double.infinity,
-                        color: PlunesColors.GREYCOLOR,
-                      ),
-                      Container(
-                        height: AppConfig.verticalBlockSize * 6,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(16),
-                              bottomRight: Radius.circular(16)),
-                          child: FlatButton(
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              splashColor:
-                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                              focusColor: Colors.transparent,
-                              onPressed: () => Navigator.pop(context),
-                              child: Container(
-                                  height: AppConfig.verticalBlockSize * 6,
-                                  width: double.infinity,
-                                  child: Center(
-                                    child: Text(
-                                      'OK',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.mediumFont,
-                                          color: PlunesColors.SPARKLINGGREEN),
-                                    ),
-                                  ))),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               );
             }
@@ -214,8 +227,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             padding: EdgeInsets.only(
                                 left: AppConfig.horizontalBlockSize * 3,
                                 right: AppConfig.horizontalBlockSize * 3,
-                                top: AppConfig.verticalBlockSize * 4.0,
-                                bottom: AppConfig.verticalBlockSize * 2),
+                                top: AppConfig.verticalBlockSize * 2.5,
+                                bottom: AppConfig.verticalBlockSize * 1.2),
                             child: Text(
                               'Update your best price for maximum bookings',
                               style: TextStyle(
@@ -370,11 +383,52 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                                     fontWeight:
                                                         FontWeight.w600),
                                               ),
-                                              Icon(
-                                                Icons.arrow_drop_up,
-                                                color: PlunesColors.GREENCOLOR,
-                                                size: 20,
-                                              ),
+                                              StreamBuilder<Object>(
+                                                  stream:
+                                                      _streamForIcon?.stream,
+                                                  builder: (context, snapshot) {
+                                                    return Container(
+                                                      height: 15,
+                                                      child: AnimatedContainer(
+                                                        margin: EdgeInsets.only(
+                                                            top: _topMargin),
+                                                        duration: Duration(
+                                                            milliseconds: 600),
+                                                        curve: Curves.easeInOut,
+                                                        child: Icon(
+                                                          Icons.arrow_drop_up,
+                                                          color: PlunesColors
+                                                              .GREENCOLOR,
+                                                          size: 20,
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }),
+//                                              RotationTransition(
+//                                                turns: Tween(
+//                                                        begin: 2.0, end: .1)
+//                                                    .chain(CurveTween(
+//                                                        curve:
+//                                                            Curves.bounceInOut))
+//                                                    .animate(
+//                                                        _animationController),
+//                                                child: Icon(
+//                                                  Icons.arrow_drop_up,
+//                                                  color:
+//                                                      PlunesColors.GREENCOLOR,
+//                                                  size: 20,
+//                                                ),
+//                                              ),
+//                                              AnimatedIcon(
+//                                                icon: AnimatedIcons.pause_play,
+//                                                progress: _animationController,
+//                                                color: PlunesColors.GREENCOLOR,
+//                                              ),
+//                                              Icon(
+//                                                Icons.arrow_drop_up,
+//                                                color: PlunesColors.GREENCOLOR,
+//                                                size: 20,
+//                                              ),
                                               Text(
                                                 'Recommended',
                                                 style: TextStyle(
@@ -578,6 +632,26 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                               color: PlunesColors.GREENCOLOR),
                                         ),
                                       ))),
+                              failureCause != null
+                                  ? Container(
+                                      margin: EdgeInsets.only(
+                                          top:
+                                              AppConfig.verticalBlockSize * 1.2,
+                                          left: AppConfig.horizontalBlockSize *
+                                              10,
+                                          right: AppConfig.horizontalBlockSize *
+                                              10),
+                                      child: Text(
+                                        failureCause,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: AppConfig.smallFont,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#FF9194")),
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      alignment: Alignment.center)
+                                  : Container(),
                               chancesPercent != null
                                   ? Container(
                                       margin: EdgeInsets.only(
@@ -600,7 +674,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   : Container(),
                               Container(
                                 width: AppConfig.horizontalBlockSize * 40,
-                                height: AppConfig.verticalBlockSize * 16,
+                                height: AppConfig.verticalBlockSize * 12.5,
                                 child: SfRadialGauge(axes: <RadialAxis>[
                                   RadialAxis(
                                       pointers: [
@@ -611,7 +685,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                                 ? 0
                                                 : double.parse(chancesPercent
                                                     .toStringAsFixed(0)),
-                                            width: 0.2,
+                                            width: 0.25,
                                             sizeUnit: GaugeSizeUnit.factor,
                                             cornerStyle: CornerStyle.bothFlat,
                                             gradient: SweepGradient(
@@ -641,7 +715,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                                   ? "0 %"
                                                   : "${chancesPercent.toStringAsFixed(0)} %",
                                               style: TextStyle(
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                   color:
                                                       PlunesColors.WHITECOLOR),
                                             ))
@@ -658,10 +732,13 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   animation: true,
                                   lineHeight: 12.0,
                                   animationDuration: 2000,
-                                  percent: 0.6,
+                                  percent: (_realInsight.compRate != null &&
+                                          _realInsight.compRate != 0)
+                                      ? _realInsight.compRate / 100
+                                      : 0,
                                   linearStrokeCap: LinearStrokeCap.roundAll,
                                   center: Text(
-                                    "63 %",
+                                    "${_realInsight.compRate?.toStringAsFixed(0) ?? 0} %",
                                     style: TextStyle(
                                         color: PlunesColors.BLACKCOLOR,
                                         fontSize: 10),
@@ -690,33 +767,66 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                     ),
                                   ],
                                 ),
+                                margin: EdgeInsets.only(
+                                    bottom: AppConfig.verticalBlockSize * 2.5),
                               ),
-                              SizedBox(
-                                height: AppConfig.verticalBlockSize * 20,
-                                width: double.infinity,
-                                child: StackedAreaLineChart.withSampleData(),
-                              ),
-                              failureCause != null
+                              (_realInsight != null &&
+                                      _realInsight.dataPoints != null &&
+                                      _realInsight.dataPoints.isNotEmpty)
                                   ? Container(
-                                      child: Text(
-                                        failureCause,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontSize: AppConfig.smallFont,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr("#FF9194")),
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      alignment: Alignment.center,
+                                      width: double.infinity,
+                                      height: 0.8,
                                       margin: EdgeInsets.only(
-                                          bottom:
-                                              AppConfig.verticalBlockSize * 3))
+                                          left:
+                                              AppConfig.horizontalBlockSize * 8,
+                                          right:
+                                              AppConfig.horizontalBlockSize * 8,
+                                          bottom: AppConfig.verticalBlockSize *
+                                              1.5),
+                                      color: Colors.white.withOpacity(0.5),
+                                    )
+                                  : Container(),
+                              (_realInsight != null &&
+                                      _realInsight.dataPoints != null &&
+                                      _realInsight.dataPoints.isNotEmpty)
+                                  ? Container(
+                                      alignment: Alignment.topLeft,
+                                      margin: EdgeInsets.only(
+                                          left:
+                                              AppConfig.horizontalBlockSize * 8,
+                                          right:
+                                              AppConfig.horizontalBlockSize * 8,
+                                          bottom: AppConfig.verticalBlockSize *
+                                              3.5),
+                                      child: Text(
+                                        "Competition Insight",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                          color: PlunesColors.WHITECOLOR,
+                                          fontWeight: FontWeight.normal,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    )
                                   : Container(),
                             ],
                           ),
                         ],
                       );
                     }),
+                    (_realInsight != null &&
+                            _realInsight.dataPoints != null &&
+                            _realInsight.dataPoints.isNotEmpty)
+                        ? Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 8),
+                            height: AppConfig.verticalBlockSize * 20,
+                            width: double.infinity,
+                            child: StackedAreaLineChart.withSampleData(
+                                _realInsight.dataPoints,
+                                _realInsight.userPrice),
+                          )
+                        : Container(),
                   ],
                 ),
               ),

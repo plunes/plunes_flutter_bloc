@@ -93,7 +93,7 @@ class _HospitalOverviewScreenState
       if (event != null &&
           event.screenName == SocketIoUtil.insightTopic &&
           mounted) {
-        print("getting insight");
+//        print("getting insight");
         _getRealTimeInsights();
       }
     });
@@ -285,7 +285,7 @@ class _HospitalOverviewScreenState
                                           getRealTimeInsights: () =>
                                               _getRealTimeInsights()),
                                       ((_realTimeInsightsResponse
-                                                          .data[itemIndex] ==
+                                                          .data[itemIndex] !=
                                                       null &&
                                                   _realTimeInsightsResponse
                                                           .data[itemIndex]
@@ -963,8 +963,7 @@ class _HospitalOverviewScreenState
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) => Dialog(
-            insetPadding: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 5),
+            insetPadding: EdgeInsets.symmetric(horizontal: 0),
             child: RealInsightPopup(
                 docHosMainInsightBloc: _docHosMainInsightBloc,
                 realInsight: realInsight))
