@@ -348,7 +348,7 @@ class PlunesStrings {
   static const String no = "No";
   static const String serviceNotAvailableText = "Service Not Available";
   static const String notificationDisabled =
-      "We have received you request.You won't be notified for this service any more!";
+      "We have received your request.You won't be notified for this service any more!";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

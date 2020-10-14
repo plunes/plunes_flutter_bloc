@@ -474,15 +474,22 @@ class AchievementsData {
 }
 
 class TimeSlotsData {
-  final List slots;
+  final List<String> slots;
   final String day;
   final bool closed;
 
   TimeSlotsData({this.slots, this.day, this.closed});
 
   factory TimeSlotsData.fromJson(Map<String, dynamic> parsedJson) {
+    List<String> _slots = [];
+    if (parsedJson['slots'] != null) {
+      parsedJson['slots'].forEach((element) {
+        _slots.add(element.toString());
+      });
+    }
+
     return new TimeSlotsData(
-      slots: parsedJson['slots'] != null ? parsedJson['slots'] : '',
+      slots: _slots,
       day: parsedJson['day'] != null ? parsedJson['day'] : '',
       closed: parsedJson['closed'] != null ? parsedJson['closed'] : '',
     );

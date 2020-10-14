@@ -8,6 +8,7 @@ import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/doc_hos_models/common_models/availability_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -44,6 +45,12 @@ class _AvailabilitySelectionScreenState
   List<String> to_1 = new List();
   List<String> to_2 = new List();
   List timeslots_ = new List();
+
+  ///////////new////////////
+  List<AvailabilityModel> _availabilityModel;
+  int _currentDayIndex = 0;
+
+  ////////////////////////
   double _movingUnit = 30;
   StreamController _streamController;
   Timer _timer;
@@ -62,16 +69,18 @@ class _AvailabilitySelectionScreenState
 
   @override
   void initState() {
-    _streamController = StreamController.broadcast();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      _timer = timer;
-      if (_movingUnit == 30) {
-        _movingUnit = 10;
-      } else {
-        _movingUnit = 30;
-      }
-      _streamController.add(null);
-    });
+    _currentDayIndex = 0;
+//    _streamController = StreamController.broadcast();
+//    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+//      _timer = timer;
+//      if (_movingUnit == 30) {
+//        _movingUnit = 10;
+//      } else {
+//        _movingUnit = 30;
+//      }
+//      _streamController.add(null);
+//    });
+    _availabilityModel = [];
     userBloc = UserBloc();
     getSlots();
     hasSubmitted = false;
@@ -99,6 +108,7 @@ class _AvailabilitySelectionScreenState
     to_2 = [];
     var result =
         await userBloc.getUserProfile(UserManager().getUserDetails().uid);
+    _availabilityModel = [];
     if (result is RequestSuccess) {
       RequestSuccess requestSuccess = result;
       loginPost = requestSuccess.response;
@@ -107,27 +117,19 @@ class _AvailabilitySelectionScreenState
             loginPost.user.timeSlots != null &&
             loginPost.user.timeSlots.isNotEmpty) {
           for (int i = 0; i < loginPost.user.timeSlots.length; i++) {
-            from_1.add(
-                loginPost.user.timeSlots[i].slots[0].toString().split("-")[0]);
-            to_1.add(
-                loginPost.user.timeSlots[i].slots[0].toString().split("-")[1]);
-            check
-                .add(loginPost.user.timeSlots[i].closed?.toString() ?? "false");
-            from_2.add(
-                loginPost.user.timeSlots[i].slots[1].toString().split("-")[0]);
-            to_2.add(
-                loginPost.user.timeSlots[i].slots[1].toString().split("-")[1]);
+            _availabilityModel.add(AvailabilityModel(
+                isSelected: i == 0 ? true : false,
+                closed: loginPost.user.timeSlots[i].closed ?? false,
+                day: days_name[i],
+                slots: loginPost.user.timeSlots[i].slots ?? []));
           }
         } else {
           for (int i = 0; i < 7; i++) {
-            if (i == 6) {
-              check.add("true");
-            } else
-              check.add("false");
-            from_1.add("9:00 AM");
-            from_2.add("3:00 PM");
-            to_1.add("1:00 PM");
-            to_2.add("8:00 PM");
+            _availabilityModel.add(AvailabilityModel(
+                isSelected: i == 0 ? true : false,
+                closed: i == 6 ? true : false,
+                day: days_name[i],
+                slots: []));
           }
         }
       }
@@ -172,557 +174,11 @@ class _AvailabilitySelectionScreenState
 
   @override
   Widget build(BuildContext context) {
-    CommonMethods.globalContext = context;
-    globalHeight = MediaQuery.of(context).size.height;
-    globalWidth = MediaQuery.of(context).size.width;
-    var streamWidget = StreamBuilder(
-      builder: (context, snapshot) {
-        return Column(
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 5, vertical: 5),
-              child: Text(
-                PlunesStrings.makeSureYouFillSlotAccurately,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: PlunesColors.BLACKCOLOR,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14),
-              ),
-            ),
-            Container(
-              height: 35,
-              width: double.infinity,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Container(),
-                    flex: 1,
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: <Widget>[
-                        Expanded(
-                          child: AnimatedContainer(
-                              alignment: Alignment.center,
-                              duration: Duration(seconds: 1),
-                              margin:
-                                  EdgeInsets.only(top: _movingUnit, left: 8),
-                              child: Icon(
-                                Icons.arrow_downward,
-                                size: 28.0,
-                                color: PlunesColors.GREENCOLOR,
-                              )),
-                        ),
-                      ],
-                    ),
-                    flex: 3,
-                  ),
-                  Expanded(
-                    child: Container(),
-                    flex: 3,
-                  ),
-                  Expanded(
-                    child: Container(),
-                    flex: 1,
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-      stream: _streamController.stream,
-    );
-    final header = Container(
-      margin: EdgeInsets.only(top: 15, bottom: 4, right: 5),
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Center(
-                child: Text(
-              "All",
-              style: TextStyle(fontWeight: FontWeight.w600),
-            )),
-          ),
-          Expanded(
-            flex: 2,
-            child: Center(
-                child: Text("From - To",
-                    style: TextStyle(fontWeight: FontWeight.w600))),
-          ),
-          Expanded(
-            flex: 2,
-            child: Center(
-                child: Text("From - To",
-                    style: TextStyle(fontWeight: FontWeight.w600))),
-          ),
-          Expanded(
-            flex: 1,
-            child: Center(
-                child: Text("Closed",
-                    style: TextStyle(fontWeight: FontWeight.w600))),
-          ),
-        ],
-      ),
-    );
-
-    final dayList = Expanded(
-      child: ListView.builder(
-        padding: EdgeInsets.all(0),
-        itemBuilder: (context, index) {
-          return Container(
-            margin: EdgeInsets.only(top: 8),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Center(
-                    child: Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          color: Color(0xffefefef)),
-                      child: Center(
-                        child: Text(days[index]),
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: () {
-                            _openTimePicker("form1", index);
-                          },
-                          child: Container(
-                            height: 25,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                border:
-                                    Border.all(width: 0.5, color: Colors.grey)),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.5),
-                              child: Text(
-                                from_1[index],
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: () {
-//                            _openTimePicker("to1", index);
-                          },
-                          child: Container(
-                            height: 25,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                border:
-                                    Border.all(width: 0.5, color: Colors.grey)),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.5),
-                              child: Text(
-                                to_1[index],
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: () {
-//                            _openTimePicker("form2", index);
-                          },
-                          child: Container(
-                            height: 25,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                border:
-                                    Border.all(width: 0.5, color: Colors.grey)),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.5),
-                              child: Text(
-                                from_2[index],
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: () {
-//                            _openTimePicker("to2", index);
-                          },
-                          child: Container(
-                            height: 25,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(12)),
-                                border:
-                                    Border.all(width: 0.5, color: Colors.grey)),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.5),
-                              child: Text(
-                                to_2[index],
-                                style: TextStyle(
-                                    fontSize: 10,
-                                    color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                    flex: 1,
-                    child: Center(
-                        child: Theme(
-                      data: Theme.of(context).copyWith(
-                        unselectedWidgetColor: Colors.grey,
-                      ),
-                      child: InkWell(
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                        onTap: () {
-                          setState(() {
-                            if (check[index] == 'true') {
-                              check[index] = 'false';
-                            } else {
-                              check[index] = 'true';
-                            }
-                          });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Container(
-                            child: check[index] == 'true'
-                                ? Image.asset(
-                                    'assets/images/bid/check.png',
-                                    height: 20,
-                                    width: 20,
-                                  )
-                                : Image.asset(
-                                    'assets/images/bid/uncheck.png',
-                                    height: 20,
-                                    width: 20,
-                                  ),
-                          ),
-                        ),
-                      ),
-                    ))),
-              ],
-            ),
-          );
-        },
-        itemCount: from_1?.length ?? 0,
-      ),
-    );
-
-    final submit = Container(
-      margin: EdgeInsets.only(bottom: 20),
-      child: StreamBuilder<RequestState>(
-          stream: userBloc.baseStream,
-          builder: (context, snapshot) {
-            if (snapshot.data is RequestInProgress && hasSubmitted) {
-              return CustomWidgets().getProgressIndicator();
-            }
-            if (snapshot.data is RequestSuccess && hasSubmitted) {
-              Future.delayed(Duration(milliseconds: 20)).then((value) {
-                _showSnackBar("Time slots updated Successfully",
-                    shouldPop: true);
-//                Future.delayed(Duration(seconds: 1)).then((value) {
-//                  Navigator.pop(context);
-//                });
-              });
-            }
-            if (snapshot.data is RequestFailed && hasSubmitted) {
-              RequestFailed requestFailed = snapshot.data;
-              Future.delayed(Duration(milliseconds: 20)).then((value) {
-                _showSnackBar(
-                    requestFailed.failureCause ?? "Unable to Update Slots");
-              });
-              userBloc.addIntoStream(null);
-            }
-            return Container(
-              margin: EdgeInsets.only(
-                  left: AppConfig.horizontalBlockSize * 30,
-                  right: AppConfig.horizontalBlockSize * 30),
-              child: InkWell(
-                borderRadius: BorderRadius.all(Radius.circular(5)),
-                onTap: addSlot,
-                child: CustomWidgets().getRoundedButton(
-                    plunesStrings.submit,
-                    AppConfig.horizontalBlockSize * 8,
-                    PlunesColors.GREENCOLOR,
-                    AppConfig.horizontalBlockSize * 0,
-                    AppConfig.verticalBlockSize * 1.2,
-                    PlunesColors.WHITECOLOR),
-              ),
-            );
-          }),
-    );
-
-    final loading = Expanded(
-        child: ListView.builder(
-      itemBuilder: (context, index) {
-        return Shimmer.fromColors(
-            baseColor: Color(0xffF5F5F5),
-            highlightColor: Color(0xffFAFAFA),
-            child: Container(
-              margin: EdgeInsets.only(top: 10),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Color(0xffefefef)),
-                        child: Center(
-                          child: Text(""),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            height: 25,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                color: Colors.grey),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                "00:00",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                            height: 25,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                color: Colors.grey),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                "",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            height: 25,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                color: Colors.grey),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                "",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Container(
-                            height: 25,
-                            width: 40,
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5)),
-                                color: Colors.grey),
-                            alignment: Alignment.center,
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                "",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                      flex: 1,
-                      child: Center(
-                          child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Container(
-                            child: Image.asset('assets/images/bid/check.png',
-                                height: 20, width: 20)),
-                      ))),
-                ],
-              ),
-            ));
-      },
-      itemCount: 7,
-    ));
-
-    final form = Container(
-        child: Padding(
-            padding: const EdgeInsets.only(
-                left: 20.0, right: 20, top: 5, bottom: 10),
-            child: failureCause == null
-                ? Column(
-                    children: <Widget>[
-                      progress ? Container() : streamWidget,
-                      header,
-                      progress ? loading : dayList,
-                      submit
-                    ],
-                  )
-                : CustomWidgets().errorWidget(
-                    failureCause ?? "No data available!",
-                    onTap: () => getSlots(),
-                    isSizeLess: true)));
-
     return Scaffold(
         appBar: widget.getAppBar(context, plunesStrings.availability, true),
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        body: form);
-  }
-
-  Widget _confirmation(BuildContext context) {
-    return new CupertinoAlertDialog(
-      title: new Text('Repeat'),
-      content: new Container(
-        child: Column(
-          children: <Widget>[
-            Text("Repeat this slot in whole week"),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop("Done");
-                      },
-                      child: Container(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            "Yes",
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                            color: Color(0xff01d35a),
-                            border:
-                                Border.all(width: 1, color: Color(0xff01d35a))),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                      child: GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text("No"),
-                      ),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                          border: Border.all(width: 1, color: Colors.grey)),
-                    ),
-                  )),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
+        body: _getBody());
   }
 
   _openTimePicker(String check, int position) {
@@ -732,7 +188,7 @@ class _AvailabilitySelectionScreenState
         return;
       }
       temporaryTimeObj = date;
-      _setTimeInBoxes(temporaryTimeObj, position, check);
+//      _setTimeInBoxes(temporaryTimeObj, position, check);
     });
   }
 
@@ -742,95 +198,95 @@ class _AvailabilitySelectionScreenState
     }
   }
 
-  _setTimeInBoxes(DateTime time, int position, String check) async {
-    if (time != null) {
-      if (check == 'form1') {
-        from1 = time;
-        _openTimePicker("to1", position);
-        return;
-      } else if (check == 'to1') {
-        if (from1.isBefore(time)) {
-          to1 = time;
-          _showSubmitNextSlotPopup();
-          Future.delayed(Duration(milliseconds: 2000)).then((value) async {
-            if (mounted) {
-              Navigator.pop(context);
-            }
-            Future.delayed(Duration(milliseconds: 400)).then((value) {
-              if (mounted && context != null) {
-                _openTimePicker("form2", position);
-              }
-            });
-          });
-          return;
-        } else {
-          from1 = null;
-          to1 = null;
-          _showSnackBar("Please select valid time");
-          return;
-        }
-      } else if (check == 'form2') {
-        if (to1.isBefore(time)) {
-          from2 = time;
-          _openTimePicker("to2", position);
-          return;
-        } else {
-          from1 = null;
-          to1 = null;
-          from2 = null;
-          _showSnackBar("Please select valid time");
-          return;
-        }
-      } else if (check == 'to2') {
-        if (from2.isBefore(time)) {
-          _showSubmitNextSlotPopup(isCompleted: true);
-          Future.delayed(Duration(milliseconds: 2000)).then((value) async {
-            if (mounted) {
-              Navigator.pop(context);
-            }
-            Future.delayed(Duration(milliseconds: 400)).then((value) async {
-              if (mounted && context != null) {
-                to2 = time;
-                from_1[position] = DateUtil.getTimeWithAmAndPmFormat(from1);
-                to_1[position] = DateUtil.getTimeWithAmAndPmFormat(to1);
-                from_2[position] = DateUtil.getTimeWithAmAndPmFormat(from2);
-                to_2[position] = DateUtil.getTimeWithAmAndPmFormat(to2);
-                if (position == 0) {
-                  var result = await showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (
-                      BuildContext context,
-                    ) =>
-                        _confirmation(context),
-                  );
-                  if (result != null &&
-                      result.toString().isNotEmpty &&
-                      result == "Done") {
-                    for (int i = 0; i < days.length; i++) {
-                      from_1[i] = from_1[0];
-                      from_2[i] = from_2[0];
-                      to_1[i] = to_1[0];
-                      to_2[i] = to_2[0];
-                    }
-                  }
-                }
-                _setState();
-              }
-            });
-          });
-        } else {
-          from1 = null;
-          to1 = null;
-          from2 = null;
-          to2 = time;
-          _showSnackBar("Please select valid time");
-          return;
-        }
-      }
-      _setState();
-    }
-  }
+//  _setTimeInBoxes(DateTime time, int position, String check) async {
+//    if (time != null) {
+//      if (check == 'form1') {
+//        from1 = time;
+//        _openTimePicker("to1", position);
+//        return;
+//      } else if (check == 'to1') {
+//        if (from1.isBefore(time)) {
+//          to1 = time;
+//          _showSubmitNextSlotPopup();
+//          Future.delayed(Duration(milliseconds: 2000)).then((value) async {
+//            if (mounted) {
+//              Navigator.pop(context);
+//            }
+//            Future.delayed(Duration(milliseconds: 400)).then((value) {
+//              if (mounted && context != null) {
+//                _openTimePicker("form2", position);
+//              }
+//            });
+//          });
+//          return;
+//        } else {
+//          from1 = null;
+//          to1 = null;
+//          _showSnackBar("Please select valid time");
+//          return;
+//        }
+//      } else if (check == 'form2') {
+//        if (to1.isBefore(time)) {
+//          from2 = time;
+//          _openTimePicker("to2", position);
+//          return;
+//        } else {
+//          from1 = null;
+//          to1 = null;
+//          from2 = null;
+//          _showSnackBar("Please select valid time");
+//          return;
+//        }
+//      } else if (check == 'to2') {
+//        if (from2.isBefore(time)) {
+//          _showSubmitNextSlotPopup(isCompleted: true);
+//          Future.delayed(Duration(milliseconds: 2000)).then((value) async {
+//            if (mounted) {
+//              Navigator.pop(context);
+//            }
+//            Future.delayed(Duration(milliseconds: 400)).then((value) async {
+//              if (mounted && context != null) {
+//                to2 = time;
+//                from_1[position] = DateUtil.getTimeWithAmAndPmFormat(from1);
+//                to_1[position] = DateUtil.getTimeWithAmAndPmFormat(to1);
+//                from_2[position] = DateUtil.getTimeWithAmAndPmFormat(from2);
+//                to_2[position] = DateUtil.getTimeWithAmAndPmFormat(to2);
+//                if (position == 0) {
+//                  var result = await showDialog(
+//                    context: context,
+//                    barrierDismissible: true,
+//                    builder: (
+//                      BuildContext context,
+//                    ) =>
+//                        _confirmation(context),
+//                  );
+//                  if (result != null &&
+//                      result.toString().isNotEmpty &&
+//                      result == "Done") {
+//                    for (int i = 0; i < days.length; i++) {
+//                      from_1[i] = from_1[0];
+//                      from_2[i] = from_2[0];
+//                      to_1[i] = to_1[0];
+//                      to_2[i] = to_2[0];
+//                    }
+//                  }
+//                }
+//                _setState();
+//              }
+//            });
+//          });
+//        } else {
+//          from1 = null;
+//          to1 = null;
+//          from2 = null;
+//          to2 = time;
+//          _showSnackBar("Please select valid time");
+//          return;
+//        }
+//      }
+//      _setState();
+//    }
+//  }
 
   void _showSnackBar(String message, {bool shouldPop = false}) {
     showDialog(
@@ -843,56 +299,214 @@ class _AvailabilitySelectionScreenState
         Navigator.pop(context);
       }
     });
-//    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, _scaffoldKey);
   }
 
-  void _showSubmitNextSlotPopup({bool isCompleted = false}) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) {
-          return Card(
+  Widget _getBody() {
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 5,
+          vertical: AppConfig.verticalBlockSize * 2),
+      color: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.center,
             margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 42,
-                horizontal: AppConfig.horizontalBlockSize * 10),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(6))),
-            child: Column(
+                horizontal: AppConfig.horizontalBlockSize * 4,
+                vertical: AppConfig.verticalBlockSize * 2),
+            child: Text(
+              "Enter your time slots correctly so that you obtain reservations according to your availability",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: PlunesColors.BLACKCOLOR,
+                  fontSize: 15,
+                  fontWeight: FontWeight.normal),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            height: AppConfig.verticalBlockSize * 8,
+            margin:
+                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    if (index != _currentDayIndex) {
+                      _currentDayIndex = index;
+                      _availabilityModel.forEach((element) {
+                        element.isSelected = false;
+                      });
+//                      print("_currentDayIndex ${_availabilityModel[_currentDayIndex].closed}");
+                      _availabilityModel[index].isSelected = true;
+                      _setState();
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(
+                        right: AppConfig.horizontalBlockSize * 2.5),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 2.5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.0),
+                      color: _availabilityModel[index]?.isSelected ?? false
+                          ? PlunesColors.GREENCOLOR
+                          : PlunesColors.GREYCOLOR.withOpacity(0.3),
+                    ),
+                    child: Center(
+                      child: Text(
+                        _availabilityModel[index]
+                                ?.day
+                                ?.substring(0, 3)
+                                ?.toUpperCase() ??
+                            PlunesStrings.NA,
+                        style: TextStyle(
+                          color: _availabilityModel[index]?.isSelected ?? false
+                              ? PlunesColors.WHITECOLOR
+                              : PlunesColors.BLACKCOLOR,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              itemCount: _availabilityModel?.length ?? 0,
+            ),
+          ),
+          Expanded(child: _getSlotView())
+        ],
+      ),
+    );
+  }
+
+  Widget _getSlotView() {
+    if (_availabilityModel == null || _availabilityModel.isEmpty) {
+      return Container();
+    }
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      isCompleted ? "Slot's filled!" : "Slot one filled ",
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR,
-                          fontSize: 15,
-                          fontWeight: FontWeight.normal),
-                    ),
-                    Icon(
-                      Icons.check,
-                      color: PlunesColors.GREENCOLOR,
-                    )
-                  ],
+                InkWell(
+                  onTap: () {
+                    _availabilityModel[_currentDayIndex].closed =
+                        !_availabilityModel[_currentDayIndex].closed;
+                    _setState();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: PlunesColors.GREYCOLOR.withOpacity(0.3)),
+                    height: AppConfig.verticalBlockSize * 4,
+                    width: AppConfig.horizontalBlockSize * 8,
+                    child: (_availabilityModel[_currentDayIndex] == null ||
+                                _availabilityModel[_currentDayIndex].closed ??
+                            false)
+                        ? Container()
+                        : Center(
+                            child: Icon(
+                              Icons.check,
+                              color: PlunesColors.GREENCOLOR,
+                            ),
+                          ),
+                  ),
                 ),
-                isCompleted
-                    ? Container()
-                    : Padding(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 1),
-                        child: Text(
-                          PlunesStrings.enterTheRestToSubmit,
-                          style: TextStyle(
-                              color: PlunesColors.BLACKCOLOR,
-                              fontSize: 15,
-                              fontWeight: FontWeight.normal),
-                        ),
-                      ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
+                  child: Text(
+                    "OPEN",
+                    style:
+                        TextStyle(fontSize: 16.5, fontWeight: FontWeight.w500),
+                  ),
+                )
               ],
             ),
-          );
-        });
+          ),
+          ListView.builder(
+            itemBuilder: (context, index) {
+              return Container(
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 1.5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 3.5),
+                      child: Card(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Text(_availabilityModel[_currentDayIndex]
+                                .slots[index]
+                                .split("-")[0]),
+                            Icon(
+                              Icons.arrow_forward,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                            Text(_availabilityModel[_currentDayIndex]
+                                .slots[index]
+                                .split("-")[1]),
+                          ],
+                        ),
+                      ),
+                    )),
+                    Icon(Icons.delete)
+                  ],
+                ),
+              );
+            },
+            itemCount: _availabilityModel[_currentDayIndex].slots?.length ?? 0,
+            shrinkWrap: true,
+          ),
+          Container(
+            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+            child: InkWell(
+              onTap: () {
+                print("hello");
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Container(
+                  height: 28,
+                  width: 48,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: PlunesColors.WHITECOLOR,
+                      border: Border.all(color: PlunesColors.GREENCOLOR)),
+                  child: Center(
+                    child: Icon(
+                      Icons.add,
+                      size: 18,
+                      color: PlunesColors.GREENCOLOR,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            child: Text(
+              "Add more slots",
+              style: TextStyle(
+                  color: PlunesColors.BLACKCOLOR,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
