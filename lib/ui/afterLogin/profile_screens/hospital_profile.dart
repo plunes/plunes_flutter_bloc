@@ -238,22 +238,25 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                       plunesImages.locationIcon,
                       plunesStrings.locationSep,
                       _profileResponse.user?.address),
-                  (_profileResponse.user.latitude != null &&
-                          _profileResponse.user.longitude != null)
-                      ? InkWell(
-                          onTap: () => _getDirections(),
-                          onDoubleTap: () {},
-                          child: Container(
-                            height: AppConfig.verticalBlockSize * 22,
-                            width: double.infinity,
-                            padding: EdgeInsets.only(
-                                bottom: AppConfig.horizontalBlockSize * 5,
-                                top: AppConfig.horizontalBlockSize * 3),
-                            margin: EdgeInsets.only(left: 24),
-                            child: Image.asset(
-                              PlunesImages.map,
-                              fit: BoxFit.fill,
-                            ),
+                  InkWell(
+                    onTap: () => _getDirections(),
+                    onDoubleTap: () {},
+                    child: Stack(
+                        alignment: Alignment.bottomRight,
+                        children: <Widget>[
+                          (_profileResponse.user.latitude != null &&
+                                  _profileResponse.user.longitude != null)
+                              ? Container(
+                                  height: AppConfig.verticalBlockSize * 20,
+                                  width: double.infinity,
+                                  padding: EdgeInsets.symmetric(
+                                      vertical:
+                                          AppConfig.horizontalBlockSize * 3),
+                                  margin: EdgeInsets.only(left: 33),
+                                  child: Image.asset(
+                                    PlunesImages.map,
+                                    fit: BoxFit.fill,
+                                  ),
 //                              Row(
 //                                children: <Widget>[
 //                                  Icon(
@@ -273,9 +276,23 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                                  ),
 //                                ],
 //                              )
-                          ),
-                        )
-                      : Container(),
+                                )
+                              : Container(),
+                          Container(
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 8,
+                                bottom: AppConfig.verticalBlockSize * 3,
+                                right: AppConfig.horizontalBlockSize * 2.5),
+                            child: Text(
+                              "View on Map",
+                              style: TextStyle(
+                                  color: PlunesColors.SPARKLINGGREEN,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: AppConfig.smallFont),
+                            ),
+                          )
+                        ]),
+                  ),
                   _getTimings(24, 24, PlunesImages.clock, PlunesStrings.timing),
                   _getIntroductionView(
                     24,

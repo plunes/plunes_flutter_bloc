@@ -163,12 +163,13 @@ class PlunesStrings {
   static const String editVariance = "Variance";
 
   ///Insight main screen
-  static const String realTimeInsights = 'Real Time Insights  ';
+  static const String realTimeInsights = 'Real Time Insights';
+  static const String doctorDetails = "Doctor Details";
   static const String realTimePrediction = 'Real Time Prediction';
   static const String noRealTimeInsights =
       "You don't have any real time insights yet";
   static const String noBusinessDataFound = 'No business data found';
-  static const String kindlyUpdateYourPrice = 'Kindly Update your price';
+  static const String kindlyUpdateYourPrice = 'Update your price';
   static const String noActionableInsightAvailable =
       "No Actionable insights yet";
   static const String noReportAvailabelMessage =

@@ -218,9 +218,11 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                   itemBuilder: (context, index) {
                     return _getAchievementView(index);
                   },
-                  itemCount: _user.achievements.length > 3
-                      ? 3
-                      : _user.achievements.length ?? 0,
+                  itemCount:
+                      // _user.achievements.length > 3
+                      //     ? 3
+                      //     :
+                      _user.achievements.length ?? 0,
                   scrollDirection: Axis.horizontal,
 //                  physics: NeverScrollableScrollPhysics(),
                 ),
@@ -341,126 +343,127 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
                   builder: (context) => PageSlider(photos, index)));
         }
       },
-      child: index == 2
-          ? Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 1.5,
-                  vertical: AppConfig.verticalBlockSize * 1),
-              height: 0.5,
-//              AppConfig.verticalBlockSize * 15,
-              width: AppConfig.horizontalBlockSize * 27,
-              decoration: ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                      width: 1.0,
-                      style: BorderStyle.solid,
-                      color: PlunesColors.GREYCOLOR),
+      child:
+//       index == 2
+//           ? Container(
+//               margin: EdgeInsets.symmetric(
+//                   horizontal: AppConfig.horizontalBlockSize * 1.5,
+//                   vertical: AppConfig.verticalBlockSize * 1),
+//               height: 0.5,
+// //              AppConfig.verticalBlockSize * 15,
+//               width: AppConfig.horizontalBlockSize * 27,
+//               decoration: ShapeDecoration(
+//                 shape: RoundedRectangleBorder(
+//                   side: BorderSide(
+//                       width: 1.0,
+//                       style: BorderStyle.solid,
+//                       color: PlunesColors.GREYCOLOR),
+//                   borderRadius: BorderRadius.all(
+//                       Radius.circular(AppConfig.horizontalBlockSize * 2)),
+//                 ),
+// //                      borderRadius: BorderRadius.all(
+// //                          Radius.circular(AppConfig.horizontalBlockSize * 5)),
+//               ),
+//               child: Center(
+//                   child: Padding(
+//                 padding: const EdgeInsets.all(5.0),
+//                 child: Text(
+//                   "View more",
+//                   // "${_user.achievements.length - 2} More Photos",
+//                   maxLines: 2,
+//                   textAlign: TextAlign.center,
+//                   style: TextStyle(
+//                       fontSize: AppConfig.smallFont,
+//                       fontWeight: FontWeight.normal,
+//                       decoration: TextDecoration.underline),
+//                 ),
+//               )),
+//             )
+//           :
+          Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 1.5,
+            vertical: AppConfig.verticalBlockSize * 1),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+                Radius.circular(AppConfig.horizontalBlockSize * 2))),
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                width: AppConfig.horizontalBlockSize * 27,
+                height: 0.5,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(
                       Radius.circular(AppConfig.horizontalBlockSize * 2)),
                 ),
-//                      borderRadius: BorderRadius.all(
-//                          Radius.circular(AppConfig.horizontalBlockSize * 5)),
-              ),
-              child: Center(
-                  child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Text(
-                  "View more",
-                  // "${_user.achievements.length - 2} More Photos",
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: AppConfig.smallFont,
-                      fontWeight: FontWeight.normal,
-                      decoration: TextDecoration.underline),
-                ),
-              )),
-            )
-          : Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 1.5,
-                  vertical: AppConfig.verticalBlockSize * 1),
-              decoration: BoxDecoration(
+                child: ClipRRect(
                   borderRadius: BorderRadius.all(
-                      Radius.circular(AppConfig.horizontalBlockSize * 2))),
-              child: Column(
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      width: AppConfig.horizontalBlockSize * 27,
-                      height: 0.5,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(AppConfig.horizontalBlockSize * 2)),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.all(
-                            Radius.circular(AppConfig.horizontalBlockSize * 2)),
-                        child: (_user.achievements[index] == null ||
-                                _user.achievements[index].imageUrl.isEmpty &&
-                                    !(_user.achievements[index].imageUrl
-                                        .contains("http")))
-                            ? Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: AppConfig.verticalBlockSize * 4,
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 10),
-                                child: Image.asset(
-                                  plunesImages.achievementIcon,
-                                ))
-                            : CustomWidgets().getImageFromUrl(
-                                _user.achievements[index].imageUrl,
-                                boxFit: BoxFit.fill,
-                                placeHolderPath:
-                                    PlunesImages.achievement_placeholder),
-                      ),
-                    ),
-                    flex: 4,
-                  ),
-                  // _user.achievements[index].title.isEmpty
-                  //     ? Container()
-                  //     : Expanded(
-                  //         child: Container(
-                  //           padding: EdgeInsets.symmetric(
-                  //               horizontal:
-                  //                   AppConfig.horizontalBlockSize * 0.5),
-                  //           child: Padding(
-                  //             padding: EdgeInsets.only(
-                  //                 top: AppConfig.verticalBlockSize * .5),
-                  //             child: Text(
-                  //               _user.achievements[index].title,
-                  //               maxLines: 1,
-                  //               overflow: TextOverflow.clip,
-                  //               textAlign: TextAlign.center,
-                  //               style: TextStyle(fontSize: 14),
-                  //             ),
-                  //           ),
-                  //           width: AppConfig.horizontalBlockSize * 40,
-                  //         ),
-                  //       ),
-                  // _user.achievements[index].achievement.isEmpty
-                  //     ? Container()
-                  //     : Flexible(
-                  //         child: Container(
-                  //           padding: EdgeInsets.symmetric(
-                  //               horizontal:
-                  //                   AppConfig.horizontalBlockSize * 0.5),
-                  //           child: Center(
-                  //             child: Text(
-                  //               _user.achievements[index]?.achievement,
-                  //               maxLines: 1,
-                  //               overflow: TextOverflow.clip,
-                  //               textAlign: TextAlign.start,
-                  //               style: TextStyle(fontSize: 14),
-                  //             ),
-                  //           ),
-                  //           width: AppConfig.horizontalBlockSize * 40,
-                  //         ),
-                  //         flex: 1,
-                  //       ),
-                ],
+                      Radius.circular(AppConfig.horizontalBlockSize * 2)),
+                  child: (_user.achievements[index] == null ||
+                          _user.achievements[index].imageUrl.isEmpty &&
+                              !(_user.achievements[index].imageUrl
+                                  .contains("http")))
+                      ? Container(
+                          margin: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 4,
+                              horizontal: AppConfig.horizontalBlockSize * 10),
+                          child: Image.asset(
+                            plunesImages.achievementIcon,
+                          ))
+                      : CustomWidgets().getImageFromUrl(
+                          _user.achievements[index].imageUrl,
+                          boxFit: BoxFit.fill,
+                          placeHolderPath:
+                              PlunesImages.achievement_placeholder),
+                ),
               ),
+              flex: 4,
             ),
+            // _user.achievements[index].title.isEmpty
+            //     ? Container()
+            //     : Expanded(
+            //         child: Container(
+            //           padding: EdgeInsets.symmetric(
+            //               horizontal:
+            //                   AppConfig.horizontalBlockSize * 0.5),
+            //           child: Padding(
+            //             padding: EdgeInsets.only(
+            //                 top: AppConfig.verticalBlockSize * .5),
+            //             child: Text(
+            //               _user.achievements[index].title,
+            //               maxLines: 1,
+            //               overflow: TextOverflow.clip,
+            //               textAlign: TextAlign.center,
+            //               style: TextStyle(fontSize: 14),
+            //             ),
+            //           ),
+            //           width: AppConfig.horizontalBlockSize * 40,
+            //         ),
+            //       ),
+            // _user.achievements[index].achievement.isEmpty
+            //     ? Container()
+            //     : Flexible(
+            //         child: Container(
+            //           padding: EdgeInsets.symmetric(
+            //               horizontal:
+            //                   AppConfig.horizontalBlockSize * 0.5),
+            //           child: Center(
+            //             child: Text(
+            //               _user.achievements[index]?.achievement,
+            //               maxLines: 1,
+            //               overflow: TextOverflow.clip,
+            //               textAlign: TextAlign.start,
+            //               style: TextStyle(fontSize: 14),
+            //             ),
+            //           ),
+            //           width: AppConfig.horizontalBlockSize * 40,
+            //         ),
+            //         flex: 1,
+            //       ),
+          ],
+        ),
+      ),
     );
   }
 

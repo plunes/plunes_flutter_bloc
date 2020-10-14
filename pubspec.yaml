@@ -232,7 +232,8 @@ flutter:
     - assets/images/profile/add_utility.png
     - assets/images/profile/practise.png
     - assets/images/profile/qualification.png
-
+    - assets/images/profile/priceHighIcon.png
+    - assets/images/profile/MapDark.png
     - assets/images/profile/calIcon.png
     - assets/images/profile/eduIcon.png
     - assets/images/profile/emailIcon.png
