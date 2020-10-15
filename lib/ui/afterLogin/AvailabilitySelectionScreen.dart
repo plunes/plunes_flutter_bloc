@@ -302,83 +302,201 @@ class _AvailabilitySelectionScreenState
   }
 
   Widget _getBody() {
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 5,
-          vertical: AppConfig.verticalBlockSize * 2),
-      color: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 4,
-                vertical: AppConfig.verticalBlockSize * 2),
-            child: Text(
-              "Enter your time slots correctly so that you obtain reservations according to your availability",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: PlunesColors.BLACKCOLOR,
-                  fontSize: 15,
-                  fontWeight: FontWeight.normal),
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 5,
+            vertical: AppConfig.verticalBlockSize * 2),
+        color: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 4,
+                  vertical: AppConfig.verticalBlockSize * 2),
+              child: Text(
+                "Enter your time slots correctly so that you obtain reservations according to your availability",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal),
+              ),
             ),
-          ),
-          Container(
-            width: double.infinity,
-            height: AppConfig.verticalBlockSize * 8,
-            margin:
-                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    if (index != _currentDayIndex) {
-                      _currentDayIndex = index;
-                      _availabilityModel.forEach((element) {
-                        element.isSelected = false;
-                      });
+            Container(
+              width: double.infinity,
+              height: AppConfig.verticalBlockSize * 8,
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      if (index != _currentDayIndex) {
+                        _currentDayIndex = index;
+                        _availabilityModel.forEach((element) {
+                          element.isSelected = false;
+                        });
 //                      print("_currentDayIndex ${_availabilityModel[_currentDayIndex].closed}");
-                      _availabilityModel[index].isSelected = true;
-                      _setState();
-                    }
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(
-                        right: AppConfig.horizontalBlockSize * 2.5),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 2.5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      color: _availabilityModel[index]?.isSelected ?? false
-                          ? PlunesColors.GREENCOLOR
-                          : PlunesColors.GREYCOLOR.withOpacity(0.3),
-                    ),
-                    child: Center(
-                      child: Text(
-                        _availabilityModel[index]
-                                ?.day
-                                ?.substring(0, 3)
-                                ?.toUpperCase() ??
-                            PlunesStrings.NA,
-                        style: TextStyle(
-                          color: _availabilityModel[index]?.isSelected ?? false
-                              ? PlunesColors.WHITECOLOR
-                              : PlunesColors.BLACKCOLOR,
+                        _availabilityModel[index].isSelected = true;
+                        _setState();
+                      }
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          right: AppConfig.horizontalBlockSize * 2.5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 2.5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: _availabilityModel[index]?.isSelected ?? false
+                            ? PlunesColors.GREENCOLOR
+                            : PlunesColors.GREYCOLOR.withOpacity(0.3),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _availabilityModel[index]
+                                  ?.day
+                                  ?.substring(0, 3)
+                                  ?.toUpperCase() ??
+                              PlunesStrings.NA,
+                          style: TextStyle(
+                            color:
+                                _availabilityModel[index]?.isSelected ?? false
+                                    ? PlunesColors.WHITECOLOR
+                                    : PlunesColors.BLACKCOLOR,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-              itemCount: _availabilityModel?.length ?? 0,
+                  );
+                },
+                itemCount: _availabilityModel?.length ?? 0,
+              ),
             ),
-          ),
-          Expanded(child: _getSlotView())
-        ],
+            _getSlotView(),
+            Container(
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
+              child: Card(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0)),
+                elevation: 3.5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 4,
+                          vertical: AppConfig.verticalBlockSize * 3),
+                      child: Text(
+                        "Apply this time slot to",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR.withOpacity(.7),
+                            fontSize: AppConfig.mediumFont,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: AppConfig.verticalBlockSize * 10,
+                      margin: EdgeInsets.all(
+                        AppConfig.horizontalBlockSize * 3,
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              if (index != _currentDayIndex) {
+                                _currentDayIndex = index;
+                                _availabilityModel.forEach((element) {
+                                  element.isSelected = false;
+                                });
+                                _availabilityModel[index].isSelected = true;
+                                _setState();
+                              }
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: AppConfig.verticalBlockSize * .8,
+                                      bottom:
+                                          AppConfig.horizontalBlockSize * 2),
+                                  child: Text(
+                                    _availabilityModel[index]
+                                            ?.day
+                                            ?.substring(0, 3)
+                                            ?.toUpperCase() ??
+                                        PlunesStrings.NA,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: _availabilityModel[index]
+                                                  ?.isSelected ??
+                                              false
+                                          ? PlunesColors.SPARKLINGGREEN
+                                          : PlunesColors.BLACKCOLOR,
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  width: AppConfig.verticalBlockSize * 5.4,
+                                  height: AppConfig.verticalBlockSize * 5.4,
+                                  margin: EdgeInsets.only(
+                                      right: AppConfig.horizontalBlockSize * 4),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 5),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color:
+                                        _availabilityModel[index]?.isSelected ??
+                                                false
+                                            ? PlunesColors.GREENCOLOR
+                                            : PlunesColors.GREYCOLOR
+                                                .withOpacity(0.3),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                        itemCount: _availabilityModel?.length ?? 0,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: InkWell(
+                onTap: () {},
+                child: Center(
+                  child: Text(
+                    "Submit",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        color: PlunesColors.SPARKLINGGREEN,
+                        fontSize: AppConfig.largeFont + 3,
+                        fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -392,6 +510,7 @@ class _AvailabilitySelectionScreenState
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
+            margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
             alignment: Alignment.center,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -437,32 +556,71 @@ class _AvailabilitySelectionScreenState
             itemBuilder: (context, index) {
               return Container(
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
-                        child: Container(
-                      margin: EdgeInsets.symmetric(
-                          vertical: AppConfig.verticalBlockSize * 1.5),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 3.5),
-                      child: Card(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: <Widget>[
-                            Text(_availabilityModel[_currentDayIndex]
-                                .slots[index]
-                                .split("-")[0]),
-                            Icon(
-                              Icons.arrow_forward,
-                              color: PlunesColors.BLACKCOLOR,
+                        flex: 11,
+                        child: Card(
+                          elevation: 3,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * .7),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: <Widget>[
+                                Text(
+                                  _availabilityModel[_currentDayIndex]
+                                      .slots[index]
+                                      .split("-")[0],
+                                  style:
+                                      TextStyle(fontSize: AppConfig.mediumFont),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  color: PlunesColors.BLACKCOLOR,
+                                ),
+                                Text(
+                                  _availabilityModel[_currentDayIndex]
+                                      .slots[index]
+                                      .split("-")[1],
+                                  style:
+                                      TextStyle(fontSize: AppConfig.mediumFont),
+                                ),
+                              ],
                             ),
-                            Text(_availabilityModel[_currentDayIndex]
-                                .slots[index]
-                                .split("-")[1]),
-                          ],
-                        ),
-                      ),
-                    )),
-                    Icon(Icons.delete)
+                          ),
+                        )),
+                    Expanded(
+                      flex: 1,
+                      child: IconButton(
+                          icon: Icon(Icons.delete_outline,
+                              size: AppConfig.extraLargeFont),
+                          onPressed: () {}),
+                    ),
+                    // Expanded(
+                    //     flex: 1,
+                    //     child: IconButton(
+                    //         icon: Stack(
+                    //             alignment: Alignment.bottomCenter,
+                    //             fit: StackFit.loose,
+                    //             overflow: Overflow.visible,
+                    //             children: <Widget>[
+                    //               Positioned(
+                    //                 top: -5,
+                    //                 left: 7,
+                    //                 child: Icon(
+                    //                   Icons.mode_edit,
+                    //                   color: PlunesColors.SPARKLINGGREEN,
+                    //                   size: AppConfig.mediumFont + 2.5,
+                    //                 ),
+                    //               ),
+                    //               Icon(
+                    //                 Icons.check_box_outline_blank,
+                    //                 color: PlunesColors.SPARKLINGGREEN,
+                    //                 size: AppConfig.mediumFont + 4,
+                    //               )
+                    //             ]),
+                    //         onPressed: () {}))
                   ],
                 ),
               );
@@ -477,23 +635,28 @@ class _AvailabilitySelectionScreenState
                 print("hello");
               },
               child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Container(
-                  height: 28,
-                  width: 48,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: PlunesColors.WHITECOLOR,
-                      border: Border.all(color: PlunesColors.GREENCOLOR)),
-                  child: Center(
-                    child: Icon(
-                      Icons.add,
-                      size: 18,
-                      color: PlunesColors.GREENCOLOR,
-                    ),
+                  padding: const EdgeInsets.all(5.0),
+                  child: Icon(
+                    Icons.add_circle_outline,
+                    size: AppConfig.veryExtraLargeFont - 15,
+                    color: PlunesColors.SPARKLINGGREEN,
+                  )
+                  // Container(
+                  //   height: 28,
+                  //   width: 48,
+                  //   decoration: BoxDecoration(
+                  //       shape: BoxShape.circle,
+                  //       color: PlunesColors.WHITECOLOR,
+                  //       border: Border.all(color: PlunesColors.GREENCOLOR)),
+                  //   child: Center(
+                  //     child: Icon(
+                  //       Icons.add,
+                  //       size: 18,
+                  //       color: PlunesColors.SPARKLINGGREEN,
+                  //     ),
+                  //   ),
+                  // ),
                   ),
-                ),
-              ),
             ),
           ),
           Container(
@@ -501,8 +664,8 @@ class _AvailabilitySelectionScreenState
               "Add more slots",
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600),
+                  fontSize: AppConfig.smallFont - 1,
+                  fontWeight: FontWeight.w900),
             ),
           ),
         ],
