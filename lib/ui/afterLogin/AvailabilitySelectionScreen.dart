@@ -49,6 +49,7 @@ class _AvailabilitySelectionScreenState
   ///////////new////////////
   List<AvailabilityModel> _availabilityModel;
   int _currentDayIndex = 0;
+  static const int _fromIndex = 0, _toIndex = 1;
 
   ////////////////////////
   double _movingUnit = 30;
@@ -65,7 +66,7 @@ class _AvailabilitySelectionScreenState
     'Saturday',
     'Sunday'
   ];
-  DateTime from1, from2, to1, to2, temporaryTimeObj;
+  DateTime from1, from2, to1, to2, _tempFromHolder, _tempToHolder;
 
   @override
   void initState() {
@@ -181,14 +182,18 @@ class _AvailabilitySelectionScreenState
         body: _getBody());
   }
 
-  _openTimePicker(String check, int position) {
+  _openTimePicker(int position) {
     latest.DatePicker.showTime12hPicker(context, currentTime: initialTime,
         onConfirm: (date) {
       if (date == null) {
         return;
       }
-      temporaryTimeObj = date;
-//      _setTimeInBoxes(temporaryTimeObj, position, check);
+      if (position == _fromIndex) {
+        _tempFromHolder = date;
+      } else if (position == _toIndex) {
+        _tempToHolder = date;
+      }
+      _setTimeInBoxes(position);
     });
   }
 
@@ -475,6 +480,7 @@ class _AvailabilitySelectionScreenState
             child: InkWell(
               onTap: () {
                 print("hello");
+                _checkFirstAndLastSlot();
               },
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -508,5 +514,100 @@ class _AvailabilitySelectionScreenState
         ],
       ),
     );
+  }
+
+  void _setTimeInBoxes(int position) {
+    switch (position) {
+      case _fromIndex:
+        if (_tempFromHolder == null) {
+          return;
+        }
+        if (_availabilityModel != null &&
+            _availabilityModel.isNotEmpty &&
+            _currentDayIndex != null &&
+            _availabilityModel.length > _currentDayIndex) {
+          if (_availabilityModel[_currentDayIndex].slots != null &&
+              _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
+            List<String> _firstTimeArray =
+                _availabilityModel[_currentDayIndex].slots.first.split("-");
+            print("_firstTimeArray $_firstTimeArray");
+            List<String> _lastTimeArray =
+                _availabilityModel[_currentDayIndex].slots.last.split("-");
+            print("_lastTimeArray $_lastTimeArray");
+            List<String> splitTime = _firstTimeArray[0].split(":");
+            int _pmTime = 0;
+            if (_firstTimeArray[0].contains("PM") && splitTime.first != "12") {
+              _pmTime = 12;
+              splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+            }
+            var _firstDate = DateTime(
+                _tempFromHolder.year,
+                _tempFromHolder.month,
+                _tempFromHolder.day,
+                int.tryParse(splitTime.first),
+                int.tryParse(
+                    splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+            print("_firstDate $_firstDate");
+
+            List<String> lastSplitTime = _lastTimeArray[1].split(":");
+            int _lastPmTime = 0;
+            if (_firstTimeArray[0].contains("PM") &&
+                lastSplitTime.first != "12") {
+              _lastPmTime = 12;
+              lastSplitTime.first =
+                  "${_lastPmTime + int.parse(lastSplitTime.first)}";
+            }
+            var _lastDate = DateTime(
+                _tempFromHolder.year,
+                _tempFromHolder.month,
+                _tempFromHolder.day,
+                int.tryParse(lastSplitTime.first),
+                int.tryParse(lastSplitTime[1]
+                    .substring(0, lastSplitTime[1].indexOf(" "))));
+            print("_lastDate $_lastDate");
+            if (_firstDate.isAfter(_tempFromHolder) &&
+                _lastDate.isBefore(_tempFromHolder)) {
+              print(
+                  "valid hai $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+            } else {
+              print(
+                  "invalid hai _firstDate $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+              return;
+            }
+          }
+          print("calling _openTimePicker");
+          _openTimePicker(_toIndex);
+        }
+        break;
+      case _toIndex:
+        if (_tempToHolder != null) {
+          String duration = DateUtil.getTimeWithAmAndPmFormat(_tempFromHolder) +
+              "-" +
+              DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
+          print("duration $duration");
+          if (_availabilityModel != null &&
+              _availabilityModel.isNotEmpty &&
+              _currentDayIndex != null &&
+              _availabilityModel.length > _currentDayIndex) {
+            if (_availabilityModel[_currentDayIndex].slots != null &&
+                _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
+              _availabilityModel[_currentDayIndex].slots.add(duration);
+            } else {
+              _availabilityModel[_currentDayIndex].slots = [duration];
+            }
+          }
+          _setState();
+        }
+        break;
+    }
+  }
+
+  void _checkFirstAndLastSlot() {
+    if (_availabilityModel != null &&
+        _availabilityModel.isNotEmpty &&
+        _currentDayIndex != null &&
+        _availabilityModel.length > _currentDayIndex) {
+      _openTimePicker(_fromIndex);
+    }
   }
 }
