@@ -203,96 +203,6 @@ class _AvailabilitySelectionScreenState
     }
   }
 
-//  _setTimeInBoxes(DateTime time, int position, String check) async {
-//    if (time != null) {
-//      if (check == 'form1') {
-//        from1 = time;
-//        _openTimePicker("to1", position);
-//        return;
-//      } else if (check == 'to1') {
-//        if (from1.isBefore(time)) {
-//          to1 = time;
-//          _showSubmitNextSlotPopup();
-//          Future.delayed(Duration(milliseconds: 2000)).then((value) async {
-//            if (mounted) {
-//              Navigator.pop(context);
-//            }
-//            Future.delayed(Duration(milliseconds: 400)).then((value) {
-//              if (mounted && context != null) {
-//                _openTimePicker("form2", position);
-//              }
-//            });
-//          });
-//          return;
-//        } else {
-//          from1 = null;
-//          to1 = null;
-//          _showSnackBar("Please select valid time");
-//          return;
-//        }
-//      } else if (check == 'form2') {
-//        if (to1.isBefore(time)) {
-//          from2 = time;
-//          _openTimePicker("to2", position);
-//          return;
-//        } else {
-//          from1 = null;
-//          to1 = null;
-//          from2 = null;
-//          _showSnackBar("Please select valid time");
-//          return;
-//        }
-//      } else if (check == 'to2') {
-//        if (from2.isBefore(time)) {
-//          _showSubmitNextSlotPopup(isCompleted: true);
-//          Future.delayed(Duration(milliseconds: 2000)).then((value) async {
-//            if (mounted) {
-//              Navigator.pop(context);
-//            }
-//            Future.delayed(Duration(milliseconds: 400)).then((value) async {
-//              if (mounted && context != null) {
-//                to2 = time;
-//                from_1[position] = DateUtil.getTimeWithAmAndPmFormat(from1);
-//                to_1[position] = DateUtil.getTimeWithAmAndPmFormat(to1);
-//                from_2[position] = DateUtil.getTimeWithAmAndPmFormat(from2);
-//                to_2[position] = DateUtil.getTimeWithAmAndPmFormat(to2);
-//                if (position == 0) {
-//                  var result = await showDialog(
-//                    context: context,
-//                    barrierDismissible: true,
-//                    builder: (
-//                      BuildContext context,
-//                    ) =>
-//                        _confirmation(context),
-//                  );
-//                  if (result != null &&
-//                      result.toString().isNotEmpty &&
-//                      result == "Done") {
-//                    for (int i = 0; i < days.length; i++) {
-//                      from_1[i] = from_1[0];
-//                      from_2[i] = from_2[0];
-//                      to_1[i] = to_1[0];
-//                      to_2[i] = to_2[0];
-//                    }
-//                  }
-//                }
-//                _setState();
-//              }
-//            });
-//          });
-//        } else {
-//          from1 = null;
-//          to1 = null;
-//          from2 = null;
-//          to2 = time;
-//          _showSnackBar("Please select valid time");
-//          return;
-//        }
-//      }
-//      _setState();
-//    }
-//  }
-
   void _showSnackBar(String message, {bool shouldPop = false}) {
     showDialog(
         context: context,
@@ -467,7 +377,17 @@ class _AvailabilitySelectionScreenState
                         ),
                       ),
                     )),
-                    Icon(Icons.delete)
+                    InkWell(
+                        onTap: () {
+                          _availabilityModel[_currentDayIndex]
+                              .slots
+                              .removeAt(index);
+                          _setState();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Icon(Icons.delete),
+                        ))
                   ],
                 ),
               );
@@ -522,81 +442,17 @@ class _AvailabilitySelectionScreenState
         if (_tempFromHolder == null) {
           return;
         }
-        if (_availabilityModel != null &&
-            _availabilityModel.isNotEmpty &&
-            _currentDayIndex != null &&
-            _availabilityModel.length > _currentDayIndex) {
-          if (_availabilityModel[_currentDayIndex].slots != null &&
-              _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
-            List<String> _firstTimeArray =
-                _availabilityModel[_currentDayIndex].slots.first.split("-");
-            print("_firstTimeArray $_firstTimeArray");
-            List<String> _lastTimeArray =
-                _availabilityModel[_currentDayIndex].slots.last.split("-");
-            print("_lastTimeArray $_lastTimeArray");
-            List<String> splitTime = _firstTimeArray[0].split(":");
-            int _pmTime = 0;
-            if (_firstTimeArray[0].contains("PM") && splitTime.first != "12") {
-              _pmTime = 12;
-              splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
-            }
-            var _firstDate = DateTime(
-                _tempFromHolder.year,
-                _tempFromHolder.month,
-                _tempFromHolder.day,
-                int.tryParse(splitTime.first),
-                int.tryParse(
-                    splitTime[1].substring(0, splitTime[1].indexOf(" "))));
-            print("_firstDate $_firstDate");
-
-            List<String> lastSplitTime = _lastTimeArray[1].split(":");
-            int _lastPmTime = 0;
-            if (_firstTimeArray[0].contains("PM") &&
-                lastSplitTime.first != "12") {
-              _lastPmTime = 12;
-              lastSplitTime.first =
-                  "${_lastPmTime + int.parse(lastSplitTime.first)}";
-            }
-            var _lastDate = DateTime(
-                _tempFromHolder.year,
-                _tempFromHolder.month,
-                _tempFromHolder.day,
-                int.tryParse(lastSplitTime.first),
-                int.tryParse(lastSplitTime[1]
-                    .substring(0, lastSplitTime[1].indexOf(" "))));
-            print("_lastDate $_lastDate");
-            if (_firstDate.isAfter(_tempFromHolder) &&
-                _lastDate.isBefore(_tempFromHolder)) {
-              print(
-                  "valid hai $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
-            } else {
-              print(
-                  "invalid hai _firstDate $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
-              return;
-            }
-          }
-          print("calling _openTimePicker");
-          _openTimePicker(_toIndex);
+        try {
+          _doFromIndexOperation();
+        } catch (e, s) {
+          print("error $s");
         }
         break;
       case _toIndex:
-        if (_tempToHolder != null) {
-          String duration = DateUtil.getTimeWithAmAndPmFormat(_tempFromHolder) +
-              "-" +
-              DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
-          print("duration $duration");
-          if (_availabilityModel != null &&
-              _availabilityModel.isNotEmpty &&
-              _currentDayIndex != null &&
-              _availabilityModel.length > _currentDayIndex) {
-            if (_availabilityModel[_currentDayIndex].slots != null &&
-                _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
-              _availabilityModel[_currentDayIndex].slots.add(duration);
-            } else {
-              _availabilityModel[_currentDayIndex].slots = [duration];
-            }
-          }
-          _setState();
+        try {
+          _setToIndexDate();
+        } catch (e, s) {
+          print("error $s");
         }
         break;
     }
@@ -608,6 +464,120 @@ class _AvailabilitySelectionScreenState
         _currentDayIndex != null &&
         _availabilityModel.length > _currentDayIndex) {
       _openTimePicker(_fromIndex);
+    }
+  }
+
+  void _setToIndexDate() {
+    if (_tempToHolder != null) {
+      if (_availabilityModel != null &&
+          _availabilityModel.isNotEmpty &&
+          _currentDayIndex != null &&
+          _availabilityModel.length > _currentDayIndex) {
+        if (_availabilityModel[_currentDayIndex].slots != null &&
+            _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
+          List<String> _lastTimeArray =
+              _availabilityModel[_currentDayIndex].slots.last.split("-");
+          print("_lastTimeArray $_lastTimeArray");
+
+          List<String> lastSplitTime = _lastTimeArray[1].split(":");
+          int _lastPmTime = 0;
+          if (_lastTimeArray[0].contains("PM") && lastSplitTime.first != "12") {
+            _lastPmTime = 12;
+            lastSplitTime.first =
+                "${_lastPmTime + int.parse(lastSplitTime.first)}";
+          }
+          var _lastDate = DateTime(
+              _tempFromHolder.year,
+              _tempFromHolder.month,
+              _tempFromHolder.day,
+              int.tryParse(lastSplitTime.first),
+              int.tryParse(lastSplitTime[1]
+                  .substring(0, lastSplitTime[1].indexOf(" "))));
+          print("_lastDate $_lastDate");
+          if (_tempToHolder.isAfter(_tempFromHolder) &&
+              _lastDate.isBefore(_tempToHolder)) {
+            print(
+                "valid hai _tempToHolder $_tempToHolder, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+            String duration =
+                DateUtil.getTimeWithAmAndPmFormat(_tempFromHolder) +
+                    "-" +
+                    DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
+            print("duration $duration");
+            _availabilityModel[_currentDayIndex].slots.add(duration);
+            _setState();
+          } else {
+            print(
+                "Invalid hai _tempToHolder $_tempToHolder, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+            return;
+          }
+        } else {
+          String duration = DateUtil.getTimeWithAmAndPmFormat(_tempFromHolder) +
+              "-" +
+              DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
+          print("duration $duration");
+          _availabilityModel[_currentDayIndex].slots = [duration];
+          _setState();
+        }
+      }
+    }
+  }
+
+  void _doFromIndexOperation() {
+    if (_availabilityModel != null &&
+        _availabilityModel.isNotEmpty &&
+        _currentDayIndex != null &&
+        _availabilityModel.length > _currentDayIndex) {
+      if (_availabilityModel[_currentDayIndex].slots != null &&
+          _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
+        List<String> _firstTimeArray =
+            _availabilityModel[_currentDayIndex].slots.first.split("-");
+        print("_firstTimeArray $_firstTimeArray");
+        List<String> _lastTimeArray =
+            _availabilityModel[_currentDayIndex].slots.last.split("-");
+        print("_lastTimeArray $_lastTimeArray");
+        List<String> splitTime = _firstTimeArray[0].split(":");
+        int _pmTime = 0;
+        if (_firstTimeArray[0].contains("PM") && splitTime.first != "12") {
+          _pmTime = 12;
+          splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+        }
+        var _firstDate = DateTime(
+            _tempFromHolder.year,
+            _tempFromHolder.month,
+            _tempFromHolder.day + 1,
+            int.tryParse(splitTime.first),
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+        print("_firstDate $_firstDate");
+
+        List<String> lastSplitTime = _lastTimeArray[1].split(":");
+        print(
+            "${(lastSplitTime[1].contains("PM") && lastSplitTime.first != "12")} lastSplitTime $lastSplitTime");
+        int _lastPmTime = 0;
+        if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
+          _lastPmTime = 12;
+          lastSplitTime.first =
+              "${_lastPmTime + int.parse(lastSplitTime.first)}";
+        }
+        var _lastDate = DateTime(
+            _tempFromHolder.year,
+            _tempFromHolder.month,
+            _tempFromHolder.day,
+            int.tryParse(lastSplitTime.first),
+            int.tryParse(
+                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" "))));
+        print("_lastDate $_lastDate");
+        if (_firstDate.isAfter(_tempFromHolder) &&
+            _lastDate.isBefore(_tempFromHolder)) {
+          print(
+              "valid hai $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+        } else {
+          print(
+              "invalid hai _firstDate $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+          return;
+        }
+      }
+      print("calling _openTimePicker");
+      _openTimePicker(_toIndex);
     }
   }
 }
