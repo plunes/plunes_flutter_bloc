@@ -372,7 +372,6 @@ class _DocProfileState extends BaseState<DocProfile> {
                 text: TextSpan(
                     text: title ?? _getEmptyString(),
                     style: TextStyle(
-                        decoration: TextDecoration.underline,
                         color: PlunesColors.GREYCOLOR,
                         fontSize: AppConfig.smallFont + 2,
                         fontWeight: FontWeight.normal),

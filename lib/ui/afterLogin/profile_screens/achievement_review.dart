@@ -391,7 +391,7 @@ class _AchievementAndReviewState extends BaseState<AchievementAndReview>
           children: <Widget>[
             Expanded(
               child: Container(
-                width: AppConfig.horizontalBlockSize * 27,
+                width: AppConfig.horizontalBlockSize * 29,
                 height: 0.5,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(
