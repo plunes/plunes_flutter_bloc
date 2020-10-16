@@ -44,17 +44,18 @@ class _AvailabilitySelectionScreenState
   List<String> from_2 = new List();
   List<String> to_1 = new List();
   List<String> to_2 = new List();
-  List timeslots_ = new List();
+  List _timeSlots = new List();
 
   ///////////new////////////
   List<AvailabilityModel> _availabilityModel;
   int _currentDayIndex = 0;
   static const int _fromIndex = 0, _toIndex = 1;
+  ScrollController _dayScrollController, _daySelectionScrollController;
 
   ////////////////////////
-  double _movingUnit = 30;
-  StreamController _streamController;
-  Timer _timer;
+//  double _movingUnit = 30;
+//  StreamController _streamController;
+//  Timer _timer;
 
   List<String> days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
   List<String> days_name = [
@@ -71,19 +72,11 @@ class _AvailabilitySelectionScreenState
   @override
   void initState() {
     _currentDayIndex = 0;
-//    _streamController = StreamController.broadcast();
-//    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-//      _timer = timer;
-//      if (_movingUnit == 30) {
-//        _movingUnit = 10;
-//      } else {
-//        _movingUnit = 30;
-//      }
-//      _streamController.add(null);
-//    });
+    _dayScrollController = ScrollController();
+    _daySelectionScrollController = ScrollController();
     _availabilityModel = [];
     userBloc = UserBloc();
-    getSlots();
+    _getSlots();
     hasSubmitted = false;
     initialTime = DateTime.now();
     super.initState();
@@ -91,22 +84,17 @@ class _AvailabilitySelectionScreenState
 
   @override
   void dispose() {
-    _timer?.cancel();
-    _streamController?.close();
+    _dayScrollController?.dispose();
+    _daySelectionScrollController?.dispose();
     super.dispose();
   }
 
-  void getSlots() async {
+  void _getSlots() async {
     failureCause = null;
     if (progress != null && progress == false) {
       progress = true;
       _setState();
     }
-    check = [];
-    from_1 = [];
-    from_2 = [];
-    to_1 = [];
-    to_2 = [];
     var result =
         await userBloc.getUserProfile(UserManager().getUserDetails().uid);
     _availabilityModel = [];
@@ -152,11 +140,11 @@ class _AvailabilitySelectionScreenState
   }
 
   void _submitSlots() async {
-    timeslots_ =
+    _timeSlots =
         _availabilityModel.map((e) => e.toJson()).toList(growable: true);
-    print("timeslots_ $timeslots_");
+//    print("timeslots_ $_timeSlots");
     var data;
-    data = {"timeSlots": timeslots_};
+    data = {"timeSlots": _timeSlots};
     userBloc.updateUserData(data);
   }
 
@@ -166,7 +154,14 @@ class _AvailabilitySelectionScreenState
         appBar: widget.getAppBar(context, plunesStrings.availability, true),
         key: _scaffoldKey,
         backgroundColor: Colors.white,
-        body: _getBody());
+        body: (progress != null && progress)
+            ? CustomWidgets().getProgressIndicator()
+            : (_availabilityModel == null || _availabilityModel.isEmpty)
+                ? CustomWidgets().errorWidget(
+                    failureCause ?? "No data available!",
+                    onTap: () => _getSlots(),
+                    isSizeLess: true)
+                : _getBody());
   }
 
   _openTimePicker(int position) {
@@ -233,57 +228,86 @@ class _AvailabilitySelectionScreenState
               height: AppConfig.verticalBlockSize * 8,
               margin: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 3),
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      if (index != _currentDayIndex) {
-                        _currentDayIndex = index;
-                        _availabilityModel.forEach((element) {
-                          element.isSelected = false;
-                        });
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                      controller: _dayScrollController,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            if (index != _currentDayIndex) {
+                              _currentDayIndex = index;
+                              _availabilityModel.forEach((element) {
+                                element.isSelected = false;
+                              });
 //                      print("_currentDayIndex ${_availabilityModel[_currentDayIndex].closed}");
-                        _availabilityModel[index].isSelected = true;
-                        _availabilityModel[index]
-                            .daySelectionList
-                            ?.forEach((element) {
-                          element.isSelected = false;
-                        });
-                        _setState();
-                      }
+                              _availabilityModel[index].isSelected = true;
+                              _availabilityModel[index]
+                                  .daySelectionList
+                                  ?.forEach((element) {
+                                element.isSelected = false;
+                              });
+                              _setState();
+                            }
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(
+                                right: AppConfig.horizontalBlockSize * 2.5),
+                            padding: EdgeInsets.symmetric(
+                                horizontal:
+                                    AppConfig.horizontalBlockSize * 2.5),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              color:
+                                  _availabilityModel[index]?.isSelected ?? false
+                                      ? PlunesColors.GREENCOLOR
+                                      : Color(CommonMethods.getColorHexFromStr(
+                                          "#F5F5F5")),
+                            ),
+                            child: Center(
+                              child: Text(
+                                _availabilityModel[index]
+                                        ?.day
+                                        ?.substring(0, 3)
+                                        ?.toUpperCase() ??
+                                    PlunesStrings.NA,
+                                style: TextStyle(
+                                  color:
+                                      _availabilityModel[index]?.isSelected ??
+                                              false
+                                          ? PlunesColors.WHITECOLOR
+                                          : PlunesColors.BLACKCOLOR,
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: _availabilityModel?.length ?? 0,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _dayScrollController.jumpTo(
+                          _dayScrollController.position.maxScrollExtent);
+                      return;
                     },
                     child: Container(
-                      margin: EdgeInsets.only(
-                          right: AppConfig.horizontalBlockSize * 2.5),
-                      padding: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 2.5),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16.0),
-                        color: _availabilityModel[index]?.isSelected ?? false
-                            ? PlunesColors.GREENCOLOR
-                            : PlunesColors.GREYCOLOR.withOpacity(0.3),
+                      color: Colors.transparent,
+                      child: Icon(
+                        Icons.navigate_next,
+                        color: PlunesColors.BLACKCOLOR,
                       ),
-                      child: Center(
-                        child: Text(
-                          _availabilityModel[index]
-                                  ?.day
-                                  ?.substring(0, 3)
-                                  ?.toUpperCase() ??
-                              PlunesStrings.NA,
-                          style: TextStyle(
-                            color:
-                                _availabilityModel[index]?.isSelected ?? false
-                                    ? PlunesColors.WHITECOLOR
-                                    : PlunesColors.BLACKCOLOR,
-                          ),
-                        ),
-                      ),
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 1,
+                          top: AppConfig.horizontalBlockSize * 2,
+                          bottom: AppConfig.horizontalBlockSize * 2),
                     ),
-                  );
-                },
-                itemCount: _availabilityModel?.length ?? 0,
+                  ),
+                ],
               ),
             ),
             _getSlotView(),
@@ -356,7 +380,8 @@ class _AvailabilitySelectionScreenState
                   child: Container(
                     decoration: BoxDecoration(
                         shape: BoxShape.rectangle,
-                        color: PlunesColors.GREYCOLOR.withOpacity(0.3)),
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#F5F5F5"))),
                     height: AppConfig.verticalBlockSize * 4,
                     width: AppConfig.horizontalBlockSize * 8,
                     child: (_availabilityModel[_currentDayIndex] == null ||
@@ -384,6 +409,7 @@ class _AvailabilitySelectionScreenState
             ),
           ),
           ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return Container(
                 child: Row(
@@ -434,7 +460,6 @@ class _AvailabilitySelectionScreenState
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
             child: InkWell(
               onTap: () {
-                print("hello");
                 _checkFirstAndLastSlot();
               },
               child: Padding(
@@ -512,7 +537,7 @@ class _AvailabilitySelectionScreenState
             _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
           List<String> _lastTimeArray =
               _availabilityModel[_currentDayIndex].slots.last.split("-");
-          print("_lastTimeArray $_lastTimeArray");
+//          print("_lastTimeArray $_lastTimeArray");
 
           List<String> lastSplitTime = _lastTimeArray[1].split(":");
           int _lastPmTime = 0;
@@ -646,74 +671,102 @@ class _AvailabilitySelectionScreenState
               margin: EdgeInsets.all(
                 AppConfig.horizontalBlockSize * 3,
               ),
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      _availabilityModel[_currentDayIndex]
-                          ?.daySelectionList[index]
-                          .isSelected = true;
-                      if (_availabilityModel.length > index) {
-                        _availabilityModel[index].slots =
-                            _availabilityModel[_currentDayIndex].slots;
-                        _availabilityModel[index].closed =
-                            _availabilityModel[_currentDayIndex].closed;
-                      }
-                      _setState();
-                    },
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(
-                              left: AppConfig.verticalBlockSize * .8,
-                              bottom: AppConfig.horizontalBlockSize * 2),
-                          child: Text(
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      controller: _daySelectionScrollController,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
                             _availabilityModel[_currentDayIndex]
-                                    ?.daySelectionList[index]
-                                    ?.dayName
-                                    ?.substring(0, 3)
-                                    ?.toUpperCase() ??
-                                PlunesStrings.NA,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: _availabilityModel[_currentDayIndex]
+                                ?.daySelectionList[index]
+                                .isSelected = true;
+                            if (_availabilityModel.length > index) {
+                              _availabilityModel[index].slots =
+                                  _availabilityModel[_currentDayIndex].slots;
+                              _availabilityModel[index].closed =
+                                  _availabilityModel[_currentDayIndex].closed;
+                            }
+                            _setState();
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                margin: EdgeInsets.only(
+                                    left: AppConfig.verticalBlockSize * .8,
+                                    bottom: AppConfig.horizontalBlockSize * 2),
+                                child: Text(
+                                  _availabilityModel[_currentDayIndex]
                                           ?.daySelectionList[index]
-                                          ?.isSelected ??
-                                      false
-                                  ? PlunesColors.SPARKLINGGREEN
-                                  : PlunesColors.BLACKCOLOR,
-                            ),
+                                          ?.dayName
+                                          ?.substring(0, 3)
+                                          ?.toUpperCase() ??
+                                      PlunesStrings.NA,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: _availabilityModel[_currentDayIndex]
+                                                ?.daySelectionList[index]
+                                                ?.isSelected ??
+                                            false
+                                        ? PlunesColors.SPARKLINGGREEN
+                                        : PlunesColors.BLACKCOLOR,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: AppConfig.verticalBlockSize * 5.4,
+                                height: AppConfig.verticalBlockSize * 5.4,
+                                margin: EdgeInsets.only(
+                                    right: AppConfig.horizontalBlockSize * 4),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        AppConfig.horizontalBlockSize * 5),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _availabilityModel[_currentDayIndex]
+                                              ?.daySelectionList[index]
+                                              ?.isSelected ??
+                                          false
+                                      ? PlunesColors.GREENCOLOR
+                                      : Color(CommonMethods.getColorHexFromStr(
+                                          "#F5F5F5")),
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        Container(
-                          width: AppConfig.verticalBlockSize * 5.4,
-                          height: AppConfig.verticalBlockSize * 5.4,
-                          margin: EdgeInsets.only(
-                              right: AppConfig.horizontalBlockSize * 4),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppConfig.horizontalBlockSize * 5),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: _availabilityModel[_currentDayIndex]
-                                        ?.daySelectionList[index]
-                                        ?.isSelected ??
-                                    false
-                                ? PlunesColors.GREENCOLOR
-                                : PlunesColors.GREYCOLOR.withOpacity(0.3),
-                          ),
-                        ),
-                      ],
+                        );
+                      },
+                      itemCount: _availabilityModel[_currentDayIndex]
+                              ?.daySelectionList
+                              ?.length ??
+                          0,
                     ),
-                  );
-                },
-                itemCount: _availabilityModel[_currentDayIndex]
-                        ?.daySelectionList
-                        ?.length ??
-                    0,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      _daySelectionScrollController.jumpTo(
+                          _daySelectionScrollController
+                              .position.maxScrollExtent);
+                      return;
+                    },
+                    child: Container(
+                      color: Colors.transparent,
+                      child: Icon(
+                        Icons.navigate_next,
+                        color: PlunesColors.BLACKCOLOR,
+                      ),
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 1,
+                          top: AppConfig.horizontalBlockSize * 2,
+                          bottom: AppConfig.horizontalBlockSize * 2),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],

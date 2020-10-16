@@ -5624,8 +5624,9 @@ class CustomWidgets {
                                       .withOpacity(.1),
                                   focusColor: Colors.transparent,
                                   onPressed: () {
-                                    Navigator.of(globalKey.currentState.context)
-                                        .pop();
+                                    docHosMainInsightBloc
+                                        .stopNotificationsForSuggestedInsight(
+                                            realInsight.serviceId);
                                     return;
                                   },
                                   child: Container(
@@ -5655,9 +5656,8 @@ class CustomWidgets {
                                       .withOpacity(.1),
                                   focusColor: Colors.transparent,
                                   onPressed: () {
-                                    docHosMainInsightBloc
-                                        .stopNotificationsForSuggestedInsight(
-                                            realInsight.serviceId);
+                                    Navigator.of(globalKey.currentState.context)
+                                        .pop();
                                     return;
                                   },
                                   child: Container(
