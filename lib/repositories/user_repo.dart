@@ -234,7 +234,7 @@ class UserManager {
       }
       return RequestSuccess(response: loginPost);
     } else {
-      return RequestFailed(response: result.failureCause);
+      return RequestFailed(failureCause: result.failureCause);
     }
   }
 

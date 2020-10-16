@@ -122,7 +122,11 @@ class _AvailabilitySelectionScreenState
                 isSelected: i == 0 ? true : false,
                 closed: loginPost.user.timeSlots[i].closed ?? false,
                 day: days_name[i],
-                slots: loginPost.user.timeSlots[i].slots ?? []));
+                slots: loginPost.user.timeSlots[i].slots ?? [],
+                daySelectionList: days_name
+                    .map(
+                        (e) => DaySelectionModel(isSelected: false, dayName: e))
+                    .toList(growable: true)));
           }
         } else {
           for (int i = 0; i < 7; i++) {
@@ -130,7 +134,11 @@ class _AvailabilitySelectionScreenState
                 isSelected: i == 0 ? true : false,
                 closed: i == 6 ? true : false,
                 day: days_name[i],
-                slots: []));
+                slots: [],
+                daySelectionList: days_name
+                    .map(
+                        (e) => DaySelectionModel(isSelected: false, dayName: e))
+                    .toList(growable: true)));
           }
         }
       }
@@ -143,31 +151,10 @@ class _AvailabilitySelectionScreenState
     _setState();
   }
 
-  void addSlot() async {
-    if (from_1 == null ||
-        from_1.length != 7 ||
-        to_1 == null ||
-        to_1.length != 7 ||
-        from_2 == null ||
-        from_2.length != 7 ||
-        to_2 == null ||
-        to_2.length != 7) {
-      _showSnackBar("Empty slots found");
-      return;
-    }
-    hasSubmitted = true;
-    timeslots_.clear();
-    for (int i = 0; i < 7; i++) {
-      timeslots_.add({
-        "slots": [
-          from_1[i] + "-" + to_1[i],
-          from_2[i] + "-" + to_2[i],
-        ],
-        "day": days_name[i],
-        "closed": check[i]
-      });
-    }
-//    print(timeslots_);
+  void _submitSlots() async {
+    timeslots_ =
+        _availabilityModel.map((e) => e.toJson()).toList(growable: true);
+    print("timeslots_ $timeslots_");
     var data;
     data = {"timeSlots": timeslots_};
     userBloc.updateUserData(data);
@@ -217,83 +204,131 @@ class _AvailabilitySelectionScreenState
   }
 
   Widget _getBody() {
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: AppConfig.horizontalBlockSize * 5,
-          vertical: AppConfig.verticalBlockSize * 2),
-      color: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            alignment: Alignment.center,
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 4,
-                vertical: AppConfig.verticalBlockSize * 2),
-            child: Text(
-              "Enter your time slots correctly so that you obtain reservations according to your availability",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                  color: PlunesColors.BLACKCOLOR,
-                  fontSize: 15,
-                  fontWeight: FontWeight.normal),
+    return SingleChildScrollView(
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 5,
+            vertical: AppConfig.verticalBlockSize * 2),
+        color: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 4,
+                  vertical: AppConfig.verticalBlockSize * 2),
+              child: Text(
+                "Enter your time slots correctly so that you obtain reservations according to your availability",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal),
+              ),
             ),
-          ),
-          Container(
-            width: double.infinity,
-            height: AppConfig.verticalBlockSize * 8,
-            margin:
-                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    if (index != _currentDayIndex) {
-                      _currentDayIndex = index;
-                      _availabilityModel.forEach((element) {
-                        element.isSelected = false;
-                      });
+            Container(
+              width: double.infinity,
+              height: AppConfig.verticalBlockSize * 8,
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      if (index != _currentDayIndex) {
+                        _currentDayIndex = index;
+                        _availabilityModel.forEach((element) {
+                          element.isSelected = false;
+                        });
 //                      print("_currentDayIndex ${_availabilityModel[_currentDayIndex].closed}");
-                      _availabilityModel[index].isSelected = true;
-                      _setState();
-                    }
-                  },
-                  child: Container(
-                    margin: EdgeInsets.only(
-                        right: AppConfig.horizontalBlockSize * 2.5),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 2.5),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0),
-                      color: _availabilityModel[index]?.isSelected ?? false
-                          ? PlunesColors.GREENCOLOR
-                          : PlunesColors.GREYCOLOR.withOpacity(0.3),
-                    ),
-                    child: Center(
-                      child: Text(
+                        _availabilityModel[index].isSelected = true;
                         _availabilityModel[index]
-                                ?.day
-                                ?.substring(0, 3)
-                                ?.toUpperCase() ??
-                            PlunesStrings.NA,
-                        style: TextStyle(
-                          color: _availabilityModel[index]?.isSelected ?? false
-                              ? PlunesColors.WHITECOLOR
-                              : PlunesColors.BLACKCOLOR,
+                            .daySelectionList
+                            ?.forEach((element) {
+                          element.isSelected = false;
+                        });
+                        _setState();
+                      }
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          right: AppConfig.horizontalBlockSize * 2.5),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 2.5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16.0),
+                        color: _availabilityModel[index]?.isSelected ?? false
+                            ? PlunesColors.GREENCOLOR
+                            : PlunesColors.GREYCOLOR.withOpacity(0.3),
+                      ),
+                      child: Center(
+                        child: Text(
+                          _availabilityModel[index]
+                                  ?.day
+                                  ?.substring(0, 3)
+                                  ?.toUpperCase() ??
+                              PlunesStrings.NA,
+                          style: TextStyle(
+                            color:
+                                _availabilityModel[index]?.isSelected ?? false
+                                    ? PlunesColors.WHITECOLOR
+                                    : PlunesColors.BLACKCOLOR,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                );
-              },
-              itemCount: _availabilityModel?.length ?? 0,
+                  );
+                },
+                itemCount: _availabilityModel?.length ?? 0,
+              ),
             ),
-          ),
-          Expanded(child: _getSlotView())
-        ],
+            _getSlotView(),
+            _getApplyView(),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: StreamBuilder<RequestState>(
+                  stream: userBloc.baseStream,
+                  builder: (context, snapshot) {
+                    if (snapshot.data is RequestInProgress) {
+                      return CustomWidgets().getProgressIndicator();
+                    } else if (snapshot.data is RequestFailed) {
+                      RequestFailed _reqFail = snapshot.data as RequestFailed;
+                      userBloc.addIntoStream(null);
+                      Future.delayed(Duration(milliseconds: 100)).then((value) {
+                        _showSnackBar(_reqFail?.failureCause);
+                      });
+                    } else if (snapshot.data is RequestSuccess) {
+                      userBloc.addIntoStream(null);
+                      Future.delayed(Duration(milliseconds: 100)).then((value) {
+                        _showSnackBar(PlunesStrings.slotUpdatedSuccessfully,
+                            shouldPop: true);
+                      });
+                    }
+                    return InkWell(
+                      onTap: () {
+                        _submitSlots();
+                        return;
+                      },
+                      child: Center(
+                        child: Text(
+                          "Submit",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: PlunesColors.SPARKLINGGREEN,
+                              fontSize: AppConfig.largeFont + 3,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    );
+                  }),
+            )
+          ],
+        ),
       ),
     );
   }
@@ -579,5 +614,111 @@ class _AvailabilitySelectionScreenState
       print("calling _openTimePicker");
       _openTimePicker(_toIndex);
     }
+  }
+
+  Widget _getApplyView() {
+    return Container(
+      margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
+      child: Card(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        elevation: 3.5,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              alignment: Alignment.center,
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 4,
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: Text(
+                "Apply this time slot to",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR.withOpacity(.7),
+                    fontSize: AppConfig.mediumFont,
+                    fontWeight: FontWeight.w600),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              height: AppConfig.verticalBlockSize * 10,
+              margin: EdgeInsets.all(
+                AppConfig.horizontalBlockSize * 3,
+              ),
+              child: ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (context, index) {
+                  return InkWell(
+                    onTap: () {
+                      _availabilityModel[_currentDayIndex]
+                          ?.daySelectionList[index]
+                          .isSelected = true;
+                      if (_availabilityModel.length > index) {
+                        _availabilityModel[index].slots =
+                            _availabilityModel[_currentDayIndex].slots;
+                        _availabilityModel[index].closed =
+                            _availabilityModel[_currentDayIndex].closed;
+                      }
+                      _setState();
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(
+                              left: AppConfig.verticalBlockSize * .8,
+                              bottom: AppConfig.horizontalBlockSize * 2),
+                          child: Text(
+                            _availabilityModel[_currentDayIndex]
+                                    ?.daySelectionList[index]
+                                    ?.dayName
+                                    ?.substring(0, 3)
+                                    ?.toUpperCase() ??
+                                PlunesStrings.NA,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: _availabilityModel[_currentDayIndex]
+                                          ?.daySelectionList[index]
+                                          ?.isSelected ??
+                                      false
+                                  ? PlunesColors.SPARKLINGGREEN
+                                  : PlunesColors.BLACKCOLOR,
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: AppConfig.verticalBlockSize * 5.4,
+                          height: AppConfig.verticalBlockSize * 5.4,
+                          margin: EdgeInsets.only(
+                              right: AppConfig.horizontalBlockSize * 4),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: AppConfig.horizontalBlockSize * 5),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _availabilityModel[_currentDayIndex]
+                                        ?.daySelectionList[index]
+                                        ?.isSelected ??
+                                    false
+                                ? PlunesColors.GREENCOLOR
+                                : PlunesColors.GREYCOLOR.withOpacity(0.3),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+                itemCount: _availabilityModel[_currentDayIndex]
+                        ?.daySelectionList
+                        ?.length ??
+                    0,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -350,6 +350,8 @@ class PlunesStrings {
   static const String notificationDisabled =
       "We have received your request.You won't be notified for this service any more!";
 
+  static const String slotUpdatedSuccessfully = "Slots Updated Successfully!";
+
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
         'Acne Scar Treatment\n Anti-Aging\n Acne Scars\n Pigmentation\n Hairfall\n Dermoscopy\n Chemical Peel\n Wart Removal\n Wart Removal\n Baldness Treatment\n Skin Polishing\n Wrinkle Treatment\n Mole Removal\n Melasma\n Eczema',
