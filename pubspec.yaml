@@ -234,6 +234,7 @@ flutter:
     - assets/images/profile/qualification.png
     - assets/images/profile/priceHighIcon.png
     - assets/images/profile/MapDark.png
+    - assets/images/profile/ServiceNot.png
     - assets/images/profile/calIcon.png
     - assets/images/profile/eduIcon.png
     - assets/images/profile/emailIcon.png

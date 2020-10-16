@@ -259,8 +259,8 @@ class _HospitalOverviewScreenState
                                       PatientServiceInfo(
                                           patientName: _realTimeInsightsResponse
                                               .data[itemIndex].userName,
-                                          serviceName: "is looking for " +
-                                              "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
+                                          serviceName:
+                                              " ${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
                                           remainingTime:
                                               (_realTimeInsightsResponse.data[
                                                               itemIndex] !=
@@ -562,7 +562,8 @@ class _HospitalOverviewScreenState
                                                         border: Border.all(
                                                             color: Color(CommonMethods
                                                                 .getColorHexFromStr(
-                                                                    "#FFE1F6")))),
+                                                                    "#1473E6")),
+                                                            width: 0)),
                                                     child: InkWell(
                                                       onTap: () {
                                                         showDialog(
@@ -596,7 +597,7 @@ class _HospitalOverviewScreenState
                                                                 0.6),
                                                         color: Color(CommonMethods
                                                             .getColorHexFromStr(
-                                                                "#FFEFEF")),
+                                                                "#D7E7FB")),
                                                         child: Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
@@ -607,10 +608,10 @@ class _HospitalOverviewScreenState
                                                           children: <Widget>[
                                                             Image.asset(
                                                               PlunesImages
-                                                                  .disableServiceIcon,
+                                                                  .serviceNotAvail,
                                                               height: AppConfig
                                                                       .verticalBlockSize *
-                                                                  2.6,
+                                                                  2.8,
                                                               width: AppConfig
                                                                       .horizontalBlockSize *
                                                                   8,
@@ -623,7 +624,7 @@ class _HospitalOverviewScreenState
                                                                 color: Color(
                                                                     CommonMethods
                                                                         .getColorHexFromStr(
-                                                                            "#FF00C3")),
+                                                                            "#1473E6")),
                                                                 fontSize: AppConfig
                                                                     .smallFont,
                                                                 fontWeight:
@@ -781,12 +782,14 @@ class _HospitalOverviewScreenState
                                     Text(
                                       '\u20B9 ${_totalBusinessEarnedResponse.businessLost?.toStringAsFixed(2) ?? "0"}',
                                       style: TextStyle(
-                                        color: Colors.yellow,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "FFB800")),
                                         fontSize: AppConfig.largeFont,
                                         fontWeight: FontWeight.normal,
                                       ),
                                     ),
-                                    Text('Business Lost',
+                                    Text('Potential Business',
                                         style: TextStyle(
                                             color: Colors.black54,
                                             fontSize: AppConfig.verySmallFont)),
@@ -1693,13 +1696,26 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                   //         )
                   //   ]
                   // : null)),
-                  Text(
-                    widget.serviceName,
-                    style: TextStyle(
-                      fontSize: AppConfig.verySmallFont + 1,
-                      color: PlunesColors.GREENCOLOR,
-                      fontWeight: FontWeight.normal,
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        " is looking for",
+                        style: TextStyle(
+                          fontSize: AppConfig.verySmallFont + 1,
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      Text(
+                        widget.serviceName,
+                        style: TextStyle(
+                          fontSize: AppConfig.verySmallFont + 1,
+                          color: PlunesColors.GREENCOLOR,
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ],
                   ),
                   (widget.centreLocation != null &&
                           widget.centreLocation.isNotEmpty)
@@ -1717,8 +1733,14 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
             )),
         Expanded(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Image.asset(PlunesImages.darkMap, fit: BoxFit.contain),
+              Image.asset(
+                PlunesImages.darkMap,
+                fit: BoxFit.contain,
+                height: AppConfig.verticalBlockSize * 5,
+                alignment: Alignment.center,
+              ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 2),
                 child: Row(
@@ -1732,7 +1754,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                     Text(
                       "20 Km",
                       style: TextStyle(
-                          fontSize: AppConfig.verySmallFont,
+                          fontSize: AppConfig.verySmallFont - 2,
                           fontWeight: FontWeight.w600,
                           color: PlunesColors.BLACKCOLOR),
                     )
