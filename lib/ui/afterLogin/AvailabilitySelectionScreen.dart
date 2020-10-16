@@ -11,6 +11,7 @@ import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/availability_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:shimmer/shimmer.dart';
@@ -413,6 +414,7 @@ class _AvailabilitySelectionScreenState
             itemBuilder: (context, index) {
               return Container(
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     Expanded(
                         child: Container(
@@ -447,7 +449,11 @@ class _AvailabilitySelectionScreenState
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(5.0),
-                          child: Icon(Icons.delete),
+                          child: Image.asset(
+                            PlunesImages.binImage,
+                            width: AppConfig.horizontalBlockSize * 8,
+                            height: AppConfig.verticalBlockSize * 2.8,
+                          ),
                         ))
                   ],
                 ),

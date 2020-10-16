@@ -4,6 +4,9 @@ final plunesImages = PlunesImages();
 
 class PlunesImages {
 //  static String achievement = "assets/images/profile/achievement.png";
+  static String serviceNotAvail = "assets/images/profile/ServiceNot.png";
+  static String priceHighIcon = "assets/images/profile/priceHighIcon.png";
+  static String darkMap = "assets/images/profile/MapDark.png";
   static String defaultHosBac = "assets/images/profile/defaulHosIcon.png";
   static String hospHelp = "assets/images/help/hospHelp.png";
   static String cardExpired = "assets/images/CardExpired.png";
@@ -97,6 +100,7 @@ class PlunesImages {
   static const String savePriceInCatalogueImage =
       "assets/images/savePriceInCatalogueImage.png";
   static const String insight_bg_img = "assets/images/insight_bg_img.png";
+  static const String binImage = "assets/images/bin.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',
