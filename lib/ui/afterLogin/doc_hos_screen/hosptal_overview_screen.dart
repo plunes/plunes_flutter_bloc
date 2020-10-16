@@ -555,6 +555,9 @@ class _HospitalOverviewScreenState
                                                                 .verticalBlockSize *
                                                             1),
                                                     decoration: BoxDecoration(
+                                                        color: Color(CommonMethods
+                                                            .getColorHexFromStr(
+                                                                "#D7E7FB")),
                                                         borderRadius:
                                                             BorderRadius.all(
                                                                 Radius.circular(
@@ -563,7 +566,7 @@ class _HospitalOverviewScreenState
                                                             color: Color(CommonMethods
                                                                 .getColorHexFromStr(
                                                                     "#1473E6")),
-                                                            width: 0)),
+                                                            width: 1)),
                                                     child: InkWell(
                                                       onTap: () {
                                                         showDialog(
@@ -595,9 +598,9 @@ class _HospitalOverviewScreenState
                                                             vertical: AppConfig
                                                                     .verticalBlockSize *
                                                                 0.6),
-                                                        color: Color(CommonMethods
-                                                            .getColorHexFromStr(
-                                                                "#D7E7FB")),
+                                                        // color: Color(CommonMethods
+                                                        //     .getColorHexFromStr(
+                                                        //         "#D7E7FB")),
                                                         child: Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
