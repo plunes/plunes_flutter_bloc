@@ -95,12 +95,11 @@ class PlunesImages {
   static const String happyEmoji = "assets/images/happyEmoji.png";
   static const String turnOffNotification =
       "assets/images/turnOffNotification.png";
-  static const String disableServiceIcon =
-      "assets/images/disableServiceIcon.png";
   static const String savePriceInCatalogueImage =
       "assets/images/savePriceInCatalogueImage.png";
   static const String insight_bg_img = "assets/images/insight_bg_img.png";
   static const String binImage = "assets/images/bin.png";
+  static const String blueBellIcon = "assets/images/blueBellIcon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

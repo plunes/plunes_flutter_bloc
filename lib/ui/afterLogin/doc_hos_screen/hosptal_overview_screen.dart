@@ -257,192 +257,80 @@ class _HospitalOverviewScreenState
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       PatientServiceInfo(
-                                          patientName: _realTimeInsightsResponse
-                                              .data[itemIndex].userName,
-                                          serviceName: "is looking for " +
-                                              "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
-                                          remainingTime:
-                                              (_realTimeInsightsResponse.data[
-                                                              itemIndex] !=
-                                                          null &&
-                                                      _realTimeInsightsResponse
-                                                              .data[itemIndex]
-                                                              .booked !=
-                                                          null &&
-                                                      _realTimeInsightsResponse
-                                                          .data[itemIndex]
-                                                          .booked)
-                                                  ? 0
-                                                  : _realTimeInsightsResponse
-                                                      .data[itemIndex]
-                                                      .expirationTimer,
-                                          centreLocation:
-                                              _realTimeInsightsResponse
-                                                  .data[itemIndex]
-                                                  .centerLocation,
-                                          imageUrl: _realTimeInsightsResponse
-                                              .data[itemIndex].imageUrl,
-                                          getRealTimeInsights: () =>
-                                              _getRealTimeInsights()),
-                                      ((_realTimeInsightsResponse
-                                                          .data[itemIndex] !=
-                                                      null &&
-                                                  _realTimeInsightsResponse
-                                                          .data[itemIndex]
-                                                          .expired !=
-                                                      null &&
-                                                  _realTimeInsightsResponse
-                                                      .data[itemIndex]
-                                                      .expired) ||
-                                              (_realTimeInsightsResponse
-                                                          .data[itemIndex] !=
-                                                      null &&
-                                                  _realTimeInsightsResponse
-                                                          .data[itemIndex]
-                                                          .booked !=
-                                                      null &&
-                                                  _realTimeInsightsResponse
-                                                      .data[itemIndex].booked))
-                                          ? Container(
-                                              margin: EdgeInsets.only(
-                                                  left: (AppConfig
-                                                              .horizontalBlockSize *
-                                                          2) +
-                                                      45,
-                                                  top: AppConfig
-                                                          .verticalBlockSize *
-                                                      2),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Flexible(
-                                                    child: Text(
-                                                      "${_realTimeInsightsResponse.data[itemIndex].expirationMessage ?? PlunesStrings.NA}" +
-                                                          " ",
-                                                      style: TextStyle(
-                                                          fontSize: AppConfig
-                                                              .smallFont,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          color: (_realTimeInsightsResponse
-                                                                          .data[
-                                                                              itemIndex]
-                                                                          .professionalBooked !=
-                                                                      null &&
-                                                                  _realTimeInsightsResponse
-                                                                      .data[
-                                                                          itemIndex]
-                                                                      .professionalBooked)
-                                                              ? PlunesColors
-                                                                  .GREENCOLOR
-                                                              : Colors
-                                                                  .deepOrangeAccent),
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                    ),
-                                                  ),
-                                                  Image.asset(
-                                                    (_realTimeInsightsResponse
-                                                                    .data[
-                                                                        itemIndex]
-                                                                    .professionalBooked !=
-                                                                null &&
-                                                            _realTimeInsightsResponse
-                                                                .data[itemIndex]
-                                                                .professionalBooked)
-                                                        ? PlunesImages
-                                                            .happyEmoji
-                                                        : PlunesImages
-                                                            .bookingLostEmoji,
-                                                    height: AppConfig
-                                                            .verticalBlockSize *
-                                                        2.6,
-                                                    width: AppConfig
-                                                            .horizontalBlockSize *
-                                                        8,
-                                                  )
-                                                ],
-                                              ),
-                                            )
-                                          : Row(
-                                              children: <Widget>[
-                                                FlatButtonLinks(
-                                                    PlunesStrings
-                                                        .kindlyUpdateYourPrice,
-                                                    AppConfig.smallFont + 2,
-                                                    null,
-                                                    AppConfig.horizontalBlockSize *
-                                                            2 +
-                                                        45,
-                                                    true,
-                                                    () => _openRealTimeInsightPriceUpdateWidget(
-                                                        _realTimeInsightsResponse
-                                                            .data[itemIndex])),
-                                                InkWell(
-                                                  onTap: () =>
-                                                      _openRealTimeInsightPriceUpdateWidget(
-                                                          _realTimeInsightsResponse
-                                                              .data[itemIndex]),
-                                                  highlightColor: Colors.white,
-                                                  child: Container(
-                                                    padding: EdgeInsets.only(
-                                                        left: 1.0,
-                                                        right: 6.0,
-                                                        top: 6.0,
-                                                        bottom: 6.0),
-                                                    child: Icon(
-                                                      Icons.arrow_forward,
-                                                      color: PlunesColors
-                                                          .GREENCOLOR,
-                                                    ),
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                      StreamBuilder<Object>(
-                                          stream: _timeUpdater.stream,
-                                          builder: (context, snapshot) {
-                                            return Container(
-                                              margin: EdgeInsets.only(
-                                                  left: (AppConfig
-                                                              .horizontalBlockSize *
-                                                          2) +
-                                                      45,
-                                                  top: (_realTimeInsightsResponse
-                                                                      .data[
-                                                                  itemIndex] !=
-                                                              null &&
-                                                          _realTimeInsightsResponse
-                                                                  .data[
-                                                                      itemIndex]
-                                                                  .expired !=
-                                                              null &&
-                                                          _realTimeInsightsResponse
-                                                              .data[itemIndex]
-                                                              .expired)
-                                                      ? AppConfig
-                                                              .verticalBlockSize *
-                                                          1
-                                                      : 0),
-                                              child: Text(
-                                                DateUtil.getDuration(
+                                        patientName: _realTimeInsightsResponse
+                                            .data[itemIndex].userName,
+                                        serviceName: "is looking for " +
+                                            "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
+                                        remainingTime:
+                                            (_realTimeInsightsResponse
+                                                            .data[itemIndex] !=
+                                                        null &&
                                                     _realTimeInsightsResponse
                                                             .data[itemIndex]
-                                                            ?.expirationTimer ??
-                                                        0),
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        AppConfig.smallFont,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    color: Color(CommonMethods
-                                                        .getColorHexFromStr(
-                                                            "#171717"))),
-                                              ),
-                                            );
-                                          }),
+                                                            .booked !=
+                                                        null &&
+                                                    _realTimeInsightsResponse
+                                                        .data[itemIndex].booked)
+                                                ? 0
+                                                : _realTimeInsightsResponse
+                                                    .data[itemIndex]
+                                                    .expirationTimer,
+                                        centreLocation:
+                                            _realTimeInsightsResponse
+                                                .data[itemIndex].centerLocation,
+                                        imageUrl: _realTimeInsightsResponse
+                                            .data[itemIndex].imageUrl,
+                                        getRealTimeInsights: () =>
+                                            _getRealTimeInsights(),
+                                        realInsight: _realTimeInsightsResponse
+                                            .data[itemIndex],
+                                        openInsightPopup: () =>
+                                            _openRealTimeInsightPriceUpdateWidget(
+                                                _realTimeInsightsResponse
+                                                    .data[itemIndex]),
+                                      ),
+//                                      StreamBuilder<Object>(
+//                                          stream: _timeUpdater.stream,
+//                                          builder: (context, snapshot) {
+//                                            return Container(
+//                                              margin: EdgeInsets.only(
+//                                                  left: (AppConfig
+//                                                              .horizontalBlockSize *
+//                                                          2) +
+//                                                      45,
+//                                                  top: (_realTimeInsightsResponse
+//                                                                      .data[
+//                                                                  itemIndex] !=
+//                                                              null &&
+//                                                          _realTimeInsightsResponse
+//                                                                  .data[
+//                                                                      itemIndex]
+//                                                                  .expired !=
+//                                                              null &&
+//                                                          _realTimeInsightsResponse
+//                                                              .data[itemIndex]
+//                                                              .expired)
+//                                                      ? AppConfig
+//                                                              .verticalBlockSize *
+//                                                          1
+//                                                      : 0),
+//                                              child: Text(
+//                                                DateUtil.getDuration(
+//                                                    _realTimeInsightsResponse
+//                                                            .data[itemIndex]
+//                                                            ?.expirationTimer ??
+//                                                        0),
+//                                                style: TextStyle(
+//                                                    fontSize:
+//                                                        AppConfig.smallFont,
+//                                                    fontWeight:
+//                                                        FontWeight.normal,
+//                                                    color: Color(CommonMethods
+//                                                        .getColorHexFromStr(
+//                                                            "#171717"))),
+//                                              ),
+//                                            );
+//                                          }),
                                       (_realTimeInsightsResponse.data[itemIndex]
                                                       .suggested !=
                                                   null &&
@@ -451,26 +339,24 @@ class _HospitalOverviewScreenState
                                           ? Row(
                                               children: <Widget>[
                                                 Expanded(
-                                                    flex: 3,
+                                                    flex: 2,
                                                     child: Container(
                                                       margin: EdgeInsets.only(
                                                           left: AppConfig
                                                                       .horizontalBlockSize *
                                                                   2 +
                                                               45,
-                                                          top: AppConfig
-                                                                  .verticalBlockSize *
-                                                              1),
+                                                          top: 3),
                                                       decoration: BoxDecoration(
                                                           borderRadius:
                                                               BorderRadius.all(
                                                                   Radius
                                                                       .circular(
-                                                                          5)),
+                                                                          3)),
                                                           border: Border.all(
                                                               color: Color(CommonMethods
                                                                   .getColorHexFromStr(
-                                                                      "#FFE1F6")))),
+                                                                      "#1473E6")))),
                                                       child: InkWell(
                                                         onTap: () {
                                                           showDialog(
@@ -505,7 +391,7 @@ class _HospitalOverviewScreenState
                                                                   0.6),
                                                           color: Color(CommonMethods
                                                               .getColorHexFromStr(
-                                                                  "#FFEFEF")),
+                                                                  "#D7E7FB")),
                                                           child: Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
@@ -516,7 +402,7 @@ class _HospitalOverviewScreenState
                                                             children: <Widget>[
                                                               Image.asset(
                                                                 PlunesImages
-                                                                    .disableServiceIcon,
+                                                                    .blueBellIcon,
                                                                 height: AppConfig
                                                                         .verticalBlockSize *
                                                                     2.6,
@@ -533,10 +419,11 @@ class _HospitalOverviewScreenState
                                                                   color: Color(
                                                                       CommonMethods
                                                                           .getColorHexFromStr(
-                                                                              "#FF00C3")),
+                                                                              "#1473E6")),
                                                                   fontSize:
                                                                       AppConfig
-                                                                          .smallFont,
+                                                                              .smallFont -
+                                                                          2,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .normal,
@@ -1461,8 +1348,9 @@ class PatientServiceInfo extends StatefulWidget {
   final String serviceName;
   final String imageUrl;
   final int remainingTime;
-  final Function getRealTimeInsights;
+  final Function getRealTimeInsights, openInsightPopup;
   final int timer;
+  final RealInsight realInsight;
 
   PatientServiceInfo(
       {this.patientName,
@@ -1471,7 +1359,9 @@ class PatientServiceInfo extends StatefulWidget {
       this.remainingTime,
       this.centreLocation,
       this.getRealTimeInsights,
-      this.timer});
+      this.timer,
+      this.realInsight,
+      this.openInsightPopup});
 
   @override
   _PatientServiceInfoState createState() => _PatientServiceInfoState();
@@ -1482,6 +1372,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   int _secondVal = 60, _secFixVal = 60;
   int _countDownValue = 59, _prevMinValue;
   String _timeValue = "00:00";
+  RealInsight _realInsight;
 
   @override
   void dispose() {
@@ -1496,6 +1387,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
 
   @override
   void initState() {
+    _realInsight = widget.realInsight;
     _timeValue = "00:00";
     if (widget.timer != null) {
       _countDownValue = widget.timer - 1;
@@ -1533,7 +1425,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         (widget.imageUrl != null &&
                 widget.imageUrl.isNotEmpty &&
@@ -1555,47 +1447,186 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                 width: 45,
                 height: 45),
         Expanded(
-            flex: 4,
-            child: Padding(
-              padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  RichText(
-                      text: TextSpan(
-                          text: widget.patientName,
-                          style: TextStyle(
-                            fontSize: AppConfig.smallFont + 2,
-                            color: Colors.black,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          children: (widget.centreLocation != null &&
-                                  widget.centreLocation.isNotEmpty)
-                              ? [
-                                  TextSpan(
-                                    text: " ${widget.centreLocation}",
-                                    style: TextStyle(
-                                      fontSize: AppConfig.smallFont + 2,
-                                      color: PlunesColors.GREENCOLOR,
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  )
-                                ]
-                              : null)),
-                  Text(
-                    widget.serviceName,
-                    style: TextStyle(
-                      fontSize: AppConfig.verySmallFont + 1,
-                      color: PlunesColors.GREYCOLOR.withOpacity(0.9),
-                      fontWeight: FontWeight.normal,
-                    ),
+          flex: 5,
+          child: Container(
+            padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                RichText(
+                    text: TextSpan(
+                        text: widget.patientName,
+                        style: TextStyle(
+                          fontSize: AppConfig.smallFont + 2,
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                        ))),
+                Text(
+                  widget.serviceName,
+                  style: TextStyle(
+                    fontSize: AppConfig.verySmallFont + 1,
+                    color: PlunesColors.GREENCOLOR,
+                    fontWeight: FontWeight.normal,
                   ),
-                ],
-              ),
-            )),
+                ),
+                (widget.centreLocation != null &&
+                        widget.centreLocation.isNotEmpty)
+                    ? Text(
+                        "${widget.centreLocation}",
+                        style: TextStyle(
+                          fontSize: AppConfig.smallFont + 2,
+                          color: PlunesColors.GREYCOLOR.withOpacity(0.9),
+                          fontWeight: FontWeight.normal,
+                        ),
+                      )
+                    : Container(),
+                ((_realInsight != null &&
+                            _realInsight.expired != null &&
+                            _realInsight.expired) ||
+                        (_realInsight != null &&
+                            _realInsight.booked != null &&
+                            _realInsight.booked))
+                    ? Container()
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          FlatButtonLinks(
+                              PlunesStrings.kindlyUpdateYourPrice,
+                              AppConfig.smallFont + 2,
+                              null,
+                              0,
+                              true,
+                              () => widget.openInsightPopup()),
+                          InkWell(
+                            onTap: () => widget.openInsightPopup(),
+                            highlightColor: Colors.white,
+                            child: Container(
+                              padding: EdgeInsets.only(
+                                  left: .1, right: 6.0, top: 6.0, bottom: 6.0),
+                              child: Icon(
+                                Icons.arrow_forward,
+                                color: PlunesColors.GREENCOLOR,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                ((_realInsight != null &&
+                            _realInsight.expired != null &&
+                            _realInsight.expired) ||
+                        (_realInsight != null &&
+                            _realInsight.booked != null &&
+                            _realInsight.booked))
+                    ? Container()
+                    : (_realInsight.compRate != null &&
+                            _realInsight.compRate > 0)
+                        ? Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(right: 5),
+                                child: Text(
+                                  "${_realInsight.compRate?.toStringAsFixed(1)}%",
+                                  style: TextStyle(
+                                      color: PlunesColors.RED,
+                                      fontSize: AppConfig.smallFont),
+                                ),
+                              ),
+                              Image.asset(
+                                PlunesImages.priceHighIcon,
+                                height: AppConfig.smallFont,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: Text(
+                                  "high",
+                                  style: TextStyle(
+                                      color: PlunesColors.RED,
+                                      fontSize: AppConfig.smallFont),
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(),
+                ((_realInsight != null &&
+                            _realInsight.expired != null &&
+                            _realInsight.expired) ||
+                        (_realInsight != null &&
+                            _realInsight.booked != null &&
+                            _realInsight.booked))
+                    ? Container(
+                        margin: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 2.5),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Flexible(
+                              child: Text(
+                                "${_realInsight.expirationMessage ?? PlunesStrings.NA}",
+                                style: TextStyle(
+                                    fontSize: AppConfig.smallFont,
+                                    fontWeight: FontWeight.normal,
+                                    color: (_realInsight.professionalBooked !=
+                                                null &&
+                                            _realInsight.professionalBooked)
+                                        ? PlunesColors.GREENCOLOR
+                                        : PlunesColors.ORANGE),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+//                    Image.asset(
+//                      (_realInsight.professionalBooked != null &&
+//                              _realInsight.professionalBooked)
+//                          ? PlunesImages.happyEmoji
+//                          : PlunesImages.bookingLostEmoji,
+//                      height: AppConfig.verticalBlockSize * 2.6,
+//                      width: AppConfig.horizontalBlockSize * 8,
+//                    )
+                          ],
+                        ),
+                      )
+                    : Container()
+              ],
+            ),
+          ),
+        ),
         Expanded(
-          child: _getTimeWidget(),
-          flex: 1,
+          flex: 2,
+          child: Column(
+            children: <Widget>[
+              Image.asset(
+                PlunesImages.darkMap,
+                fit: BoxFit.contain,
+                height: AppConfig.verticalBlockSize * 5,
+                alignment: Alignment.center,
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(
+                    vertical: AppConfig.verticalBlockSize * 1),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Icon(
+                      Icons.perm_identity,
+                      size: AppConfig.verySmallFont,
+                      color: PlunesColors.BLACKCOLOR,
+                    ),
+                    Text(
+                      "${_realInsight.distance?.toStringAsFixed(0) ?? 0} Km",
+                      style: TextStyle(
+                          fontSize: AppConfig.verySmallFont - 2,
+                          fontWeight: FontWeight.w600,
+                          color: PlunesColors.BLACKCOLOR),
+                    )
+                  ],
+                ),
+              ),
+              _getTimeWidget()
+            ],
+          ),
         )
       ],
     );
@@ -1628,13 +1659,14 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       }
     }
     return Container(
-      padding: EdgeInsets.only(left: 2),
+      padding: EdgeInsets.only(left: 2, top: AppConfig.verticalBlockSize * 1.6),
       child: !showShowWidget()
           ? Column(
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 0.5),
+                      vertical: AppConfig.verticalBlockSize * 0.5,
+                      horizontal: AppConfig.horizontalBlockSize * 1),
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       border:
@@ -1642,24 +1674,21 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       borderRadius: BorderRadius.circular(8.0)),
                   child: Center(
                     child: Text(
-                      showShowWidget() ? "00:00" : _timeValue,
+                      showShowWidget() ? "00:00 Mins" : _timeValue + " Mins",
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,
                           fontSize: AppConfig.verySmallFont + 2),
                     ),
                   ),
                 ),
-                Text(
-                  'Mins',
-                  style: TextStyle(fontSize: AppConfig.verySmallFont),
-                )
               ],
             )
           : Column(
               children: <Widget>[
                 Container(
                   padding: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 0.5),
+                      vertical: AppConfig.verticalBlockSize * 0.5,
+                      horizontal: AppConfig.horizontalBlockSize * 1),
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       border:
@@ -1667,17 +1696,13 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       borderRadius: BorderRadius.circular(8.0)),
                   child: Center(
                     child: Text(
-                      "00:00",
+                      "00:00 Mins",
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,
                           fontSize: AppConfig.verySmallFont + 2),
                     ),
                   ),
                 ),
-                Text(
-                  'Mins',
-                  style: TextStyle(fontSize: AppConfig.verySmallFont),
-                )
               ],
             ),
     );
@@ -1690,7 +1715,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   }
 
   void _runSolutionExpireTimer() {
-    _timerForSolutionExpire = Timer.periodic(Duration(seconds: 30), (timer) {
+    _timerForSolutionExpire = Timer.periodic(Duration(seconds: 2), (timer) {
       _timerForSolutionExpire = timer;
       if (widget.remainingTime == null || widget.remainingTime == 0) {
         timer.cancel();

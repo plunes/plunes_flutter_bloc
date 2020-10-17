@@ -350,10 +350,10 @@ flutter:
     - assets/images/plunesCommonGreenBgImage.png
     - assets/images/happyEmoji.png
     - assets/images/turnOffNotification.png
-    - assets/images/disableServiceIcon.png
     - assets/images/savePriceInCatalogueImage.png
     - assets/images/insight_bg_img.png
     - assets/images/bin.png
+    - assets/images/blueBellIcon.png
 
 
 
