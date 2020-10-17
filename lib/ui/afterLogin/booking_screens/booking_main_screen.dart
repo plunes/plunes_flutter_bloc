@@ -1065,15 +1065,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   _calcPriceToShow() {
-    if (widget.bookInPrice != null) {
-      return "${widget.bookInPrice}";
-    } else {
-      num price = widget?.service?.newPrice[0]?.toDouble() ?? 0;
-      num percentage = widget?.service?.paymentOptions[1] ?? 0;
-      var finalPrice = (price * percentage) / 100;
-      return finalPrice == null
-          ? PlunesStrings.NA
-          : "${finalPrice.floorToDouble().toInt()}";
+    try {
+      if (widget.bookInPrice != null) {
+        return "${widget.bookInPrice}";
+      } else {
+        num price = widget?.service?.newPrice[0]?.toDouble() ?? 0;
+        num percentage = widget?.service?.paymentOptions?.last ?? 0;
+        var finalPrice = (price * percentage) / 100;
+        return finalPrice == null
+            ? PlunesStrings.NA
+            : "${finalPrice.floorToDouble().toInt()}";
+      }
+    } catch (e) {
+      return PlunesStrings.NA;
     }
   }
 
