@@ -606,10 +606,10 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         break;
       case 1:
         Navigator.pop(context);
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => AvailabilitySelectionScreen()));
+        // Navigator.push(
+        //     context,
+        //     MaterialPageRoute(
+        //         builder: (context) => AvailabilitySelectionScreen()));
         break;
       case 2:
         Navigator.popAndPushNamed(context, AppointmentMainScreen.tag);

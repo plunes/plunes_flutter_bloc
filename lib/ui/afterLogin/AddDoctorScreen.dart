@@ -161,7 +161,8 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
               SizedBox(
                 width: 20,
               ),
-              widget.getDefaultButton(plunesStrings.upload, 100, 35, _pickImage),
+              widget.getDefaultButton(
+                  plunesStrings.upload, 100, 35, _pickImage),
             ],
           ),
           widget.getSpacer(0.0, 30.0),
@@ -364,7 +365,8 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
       progress = false;
       if (data != null && data['success'] != null && data['success']) {
         await bloc.saveEditProfileDataInPreferences(context, body);
-        widget.showInSnackBar(plunesStrings.success, Colors.green, _scaffoldKey);
+        widget.showInSnackBar(
+            plunesStrings.success, Colors.green, _scaffoldKey);
       } else {
         widget.showInSnackBar(data.message, Colors.red, _scaffoldKey);
       }
@@ -455,6 +457,6 @@ class _AddDoctorScreenState extends State<AddDoctorScreen>
   }
 
   void goToAvailabilityScreen() {
-    CommonMethods.goToPage(context, AvailabilitySelectionScreen());
+    // CommonMethods.goToPage(context, AvailabilitySelectionScreen());
   }
 }
