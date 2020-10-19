@@ -68,7 +68,14 @@ class _AvailabilitySelectionScreenState
     'Saturday',
     'Sunday'
   ];
-  DateTime from1, from2, to1, to2, _tempFromHolder, _tempToHolder;
+  DateTime from1,
+      from2,
+      to1,
+      to2,
+      _tempFromHolder,
+      _tempToHolder,
+      _fromDateHolderForSlotEdit,
+      _toDateHolderForSlotEdit;
 
   @override
   void initState() {
@@ -177,6 +184,23 @@ class _AvailabilitySelectionScreenState
         _tempToHolder = date;
       }
       _setTimeInBoxes(position);
+    });
+  }
+
+  _openTimePickerForSlotEditing(int position) {
+    latest.DatePicker.showTime12hPicker(context, currentTime: initialTime,
+        onConfirm: (date) {
+      if (date == null) {
+        return;
+      }
+      if (_fromDateHolderForSlotEdit == null) {
+        _fromDateHolderForSlotEdit = date;
+        _openTimePickerForSlotEditing(position);
+        return;
+      } else if (_toDateHolderForSlotEdit == null) {
+        _toDateHolderForSlotEdit = date;
+      }
+      _editTime(position);
     });
   }
 
@@ -454,6 +478,24 @@ class _AvailabilitySelectionScreenState
                             width: AppConfig.horizontalBlockSize * 8,
                             height: AppConfig.verticalBlockSize * 2.8,
                           ),
+                        )),
+                    InkWell(
+                        onTap: () {
+//                          _availabilityModel[_currentDayIndex]
+//                              .slots
+//                              .removeAt(index);
+//                          _setState();
+                          _fromDateHolderForSlotEdit = null;
+                          _toDateHolderForSlotEdit = null;
+                          _openTimePickerForSlotEditing(index);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: Image.asset(
+                            PlunesImages.availability_edit_image,
+                            width: AppConfig.horizontalBlockSize * 8,
+                            height: AppConfig.verticalBlockSize * 2.8,
+                          ),
                         ))
                   ],
                 ),
@@ -613,11 +655,10 @@ class _AvailabilitySelectionScreenState
             _tempFromHolder.day + 1,
             int.tryParse(splitTime.first),
             int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
-        print("_firstDate $_firstDate");
-
+//        print("_firstDate $_firstDate");
         List<String> lastSplitTime = _lastTimeArray[1].split(":");
-        print(
-            "${(lastSplitTime[1].contains("PM") && lastSplitTime.first != "12")} lastSplitTime $lastSplitTime");
+//        print(
+//            "${(lastSplitTime[1].contains("PM") && lastSplitTime.first != "12")} lastSplitTime $lastSplitTime");
         int _lastPmTime = 0;
         if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
           _lastPmTime = 12;
@@ -631,7 +672,7 @@ class _AvailabilitySelectionScreenState
             int.tryParse(lastSplitTime.first),
             int.tryParse(
                 lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" "))));
-        print("_lastDate $_lastDate");
+//        print("_lastDate $_lastDate");
         if (_firstDate.isAfter(_tempFromHolder) &&
             _lastDate.isBefore(_tempFromHolder)) {
           print(
@@ -779,5 +820,238 @@ class _AvailabilitySelectionScreenState
         ),
       ),
     );
+  }
+
+  void _editTime(int index) {
+    try {
+      String slotToBeEdited =
+          _availabilityModel[_currentDayIndex]?.slots[index];
+      if (slotToBeEdited != null) {
+        if (_availabilityModel[_currentDayIndex].slots.first ==
+            slotToBeEdited) {
+          ///if first slot
+          _editFirstSlot(slotToBeEdited);
+        } else if (_availabilityModel[_currentDayIndex].slots.last ==
+            slotToBeEdited) {
+          ///if last slot
+          _editLastSlot(slotToBeEdited);
+        } else {
+          ///middle slot
+          _editMiddleSlot(slotToBeEdited);
+        }
+      }
+    } catch (e) {
+      print("error $e");
+    }
+  }
+
+  void _editFirstSlot(String slotToBeEdited) {
+    try {
+      if (_availabilityModel[_currentDayIndex].slots.length > 1) {
+        String _secondSlot = _availabilityModel[_currentDayIndex].slots[1];
+        List<String> _lastTimeArray = _secondSlot.split("-");
+        print("_lastTimeArray $_lastTimeArray");
+        List<String> lastSplitTime = _lastTimeArray[0].split(":");
+        int _lastPmTime = 0;
+        if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
+          _lastPmTime = 12;
+          lastSplitTime.first =
+              "${_lastPmTime + int.parse(lastSplitTime.first)}";
+        }
+        print("lastSplitTime $lastSplitTime");
+        var _lastDate = DateTime(
+            _fromDateHolderForSlotEdit.year,
+            _fromDateHolderForSlotEdit.month,
+            _fromDateHolderForSlotEdit.day,
+            int.tryParse(lastSplitTime.first),
+            int.tryParse(
+                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" "))));
+//        print("_lastDate $_lastDate");
+        if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit) &&
+            _toDateHolderForSlotEdit.isBefore(_lastDate)) {
+          print(
+              "valid hai _fromDateHolderForSlotEdit $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit $_toDateHolderForSlotEdit, _lastDate $_lastDate");
+          String duration =
+              DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
+                  "-" +
+                  DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
+          print("duration $duration");
+          _availabilityModel[_currentDayIndex].slots[
+              _availabilityModel[_currentDayIndex]
+                  .slots
+                  .indexOf(slotToBeEdited)] = duration;
+          _setState();
+        } else {
+          print(
+              "in valid hai _fromDateHolderForSlotEdit $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit $_toDateHolderForSlotEdit, _lastDate $_lastDate");
+          return;
+        }
+      } else {
+        if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit)) {
+          print("valid slot");
+          String duration =
+              DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
+                  "-" +
+                  DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
+          print("duration $duration");
+          _availabilityModel[_currentDayIndex].slots = [duration];
+          _setState();
+        } else {
+          print("in valid slot");
+        }
+      }
+    } catch (e) {
+      print("error $e");
+    }
+  }
+
+  void _editLastSlot(String slotToBeEdited) {
+    try {
+      if (_availabilityModel[_currentDayIndex].slots.length > 1) {
+        String _firstSlot = _availabilityModel[_currentDayIndex].slots[0];
+        String previousSlot = _availabilityModel[_currentDayIndex].slots[
+            _availabilityModel[_currentDayIndex].slots.indexOf(slotToBeEdited) -
+                1];
+        List<String> _lastTimeArray = previousSlot.split("-");
+        print("_lastTimeArray $_lastTimeArray");
+        List<String> lastSplitTime = _lastTimeArray[1].split(":");
+        int _lastPmTime = 0;
+        if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
+          _lastPmTime = 12;
+          lastSplitTime.first =
+              "${_lastPmTime + int.parse(lastSplitTime.first)}";
+        }
+        print("lastSplitTime $lastSplitTime");
+        var _lastDate = DateTime(
+            _fromDateHolderForSlotEdit.year,
+            _fromDateHolderForSlotEdit.month,
+            _fromDateHolderForSlotEdit.day,
+            int.tryParse(lastSplitTime.first),
+            int.tryParse(
+                lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" "))));
+        //////////////////////////////
+        List<String> _firstTimeArray = _firstSlot.split("-");
+        print("_lastTimeArray $_lastTimeArray");
+        List<String> firstSplitTime = _firstTimeArray[0].split(":");
+        int _firstPmTime = 0;
+        if (firstSplitTime[1].contains("PM") && firstSplitTime.first != "12") {
+          _firstPmTime = 12;
+          firstSplitTime.first =
+              "${_firstPmTime + int.parse(firstSplitTime.first)}";
+        }
+        print("firstSplitTime $firstSplitTime");
+        var _firstDate = DateTime(
+            _fromDateHolderForSlotEdit.year,
+            _fromDateHolderForSlotEdit.month,
+            _fromDateHolderForSlotEdit.day + 1,
+            int.tryParse(firstSplitTime.first),
+            int.tryParse(firstSplitTime[1]
+                .substring(0, firstSplitTime[1].indexOf(" "))));
+//        print("_lastDate $_lastDate");
+        if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit) &&
+            _fromDateHolderForSlotEdit.isAfter(_lastDate) &&
+            _toDateHolderForSlotEdit.isBefore(_firstDate)) {
+          print(
+              "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+          String duration =
+              DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
+                  "-" +
+                  DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
+          print("duration $duration");
+          _availabilityModel[_currentDayIndex].slots[
+              _availabilityModel[_currentDayIndex]
+                  .slots
+                  .indexOf(slotToBeEdited)] = duration;
+          _setState();
+        } else {
+          print(
+              "in valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+          return;
+        }
+      }
+    } catch (e) {
+      print("error $e");
+    }
+  }
+
+  void _editMiddleSlot(String slotToBeEdited) {
+    try {
+      int _editableSlotIndex =
+          _availabilityModel[_currentDayIndex].slots.indexOf(slotToBeEdited);
+      print(
+          "_availabilityModel[_currentDayIndex].slots.length ${_availabilityModel[_currentDayIndex].slots.length}");
+      if (_editableSlotIndex != null && _editableSlotIndex != -1) {
+        if (_availabilityModel[_currentDayIndex].slots.length > 2 &&
+            (_availabilityModel[_currentDayIndex].slots.length >=
+                (_editableSlotIndex + 1))) {
+          String _earlierSlot = _availabilityModel[_currentDayIndex]
+              .slots[_editableSlotIndex - 1];
+          print("earlier slot $_earlierSlot");
+          String _laterSlot = _availabilityModel[_currentDayIndex]
+              .slots[_editableSlotIndex + 1];
+          print("later slot $_laterSlot");
+
+          List<String> _lastTimeArray = _laterSlot.split("-");
+          print("_lastTimeArray $_lastTimeArray");
+          List<String> lastSplitTime = _lastTimeArray[0].split(":");
+          int _lastPmTime = 0;
+          if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
+            _lastPmTime = 12;
+            lastSplitTime.first =
+                "${_lastPmTime + int.parse(lastSplitTime.first)}";
+          }
+          print("lastSplitTime $lastSplitTime");
+          var _lastDate = DateTime(
+              _fromDateHolderForSlotEdit.year,
+              _fromDateHolderForSlotEdit.month,
+              _fromDateHolderForSlotEdit.day,
+              int.tryParse(lastSplitTime.first),
+              int.tryParse(lastSplitTime[1]
+                  .substring(0, lastSplitTime[1].indexOf(" "))));
+          //////////////////////////////
+          List<String> _firstTimeArray = _earlierSlot.split("-");
+          print("_firstTimeArray $_firstTimeArray");
+          List<String> firstSplitTime = _firstTimeArray[1].split(":");
+          int _firstPmTime = 0;
+          if (firstSplitTime[1].contains("PM") &&
+              firstSplitTime.first != "12") {
+            _firstPmTime = 12;
+            firstSplitTime.first =
+                "${_firstPmTime + int.parse(firstSplitTime.first)}";
+          }
+          print("firstSplitTime $firstSplitTime");
+          var _firstDate = DateTime(
+              _fromDateHolderForSlotEdit.year,
+              _fromDateHolderForSlotEdit.month,
+              _fromDateHolderForSlotEdit.day,
+              int.tryParse(firstSplitTime.first),
+              int.tryParse(firstSplitTime[1]
+                  .substring(0, firstSplitTime[1].indexOf(" "))));
+
+          if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit) &&
+              _fromDateHolderForSlotEdit.isAfter(_firstDate) &&
+              _toDateHolderForSlotEdit.isBefore(_lastDate)) {
+            print(
+                "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+            String duration =
+                DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
+                    "-" +
+                    DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
+            print("duration $duration");
+            _availabilityModel[_currentDayIndex].slots[
+                _availabilityModel[_currentDayIndex]
+                    .slots
+                    .indexOf(slotToBeEdited)] = duration;
+            _setState();
+          } else {
+            print(
+                "in valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+            return;
+          }
+        }
+      }
+    } catch (e) {
+      print("error $e");
+    }
   }
 }

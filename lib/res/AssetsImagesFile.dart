@@ -100,6 +100,8 @@ class PlunesImages {
   static const String insight_bg_img = "assets/images/insight_bg_img.png";
   static const String binImage = "assets/images/bin.png";
   static const String blueBellIcon = "assets/images/blueBellIcon.png";
+  static const String availability_edit_image =
+      "assets/images/availability_edit_image.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',
