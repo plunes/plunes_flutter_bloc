@@ -434,7 +434,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       child: Stack(
         children: <Widget>[
-          Column(
+          ListView(
             children: <Widget>[
               _getWhyPlunesView(),
               StreamBuilder<Object>(
@@ -443,159 +443,32 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     return (_timer != null &&
                             _timer.isActive &&
                             !(_isCrossClicked))
-                        ? _getHoldOnPopup()
+                        ? _getHoldOnNegoPopup()
                         : _getNegotiatedPriceTotalView();
                   }),
-              Card(
-                elevation: 4.0,
+              _getSolutionNameView(),
+              Container(
                 margin: EdgeInsets.only(
                     left: AppConfig.horizontalBlockSize * 4,
                     right: AppConfig.horizontalBlockSize * 4,
                     top: AppConfig.verticalBlockSize * 1.5),
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 4,
-                      vertical: AppConfig.verticalBlockSize * 2),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Expanded(
-                        flex: 2,
-                        child: InkWell(
-                          onTap: () => _viewDetails(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                widget.catalogueData.service ??
-                                    _searchedDocResults
-                                        ?.catalogueData?.service ??
-                                    PlunesStrings.NA,
-                                style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
-                                    color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 1),
-                                child: Text(
-                                  PlunesStrings.viewDetails,
-                                  style: TextStyle(
-                                      fontSize: AppConfig.smallFont,
-                                      color: PlunesColors.GREENCOLOR),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                            alignment: Alignment.topRight,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                _solutionReceivedTime == null ||
-                                        _solutionReceivedTime == 0
-                                    ? Container()
-                                    : StreamBuilder(
-                                        builder: (context, snapShot) {
-                                          return Text(
-                                            DateUtil.getDuration(
-                                                    _solutionReceivedTime) ??
-                                                PlunesStrings.NA,
-                                            style: TextStyle(
-                                                fontSize: AppConfig.smallFont),
-                                          );
-                                        },
-                                        stream: _streamForTimer.stream,
-                                      ),
-                                InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => SolutionMap(
-                                                _searchedDocResults,
-                                                widget.catalogueData))).then(
-                                        (value) {
-                                      if (value != null && value) {
-                                        Navigator.pop(context, true);
-                                      }
-                                    });
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 1),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: <Widget>[
-                                        Flexible(
-                                          flex: 2,
-                                          child: Container(
-                                            child: Image.asset(
-                                                plunesImages.locationIcon),
-                                            height:
-                                                AppConfig.verticalBlockSize * 3,
-                                            width:
-                                                AppConfig.horizontalBlockSize *
-                                                    8,
-                                          ),
-                                        ),
-                                        Flexible(
-                                          flex: 10,
-                                          child: Padding(
-                                            padding:
-                                                const EdgeInsets.only(left: 2),
-                                            child: Text(
-                                              PlunesStrings.viewOnMap,
-                                              textAlign: TextAlign.right,
-                                              maxLines: 1,
-                                              style: TextStyle(
-                                                  fontSize: AppConfig.smallFont,
-                                                  color:
-                                                      PlunesColors.GREENCOLOR),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            )),
-                      )
-                    ],
-                  ),
-                ),
-                color: PlunesColors.WHITECOLOR,
-              ),
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 4,
-                      right: AppConfig.horizontalBlockSize * 4,
-                      top: AppConfig.verticalBlockSize * 1.5),
-                  child: StreamBuilder<RequestState>(
-                    builder: (context, snapShot) {
-                      if (snapShot.data is RequestSuccess) {
-                        RequestSuccess _successObject = snapShot.data;
-                        _searchedDocResults = _successObject.response;
-                        _checkExpandedSolutions();
-                        _searchSolutionBloc.addIntoDocHosStream(null);
-                        _checkShouldTimerRun();
-                      } else if (snapShot.data is RequestFailed) {
-                        RequestFailed _failedObject = snapShot.data;
-                        _failureCause = _failedObject.failureCause;
-                        _searchSolutionBloc.addIntoDocHosStream(null);
-                        _cancelNegotiationTimer();
-                      }
-                      return _showContent();
-                    },
-                    stream: _searchSolutionBloc.getDocHosStream(),
-                  ),
+                child: StreamBuilder<RequestState>(
+                  builder: (context, snapShot) {
+                    if (snapShot.data is RequestSuccess) {
+                      RequestSuccess _successObject = snapShot.data;
+                      _searchedDocResults = _successObject.response;
+                      _checkExpandedSolutions();
+                      _searchSolutionBloc.addIntoDocHosStream(null);
+                      _checkShouldTimerRun();
+                    } else if (snapShot.data is RequestFailed) {
+                      RequestFailed _failedObject = snapShot.data;
+                      _failureCause = _failedObject.failureCause;
+                      _searchSolutionBloc.addIntoDocHosStream(null);
+                      _cancelNegotiationTimer();
+                    }
+                    return _showContent();
+                  },
+                  stream: _searchSolutionBloc.getDocHosStream(),
                 ),
               ),
             ],
@@ -1428,54 +1301,54 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         } else {
           time = "${duration.inMinutes} mins";
         }
-        return Card(
-          elevation: 2.5,
+        return Container(
           margin: EdgeInsets.only(
               left: AppConfig.horizontalBlockSize * 4,
               right: AppConfig.horizontalBlockSize * 4,
               top: AppConfig.verticalBlockSize * 2),
-          child: Container(
-              padding: EdgeInsets.all(12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    child: Image.asset(PlunesImages.savedMoneyImage),
-                    height: AppConfig.verticalBlockSize * 4,
-                    width: AppConfig.horizontalBlockSize * 10,
-                  ),
-                  Padding(padding: EdgeInsets.only(left: 15.0)),
-                  Expanded(
-                      child: RichText(
-                          text: TextSpan(
-                              text: "We managed to save ",
-                              style: TextStyle(
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 16),
-                              children: [
-                        TextSpan(
-                            text: "${_gainedDiscount?.toStringAsFixed(0)} INR ",
-                            style: TextStyle(
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16)),
-                        TextSpan(
-                            text: "For you in the last ",
-                            style: TextStyle(
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 16)),
-                        TextSpan(
-                            text: "$time !",
-                            style: TextStyle(
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.w800,
-                                fontSize: 16))
-                      ])))
-                ],
-              )),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                alignment: Alignment.center,
+                child: Container(
+                  child: Image.asset(PlunesImages.savedMoneyImage),
+                  height: AppConfig.verticalBlockSize * 4,
+                  width: AppConfig.horizontalBlockSize * 10,
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 2.0)),
+              RichText(
+                  text: TextSpan(
+                      text: "We managed to save ",
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16),
+                      children: [
+                    TextSpan(
+                        text: "${_gainedDiscount?.toStringAsFixed(0)} INR ",
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16)),
+                    TextSpan(
+                        text: "For you in the last ",
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16)),
+                    TextSpan(
+                        text: "$time !",
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16))
+                  ]))
+            ],
+          ),
         );
       },
       stream: _totalDiscountController.stream,
@@ -1728,4 +1601,160 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       ),
     ),
   ];
+
+  Widget _getHoldOnNegoPopup() {
+    return Container(
+      margin: EdgeInsets.only(
+          left: AppConfig.horizontalBlockSize * 4,
+          right: AppConfig.horizontalBlockSize * 4,
+          top: AppConfig.verticalBlockSize * 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            "Hold on",
+            style: TextStyle(
+                color: PlunesColors.BLACKCOLOR,
+                fontSize: 16,
+                fontWeight: FontWeight.w600),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 2),
+            child: Text(
+              "Hold on we are negotiating with doctor's near you",
+              style: TextStyle(
+                  color: PlunesColors.BLACKCOLOR,
+                  fontWeight: FontWeight.normal,
+                  fontSize: 16),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getSolutionNameView() {
+    return Card(
+      elevation: 4.0,
+      margin: EdgeInsets.only(
+          left: AppConfig.horizontalBlockSize * 4,
+          right: AppConfig.horizontalBlockSize * 4,
+          top: AppConfig.verticalBlockSize * 2),
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 4,
+            vertical: AppConfig.verticalBlockSize * 2),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            Expanded(
+              flex: 2,
+              child: InkWell(
+                onTap: () => _viewDetails(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      widget.catalogueData.service ??
+                          _searchedDocResults?.catalogueData?.service ??
+                          PlunesStrings.NA,
+                      style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                      child: Text(
+                        PlunesStrings.viewDetails,
+                        style: TextStyle(
+                            fontSize: AppConfig.smallFont,
+                            color: PlunesColors.GREENCOLOR),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Container(
+                  alignment: Alignment.topRight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+//                      _solutionReceivedTime == null ||
+//                          _solutionReceivedTime == 0
+//                          ? Container()
+//                          : StreamBuilder(
+//                        builder: (context, snapShot) {
+//                          return Text(
+//                            DateUtil.getDuration(
+//                                _solutionReceivedTime) ??
+//                                PlunesStrings.NA,
+//                            style: TextStyle(
+//                                fontSize: AppConfig.smallFont),
+//                          );
+//                        },
+//                        stream: _streamForTimer.stream,
+//                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SolutionMap(
+                                      _searchedDocResults,
+                                      widget.catalogueData))).then((value) {
+                            if (value != null && value) {
+                              Navigator.pop(context, true);
+                            }
+                          });
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 1),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              Flexible(
+                                flex: 2,
+                                child: Container(
+                                  child: Image.asset(
+                                    plunesImages.locationIcon,
+                                    color: PlunesColors.BLACKCOLOR,
+                                  ),
+                                  height: AppConfig.verticalBlockSize * 1.8,
+                                  width: AppConfig.horizontalBlockSize * 5,
+                                ),
+                              ),
+                              Flexible(
+                                flex: 10,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 2),
+                                  child: Text(
+                                    PlunesStrings.viewOnMap,
+                                    textAlign: TextAlign.right,
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.smallFont,
+                                        color: PlunesColors.GREENCOLOR),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  )),
+            )
+          ],
+        ),
+      ),
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+    );
+  }
 }

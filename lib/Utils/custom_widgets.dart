@@ -652,12 +652,10 @@ class CustomWidgets {
         padding: EdgeInsets.symmetric(
             vertical: AppConfig.verticalBlockSize * 2.5,
             horizontal: AppConfig.horizontalBlockSize * 2.5),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
           children: <Widget>[
-            Column(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 InkWell(
                   onTap: () => viewProfile(),
@@ -691,11 +689,90 @@ class CustomWidgets {
                           14,
                         ),
                 ),
+                Flexible(
+                    child: Container(
+                  padding:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            flex: 2,
+                            child: InkWell(
+                              onTap: () => viewProfile(),
+                              child: Container(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * .5),
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  CommonMethods.getStringInCamelCase(
+                                          solutions[index]?.name) ??
+                                      PlunesStrings.NA,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            child: Container(
+                                height: AppConfig.verticalBlockSize * 3,
+                                width: AppConfig.horizontalBlockSize * 5,
+                                child: Image.asset(plunesImages.locationIcon)),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.horizontalBlockSize * 1),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            (solutions[index] != null &&
+                                    solutions[index].experience != null &&
+                                    solutions[index].experience > 0)
+                                ? Text(
+                                    "${solutions[index].experience > 100 ? "100+" : solutions[index].experience} ${PlunesStrings.yrExp}",
+                                    style: TextStyle(
+                                      fontSize: 13.5,
+                                      color: PlunesColors.BLACKCOLOR,
+                                    ),
+                                  )
+                                : Container(),
+//                            Expanded(child: Container()),
+//                            Row(
+//                              crossAxisAlignment: CrossAxisAlignment.center,
+//                              children: <Widget>[
+//                                Container(
+//                                    height: AppConfig.verticalBlockSize * 3,
+//                                    width: AppConfig.horizontalBlockSize * 5,
+//                                    child: Image.asset(
+//                                        plunesImages.locationIcon)),
+//                                Text(
+//                                  "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
+//                                  style: TextStyle(
+//                                      color: PlunesColors.GREYCOLOR,
+//                                      fontSize: 10),
+//                                ),
+//                              ],
+//                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
                 Container(
                   width: AppConfig.horizontalBlockSize * 14,
-                  padding:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * .8),
-                  child: Column(
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Icon(
@@ -706,186 +783,152 @@ class CustomWidgets {
                         solutions[index].rating?.toStringAsFixed(1) ??
                             _getEmptyString(),
                         style: TextStyle(
-                            color: PlunesColors.GREYCOLOR, fontSize: 14),
+                            color: PlunesColors.BLACKCOLOR, fontSize: 14),
                       ),
                     ],
                   ),
+                )
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 2,
+                  horizontal: AppConfig.horizontalBlockSize * 3),
+              child: Row(
+                children: List.generate(
+                    500 ~/ 4,
+                    (index) => Expanded(
+                          child: Container(
+                            color: index % 2 == 0
+                                ? Colors.transparent
+                                : PlunesColors.LIGHTGREYCOLOR,
+                            height: 2,
+                          ),
+                        )),
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                Flexible(
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Flexible(
+                            child: RichText(
+                                text: TextSpan(
+                                    text: (solutions[index].price == null ||
+                                            solutions[index].price.isEmpty ||
+                                            solutions[index]?.price[0] ==
+                                                solutions[index]?.newPrice[0])
+                                        ? ""
+                                        : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: solutions[index].negotiating
+                                            ? PlunesColors.BLACKCOLOR
+                                            : PlunesColors.GREYCOLOR,
+                                        decoration: solutions[index].negotiating
+                                            ? TextDecoration.none
+                                            : TextDecoration.lineThrough),
+                                    children: <TextSpan>[
+                                  TextSpan(
+                                    text: solutions[index].negotiating
+                                        ? ""
+                                        : " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: PlunesColors.BLACKCOLOR,
+                                        fontWeight: FontWeight.w500,
+                                        decoration: TextDecoration.none),
+                                  )
+                                ])),
+                          ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 1)),
+                          solutions[index].negotiating
+                              ? Container()
+                              : ((solutions[index].price.isEmpty) ||
+                                      (solutions[index].newPrice.isEmpty) ||
+                                      solutions[index].price[0] ==
+                                          solutions[index].newPrice[0])
+                                  ? Container()
+                                  : Text(
+                                      (solutions[index].discount == null ||
+                                              solutions[index].discount == 0 ||
+                                              solutions[index].discount < 0)
+                                          ? ""
+                                          : " ${PlunesStrings.save} \u20B9 ${(solutions[index].price[0] - solutions[index].newPrice[0])?.toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: PlunesColors.GREENCOLOR),
+                                    )
+                        ],
+                      ),
+                      ((solutions[index].homeCollection != null &&
+                                  solutions[index].homeCollection) &&
+                              !(solutions[index].negotiating))
+                          ? Container(
+                              width: double.infinity,
+                              margin: EdgeInsets.only(top: 4),
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                PlunesStrings.homeCollectionAvailable,
+                                style: TextStyle(
+                                    color: PlunesColors.GREYCOLOR,
+                                    fontSize: 13.5),
+                              ),
+                            )
+                          : Container(),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 2),
+                  child: InkWell(
+                      onTap:
+                          solutions[index].negotiating ? () {} : onBookingTap,
+                      child: getRoundedButton(
+                          solutions[index].bookIn == null
+                              ? PlunesStrings.book
+                              : "${PlunesStrings.bookIn} ${solutions[index].bookIn}",
+                          AppConfig.horizontalBlockSize * 8,
+                          solutions[index].negotiating
+                              ? PlunesColors.GREYCOLOR
+                              : PlunesColors.SPARKLINGGREEN,
+                          AppConfig.horizontalBlockSize * 3,
+                          AppConfig.verticalBlockSize * 1,
+                          PlunesColors.WHITECOLOR)),
                 ),
               ],
             ),
-            Expanded(
-              child: Container(
-                padding:
-                    EdgeInsets.only(left: AppConfig.horizontalBlockSize * 3),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Expanded(
-                          child: InkWell(
-                            onTap: () => viewProfile(),
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * .5),
-                              alignment: Alignment.topLeft,
-                              child: Text(
-                                CommonMethods.getStringInCamelCase(
-                                        solutions[index]?.name) ??
-                                    PlunesStrings.NA,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Container(
-                            padding: EdgeInsets.only(
-                                left: AppConfig.horizontalBlockSize * 2)),
-                        solutions[index].negotiating
-                            ? Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    PlunesStrings.negotiating,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.normal,
-                                        color: PlunesColors.BLACKCOLOR),
-                                  ),
-                                  getLinearIndicator()
-                                ],
-                              )
-                            : InkWell(
-                                onTap: onBookingTap,
-                                child: getRoundedButton(
-                                    solutions[index].bookIn == null
-                                        ? PlunesStrings.book
-                                        : "${PlunesStrings.bookIn} ${solutions[index].bookIn}",
-                                    AppConfig.horizontalBlockSize * 8,
-                                    PlunesColors.SPARKLINGGREEN,
-                                    AppConfig.horizontalBlockSize * 3,
-                                    AppConfig.verticalBlockSize * 1,
-                                    PlunesColors.WHITECOLOR)),
-                      ],
+            solutions[index].negotiating
+                ? Container(
+                    width: double.infinity,
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                    child: Text(
+                      PlunesStrings.negotiating,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal,
+                          color: PlunesColors.BLACKCOLOR),
                     ),
-                    Container(
-                      padding: EdgeInsets.only(
-                          top: AppConfig.horizontalBlockSize * 1),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          (solutions[index] != null &&
-                                  solutions[index].experience != null &&
-                                  solutions[index].experience > 0)
-                              ? Text(
-                                  "${solutions[index].experience} ${PlunesStrings.yrExp}",
-                                  style: TextStyle(
-                                    fontSize: 13.5,
-                                    color: PlunesColors.GREYCOLOR,
-                                  ),
-                                )
-                              : Container(),
-                          (solutions[index].homeCollection != null &&
-                                  solutions[index].homeCollection)
-                              ? Text(
-                                  PlunesStrings.homeCollectionAvailable,
-                                  style: TextStyle(
-                                      color: PlunesColors.GREYCOLOR,
-                                      fontSize: 13.5),
-                                )
-                              : Container(),
-                          Expanded(child: Container()),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Container(
-                                  height: AppConfig.verticalBlockSize * 3,
-                                  width: AppConfig.horizontalBlockSize * 5,
-                                  child:
-                                      Image.asset(plunesImages.locationIcon)),
-                              Text(
-                                "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
-                                style: TextStyle(
-                                    color: PlunesColors.GREYCOLOR,
-                                    fontSize: 10),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
+                  )
+                : Container(),
+            solutions[index].negotiating
+                ? Container(
+                    width: double.infinity,
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                    child: LinearProgressIndicator(
+                      backgroundColor: PlunesColors.LIGHTGREYCOLOR,
                     ),
-                    solutions[index].negotiating
-                        ? Container()
-                        : Padding(
-                            padding: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 1),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: <Widget>[
-                                Flexible(
-                                  child: RichText(
-                                      text: TextSpan(
-                                          text: (solutions[index].price ==
-                                                      null ||
-                                                  solutions[index]
-                                                      .price
-                                                      .isEmpty ||
-                                                  solutions[index]?.price[0] ==
-                                                      solutions[index]
-                                                          ?.newPrice[0])
-                                              ? ""
-                                              : "\u20B9${solutions[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: PlunesColors.GREYCOLOR,
-                                              decoration:
-                                                  TextDecoration.lineThrough),
-                                          children: <TextSpan>[
-                                        TextSpan(
-                                          text:
-                                              " \u20B9${solutions[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: PlunesColors.BLACKCOLOR,
-                                              fontWeight: FontWeight.w500,
-                                              decoration: TextDecoration.none),
-                                        )
-                                      ])),
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        left:
-                                            AppConfig.horizontalBlockSize * 1)),
-                                ((solutions[index].price.isEmpty) ||
-                                        (solutions[index].newPrice.isEmpty) ||
-                                        solutions[index].price[0] ==
-                                            solutions[index].newPrice[0])
-                                    ? Container()
-                                    : Text(
-                                        (solutions[index].discount == null ||
-                                                solutions[index].discount ==
-                                                    0 ||
-                                                solutions[index].discount < 0)
-                                            ? ""
-                                            : " ${PlunesStrings.save} \u20B9 ${(solutions[index].price[0] - solutions[index].newPrice[0])?.toStringAsFixed(2)}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: PlunesColors.GREENCOLOR),
-                                      )
-                              ],
-                            ),
-                          )
-                  ],
-                ),
-              ),
-            )
+                  )
+                : Container(),
           ],
         ),
       ),
