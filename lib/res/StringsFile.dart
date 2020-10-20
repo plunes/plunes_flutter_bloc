@@ -73,7 +73,7 @@ class PlunesStrings {
   static const String newVersionAvailable = "New Version Available";
   static const String solutionSearched = "Solution Searched";
   static const String negotiatedSolutions = "Negotiated Prices";
-  static const String validForOneHour = "Valid for 1 hour only";
+  static const String validForOneHour = "Valid for ";
   static const String consultations = "Consultations";
   static const String tests = "Tests";
   static const String procedures = "Procedures";

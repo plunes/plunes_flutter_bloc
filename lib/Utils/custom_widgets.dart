@@ -726,7 +726,8 @@ class CustomWidgets {
                             child: Container(
                                 height: AppConfig.verticalBlockSize * 3,
                                 width: AppConfig.horizontalBlockSize * 5,
-                                child: Image.asset(plunesImages.locationIcon)),
+                                child:
+                                    Image.asset(PlunesImages.certifiedImage)),
                           ),
                         ],
                       ),

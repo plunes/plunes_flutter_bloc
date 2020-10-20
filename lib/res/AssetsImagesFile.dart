@@ -102,6 +102,18 @@ class PlunesImages {
   static const String blueBellIcon = "assets/images/blueBellIcon.png";
   static const String availability_edit_image =
       "assets/images/availability_edit_image.png";
+  static const String certifiedImage = "assets/images/certifiedImage.png";
+  static const String zeroCostEmiIcon =
+      "assets/images/solution/zeroCostEmiIcon.png";
+  static const String firstConslFree =
+      "assets/images/solution/firstConslFree.png";
+  static const String freeTeleConsImg =
+      "assets/images/solution/freeTeleConsImg.png";
+  static const String paymentRefIcon =
+      "assets/images/solution/paymentRefIcon.png";
+  static const String plunesVerifiedImg =
+      "assets/images/solution/plunesVerifiedImg.png";
+  static const String prefTimeIcon = "assets/images/solution/prefTimeIcon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

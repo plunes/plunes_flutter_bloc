@@ -355,6 +355,13 @@ flutter:
     - assets/images/bin.png
     - assets/images/blueBellIcon.png
     - assets/images/availability_edit_image.png
+    - assets/images/certifiedImage.png
+    - assets/images/solution/zeroCostEmiIcon.png
+    - assets/images/solution/firstConslFree.png
+    - assets/images/solution/freeTeleConsImg.png
+    - assets/images/solution/paymentRefIcon.png
+    - assets/images/solution/plunesVerifiedImg.png
+    - assets/images/solution/prefTimeIcon.png
 
 
 

@@ -20,6 +20,7 @@ import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../widgets/dialogPopScreen.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -54,7 +55,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   FocusNode _focusNode;
   final double lat = 28.4594965, long = 77.0266383;
   Set<Services> _services = {};
-  num _gainedDiscount = 0;
+  num _gainedDiscount = 0, _gainedDiscountPercentage = 0;
   GlobalKey _moreFacilityKey = GlobalKey();
   ScrollController _scrollController;
   Key _visibilityKey = Key("ItsVisibilityKey");
@@ -182,11 +183,24 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 scale: 3,
                               ),
                               Padding(
-                                child: Text(
-                                  PlunesStrings.validForOneHour,
-                                  style: TextStyle(
-                                      color: PlunesColors.GREYCOLOR,
-                                      fontSize: 16),
+                                child: RichText(
+                                  text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                            text: "1 hour",
+                                            style: TextStyle(
+                                                color: PlunesColors.GREENCOLOR,
+                                                fontSize: 16)),
+                                        TextSpan(
+                                            text: " only",
+                                            style: TextStyle(
+                                                color: PlunesColors.GREYCOLOR,
+                                                fontSize: 15))
+                                      ],
+                                      text: PlunesStrings.validForOneHour,
+                                      style: TextStyle(
+                                          color: PlunesColors.GREYCOLOR,
+                                          fontSize: 15)),
                                 ),
                                 padding: EdgeInsets.only(left: 4.0),
                               )
@@ -445,6 +459,15 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             !(_isCrossClicked))
                         ? _getHoldOnNegoPopup()
                         : _getNegotiatedPriceTotalView();
+                  }),
+              StreamBuilder<Object>(
+                  stream: _totalDiscountController?.stream,
+                  builder: (context, snapshot) {
+                    if (_gainedDiscountPercentage == null ||
+                        _gainedDiscountPercentage <= 0) {
+                      return Container();
+                    }
+                    return _getDailerWidget();
                   }),
               _getSolutionNameView(),
               Container(
@@ -937,56 +960,34 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      _viewProfile(service);
-                    },
-                    onDoubleTap: () {},
-                    child: (service.doctors[index].imageUrl != null &&
-                            service.doctors[index].imageUrl.isNotEmpty &&
-                            service.doctors[index].imageUrl.contains("http"))
-                        ? CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            child: Container(
-                              height: AppConfig.horizontalBlockSize * 14,
-                              width: AppConfig.horizontalBlockSize * 14,
-                              child: ClipOval(
-                                  child: CustomWidgets().getImageFromUrl(
-                                      service.doctors[index].imageUrl,
-                                      boxFit: BoxFit.fill,
-                                      placeHolderPath:
-                                          PlunesImages.doc_placeholder)),
-                            ),
-                            radius: AppConfig.horizontalBlockSize * 7,
-                          )
-                        : CustomWidgets().getProfileIconWithName(
-                            service.doctors[index].name,
-                            14,
-                            14,
-                          ),
-                  ),
-//                  Container(
-//                    width: AppConfig.horizontalBlockSize * 14,
-//                    child: Column(
-//                      crossAxisAlignment: CrossAxisAlignment.center,
-//                      children: <Widget>[
-//                        Icon(
-//                          Icons.star,
-//                          color: PlunesColors.GREENCOLOR,
-//                        ),
-//                        Text(
-//                          service.doctors[index].rating?.toStringAsFixed(1) ??
-//                              PlunesStrings.NA,
-//                          style: TextStyle(
-//                              color: PlunesColors.GREYCOLOR, fontSize: 14),
-//                        ),
-//                      ],
-//                    ),
-//                  ),
-                ],
+              InkWell(
+                onTap: () {
+                  _viewProfile(service);
+                  return;
+                },
+                onDoubleTap: () {},
+                child: (service.doctors[index].imageUrl != null &&
+                        service.doctors[index].imageUrl.isNotEmpty &&
+                        service.doctors[index].imageUrl.contains("http"))
+                    ? CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        child: Container(
+                          height: AppConfig.horizontalBlockSize * 14,
+                          width: AppConfig.horizontalBlockSize * 14,
+                          child: ClipOval(
+                              child: CustomWidgets().getImageFromUrl(
+                                  service.doctors[index].imageUrl,
+                                  boxFit: BoxFit.fill,
+                                  placeHolderPath:
+                                      PlunesImages.doc_placeholder)),
+                        ),
+                        radius: AppConfig.horizontalBlockSize * 7,
+                      )
+                    : CustomWidgets().getProfileIconWithName(
+                        service.doctors[index].name,
+                        14,
+                        14,
+                      ),
               ),
               Expanded(
                   child: Padding(
@@ -996,9 +997,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Expanded(
+                          flex: 2,
                           child: InkWell(
                             onTap: () => _viewProfile(service),
                             child: Container(
@@ -1018,77 +1020,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             ),
                           ),
                         ),
-                        Container(
-                            padding: EdgeInsets.only(
-                                left: AppConfig.horizontalBlockSize * 2)),
-                        service.negotiating ?? false
-                            ? Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    PlunesStrings.negotiating,
-                                    style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.normal,
-                                        color: PlunesColors.BLACKCOLOR),
-                                  ),
-                                  CustomWidgets().getLinearIndicator()
-                                ],
-                              )
-                            : InkWell(
-                                onTap: () {
-                                  if (!_canGoAhead()) {
-                                    _showSnackBar(
-                                        PlunesStrings.cantBookPriceExpired,
-                                        shouldPop: true);
-                                    return;
-                                  }
-                                  _solution = _searchedDocResults.solution;
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              BookingMainScreen(
-                                                price: service
-                                                    .doctors[index].newPrice[0]
-                                                    .toString(),
-                                                profId: service.professionalId,
-                                                docId: service.doctors[index]
-                                                    .professionalId,
-                                                searchedSolutionServiceId:
-                                                    service.sId,
-                                                timeSlots: service
-                                                    .doctors[index].timeSlots,
-                                                docHosSolution: _solution,
-                                                bookInPrice: service
-                                                    .doctors[index].bookIn,
-                                                serviceIndex: 0,
-                                                service: Services(
-                                                    price: service
-                                                        .doctors[index].price,
-                                                    newPrice: service
-                                                        .doctors[index]
-                                                        .newPrice,
-                                                    paymentOptions:
-                                                        service.paymentOptions),
-                                              ))).then((value) {
-                                    if (value != null &&
-                                        value.runtimeType ==
-                                            "pop".runtimeType &&
-                                        value.toString() == "pop") {
-                                      Navigator.pop(context);
-                                    }
-                                  });
-                                },
-                                child: CustomWidgets().getRoundedButton(
-                                    service.doctors[index].bookIn == null
-                                        ? PlunesStrings.book
-                                        : "${PlunesStrings.bookIn} ${service.doctors[index].bookIn}",
-                                    AppConfig.horizontalBlockSize * 8,
-                                    PlunesColors.SPARKLINGGREEN,
-                                    AppConfig.horizontalBlockSize * 3,
-                                    AppConfig.verticalBlockSize * 1,
-                                    PlunesColors.WHITECOLOR))
+                        Flexible(
+                          child: Container(
+                              height: AppConfig.verticalBlockSize * 3,
+                              width: AppConfig.horizontalBlockSize * 5,
+                              child: Image.asset(PlunesImages.certifiedImage)),
+                        ),
                       ],
                     ),
                     Container(
@@ -1100,95 +1037,208 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 service.doctors[index].experience != null &&
                                 service.doctors[index].experience > 0)
                             ? Text(
-                                "${service.doctors[index].experience} ${PlunesStrings.yrExp}",
+                                "${service.doctors[index].experience > 100 ? "100+" : service.doctors[index].experience} ${PlunesStrings.yrExp}",
                                 style: TextStyle(
                                   fontSize: 13.5,
                                   color: PlunesColors.GREYCOLOR,
                                 ),
                               )
                             : Container()),
-                    Container(
-                        width: double.infinity,
-                        alignment: Alignment.topLeft,
-                        padding: EdgeInsets.only(
-                            top: AppConfig.horizontalBlockSize * 1),
-                        child: (service.doctors[index].homeCollection != null &&
-                                service.doctors[index].homeCollection)
-                            ? Text(
-                                PlunesStrings.homeCollectionAvailable,
-                                style: TextStyle(
-                                  color: PlunesColors.GREYCOLOR,
-                                  fontSize: 13.5,
-                                ),
-                              )
-                            : Container()),
-                    service.negotiating ?? false
-                        ? Container()
-                        : Container(
-                            padding: EdgeInsets.only(
-                                top: AppConfig.horizontalBlockSize * 1),
-                            child: Row(
-                              children: <Widget>[
-                                RichText(
-                                    text: TextSpan(
-                                        text: (service.doctors[index].price ==
-                                                    null ||
-                                                service.doctors[index].price
-                                                    .isEmpty ||
-                                                service.doctors[index]
-                                                        .price[0] ==
-                                                    service.doctors[index]
-                                                        ?.newPrice[0])
-                                            ? ""
-                                            : "\u20B9${service.doctors[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: PlunesColors.GREYCOLOR,
-                                            decoration:
-                                                TextDecoration.lineThrough),
-                                        children: <TextSpan>[
-                                      TextSpan(
-                                        text:
-                                            " \u20B9${service.doctors[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: PlunesColors.BLACKCOLOR,
-                                            fontWeight: FontWeight.w500,
-                                            decoration: TextDecoration.none),
-                                      )
-                                    ])),
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        left:
-                                            AppConfig.horizontalBlockSize * 1)),
-                                ((service.doctors[index].price.isEmpty) ||
-                                        (service
-                                            .doctors[index].newPrice.isEmpty) ||
-                                        service.doctors[index].price[0] ==
-                                            service.doctors[index].newPrice[0])
-                                    ? Container()
-                                    : Text(
-                                        (service.doctors[index].discount ==
-                                                    null ||
-                                                service.doctors[index]
-                                                        .discount ==
-                                                    0 ||
-                                                service.doctors[index]
-                                                        .discount <
-                                                    0)
-                                            ? ""
-                                            : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(2)}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: PlunesColors.GREENCOLOR),
-                                      )
-                              ],
-                            ))
                   ],
                 ),
               )),
+              service.doctors[index].rating == null ||
+                      service.doctors[index].rating < 1
+                  ? Container()
+                  : Container(
+                      width: AppConfig.horizontalBlockSize * 14,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.star,
+                            color: PlunesColors.GREENCOLOR,
+                          ),
+                          Text(
+                            service.doctors[index].rating?.toStringAsFixed(1) ??
+                                PlunesStrings.NA,
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR, fontSize: 14),
+                          ),
+                        ],
+                      ),
+                    ),
             ],
           ),
+          Container(
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 2,
+                horizontal: AppConfig.horizontalBlockSize * 3),
+            child: Row(
+              children: List.generate(
+                  500 ~/ 4,
+                  (index) => Expanded(
+                        child: Container(
+                          color: index % 2 == 0
+                              ? Colors.transparent
+                              : PlunesColors.LIGHTGREYCOLOR,
+                          height: 2,
+                        ),
+                      )),
+            ),
+          ),
+          Row(
+            children: <Widget>[
+              Flexible(
+                  child: Column(
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Flexible(
+                        child: RichText(
+                            text: TextSpan(
+                                text: (service.doctors[index].price == null ||
+                                        service.doctors[index].price.isEmpty ||
+                                        service.doctors[index].price[0] ==
+                                            service.doctors[index]?.newPrice[0])
+                                    ? ""
+                                    : "\u20B9${service.doctors[index].price[0]?.toStringAsFixed(0) ?? PlunesStrings.NA} ",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: service.negotiating
+                                        ? PlunesColors.BLACKCOLOR
+                                        : PlunesColors.GREYCOLOR,
+                                    decoration: service.negotiating
+                                        ? TextDecoration.none
+                                        : TextDecoration.lineThrough),
+                                children: <TextSpan>[
+                              TextSpan(
+                                text: service.negotiating
+                                    ? ""
+                                    : " \u20B9${service.doctors[index].newPrice[0]?.toStringAsFixed(2) ?? PlunesStrings.NA}",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.w500,
+                                    decoration: TextDecoration.none),
+                              )
+                            ])),
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 1)),
+                      Flexible(
+                        child: ((service.doctors[index].price.isEmpty) ||
+                                (service.doctors[index].newPrice.isEmpty) ||
+                                service.doctors[index].price[0] ==
+                                    service.doctors[index].newPrice[0])
+                            ? Container()
+                            : service.negotiating
+                                ? Container()
+                                : Text(
+                                    (service.doctors[index].discount == null ||
+                                            service.doctors[index].discount ==
+                                                0 ||
+                                            service.doctors[index].discount < 0)
+                                        ? ""
+                                        : " ${PlunesStrings.save} \u20B9 ${(service.doctors[index].price[0] - service.doctors[index].newPrice[0])?.toStringAsFixed(2)}",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: PlunesColors.GREENCOLOR),
+                                  ),
+                      )
+                    ],
+                  ),
+                  Container(
+                      width: double.infinity,
+                      alignment: Alignment.topLeft,
+                      padding: EdgeInsets.only(
+                          top: AppConfig.horizontalBlockSize * 1),
+                      child: (service.doctors[index].homeCollection != null &&
+                              service.doctors[index].homeCollection &&
+                              !(service.negotiating))
+                          ? Text(
+                              PlunesStrings.homeCollectionAvailable,
+                              style: TextStyle(
+                                color: PlunesColors.GREYCOLOR,
+                                fontSize: 13.5,
+                              ),
+                            )
+                          : Container()),
+                ],
+              )),
+              InkWell(
+                  onTap: () {
+                    if (service.negotiating) {
+                      return;
+                    }
+                    if (!_canGoAhead()) {
+                      _showSnackBar(PlunesStrings.cantBookPriceExpired,
+                          shouldPop: true);
+                      return;
+                    }
+                    _solution = _searchedDocResults.solution;
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => BookingMainScreen(
+                                  price: service.doctors[index].newPrice[0]
+                                      .toString(),
+                                  profId: service.professionalId,
+                                  docId: service.doctors[index].professionalId,
+                                  searchedSolutionServiceId: service.sId,
+                                  timeSlots: service.doctors[index].timeSlots,
+                                  docHosSolution: _solution,
+                                  bookInPrice: service.doctors[index].bookIn,
+                                  serviceIndex: 0,
+                                  service: Services(
+                                      price: service.doctors[index].price,
+                                      newPrice: service.doctors[index].newPrice,
+                                      paymentOptions: service.paymentOptions),
+                                ))).then((value) {
+                      if (value != null &&
+                          value.runtimeType == "pop".runtimeType &&
+                          value.toString() == "pop") {
+                        Navigator.pop(context);
+                      }
+                    });
+                  },
+                  child: CustomWidgets().getRoundedButton(
+                      service.doctors[index].bookIn == null
+                          ? PlunesStrings.book
+                          : "${PlunesStrings.bookIn} ${service.doctors[index].bookIn}",
+                      AppConfig.horizontalBlockSize * 8,
+                      service.negotiating
+                          ? PlunesColors.GREYCOLOR
+                          : PlunesColors.SPARKLINGGREEN,
+                      AppConfig.horizontalBlockSize * 3,
+                      AppConfig.verticalBlockSize * 1,
+                      PlunesColors.WHITECOLOR))
+            ],
+          ),
+          service.negotiating
+              ? Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                  child: Text(
+                    PlunesStrings.negotiating,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.normal,
+                        color: PlunesColors.BLACKCOLOR),
+                  ),
+                )
+              : Container(),
+          service.negotiating
+              ? Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                  child: LinearProgressIndicator(
+                    backgroundColor: PlunesColors.LIGHTGREYCOLOR,
+                  ),
+                )
+              : Container(),
           (service.doctors.length == 1)
               ? Container()
               : (service.isExpanded && (index == (service.doctors.length - 1)))
@@ -1208,12 +1258,23 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(5.0),
-                          child: Text(
-                            "View less Doctors",
-                            style: TextStyle(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "View less Doctors",
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.normal),
+                              ),
+                              Icon(
+                                Icons.arrow_upward,
+                                size: 15,
                                 color: PlunesColors.GREENCOLOR,
-                                fontSize: 15,
-                                fontWeight: FontWeight.normal),
+                              )
+                            ],
                           ),
                         ),
                       ),
@@ -1237,12 +1298,23 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             },
                             child: Padding(
                               padding: const EdgeInsets.all(5.0),
-                              child: Text(
-                                "View more Doctors",
-                                style: TextStyle(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    "View more Doctors ",
+                                    style: TextStyle(
+                                        color: PlunesColors.BLACKCOLOR,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                  Icon(
+                                    Icons.arrow_downward,
+                                    size: 15,
                                     color: PlunesColors.GREENCOLOR,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.normal),
+                                  )
+                                ],
                               ),
                             ),
                           ),
@@ -1321,6 +1393,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               ),
               Padding(padding: EdgeInsets.only(top: 2.0)),
               RichText(
+                  textAlign: TextAlign.center,
                   text: TextSpan(
                       text: "We managed to save ",
                       style: TextStyle(
@@ -1328,25 +1401,26 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           fontWeight: FontWeight.normal,
                           fontSize: 16),
                       children: [
-                    TextSpan(
-                        text: "${_gainedDiscount?.toStringAsFixed(0)} INR ",
-                        style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16)),
-                    TextSpan(
-                        text: "For you in the last ",
-                        style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16)),
-                    TextSpan(
-                        text: "$time !",
-                        style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16))
-                  ]))
+                        TextSpan(
+                            text:
+                                "\u20B9${_gainedDiscount?.toStringAsFixed(0)} ",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16)),
+                        TextSpan(
+                            text: "for you in the last ",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16)),
+                        TextSpan(
+                            text: "$time !",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16))
+                      ]))
             ],
           ),
         );
@@ -1361,7 +1435,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   num _getTotalDiscount() {
-    num totalDiscount = 0;
+    num totalDiscount = 0, _origPrice = 0;
     try {
       if (_searchedDocResults != null &&
           _searchedDocResults.solution != null &&
@@ -1373,12 +1447,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               if (element.discount != null && element.discount > 0) {
                 totalDiscount =
                     totalDiscount + (element.price[0] - element.newPrice[0]);
+                _origPrice = _origPrice + element.price[0];
               }
             });
           } else {
             if (service.discount != null && service.discount > 0) {
               totalDiscount =
                   totalDiscount + (service.price[0] - service.newPrice[0]);
+              _origPrice = _origPrice + service.price[0];
             }
           }
         });
@@ -1388,7 +1464,15 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       totalDiscount = 0;
     }
     _gainedDiscount = totalDiscount;
-    _totalDiscountController.add(null);
+    if (_origPrice != null &&
+        _origPrice > 0 &&
+        _gainedDiscount != null &&
+        _gainedDiscount > 0) {
+      _gainedDiscountPercentage = double.tryParse(
+          ((totalDiscount / _origPrice) * 100)?.toStringAsFixed(0));
+      _totalDiscountController.add(null);
+    }
+
     return totalDiscount;
   }
 
@@ -1441,7 +1525,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: PlunesColors.BLACKCOLOR,
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.w500,
                 fontSize: 16),
           ),
           Container(
@@ -1473,7 +1557,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       child: Row(
         children: <Widget>[
           Container(
-            child: Image.asset(PlunesImages.darkMap),
+            child: Image.asset(PlunesImages.zeroCostEmiIcon),
             height: AppConfig.verticalBlockSize * 3,
             width: AppConfig.horizontalBlockSize * 6,
             margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
@@ -1496,7 +1580,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       child: Row(
         children: <Widget>[
           Container(
-            child: Image.asset(PlunesImages.darkMap),
+            child: Image.asset(PlunesImages.paymentRefIcon),
             height: AppConfig.verticalBlockSize * 3,
             width: AppConfig.horizontalBlockSize * 6,
             margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
@@ -1519,7 +1603,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       child: Row(
         children: <Widget>[
           Container(
-            child: Image.asset(PlunesImages.darkMap),
+            child: Image.asset(PlunesImages.firstConslFree),
             height: AppConfig.verticalBlockSize * 3,
             width: AppConfig.horizontalBlockSize * 6,
             margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
@@ -1542,7 +1626,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       child: Row(
         children: <Widget>[
           Container(
-            child: Image.asset(PlunesImages.darkMap),
+            child: Image.asset(PlunesImages.prefTimeIcon),
             height: AppConfig.verticalBlockSize * 3,
             width: AppConfig.horizontalBlockSize * 6,
             margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
@@ -1565,7 +1649,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       child: Row(
         children: <Widget>[
           Container(
-            child: Image.asset(PlunesImages.darkMap),
+            child: Image.asset(PlunesImages.freeTeleConsImg),
             height: AppConfig.verticalBlockSize * 3,
             width: AppConfig.horizontalBlockSize * 6,
             margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
@@ -1588,7 +1672,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       child: Row(
         children: <Widget>[
           Container(
-            child: Image.asset(PlunesImages.darkMap),
+            child: Image.asset(PlunesImages.plunesVerifiedImg),
             height: AppConfig.verticalBlockSize * 3,
             width: AppConfig.horizontalBlockSize * 6,
             margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
@@ -1755,6 +1839,95 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         ),
       ),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+    );
+  }
+
+  Widget _getDailerWidget() {
+    return Container(
+      margin: EdgeInsets.only(
+          left: AppConfig.horizontalBlockSize * 4,
+          right: AppConfig.horizontalBlockSize * 4,
+          top: AppConfig.verticalBlockSize * 2),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: AppConfig.horizontalBlockSize * 40,
+            height: AppConfig.verticalBlockSize * 12.5,
+            child: SfRadialGauge(axes: <RadialAxis>[
+              RadialAxis(
+                  pointers: [
+                    RangePointer(
+                        value: _gainedDiscountPercentage,
+                        width: 0.25,
+                        sizeUnit: GaugeSizeUnit.factor,
+                        cornerStyle: CornerStyle.bothFlat,
+                        gradient: SweepGradient(colors: <Color>[
+                          PlunesColors.GREENCOLOR,
+                          PlunesColors.GREENCOLOR
+                        ], stops: <double>[
+                          0.25,
+                          0.75
+                        ])),
+                  ],
+                  minimum: 0,
+                  maximum: 100,
+                  showLabels: false,
+                  showTicks: false,
+                  startAngle: 270,
+                  endAngle: 270,
+                  annotations: <GaugeAnnotation>[
+                    GaugeAnnotation(
+                        positionFactor: 0.1,
+                        angle: 90,
+                        widget: Text(
+                          "$_gainedDiscountPercentage%",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: PlunesColors.BLACKCOLOR,
+                              fontWeight: FontWeight.w600),
+                        ))
+                  ])
+            ]),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Real Time Saving",
+                  style: TextStyle(
+                      color: PlunesColors.BLACKCOLOR,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.5),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "$_gainedDiscountPercentage%",
+                        style: TextStyle(
+                            color: PlunesColors.GREENCOLOR,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 22),
+                      ),
+                      Text(
+                        " on original price",
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 15),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
