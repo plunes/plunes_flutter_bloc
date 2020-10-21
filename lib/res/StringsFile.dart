@@ -350,9 +350,12 @@ class PlunesStrings {
   static const String serviceNotAvailableText = "Service Not Available";
   static const String notificationDisabled =
       "We have received your request.You won't be notified for this service any more!";
-
   static const String slotUpdatedSuccessfully =
       "Time slots updated successfully!";
+  static const String daySuccessfullyClosed =
+      "Selected day is successfully closed";
+  static const String slotNotInSequence =
+      "Seems like your slots are not in sequence, try again.";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

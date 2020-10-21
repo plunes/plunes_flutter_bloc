@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -73,6 +76,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   double _widgetSize = 0;
   ScrollController _scrollController;
   GlobalKey _selectedTimeSlotKey;
+
+  Completer<GoogleMapController> _googleMapController = Completer();
+  GoogleMapController _mapController;
+  Set<Marker> _markers = {};
 
   @override
   void initState() {
@@ -152,18 +159,18 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       child: ListView(
         shrinkWrap: true,
         children: <Widget>[
+          // Container(
+          //   alignment: Alignment.center,
+          //   child: Text(
+          //     PlunesStrings.whyPlunes,
+          //     style: TextStyle(
+          //       fontSize: AppConfig.mediumFont,
+          //       color: PlunesColors.BLACKCOLOR,
+          //     ),
+          //   ),
+          // ),
+          // getWhyPlunesView(),
           Container(
-            alignment: Alignment.center,
-            child: Text(
-              PlunesStrings.whyPlunes,
-              style: TextStyle(
-                fontSize: AppConfig.mediumFont,
-                color: PlunesColors.BLACKCOLOR,
-              ),
-            ),
-          ),
-          getWhyPlunesView(),
-          Padding(
             padding: EdgeInsets.symmetric(
                 vertical: AppConfig.verticalBlockSize * 1.5),
             child: _getDoctorDetailsView(),
@@ -343,56 +350,95 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   ),
                   Expanded(
                     child: InkWell(
-                      onTap: () => _getDirections(),
+                      onTap: () => _goToProfilePage(),
                       onDoubleTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 5.0, top: 5.0, bottom: 5.0),
-                        child: Text(
-                          PlunesStrings.getDirection,
-                          style: TextStyle(
-                              fontSize: AppConfig.smallFont,
-                              color: PlunesColors.GREENCOLOR),
+                      child: Container(
+                        alignment: Alignment.topRight,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(Icons.star,
+                                color: PlunesColors.GREENCOLOR,
+                                size: AppConfig.largeFont),
+                            Text(
+                              _docProfileInfo.user?.rating
+                                      ?.toStringAsFixed(1) ??
+                                  PlunesStrings.NA,
+                              style: TextStyle(
+                                  color: PlunesColors.GREYCOLOR,
+                                  fontSize: AppConfig.mediumFont),
+                            ),
+                          ],
                         ),
+                        // Text(
+                        //   PlunesStrings.getDirection,
+                        //   style: TextStyle(
+                        //       fontSize: AppConfig.smallFont,
+                        //       color: PlunesColors.GREENCOLOR),
+                        // ),
                       ),
                     ),
-                    flex: 3,
+                    flex: 2,
                   ),
                 ],
               ),
-              Text(
-                CommonMethods.getStringInCamelCase(
-                        _docProfileInfo.user?.speciality) ??
-                    PlunesStrings.NA,
-                style: TextStyle(
-                    fontSize: AppConfig.mediumFont,
-                    fontWeight: FontWeight.normal,
-                    color: PlunesColors.BLACKCOLOR),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                child: RichText(
-                  text: new TextSpan(
-                    style: new TextStyle(
-                      color: Colors.black,
+              _getDoctordetail(),
+              InkWell(
+                onTap: () => _getDirections(),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      height: AppConfig.verticalBlockSize * 16,
+                      child: _showMapview(),
                     ),
-                    children: <TextSpan>[
-                      new TextSpan(
-                          text: '${PlunesStrings.addressInSmall} - ',
-                          style: TextStyle(
-                              color: PlunesColors.GREYCOLOR,
-                              fontSize: AppConfig.mediumFont)),
-                      new TextSpan(
-                          text:
-                              _docProfileInfo.user?.address ?? PlunesStrings.NA,
-                          style: new TextStyle(
-                              fontSize: AppConfig.smallFont,
-                              fontWeight: FontWeight.normal,
-                              color: PlunesColors.BLACKCOLOR)),
-                    ],
-                  ),
+                    Container(
+                      padding:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            PlunesStrings.getDirection,
+                            style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                                color: PlunesColors.GREENCOLOR),
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: PlunesColors.GREENCOLOR,
+                            size: AppConfig.mediumFont,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-              ),
+              )
+              // Padding(
+              //   padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+              //   child: RichText(
+              //     text: new TextSpan(
+              //       style: new TextStyle(
+              //         color: Colors.black,
+              //       ),
+              //       children: <TextSpan>[
+              //         new TextSpan(
+              //             text: '${PlunesStrings.addressInSmall} - ',
+              //             style: TextStyle(
+              //                 color: PlunesColors.GREYCOLOR,
+              //                 fontSize: AppConfig.mediumFont)),
+              //         new TextSpan(
+              //             text:
+              //                 _docProfileInfo.user?.address ?? PlunesStrings.NA,
+              //             style: new TextStyle(
+              //                 fontSize: AppConfig.smallFont,
+              //                 fontWeight: FontWeight.normal,
+              //                 color: PlunesColors.BLACKCOLOR)),
+              //       ],
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         )),
@@ -1180,7 +1226,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                     child: Padding(
                       child: Icon(
                         Icons.navigate_before,
-                        color: PlunesColors.GREYCOLOR,
+                        color: PlunesColors.BLACKCOLOR,
                       ),
                       padding: EdgeInsets.only(
                           right: AppConfig.horizontalBlockSize * 2,
@@ -1195,7 +1241,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       controller: _scrollController,
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
-                          childAspectRatio: 0.6,
+                          childAspectRatio: 0.55,
                           mainAxisSpacing: 8,
                           crossAxisSpacing: 8),
                       itemBuilder: (_, index) {
@@ -1241,6 +1287,139 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               ));
   }
 
+  Widget getProfileInfoView(
+      double height, double width, String icon, String title, String value) {
+    return Container(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Container(
+              width: width,
+              height: height,
+              child: widget.getAssetIconWidget(
+                  icon, height, width, BoxFit.contain)),
+          Container(
+              margin: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2)),
+          Expanded(
+            child: RichText(
+                maxLines: 3,
+                text: TextSpan(
+                    text: title ?? _getEmptyString(),
+                    style: TextStyle(
+                        color: PlunesColors.GREYCOLOR,
+                        fontSize: AppConfig.smallFont + 2,
+                        fontWeight: FontWeight.normal),
+                    children: <InlineSpan>[
+                      TextSpan(
+                        text: ": ${value ?? _getEmptyString()}",
+                        style: TextStyle(
+                            fontSize: AppConfig.smallFont,
+                            backgroundColor: Colors.transparent,
+                            decoration: TextDecoration.none,
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.normal),
+                      )
+                    ])),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _getEmptyString() {
+    return PlunesStrings.NA;
+  }
+
+  _showMapview() {
+    return (_docProfileInfo.user?.latitude == null ||
+            _docProfileInfo.user.latitude.isEmpty ||
+            _docProfileInfo.user.latitude == null ||
+            _docProfileInfo.user.latitude.isEmpty)
+        ? widget.showInSnackBar(PlunesStrings.locationNotAvailable,
+            PlunesColors.BLACKCOLOR, scaffoldKey)
+        : Stack(children: <Widget>[
+            Positioned(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Flexible(
+                    child: GoogleMap(
+                      onMapCreated: (mapController) {
+                        if (_googleMapController != null &&
+                            _googleMapController.isCompleted) {
+                          return;
+                        }
+                        _mapController = mapController;
+                        _googleMapController.complete(_mapController);
+                      },
+                      markers: _markers,
+                      // _hasAnimated ? _markers : _bigMarkers,
+                      initialCameraPosition: CameraPosition(
+                          target: LatLng(
+                              double.parse(
+                                  _docProfileInfo.user.latitude ?? "0.0"),
+                              double.parse(
+                                  _docProfileInfo.user.longitude ?? "0.0")),
+                          zoom: 10),
+                      mapType: MapType.terrain,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Positioned(
+            //   left: 0,
+            //   right: 0,
+            //   bottom: 0,
+            //   top: 0,
+            //   child: IgnorePointer(
+            //     child: Container(color: Colors.black12),
+            //     ignoring: true,
+            //   ),
+            // ),
+          ]);
+  }
+
+  Widget _getDoctordetail() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
+      child: Column(
+        children: <Widget>[
+          getProfileInfoView(16, 16, plunesImages.expertiseIcon,
+              plunesStrings.areaExpertise, _docProfileInfo.user?.speciality),
+          SizedBox(
+            height: 8,
+          ),
+          getProfileInfoView(
+              16,
+              16,
+              plunesImages.clockIcon,
+              plunesStrings.expOfPractice,
+              (_docProfileInfo.user == null ||
+                      _docProfileInfo.user.experience == null ||
+                      _docProfileInfo.user.experience == "0")
+                  ? _getEmptyString()
+                  : _docProfileInfo.user.experience),
+          SizedBox(
+            height: 8,
+          ),
+          getProfileInfoView(16, 16, plunesImages.practisingIcon,
+              plunesStrings.practising, _docProfileInfo.user?.practising),
+          SizedBox(
+            height: 8,
+          ),
+          getProfileInfoView(16, 16, plunesImages.eduIcon,
+              plunesStrings.qualification, _docProfileInfo.user?.qualification),
+          SizedBox(
+            height: 8,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _getTimeBoxWidget(String time, bool isSelected) {
     bool _isSlotTimeExpire = _isSlotTimeExpired(time);
     double opacity = 1.0;
@@ -1248,16 +1427,18 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       opacity = 0.3;
     }
     return Container(
+      padding: EdgeInsets.all(1),
       decoration: BoxDecoration(
           color: PlunesColors.WHITECOLOR,
           shape: BoxShape.rectangle,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
+          borderRadius: BorderRadius.all(Radius.circular(16)),
           border: Border.all(
               color: isSelected
                   ? PlunesColors.GREENCOLOR
-                  : Color(CommonMethods.getColorHexFromStr("#D2D2D2"))
-                      .withOpacity(opacity),
-              width: 1)),
+                  : PlunesColors.BLACKCOLOR.withOpacity(opacity),
+              // Color(CommonMethods.getColorHexFromStr("#D2D2D2"))
+              //         .withOpacity(opacity),
+              width: .8)),
       alignment: Alignment.center,
       child: Text(
         time ?? "",
@@ -1265,8 +1446,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         style: TextStyle(
             color: isSelected
                 ? PlunesColors.GREENCOLOR
-                : Color(CommonMethods.getColorHexFromStr("#9C9C9C"))
-                    .withOpacity(opacity),
+                : PlunesColors.BLACKCOLOR.withOpacity(opacity),
+            // Color(CommonMethods.getColorHexFromStr("#9C9C9C"))
+            //         .withOpacity(opacity),
             fontWeight: FontWeight.normal,
             fontSize: AppConfig.smallFont - 1),
       ),

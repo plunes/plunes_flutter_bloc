@@ -401,6 +401,9 @@ class _AvailabilitySelectionScreenState
                     _availabilityModel[_currentDayIndex].closed =
                         !_availabilityModel[_currentDayIndex].closed;
                     _setState();
+                    if (_availabilityModel[_currentDayIndex].closed) {
+                      _showSnackBar(PlunesStrings.daySuccessfullyClosed);
+                    }
                   },
                   child: Container(
                     decoration: BoxDecoration(
@@ -450,22 +453,42 @@ class _AvailabilitySelectionScreenState
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: <Widget>[
-                            Text(_availabilityModel[_currentDayIndex]
-                                .slots[index]
-                                .split("-")[0]),
+                            Text(
+                              _availabilityModel[_currentDayIndex]
+                                  .slots[index]
+                                  .split("-")[0],
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: _availabilityModel[_currentDayIndex]
+                                          .closed
+                                      ? PlunesColors.GREYCOLOR
+                                      : PlunesColors.BLACKCOLOR),
+                            ),
                             Icon(
                               Icons.arrow_forward,
-                              color: PlunesColors.BLACKCOLOR,
+                              color: _availabilityModel[_currentDayIndex].closed
+                                  ? PlunesColors.GREYCOLOR
+                                  : PlunesColors.BLACKCOLOR,
                             ),
-                            Text(_availabilityModel[_currentDayIndex]
-                                .slots[index]
-                                .split("-")[1]),
+                            Text(
+                                _availabilityModel[_currentDayIndex]
+                                    .slots[index]
+                                    .split("-")[1],
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: _availabilityModel[_currentDayIndex]
+                                            .closed
+                                        ? PlunesColors.GREYCOLOR
+                                        : PlunesColors.BLACKCOLOR)),
                           ],
                         ),
                       ),
                     )),
                     InkWell(
                         onTap: () {
+                          if (_availabilityModel[_currentDayIndex].closed) {
+                            return;
+                          }
                           _availabilityModel[_currentDayIndex]
                               .slots
                               .removeAt(index);
@@ -477,14 +500,16 @@ class _AvailabilitySelectionScreenState
                             PlunesImages.binImage,
                             width: AppConfig.horizontalBlockSize * 8,
                             height: AppConfig.verticalBlockSize * 2.8,
+                            color: _availabilityModel[_currentDayIndex].closed
+                                ? PlunesColors.GREYCOLOR
+                                : null,
                           ),
                         )),
                     InkWell(
                         onTap: () {
-//                          _availabilityModel[_currentDayIndex]
-//                              .slots
-//                              .removeAt(index);
-//                          _setState();
+                          if (_availabilityModel[_currentDayIndex].closed) {
+                            return;
+                          }
                           _fromDateHolderForSlotEdit = null;
                           _toDateHolderForSlotEdit = null;
                           _openTimePickerForSlotEditing(index);
@@ -495,6 +520,9 @@ class _AvailabilitySelectionScreenState
                             PlunesImages.availability_edit_image,
                             width: AppConfig.horizontalBlockSize * 8,
                             height: AppConfig.verticalBlockSize * 2.8,
+                            color: _availabilityModel[_currentDayIndex].closed
+                                ? PlunesColors.GREYCOLOR
+                                : null,
                           ),
                         ))
                   ],
@@ -508,7 +536,11 @@ class _AvailabilitySelectionScreenState
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
             child: InkWell(
               onTap: () {
+                if (_availabilityModel[_currentDayIndex].closed) {
+                  return;
+                }
                 _checkFirstAndLastSlot();
+                return;
               },
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -518,12 +550,17 @@ class _AvailabilitySelectionScreenState
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: PlunesColors.WHITECOLOR,
-                      border: Border.all(color: PlunesColors.GREENCOLOR)),
+                      border: Border.all(
+                          color: _availabilityModel[_currentDayIndex].closed
+                              ? PlunesColors.GREYCOLOR
+                              : PlunesColors.GREENCOLOR)),
                   child: Center(
                     child: Icon(
                       Icons.add,
                       size: 18,
-                      color: PlunesColors.GREENCOLOR,
+                      color: _availabilityModel[_currentDayIndex].closed
+                          ? PlunesColors.GREYCOLOR
+                          : PlunesColors.GREENCOLOR,
                     ),
                   ),
                 ),
@@ -534,7 +571,9 @@ class _AvailabilitySelectionScreenState
             child: Text(
               "Add more slots",
               style: TextStyle(
-                  color: PlunesColors.BLACKCOLOR,
+                  color: _availabilityModel[_currentDayIndex].closed
+                      ? PlunesColors.GREYCOLOR
+                      : PlunesColors.BLACKCOLOR,
                   fontSize: 12,
                   fontWeight: FontWeight.w600),
             ),
@@ -601,28 +640,29 @@ class _AvailabilitySelectionScreenState
               int.tryParse(lastSplitTime.first),
               int.tryParse(lastSplitTime[1]
                   .substring(0, lastSplitTime[1].indexOf(" "))));
-          print("_lastDate $_lastDate");
+//          print("_lastDate $_lastDate");
           if (_tempToHolder.isAfter(_tempFromHolder) &&
               _lastDate.isBefore(_tempToHolder)) {
-            print(
-                "valid hai _tempToHolder $_tempToHolder, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+//            print(
+//                "valid hai _tempToHolder $_tempToHolder, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
             String duration =
                 DateUtil.getTimeWithAmAndPmFormat(_tempFromHolder) +
                     "-" +
                     DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
-            print("duration $duration");
+//            print("duration $duration");
             _availabilityModel[_currentDayIndex].slots.add(duration);
             _setState();
           } else {
-            print(
-                "Invalid hai _tempToHolder $_tempToHolder, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+            _invalidSlotCallBack();
+//            print(
+//                "Invalid hai _tempToHolder $_tempToHolder, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
             return;
           }
         } else {
           String duration = DateUtil.getTimeWithAmAndPmFormat(_tempFromHolder) +
               "-" +
               DateUtil.getTimeWithAmAndPmFormat(_tempToHolder);
-          print("duration $duration");
+//          print("duration $duration");
           _availabilityModel[_currentDayIndex].slots = [duration];
           _setState();
         }
@@ -639,10 +679,10 @@ class _AvailabilitySelectionScreenState
           _availabilityModel[_currentDayIndex].slots.isNotEmpty) {
         List<String> _firstTimeArray =
             _availabilityModel[_currentDayIndex].slots.first.split("-");
-        print("_firstTimeArray $_firstTimeArray");
+//        print("_firstTimeArray $_firstTimeArray");
         List<String> _lastTimeArray =
             _availabilityModel[_currentDayIndex].slots.last.split("-");
-        print("_lastTimeArray $_lastTimeArray");
+//        print("_lastTimeArray $_lastTimeArray");
         List<String> splitTime = _firstTimeArray[0].split(":");
         int _pmTime = 0;
         if (_firstTimeArray[0].contains("PM") && splitTime.first != "12") {
@@ -675,15 +715,16 @@ class _AvailabilitySelectionScreenState
 //        print("_lastDate $_lastDate");
         if (_firstDate.isAfter(_tempFromHolder) &&
             _lastDate.isBefore(_tempFromHolder)) {
-          print(
-              "valid hai $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+//          print(
+//              "valid hai $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
         } else {
-          print(
-              "invalid hai _firstDate $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
+          _invalidSlotCallBack();
+//          print(
+//              "invalid hai _firstDate $_firstDate, _tempFromHolder $_tempFromHolder, _lastDate $_lastDate");
           return;
         }
       }
-      print("calling _openTimePicker");
+//      print("calling _openTimePicker");
       _openTimePicker(_toIndex);
     }
   }
@@ -738,6 +779,7 @@ class _AvailabilitySelectionScreenState
                                   _availabilityModel[_currentDayIndex].closed;
                             }
                             _setState();
+                            _showSnackBar("Slot Applied Successfully!");
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -850,7 +892,7 @@ class _AvailabilitySelectionScreenState
       if (_availabilityModel[_currentDayIndex].slots.length > 1) {
         String _secondSlot = _availabilityModel[_currentDayIndex].slots[1];
         List<String> _lastTimeArray = _secondSlot.split("-");
-        print("_lastTimeArray $_lastTimeArray");
+//        print("_lastTimeArray $_lastTimeArray");
         List<String> lastSplitTime = _lastTimeArray[0].split(":");
         int _lastPmTime = 0;
         if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
@@ -858,7 +900,7 @@ class _AvailabilitySelectionScreenState
           lastSplitTime.first =
               "${_lastPmTime + int.parse(lastSplitTime.first)}";
         }
-        print("lastSplitTime $lastSplitTime");
+//        print("lastSplitTime $lastSplitTime");
         var _lastDate = DateTime(
             _fromDateHolderForSlotEdit.year,
             _fromDateHolderForSlotEdit.month,
@@ -869,35 +911,37 @@ class _AvailabilitySelectionScreenState
 //        print("_lastDate $_lastDate");
         if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit) &&
             _toDateHolderForSlotEdit.isBefore(_lastDate)) {
-          print(
-              "valid hai _fromDateHolderForSlotEdit $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit $_toDateHolderForSlotEdit, _lastDate $_lastDate");
+//          print(
+//              "valid hai _fromDateHolderForSlotEdit $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit $_toDateHolderForSlotEdit, _lastDate $_lastDate");
           String duration =
               DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
                   "-" +
                   DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
-          print("duration $duration");
+//          print("duration $duration");
           _availabilityModel[_currentDayIndex].slots[
               _availabilityModel[_currentDayIndex]
                   .slots
                   .indexOf(slotToBeEdited)] = duration;
           _setState();
         } else {
-          print(
-              "in valid hai _fromDateHolderForSlotEdit $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit $_toDateHolderForSlotEdit, _lastDate $_lastDate");
+          _invalidSlotCallBack();
+//          print(
+//              "in valid hai _fromDateHolderForSlotEdit $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit $_toDateHolderForSlotEdit, _lastDate $_lastDate");
           return;
         }
       } else {
         if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit)) {
-          print("valid slot");
+//          print("valid slot");
           String duration =
               DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
                   "-" +
                   DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
-          print("duration $duration");
+//          print("duration $duration");
           _availabilityModel[_currentDayIndex].slots = [duration];
           _setState();
         } else {
-          print("in valid slot");
+          _invalidSlotCallBack();
+//          print("in valid slot");
         }
       }
     } catch (e) {
@@ -913,7 +957,7 @@ class _AvailabilitySelectionScreenState
             _availabilityModel[_currentDayIndex].slots.indexOf(slotToBeEdited) -
                 1];
         List<String> _lastTimeArray = previousSlot.split("-");
-        print("_lastTimeArray $_lastTimeArray");
+//        print("_lastTimeArray $_lastTimeArray");
         List<String> lastSplitTime = _lastTimeArray[1].split(":");
         int _lastPmTime = 0;
         if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
@@ -921,7 +965,7 @@ class _AvailabilitySelectionScreenState
           lastSplitTime.first =
               "${_lastPmTime + int.parse(lastSplitTime.first)}";
         }
-        print("lastSplitTime $lastSplitTime");
+//        print("lastSplitTime $lastSplitTime");
         var _lastDate = DateTime(
             _fromDateHolderForSlotEdit.year,
             _fromDateHolderForSlotEdit.month,
@@ -931,7 +975,7 @@ class _AvailabilitySelectionScreenState
                 lastSplitTime[1].substring(0, lastSplitTime[1].indexOf(" "))));
         //////////////////////////////
         List<String> _firstTimeArray = _firstSlot.split("-");
-        print("_lastTimeArray $_lastTimeArray");
+//        print("_lastTimeArray $_lastTimeArray");
         List<String> firstSplitTime = _firstTimeArray[0].split(":");
         int _firstPmTime = 0;
         if (firstSplitTime[1].contains("PM") && firstSplitTime.first != "12") {
@@ -939,7 +983,7 @@ class _AvailabilitySelectionScreenState
           firstSplitTime.first =
               "${_firstPmTime + int.parse(firstSplitTime.first)}";
         }
-        print("firstSplitTime $firstSplitTime");
+//        print("firstSplitTime $firstSplitTime");
         var _firstDate = DateTime(
             _fromDateHolderForSlotEdit.year,
             _fromDateHolderForSlotEdit.month,
@@ -951,21 +995,22 @@ class _AvailabilitySelectionScreenState
         if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit) &&
             _fromDateHolderForSlotEdit.isAfter(_lastDate) &&
             _toDateHolderForSlotEdit.isBefore(_firstDate)) {
-          print(
-              "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+//          print(
+//              "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
           String duration =
               DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
                   "-" +
                   DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
-          print("duration $duration");
+//          print("duration $duration");
           _availabilityModel[_currentDayIndex].slots[
               _availabilityModel[_currentDayIndex]
                   .slots
                   .indexOf(slotToBeEdited)] = duration;
           _setState();
         } else {
-          print(
-              "in valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+          _invalidSlotCallBack();
+//          print(
+//              "in valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
           return;
         }
       }
@@ -978,21 +1023,20 @@ class _AvailabilitySelectionScreenState
     try {
       int _editableSlotIndex =
           _availabilityModel[_currentDayIndex].slots.indexOf(slotToBeEdited);
-      print(
-          "_availabilityModel[_currentDayIndex].slots.length ${_availabilityModel[_currentDayIndex].slots.length}");
+//      print(
+//          "_availabilityModel[_currentDayIndex].slots.length ${_availabilityModel[_currentDayIndex].slots.length}");
       if (_editableSlotIndex != null && _editableSlotIndex != -1) {
         if (_availabilityModel[_currentDayIndex].slots.length > 2 &&
             (_availabilityModel[_currentDayIndex].slots.length >=
                 (_editableSlotIndex + 1))) {
           String _earlierSlot = _availabilityModel[_currentDayIndex]
               .slots[_editableSlotIndex - 1];
-          print("earlier slot $_earlierSlot");
+//          print("earlier slot $_earlierSlot");
           String _laterSlot = _availabilityModel[_currentDayIndex]
               .slots[_editableSlotIndex + 1];
-          print("later slot $_laterSlot");
-
+//          print("later slot $_laterSlot");
           List<String> _lastTimeArray = _laterSlot.split("-");
-          print("_lastTimeArray $_lastTimeArray");
+//          print("_lastTimeArray $_lastTimeArray");
           List<String> lastSplitTime = _lastTimeArray[0].split(":");
           int _lastPmTime = 0;
           if (lastSplitTime[1].contains("PM") && lastSplitTime.first != "12") {
@@ -1000,7 +1044,7 @@ class _AvailabilitySelectionScreenState
             lastSplitTime.first =
                 "${_lastPmTime + int.parse(lastSplitTime.first)}";
           }
-          print("lastSplitTime $lastSplitTime");
+//          print("lastSplitTime $lastSplitTime");
           var _lastDate = DateTime(
               _fromDateHolderForSlotEdit.year,
               _fromDateHolderForSlotEdit.month,
@@ -1010,7 +1054,7 @@ class _AvailabilitySelectionScreenState
                   .substring(0, lastSplitTime[1].indexOf(" "))));
           //////////////////////////////
           List<String> _firstTimeArray = _earlierSlot.split("-");
-          print("_firstTimeArray $_firstTimeArray");
+//          print("_firstTimeArray $_firstTimeArray");
           List<String> firstSplitTime = _firstTimeArray[1].split(":");
           int _firstPmTime = 0;
           if (firstSplitTime[1].contains("PM") &&
@@ -1019,7 +1063,7 @@ class _AvailabilitySelectionScreenState
             firstSplitTime.first =
                 "${_firstPmTime + int.parse(firstSplitTime.first)}";
           }
-          print("firstSplitTime $firstSplitTime");
+//          print("firstSplitTime $firstSplitTime");
           var _firstDate = DateTime(
               _fromDateHolderForSlotEdit.year,
               _fromDateHolderForSlotEdit.month,
@@ -1031,21 +1075,22 @@ class _AvailabilitySelectionScreenState
           if (_fromDateHolderForSlotEdit.isBefore(_toDateHolderForSlotEdit) &&
               _fromDateHolderForSlotEdit.isAfter(_firstDate) &&
               _toDateHolderForSlotEdit.isBefore(_lastDate)) {
-            print(
-                "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+//            print(
+//                "valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
             String duration =
                 DateUtil.getTimeWithAmAndPmFormat(_fromDateHolderForSlotEdit) +
                     "-" +
                     DateUtil.getTimeWithAmAndPmFormat(_toDateHolderForSlotEdit);
-            print("duration $duration");
+//            print("duration $duration");
             _availabilityModel[_currentDayIndex].slots[
                 _availabilityModel[_currentDayIndex]
                     .slots
                     .indexOf(slotToBeEdited)] = duration;
             _setState();
           } else {
-            print(
-                "in valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
+            _invalidSlotCallBack();
+//            print(
+//                "in valid slot _fromDateHolderForSlotEdit: $_fromDateHolderForSlotEdit, _toDateHolderForSlotEdit: $_toDateHolderForSlotEdit, _lastDate: $_lastDate, _firstDate: $_firstDate");
             return;
           }
         }
@@ -1053,5 +1098,9 @@ class _AvailabilitySelectionScreenState
     } catch (e) {
       print("error $e");
     }
+  }
+
+  void _invalidSlotCallBack() {
+    _showSnackBar(PlunesStrings.slotNotInSequence);
   }
 }
