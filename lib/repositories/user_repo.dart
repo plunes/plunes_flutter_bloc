@@ -266,10 +266,11 @@ class UserManager {
     if (savedToken == null || savedToken.isEmpty) {
       return RequestFailed();
     }
+    var postData = {"newToken": token, "oldToken": savedToken};
     var result = await DioRequester().requestMethod(
         url: Urls.UPDATE_TOKEN,
         headerIncluded: true,
-        postData: {"newToken": token, "oldToken": savedToken},
+        postData: postData,
         requestType: HttpRequestMethods.HTTP_POST);
     if (result.isRequestSucceed) {
       setDeviceToken(token);

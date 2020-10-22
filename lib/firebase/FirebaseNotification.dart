@@ -91,8 +91,8 @@ class FirebaseNotification {
   var _notificationListener = PublishSubject<int>();
 
   /// call this method to configure fireBase messaging in the app for push notification
-  init(BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey,
-      var key, FacebookAppEvents fbInstance, FirebaseAnalytics analytics) {
+  init(BuildContext context, GlobalKey<ScaffoldState> _scaffoldKey, var key,
+      FacebookAppEvents fbInstance, FirebaseAnalytics analytics) {
     _navKey = key;
     _buildContext = context;
     _scaffoldKeyNotification = _scaffoldKey;
@@ -191,7 +191,7 @@ class FirebaseNotification {
 //    _updateToken("randomtoken");
     _firebaseMessaging.onTokenRefresh.listen((token) {
       Constants.DEVICE_TOKEN = token;
-//      _updateToken(token);
+      _updateToken(token);
     });
 //    _firebaseMessaging.subscribeToTopic("Testing123");
     _firebaseMessaging.configure(
@@ -422,9 +422,11 @@ class FirebaseNotification {
   }
 
   void _updateToken(String token) async {
-//    await Future.delayed(Duration(seconds: 20));
-//    print("called");
-//    UserBloc().saveUpdateFirebaseToken("thisistoken");
+    Future.delayed(Duration(seconds: 10)).then((value) {
+      if (token != UserManager().getDeviceToken()) {
+        UserBloc().saveUpdateFirebaseToken(token);
+      }
+    });
   }
 
   close() {
