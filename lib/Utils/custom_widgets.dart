@@ -647,6 +647,8 @@ class CustomWidgets {
       BuildContext context,
       Function viewProfile) {
     return Card(
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
       elevation: 2.5,
       child: Container(
         padding: EdgeInsets.symmetric(

@@ -875,6 +875,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   Widget _showHosDocCards(Services service) {
     return Card(
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
       elevation: 2.5,
       child: Container(
         child: Column(
