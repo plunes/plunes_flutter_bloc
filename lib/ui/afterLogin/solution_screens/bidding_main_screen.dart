@@ -26,6 +26,7 @@ import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import './previous_activity_screen.dart';
 import 'package:showcaseview/showcaseview.dart';
 
@@ -170,7 +171,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
           child: Column(
             children: <Widget>[
               Expanded(
-                flex: 7,
+                flex: 4,
                 child: Stack(
                   children: <Widget>[
                     Positioned(
@@ -183,7 +184,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                 ),
               ),
               _canGoAhead ? Container() : _getNoLocationView(),
-              _getBottomView(),
+              _getBottomView()
             ],
           ),
         ),
@@ -206,96 +207,168 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
             _prevSearchedSolution.data == null ||
             _prevSearchedSolution.data.isEmpty)
         ? Container()
-        : Expanded(
-            flex: 7,
-            child: StreamBuilder<Object>(
-                stream: _controller.stream,
-                builder: (context, snapshot) {
-                  return Card(
-                      margin: EdgeInsets.all(0.0),
-                      child: Column(
-                        children: <Widget>[
-                          InkWell(
-                            onTap: () {
-                              if (_prevSearchedSolution.topSearches != null &&
-                                  _prevSearchedSolution.topSearches) {
-                                return;
-                              }
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PreviousActivity()));
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: AppConfig.verticalBlockSize * 1.5),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                    (_prevSearchedSolution.topSearches !=
-                                                null &&
-                                            _prevSearchedSolution.topSearches)
-                                        ? PlunesStrings.topSearches
-                                        : PlunesStrings.previousActivities,
-                                    style: TextStyle(
-                                      fontSize: AppConfig.mediumFont,
-                                      fontWeight: FontWeight.normal,
-//                                        decoration: (_prevSearchedSolution
-//                                                        .topSearches !=
-//                                                    null &&
-//                                                _prevSearchedSolution
-//                                                    .topSearches)
-//                                            ? TextDecoration.none
-//                                            : TextDecoration.underline,
-//                                        decorationStyle:
-//                                            TextDecorationStyle.solid,
-//                                        decorationThickness: 5,
-//                                        decorationColor:
-//                                            PlunesColors.GREENCOLOR
-                                    ),
-                                  ),
-                                  (_prevSearchedSolution.topSearches != null &&
-                                          _prevSearchedSolution.topSearches)
-                                      ? Container()
-                                      : Icon(
-                                          Icons.chevron_right,
-                                          color: PlunesColors.GREENCOLOR,
-                                          size: 35,
-                                        )
-                                ],
-                              ),
-                            ),
-                          ),
-                          (_prevSearchedSolution == null ||
-                                  _prevSearchedSolution.data == null ||
-                                  _prevSearchedSolution.data.isEmpty)
-                              ? Container()
-                              : Expanded(
-                                  child: ListView.builder(
-                                  padding: EdgeInsets.all(0.0),
-                                  itemBuilder: (context, index) {
-                                    TapGestureRecognizer tapRecognizer =
-                                        TapGestureRecognizer()
-                                          ..onTap = () => _onViewMoreTap(index);
-                                    return CustomWidgets().getSolutionRow(
-                                        _prevSearchedSolution.data, index,
-                                        onButtonTap: () => _onSolutionItemTap(
-                                            _prevSearchedSolution.data[index]),
-                                        isTopSearches: (_prevSearchedSolution
+        : SlidingUpPanel(
+            boxShadow: null,
+            color: Colors.transparent,
+            maxHeight: _canGoAhead
+                ? AppConfig.verticalBlockSize * 80
+                : AppConfig.verticalBlockSize * 53,
+            minHeight: _canGoAhead
+                ? AppConfig.verticalBlockSize * 60
+                : AppConfig.verticalBlockSize * 53,
+            panelBuilder: (s) {
+              return StreamBuilder<Object>(
+                  stream: _controller.stream,
+                  builder: (context, snapshot) {
+                    return Stack(
+                      children: <Widget>[
+                        Card(
+                            color: Colors.white,
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 3.5),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(35),
+                                    topRight: Radius.circular(35))),
+                            child: Column(
+                              children: <Widget>[
+                                Container(
+                                  width: double.infinity,
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 4),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 4.5,
+                                      vertical:
+                                          AppConfig.verticalBlockSize * 2),
+                                  child: InkWell(
+                                    onTap: () {
+                                      if (_prevSearchedSolution.topSearches !=
+                                              null &&
+                                          _prevSearchedSolution.topSearches) {
+                                        return;
+                                      }
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PreviousActivity()));
+                                    },
+                                    highlightColor: (_prevSearchedSolution
                                                     .topSearches !=
                                                 null &&
-                                            _prevSearchedSolution.topSearches),
-                                        onViewMoreTap: tapRecognizer);
-                                  },
-                                  itemCount: _prevSearchedSolution.data.length,
-                                ))
-                        ],
-                      ));
-                }));
+                                            _prevSearchedSolution.topSearches)
+                                        ? Colors.transparent
+                                        : null,
+                                    splashColor: (_prevSearchedSolution
+                                                    .topSearches !=
+                                                null &&
+                                            _prevSearchedSolution.topSearches)
+                                        ? Colors.transparent
+                                        : null,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        Text(
+                                          (_prevSearchedSolution.topSearches !=
+                                                      null &&
+                                                  _prevSearchedSolution
+                                                      .topSearches)
+                                              ? PlunesStrings.topSearches
+                                              : PlunesStrings
+                                                  .previousActivities,
+                                          style: TextStyle(
+                                            fontSize: AppConfig.mediumFont,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                        (_prevSearchedSolution.topSearches !=
+                                                    null &&
+                                                _prevSearchedSolution
+                                                    .topSearches)
+                                            ? Container()
+                                            : Icon(
+                                                Icons.chevron_right,
+                                                color: PlunesColors.GREENCOLOR,
+                                                size: 35,
+                                              )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                (_prevSearchedSolution == null ||
+                                        _prevSearchedSolution.data == null ||
+                                        _prevSearchedSolution.data.isEmpty)
+                                    ? Container()
+                                    : Expanded(
+                                        child: ListView.builder(
+                                        padding: EdgeInsets.all(0.0),
+                                        itemBuilder: (context, index) {
+                                          if (index ==
+                                              _prevSearchedSolution
+                                                  .data.length) {
+                                            return Container(
+                                              alignment: Alignment.center,
+                                              padding: EdgeInsets.symmetric(
+                                                  vertical: AppConfig
+                                                          .verticalBlockSize *
+                                                      1.8),
+                                              child: Text(
+                                                PlunesStrings.exploreMore,
+                                                style: TextStyle(
+                                                    color:
+                                                        PlunesColors.GREENCOLOR,
+                                                    fontSize: 15,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                              ),
+                                              width: double.infinity,
+                                            );
+                                          }
+                                          TapGestureRecognizer tapRecognizer =
+                                              TapGestureRecognizer()
+                                                ..onTap =
+                                                    () => _onViewMoreTap(index);
+                                          return CustomWidgets()
+                                              .getTopSearchesPrevSearchedSolutionRow(
+                                                  _prevSearchedSolution.data,
+                                                  index,
+                                                  onButtonTap: () =>
+                                                      _onSolutionItemTap(
+                                                          _prevSearchedSolution
+                                                              .data[index]),
+                                                  isTopSearches:
+                                                      (_prevSearchedSolution
+                                                                  .topSearches !=
+                                                              null &&
+                                                          _prevSearchedSolution
+                                                              .topSearches),
+                                                  onViewMoreTap: tapRecognizer);
+                                        },
+                                        itemCount:
+                                            _prevSearchedSolution.data.length +
+                                                1,
+                                      ))
+                              ],
+                            )),
+                        Positioned(
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 10),
+                            child: _getSearchBar(),
+                          ),
+                          left: 0.0,
+                          right: 0.0,
+                          top: 0,
+                        ),
+                      ],
+                    );
+                  });
+            },
+          );
   }
 
   _getCurrentLocation() async {
@@ -326,90 +399,12 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               style: TextStyle(fontSize: AppConfig.largeFont),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 1,
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Flexible(
-                    child: Hero(
-                        tag: "my_tag",
-                        child: Material(
-                          child: InkWell(
-                            onTap: () async {
-//                              if ((!(await _getLocationPermissionStatus()) &&
-//                                  !(UserManager()
-//                                      .getIsUserInServiceLocation()))) {
-//                                widget.showInSnackBar(
-//                                    PlunesStrings.pleaseSelectALocation,
-//                                    PlunesColors.GREYCOLOR,
-//                                    scaffoldKey);
-//                                return;
-//                              }
-                              await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          SolutionBiddingScreen()));
-                              _canGoAhead =
-                                  UserManager().getIsUserInServiceLocation();
-                              if (_canGoAhead) {
-                                _setState();
-                              }
-                              _getPreviousSolutions();
-                            },
-                            child: IgnorePointer(
-                              ignoring: true,
-                              child: CustomWidgets().getShowCase(_searchKey,
-                                  child: CustomWidgets().searchBar(
-                                      searchController: _textEditingController,
-                                      isRounded: true,
-                                      focusNode: _focusNode,
-                                      hintText: plunesStrings.searchHint),
-                                  title: plunesStrings.search,
-                                  description: PlunesStrings.searchDesc),
-                            ),
-                          ),
-                        ))),
-//                InkWell(
-//                    onTap: () {
-//                      Navigator.of(context)
-//                          .push(PageRouteBuilder(
-//                              opaque: false,
-//                              pageBuilder: (BuildContext context, _, __) =>
-//                                  LocationFetch()))
-//                          .then((val) {
-//                        if (val != null) {
-//                          var addressControllerList = new List();
-//                          addressControllerList = val.toString().split(":");
-//                          String addr = addressControllerList[0] +
-//                              ' ' +
-//                              addressControllerList[1] +
-//                              ' ' +
-//                              addressControllerList[2];
-////                          print("addr is $addr");
-//                          var _latitude = addressControllerList[3];
-//                          var _longitude = addressControllerList[4];
-////                          print("_latitude $_latitude");
-////                          print("_longitude $_longitude");
-//                          _checkUserLocation(_latitude, _longitude,
-//                              address: addr);
-//                        }
-//                      });
-//                    },
-//                    child: Container(
-//                      padding: EdgeInsets.all(6.0),
-//                      height: AppConfig.verticalBlockSize * 5,
-//                      width: AppConfig.horizontalBlockSize * 10,
-//                      child: Image.asset(
-//                        PlunesImages.userLandingGoogleIcon,
-//                      ),
-//                    ))
-              ],
-            ),
-          )
+//          Padding(
+//            padding: EdgeInsets.only(
+//              top: AppConfig.verticalBlockSize * 1,
+//            ),
+//            child: ,
+//          )
         ],
       ),
     );
@@ -703,6 +698,88 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       print("error is " + e);
     }
     return _hasLocationPermission;
+  }
+
+  Widget _getSearchBar() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Flexible(
+            child: Hero(
+                tag: "my_tag",
+                child: InkWell(
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () async {
+//                              if ((!(await _getLocationPermissionStatus()) &&
+//                                  !(UserManager()
+//                                      .getIsUserInServiceLocation()))) {
+//                                widget.showInSnackBar(
+//                                    PlunesStrings.pleaseSelectALocation,
+//                                    PlunesColors.GREYCOLOR,
+//                                    scaffoldKey);
+//                                return;
+//                              }
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SolutionBiddingScreen()));
+                    _canGoAhead = UserManager().getIsUserInServiceLocation();
+                    if (_canGoAhead) {
+                      _setState();
+                    }
+                    _getPreviousSolutions();
+                  },
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: CustomWidgets().getShowCase(_searchKey,
+                        child: CustomWidgets().searchBar(
+                            searchController: _textEditingController,
+                            isRounded: true,
+                            focusNode: _focusNode,
+                            hintText: plunesStrings.searchHint),
+                        title: plunesStrings.search,
+                        description: PlunesStrings.searchDesc),
+                  ),
+                ))),
+//                InkWell(
+//                    onTap: () {
+//                      Navigator.of(context)
+//                          .push(PageRouteBuilder(
+//                              opaque: false,
+//                              pageBuilder: (BuildContext context, _, __) =>
+//                                  LocationFetch()))
+//                          .then((val) {
+//                        if (val != null) {
+//                          var addressControllerList = new List();
+//                          addressControllerList = val.toString().split(":");
+//                          String addr = addressControllerList[0] +
+//                              ' ' +
+//                              addressControllerList[1] +
+//                              ' ' +
+//                              addressControllerList[2];
+////                          print("addr is $addr");
+//                          var _latitude = addressControllerList[3];
+//                          var _longitude = addressControllerList[4];
+////                          print("_latitude $_latitude");
+////                          print("_longitude $_longitude");
+//                          _checkUserLocation(_latitude, _longitude,
+//                              address: addr);
+//                        }
+//                      });
+//                    },
+//                    child: Container(
+//                      padding: EdgeInsets.all(6.0),
+//                      height: AppConfig.verticalBlockSize * 5,
+//                      width: AppConfig.horizontalBlockSize * 10,
+//                      child: Image.asset(
+//                        PlunesImages.userLandingGoogleIcon,
+//                      ),
+//                    ))
+      ],
+    );
   }
 }
 

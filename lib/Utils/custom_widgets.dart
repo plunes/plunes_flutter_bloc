@@ -341,6 +341,194 @@ class CustomWidgets {
     });
   }
 
+  Widget getTopSearchesPrevSearchedSolutionRow(
+      List<CatalogueData> solutionList, int index,
+      {Function onButtonTap,
+      TapGestureRecognizer onViewMoreTap,
+      bool isTopSearches = false}) {
+    return StatefulBuilder(builder: (context, newState) {
+      return Column(
+        children: <Widget>[
+          InkWell(
+            onTap: () {
+              if (solutionList[index].createdAt != null &&
+                  solutionList[index].createdAt != 0) {
+                var difference = DateTime.fromMillisecondsSinceEpoch(
+                        solutionList[index].createdAt)
+                    .difference(DateTime.now());
+                if (difference.inHours == 0) {
+                  onButtonTap();
+                  return;
+                }
+              }
+              newState(() {
+                solutionList[index].isSelected =
+                    !solutionList[index].isSelected ?? false;
+              });
+            },
+            focusColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+            child: Card(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 3,
+                  vertical: AppConfig.verticalBlockSize * 0.8),
+              color: solutionList[index].isSelected ?? false
+                  ? PlunesColors.LIGHTGREENCOLOR
+                  : Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14)),
+              child: Container(
+                padding: (index == 0)
+                    ? EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 1.5,
+                        bottom: AppConfig.verticalBlockSize * 2.5,
+                        right: AppConfig.horizontalBlockSize * 3,
+                        left: AppConfig.horizontalBlockSize * 3)
+                    : EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 2.5,
+                        horizontal: AppConfig.horizontalBlockSize * 3),
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      crossAxisAlignment: isTopSearches
+                          ? CrossAxisAlignment.center
+                          : CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(
+                          color: Colors.transparent,
+                          height: AppConfig.horizontalBlockSize * 14,
+                          width: AppConfig.horizontalBlockSize * 14,
+                          child: (solutionList[index] == null ||
+                                  solutionList[index].speciality == null ||
+                                  solutionList[index].speciality.isEmpty)
+                              ? Image.asset(PlunesImages.basicImage,
+                                  fit: BoxFit.contain)
+                              : getImageFromUrl(
+                                  "https://specialities.s3.ap-south-1.amazonaws.com/${solutionList[index].speciality}.png",
+                                  boxFit: BoxFit.contain),
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(
+                                left: AppConfig.horizontalBlockSize * 2)),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              RichText(
+                                  text: TextSpan(
+                                      text: CommonMethods.getStringInCamelCase(
+                                              solutionList[index]?.service) ??
+                                          PlunesStrings.NA,
+                                      style: TextStyle(
+                                        fontSize: AppConfig.smallFont + 1,
+                                        color: Colors.black,
+                                        //fontWeight: FontWeight.w500
+                                      ),
+                                      children: [
+                                    TextSpan(
+                                        text:
+                                            "(${solutionList[index].category ?? PlunesStrings.NA})",
+                                        style: TextStyle(
+                                            fontSize: AppConfig.smallFont,
+                                            color: PlunesColors.GREENCOLOR))
+                                  ])),
+                              Padding(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 1)),
+                              (solutionList[index].details == null ||
+                                      solutionList[index].details.isEmpty)
+                                  ? (solutionList[index].createdAt == null ||
+                                          solutionList[index].createdAt == 0)
+                                      ? Container()
+                                      : Text(
+                                          DateUtil.getDuration(
+                                              solutionList[index].createdAt),
+                                          style: TextStyle(
+                                              fontSize: AppConfig.smallFont,
+                                              color: PlunesColors.GREYCOLOR))
+                                  : RichText(
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      text: TextSpan(
+                                        text: solutionList[index].details ??
+                                            PlunesStrings.NA,
+                                        style: TextStyle(
+                                            fontSize: AppConfig.verySmallFont,
+                                            color: Colors.black),
+                                      )),
+                              (solutionList[index].details == null ||
+                                      solutionList[index].details.isEmpty)
+                                  ? Container()
+                                  : RichText(
+                                      text: TextSpan(
+                                          text: plunesStrings.viewMore,
+                                          recognizer: onViewMoreTap,
+                                          style: TextStyle(
+                                              fontSize: AppConfig.verySmallFont,
+                                              color: PlunesColors.GREENCOLOR)),
+                                    ),
+                              (!(solutionList[index].isActive) &&
+                                      solutionList[index].maxDiscount != null &&
+                                      solutionList[index].maxDiscount != 0 &&
+                                      (solutionList[index].booked == null ||
+                                          !(solutionList[index].booked)))
+                                  ? Padding(
+                                      padding: EdgeInsets.only(
+                                          top: AppConfig.verticalBlockSize * 1),
+                                      child: Text(
+                                        "You have missed ${solutionList[index].maxDiscount.toStringAsFixed(0)}% on your ${solutionList[index].service ?? PlunesStrings.NA} Previously",
+                                        style: TextStyle(
+                                            fontSize: AppConfig.smallFont,
+                                            color: Colors.black),
+                                      ))
+                                  : Container()
+                            ],
+                          ),
+                        ),
+                        //CustomWidgets().getRightFacingWidget(),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          solutionList[index].isSelected ?? false
+              ? InkWell(
+                  onTap: onButtonTap,
+                  child: Container(
+                      color: PlunesColors.WHITECOLOR,
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 32,
+                          top: AppConfig.verticalBlockSize * 2,
+                          right: AppConfig.horizontalBlockSize * 32),
+                      child: getRoundedButton(
+                          "Negotiate",
+                          AppConfig.horizontalBlockSize * 8,
+                          PlunesColors.GREENCOLOR,
+                          AppConfig.horizontalBlockSize * 0,
+                          AppConfig.verticalBlockSize * 1.5,
+                          PlunesColors.WHITECOLOR)))
+              : Container(),
+          solutionList[index].isSelected ?? true
+              ? Container(
+                  margin: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 1.5,
+                      bottom: AppConfig.verticalBlockSize * 1.5),
+                  width: double.infinity,
+                  height: 0.5,
+                  color: PlunesColors.GREYCOLOR,
+                )
+              : Container()
+        ],
+      );
+    });
+  }
+
   Widget getImageFromUrl(final String imageUrl,
       {BoxFit boxFit = BoxFit.contain, String placeHolderPath}) {
 //    print("file url is $imageUrl");

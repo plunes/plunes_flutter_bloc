@@ -84,6 +84,7 @@ dependencies:
   socket_io_client: ^0.9.11
   syncfusion_flutter_gauges: ^18.3.38
   charts_flutter: ^0.9.0
+  sliding_up_panel: ^1.0.2
   permission:
     git:
       url: https://github.com/plunes/permission.git

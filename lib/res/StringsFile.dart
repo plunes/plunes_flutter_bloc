@@ -356,6 +356,7 @@ class PlunesStrings {
       "Selected day is successfully closed";
   static const String slotNotInSequence =
       "Seems like your slots are not in sequence, try again.";
+  static const String exploreMore = "Explore more";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

@@ -643,7 +643,7 @@ class _BiddingLoadingState extends BaseState<BiddingLoading> {
       minZoom = 9;
     }
     Future.delayed(Duration(milliseconds: 10)).then((value) {
-      if (_mapController != null) {
+      if (_mapController != null && mounted) {
         _mapController.animateCamera(CameraUpdate.newCameraPosition(
             CameraPosition(
                 target: LatLng(double.parse(_user.latitude),

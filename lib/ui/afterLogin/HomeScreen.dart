@@ -69,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   bool _showBadge = false, progress = false, isSelected = false;
   final List<Widget> _widgetOptionsForUser = [
     BiddingMainScreen(() => _scaffoldKey.currentState.openDrawer()),
-    PlockrMainScreen(),
+//    PlockrMainScreen(),
     NotificationScreen(),
   ];
   final List<Widget> _widgetOptionsForDoctor = [
@@ -113,23 +113,25 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             ? null
             : widget.getHomeAppBar(
                 context,
-                _userType != Constants.user
-                    ? (_selectedIndex == 0
-                        ? CommonMethods.getStringInCamelCase(
-                                UserManager().getUserDetails().name) ??
-                            ""
-                        : _selectedIndex == 1
-                            ? plunesStrings.notifications
-                            : _selectedIndex == 3
-                                ? plunesStrings.profiles
-                                : _selectedIndex == 2
-                                    ? plunesStrings.notifications
-                                    : '')
-                    : (_selectedIndex == 1
-                        ? plunesStrings.plockr
-                        : _selectedIndex == 2
-                            ? plunesStrings.notifications
-                            : ''),
+//                _userType != Constants.user
+//                    ?
+                (_selectedIndex == 0
+                    ? CommonMethods.getStringInCamelCase(
+                            UserManager().getUserDetails().name) ??
+                        ""
+                    : _selectedIndex == 1
+                        ? plunesStrings.notifications
+                        : _selectedIndex == 3
+                            ? plunesStrings.profiles
+                            : _selectedIndex == 2
+                                ? plunesStrings.notifications
+                                : '')
+//                    : (_selectedIndex == 1
+//                        ? plunesStrings.plockr
+//                        : _selectedIndex == 2
+//                            ? plunesStrings.notifications
+//                            : ''),
+                ,
                 isSelected,
                 selectedPositions,
                 from,
@@ -233,8 +235,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       items: <BottomNavigationBarItem>[
         bottomNavigationBarItem(plunesStrings.solution, plunesImages.bidIcon,
             plunesImages.bidActiveIcon),
-        bottomNavigationBarItem(plunesStrings.plockr,
-            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
+//        bottomNavigationBarItem(plunesStrings.plockr,
+//            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
         bottomNavigationBarItem(
             plunesStrings.notification,
             (FirebaseNotification().getNotificationCount() != null &&

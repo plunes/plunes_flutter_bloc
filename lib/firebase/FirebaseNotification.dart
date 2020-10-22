@@ -51,7 +51,7 @@ class FirebaseNotification {
 
   static const String homeScreenName = "HomeScreen";
   static const String bookingScreen = "booking"; // for all
-  static const String plockrScreen = "plockr";
+  static const String plockrScreen = "plocks"; //"plockr";
   static const String solutionScreen = "solution";
   static const String reviewScreen = "review";
   int _notificationCount = 0, _plockrCount = 0;
