@@ -885,11 +885,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     }
     return Card(
       elevation: 2.5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       margin: EdgeInsets.symmetric(
           vertical: AppConfig.verticalBlockSize * 1.2,
           horizontal: AppConfig.horizontalBlockSize * 1.8),
       child: Container(
-        color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+//        color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
         child: Column(
           children: <Widget>[
             Container(
@@ -1745,7 +1747,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   Widget _getSolutionNameView() {
     return Card(
-      elevation: 4.0,
+      elevation: 2.5,
       margin: EdgeInsets.only(
           left: AppConfig.horizontalBlockSize * 5.8,
           right: AppConfig.horizontalBlockSize * 5.8,
@@ -1864,6 +1866,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         ),
       ),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
     );
   }
 

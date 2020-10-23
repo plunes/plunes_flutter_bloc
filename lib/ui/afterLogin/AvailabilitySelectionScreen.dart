@@ -770,16 +770,12 @@ class _AvailabilitySelectionScreenState
                         return InkWell(
                           onTap: () {
                             _availabilityModel[_currentDayIndex]
-                                ?.daySelectionList[index]
-                                .isSelected = true;
-                            if (_availabilityModel.length > index) {
-                              _availabilityModel[index].slots =
-                                  _availabilityModel[_currentDayIndex].slots;
-                              _availabilityModel[index].closed =
-                                  _availabilityModel[_currentDayIndex].closed;
-                            }
+                                    ?.daySelectionList[index]
+                                    .isSelected =
+                                !_availabilityModel[_currentDayIndex]
+                                    ?.daySelectionList[index]
+                                    .isSelected;
                             _setState();
-                            _showSnackBar("Slot Applied Successfully!");
                           },
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -858,24 +854,7 @@ class _AvailabilitySelectionScreenState
                 ],
               ),
             ),
-            Container(
-                margin: EdgeInsets.symmetric(
-                    vertical: AppConfig.verticalBlockSize * 2.5),
-                child: InkWell(
-                  onTap: () {
-                    return;
-                  },
-                  child: Center(
-                    child: Text(
-                      PlunesStrings.apply,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: PlunesColors.SPARKLINGGREEN,
-                          fontSize: AppConfig.largeFont,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ))
+            _getApplyButton()
           ],
         ),
       ),
@@ -1120,5 +1099,59 @@ class _AvailabilitySelectionScreenState
 
   void _invalidSlotCallBack() {
     _showSnackBar(PlunesStrings.slotNotInSequence);
+  }
+
+  Widget _getApplyButton() {
+    bool isItemSelected = false;
+    _availabilityModel[_currentDayIndex].daySelectionList.forEach((element) {
+      if (!isItemSelected) {
+        isItemSelected = element.isSelected;
+      }
+    });
+    return Container(
+        margin:
+            EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2.5),
+        child: InkWell(
+          onTap: () {
+            if (!isItemSelected) {
+              return;
+            }
+            for (int index = 0;
+                index <
+                    _availabilityModel[_currentDayIndex]
+                        .daySelectionList
+                        .length;
+                index++) {
+              if (_availabilityModel[_currentDayIndex]
+                  .daySelectionList[index]
+                  .isSelected) {
+                _availabilityModel[index].slots =
+                    _availabilityModel[_currentDayIndex].slots;
+                _availabilityModel[index].closed =
+                    _availabilityModel[_currentDayIndex].closed;
+              }
+            }
+            _availabilityModel[_currentDayIndex]
+                .daySelectionList
+                .forEach((element) {
+              element.isSelected = false;
+            });
+            _setState();
+            _showSnackBar("Slot Applied Successfully!");
+            return;
+          },
+          child: Center(
+            child: Text(
+              PlunesStrings.apply,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: !(isItemSelected)
+                      ? PlunesColors.LIGHTGREYCOLOR
+                      : PlunesColors.SPARKLINGGREEN,
+                  fontSize: AppConfig.largeFont,
+                  fontWeight: FontWeight.w600),
+            ),
+          ),
+        ));
   }
 }

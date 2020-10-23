@@ -841,11 +841,13 @@ class CustomWidgets {
     }
     return Card(
       elevation: 2.5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       margin: EdgeInsets.symmetric(
           vertical: AppConfig.verticalBlockSize * 1.2,
           horizontal: AppConfig.horizontalBlockSize * 1.8),
       child: Container(
-        color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+//        color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
         padding: EdgeInsets.symmetric(
             vertical: AppConfig.verticalBlockSize * 2.5,
             horizontal: AppConfig.horizontalBlockSize * 2.5),

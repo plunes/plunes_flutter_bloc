@@ -260,7 +260,7 @@ class _HospitalOverviewScreenState
                                         patientName: _realTimeInsightsResponse
                                             .data[itemIndex].userName,
                                         serviceName: "is looking for " +
-                                            "${_realTimeInsightsResponse.data[itemIndex].serviceName?.toUpperCase() ?? _getNaString()}",
+                                            "${_realTimeInsightsResponse.data[itemIndex].serviceName ?? _getNaString()}",
                                         remainingTime:
                                             (_realTimeInsightsResponse
                                                             .data[itemIndex] !=
@@ -740,7 +740,7 @@ class _HospitalOverviewScreenState
                                             children: <TextSpan>[
                                               TextSpan(
                                                   text:
-                                                      "${_actionableInsightResponse?.data[itemIndex]?.serviceName?.toUpperCase() ?? _getNaString()}",
+                                                      "${_actionableInsightResponse?.data[itemIndex]?.serviceName ?? _getNaString()}",
                                                   style: TextStyle(
                                                       fontSize: AppConfig
                                                               .verySmallFont +
@@ -1466,7 +1466,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                   widget.serviceName,
                   style: TextStyle(
                     fontSize: AppConfig.verySmallFont + 1,
-                    color: PlunesColors.GREENCOLOR,
+                    color: PlunesColors.BLACKCOLOR,
                     fontWeight: FontWeight.normal,
                   ),
                 ),
