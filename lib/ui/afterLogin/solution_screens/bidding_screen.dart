@@ -83,7 +83,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                 icon: Icon(Icons.arrow_back_ios),
                 onPressed: () {
                   _unFocus();
-                  Navigator.pop(context, false);
+                  Future.delayed(Duration(milliseconds: 5)).then((value) {
+                    Navigator.pop(context, false);
+                  });
                 },
               ),
               title: widget.createTextViews(PlunesStrings.solutionSearched, 18,

@@ -855,7 +855,7 @@ packages:
       name: step_progress_indicator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.3+6"
+    version: "0.2.4+7"
   stream_channel:
     dependency: transitive
     description:

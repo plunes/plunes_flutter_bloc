@@ -164,27 +164,21 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     return Stack(
       children: <Widget>[
         Container(
+          child: _getSearchWidget(),
+          padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 15),
+        ),
+        Container(
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: ExactAssetImage(PlunesImages.userLandingImage),
                   fit: BoxFit.cover)),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Expanded(
-                flex: 4,
-                child: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      child: _getSearchWidget(),
-                      left: 0.0,
-                      right: 0.0,
-                      top: AppConfig.verticalBlockSize * 15,
-                    )
-                  ],
-                ),
+                child: _getBottomView(),
               ),
               _canGoAhead ? Container() : _getNoLocationView(),
-              _getBottomView()
             ],
           ),
         ),

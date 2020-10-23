@@ -336,10 +336,9 @@ class _AvailabilitySelectionScreenState
               ),
             ),
             _getSlotView(),
-            _getApplyView(),
             Container(
               margin: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 3),
+                  vertical: AppConfig.verticalBlockSize * 2),
               child: StreamBuilder<RequestState>(
                   stream: userBloc.baseStream,
                   builder: (context, snapshot) {
@@ -369,13 +368,14 @@ class _AvailabilitySelectionScreenState
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: PlunesColors.SPARKLINGGREEN,
-                              fontSize: AppConfig.largeFont + 3,
+                              fontSize: AppConfig.largeFont,
                               fontWeight: FontWeight.w600),
                         ),
                       ),
                     );
                   }),
-            )
+            ),
+            _getApplyView(),
           ],
         ),
       ),
@@ -858,6 +858,24 @@ class _AvailabilitySelectionScreenState
                 ],
               ),
             ),
+            Container(
+                margin: EdgeInsets.symmetric(
+                    vertical: AppConfig.verticalBlockSize * 2.5),
+                child: InkWell(
+                  onTap: () {
+                    return;
+                  },
+                  child: Center(
+                    child: Text(
+                      PlunesStrings.apply,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: PlunesColors.SPARKLINGGREEN,
+                          fontSize: AppConfig.largeFont,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ))
           ],
         ),
       ),

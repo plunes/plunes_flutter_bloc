@@ -20,6 +20,7 @@ import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../widgets/dialogPopScreen.dart';
@@ -60,8 +61,11 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   ScrollController _scrollController;
   Key _visibilityKey = Key("ItsVisibilityKey");
 
+  int _currentProgress = 1;
+
   @override
   void initState() {
+    _currentProgress = 1;
     _scrollController = ScrollController();
     _isCrossClicked = false;
     _focusNode = FocusNode()
@@ -256,7 +260,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   null &&
               _searchedDocResults.solution.services[index].doctors.isNotEmpty) {
             return _showHosDocCards(
-                _searchedDocResults.solution.services[index]);
+                _searchedDocResults.solution.services[index], _currentProgress);
           }
           return CustomWidgets().getDocDetailWidget(
               _searchedDocResults.solution?.services ?? [],
@@ -266,8 +270,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   _searchedDocResults.solution.services[index], index),
               _searchedDocResults.catalogueData,
               _buildContext,
-              () =>
-                  _viewProfile(_searchedDocResults.solution?.services[index]));
+              () => _viewProfile(_searchedDocResults.solution?.services[index]),
+              _currentProgress);
         },
         itemCount: _searchedDocResults.solution == null
             ? 0
@@ -319,6 +323,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                 if (_timer != null && _timer.isActive) {
                   _negotiate();
                 } else {
+                  _currentProgress = 1;
                   _fetchResultAndStartTimer();
                 }
 //              Future.delayed(Duration(seconds: 3)).then((value) {
@@ -433,6 +438,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       _timer = timer;
+      _currentProgress = _currentProgress + 7;
       if (!mounted) {
         if (_timer != null && _timer.isActive) {
           _timer.cancel();
@@ -445,7 +451,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   Widget _showBody() {
     return Container(
-      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      color: Colors.white,
       child: Stack(
         children: <Widget>[
           ListView(
@@ -457,7 +463,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     return (_timer != null &&
                             _timer.isActive &&
                             !(_isCrossClicked))
-                        ? _getHoldOnNegoPopup()
+                        ? _getHoldOnPopup()
                         : _getNegotiatedPriceTotalView();
                   }),
               StreamBuilder<Object>(
@@ -873,10 +879,17 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     }
   }
 
-  Widget _showHosDocCards(Services service) {
+  Widget _showHosDocCards(Services service, int currentStep) {
+    if (currentStep == null || currentStep >= 40) {
+      currentStep = 35;
+    }
     return Card(
       elevation: 2.5,
+      margin: EdgeInsets.symmetric(
+          vertical: AppConfig.verticalBlockSize * 1.2,
+          horizontal: AppConfig.horizontalBlockSize * 1.8),
       child: Container(
+        color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
         child: Column(
           children: <Widget>[
             Container(
@@ -936,7 +949,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     padding: EdgeInsets.all(0),
                     physics: NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
-                      return _hosDoc(service, index);
+                      return _hosDoc(service, index, currentStep);
                     },
                     itemCount:
                         (service.isExpanded) ? service.doctors.length : 1,
@@ -948,7 +961,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     );
   }
 
-  Widget _hosDoc(Services service, int index) {
+  Widget _hosDoc(Services service, int index, int currentStep) {
     return Container(
       padding: EdgeInsets.symmetric(
           vertical: AppConfig.verticalBlockSize * 1.8,
@@ -1008,8 +1021,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                   top: AppConfig.verticalBlockSize * .5),
                               child: Text(
                                 CommonMethods.getStringInCamelCase(
-                                        service.doctors[index]?.name) ??
-                                    PlunesStrings.NA,
+                                        service.doctors[index]?.name) +
+                                    " \u2714",
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
@@ -1020,12 +1033,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             ),
                           ),
                         ),
-                        Flexible(
-                          child: Container(
-                              height: AppConfig.verticalBlockSize * 3,
-                              width: AppConfig.horizontalBlockSize * 5,
-                              child: Image.asset(PlunesImages.certifiedImage)),
-                        ),
+//                        Flexible(
+//                          child: Container(
+//                              height: AppConfig.verticalBlockSize * 3,
+//                              width: AppConfig.horizontalBlockSize * 5,
+//                              child: Image.asset(PlunesImages.certifiedImage)),
+//                        ),
                       ],
                     ),
                     Container(
@@ -1234,8 +1247,20 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               ? Container(
                   width: double.infinity,
                   margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                  child: LinearProgressIndicator(
-                    backgroundColor: PlunesColors.LIGHTGREYCOLOR,
+                  child: Container(
+                    width: double.infinity,
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                    child: StepProgressIndicator(
+                      totalSteps: 40,
+                      currentStep: currentStep,
+                      size: 8,
+                      padding: 0,
+                      selectedColor: PlunesColors.GREENCOLOR,
+                      unselectedColor:
+                          Color(CommonMethods.getColorHexFromStr("#E4EAF0")),
+                      roundedEdges: Radius.circular(10),
+                    ),
                   ),
                 )
               : Container(),
@@ -1722,8 +1747,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     return Card(
       elevation: 4.0,
       margin: EdgeInsets.only(
-          left: AppConfig.horizontalBlockSize * 4,
-          right: AppConfig.horizontalBlockSize * 4,
+          left: AppConfig.horizontalBlockSize * 5.8,
+          right: AppConfig.horizontalBlockSize * 5.8,
           top: AppConfig.verticalBlockSize * 2),
       child: Container(
         margin: EdgeInsets.symmetric(
@@ -1858,7 +1883,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   pointers: [
                     RangePointer(
                         value: _gainedDiscountPercentage,
-                        width: 0.25,
+                        width: 0.3,
                         sizeUnit: GaugeSizeUnit.factor,
                         cornerStyle: CornerStyle.bothFlat,
                         gradient: SweepGradient(colors: <Color>[

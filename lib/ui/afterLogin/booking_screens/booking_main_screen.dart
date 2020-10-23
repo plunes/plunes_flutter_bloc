@@ -748,19 +748,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   );
                 }),
           ),
-          InkWell(
-            onTap: () => LauncherUtil.launchUrl(urls.terms),
-            onDoubleTap: () {},
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                PlunesStrings.tcApply,
-                style: TextStyle(
-                    decoration: TextDecoration.underline,
-                    fontSize: AppConfig.smallFont),
-              ),
-            ),
-          ),
+//          InkWell(
+//            onTap: () => LauncherUtil.launchUrl(urls.terms),
+//            onDoubleTap: () {},
+//            child: Padding(
+//              padding: const EdgeInsets.all(8.0),
+//              child: Text(
+//                PlunesStrings.tcApply,
+//                style: TextStyle(
+//                    decoration: TextDecoration.underline,
+//                    fontSize: AppConfig.smallFont),
+//              ),
+//            ),
+//          ),
         ],
       ),
     );
@@ -1364,6 +1364,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                                   _docProfileInfo.user.longitude ?? "0.0")),
                           zoom: 10),
                       mapType: MapType.terrain,
+                      zoomControlsEnabled: false,
                     ),
                   ),
                 ],

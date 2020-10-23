@@ -33,6 +33,7 @@ import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:share/share.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'CommonMethods.dart';
 import 'app_config.dart';
 
@@ -514,16 +515,16 @@ class CustomWidgets {
                           AppConfig.verticalBlockSize * 1.5,
                           PlunesColors.WHITECOLOR)))
               : Container(),
-          solutionList[index].isSelected ?? true
-              ? Container(
-                  margin: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 1.5,
-                      bottom: AppConfig.verticalBlockSize * 1.5),
-                  width: double.infinity,
-                  height: 0.5,
-                  color: PlunesColors.GREYCOLOR,
-                )
-              : Container()
+//          solutionList[index].isSelected ?? true
+//              ? Container(
+//                  margin: EdgeInsets.only(
+//                      top: AppConfig.verticalBlockSize * 1.5,
+//                      bottom: AppConfig.verticalBlockSize * 1.5),
+//                  width: double.infinity,
+//                  height: 0.5,
+//                  color: PlunesColors.GREYCOLOR,
+//                )
+//              : Container()
         ],
       );
     });
@@ -833,10 +834,18 @@ class CustomWidgets {
       Function onBookingTap,
       CatalogueData catalogueData,
       BuildContext context,
-      Function viewProfile) {
+      Function viewProfile,
+      int currentStep) {
+    if (currentStep == null || currentStep >= 40) {
+      currentStep = 35;
+    }
     return Card(
       elevation: 2.5,
+      margin: EdgeInsets.symmetric(
+          vertical: AppConfig.verticalBlockSize * 1.2,
+          horizontal: AppConfig.horizontalBlockSize * 1.8),
       child: Container(
+        color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
         padding: EdgeInsets.symmetric(
             vertical: AppConfig.verticalBlockSize * 2.5,
             horizontal: AppConfig.horizontalBlockSize * 2.5),
@@ -898,8 +907,8 @@ class CustomWidgets {
                                 alignment: Alignment.topLeft,
                                 child: Text(
                                   CommonMethods.getStringInCamelCase(
-                                          solutions[index]?.name) ??
-                                      PlunesStrings.NA,
+                                          solutions[index]?.name) +
+                                      " \u2714",
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
@@ -910,13 +919,13 @@ class CustomWidgets {
                               ),
                             ),
                           ),
-                          Flexible(
-                            child: Container(
-                                height: AppConfig.verticalBlockSize * 3,
-                                width: AppConfig.horizontalBlockSize * 5,
-                                child:
-                                    Image.asset(PlunesImages.certifiedImage)),
-                          ),
+//                          Flexible(
+//                            child: Container(
+//                                height: AppConfig.verticalBlockSize * 3,
+//                                width: AppConfig.horizontalBlockSize * 5,
+//                                child:
+//                                    Image.asset(PlunesImages.certifiedImage)),
+//                          ),
                         ],
                       ),
                       Container(
@@ -936,23 +945,6 @@ class CustomWidgets {
                                     ),
                                   )
                                 : Container(),
-//                            Expanded(child: Container()),
-//                            Row(
-//                              crossAxisAlignment: CrossAxisAlignment.center,
-//                              children: <Widget>[
-//                                Container(
-//                                    height: AppConfig.verticalBlockSize * 3,
-//                                    width: AppConfig.horizontalBlockSize * 5,
-//                                    child: Image.asset(
-//                                        plunesImages.locationIcon)),
-//                                Text(
-//                                  "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
-//                                  style: TextStyle(
-//                                      color: PlunesColors.GREYCOLOR,
-//                                      fontSize: 10),
-//                                ),
-//                              ],
-//                            )
                           ],
                         ),
                       ),
@@ -960,20 +952,38 @@ class CustomWidgets {
                   ),
                 )),
                 Container(
-                  width: AppConfig.horizontalBlockSize * 14,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+//                  width: AppConfig.horizontalBlockSize * 14,
+                  child: Column(
                     children: <Widget>[
-                      Icon(
-                        Icons.star,
-                        color: PlunesColors.GREENCOLOR,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.star,
+                            color: PlunesColors.GREENCOLOR,
+                          ),
+                          Text(
+                            solutions[index].rating?.toStringAsFixed(1) ??
+                                _getEmptyString(),
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR, fontSize: 14),
+                          ),
+                        ],
                       ),
-                      Text(
-                        solutions[index].rating?.toStringAsFixed(1) ??
-                            _getEmptyString(),
-                        style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR, fontSize: 14),
-                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                              height: AppConfig.verticalBlockSize * 3,
+                              width: AppConfig.horizontalBlockSize * 5,
+                              child: Image.asset(plunesImages.locationIcon)),
+                          Text(
+                            "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
+                            style: TextStyle(
+                                color: PlunesColors.GREYCOLOR, fontSize: 10),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 )
@@ -1113,8 +1123,15 @@ class CustomWidgets {
                     width: double.infinity,
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                    child: LinearProgressIndicator(
-                      backgroundColor: PlunesColors.LIGHTGREYCOLOR,
+                    child: StepProgressIndicator(
+                      totalSteps: 40,
+                      currentStep: currentStep,
+                      size: 8,
+                      padding: 0,
+                      selectedColor: PlunesColors.GREENCOLOR,
+                      unselectedColor:
+                          Color(CommonMethods.getColorHexFromStr("#E4EAF0")),
+                      roundedEdges: Radius.circular(10),
                     ),
                   )
                 : Container(),
