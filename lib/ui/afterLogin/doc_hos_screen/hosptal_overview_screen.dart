@@ -402,7 +402,7 @@ class _HospitalOverviewScreenState
                                                             children: <Widget>[
                                                               Image.asset(
                                                                 PlunesImages
-                                                                    .blueBellIcon,
+                                                                    .serviceNotAvail,
                                                                 height: AppConfig
                                                                         .verticalBlockSize *
                                                                     2.6,
