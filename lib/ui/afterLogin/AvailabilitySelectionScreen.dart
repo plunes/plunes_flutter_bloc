@@ -403,6 +403,9 @@ class _AvailabilitySelectionScreenState
                     _setState();
                     if (_availabilityModel[_currentDayIndex].closed) {
                       _showSnackBar(PlunesStrings.daySuccessfullyClosed);
+                    } else {
+                      _showSnackBar(PlunesStrings.daySuccessfullyClosed
+                          .replaceAll("closed", "opened"));
                     }
                   },
                   child: Container(

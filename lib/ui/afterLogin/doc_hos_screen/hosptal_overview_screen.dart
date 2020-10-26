@@ -1716,17 +1716,21 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
 
   void _runSolutionExpireTimer() {
     _timerForSolutionExpire = Timer.periodic(Duration(seconds: 2), (timer) {
+      print("hello ${widget.remainingTime}");
       _timerForSolutionExpire = timer;
       if (widget.remainingTime == null || widget.remainingTime == 0) {
+        print("timer cancelled ${widget.remainingTime}");
         timer.cancel();
       } else if (DateTime.now()
               .difference(
                   DateTime.fromMillisecondsSinceEpoch(widget.remainingTime))
               .inMinutes >=
           60) {
+        print("refreshing insights now");
         widget.getRealTimeInsights();
         timer.cancel();
       }
+      print("kuch nhi chala");
       return;
     });
   }

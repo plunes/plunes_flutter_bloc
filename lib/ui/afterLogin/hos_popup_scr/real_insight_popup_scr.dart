@@ -628,7 +628,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                           'Apply here',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                              fontSize: AppConfig.mediumFont,
+                                              fontSize:
+                                                  AppConfig.mediumFont + 3,
                                               color: PlunesColors.GREENCOLOR),
                                         ),
                                       ))),
