@@ -44,19 +44,22 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   TextEditingController _textEditingController;
   FocusNode _focusNode;
   bool _progressEnabled;
-  bool _canGoAhead;
+  bool _canGoAhead, _isPanelOpened;
   String _failureCause, _locationMessage;
   PrevMissSolutionBloc _prevMissSolutionBloc;
   PrevSearchedSolution _prevSearchedSolution;
   Timer _timer;
-  StreamController _controller;
+  StreamController _controller, _panelStreamController;
   BuildContext _context;
   GlobalKey _searchKey = GlobalKey();
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
+  PanelController _panelController;
 
   @override
   void initState() {
+    _panelController = PanelController();
+    _isPanelOpened = false;
     _highlightSearchBar();
     _locationMessage = PlunesStrings.switchToGurLoc;
     _progressEnabled = false;
@@ -64,6 +67,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     _prevMissSolutionBloc = PrevMissSolutionBloc();
     _textEditingController = TextEditingController();
     _controller = StreamController.broadcast();
+    _panelStreamController = StreamController.broadcast();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _timer = timer;
       _controller.add(null);
@@ -175,6 +179,20 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
+              StreamBuilder<Object>(
+                  stream: _panelStreamController.stream,
+                  builder: (context, snapshot) {
+                    if (_isPanelOpened != null && !_isPanelOpened) {
+                      return Container(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 28),
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 10),
+                        child: _getSearchBar(),
+                      );
+                    }
+                    return Container();
+                  }),
               Expanded(
                 child: _getBottomView(),
               ),
@@ -203,6 +221,17 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
         ? Container()
         : SlidingUpPanel(
             boxShadow: null,
+            controller: _panelController,
+            onPanelOpened: () {
+//              print("onPanelOpened");
+              _isPanelOpened = true;
+              _panelStreamController.add(null);
+            },
+            onPanelClosed: () {
+//              print("onPanelClosed");
+              _isPanelOpened = false;
+              _panelStreamController.add(null);
+            },
             color: Colors.transparent,
             maxHeight: _canGoAhead
                 ? AppConfig.verticalBlockSize * 80
@@ -349,11 +378,19 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                               ],
                             )),
                         Positioned(
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: AppConfig.horizontalBlockSize * 10),
-                            child: _getSearchBar(),
-                          ),
+                          child: StreamBuilder<Object>(
+                              stream: _panelStreamController.stream,
+                              builder: (context, snapshot) {
+                                if (_isPanelOpened != null && !_isPanelOpened) {
+                                  return Container();
+                                }
+                                return Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 10),
+                                  child: _getSearchBar(),
+                                );
+                              }),
                           left: 0.0,
                           right: 0.0,
                           top: 0,

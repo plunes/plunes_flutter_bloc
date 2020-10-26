@@ -972,19 +972,23 @@ class CustomWidgets {
                           ),
                         ],
                       ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                              height: AppConfig.verticalBlockSize * 3,
-                              width: AppConfig.horizontalBlockSize * 5,
-                              child: Image.asset(plunesImages.locationIcon)),
-                          Text(
-                            "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
-                            style: TextStyle(
-                                color: PlunesColors.GREYCOLOR, fontSize: 10),
-                          ),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 1),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                                height: AppConfig.verticalBlockSize * 3,
+                                width: AppConfig.horizontalBlockSize * 5,
+                                child: Image.asset(plunesImages.locationIcon)),
+                            Text(
+                              "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
+                              style: TextStyle(
+                                  color: PlunesColors.GREYCOLOR, fontSize: 10),
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),
