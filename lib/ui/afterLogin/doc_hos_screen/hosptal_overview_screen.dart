@@ -402,7 +402,7 @@ class _HospitalOverviewScreenState
                                                             children: <Widget>[
                                                               Image.asset(
                                                                 PlunesImages
-                                                                    .blueBellIcon,
+                                                                    .serviceNotAvail,
                                                                 height: AppConfig
                                                                         .verticalBlockSize *
                                                                     2.6,
@@ -1666,7 +1666,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                 Container(
                   padding: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 0.5,
-                      horizontal: AppConfig.horizontalBlockSize * 1),
+                      horizontal: AppConfig.horizontalBlockSize * 0.6),
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       border:
@@ -1677,7 +1677,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       showShowWidget() ? "00:00 Mins" : _timeValue + " Mins",
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,
-                          fontSize: AppConfig.verySmallFont + 2),
+                          fontSize: AppConfig.verySmallFont),
                     ),
                   ),
                 ),
@@ -1688,7 +1688,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                 Container(
                   padding: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 0.5,
-                      horizontal: AppConfig.horizontalBlockSize * 1),
+                      horizontal: AppConfig.horizontalBlockSize * 0.6),
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       border:
@@ -1699,7 +1699,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       "00:00 Mins",
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,
-                          fontSize: AppConfig.verySmallFont + 2),
+                          fontSize: AppConfig.verySmallFont),
                     ),
                   ),
                 ),

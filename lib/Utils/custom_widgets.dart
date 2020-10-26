@@ -5885,7 +5885,7 @@ class CustomWidgets {
                                       width: double.infinity,
                                       child: Center(
                                         child: Text(
-                                          PlunesStrings.no,
+                                          PlunesStrings.yes,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize: AppConfig.mediumFont,
@@ -5916,7 +5916,7 @@ class CustomWidgets {
                                       width: double.infinity,
                                       child: Center(
                                         child: Text(
-                                          PlunesStrings.yes,
+                                          plunesStrings.cancel,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize: AppConfig.mediumFont,

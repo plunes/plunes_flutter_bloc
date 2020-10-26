@@ -201,6 +201,7 @@ flutter:
     - assets/images/pdf.png
     - assets/images/doc.png
     - assets/images/update.png
+    - assets/images/serviceNotAvail.png
 
     - assets/images/achievments/gradient/1.jpg
     - assets/images/achievments/gradient/2.jpg
@@ -238,6 +239,7 @@ flutter:
     - assets/images/profile/qualification.png
     - assets/images/profile/priceHighIcon.png
     - assets/images/profile/MapDark.png
+    - assets/images/profile/MapIcon.png
     - assets/images/profile/ServiceNot.png
     - assets/images/profile/calIcon.png
     - assets/images/profile/eduIcon.png
