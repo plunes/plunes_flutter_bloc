@@ -85,6 +85,8 @@ dependencies:
   syncfusion_flutter_gauges: ^18.3.38
   charts_flutter: ^0.9.0
   sliding_up_panel: ^1.0.2
+  carousel_slider: ^2.3.1
+  dots_indicator: ^1.2.0
   permission:
     git:
       url: https://github.com/plunes/permission.git

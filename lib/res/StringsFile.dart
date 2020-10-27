@@ -358,6 +358,7 @@ class PlunesStrings {
       "Seems like your slots are not in sequence, try again.";
   static const String exploreMore = "Explore more";
   static const String apply = "Apply";
+  static const String explore = "Explore";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

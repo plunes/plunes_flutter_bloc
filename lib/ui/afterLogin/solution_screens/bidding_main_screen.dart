@@ -22,6 +22,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
+import 'package:plunes/ui/afterLogin/explore_screens/explore_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
@@ -333,22 +334,29 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                           if (index ==
                                               _prevSearchedSolution
                                                   .data.length) {
-                                            return Container(
-                                              alignment: Alignment.center,
-                                              padding: EdgeInsets.symmetric(
-                                                  vertical: AppConfig
-                                                          .verticalBlockSize *
-                                                      1.8),
-                                              child: Text(
-                                                PlunesStrings.exploreMore,
-                                                style: TextStyle(
-                                                    color:
-                                                        PlunesColors.GREENCOLOR,
-                                                    fontSize: 15,
-                                                    fontWeight:
-                                                        FontWeight.w600),
+                                            return InkWell(
+                                              onTap: () => Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ExploreMainScreen())),
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: AppConfig
+                                                            .verticalBlockSize *
+                                                        1.8),
+                                                child: Text(
+                                                  PlunesStrings.exploreMore,
+                                                  style: TextStyle(
+                                                      color: PlunesColors
+                                                          .GREENCOLOR,
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
+                                                width: double.infinity,
                                               ),
-                                              width: double.infinity,
                                             );
                                           }
                                           TapGestureRecognizer tapRecognizer =

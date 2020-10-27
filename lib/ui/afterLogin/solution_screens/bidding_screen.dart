@@ -19,6 +19,10 @@ import 'package:plunes/ui/afterLogin/solution_screens/testNproceduresMainScreen.
 
 // ignore: must_be_immutable
 class SolutionBiddingScreen extends BaseActivity {
+  final String searchQuery;
+
+  SolutionBiddingScreen({this.searchQuery});
+
   @override
   _SolutionBiddingScreenState createState() => _SolutionBiddingScreenState();
 }
@@ -42,6 +46,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     _searchSolutionBloc = SearchSolutionBloc();
     _streamController = StreamController.broadcast();
     _searchController = TextEditingController()..addListener(_onSearch);
+    if (widget.searchQuery != null && widget.searchQuery.trim().isNotEmpty) {
+      _searchController.text = widget.searchQuery;
+    }
     super.initState();
   }
 
