@@ -305,9 +305,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   _currentProgress = 1;
                   _fetchResultAndStartTimer();
                 }
-//              Future.delayed(Duration(seconds: 3)).then((value) {
-//                _setState();
-//              });
               }
             });
           },
@@ -317,16 +314,19 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                CustomWidgets().getShowCase(
-                  _moreFacilityKey,
-                  title: PlunesStrings.moreFacilities,
-                  description: PlunesStrings.moreFacilityDesc,
-                  child: Text(
-                    "Negotiate with more facilities",
-                    style: TextStyle(
-                        color: PlunesColors.GREENCOLOR,
-                        fontSize: 15,
-                        fontWeight: FontWeight.normal),
+                Flexible(
+                  child: CustomWidgets().getShowCase(
+                    _moreFacilityKey,
+                    title: PlunesStrings.moreFacilities,
+                    description: PlunesStrings.moreFacilityDesc,
+                    child: Text(
+                      "Negotiate with more facilities",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: PlunesColors.GREENCOLOR,
+                          fontSize: 15,
+                          fontWeight: FontWeight.normal),
+                    ),
                   ),
                 ),
                 Icon(
@@ -889,19 +889,15 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       padding: EdgeInsets.only(
                           left: AppConfig.horizontalBlockSize * 3)),
                   Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(
-                          right: AppConfig.horizontalBlockSize * 3),
-                      child: Text(
-                        CommonMethods.getStringInCamelCase(service?.name) ??
-                            PlunesStrings.NA,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.normal),
-                      ),
+                    child: Text(
+                      CommonMethods.getStringInCamelCase(service?.name) ??
+                          PlunesStrings.NA,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.normal),
                     ),
                   ),
                   Row(
@@ -1926,12 +1922,14 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             fontWeight: FontWeight.w600,
                             fontSize: 22),
                       ),
-                      Text(
-                        " on original price",
-                        style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 15),
+                      Flexible(
+                        child: Text(
+                          " on original price",
+                          style: TextStyle(
+                              color: PlunesColors.BLACKCOLOR,
+                              fontWeight: FontWeight.normal,
+                              fontSize: 15),
+                        ),
                       )
                     ],
                   ),
