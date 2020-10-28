@@ -1462,10 +1462,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       var _currentDateTime = DateTime.now();
       List<String> splitTime = selectedTime.split(":");
       int _pmTime = 0;
+      bool _shouldDecreaseDay = false;
       if (selectedTime.contains("PM") && splitTime.first != "12") {
 //        print("contains pm");
         _pmTime = 12;
         splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+      } else if (selectedTime.contains("AM") && splitTime.first == "12") {
+//        print("contains pm");
+        _pmTime = 12;
+        splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+        _shouldDecreaseDay = true;
       }
       List<String> lastTimeOfBooking =
           _slotArray[_slotArray.length - 1].split(":");
@@ -1501,7 +1507,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         var _selectedDateTime = DateTime(
             _currentDateTime.year,
             _currentDateTime.month,
-            _currentDateTime.day,
+            _shouldDecreaseDay
+                ? _currentDateTime.day - 1
+                : _currentDateTime.day,
             int.tryParse(splitTime.first),
             int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
         var _todayLatBookingDateTime = DateTime(
@@ -1586,9 +1594,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               _selectedDate.day == _currentDateTime.day)) {
         List<String> splitTime = time.split(":");
         int _pmTime = 0;
+        bool _shouldDecreaseDay = false;
         if (time.contains("PM") && splitTime.first != "12") {
           _pmTime = 12;
           splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+        } else if (time.contains("AM") && splitTime.first == "12") {
+          _pmTime = 12;
+          splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+          _shouldDecreaseDay = true;
         }
         List<String> lastTimeOfBooking =
             _slotArray[_slotArray.length - 1].split(":");
@@ -1619,7 +1632,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         var _selectedDateTime = DateTime(
             _currentDateTime.year,
             _currentDateTime.month,
-            _currentDateTime.day,
+            _shouldDecreaseDay
+                ? _currentDateTime.day - 1
+                : _currentDateTime.day,
             int.tryParse(splitTime.first),
             int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
         if (_selectedDateTime.isAfter(_currentDateTime) ||
