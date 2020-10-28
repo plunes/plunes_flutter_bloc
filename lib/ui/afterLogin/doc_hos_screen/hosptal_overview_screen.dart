@@ -402,7 +402,7 @@ class _HospitalOverviewScreenState
                                                             children: <Widget>[
                                                               Image.asset(
                                                                 PlunesImages
-                                                                    .blueBellIcon,
+                                                                    .serviceNotAvail,
                                                                 height: AppConfig
                                                                         .verticalBlockSize *
                                                                     2.6,
@@ -1388,6 +1388,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   @override
   void initState() {
     _realInsight = widget.realInsight;
+    print("\n ${widget.realInsight?.toString()}");
     _timeValue = "00:00";
     if (widget.timer != null) {
       _countDownValue = widget.timer - 1;
@@ -1486,7 +1487,8 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                             _realInsight.expired) ||
                         (_realInsight != null &&
                             _realInsight.booked != null &&
-                            _realInsight.booked))
+                            _realInsight.booked) ||
+                        showShowWidget())
                     ? Container()
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -1519,7 +1521,8 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                             _realInsight.expired) ||
                         (_realInsight != null &&
                             _realInsight.booked != null &&
-                            _realInsight.booked))
+                            _realInsight.booked) ||
+                        showShowWidget())
                     ? Container()
                     : (_realInsight.compRate != null &&
                             _realInsight.compRate > 0)
@@ -1555,7 +1558,8 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                             _realInsight.expired) ||
                         (_realInsight != null &&
                             _realInsight.booked != null &&
-                            _realInsight.booked))
+                            _realInsight.booked) ||
+                        !showShowWidget())
                     ? Container(
                         margin: EdgeInsets.only(
                             top: AppConfig.verticalBlockSize * 2.5),
@@ -1666,7 +1670,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                 Container(
                   padding: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 0.5,
-                      horizontal: AppConfig.horizontalBlockSize * 1),
+                      horizontal: AppConfig.horizontalBlockSize * 0.6),
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       border:
@@ -1677,7 +1681,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       showShowWidget() ? "00:00 Mins" : _timeValue + " Mins",
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,
-                          fontSize: AppConfig.verySmallFont + 2),
+                          fontSize: AppConfig.verySmallFont),
                     ),
                   ),
                 ),
@@ -1688,7 +1692,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                 Container(
                   padding: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 0.5,
-                      horizontal: AppConfig.horizontalBlockSize * 1),
+                      horizontal: AppConfig.horizontalBlockSize * 0.6),
                   decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       border:
@@ -1699,7 +1703,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       "00:00 Mins",
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,
-                          fontSize: AppConfig.verySmallFont + 2),
+                          fontSize: AppConfig.verySmallFont),
                     ),
                   ),
                 ),
@@ -1715,18 +1719,23 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   }
 
   void _runSolutionExpireTimer() {
-    _timerForSolutionExpire = Timer.periodic(Duration(seconds: 2), (timer) {
+    _timerForSolutionExpire = Timer.periodic(Duration(seconds: 1), (timer) {
+//      print("hello ${widget.serviceName} ${widget.remainingTime}");
       _timerForSolutionExpire = timer;
       if (widget.remainingTime == null || widget.remainingTime == 0) {
+//        print("timer cancelled ${widget.serviceName} ${widget.remainingTime}");
         timer.cancel();
+        _setState();
       } else if (DateTime.now()
               .difference(
                   DateTime.fromMillisecondsSinceEpoch(widget.remainingTime))
               .inMinutes >=
           60) {
+//        print("refreshing insights now ${widget.serviceName}");
         widget.getRealTimeInsights();
         timer.cancel();
       }
+//      print("kuch nhi chala ${widget.serviceName}");
       return;
     });
   }

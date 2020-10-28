@@ -85,6 +85,8 @@ dependencies:
   syncfusion_flutter_gauges: ^18.3.38
   charts_flutter: ^0.9.0
   sliding_up_panel: ^1.0.2
+  carousel_slider: ^2.3.1
+  dots_indicator: ^1.2.0
   permission:
     git:
       url: https://github.com/plunes/permission.git
@@ -201,6 +203,7 @@ flutter:
     - assets/images/pdf.png
     - assets/images/doc.png
     - assets/images/update.png
+    - assets/images/serviceNotAvail.png
 
     - assets/images/achievments/gradient/1.jpg
     - assets/images/achievments/gradient/2.jpg
@@ -238,6 +241,7 @@ flutter:
     - assets/images/profile/qualification.png
     - assets/images/profile/priceHighIcon.png
     - assets/images/profile/MapDark.png
+    - assets/images/profile/MapIcon.png
     - assets/images/profile/ServiceNot.png
     - assets/images/profile/calIcon.png
     - assets/images/profile/eduIcon.png

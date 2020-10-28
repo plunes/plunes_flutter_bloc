@@ -972,19 +972,23 @@ class CustomWidgets {
                           ),
                         ],
                       ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                              height: AppConfig.verticalBlockSize * 3,
-                              width: AppConfig.horizontalBlockSize * 5,
-                              child: Image.asset(plunesImages.locationIcon)),
-                          Text(
-                            "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
-                            style: TextStyle(
-                                color: PlunesColors.GREYCOLOR, fontSize: 10),
-                          ),
-                        ],
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 1),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Container(
+                                height: AppConfig.verticalBlockSize * 3,
+                                width: AppConfig.horizontalBlockSize * 5,
+                                child: Image.asset(plunesImages.locationIcon)),
+                            Text(
+                              "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
+                              style: TextStyle(
+                                  color: PlunesColors.GREYCOLOR, fontSize: 10),
+                            ),
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -5885,7 +5889,7 @@ class CustomWidgets {
                                       width: double.infinity,
                                       child: Center(
                                         child: Text(
-                                          PlunesStrings.no,
+                                          PlunesStrings.yes,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize: AppConfig.mediumFont,
@@ -5916,7 +5920,7 @@ class CustomWidgets {
                                       width: double.infinity,
                                       child: Center(
                                         child: Text(
-                                          PlunesStrings.yes,
+                                          plunesStrings.cancel,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               fontSize: AppConfig.mediumFont,
