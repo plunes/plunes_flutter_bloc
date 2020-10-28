@@ -1140,7 +1140,8 @@ class _AvailabilitySelectionScreenState
               element.isSelected = false;
             });
             _setState();
-            _showSnackBar("Slot Applied Successfully!");
+            _showSnackBar(
+                "Slot Applied Successfully! Press Submit button to save the changes.");
             return;
           },
           child: Center(

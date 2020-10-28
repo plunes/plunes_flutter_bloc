@@ -186,28 +186,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                 PlunesImages.validForOneHourOnlyWatch,
                                 scale: 3,
                               ),
-                              Padding(
-                                child: RichText(
-                                  text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                            text: "1 hour",
-                                            style: TextStyle(
-                                                color: PlunesColors.GREENCOLOR,
-                                                fontSize: 16)),
-                                        TextSpan(
-                                            text: " only",
-                                            style: TextStyle(
-                                                color: PlunesColors.GREYCOLOR,
-                                                fontSize: 15))
-                                      ],
-                                      text: PlunesStrings.validForOneHour,
-                                      style: TextStyle(
-                                          color: PlunesColors.GREYCOLOR,
-                                          fontSize: 15)),
-                                ),
-                                padding: EdgeInsets.only(left: 4.0),
-                              )
+                              _getTimerForTop()
                             ],
                           )
                         ],
@@ -839,8 +818,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       return;
     }
     bool shouldNegotiate = false;
-    _solutionReceivedTime = _searchedDocResults.solution?.createdTime ?? 0;
+//    _solutionReceivedTime = _searchedDocResults.solution?.createdTime ?? 0;
     _expirationTimer = _searchedDocResults.solution?.expirationTimer ?? 0;
+    _solutionReceivedTime = _expirationTimer;
     if (DateTime.now()
             .difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer))
             .inHours >=
@@ -891,7 +871,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
           vertical: AppConfig.verticalBlockSize * 1.2,
           horizontal: AppConfig.horizontalBlockSize * 1.8),
       child: Container(
-//        color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
         child: Column(
           children: <Widget>[
             Container(
@@ -910,15 +889,19 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                       padding: EdgeInsets.only(
                           left: AppConfig.horizontalBlockSize * 3)),
                   Expanded(
-                    child: Text(
-                      CommonMethods.getStringInCamelCase(service?.name) ??
-                          PlunesStrings.NA,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          fontSize: 15,
-                          color: PlunesColors.BLACKCOLOR,
-                          fontWeight: FontWeight.normal),
+                    child: Container(
+                      margin: EdgeInsets.only(
+                          right: AppConfig.horizontalBlockSize * 3),
+                      child: Text(
+                        CommonMethods.getStringInCamelCase(service?.name) ??
+                            PlunesStrings.NA,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: PlunesColors.BLACKCOLOR,
+                            fontWeight: FontWeight.normal),
+                      ),
                     ),
                   ),
                   Row(
@@ -1021,6 +1004,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             child: Container(
                               padding: EdgeInsets.only(
                                   top: AppConfig.verticalBlockSize * .5),
+                              margin: EdgeInsets.only(
+                                  right: AppConfig.horizontalBlockSize * 15),
                               child: Text(
                                 CommonMethods.getStringInCamelCase(
                                         service.doctors[index]?.name) +
@@ -1957,5 +1942,65 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
         ],
       ),
     );
+  }
+
+  Widget _getTimerForTop() {
+    return StreamBuilder<Object>(
+        stream: _streamForTimer.stream,
+        builder: (context, snapshot) {
+          String value = "Valid for 1 hour only";
+          bool shouldShowRichText = false;
+          if (_expirationTimer != null) {
+            var dateTimeNow = DateTime.now();
+            if (dateTimeNow
+                    .difference(
+                        DateTime.fromMillisecondsSinceEpoch(_expirationTimer))
+                    .inMinutes >=
+                60) {
+              value = "Prices Expired";
+            } else if (dateTimeNow
+                        .difference(DateTime.fromMillisecondsSinceEpoch(
+                            _expirationTimer))
+                        .inMinutes <
+                    60 &&
+                dateTimeNow
+                        .difference(DateTime.fromMillisecondsSinceEpoch(
+                            _expirationTimer))
+                        .inMinutes >
+                    0) {
+              value =
+                  "${60 - dateTimeNow.difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer)).inMinutes} min";
+              shouldShowRichText = true;
+            }
+          }
+          return shouldShowRichText
+              ? Padding(
+                  child: RichText(
+                    text: TextSpan(
+                        children: [
+                          TextSpan(
+                              text: value ?? "",
+                              style: TextStyle(
+                                  color: PlunesColors.GREENCOLOR,
+                                  fontSize: 16)),
+                          TextSpan(
+                              text: " only",
+                              style: TextStyle(
+                                  color: PlunesColors.GREYCOLOR, fontSize: 15)),
+                        ],
+                        text: PlunesStrings.validForOneHour,
+                        style: TextStyle(
+                            color: PlunesColors.GREYCOLOR, fontSize: 15)),
+                  ),
+                  padding: EdgeInsets.only(left: 4.0),
+                )
+              : Container(
+                  margin:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
+                  child: Text(value,
+                      style: TextStyle(
+                          color: PlunesColors.GREYCOLOR, fontSize: 15)),
+                );
+        });
   }
 }

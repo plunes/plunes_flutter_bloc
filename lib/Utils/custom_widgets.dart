@@ -934,7 +934,7 @@ class CustomWidgets {
                         padding: EdgeInsets.only(
                             top: AppConfig.horizontalBlockSize * 1),
                         child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
                             (solutions[index] != null &&
                                     solutions[index].experience != null &&
@@ -947,6 +947,25 @@ class CustomWidgets {
                                     ),
                                   )
                                 : Container(),
+                            !(solutions[index] != null &&
+                                    solutions[index].experience != null &&
+                                    solutions[index].experience > 0)
+                                ? Container(
+                                    height: AppConfig.verticalBlockSize * 3,
+                                    width: AppConfig.horizontalBlockSize * 5,
+                                    child:
+                                        Image.asset(plunesImages.locationIcon))
+                                : Container(),
+                            !(solutions[index] != null &&
+                                    solutions[index].experience != null &&
+                                    solutions[index].experience > 0)
+                                ? Text(
+                                    "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
+                                    style: TextStyle(
+                                        color: PlunesColors.GREYCOLOR,
+                                        fontSize: 10),
+                                  )
+                                : Container()
                           ],
                         ),
                       ),
@@ -954,7 +973,8 @@ class CustomWidgets {
                   ),
                 )),
                 Container(
-//                  width: AppConfig.horizontalBlockSize * 14,
+                  margin:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 5),
                   child: Column(
                     children: <Widget>[
                       Row(
@@ -972,24 +992,30 @@ class CustomWidgets {
                           ),
                         ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 1),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Container(
-                                height: AppConfig.verticalBlockSize * 3,
-                                width: AppConfig.horizontalBlockSize * 5,
-                                child: Image.asset(plunesImages.locationIcon)),
-                            Text(
-                              "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
-                              style: TextStyle(
-                                  color: PlunesColors.GREYCOLOR, fontSize: 10),
-                            ),
-                          ],
-                        ),
-                      )
+                      !(solutions[index] != null &&
+                              solutions[index].experience != null &&
+                              solutions[index].experience > 0)
+                          ? Container()
+                          : Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                      height: AppConfig.verticalBlockSize * 3,
+                                      width: AppConfig.horizontalBlockSize * 5,
+                                      child: Image.asset(
+                                          plunesImages.locationIcon)),
+                                  Text(
+                                    "${solutions[index].distance?.toStringAsFixed(1) ?? _getEmptyString()}kms",
+                                    style: TextStyle(
+                                        color: PlunesColors.GREYCOLOR,
+                                        fontSize: 10),
+                                  ),
+                                ],
+                              ),
+                            )
                     ],
                   ),
                 )

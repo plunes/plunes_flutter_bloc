@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -8,6 +10,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:quiver/async.dart';
+import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 import 'ChangePassword.dart';
 import 'Registration.dart';
 
@@ -137,42 +140,74 @@ class _CheckOTPState extends BaseState<CheckOTP> {
           Container(
             alignment: Alignment.center,
             child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 60.0, right: 20, top: 70, bottom: 0),
+              padding: EdgeInsets.only(
+                  left: Platform.isAndroid ? 30 : 60.0,
+                  right: 20,
+                  top: 70,
+                  bottom: 0),
               child: Center(
-                child: PinPut(
-                  fieldsCount: 4,
-                  autoFocus: true,
-                  spaceBetween: 20,
-                  textStyle: TextStyle(
-                    color: Color(
-                        CommonMethods.getColorHexFromStr(colorsFile.black0)),
-                    fontSize: 22,
-                  ),
-                  onSubmit: (String pin) => _checkOTP(pin, context),
-                  keyboardType: TextInputType.phone,
-                  inputDecoration: InputDecoration(
-                    counterText: "",
-                    contentPadding: EdgeInsets.only(top: 10, bottom: 10),
-                    focusedBorder: UnderlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(10.0),
+                child: Platform.isAndroid
+                    ? Container(
+                        margin: EdgeInsets.only(top: 10, bottom: 10),
+                        child: TextFieldPin(
+                          filled: true,
+                          filledColor: Colors.transparent,
+                          codeLength: 4,
+                          boxSize: 46,
+                          filledAfterTextChange: false,
+                          textStyle: TextStyle(fontSize: 16),
+                          borderStyle: UnderlineInputBorder(
+                              borderSide: BorderSide.lerp(
+                                  BorderSide(color: Colors.green),
+                                  BorderSide(color: Colors.green),
+                                  10),
+                              borderRadius: BorderRadius.zero),
+                          borderStyeAfterTextChange: UnderlineInputBorder(
+                              borderSide: BorderSide.lerp(
+                                  BorderSide(color: Colors.green),
+                                  BorderSide(color: Colors.green),
+                                  10),
+                              borderRadius: BorderRadius.zero),
+                          onOtpCallback: (code, isAutofill) =>
+                              _onOtpCallBack(code, isAutofill),
+                        ),
+                      )
+                    : PinPut(
+                        fieldsCount: 4,
+                        autoFocus: true,
+                        spaceBetween: 20,
+                        textStyle: TextStyle(
+                          color: Color(CommonMethods.getColorHexFromStr(
+                              colorsFile.black0)),
+                          fontSize: 22,
+                        ),
+                        onSubmit: (String pin) => _checkOTP(pin, context),
+                        keyboardType: TextInputType.phone,
+                        inputDecoration: InputDecoration(
+                          counterText: "",
+                          contentPadding: EdgeInsets.only(top: 10, bottom: 10),
+                          focusedBorder: UnderlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                            borderSide: BorderSide(
+                                color: Color(hexColorCode.defaultGreen),
+                                width: 3.0),
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                            borderSide: BorderSide(
+                                color: Color(hexColorCode.defaultGreen),
+                                width: 3.0),
+                          ),
+                        ),
+                        clearButtonIcon:
+                            Icon(Icons.clear, color: Colors.transparent),
+                        pasteButtonIcon: Icon(Icons.content_paste,
+                            color: Colors.transparent),
                       ),
-                      borderSide: BorderSide(
-                          color: Color(hexColorCode.defaultGreen), width: 3.0),
-                    ),
-                    enabledBorder: UnderlineInputBorder(
-                      borderRadius: const BorderRadius.all(
-                        const Radius.circular(10.0),
-                      ),
-                      borderSide: BorderSide(
-                          color: Color(hexColorCode.defaultGreen), width: 3.0),
-                    ),
-                  ),
-                  clearButtonIcon: Icon(Icons.clear, color: Colors.transparent),
-                  pasteButtonIcon:
-                      Icon(Icons.content_paste, color: Colors.transparent),
-                ),
               ),
             ),
           ),
@@ -240,5 +275,11 @@ class _CheckOTPState extends BaseState<CheckOTP> {
             child: form,
           )),
     );
+  }
+
+  _onOtpCallBack(String otpCode, bool isAutofill) {
+    if (otpCode != null && otpCode.length == 4) {
+      _checkOTP(otpCode, context);
+    }
   }
 }
