@@ -183,8 +183,8 @@ class UserManager {
             ? Urls.FORGOT_PASSWORD_URL
             : Urls.GENERATE_OTP_URL,
         headerIncluded: false,
-        requestType: HttpRequestMethods.HTTP_GET,
-        queryParameter: {key: mobileNumber, "signature": signature});
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {key: mobileNumber, "signature": signature});
     if (result.isRequestSucceed) {
       GetOtpModel _getOtp = GetOtpModel.fromJson(result.response.data);
       return RequestSuccess(response: _getOtp);

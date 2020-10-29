@@ -70,7 +70,7 @@ class AppConfig {
 
   static Future<String> getAppSignature() async {
     String signature = await SmsRetrieved.getAppSignature();
-//    print("signature $signature");
+    print("signature $signature");
     return signature;
   }
 
