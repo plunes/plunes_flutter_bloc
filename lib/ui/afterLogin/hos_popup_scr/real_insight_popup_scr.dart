@@ -722,54 +722,67 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                       ])
                                 ]),
                               ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 10),
-                                margin: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 2),
-                                child: LinearPercentIndicator(
-                                  animation: true,
-                                  lineHeight: 12.0,
-                                  animationDuration: 2000,
-                                  percent: (_realInsight.compRate != null &&
-                                          _realInsight.compRate != 0)
-                                      ? _realInsight.compRate / 100
-                                      : 0,
-                                  linearStrokeCap: LinearStrokeCap.roundAll,
-                                  center: Text(
-                                    "${_realInsight.compRate?.toStringAsFixed(0) ?? 0} %",
-                                    style: TextStyle(
-                                        color: PlunesColors.BLACKCOLOR,
-                                        fontSize: 10),
-                                  ),
-                                  progressColor: Color(
-                                      CommonMethods.getColorHexFromStr(
-                                          "#F3CF3D")),
-                                ),
-                              ),
-                              Container(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.arrow_drop_up,
-                                      color: PlunesColors.GREENCOLOR,
-                                      size: 20,
+                              (_realInsight.compRate == null ||
+                                      _realInsight.compRate <= 0)
+                                  ? Container()
+                                  : Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              AppConfig.horizontalBlockSize *
+                                                  10),
+                                      margin: EdgeInsets.only(
+                                          top: AppConfig.verticalBlockSize * 2),
+                                      child: LinearPercentIndicator(
+                                        animation: true,
+                                        lineHeight: 12.0,
+                                        animationDuration: 2000,
+                                        percent:
+                                            (_realInsight.compRate != null &&
+                                                    _realInsight.compRate != 0)
+                                                ? _realInsight.compRate / 100
+                                                : 0,
+                                        linearStrokeCap:
+                                            LinearStrokeCap.roundAll,
+                                        center: Text(
+                                          "${_realInsight.compRate?.toStringAsFixed(0) ?? 0} %",
+                                          style: TextStyle(
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontSize: 10),
+                                        ),
+                                        progressColor: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#F3CF3D")),
+                                      ),
                                     ),
-                                    Text(
-                                      'Competition Rate',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: AppConfig.mediumFont - 1,
-                                          fontWeight: FontWeight.w600),
+                              (_realInsight.compRate == null ||
+                                      _realInsight.compRate <= 0)
+                                  ? Container()
+                                  : Container(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.arrow_drop_up,
+                                            color: PlunesColors.GREENCOLOR,
+                                            size: 20,
+                                          ),
+                                          Text(
+                                            'Competition Rate',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize:
+                                                    AppConfig.mediumFont - 1,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                        ],
+                                      ),
+                                      margin: EdgeInsets.only(
+                                          bottom: AppConfig.verticalBlockSize *
+                                              2.5),
                                     ),
-                                  ],
-                                ),
-                                margin: EdgeInsets.only(
-                                    bottom: AppConfig.verticalBlockSize * 2.5),
-                              ),
                               (_realInsight != null &&
                                       _realInsight.dataPoints != null &&
                                       _realInsight.dataPoints.isNotEmpty)

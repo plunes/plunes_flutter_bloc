@@ -335,11 +335,16 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                               _prevSearchedSolution
                                                   .data.length) {
                                             return InkWell(
-                                              onTap: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          ExploreMainScreen())),
+                                              onTap: () {
+                                                Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ExploreMainScreen()))
+                                                    .then((value) {
+                                                  _getPreviousSolutions();
+                                                });
+                                              },
                                               child: Container(
                                                 alignment: Alignment.center,
                                                 padding: EdgeInsets.symmetric(

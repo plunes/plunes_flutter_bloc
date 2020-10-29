@@ -8,6 +8,9 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/explore_bloc/explore_main_bloc.dart';
+import 'package:plunes/models/explore/explore_main_model.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -27,9 +30,14 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
   double _currentDotPosition = 0.0;
   final CarouselController _controller = CarouselController();
   StreamController _streamController;
+  ExploreMainBloc _exploreMainBloc;
+  ExploreOuterModel _exploreModel;
+  String _failedMessage;
 
   @override
   void initState() {
+    _exploreMainBloc = ExploreMainBloc();
+    _getExploreData();
     _currentDotPosition = 0.0;
     _streamController = StreamController.broadcast();
     super.initState();
@@ -39,13 +47,35 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
   void dispose() {
     _whyPlunesWidgets = [];
     _streamController?.close();
+    _exploreMainBloc?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _getBody(),
+      body: StreamBuilder<RequestState>(
+          initialData: (_exploreModel == null || _exploreModel.data == null)
+              ? RequestInProgress()
+              : null,
+          stream: _exploreMainBloc.baseStream,
+          builder: (context, snapshot) {
+            if (snapshot.data is RequestSuccess) {
+              RequestSuccess successObject = snapshot.data;
+              _exploreModel = successObject.response;
+            } else if (snapshot.data is RequestFailed) {
+              RequestFailed _failedObj = snapshot.data;
+              _failedMessage = _failedObj?.failureCause;
+            } else if (snapshot.data is RequestInProgress) {
+              return CustomWidgets().getProgressIndicator();
+            }
+            return (_exploreModel == null ||
+                    _exploreModel.data == null ||
+                    _exploreModel.data.isEmpty)
+                ? CustomWidgets().errorWidget(_failedMessage,
+                    onTap: () => _getExploreData(), isSizeLess: true)
+                : _getBody();
+          }),
       appBar: widget.getAppBar(context, PlunesStrings.explore, true),
     );
   }
@@ -198,10 +228,26 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
         shrinkWrap: true,
         children: <Widget>[
           _getWhyPlunesView(),
-          _getFestiveOfferWidget(),
-          _getTopFacilityWidget(),
-          _bookFacilityDirectlyWidget(),
-          _getPeopleAvailingDiscountWidget(),
+          _exploreModel.data.first.section2 != null &&
+                  _exploreModel.data.first.section2.elements != null &&
+                  _exploreModel.data.first.section2.elements.isNotEmpty
+              ? _getSectionTwoWidget(_exploreModel.data.first.section2)
+              : Container(),
+          _exploreModel.data.first.section3 != null &&
+                  _exploreModel.data.first.section3.elements != null &&
+                  _exploreModel.data.first.section3.elements.isNotEmpty
+              ? _getSectionThreeWidget(_exploreModel.data.first.section3)
+              : Container(),
+          _exploreModel.data.first.section4 != null &&
+                  _exploreModel.data.first.section4.elements != null &&
+                  _exploreModel.data.first.section4.elements.isNotEmpty
+              ? _getSectionFourWidget(_exploreModel.data.first.section4)
+              : Container(),
+          _exploreModel.data.first.section5 != null &&
+                  _exploreModel.data.first.section5.elements != null &&
+                  _exploreModel.data.first.section5.elements.isNotEmpty
+              ? _getSectionFiveWidget(_exploreModel.data.first.section5)
+              : Container(),
         ],
       ),
     );
@@ -243,7 +289,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
     );
   }
 
-  Widget _getFestiveOfferWidget() {
+  Widget _getSectionTwoWidget(Section3 sectionTwo) {
     return Container(
       margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
       child: Column(
@@ -251,7 +297,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
           Container(
             alignment: Alignment.topLeft,
             child: Text(
-              "Grand Festive offers",
+              sectionTwo.heading ?? PlunesStrings.NA,
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontWeight: FontWeight.w600,
@@ -262,17 +308,18 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                 horizontal: AppConfig.horizontalBlockSize * 4),
           ),
           CarouselSlider.builder(
-            itemCount: 5,
+            itemCount:
+                sectionTwo.elements.length > 8 ? 8 : sectionTwo.elements.length,
             carouselController: _controller,
             options: CarouselOptions(
-                height: AppConfig.verticalBlockSize * 25,
+                height: AppConfig.verticalBlockSize * 28,
                 aspectRatio: 16 / 9,
-                viewportFraction: 0.8,
                 initialPage: 0,
-                enableInfiniteScroll: true,
+                enableInfiniteScroll: false,
                 pageSnapping: true,
                 reverse: false,
                 enlargeCenterPage: true,
+                viewportFraction: 1.0,
                 scrollDirection: Axis.horizontal,
                 onPageChanged: (index, _) {
                   if (_currentDotPosition.toInt() != index) {
@@ -281,13 +328,31 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                   }
                 }),
             itemBuilder: (BuildContext context, int itemIndex) => Container(
-              color: Colors.grey,
-              child: Stack(
-                children: <Widget>[
-                  CustomWidgets().getImageFromUrl(
-                      'https://images.unsplash.com/photo-1586871608370-4adee64d1794?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2862&q=80'),
-                  Center(child: Text(itemIndex.toString()))
-                ],
+//              color: Colors.grey,
+              width: double.infinity,
+              child: InkWell(
+                onTap: () {
+                  if (sectionTwo.elements[itemIndex].serviceName != null &&
+                      sectionTwo.elements[itemIndex].serviceName
+                          .trim()
+                          .isNotEmpty) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SolutionBiddingScreen(
+                                searchQuery: sectionTwo
+                                    .elements[itemIndex].serviceName)));
+                  }
+                },
+                child: Container(
+                  margin: EdgeInsets.all(10.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CustomWidgets().getImageFromUrl(
+                        sectionTwo.elements[itemIndex].imgUrl,
+                        boxFit: BoxFit.cover),
+                  ),
+                ),
               ),
             ),
           ),
@@ -298,7 +363,9 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                   margin:
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
                   child: DotsIndicator(
-                    dotsCount: 5,
+                    dotsCount: sectionTwo.elements.length > 8
+                        ? 8
+                        : sectionTwo.elements.length,
                     position: _currentDotPosition,
                     axis: Axis.horizontal,
                     decorator: _decorator,
@@ -318,7 +385,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
     );
   }
 
-  Widget _getTopFacilityWidget() {
+  Widget _getSectionThreeWidget(Section3 section3) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
       child: Column(
@@ -326,184 +393,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
           Container(
             alignment: Alignment.topLeft,
             child: Text(
-              "Top facilities Today Near You",
-              style: TextStyle(
-                  color: PlunesColors.BLACKCOLOR,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16),
-            ),
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 1.5,
-                horizontal: AppConfig.horizontalBlockSize * 4),
-          ),
-          Container(
-            height: AppConfig.verticalBlockSize * 35,
-            margin: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return Card(
-                  color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Container(
-                    width: AppConfig.horizontalBlockSize * 48,
-                    margin: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 3,
-                        vertical: AppConfig.verticalBlockSize * 1.2),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          width: AppConfig.horizontalBlockSize * 40,
-                          height: AppConfig.verticalBlockSize * 15,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: CustomWidgets().getImageFromUrl(
-                                'https://images.unsplash.com/photo-1586871608370-4adee64d1794?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2862&q=80',
-                                boxFit: BoxFit.fill),
-                          ),
-                        ),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Fortis Hospital Price dropped by some percent Price dropped by some percent Price dropped by some percent",
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 15),
-                          ),
-                          margin: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 1.5,
-                              horizontal: AppConfig.horizontalBlockSize * 4),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            "Price dropped by some percent Price dropped by some percent Price dropped by some percent Price dropped by some percent",
-                            maxLines: 2,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 13),
-                          ),
-                          margin: EdgeInsets.symmetric(
-                              vertical: AppConfig.verticalBlockSize * 0.4,
-                              horizontal: AppConfig.horizontalBlockSize * 4),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-              itemCount: 5,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _bookFacilityDirectlyWidget() {
-    return Container(
-      padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
-      height: AppConfig.verticalBlockSize * 10,
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          return Card(
-            color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: Container(
-              width: AppConfig.horizontalBlockSize * 90,
-              padding: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 4),
-              child: Row(
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      return;
-                    },
-                    onDoubleTap: () {},
-                    child: 1 == 1
-                        ? CircleAvatar(
-                            backgroundColor: Colors.transparent,
-                            child: Container(
-                              height: AppConfig.horizontalBlockSize * 14,
-                              width: AppConfig.horizontalBlockSize * 14,
-                              child: ClipOval(
-                                  child: CustomWidgets().getImageFromUrl(
-                                      'https://images.unsplash.com/photo-1586871608370-4adee64d1794?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2862&q=80',
-                                      boxFit: BoxFit.fill,
-                                      placeHolderPath:
-                                          PlunesImages.doc_placeholder)),
-                            ),
-                            radius: AppConfig.horizontalBlockSize * 7,
-                          )
-                        : CustomWidgets().getProfileIconWithName(
-                            "name",
-                            14,
-                            14,
-                          ),
-                  ),
-                  Expanded(
-                      child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 3),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "Hair Transplant",
-                          maxLines: 1,
-                          style: TextStyle(
-                              color: PlunesColors.BLACKCOLOR,
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500),
-                        ),
-                        Text(
-                          "5 slots booked 8 remaining !",
-                          maxLines: 1,
-                          style: TextStyle(
-                              color: PlunesColors.BLACKCOLOR,
-                              fontSize: 13,
-                              fontWeight: FontWeight.normal),
-                        )
-                      ],
-                    ),
-                  )),
-                  Text(
-                    "View",
-                    style: TextStyle(
-                        color: PlunesColors.GREENCOLOR,
-                        fontSize: 14,
-                        fontWeight: FontWeight.normal),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-        itemCount: 4,
-        shrinkWrap: true,
-        scrollDirection: Axis.horizontal,
-      ),
-    );
-  }
-
-  Widget _getPeopleAvailingDiscountWidget() {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
-      child: Column(
-        children: <Widget>[
-          Container(
-            alignment: Alignment.topLeft,
-            child: Text(
-              "People Availing Discounts",
+              section3?.heading ?? PlunesStrings.NA,
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontWeight: FontWeight.w600,
@@ -522,11 +412,15 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SolutionBiddingScreen(
-                                searchQuery: "Botox Treatment")));
+                    return;
+                    if (section3.elements[index].name != null &&
+                        section3.elements[index].name.trim().isNotEmpty) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SolutionBiddingScreen(
+                                  searchQuery: section3.elements[index].name)));
+                    }
                   },
                   child: Card(
                     color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
@@ -540,16 +434,19 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                       child: Column(
                         children: <Widget>[
                           Container(
-                            alignment: Alignment.center,
-                            color: Colors.transparent,
-                            child: CustomWidgets().getImageFromUrl(
-                                'https://images.unsplash.com/photo-1586871608370-4adee64d1794?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2862&q=80',
-                                boxFit: BoxFit.fill),
+                            width: AppConfig.horizontalBlockSize * 40,
+                            height: AppConfig.verticalBlockSize * 15,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: CustomWidgets().getImageFromUrl(
+                                  section3.elements[index].imgUrl,
+                                  boxFit: BoxFit.fill),
+                            ),
                           ),
                           Container(
-                            alignment: Alignment.center,
+                            alignment: Alignment.topLeft,
                             child: Text(
-                              "Botox Treatment",
+                              section3.elements[index].name ?? PlunesStrings.NA,
                               maxLines: 2,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -564,7 +461,8 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                           Container(
                             alignment: Alignment.center,
                             child: Text(
-                              "Price dropped by some percent Price dropped by some percent Price dropped by some percent Price dropped by some percent",
+                              section3.elements[index].subHeading ??
+                                  PlunesStrings.NA,
                               maxLines: 2,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -582,11 +480,241 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                   ),
                 );
               },
-              itemCount: 5,
+              itemCount: section3.elements?.length ?? 0,
             ),
           )
         ],
       ),
     );
+  }
+
+  Widget _getSectionFourWidget(Section3 section4) {
+    return Container(
+      padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
+      height: AppConfig.verticalBlockSize * 10,
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return InkWell(
+            onTap: () {
+              if (section4.elements[index].serviceName != null &&
+                  section4.elements[index].serviceName.trim().isNotEmpty) {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SolutionBiddingScreen(
+                            searchQuery:
+                                section4.elements[index].serviceName)));
+              }
+            },
+            child: Card(
+              color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Container(
+                width: AppConfig.horizontalBlockSize * 90,
+                padding: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 4),
+                child: Row(
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        return;
+                      },
+                      onDoubleTap: () {},
+                      child: (section4.elements[index].imgUrl != null &&
+                              section4.elements[index].imgUrl.isNotEmpty &&
+                              section4.elements[index].imgUrl.contains("http"))
+                          ? CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              child: Container(
+                                height: AppConfig.horizontalBlockSize * 14,
+                                width: AppConfig.horizontalBlockSize * 14,
+                                child: ClipOval(
+                                    child: CustomWidgets().getImageFromUrl(
+                                        section4.elements[index].imgUrl,
+                                        boxFit: BoxFit.fill,
+                                        placeHolderPath:
+                                            PlunesImages.doc_placeholder)),
+                              ),
+                              radius: AppConfig.horizontalBlockSize * 7,
+                            )
+                          : CustomWidgets().getProfileIconWithName(
+                              section4.elements[index].serviceName ??
+                                  PlunesStrings.NA,
+                              14,
+                              14,
+                            ),
+                    ),
+                    Expanded(
+                        child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 3),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            section4.elements[index].serviceName ??
+                                PlunesStrings.NA,
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          Text(
+                            section4.elements[index].subHeading ??
+                                PlunesStrings.NA,
+                            maxLines: 1,
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontSize: 13,
+                                fontWeight: FontWeight.normal),
+                          )
+                        ],
+                      ),
+                    )),
+                    Text(
+                      "View",
+                      style: TextStyle(
+                          color: PlunesColors.GREENCOLOR,
+                          fontSize: 14,
+                          fontWeight: FontWeight.normal),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+        itemCount: section4.elements?.length ?? 0,
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+      ),
+    );
+  }
+
+  Widget _getSectionFiveWidget(Section3 section5) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+      child: Column(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.topLeft,
+            child: Text(
+              section5.heading ?? PlunesStrings.NA,
+              style: TextStyle(
+                  color: PlunesColors.BLACKCOLOR,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16),
+            ),
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 1.5,
+                horizontal: AppConfig.horizontalBlockSize * 4),
+          ),
+          Container(
+            height: AppConfig.verticalBlockSize * 35,
+            margin: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    if (section5.elements[index].serviceName != null &&
+                        section5.elements[index].serviceName
+                            .trim()
+                            .isNotEmpty) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SolutionBiddingScreen(
+                                  searchQuery:
+                                      section5.elements[index].serviceName)));
+                    }
+                  },
+                  child: Card(
+                    color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Container(
+                      width: AppConfig.horizontalBlockSize * 48,
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 3,
+                          vertical: AppConfig.verticalBlockSize * 1.2),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            alignment: Alignment.center,
+                            color: Colors.transparent,
+                            child: CustomWidgets().getImageFromUrl(
+                                section5.elements[index].imgUrl,
+                                boxFit: BoxFit.fill),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              section5.elements[index].serviceName ??
+                                  PlunesStrings.NA,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 15),
+                            ),
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 1.5,
+                                horizontal: AppConfig.horizontalBlockSize * 4),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              section5.elements[index].subHeading1 ??
+                                  PlunesStrings.NA,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 13),
+                            ),
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 0.4,
+                                horizontal: AppConfig.horizontalBlockSize * 4),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              section5.elements[index].subHeading2 ??
+                                  PlunesStrings.NA,
+                              maxLines: 2,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 13),
+                            ),
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 0.4,
+                                horizontal: AppConfig.horizontalBlockSize * 4),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+              itemCount: section5.elements?.length ?? 0,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _getExploreData() {
+    _failedMessage = null;
+    _exploreMainBloc.getExploreData();
   }
 }

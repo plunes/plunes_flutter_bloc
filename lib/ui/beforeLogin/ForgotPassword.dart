@@ -206,10 +206,12 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
   }
 
   _getUserExistenceData(data) async {
+    String signature = await AppConfig.getAppSignature();
     if (data['success'] != null && data['success']) {
       var requestState = await _userBloc.getGenerateOtp(
           phoneNumberController.text.trim(),
-          iFromForgotPassword: true);
+          iFromForgotPassword: true,
+          signature: signature);
       progress = false;
       _setState();
       await Future.delayed(Duration(milliseconds: 200));

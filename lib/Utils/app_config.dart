@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/widgets.dart';
+import 'package:sms_otp_auto_verify/sms_otp_auto_verify.dart';
 
 /// This class is for app configurations (i.e Media query,App textSize )
 class AppConfig {
@@ -65,6 +66,12 @@ class AppConfig {
   ///determines the platform
   static bool isAndroidPlatform() {
     return Platform.isAndroid;
+  }
+
+  static Future<String> getAppSignature() async {
+    String signature = await SmsRetrieved.getAppSignature();
+//    print("signature $signature");
+    return signature;
   }
 
   ///provides a unique device-Id of the Device

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pinput/pin_put/pin_put.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/blocs/user_bloc.dart';
@@ -75,8 +76,10 @@ class _CheckOTPState extends BaseState<CheckOTP> {
   }
 
   void sendOtp() async {
+    String signature = await AppConfig.getAppSignature();
     var requestState = await _userBloc.getGenerateOtp(widget.phone,
-        iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle);
+        iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle,
+        signature: signature);
     if (requestState is RequestSuccess) {
       _start = 60;
       _current = 60;

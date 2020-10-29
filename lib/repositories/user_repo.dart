@@ -176,7 +176,7 @@ class UserManager {
   }
 
   Future<RequestState> getGenerateOtp(String mobileNumber,
-      {bool iFromForgotPassword = false}) async {
+      {bool iFromForgotPassword = false, String signature}) async {
     String key = iFromForgotPassword ? 'userId' : 'mobileNumber';
     var result = await DioRequester().requestMethod(
         url: iFromForgotPassword
@@ -184,7 +184,7 @@ class UserManager {
             : Urls.GENERATE_OTP_URL,
         headerIncluded: false,
         requestType: HttpRequestMethods.HTTP_GET,
-        queryParameter: {key: mobileNumber});
+        queryParameter: {key: mobileNumber, "signature": signature});
     if (result.isRequestSucceed) {
       GetOtpModel _getOtp = GetOtpModel.fromJson(result.response.data);
       return RequestSuccess(response: _getOtp);

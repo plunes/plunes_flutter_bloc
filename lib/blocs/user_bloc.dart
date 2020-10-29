@@ -38,9 +38,9 @@ class UserBloc extends BlocBase {
   }
 
   Future<RequestState> getGenerateOtp(String mobileNumber,
-      {bool iFromForgotPassword = false}) async {
-    var result = await UserManager()
-        .getGenerateOtp(mobileNumber, iFromForgotPassword: iFromForgotPassword);
+      {bool iFromForgotPassword = false, String signature}) async {
+    var result = await UserManager().getGenerateOtp(mobileNumber,
+        iFromForgotPassword: iFromForgotPassword, signature: signature);
     super.addIntoStream(result);
     return result;
   }

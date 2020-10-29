@@ -119,4 +119,5 @@ class Urls {
       "user/serviceNotificationException/";
   static const String UPDATE_PRICE_IN_CATALOGUE_FROM_REAL_INSIGHT =
       "user/addServiceToCatalogue";
+  static const String EXPLORE_URL = "explore/";
 }

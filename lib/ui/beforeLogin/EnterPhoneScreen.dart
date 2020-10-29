@@ -319,8 +319,10 @@ class _EnterPhoneScreenState extends State<EnterPhoneScreen>
   }
 
   void _sendOtp() async {
-    var requestState =
-        await _userBloc.getGenerateOtp(phoneNumberController.text.trim());
+    String signature = await AppConfig.getAppSignature();
+    var requestState = await _userBloc.getGenerateOtp(
+        phoneNumberController.text.trim(),
+        signature: signature);
     progress = false;
     _setState();
     await Future.delayed(Duration(milliseconds: 200));
