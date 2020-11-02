@@ -36,13 +36,13 @@ class RealInsight {
   String serviceName, expirationMessage, imageUrl, professionalId;
   bool negotiating, expired, booked, professionalBooked, priceUpdated;
   int timeRemaining, expirationTimer;
-  num userPrice, compRate, distance;
+  num userPrice, compRate, distance, recommendation;
   int createdAt;
   List<DataPoint> dataPoints;
 
   @override
   String toString() {
-    return 'RealInsight{solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, centerLocation: $centerLocation, serviceName: $serviceName, expirationMessage: $expirationMessage, negotiating: $negotiating, expired: $expired, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt, suggested: $suggested, booked: $booked, professionalBooked: $professionalBooked, dataPoints: $dataPoints, compRate: $compRate, distance: $distance}';
+    return 'RealInsight{solutionId: $solutionId, serviceId: $serviceId, userName: $userName, profName: $profName, centerLocation: $centerLocation, serviceName: $serviceName, expirationMessage: $expirationMessage, negotiating: $negotiating, expired: $expired, timeRemaining: $timeRemaining, userPrice: $userPrice, createdAt: $createdAt, suggested: $suggested, booked: $booked, professionalBooked: $professionalBooked, dataPoints: $dataPoints, compRate: $compRate, distance: $distance, recommendation $recommendation}';
   }
 
   bool suggested;
@@ -69,7 +69,8 @@ class RealInsight {
       this.suggested,
       this.dataPoints,
       this.compRate,
-      this.distance});
+      this.distance,
+      this.recommendation});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
     solutionId = json['solutionId'];
@@ -99,6 +100,7 @@ class RealInsight {
     }
     compRate = json['competitionRate'];
     distance = json['distance'];
+    recommendation = json['recommendation'];
   }
 
   Map<String, dynamic> toJson() {

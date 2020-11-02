@@ -18,6 +18,10 @@ import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 
 // ignore: must_be_immutable
 class ExploreMainScreen extends BaseActivity {
+  bool hasAppBar;
+
+  ExploreMainScreen({this.hasAppBar});
+
   @override
   _ExploreMainScreenState createState() => _ExploreMainScreenState();
 }
@@ -76,7 +80,9 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                     onTap: () => _getExploreData(), isSizeLess: true)
                 : _getBody();
           }),
-      appBar: widget.getAppBar(context, PlunesStrings.explore, true),
+      appBar: (widget.hasAppBar == null || !widget.hasAppBar)
+          ? null
+          : widget.getAppBar(context, PlunesStrings.explore, true),
     );
   }
 
@@ -143,10 +149,8 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
             width: AppConfig.horizontalBlockSize * 6,
             margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
           ),
-          Text(
-            "First consultation free",
-            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
-          )
+          Text("First consultation free",
+              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13))
         ],
       ),
     ),
@@ -361,7 +365,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
               builder: (context, snapshot) {
                 return Container(
                   margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.5),
                   child: DotsIndicator(
                     dotsCount: sectionTwo.elements.length > 8
                         ? 8
@@ -434,17 +438,17 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                       child: Column(
                         children: <Widget>[
                           Container(
-                            width: AppConfig.horizontalBlockSize * 40,
+                            width: double.infinity,
                             height: AppConfig.verticalBlockSize * 15,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: CustomWidgets().getImageFromUrl(
                                   section3.elements[index].imgUrl,
-                                  boxFit: BoxFit.fill),
+                                  boxFit: BoxFit.cover),
                             ),
                           ),
                           Container(
-                            alignment: Alignment.topLeft,
+                            alignment: Alignment.center,
                             child: Text(
                               section3.elements[index].name ?? PlunesStrings.NA,
                               maxLines: 2,
@@ -513,7 +517,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
               child: Container(
                 width: AppConfig.horizontalBlockSize * 90,
                 padding: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 4),
+                    horizontal: AppConfig.horizontalBlockSize * 2.5),
                 child: Row(
                   children: <Widget>[
                     InkWell(
@@ -649,7 +653,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                             color: Colors.transparent,
                             child: CustomWidgets().getImageFromUrl(
                                 section5.elements[index].imgUrl,
-                                boxFit: BoxFit.fill),
+                                boxFit: BoxFit.cover),
                           ),
                           Container(
                             alignment: Alignment.center,

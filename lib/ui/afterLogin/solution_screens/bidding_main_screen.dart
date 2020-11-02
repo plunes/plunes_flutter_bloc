@@ -357,11 +357,12 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                             return InkWell(
                                               onTap: () {
                                                 Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                ExploreMainScreen()))
-                                                    .then((value) {
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ExploreMainScreen(
+                                                              hasAppBar: true,
+                                                            ))).then((value) {
                                                   _getPreviousSolutions();
                                                 });
                                               },

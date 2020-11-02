@@ -383,38 +383,43 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   ),
                 ],
               ),
-              _getDoctordetail(),
-              InkWell(
-                onTap: () => _getDirections(),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      height: AppConfig.verticalBlockSize * 16,
-                      child: _showMapview(),
-                    ),
-                    Container(
-                      padding:
-                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+              _getDoctorDetails(),
+              (_docProfileInfo.user.latitude == null ||
+                      _docProfileInfo.user.latitude.isEmpty ||
+                      _docProfileInfo.user.latitude == null ||
+                      _docProfileInfo.user.latitude.isEmpty)
+                  ? Container()
+                  : InkWell(
+                      onTap: () => _getDirections(),
+                      child: Column(
                         children: <Widget>[
-                          Text(
-                            PlunesStrings.getDirection,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                color: PlunesColors.GREENCOLOR),
+                          Container(
+                            height: AppConfig.verticalBlockSize * 16,
+                            child: _showMapview(),
                           ),
-                          Icon(
-                            Icons.arrow_forward,
-                            color: PlunesColors.GREENCOLOR,
-                            size: AppConfig.mediumFont,
+                          Container(
+                            padding: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  PlunesStrings.getDirection,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.mediumFont,
+                                      color: PlunesColors.GREENCOLOR),
+                                ),
+                                Icon(
+                                  Icons.arrow_forward,
+                                  color: PlunesColors.GREENCOLOR,
+                                  size: AppConfig.mediumFont,
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              )
+                    )
               // Padding(
               //   padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
               //   child: RichText(
@@ -1289,6 +1294,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   Widget getProfileInfoView(
       double height, double width, String icon, String title, String value) {
+    if (value == null || value.trim().isEmpty) {
+      return Container();
+    }
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1383,7 +1391,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           ]);
   }
 
-  Widget _getDoctordetail() {
+  Widget _getDoctorDetails() {
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
       child: Column(
@@ -1393,16 +1401,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           SizedBox(
             height: 8,
           ),
-          getProfileInfoView(
-              16,
-              16,
-              plunesImages.clockIcon,
-              plunesStrings.expOfPractice,
-              (_docProfileInfo.user == null ||
-                      _docProfileInfo.user.experience == null ||
-                      _docProfileInfo.user.experience == "0")
-                  ? _getEmptyString()
-                  : _docProfileInfo.user.experience),
+          (_docProfileInfo.user == null ||
+                  _docProfileInfo.user.experience == null ||
+                  _docProfileInfo.user.experience == "0")
+              ? Container()
+              : getProfileInfoView(16, 16, plunesImages.clockIcon,
+                  plunesStrings.expOfPractice, _docProfileInfo.user.experience),
           SizedBox(
             height: 8,
           ),

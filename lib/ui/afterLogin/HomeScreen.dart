@@ -22,6 +22,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/AvailabilitySelectionScreen.dart';
 import 'package:plunes/ui/afterLogin/doc_hos_screen/hosptal_overview_screen.dart';
+import 'package:plunes/ui/afterLogin/explore_screens/explore_main_screen.dart';
 import 'package:plunes/ui/afterLogin/fill_coupon.dart';
 import 'package:plunes/ui/afterLogin/payment/manage_payment.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
@@ -69,6 +70,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   bool _showBadge = false, progress = false, isSelected = false;
   final List<Widget> _widgetOptionsForUser = [
     BiddingMainScreen(() => _scaffoldKey.currentState.openDrawer()),
+    ExploreMainScreen(),
 //    PlockrMainScreen(),
     NotificationScreen(),
   ];
@@ -113,25 +115,23 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             ? null
             : widget.getHomeAppBar(
                 context,
-//                _userType != Constants.user
-//                    ?
-                (_selectedIndex == 0
-                    ? CommonMethods.getStringInCamelCase(
-                            UserManager().getUserDetails().name) ??
-                        ""
-                    : _selectedIndex == 1
-                        ? plunesStrings.notifications
-                        : _selectedIndex == 3
-                            ? plunesStrings.profiles
-                            : _selectedIndex == 2
-                                ? plunesStrings.notifications
-                                : '')
-//                    : (_selectedIndex == 1
-//                        ? plunesStrings.plockr
-//                        : _selectedIndex == 2
-//                            ? plunesStrings.notifications
-//                            : ''),
-                ,
+                _userType != Constants.user
+                    ? (_selectedIndex == 0
+                        ? CommonMethods.getStringInCamelCase(
+                                UserManager().getUserDetails().name) ??
+                            ""
+                        : _selectedIndex == 1
+                            ? plunesStrings.notifications
+                            : _selectedIndex == 3
+                                ? plunesStrings.profiles
+                                : _selectedIndex == 2
+                                    ? plunesStrings.notifications
+                                    : '')
+                    : (_selectedIndex == 1
+                        ? PlunesStrings.explore
+                        : _selectedIndex == 2
+                            ? plunesStrings.notifications
+                            : ''),
                 isSelected,
                 selectedPositions,
                 from,
@@ -235,8 +235,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       items: <BottomNavigationBarItem>[
         bottomNavigationBarItem(plunesStrings.solution, plunesImages.bidIcon,
             plunesImages.bidActiveIcon),
-//        bottomNavigationBarItem(plunesStrings.plockr,
-//            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
+        bottomNavigationBarItem(PlunesStrings.explore,
+            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
         bottomNavigationBarItem(
             plunesStrings.notification,
             (FirebaseNotification().getNotificationCount() != null &&
