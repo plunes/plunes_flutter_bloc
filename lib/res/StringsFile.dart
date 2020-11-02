@@ -280,7 +280,7 @@ class PlunesStrings {
 
   ///More Facilities Screen
   static const String moreFacilities = "More Facilities";
-  static const String congrats = "Congrats";
+  static const String congrats = "Congrats!";
   static const String negotiateWithFiveMore =
       "Negotiate with up to 5 more facilities near you";
   static const String searchFacilities = "Search Facilities";

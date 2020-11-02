@@ -184,11 +184,13 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                   stream: _panelStreamController.stream,
                   builder: (context, snapshot) {
                     if (_isPanelOpened != null && !_isPanelOpened) {
-                      return Container(
+                      return AnimatedContainer(
                         padding: EdgeInsets.only(
                             top: AppConfig.verticalBlockSize * 28),
                         margin: EdgeInsets.symmetric(
                             horizontal: AppConfig.horizontalBlockSize * 10),
+                        duration: Duration(milliseconds: 1500),
+                        curve: Curves.ease,
                         child: _getSearchBar(),
                       );
                     }
@@ -256,73 +258,91 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                     topRight: Radius.circular(35))),
                             child: Column(
                               children: <Widget>[
-                                Container(
-                                  width: double.infinity,
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 4),
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          AppConfig.horizontalBlockSize * 4.5,
-                                      vertical:
-                                          AppConfig.verticalBlockSize * 2),
-                                  child: InkWell(
-                                    onTap: () {
-                                      if (_prevSearchedSolution.topSearches !=
-                                              null &&
-                                          _prevSearchedSolution.topSearches) {
-                                        return;
-                                      }
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  PreviousActivity()));
-                                    },
-                                    highlightColor: (_prevSearchedSolution
-                                                    .topSearches !=
-                                                null &&
-                                            _prevSearchedSolution.topSearches)
-                                        ? Colors.transparent
-                                        : null,
-                                    splashColor: (_prevSearchedSolution
-                                                    .topSearches !=
-                                                null &&
-                                            _prevSearchedSolution.topSearches)
-                                        ? Colors.transparent
-                                        : null,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Text(
-                                          (_prevSearchedSolution.topSearches !=
+                                StreamBuilder<Object>(
+                                    stream: _panelStreamController.stream,
+                                    builder: (context, snapshot) {
+                                      return Container(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.only(
+                                            top: (_isPanelOpened != null &&
+                                                    !_isPanelOpened)
+                                                ? AppConfig.verticalBlockSize *
+                                                    1
+                                                : AppConfig.verticalBlockSize *
+                                                    4),
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal:
+                                                AppConfig.horizontalBlockSize *
+                                                    4.5,
+                                            vertical:
+                                                AppConfig.verticalBlockSize *
+                                                    2),
+                                        child: InkWell(
+                                          onTap: () {
+                                            if (_prevSearchedSolution
+                                                        .topSearches !=
+                                                    null &&
+                                                _prevSearchedSolution
+                                                    .topSearches) {
+                                              return;
+                                            }
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PreviousActivity()));
+                                          },
+                                          highlightColor: (_prevSearchedSolution
+                                                          .topSearches !=
                                                       null &&
                                                   _prevSearchedSolution
                                                       .topSearches)
-                                              ? PlunesStrings.topSearches
-                                              : PlunesStrings
-                                                  .previousActivities,
-                                          style: TextStyle(
-                                            fontSize: AppConfig.mediumFont,
-                                            fontWeight: FontWeight.w500,
+                                              ? Colors.transparent
+                                              : null,
+                                          splashColor: (_prevSearchedSolution
+                                                          .topSearches !=
+                                                      null &&
+                                                  _prevSearchedSolution
+                                                      .topSearches)
+                                              ? Colors.transparent
+                                              : null,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: <Widget>[
+                                              Text(
+                                                (_prevSearchedSolution
+                                                                .topSearches !=
+                                                            null &&
+                                                        _prevSearchedSolution
+                                                            .topSearches)
+                                                    ? PlunesStrings.topSearches
+                                                    : PlunesStrings
+                                                        .previousActivities,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              (_prevSearchedSolution
+                                                              .topSearches !=
+                                                          null &&
+                                                      _prevSearchedSolution
+                                                          .topSearches)
+                                                  ? Container()
+                                                  : Icon(
+                                                      Icons.chevron_right,
+                                                      color: PlunesColors
+                                                          .GREENCOLOR,
+                                                      size: 35,
+                                                    )
+                                            ],
                                           ),
                                         ),
-                                        (_prevSearchedSolution.topSearches !=
-                                                    null &&
-                                                _prevSearchedSolution
-                                                    .topSearches)
-                                            ? Container()
-                                            : Icon(
-                                                Icons.chevron_right,
-                                                color: PlunesColors.GREENCOLOR,
-                                                size: 35,
-                                              )
-                                      ],
-                                    ),
-                                  ),
-                                ),
+                                      );
+                                    }),
                                 (_prevSearchedSolution == null ||
                                         _prevSearchedSolution.data == null ||
                                         _prevSearchedSolution.data.isEmpty)
@@ -397,10 +417,12 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                 if (_isPanelOpened != null && !_isPanelOpened) {
                                   return Container();
                                 }
-                                return Container(
+                                return AnimatedContainer(
                                   margin: EdgeInsets.symmetric(
                                       horizontal:
                                           AppConfig.horizontalBlockSize * 10),
+                                  duration: Duration(milliseconds: 1500),
+                                  curve: Curves.ease,
                                   child: _getSearchBar(),
                                 );
                               }),

@@ -274,7 +274,7 @@ class _DocProfileState extends BaseState<DocProfile> {
                   plunesImages.introduction,
                 ),
                 _getBottomView(),
-                _getDoctordetail(
+                _getDocDetails(
                   24,
                   24,
                   PlunesImages.expert,
@@ -353,6 +353,9 @@ class _DocProfileState extends BaseState<DocProfile> {
 
   Widget getProfileInfoView(
       double height, double width, String icon, String title, String value) {
+    if (value == null || value.isEmpty) {
+      return Container();
+    }
     return Container(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -703,7 +706,7 @@ class _DocProfileState extends BaseState<DocProfile> {
     );
   }
 
-  Widget _getDoctordetail(
+  Widget _getDocDetails(
       double height, double width, String icon, String title) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -754,16 +757,16 @@ class _DocProfileState extends BaseState<DocProfile> {
               SizedBox(
                 height: 8,
               ),
-              getProfileInfoView(
-                  16,
-                  16,
-                  plunesImages.clockIcon,
-                  plunesStrings.expOfPractice,
-                  (_profileResponse.user == null ||
-                          _profileResponse.user.experience == null ||
-                          _profileResponse.user.experience == "0")
-                      ? _getEmptyString()
-                      : _profileResponse.user.experience),
+              (_profileResponse.user == null ||
+                      _profileResponse.user.experience == null ||
+                      _profileResponse.user.experience == "0")
+                  ? Container()
+                  : getProfileInfoView(
+                      16,
+                      16,
+                      plunesImages.clockIcon,
+                      plunesStrings.expOfPractice,
+                      _profileResponse.user.experience),
               SizedBox(
                 height: 8,
               ),

@@ -980,7 +980,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                               .user
                                               ?.doctorsData[itemIndex]
                                               .designation ??
-                                          _getEmptyString(),
+                                          PlunesStrings.emptyStr,
                                       textAlign: TextAlign.center,
                                       maxLines: 1,
                                       style: TextStyle(
@@ -997,7 +997,8 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                                                0.8),
 //                                    child:
                                     Text(
-                                      _getExpr(itemIndex) ?? _getEmptyString(),
+                                      _getExpr(itemIndex) ??
+                                          PlunesStrings.emptyStr,
                                       textAlign: TextAlign.center,
                                       maxLines: 1,
                                       style: TextStyle(

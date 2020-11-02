@@ -82,6 +82,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     _timerToUpdateSolutionReceivedTime =
         Timer.periodic(Duration(seconds: 1), (timer) {
       _timerToUpdateSolutionReceivedTime = timer;
+      _currentProgress++;
       _streamForTimer.add(null);
     });
     _discountCalculationTimer = Timer.periodic(Duration(seconds: 4), (timer) {
@@ -297,12 +298,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           catalogueData: _searchedDocResults?.catalogueData,
                         ))).then((value) {
               if (value != null && value) {
+                _currentProgress = 1;
                 _isCrossClicked = false;
                 _shouldStartTimer = true;
                 if (_timer != null && _timer.isActive) {
                   _negotiate();
                 } else {
-                  _currentProgress = 1;
                   _fetchResultAndStartTimer();
                 }
               }
@@ -417,7 +418,6 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 5), (timer) {
       _timer = timer;
-      _currentProgress = _currentProgress + 7;
       if (!mounted) {
         if (_timer != null && _timer.isActive) {
           _timer.cancel();
@@ -763,7 +763,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                               Container(
                                 child: Text(
                                   "We are negotiating the best fee for you."
-                                  "It may take upto 15 mins, we'll update you.",
+                                  "It may take sometime, we'll update you.",
                                   style: TextStyle(
                                       fontSize: AppConfig.smallFont,
                                       color: Colors.white,

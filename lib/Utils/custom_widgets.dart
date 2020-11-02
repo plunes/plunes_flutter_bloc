@@ -3353,7 +3353,7 @@ class CustomWidgets {
                                     width: AppConfig.horizontalBlockSize * 40,
                                     child: Text(
                                       doctorsData[itemIndex].designation ??
-                                          PlunesStrings.NA,
+                                          PlunesStrings.emptyStr,
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
@@ -3368,7 +3368,7 @@ class CustomWidgets {
                                     width: AppConfig.horizontalBlockSize * 64,
                                     child: Text(
                                       doctorsData[itemIndex].education ??
-                                          PlunesStrings.NA,
+                                          PlunesStrings.emptyStr,
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
                                       maxLines: 1,
@@ -3386,7 +3386,7 @@ class CustomWidgets {
                                               doctorsData[itemIndex]
                                                       .experience ==
                                                   "0"
-                                          ? PlunesStrings.NA
+                                          ? PlunesStrings.emptyStr
                                           : "Expr ${doctorsData[itemIndex].experience} years",
                                       textAlign: TextAlign.start,
                                       overflow: TextOverflow.ellipsis,
@@ -3941,52 +3941,65 @@ class CustomWidgets {
                           )
                         ],
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 3),
-                        child: getProfileInfoView(
-                            22,
-                            22,
-                            plunesImages.expertiseIcon,
-                            plunesStrings.areaExpertise,
-                            CommonMethods.getStringInCamelCase(
-                                    doctorsData?.department) ??
-                                _getEmptyString()),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 3),
-                        child: getProfileInfoView(
-                            22,
-                            22,
-                            plunesImages.clockIcon,
-                            plunesStrings.expOfPractice,
-                            (doctorsData.experience == null ||
-                                    doctorsData?.experience == "0")
-                                ? _getEmptyString()
-                                : doctorsData.experience),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 3),
-                        child: getProfileInfoView(
-                            22,
-                            22,
-                            plunesImages.practisingIcon,
-                            plunesStrings.practising,
-                            CommonMethods.getStringInCamelCase(hospitalName) ??
-                                _getEmptyString()),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 3),
-                        child: getProfileInfoView(
-                            22,
-                            22,
-                            plunesImages.eduIcon,
-                            plunesStrings.qualification,
-                            doctorsData?.education ?? _getEmptyString()),
-                      ),
+                      doctorsData.department == null ||
+                              doctorsData.department.trim().isEmpty
+                          ? Container()
+                          : Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 3),
+                              child: getProfileInfoView(
+                                  22,
+                                  22,
+                                  plunesImages.expertiseIcon,
+                                  plunesStrings.areaExpertise,
+                                  CommonMethods.getStringInCamelCase(
+                                          doctorsData?.department) ??
+                                      _getEmptyString()),
+                            ),
+                      doctorsData.experience == null ||
+                              doctorsData.experience.trim().isEmpty ||
+                              doctorsData.experience == "0"
+                          ? Container()
+                          : Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 3),
+                              child: getProfileInfoView(
+                                  22,
+                                  22,
+                                  plunesImages.clockIcon,
+                                  plunesStrings.expOfPractice,
+                                  (doctorsData.experience == null ||
+                                          doctorsData?.experience == "0")
+                                      ? _getEmptyString()
+                                      : doctorsData.experience),
+                            ),
+                      hospitalName == null || hospitalName.trim().isEmpty
+                          ? Container()
+                          : Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 3),
+                              child: getProfileInfoView(
+                                  22,
+                                  22,
+                                  plunesImages.practisingIcon,
+                                  plunesStrings.practising,
+                                  CommonMethods.getStringInCamelCase(
+                                          hospitalName) ??
+                                      _getEmptyString()),
+                            ),
+                      doctorsData.education == null ||
+                              doctorsData.education.trim().isEmpty
+                          ? Container()
+                          : Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 3),
+                              child: getProfileInfoView(
+                                  22,
+                                  22,
+                                  plunesImages.eduIcon,
+                                  plunesStrings.qualification,
+                                  doctorsData?.education ?? _getEmptyString()),
+                            ),
                     ],
                   ),
                 )),

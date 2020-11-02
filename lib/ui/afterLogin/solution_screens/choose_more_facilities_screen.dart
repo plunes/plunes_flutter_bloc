@@ -103,7 +103,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                     } else if (snapshot.data is RequestSuccess) {
                       Future.delayed(Duration(milliseconds: 10)).then((value) {
                         _showInSnackBar(
-                            "Congrats you have unlocked ${_selectedItemList?.length} more facilities!",
+                            "Congrats! You have unlocked ${_selectedItemList.length} more ${_selectedItemList.length == 1 ? "facility" : "facilities"}!",
                             shouldTakeBack: true);
                       });
                     } else if (snapshot.data is RequestFailed) {
