@@ -408,7 +408,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                 horizontal: AppConfig.horizontalBlockSize * 4),
           ),
           Container(
-            height: AppConfig.verticalBlockSize * 35,
+            height: AppConfig.verticalBlockSize * 32,
             margin: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
             child: ListView.builder(
               shrinkWrap: true,
@@ -431,7 +431,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     child: Container(
-                      width: AppConfig.horizontalBlockSize * 48,
+                      width: AppConfig.horizontalBlockSize * 42,
                       margin: EdgeInsets.symmetric(
                           horizontal: AppConfig.horizontalBlockSize * 3,
                           vertical: AppConfig.verticalBlockSize * 1.2),
@@ -462,21 +462,24 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                                 vertical: AppConfig.verticalBlockSize * 1.5,
                                 horizontal: AppConfig.horizontalBlockSize * 4),
                           ),
-                          Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              section3.elements[index].subHeading ??
-                                  PlunesStrings.NA,
-                              maxLines: 2,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 13),
+                          Flexible(
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                section3.elements[index].subHeading ??
+                                    PlunesStrings.NA,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 13),
+                              ),
+                              margin: EdgeInsets.symmetric(
+                                  vertical: AppConfig.verticalBlockSize * 0.2,
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 4),
                             ),
-                            margin: EdgeInsets.symmetric(
-                                vertical: AppConfig.verticalBlockSize * 0.4,
-                                horizontal: AppConfig.horizontalBlockSize * 4),
                           ),
                         ],
                       ),
@@ -687,21 +690,23 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                                 vertical: AppConfig.verticalBlockSize * 0.4,
                                 horizontal: AppConfig.horizontalBlockSize * 4),
                           ),
-                          Container(
-                            alignment: Alignment.center,
-                            child: Text(
-                              section5.elements[index].subHeading2 ??
-                                  PlunesStrings.NA,
-                              maxLines: 2,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontWeight: FontWeight.normal,
-                                  fontSize: 13),
+                          Flexible(
+                            child: Container(
+                              alignment: Alignment.topCenter,
+                              child: Text(
+                                section5.elements[index].subHeading2 ??
+                                    PlunesStrings.NA,
+                                maxLines: 2,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 13),
+                              ),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 4),
                             ),
-                            margin: EdgeInsets.symmetric(
-                                vertical: AppConfig.verticalBlockSize * 0.4,
-                                horizontal: AppConfig.horizontalBlockSize * 4),
                           ),
                         ],
                       ),

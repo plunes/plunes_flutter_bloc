@@ -3,7 +3,7 @@ class CatalogueData {
   String details;
   String dnd;
   String category;
-  bool isSelected = false, isActive, topSearch;
+  bool isSelected = false, isActive, topSearch, toShowSearched;
   String speciality;
   String specialityId;
   String serviceId;
@@ -38,7 +38,8 @@ class CatalogueData {
       this.isFromNotification,
       this.solutionId,
       this.booked,
-      this.topSearch});
+      this.topSearch,
+      this.toShowSearched});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
@@ -57,6 +58,7 @@ class CatalogueData {
     iV = json['__v'];
     booked = json['booked'];
     topSearch = json['topSearch'];
+    toShowSearched = json['toShowSearched'];
   }
 
   Map<String, dynamic> toJson() {

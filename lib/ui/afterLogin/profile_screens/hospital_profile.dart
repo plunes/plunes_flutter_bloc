@@ -42,6 +42,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
   BuildContext _context;
   String _failureCause;
   Services _services;
+  bool _scrollParent = false;
 
 //  Completer<GoogleMapController> _googleMapController = Completer();
 //  GoogleMapController _mapController;
@@ -49,6 +50,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 
   @override
   void initState() {
+    _scrollParent = false;
     _userBloc = UserBloc();
     _currentDate = DateTime.now();
     _getUserDetails();
@@ -1199,47 +1201,63 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                     : AppConfig.verticalBlockSize * 45
                 : AppConfig.verticalBlockSize * 16,
             width: double.infinity,
-            child: ListView.builder(
-              physics: _isServiceListOpened
-                  ? AlwaysScrollableScrollPhysics()
-                  : NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) => CustomWidgets()
-                          .buildViewMoreDialog(
-                              catalogueData: _catalogueList[index]),
-                    );
-                  },
-                  onDoubleTap: () {},
-                  child: Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: AppConfig.verticalBlockSize * 0.8),
-                            child: Text(
-                              CommonMethods.getStringInCamelCase(
-                                      _catalogueList[index]?.service) ??
-                                  _getEmptyString(),
-                              maxLines: 2,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color:
-                                      PlunesColors.BLACKCOLOR.withOpacity(0.7)),
+            child: NotificationListener<OverscrollNotification>(
+              onNotification: (OverscrollNotification value) {
+                if (!_isServiceListOpened) {
+                  return;
+                }
+                _scrollParent = true;
+                _setState();
+                Future.delayed(Duration(seconds: 1)).then((value) {
+                  _scrollParent = false;
+                  _setState();
+                });
+                return;
+              },
+              child: IgnorePointer(
+                ignoring: _scrollParent,
+                child: ListView.builder(
+                  physics: _isServiceListOpened
+                      ? AlwaysScrollableScrollPhysics()
+                      : NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return InkWell(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => CustomWidgets()
+                              .buildViewMoreDialog(
+                                  catalogueData: _catalogueList[index]),
+                        );
+                      },
+                      onDoubleTap: () {},
+                      child: Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(
+                                    vertical:
+                                        AppConfig.verticalBlockSize * 0.8),
+                                child: Text(
+                                  CommonMethods.getStringInCamelCase(
+                                          _catalogueList[index]?.service) ??
+                                      _getEmptyString(),
+                                  maxLines: 2,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: PlunesColors.BLACKCOLOR
+                                          .withOpacity(0.7)),
+                                ),
+                              ),
+                              flex: 5,
                             ),
-                          ),
-                          flex: 5,
-                        ),
-                        Icon(
-                          Icons.navigate_next,
-                          color: PlunesColors.BLACKCOLOR.withOpacity(0.7),
-                        )
+                            Icon(
+                              Icons.navigate_next,
+                              color: PlunesColors.BLACKCOLOR.withOpacity(0.7),
+                            )
 
 //                    Expanded(
 //                      child: Text(
@@ -1252,14 +1270,16 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
 //                      ),
 //                      flex: 1,
 //                    )
-                      ],
-                    ),
-                  ),
-                );
-              },
-              itemCount: _isServiceListOpened
-                  ? _catalogueList?.length
-                  : _catalogueList.length < 4 ? _catalogueList?.length : 3,
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  itemCount: _isServiceListOpened
+                      ? _catalogueList?.length
+                      : _catalogueList.length < 4 ? _catalogueList?.length : 3,
+                ),
+              ),
             ),
           ),
           (_catalogueList != null && _catalogueList.length <= 3)
@@ -1411,5 +1431,11 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
               ),
             ),
     );
+  }
+
+  void _setState() {
+    if (mounted) {
+      setState(() {});
+    }
   }
 }

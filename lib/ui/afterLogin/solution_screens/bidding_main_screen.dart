@@ -48,7 +48,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   bool _canGoAhead, _isPanelOpened;
   String _failureCause, _locationMessage;
   PrevMissSolutionBloc _prevMissSolutionBloc;
-  PrevSearchedSolution _prevSearchedSolution, _topSearchedSolutions;
+  PrevSearchedSolution _prevSearchedSolution;
   Timer _timer;
   StreamController _controller, _panelStreamController;
   BuildContext _context;
@@ -191,7 +191,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                             horizontal: AppConfig.horizontalBlockSize * 10),
                         duration: Duration(milliseconds: 1500),
                         curve: Curves.ease,
-                        child: _getSearchBar(),
+                        child: Hero(tag: "my_tag", child: _getSearchBar()),
                       );
                     }
                     return Container();
@@ -351,12 +351,35 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                         child: ListView.builder(
                                         padding: EdgeInsets.all(0.0),
                                         itemBuilder: (context, index) {
-                                          if (_prevSearchedSolution
-                                                      .data[index].topSearch !=
+                                          if (_prevSearchedSolution.data[index]
+                                                      .toShowSearched !=
                                                   null &&
                                               _prevSearchedSolution
-                                                  .data[index].topSearch) {
-                                            return Container();
+                                                  .data[index].toShowSearched) {
+                                            return Container(
+                                              width: double.infinity,
+                                              padding: EdgeInsets.only(
+                                                  top: AppConfig
+                                                          .verticalBlockSize *
+                                                      1),
+                                              margin: EdgeInsets.symmetric(
+                                                  horizontal: AppConfig
+                                                          .horizontalBlockSize *
+                                                      4.5,
+                                                  vertical: AppConfig
+                                                          .verticalBlockSize *
+                                                      2),
+                                              child: Text(
+                                                _prevSearchedSolution
+                                                        .data[index]
+                                                        .specialityId ??
+                                                    PlunesStrings.topSearches,
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                            );
                                           }
                                           TapGestureRecognizer tapRecognizer =
                                               TapGestureRecognizer()
@@ -365,71 +388,38 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                           return CustomWidgets()
                                               .getTopSearchesPrevSearchedSolutionRow(
                                                   _prevSearchedSolution.data,
-                                                  index,
-                                                  onButtonTap: () =>
-                                                      _onSolutionItemTap(
-                                                          _prevSearchedSolution
-                                                              .data[index]),
-                                                  isTopSearches:
-                                                      (_prevSearchedSolution
+                                                  index, onButtonTap: () {
+                                            if (_prevSearchedSolution
+                                                        .data[index]
+                                                        .topSearch !=
+                                                    null &&
+                                                _prevSearchedSolution
+                                                    .data[index].topSearch) {
+                                              _onSolutionItemTapForTopSearches(
+                                                  _prevSearchedSolution
+                                                      .data[index]);
+                                            } else {
+                                              _onSolutionItemTap(
+                                                  _prevSearchedSolution
+                                                      .data[index]);
+                                            }
+                                          },
+                                                  isTopSearches: ((_prevSearchedSolution
                                                                   .topSearches !=
                                                               null &&
                                                           _prevSearchedSolution
-                                                              .topSearches),
+                                                              .topSearches) ||
+                                                      (_prevSearchedSolution
+                                                                  .data[index]
+                                                                  .topSearch !=
+                                                              null &&
+                                                          _prevSearchedSolution
+                                                              .data[index]
+                                                              .topSearch)),
                                                   onViewMoreTap: tapRecognizer);
                                         },
                                         itemCount:
                                             _prevSearchedSolution.data.length,
-                                      )),
-                                (_topSearchedSolutions == null ||
-                                        _topSearchedSolutions.data == null ||
-                                        _topSearchedSolutions.data.isEmpty)
-                                    ? Container()
-                                    : Container(
-                                        width: double.infinity,
-                                        padding: EdgeInsets.only(
-                                            top: AppConfig.verticalBlockSize *
-                                                1),
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal:
-                                                AppConfig.horizontalBlockSize *
-                                                    4.5,
-                                            vertical:
-                                                AppConfig.verticalBlockSize *
-                                                    2),
-                                        child: Text(
-                                          PlunesStrings.topSearches,
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                (_topSearchedSolutions == null ||
-                                        _topSearchedSolutions.data == null ||
-                                        _topSearchedSolutions.data.isEmpty)
-                                    ? Container()
-                                    : Flexible(
-                                        child: ListView.builder(
-                                        padding: EdgeInsets.all(0.0),
-                                        itemBuilder: (context, index) {
-                                          TapGestureRecognizer tapRecognizer =
-                                              TapGestureRecognizer()
-                                                ..onTap =
-                                                    () => _onViewMoreTap(index);
-                                          return CustomWidgets()
-                                              .getTopSearchesPrevSearchedSolutionRow(
-                                                  _topSearchedSolutions.data,
-                                                  index,
-                                                  onButtonTap: () =>
-                                                      _onSolutionItemTapForTopSearches(
-                                                          _topSearchedSolutions
-                                                              .data[index]),
-                                                  isTopSearches: true,
-                                                  onViewMoreTap: tapRecognizer);
-                                        },
-                                        itemCount:
-                                            _topSearchedSolutions.data.length,
                                       )),
                               ],
                             )),
@@ -446,7 +436,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                           AppConfig.horizontalBlockSize * 10),
                                   duration: Duration(milliseconds: 1500),
                                   curve: Curves.ease,
-                                  child: _getSearchBar(),
+                                  child: Hero(
+                                    child: _getSearchBar(),
+                                    tag: "my_tag",
+                                  ),
                                 );
                               }),
                           left: 0.0,
@@ -782,19 +775,6 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     var requestState = await _prevMissSolutionBloc.getPreviousSolutions();
     if (requestState is RequestSuccess) {
       _prevSearchedSolution = requestState.response;
-      if (_prevSearchedSolution != null &&
-          _prevSearchedSolution.data != null &&
-          _prevSearchedSolution.data.isNotEmpty &&
-          _prevSearchedSolution.topSearches != null &&
-          !_prevSearchedSolution.topSearches) {
-        List<CatalogueData> data = [];
-        _prevSearchedSolution.data.forEach((element) {
-          if (element.topSearch != null && element.topSearch) {
-            data.add(element);
-          }
-        });
-        _topSearchedSolutions = PrevSearchedSolution(data: data);
-      }
       _setState();
     }
   }
@@ -846,14 +826,12 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Flexible(
-            child: Hero(
-                tag: "my_tag",
-                child: InkWell(
-                  focusColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onTap: () async {
+            child: InkWell(
+          focusColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: () async {
 //                              if ((!(await _getLocationPermissionStatus()) &&
 //                                  !(UserManager()
 //                                      .getIsUserInServiceLocation()))) {
@@ -863,28 +841,28 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //                                    scaffoldKey);
 //                                return;
 //                              }
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SolutionBiddingScreen()));
-                    _canGoAhead = UserManager().getIsUserInServiceLocation();
-                    if (_canGoAhead) {
-                      _setState();
-                    }
-                    _getPreviousSolutions();
-                  },
-                  child: IgnorePointer(
-                    ignoring: true,
-                    child: CustomWidgets().getShowCase(_searchKey,
-                        child: CustomWidgets().searchBar(
-                            searchController: _textEditingController,
-                            isRounded: true,
-                            focusNode: _focusNode,
-                            hintText: plunesStrings.searchHint),
-                        title: plunesStrings.search,
-                        description: PlunesStrings.searchDesc),
-                  ),
-                ))),
+            await Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => SolutionBiddingScreen()));
+            _canGoAhead = UserManager().getIsUserInServiceLocation();
+            if (_canGoAhead) {
+              _setState();
+            }
+            _getPreviousSolutions();
+          },
+          child: IgnorePointer(
+            ignoring: true,
+            child: CustomWidgets().getShowCase(_searchKey,
+                child: CustomWidgets().searchBar(
+                    searchController: _textEditingController,
+                    isRounded: true,
+                    focusNode: _focusNode,
+                    hintText: plunesStrings.searchHint),
+                title: plunesStrings.search,
+                description: PlunesStrings.searchDesc),
+          ),
+        )),
 //                InkWell(
 //                    onTap: () {
 //                      Navigator.of(context)

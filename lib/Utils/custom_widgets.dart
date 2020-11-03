@@ -840,8 +840,8 @@ class CustomWidgets {
       Function viewProfile,
       int currentStep,
       StreamController timerStream) {
-    if (currentStep == null || currentStep >= 40) {
-      currentStep = 35;
+    if (currentStep == null || currentStep >= 33) {
+      currentStep = 32;
     }
     return Card(
       elevation: 2.5,
@@ -1164,7 +1164,7 @@ class CustomWidgets {
                         stream: timerStream.stream,
                         builder: (context, snapshot) {
                           return StepProgressIndicator(
-                            totalSteps: 40,
+                            totalSteps: 33,
                             currentStep: currentStep,
                             size: 8,
                             padding: 0,

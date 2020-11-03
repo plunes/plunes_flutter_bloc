@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -25,6 +26,7 @@ import 'package:syncfusion_flutter_gauges/gauges.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import '../../widgets/dialogPopScreen.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:flutter_windowmanager/flutter_windowmanager.dart';
 
 // ignore: must_be_immutable
 class SolutionReceivedScreen extends BaseActivity {
@@ -65,6 +67,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   @override
   void initState() {
+    _disableScreenShot();
     _currentProgress = 1;
     _scrollController = ScrollController();
     _isCrossClicked = false;
@@ -126,6 +129,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 
   @override
   void dispose() {
+    _disableScreenShotFlag();
     if (_timer != null && _timer.isActive) {
       _timer?.cancel();
     }
@@ -863,8 +867,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Widget _showHosDocCards(Services service, int currentStep) {
-    if (currentStep == null || currentStep >= 40) {
-      currentStep = 35;
+    if (currentStep == null || currentStep >= 33) {
+      currentStep = 32;
     }
     return Card(
       elevation: 2.5,
@@ -1239,7 +1243,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                         stream: _streamForTimer.stream,
                         builder: (context, snapshot) {
                           return StepProgressIndicator(
-                            totalSteps: 40,
+                            totalSteps: 33,
                             currentStep: currentStep,
                             size: 8,
                             padding: 0,
@@ -2008,5 +2012,17 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           color: PlunesColors.GREYCOLOR, fontSize: 15)),
                 );
         });
+  }
+
+  void _disableScreenShot() {
+    if (Platform.isAndroid) {
+      FlutterWindowManager.addFlags(FlutterWindowManager.FLAG_SECURE);
+    }
+  }
+
+  _disableScreenShotFlag() {
+    if (Platform.isAndroid) {
+      FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
+    }
   }
 }

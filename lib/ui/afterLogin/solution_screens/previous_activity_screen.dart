@@ -104,8 +104,11 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                           child: ListView.builder(
                             padding: EdgeInsets.all(0.0),
                             itemBuilder: (context, index) {
-                              if (_missedSolutions[index].topSearch != null &&
-                                  _missedSolutions[index].topSearch) {
+                              if ((_missedSolutions[index].topSearch != null &&
+                                      _missedSolutions[index].topSearch) ||
+                                  (_missedSolutions[index].toShowSearched !=
+                                          null &&
+                                      _missedSolutions[index].toShowSearched)) {
                                 return Container();
                               }
                               TapGestureRecognizer tapRecognizer =
@@ -182,8 +185,11 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                           child: ListView.builder(
                             padding: EdgeInsets.all(0.0),
                             itemBuilder: (context, index) {
-                              if (_prevSolutions[index].topSearch != null &&
-                                  _prevSolutions[index].topSearch) {
+                              if ((_prevSolutions[index].topSearch != null &&
+                                      _prevSolutions[index].topSearch) ||
+                                  (_prevSolutions[index].toShowSearched !=
+                                          null &&
+                                      _prevSolutions[index].toShowSearched)) {
                                 return Container();
                               }
                               TapGestureRecognizer tapRecognizer =
