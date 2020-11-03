@@ -48,7 +48,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   bool _canGoAhead, _isPanelOpened;
   String _failureCause, _locationMessage;
   PrevMissSolutionBloc _prevMissSolutionBloc;
-  PrevSearchedSolution _prevSearchedSolution;
+  PrevSearchedSolution _prevSearchedSolution, _topSearchedSolutions;
   Timer _timer;
   StreamController _controller, _panelStreamController;
   BuildContext _context;
@@ -347,43 +347,16 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                         _prevSearchedSolution.data == null ||
                                         _prevSearchedSolution.data.isEmpty)
                                     ? Container()
-                                    : Expanded(
+                                    : Flexible(
                                         child: ListView.builder(
                                         padding: EdgeInsets.all(0.0),
                                         itemBuilder: (context, index) {
-                                          if (index ==
+                                          if (_prevSearchedSolution
+                                                      .data[index].topSearch !=
+                                                  null &&
                                               _prevSearchedSolution
-                                                  .data.length) {
-                                            return InkWell(
-                                              onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ExploreMainScreen(
-                                                              hasAppBar: true,
-                                                            ))).then((value) {
-                                                  _getPreviousSolutions();
-                                                });
-                                              },
-                                              child: Container(
-                                                alignment: Alignment.center,
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: AppConfig
-                                                            .verticalBlockSize *
-                                                        1.8),
-                                                child: Text(
-                                                  PlunesStrings.exploreMore,
-                                                  style: TextStyle(
-                                                      color: PlunesColors
-                                                          .GREENCOLOR,
-                                                      fontSize: 15,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                                width: double.infinity,
-                                              ),
-                                            );
+                                                  .data[index].topSearch) {
+                                            return Container();
                                           }
                                           TapGestureRecognizer tapRecognizer =
                                               TapGestureRecognizer()
@@ -406,9 +379,58 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                                   onViewMoreTap: tapRecognizer);
                                         },
                                         itemCount:
-                                            _prevSearchedSolution.data.length +
-                                                1,
-                                      ))
+                                            _prevSearchedSolution.data.length,
+                                      )),
+                                (_topSearchedSolutions == null ||
+                                        _topSearchedSolutions.data == null ||
+                                        _topSearchedSolutions.data.isEmpty)
+                                    ? Container()
+                                    : Container(
+                                        width: double.infinity,
+                                        padding: EdgeInsets.only(
+                                            top: AppConfig.verticalBlockSize *
+                                                1),
+                                        margin: EdgeInsets.symmetric(
+                                            horizontal:
+                                                AppConfig.horizontalBlockSize *
+                                                    4.5,
+                                            vertical:
+                                                AppConfig.verticalBlockSize *
+                                                    2),
+                                        child: Text(
+                                          PlunesStrings.topSearches,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                (_topSearchedSolutions == null ||
+                                        _topSearchedSolutions.data == null ||
+                                        _topSearchedSolutions.data.isEmpty)
+                                    ? Container()
+                                    : Flexible(
+                                        child: ListView.builder(
+                                        padding: EdgeInsets.all(0.0),
+                                        itemBuilder: (context, index) {
+                                          TapGestureRecognizer tapRecognizer =
+                                              TapGestureRecognizer()
+                                                ..onTap =
+                                                    () => _onViewMoreTap(index);
+                                          return CustomWidgets()
+                                              .getTopSearchesPrevSearchedSolutionRow(
+                                                  _topSearchedSolutions.data,
+                                                  index,
+                                                  onButtonTap: () =>
+                                                      _onSolutionItemTapForTopSearches(
+                                                          _topSearchedSolutions
+                                                              .data[index]),
+                                                  isTopSearches: true,
+                                                  onViewMoreTap: tapRecognizer);
+                                        },
+                                        itemCount:
+                                            _topSearchedSolutions.data.length,
+                                      )),
                               ],
                             )),
                         Positioned(
@@ -533,6 +555,45 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               builder: (context) =>
                   BiddingLoading(catalogueData: catalogueData)));
     }
+    _canGoAhead = UserManager().getIsUserInServiceLocation();
+    _setState();
+    _getPreviousSolutions();
+  }
+
+  _onSolutionItemTapForTopSearches(CatalogueData catalogueData) async {
+    if ((!(await _getLocationPermissionStatus()) &&
+        !(UserManager().getIsUserInServiceLocation()))) {
+      await showDialog(
+          context: _context,
+          builder: (context) {
+            return CustomWidgets().fetchLocationPopUp(_context);
+          },
+          barrierDismissible: false);
+      if (!UserManager().getIsUserInServiceLocation()) {
+        return;
+      }
+      _canGoAhead = UserManager().getIsUserInServiceLocation();
+      _setState();
+    }
+    if (!_canGoAhead) {
+      await showDialog(
+          context: _context,
+          builder: (context) {
+            return CustomWidgets().fetchLocationPopUp(_context);
+          },
+          barrierDismissible: false);
+      if (!UserManager().getIsUserInServiceLocation()) {
+        return;
+      }
+      _canGoAhead = UserManager().getIsUserInServiceLocation();
+      _setState();
+    }
+    catalogueData.isFromNotification = false;
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                BiddingLoading(catalogueData: catalogueData)));
     _canGoAhead = UserManager().getIsUserInServiceLocation();
     _setState();
     _getPreviousSolutions();
@@ -721,6 +782,19 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     var requestState = await _prevMissSolutionBloc.getPreviousSolutions();
     if (requestState is RequestSuccess) {
       _prevSearchedSolution = requestState.response;
+      if (_prevSearchedSolution != null &&
+          _prevSearchedSolution.data != null &&
+          _prevSearchedSolution.data.isNotEmpty &&
+          _prevSearchedSolution.topSearches != null &&
+          !_prevSearchedSolution.topSearches) {
+        List<CatalogueData> data = [];
+        _prevSearchedSolution.data.forEach((element) {
+          if (element.topSearch != null && element.topSearch) {
+            data.add(element);
+          }
+        });
+        _topSearchedSolutions = PrevSearchedSolution(data: data);
+      }
       _setState();
     }
   }
@@ -1033,3 +1107,37 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
     );
   }
 }
+//                                          if (index ==
+//                                              _prevSearchedSolution
+//                                                  .data.length) {
+//                                            return InkWell(
+//                                              onTap: () {
+//                                                Navigator.push(
+//                                                    context,
+//                                                    MaterialPageRoute(
+//                                                        builder: (context) =>
+//                                                            ExploreMainScreen(
+//                                                              hasAppBar: true,
+//                                                            ))).then((value) {
+//                                                  _getPreviousSolutions();
+//                                                });
+//                                              },
+//                                              child: Container(
+//                                                alignment: Alignment.center,
+//                                                padding: EdgeInsets.symmetric(
+//                                                    vertical: AppConfig
+//                                                            .verticalBlockSize *
+//                                                        1.8),
+//                                                child: Text(
+//                                                  PlunesStrings.exploreMore,
+//                                                  style: TextStyle(
+//                                                      color: PlunesColors
+//                                                          .GREENCOLOR,
+//                                                      fontSize: 15,
+//                                                      fontWeight:
+//                                                          FontWeight.w600),
+//                                                ),
+//                                                width: double.infinity,
+//                                              ),
+//                                            );
+//                                          }

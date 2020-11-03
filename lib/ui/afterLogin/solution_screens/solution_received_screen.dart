@@ -417,7 +417,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 5), (timer) {
+    _timer = Timer.periodic(Duration(seconds: 3), (timer) {
       _timer = timer;
       if (!mounted) {
         if (_timer != null && _timer.isActive) {
@@ -451,6 +451,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   builder: (context, snapshot) {
                     if (_gainedDiscountPercentage == null ||
                         _gainedDiscountPercentage <= 0) {
+                      return Container();
+                    } else if (_timer != null && _timer.isActive) {
                       return Container();
                     }
                     return _getDailerWidget();
@@ -1369,6 +1371,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   Widget _getNegotiatedPriceTotalView() {
+    if (_timer != null && _timer.isActive) {
+      return Container();
+    }
     return StreamBuilder(
       builder: (context, data) {
         if (_gainedDiscount == null || _gainedDiscount == 0) {

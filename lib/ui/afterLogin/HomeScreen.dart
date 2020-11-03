@@ -235,8 +235,10 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       items: <BottomNavigationBarItem>[
         bottomNavigationBarItem(plunesStrings.solution, plunesImages.bidIcon,
             plunesImages.bidActiveIcon),
-        bottomNavigationBarItem(PlunesStrings.explore,
-            plunesImages.plockrUnselectedIcon, plunesImages.plockrSelectedIcon),
+        bottomNavigationBarItem(
+            PlunesStrings.explore,
+            PlunesImages.exploreInActiveIcon,
+            PlunesImages.exploreSelectedImage),
         bottomNavigationBarItem(
             plunesStrings.notification,
             (FirebaseNotification().getNotificationCount() != null &&

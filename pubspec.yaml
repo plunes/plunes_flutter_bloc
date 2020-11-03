@@ -367,7 +367,8 @@ flutter:
     - assets/images/solution/paymentRefIcon.png
     - assets/images/solution/plunesVerifiedImg.png
     - assets/images/solution/prefTimeIcon.png
-
+    - assets/images/bottom_tabs/exploreSelectedImage.png
+    - assets/images/bottom_tabs/exploreUnSelectedImage.png
 
 
 

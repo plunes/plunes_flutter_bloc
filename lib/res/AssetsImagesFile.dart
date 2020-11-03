@@ -114,6 +114,10 @@ class PlunesImages {
   static const String plunesVerifiedImg =
       "assets/images/solution/plunesVerifiedImg.png";
   static const String prefTimeIcon = "assets/images/solution/prefTimeIcon.png";
+  static const String exploreInActiveIcon =
+      "assets/images/bottom_tabs/exploreUnSelectedImage.png";
+  static const String exploreSelectedImage =
+      "assets/images/bottom_tabs/exploreSelectedImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

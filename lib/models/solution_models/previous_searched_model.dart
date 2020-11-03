@@ -8,6 +8,7 @@ class PrevSearchedSolution {
   PrevSearchedSolution({this.success, this.data});
 
   PrevSearchedSolution.fromJson(Map<String, dynamic> json) {
+//    print(" ${json['topSearches']} json $json");
     success = json['success'];
     topSearches = json['topSearches'];
     if (json['data'] != null) {
