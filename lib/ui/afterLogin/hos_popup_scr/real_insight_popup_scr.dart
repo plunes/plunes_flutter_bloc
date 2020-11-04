@@ -47,12 +47,38 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
     _realInsight = widget.realInsight;
     _streamForIcon = StreamController.broadcast();
     _docHosMainInsightBloc = widget.docHosMainInsightBloc;
-    sliderVal = (_realInsight.userPrice.toDouble() / 2) +
-        (((_realInsight.userPrice.toDouble() / 2)) / 2);
-    half = (_realInsight.userPrice.toDouble() / 2) +
-        (((_realInsight.userPrice.toDouble() / 2)) / 2);
     reductionInPrice = ((((_realInsight.userPrice.toDouble() / 2)) / 2) * 100) /
         _realInsight.userPrice.toDouble();
+    if (_realInsight.recommendation != null &&
+        _realInsight.recommendation > 0) {
+      sliderVal =
+          ((_realInsight.max / 100) * _realInsight.recommendation)?.toDouble();
+      print("sliderVal $sliderVal");
+      sliderVal = _realInsight.max - sliderVal;
+      print("sliderVal $sliderVal");
+      half =
+          ((_realInsight.max / 100) * _realInsight.recommendation)?.toDouble();
+      half = _realInsight.max - half;
+      if (sliderVal < _realInsight.min) {
+        sliderVal = _realInsight.min;
+        half = _realInsight.min;
+      }
+      try {
+        var val = (sliderVal * 100) / _realInsight.userPrice.floor().toDouble();
+        reductionInPrice = 100 - reductionInPrice;
+        chancesPercent = double.tryParse((100 - val)?.toStringAsFixed(1));
+        if (chancesPercent >= 50) {
+          chancesPercent = 50;
+        }
+      } catch (e) {
+        print("Breaking here val");
+      }
+    } else {
+      sliderVal = (_realInsight.userPrice.toDouble() / 2) +
+          (((_realInsight.userPrice.toDouble() / 2)) / 2);
+      half = (_realInsight.userPrice.toDouble() / 2) +
+          (((_realInsight.userPrice.toDouble() / 2)) / 2);
+    }
     if (sliderVal == null || sliderVal == 0) {
       chancesPercent = 0;
       reductionInPrice = 0;
@@ -315,12 +341,10 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                         overlayRadius: 28.0),
                                   ),
                                   child: Slider(
-                                    value: sliderVal,
-                                    min: (_realInsight.userPrice.floor() / 2) ??
-                                        0,
-                                    max: _realInsight.userPrice
-                                        .floor()
-                                        .toDouble(),
+                                    value: sliderVal?.toDouble(),
+                                    min: _realInsight.min?.toDouble() ?? 0,
+                                    max: _realInsight.max?.toDouble() ??
+                                        ((_realInsight.min ?? 0) + 1),
                                     divisions: 100,
                                     onChanged: (newValue) {
                                       if (shouldShowField) {
@@ -345,6 +369,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                           reductionInPrice = 50;
                                         }
                                         sliderVal = newValue;
+                                        if (chancesPercent >= 50) {
+                                          chancesPercent = 50;
+                                        }
                                       });
                                     },
                                     label: "${sliderVal.toStringAsFixed(1)}",
@@ -360,7 +387,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     Text(
-                                      ' \u20B9 ${(_realInsight.userPrice.floor() / 2)?.toStringAsFixed(0)}',
+                                      ' \u20B9 ${(_realInsight.min)?.toStringAsFixed(0)}',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: AppConfig.mediumFont - 1,
@@ -443,7 +470,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                           )
                                         : Container(),
                                     Text(
-                                      ' \u20B9 ${_realInsight.userPrice?.toStringAsFixed(0)}',
+                                      ' \u20B9 ${_realInsight.max?.toStringAsFixed(0)}',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: AppConfig.mediumFont - 1,

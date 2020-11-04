@@ -36,7 +36,7 @@ class RealInsight {
   String serviceName, expirationMessage, imageUrl, professionalId;
   bool negotiating, expired, booked, professionalBooked, priceUpdated;
   int timeRemaining, expirationTimer;
-  num userPrice, compRate, distance, recommendation;
+  num userPrice, compRate, distance, recommendation, min, max;
   int createdAt;
   List<DataPoint> dataPoints;
 
@@ -70,9 +70,12 @@ class RealInsight {
       this.dataPoints,
       this.compRate,
       this.distance,
-      this.recommendation});
+      this.recommendation,
+      this.min,
+      this.max});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
+//    print("json insight $json");
     solutionId = json['solutionId'];
     serviceId = json['serviceId'];
     userName = json['userName'];
@@ -101,6 +104,8 @@ class RealInsight {
     compRate = json['competitionRate'];
     distance = json['distance'];
     recommendation = json['recommendation'];
+    min = json['min'];
+    max = json['max'];
   }
 
   Map<String, dynamic> toJson() {
