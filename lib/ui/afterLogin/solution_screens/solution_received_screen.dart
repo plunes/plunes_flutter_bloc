@@ -462,11 +462,12 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     return _getDailerWidget();
                   }),
               _getSolutionNameView(),
+              _getPriceValidThroughAppView(),
               Container(
                 margin: EdgeInsets.only(
                     left: AppConfig.horizontalBlockSize * 4,
                     right: AppConfig.horizontalBlockSize * 4,
-                    top: AppConfig.verticalBlockSize * 1.5),
+                    top: AppConfig.verticalBlockSize * 1),
                 child: StreamBuilder<RequestState>(
                   builder: (context, snapShot) {
                     if (snapShot.data is RequestSuccess) {
@@ -2024,5 +2025,34 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
     if (Platform.isAndroid) {
       FlutterWindowManager.clearFlags(FlutterWindowManager.FLAG_SECURE);
     }
+  }
+
+  Widget _getPriceValidThroughAppView() {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: AppConfig.horizontalBlockSize * 4,
+      ),
+      padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            height: AppConfig.verticalBlockSize * 2.5,
+            width: AppConfig.horizontalBlockSize * 8,
+            child: Image.asset(PlunesImages.pricesValidThroughAppIcon),
+          ),
+          Container(
+            margin: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 1.2),
+            child: Text(
+              PlunesStrings.priceValidThroughPlunes,
+              style: TextStyle(
+                  color: Color(CommonMethods.getColorHexFromStr("#A2A2A2")),
+                  fontSize: 12),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

@@ -51,14 +51,17 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
         _realInsight.userPrice.toDouble();
     if (_realInsight.recommendation != null &&
         _realInsight.recommendation > 0) {
+      print("${_realInsight.recommendation} rec ear");
+      _realInsight.recommendation = 100 - _realInsight.recommendation;
+      print("${_realInsight.recommendation} rec lat");
       sliderVal =
           ((_realInsight.max / 100) * _realInsight.recommendation)?.toDouble();
-      print("sliderVal $sliderVal");
-      sliderVal = _realInsight.max - sliderVal;
+      print("${_realInsight.recommendation} sliderVal $sliderVal");
+//      sliderVal = _realInsight.max - sliderVal;
       print("sliderVal $sliderVal");
       half =
           ((_realInsight.max / 100) * _realInsight.recommendation)?.toDouble();
-      half = _realInsight.max - half;
+//      half = _realInsight.max - half;
       if (sliderVal < _realInsight.min) {
         sliderVal = _realInsight.min;
         half = _realInsight.min;

@@ -118,6 +118,8 @@ class PlunesImages {
       "assets/images/bottom_tabs/exploreUnSelectedImage.png";
   static const String exploreSelectedImage =
       "assets/images/bottom_tabs/exploreSelectedImage.png";
+  static const String pricesValidThroughAppIcon =
+      "assets/images/pricesValidThroughAppIcon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',
