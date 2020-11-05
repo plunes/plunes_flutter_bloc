@@ -1,5 +1,6 @@
 import 'package:plunes/blocs/base_bloc.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
+import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/repositories/booking_repo/booking_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
@@ -138,5 +139,9 @@ class BookingBloc extends BlocBase {
 
   void addStateInRequestInvoiceProvider(RequestState state) {
     addStateInGenericStream(_requestInvoiceProvider, state);
+  }
+
+  Future<RequestState> processZestMoney(InitPayment initPayment,InitPaymentResponse initPaymentResponse) {
+    return BookingRepo().processZestMoney(initPayment,initPaymentResponse);
   }
 }

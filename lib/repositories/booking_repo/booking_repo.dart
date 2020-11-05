@@ -161,4 +161,20 @@ class BookingRepo {
           failureCause: result.failureCause, requestCode: index);
     }
   }
+
+  Future<RequestState> processZestMoney(
+      InitPayment initPayment, InitPaymentResponse initPaymentResponse) async {
+    print("Urls.ZEST_MONEY_URL ${Urls.ZEST_MONEY_URL}");
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
+        requestType: HttpRequestMethods.HTTP_POST,
+        headerIncluded: true,
+        postData: {"bookingId": initPaymentResponse.id},
+        url: Urls.ZEST_MONEY_URL);
+    if (result.isRequestSucceed) {
+      return RequestSuccess(
+          response: ZestMoneyResponseModel.fromJson(result.response.data));
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

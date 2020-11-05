@@ -126,7 +126,7 @@ class Services {
   num recommendation;
   num bookIn;
   num rating;
-  bool negotiating;
+  bool negotiating, zestMoney;
 
   Services(
       {this.price,
@@ -151,7 +151,8 @@ class Services {
       this.experience,
       this.paymentOptions,
       this.doctors,
-      this.isExpanded = false});
+      this.isExpanded = false,
+      this.zestMoney});
 
   Services.fromJson(Map<String, dynamic> json) {
     price = json['price'].cast<num>();
@@ -188,6 +189,7 @@ class Services {
       paymentOptions = json['paymentOptions'].cast<num>();
     }
     experience = json['experience'];
+    zestMoney = json['zestMoney'];
   }
 
   Map<String, dynamic> toJson() {
@@ -257,7 +259,7 @@ class Doctors {
   List<num> newPrice;
   List<String> category;
   List<TimeSlots> timeSlots;
-  bool negotiating;
+  bool negotiating, zestMoney;
   num bookIn;
   num rating;
 
@@ -274,7 +276,8 @@ class Doctors {
       this.timeSlots,
       this.negotiating,
       this.rating,
-      this.bookIn});
+      this.bookIn,
+      this.zestMoney});
 
   Doctors.fromJson(Map<String, dynamic> json) {
     professionalId = json['professionalId'];
@@ -289,6 +292,7 @@ class Doctors {
     bookIn = json['bookIn'];
     rating = json['rating'];
     negotiating = json['negotiating'];
+    zestMoney = json['zestMoney'];
     if (json['timeSlots'] != null) {
       timeSlots = new List<TimeSlots>();
       json['timeSlots'].forEach((v) {

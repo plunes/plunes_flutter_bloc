@@ -1195,6 +1195,8 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                   serviceIndex: 0,
                                   service: Services(
                                       price: service.doctors[index].price,
+                                      zestMoney:
+                                          service.doctors[index].zestMoney,
                                       newPrice: service.doctors[index].newPrice,
                                       paymentOptions: service.paymentOptions),
                                 ))).then((value) {

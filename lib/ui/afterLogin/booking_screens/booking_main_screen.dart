@@ -999,11 +999,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   _initPayment(PaymentSelector paymentSelector) async {
 //    print("$_selectedTimeSlot _selectedTimeSlot _selectedDate $_selectedDate");
 //    print(DateUtil.getTimeWithAmAndPmFormat(_selectedDate));
+    bool zestMoney = false;
+    if (paymentSelector.paymentUnit == PlunesStrings.zestMoney) {
+      zestMoney = true;
+    }
     InitPayment _initPayment = InitPayment(
         appointmentTime:
             _selectedDate.toUtc().millisecondsSinceEpoch.toString(),
-        percentage:
-            paymentSelector.isInPercent ? paymentSelector.paymentUnit : null,
+        percentage: zestMoney
+            ? "100"
+            : paymentSelector.isInPercent ? paymentSelector.paymentUnit : null,
         price_pos: widget.serviceIndex,
         //negotiate prev id
         docHosServiceId: widget.docHosSolution.serviceId,
@@ -1017,14 +1022,20 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         creditsUsed: _shouldUseCredit,
         user_id: UserManager().getUserDetails().uid,
         couponName: "",
-        bookIn: !(paymentSelector.isInPercent)
-            ? paymentSelector.paymentUnit
-            : null);
+        bookIn: zestMoney
+            ? null
+            : !(paymentSelector.isInPercent)
+                ? paymentSelector.paymentUnit
+                : null);
 //    print("initiate payment ${_initPayment.initiatePaymentToJson()}");
     RequestState _requestState = await _bookingBloc.initPayment(_initPayment);
     if (_requestState is RequestSuccess) {
       InitPaymentResponse _initPaymentResponse = _requestState.response;
       if (_initPaymentResponse.success) {
+        if (zestMoney) {
+          _processZestMoneyQueries(_initPayment, _initPaymentResponse);
+          return;
+        }
         if (_initPaymentResponse.status.contains("Confirmed")) {
           AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
           showDialog(
@@ -1674,6 +1685,68 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         }
       });
     }
+  }
+
+  void _processZestMoneyQueries(
+      InitPayment initPayment, InitPaymentResponse initPaymentResponse) {
+    _bookingBloc
+        .processZestMoney(initPayment, initPaymentResponse)
+        .then((value) {
+      {
+        if (value is RequestSuccess) {
+          ZestMoneyResponseModel zestMoneyResponseModel = value.response;
+          if (zestMoneyResponseModel != null &&
+              zestMoneyResponseModel.success != null &&
+              zestMoneyResponseModel.success &&
+              zestMoneyResponseModel.data != null &&
+              zestMoneyResponseModel.data.trim().isNotEmpty) {
+            _openWebViewWithDynamicUrl(
+                zestMoneyResponseModel, initPaymentResponse);
+            return;
+          } else {
+            _showInSnackBar(zestMoneyResponseModel?.msg);
+          }
+        } else if (value is RequestFailed) {
+          _showInSnackBar(value.failureCause);
+        }
+      }
+    });
+  }
+
+  void _openWebViewWithDynamicUrl(ZestMoneyResponseModel zestMoneyResponseModel,
+      InitPaymentResponse initPaymentResponse) {
+    Navigator.of(context)
+        .push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) =>
+                PaymentWebView(url: zestMoneyResponseModel.data)))
+        .then((val) {
+      if (val == null) {
+        AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
+        _bookingBloc.cancelPayment(initPaymentResponse.id);
+        return;
+      }
+      if (val.toString().contains("success")) {
+        AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
+        showDialog(
+            context: context,
+            builder: (
+              BuildContext context,
+            ) =>
+                CustomWidgets().paymentStatusPopup(
+                    "Payment Success",
+                    "Your Booking ID is ${initPaymentResponse.referenceId}",
+                    plunesImages.checkIcon,
+                    context,
+                    bookingId: initPaymentResponse.referenceId)).then((value) {
+          Navigator.pop(context, "pop");
+        });
+      } else if (val.toString().contains("fail")) {
+        _showInSnackBar("Payment Failed");
+      } else if (val.toString().contains("cancel")) {
+        _showInSnackBar("Payment Cancelled");
+      }
+    });
   }
 }
 

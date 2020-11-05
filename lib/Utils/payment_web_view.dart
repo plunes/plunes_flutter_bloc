@@ -6,9 +6,9 @@ import 'package:plunes/resources/network/Urls.dart';
 class PaymentWebView extends StatefulWidget {
   static const tag = '/payment';
 
-  final String id;
+  final String id, url;
 
-  PaymentWebView({Key key, this.id}) : super(key: key);
+  PaymentWebView({Key key, this.id, this.url}) : super(key: key);
 
   @override
   _PaymentWebViewState createState() => _PaymentWebViewState(id);
@@ -70,7 +70,9 @@ class _PaymentWebViewState extends State<PaymentWebView> {
         elevation: 2,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      url: Urls.PAYMENT_WEB_VIEW_URL + "/" + id,
+      url: widget.url != null
+          ? widget.url
+          : Urls.PAYMENT_WEB_VIEW_URL + "/" + id,
     );
   }
 }

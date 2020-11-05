@@ -32,8 +32,17 @@ class _PopupChooseState extends State<PopupChoose> {
         _paymentSelectionOptions.add(PaymentSelector(
             isInPercent: true,
             isSelected: false,
-            paymentUnit: "${option.toString()}"));
+            paymentUnit:
+                (widget.services.zestMoney != null && widget.services.zestMoney)
+                    ? PlunesStrings.zestMoney
+                    : "${option.toString()}"));
       });
+      if (widget.services.zestMoney != null && widget.services.zestMoney) {
+        _paymentSelectionOptions.add(PaymentSelector(
+            isInPercent: false,
+            isSelected: false,
+            paymentUnit: PlunesStrings.zestMoney));
+      }
     } else {
       for (int pIndex = 0;
           pIndex < widget.services.paymentOptions.length;
@@ -43,6 +52,12 @@ class _PopupChooseState extends State<PopupChoose> {
             isSelected: pIndex == 0 ? true : false,
             paymentUnit:
                 "${widget.services.paymentOptions[pIndex].toString()}"));
+      }
+      if (widget.services.zestMoney != null && widget.services.zestMoney) {
+        _paymentSelectionOptions.add(PaymentSelector(
+            isInPercent: false,
+            isSelected: false,
+            paymentUnit: PlunesStrings.zestMoney));
       }
     }
 //    print("_paymentSelectionOptions${_paymentSelectionOptions.toString()}");
@@ -127,10 +142,17 @@ class _PopupChooseState extends State<PopupChoose> {
                             child: Text(
                                 (widget.bookInPrice != null && count == 0)
                                     ? '${PlunesStrings.bookIn} ${_paymentSelectionOptions[count].paymentUnit}'
-                                    : count !=
-                                            _paymentSelectionOptions.length - 1
-                                        ? 'Pay ${_paymentSelectionOptions[count].paymentUnit}%'
-                                        : 'Pay full. No Hassle',
+                                    : (_paymentSelectionOptions[count]
+                                                .paymentUnit ==
+                                            PlunesStrings.zestMoney)
+                                        ? _paymentSelectionOptions[count]
+                                            .paymentUnit
+                                        : count !=
+                                                _paymentSelectionOptions
+                                                        .length -
+                                                    1
+                                            ? 'Pay ${_paymentSelectionOptions[count].paymentUnit}%'
+                                            : 'Pay full. No Hassle',
                                 style: TextStyle(fontSize: 16.0))),
                       ],
                     ),
@@ -188,7 +210,6 @@ class _PopupChooseState extends State<PopupChoose> {
                       width: 0.5,
                     ),
                     Expanded(
-//                                      flex: 200,
                       child: FlatButton(
                           highlightColor: Colors.transparent,
                           hoverColor: Colors.transparent,

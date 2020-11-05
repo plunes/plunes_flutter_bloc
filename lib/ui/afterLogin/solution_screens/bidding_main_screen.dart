@@ -189,7 +189,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                             top: AppConfig.verticalBlockSize * 28),
                         margin: EdgeInsets.symmetric(
                             horizontal: AppConfig.horizontalBlockSize * 10),
-                        duration: Duration(milliseconds: 1500),
+                        duration: Duration(milliseconds: 5500),
                         curve: Curves.ease,
                         child: Hero(tag: "my_tag", child: _getSearchBar()),
                       );
@@ -434,7 +434,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                   margin: EdgeInsets.symmetric(
                                       horizontal:
                                           AppConfig.horizontalBlockSize * 10),
-                                  duration: Duration(milliseconds: 1500),
+                                  duration: Duration(milliseconds: 5500),
                                   curve: Curves.ease,
                                   child: Hero(
                                     child: _getSearchBar(),
