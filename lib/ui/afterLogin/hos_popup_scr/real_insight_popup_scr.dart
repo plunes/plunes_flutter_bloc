@@ -51,16 +51,16 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
         _realInsight.userPrice.toDouble();
     if (_realInsight.recommendation != null &&
         _realInsight.recommendation > 0) {
-      print("${_realInsight.recommendation} rec ear");
+//      print("${_realInsight.recommendation} rec ear");
       _realInsight.recommendation = 100 - _realInsight.recommendation;
-      print("${_realInsight.recommendation} rec lat");
-      sliderVal =
-          ((_realInsight.max / 100) * _realInsight.recommendation)?.toDouble();
-      print("${_realInsight.recommendation} sliderVal $sliderVal");
+//      print("${_realInsight.recommendation} rec lat");
+      sliderVal = ((_realInsight.userPrice / 100) * _realInsight.recommendation)
+          ?.toDouble();
+//      print("${_realInsight.recommendation} sliderVal $sliderVal");
 //      sliderVal = _realInsight.max - sliderVal;
-      print("sliderVal $sliderVal");
-      half =
-          ((_realInsight.max / 100) * _realInsight.recommendation)?.toDouble();
+//      print("sliderVal $sliderVal");
+      half = ((_realInsight.userPrice / 100) * _realInsight.recommendation)
+          ?.toDouble();
 //      half = _realInsight.max - half;
       if (sliderVal < _realInsight.min) {
         sliderVal = _realInsight.min;
@@ -68,19 +68,18 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       }
       try {
         var val = (sliderVal * 100) / _realInsight.userPrice.floor().toDouble();
-        reductionInPrice = 100 - reductionInPrice;
         chancesPercent = double.tryParse((100 - val)?.toStringAsFixed(1));
-        if (chancesPercent >= 50) {
-          chancesPercent = 50;
+        if (chancesPercent >= 70) {
+          chancesPercent = 70;
         }
       } catch (e) {
         print("Breaking here val");
       }
+    } else if (_realInsight.suggested != null && _realInsight.suggested) {
+      sliderVal = _realInsight.userPrice.toInt().toDouble();
+      half = _realInsight.userPrice.toInt().toDouble();
     } else {
-      sliderVal = (_realInsight.userPrice.toDouble() / 2) +
-          (((_realInsight.userPrice.toDouble() / 2)) / 2);
-      half = (_realInsight.userPrice.toDouble() / 2) +
-          (((_realInsight.userPrice.toDouble() / 2)) / 2);
+      Navigator.pop(context); ///check this code
     }
     if (sliderVal == null || sliderVal == 0) {
       chancesPercent = 0;
@@ -372,8 +371,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                           reductionInPrice = 50;
                                         }
                                         sliderVal = newValue;
-                                        if (chancesPercent >= 50) {
-                                          chancesPercent = 50;
+                                        if (chancesPercent >= 70) {
+                                          chancesPercent = 70;
                                         }
                                       });
                                     },
@@ -729,7 +728,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                                 ])),
                                       ],
                                       minimum: 0,
-                                      maximum: 50,
+                                      maximum: 70,
                                       showLabels: false,
                                       showTicks: false,
                                       startAngle: 270,

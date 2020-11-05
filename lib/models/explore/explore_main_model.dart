@@ -142,6 +142,7 @@ class Elements {
   String subHeading, serviceName;
   String subHeading1;
   String subHeading2;
+  String userId, userType;
 
   Elements(
       {this.imgUrl,
@@ -149,7 +150,9 @@ class Elements {
       this.subHeading,
       this.serviceName,
       this.subHeading1,
-      this.subHeading2});
+      this.subHeading2,
+      this.userId,
+      this.userType});
 
   Elements.fromJson(Map<String, dynamic> json) {
     imgUrl = json['imgUrl'];
@@ -158,6 +161,8 @@ class Elements {
     serviceName = json['serviceName'];
     subHeading1 = json['subHeading1'];
     subHeading2 = json['subHeading2'];
+    userId = json['userId'];
+    userType = json['userType'];
   }
 
   Map<String, dynamic> toJson() {

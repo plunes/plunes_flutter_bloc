@@ -1021,13 +1021,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                             ),
                           ),
                         ),
-                        Flexible(
-                          child: Container(
-                              alignment: Alignment.topLeft,
-                              height: AppConfig.verticalBlockSize * 3,
-                              width: AppConfig.horizontalBlockSize * 5,
-                              child: Image.asset(PlunesImages.certifiedImage)),
-                        ),
+//                        Flexible(
+//                          child: Container(
+//                              alignment: Alignment.topLeft,
+//                              height: AppConfig.verticalBlockSize * 3,
+//                              width: AppConfig.horizontalBlockSize * 5,
+//                              child: Image.asset(PlunesImages.certifiedImage)),
+//                        ),
                       ],
                     ),
                     Container(

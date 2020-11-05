@@ -5,6 +5,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
@@ -14,6 +15,8 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 
 // ignore: must_be_immutable
@@ -416,15 +419,21 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
-                    return;
-                    if (section3.elements[index].name != null &&
-                        section3.elements[index].name.trim().isNotEmpty) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SolutionBiddingScreen(
-                                  searchQuery: section3.elements[index].name)));
+                    if (section3.elements[index].userType != null &&
+                        section3.elements[index].userId != null) {
+                      Widget route;
+                      if (section3.elements[index].userType.toLowerCase() ==
+                          Constants.doctor.toString().toLowerCase()) {
+                        route =
+                            DocProfile(userId: section3.elements[index].userId);
+                      } else {
+                        route = HospitalProfile(
+                            userID: section3.elements[index].userId);
+                      }
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => route));
                     }
+                    return;
                   },
                   child: Card(
                     color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),

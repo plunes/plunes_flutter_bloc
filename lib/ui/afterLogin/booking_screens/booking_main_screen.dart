@@ -1721,6 +1721,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             pageBuilder: (BuildContext context, _, __) =>
                 PaymentWebView(url: zestMoneyResponseModel.data)))
         .then((val) {
+      print("val $val");
       if (val == null) {
         AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
         _bookingBloc.cancelPayment(initPaymentResponse.id);

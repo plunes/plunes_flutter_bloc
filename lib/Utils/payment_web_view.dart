@@ -23,18 +23,25 @@ class _PaymentWebViewState extends State<PaymentWebView> {
 
   @override
   void initState() {
+//    print("widget.url ${widget.url}");
     super.initState();
     check();
   }
 
   void check() async {
-    flutterWebViewPlugin.onUrlChanged.listen((String url) {
-      print(url);
+    flutterWebViewPlugin.onUrlChanged.listen((final String url) {
+      if (widget.url != null && url.length > 300) {
+        return;
+      }
       if (url.contains("success")) {
         Navigator.of(context).pop(url);
       } else if (url.contains("error")) {
         Navigator.of(context).pop("fail");
       } else if (url.contains("cancelled")) {
+//        String s =
+//            "https://staging-app.zestmoney.in/?LoanApplicationId=3158523c-6d1b-430d-94cd-323de5623f2b&merchantid=35ce48c0-1fd7-4c09-bbfc-ef92e0314505&basketamount=30676&returnurl=https:%2F%2Fdevapi.plunes.com%2FpaymentControl%2Fcancelled%2F5fa3cf311ca71d121d769b73&approvedurl=https:%2F%2Fdevapi.plunes.com%2FpaymentControl%2FzestSuccess5fa3cf311ca71d121d769b73&downpaymentamount=10000&paymentGatewayId=e39985df-5ac9-4198-897c-94e6ecb9bfec";
+//        print("s ${s.length}");
+//            "${s == url} cancelling ${s.substring(0, 220)} ${s.indexOf("cancelled")}");
         Navigator.of(context).pop("cancel");
       }
     });
