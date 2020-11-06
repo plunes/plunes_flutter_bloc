@@ -1458,7 +1458,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   }
 
   num _getTotalDiscount() {
-    num totalDiscount = 0, _origPrice = 0;
+    num totalDiscount = 0, _origPrice = 0, _highestDiscount = 0;
     try {
       if (_searchedDocResults != null &&
           _searchedDocResults.solution != null &&
@@ -1468,16 +1468,19 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
           if (service.doctors != null && service.doctors.isNotEmpty) {
             service.doctors.forEach((element) {
               if (element.discount != null && element.discount > 0) {
-                totalDiscount =
-                    totalDiscount + (element.price[0] - element.newPrice[0]);
-                _origPrice = _origPrice + element.price[0];
+                if (((element.price[0] - element.newPrice[0])) >
+                    _highestDiscount) {
+                  _highestDiscount = (element.price[0] - element.newPrice[0]);
+                  _origPrice = element.price[0];
+                }
               }
             });
           } else {
             if (service.discount != null && service.discount > 0) {
-              totalDiscount =
-                  totalDiscount + (service.price[0] - service.newPrice[0]);
-              _origPrice = _origPrice + service.price[0];
+              if ((service.price[0] - service.newPrice[0]) > _highestDiscount) {
+                _highestDiscount = (service.price[0] - service.newPrice[0]);
+                _origPrice = service.price[0];
+              }
             }
           }
         });
@@ -1486,16 +1489,16 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
 //      print("error in _getTotalDiscount ${e.toString()}");
       totalDiscount = 0;
     }
-    _gainedDiscount = totalDiscount;
+    _gainedDiscount = _highestDiscount;
     if (_origPrice != null &&
         _origPrice > 0 &&
         _gainedDiscount != null &&
         _gainedDiscount > 0) {
       _gainedDiscountPercentage = double.tryParse(
-          ((totalDiscount / _origPrice) * 100)?.toStringAsFixed(0));
+          ((_gainedDiscount / _origPrice) * 100)?.toStringAsFixed(0));
       _totalDiscountController.add(null);
     }
-
+    totalDiscount = _gainedDiscount;
     return totalDiscount;
   }
 

@@ -235,12 +235,12 @@ class CustomWidgets {
                                       //fontWeight: FontWeight.w500
                                     ),
                                     children: [
-                                  TextSpan(
-                                      text:
-                                          "(${solutionList[index].category ?? PlunesStrings.NA})",
-                                      style: TextStyle(
-                                          fontSize: AppConfig.smallFont,
-                                          color: PlunesColors.GREENCOLOR))
+//                                  TextSpan(
+//                                      text:
+//                                          "(${solutionList[index].category ?? PlunesStrings.NA})",
+//                                      style: TextStyle(
+//                                          fontSize: AppConfig.smallFont,
+//                                          color: PlunesColors.GREENCOLOR))
                                 ])),
                             Padding(
                                 padding: EdgeInsets.only(
@@ -433,12 +433,12 @@ class CustomWidgets {
                                         //fontWeight: FontWeight.w500
                                       ),
                                       children: [
-                                    TextSpan(
-                                        text:
-                                            "(${solutionList[index].category ?? PlunesStrings.NA})",
-                                        style: TextStyle(
-                                            fontSize: AppConfig.smallFont,
-                                            color: PlunesColors.GREENCOLOR))
+//                                    TextSpan(
+//                                        text:
+//                                            "(${solutionList[index].category ?? PlunesStrings.NA})",
+//                                        style: TextStyle(
+//                                            fontSize: AppConfig.smallFont,
+//                                            color: PlunesColors.GREENCOLOR))
                                   ])),
                               Padding(
                                   padding: EdgeInsets.only(
