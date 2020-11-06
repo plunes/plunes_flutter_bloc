@@ -85,16 +85,16 @@ class ExploreData {
 }
 
 class Section1 {
-  List elements;
+  List<Elements> elements;
   String heading;
 
   Section1({this.elements, this.heading});
 
   Section1.fromJson(Map<String, dynamic> json) {
     if (json['elements'] != null) {
-      elements = new List<Null>();
+      elements = new List<Elements>();
       json['elements'].forEach((v) {
-//        elements.add(new Null.fromJson(v));
+        elements.add(new Elements.fromJson(v));
       });
     }
     heading = json['heading'];

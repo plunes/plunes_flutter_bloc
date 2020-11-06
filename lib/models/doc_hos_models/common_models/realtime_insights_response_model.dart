@@ -128,6 +128,11 @@ class DataPoint {
 //  String id;
   num x, y;
 
+  @override
+  String toString() {
+    return 'DataPoint{x: $x, y: $y}';
+  }
+
   DataPoint({this.x, this.y});
 
   DataPoint.fromJson(Map<String, dynamic> json) {

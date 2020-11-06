@@ -159,7 +159,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
       body: ShowCaseWidget(
         builder: Builder(builder: (context) {
           _context = context;
-          return _getWidgetBody();
+          return StreamBuilder<RequestState>(
+              stream: _prevMissSolutionBloc.baseStream,
+              builder: (context, snapshot) {
+                return _getWidgetBody();
+              });
         }),
       ),
     );
@@ -169,36 +173,38 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     return Stack(
       children: <Widget>[
         Container(
-          child: _getSearchWidget(),
-          padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 15),
-        ),
+            child: _getSearchWidget(),
+            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 15)),
         Container(
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: ExactAssetImage(PlunesImages.userLandingImage),
                   fit: BoxFit.cover)),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: (_prevSearchedSolution == null ||
+                    _prevSearchedSolution.data == null ||
+                    _prevSearchedSolution.data.isEmpty)
+                ? MainAxisAlignment.start
+                : MainAxisAlignment.end,
             children: <Widget>[
-              StreamBuilder<Object>(
-                  stream: _panelStreamController.stream,
-                  builder: (context, snapshot) {
-                    if (_isPanelOpened != null && !_isPanelOpened) {
-                      return AnimatedContainer(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 28),
-                        margin: EdgeInsets.symmetric(
-                            horizontal: AppConfig.horizontalBlockSize * 10),
-                        duration: Duration(milliseconds: 5500),
-                        curve: Curves.ease,
-                        child: Hero(tag: "my_tag", child: _getSearchBar()),
-                      );
-                    }
-                    return Container();
-                  }),
-              Expanded(
-                child: _getBottomView(),
-              ),
+              (_prevSearchedSolution == null ||
+                      _prevSearchedSolution.data == null ||
+                      _prevSearchedSolution.data.isEmpty)
+                  ? AnimatedContainer(
+                      padding: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 28),
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 10),
+                      duration: Duration(milliseconds: 5500),
+                      curve: Curves.ease,
+                      child: Hero(tag: "my_tag", child: _getSearchBar()),
+                    )
+                  : Container(),
+              (_prevSearchedSolution == null ||
+                      _prevSearchedSolution.data == null ||
+                      _prevSearchedSolution.data.isEmpty)
+                  ? Container()
+                  : Expanded(child: _getBottomView()),
               _canGoAhead ? Container() : _getNoLocationView(),
             ],
           ),
@@ -218,58 +224,116 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   }
 
   _getBottomView() {
-    return (_prevSearchedSolution == null ||
-            _prevSearchedSolution.data == null ||
-            _prevSearchedSolution.data.isEmpty)
-        ? Container()
-        : SlidingUpPanel(
-            boxShadow: null,
-            controller: _panelController,
-            onPanelOpened: () {
-//              print("onPanelOpened");
-              _isPanelOpened = true;
-              _panelStreamController.add(null);
-            },
-            onPanelClosed: () {
-//              print("onPanelClosed");
-              _isPanelOpened = false;
-              _panelStreamController.add(null);
-            },
-            color: Colors.transparent,
-            maxHeight: _canGoAhead
-                ? AppConfig.verticalBlockSize * 80
-                : AppConfig.verticalBlockSize * 53,
-            minHeight: _canGoAhead
-                ? AppConfig.verticalBlockSize * 60
-                : AppConfig.verticalBlockSize * 53,
-            panelBuilder: (s) {
-              return StreamBuilder<Object>(
-                  stream: _controller.stream,
-                  builder: (context, snapshot) {
-                    return Stack(
-                      children: <Widget>[
-                        Card(
-                            color: Colors.white,
-                            margin: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 3.5),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(35),
-                                    topRight: Radius.circular(35))),
-                            child: Column(
-                              children: <Widget>[
-                                StreamBuilder<Object>(
-                                    stream: _panelStreamController.stream,
-                                    builder: (context, snapshot) {
+    return SlidingUpPanel(
+      boxShadow: null,
+      controller: _panelController,
+//            onPanelOpened: () {
+////              print("onPanelOpened");
+//              _isPanelOpened = true;
+////              _panelStreamController.add(null);
+//            },
+//            onPanelClosed: () {
+////              print("onPanelClosed");
+//              _isPanelOpened = false;
+////              _panelStreamController.add(null);
+//            },
+      color: Colors.transparent,
+      maxHeight: _canGoAhead
+          ? AppConfig.verticalBlockSize * 80
+          : AppConfig.verticalBlockSize * 53,
+      minHeight: _canGoAhead
+          ? AppConfig.verticalBlockSize * 60
+          : AppConfig.verticalBlockSize * 53,
+      panelBuilder: (s) {
+        return StreamBuilder<Object>(
+            stream: _controller.stream,
+            builder: (context, snapshot) {
+              return Stack(
+                children: <Widget>[
+                  Card(
+                      color: Colors.white,
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 3.5),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(35),
+                              topRight: Radius.circular(35))),
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 2),
+                            margin: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 4.5,
+                                vertical: AppConfig.verticalBlockSize * 2),
+                            child: InkWell(
+                              onTap: () {
+                                if (_prevSearchedSolution.topSearches != null &&
+                                    _prevSearchedSolution.topSearches) {
+                                  return;
+                                }
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PreviousActivity()));
+                              },
+                              highlightColor:
+                                  (_prevSearchedSolution.topSearches != null &&
+                                          _prevSearchedSolution.topSearches)
+                                      ? Colors.transparent
+                                      : null,
+                              splashColor:
+                                  (_prevSearchedSolution.topSearches != null &&
+                                          _prevSearchedSolution.topSearches)
+                                      ? Colors.transparent
+                                      : null,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    (_prevSearchedSolution.topSearches !=
+                                                null &&
+                                            _prevSearchedSolution.topSearches)
+                                        ? PlunesStrings.topSearches
+                                        : PlunesStrings.previousActivities,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  (_prevSearchedSolution.topSearches != null &&
+                                          _prevSearchedSolution.topSearches)
+                                      ? Container()
+                                      : Icon(
+                                          Icons.chevron_right,
+                                          color: PlunesColors.GREENCOLOR,
+                                          size: 35,
+                                        )
+                                ],
+                              ),
+                            ),
+                          ),
+                          (_prevSearchedSolution == null ||
+                                  _prevSearchedSolution.data == null ||
+                                  _prevSearchedSolution.data.isEmpty)
+                              ? Container()
+                              : Flexible(
+                                  child: ListView.builder(
+                                  padding: EdgeInsets.all(0.0),
+                                  itemBuilder: (context, index) {
+                                    if (_prevSearchedSolution
+                                                .data[index].toShowSearched !=
+                                            null &&
+                                        _prevSearchedSolution
+                                            .data[index].toShowSearched) {
                                       return Container(
                                         width: double.infinity,
                                         padding: EdgeInsets.only(
-                                            top: (_isPanelOpened != null &&
-                                                    !_isPanelOpened)
-                                                ? AppConfig.verticalBlockSize *
-                                                    1
-                                                : AppConfig.verticalBlockSize *
-                                                    4),
+                                            top: AppConfig.verticalBlockSize *
+                                                1),
                                         margin: EdgeInsets.symmetric(
                                             horizontal:
                                                 AppConfig.horizontalBlockSize *
@@ -277,180 +341,82 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                             vertical:
                                                 AppConfig.verticalBlockSize *
                                                     2),
-                                        child: InkWell(
-                                          onTap: () {
-                                            if (_prevSearchedSolution
-                                                        .topSearches !=
-                                                    null &&
-                                                _prevSearchedSolution
-                                                    .topSearches) {
-                                              return;
-                                            }
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        PreviousActivity()));
-                                          },
-                                          highlightColor: (_prevSearchedSolution
-                                                          .topSearches !=
-                                                      null &&
-                                                  _prevSearchedSolution
-                                                      .topSearches)
-                                              ? Colors.transparent
-                                              : null,
-                                          splashColor: (_prevSearchedSolution
-                                                          .topSearches !=
-                                                      null &&
-                                                  _prevSearchedSolution
-                                                      .topSearches)
-                                              ? Colors.transparent
-                                              : null,
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: <Widget>[
-                                              Text(
-                                                (_prevSearchedSolution
-                                                                .topSearches !=
-                                                            null &&
-                                                        _prevSearchedSolution
-                                                            .topSearches)
-                                                    ? PlunesStrings.topSearches
-                                                    : PlunesStrings
-                                                        .previousActivities,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                              (_prevSearchedSolution
-                                                              .topSearches !=
-                                                          null &&
-                                                      _prevSearchedSolution
-                                                          .topSearches)
-                                                  ? Container()
-                                                  : Icon(
-                                                      Icons.chevron_right,
-                                                      color: PlunesColors
-                                                          .GREENCOLOR,
-                                                      size: 35,
-                                                    )
-                                            ],
+                                        child: Text(
+                                          _prevSearchedSolution
+                                                  .data[index].specialityId ??
+                                              PlunesStrings.topSearches,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
                                           ),
                                         ),
                                       );
-                                    }),
-                                (_prevSearchedSolution == null ||
-                                        _prevSearchedSolution.data == null ||
-                                        _prevSearchedSolution.data.isEmpty)
-                                    ? Container()
-                                    : Flexible(
-                                        child: ListView.builder(
-                                        padding: EdgeInsets.all(0.0),
-                                        itemBuilder: (context, index) {
-                                          if (_prevSearchedSolution.data[index]
-                                                      .toShowSearched !=
-                                                  null &&
-                                              _prevSearchedSolution
-                                                  .data[index].toShowSearched) {
-                                            return Container(
-                                              width: double.infinity,
-                                              padding: EdgeInsets.only(
-                                                  top: AppConfig
-                                                          .verticalBlockSize *
-                                                      1),
-                                              margin: EdgeInsets.symmetric(
-                                                  horizontal: AppConfig
-                                                          .horizontalBlockSize *
-                                                      4.5,
-                                                  vertical: AppConfig
-                                                          .verticalBlockSize *
-                                                      2),
-                                              child: Text(
-                                                _prevSearchedSolution
-                                                        .data[index]
-                                                        .specialityId ??
-                                                    PlunesStrings.topSearches,
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                              ),
-                                            );
-                                          }
-                                          TapGestureRecognizer tapRecognizer =
-                                              TapGestureRecognizer()
-                                                ..onTap =
-                                                    () => _onViewMoreTap(index);
-                                          return CustomWidgets()
-                                              .getTopSearchesPrevSearchedSolutionRow(
-                                                  _prevSearchedSolution.data,
-                                                  index, onButtonTap: () {
-                                            if (_prevSearchedSolution
-                                                        .data[index]
-                                                        .topSearch !=
-                                                    null &&
-                                                _prevSearchedSolution
-                                                    .data[index].topSearch) {
-                                              _onSolutionItemTapForTopSearches(
-                                                  _prevSearchedSolution
-                                                      .data[index]);
-                                            } else {
-                                              _onSolutionItemTap(
-                                                  _prevSearchedSolution
-                                                      .data[index]);
-                                            }
-                                          },
-                                                  isTopSearches: ((_prevSearchedSolution
-                                                                  .topSearches !=
-                                                              null &&
-                                                          _prevSearchedSolution
-                                                              .topSearches) ||
-                                                      (_prevSearchedSolution
-                                                                  .data[index]
-                                                                  .topSearch !=
-                                                              null &&
-                                                          _prevSearchedSolution
-                                                              .data[index]
-                                                              .topSearch)),
-                                                  onViewMoreTap: tapRecognizer);
-                                        },
-                                        itemCount:
-                                            _prevSearchedSolution.data.length,
-                                      )),
-                              ],
-                            )),
-                        Positioned(
-                          child: StreamBuilder<Object>(
-                              stream: _panelStreamController.stream,
-                              builder: (context, snapshot) {
-                                if (_isPanelOpened != null && !_isPanelOpened) {
-                                  return Container();
-                                }
-                                return AnimatedContainer(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          AppConfig.horizontalBlockSize * 10),
-                                  duration: Duration(milliseconds: 5500),
-                                  curve: Curves.ease,
-                                  child: Hero(
-                                    child: _getSearchBar(),
-                                    tag: "my_tag",
-                                  ),
-                                );
-                              }),
-                          left: 0.0,
-                          right: 0.0,
-                          top: 0,
-                        ),
-                      ],
-                    );
-                  });
-            },
-          );
+                                    }
+                                    TapGestureRecognizer tapRecognizer =
+                                        TapGestureRecognizer()
+                                          ..onTap = () => _onViewMoreTap(index);
+                                    return CustomWidgets()
+                                        .getTopSearchesPrevSearchedSolutionRow(
+                                            _prevSearchedSolution.data, index,
+                                            onButtonTap: () {
+                                      if (_prevSearchedSolution
+                                                  .data[index].topSearch !=
+                                              null &&
+                                          _prevSearchedSolution
+                                              .data[index].topSearch) {
+                                        _onSolutionItemTapForTopSearches(
+                                            _prevSearchedSolution.data[index]);
+                                      } else {
+                                        _onSolutionItemTap(
+                                            _prevSearchedSolution.data[index]);
+                                      }
+                                    },
+                                            isTopSearches:
+                                                ((_prevSearchedSolution
+                                                                .topSearches !=
+                                                            null &&
+                                                        _prevSearchedSolution
+                                                            .topSearches) ||
+                                                    (_prevSearchedSolution
+                                                                .data[index]
+                                                                .topSearch !=
+                                                            null &&
+                                                        _prevSearchedSolution
+                                                            .data[index]
+                                                            .topSearch)),
+                                            onViewMoreTap: tapRecognizer);
+                                  },
+                                  itemCount: _prevSearchedSolution.data.length,
+                                )),
+                        ],
+                      )),
+                  Positioned(
+                    child: StreamBuilder<Object>(
+                        stream: _panelStreamController.stream,
+                        builder: (context, snapshot) {
+//                                if (_isPanelOpened != null && !_isPanelOpened) {
+//                                  return Container();
+//                                }
+                          return AnimatedContainer(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 10),
+                            duration: Duration(milliseconds: 5500),
+                            curve: Curves.ease,
+                            child: Hero(
+                              child: _getSearchBar(),
+                              tag: "my_tag",
+                            ),
+                          );
+                        }),
+                    left: 0.0,
+                    right: 0.0,
+                    top: 0,
+                  ),
+                ],
+              );
+            });
+      },
+    );
   }
 
   _getCurrentLocation() async {
@@ -481,12 +447,6 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               style: TextStyle(fontSize: AppConfig.largeFont),
             ),
           ),
-//          Padding(
-//            padding: EdgeInsets.only(
-//              top: AppConfig.verticalBlockSize * 1,
-//            ),
-//            child: ,
-//          )
         ],
       ),
     );

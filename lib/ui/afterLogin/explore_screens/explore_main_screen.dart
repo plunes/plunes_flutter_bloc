@@ -52,7 +52,6 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
 
   @override
   void dispose() {
-    _whyPlunesWidgets = [];
     _streamController?.close();
     _exploreMainBloc?.dispose();
     super.dispose();
@@ -89,123 +88,123 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
     );
   }
 
-  List<Widget> _whyPlunesWidgets = [
-    Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-      ),
-      padding:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
-      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      child: Row(
-        children: <Widget>[
-          Container(
-            child: Image.asset(PlunesImages.zeroCostEmiIcon),
-            height: AppConfig.verticalBlockSize * 3,
-            width: AppConfig.horizontalBlockSize * 6,
-            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-          ),
-          Text(
-            "Zero cost EMI",
-            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
-          )
-        ],
-      ),
-    ),
-    Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-      ),
-      padding:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
-      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      child: Row(
-        children: <Widget>[
-          Container(
-            child: Image.asset(PlunesImages.paymentRefIcon),
-            height: AppConfig.verticalBlockSize * 3,
-            width: AppConfig.horizontalBlockSize * 6,
-            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-          ),
-          Text(
-            "Payment Refundable",
-            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
-          )
-        ],
-      ),
-    ),
-    Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-      ),
-      padding:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
-      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      child: Row(
-        children: <Widget>[
-          Container(
-            child: Image.asset(PlunesImages.prefTimeIcon),
-            height: AppConfig.verticalBlockSize * 3,
-            width: AppConfig.horizontalBlockSize * 6,
-            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-          ),
-          Text(
-            "Preferred timing as per your availability",
-            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
-          )
-        ],
-      ),
-    ),
-    Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-      ),
-      padding:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
-      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      child: Row(
-        children: <Widget>[
-          Container(
-            child: Image.asset(PlunesImages.freeTeleConsImg),
-            height: AppConfig.verticalBlockSize * 3,
-            width: AppConfig.horizontalBlockSize * 6,
-            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-          ),
-          Text(
-            "Free telephonic consultation",
-            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
-          )
-        ],
-      ),
-    ),
-    Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-      ),
-      padding:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
-      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      child: Row(
-        children: <Widget>[
-          Container(
-            child: Image.asset(PlunesImages.plunesVerifiedImg),
-            height: AppConfig.verticalBlockSize * 3,
-            width: AppConfig.horizontalBlockSize * 6,
-            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-          ),
-          Text(
-            "Plunes verified",
-            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
-          )
-        ],
-      ),
-    ),
-  ];
+//  List<Widget> _whyPlunesWidgets = [
+//    Container(
+//      decoration: BoxDecoration(
+//        borderRadius: BorderRadius.all(Radius.circular(8)),
+//        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+//      ),
+//      padding:
+//          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
+//      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//      child: Row(
+//        children: <Widget>[
+//          Container(
+//            child: Image.asset(PlunesImages.zeroCostEmiIcon),
+//            height: AppConfig.verticalBlockSize * 3,
+//            width: AppConfig.horizontalBlockSize * 6,
+//            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//          ),
+//          Text(
+//            "Zero cost EMI",
+//            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
+//          )
+//        ],
+//      ),
+//    ),
+//    Container(
+//      decoration: BoxDecoration(
+//        borderRadius: BorderRadius.all(Radius.circular(8)),
+//        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+//      ),
+//      padding:
+//          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
+//      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//      child: Row(
+//        children: <Widget>[
+//          Container(
+//            child: Image.asset(PlunesImages.paymentRefIcon),
+//            height: AppConfig.verticalBlockSize * 3,
+//            width: AppConfig.horizontalBlockSize * 6,
+//            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//          ),
+//          Text(
+//            "Payment Refundable",
+//            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
+//          )
+//        ],
+//      ),
+//    ),
+//    Container(
+//      decoration: BoxDecoration(
+//        borderRadius: BorderRadius.all(Radius.circular(8)),
+//        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+//      ),
+//      padding:
+//          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
+//      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//      child: Row(
+//        children: <Widget>[
+//          Container(
+//            child: Image.asset(PlunesImages.prefTimeIcon),
+//            height: AppConfig.verticalBlockSize * 3,
+//            width: AppConfig.horizontalBlockSize * 6,
+//            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//          ),
+//          Text(
+//            "Preferred timing as per your availability",
+//            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
+//          )
+//        ],
+//      ),
+//    ),
+//    Container(
+//      decoration: BoxDecoration(
+//        borderRadius: BorderRadius.all(Radius.circular(8)),
+//        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+//      ),
+//      padding:
+//          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
+//      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//      child: Row(
+//        children: <Widget>[
+//          Container(
+//            child: Image.asset(PlunesImages.freeTeleConsImg),
+//            height: AppConfig.verticalBlockSize * 3,
+//            width: AppConfig.horizontalBlockSize * 6,
+//            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//          ),
+//          Text(
+//            "Free telephonic consultation",
+//            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
+//          )
+//        ],
+//      ),
+//    ),
+//    Container(
+//      decoration: BoxDecoration(
+//        borderRadius: BorderRadius.all(Radius.circular(8)),
+//        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+//      ),
+//      padding:
+//          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
+//      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//      child: Row(
+//        children: <Widget>[
+//          Container(
+//            child: Image.asset(PlunesImages.plunesVerifiedImg),
+//            height: AppConfig.verticalBlockSize * 3,
+//            width: AppConfig.horizontalBlockSize * 6,
+//            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+//          ),
+//          Text(
+//            "Plunes verified",
+//            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
+//          )
+//        ],
+//      ),
+//    ),
+//  ];
 
   Widget _getBody() {
     return Container(
@@ -213,7 +212,11 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
       child: ListView(
         shrinkWrap: true,
         children: <Widget>[
-          _getWhyPlunesView(),
+          _exploreModel.data.first.section1 != null &&
+                  _exploreModel.data.first.section1.elements != null &&
+                  _exploreModel.data.first.section1.elements.isNotEmpty
+              ? _getWhyPlunesView(_exploreModel.data.first.section1)
+              : Container(),
           _exploreModel.data.first.section2 != null &&
                   _exploreModel.data.first.section2.elements != null &&
                   _exploreModel.data.first.section2.elements.isNotEmpty
@@ -239,7 +242,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
     );
   }
 
-  Widget _getWhyPlunesView() {
+  Widget _getWhyPlunesView(Section1 section1) {
     return Container(
       width: double.infinity,
       margin: EdgeInsets.only(
@@ -251,7 +254,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Text(
-            PlunesStrings.whyPlunes,
+            section1?.heading ?? PlunesStrings.whyPlunes,
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: PlunesColors.BLACKCOLOR,
@@ -265,9 +268,21 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
-                return _whyPlunesWidgets[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                    color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 2),
+                  margin:
+                      EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+                  child: CustomWidgets().getImageFromUrl(
+                      section1.elements[index].imgUrl,
+                      boxFit: BoxFit.cover),
+                );
               },
-              itemCount: _whyPlunesWidgets.length,
+              itemCount: section1.elements.length,
             ),
           )
         ],
