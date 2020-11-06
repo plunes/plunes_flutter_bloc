@@ -130,30 +130,9 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
             margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
           ),
           Text(
-            "100% Payment Refundable",
+            "Payment Refundable",
             style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13),
           )
-        ],
-      ),
-    ),
-    Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(8)),
-        color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-      ),
-      padding:
-          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2),
-      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-      child: Row(
-        children: <Widget>[
-          Container(
-            child: Image.asset(PlunesImages.firstConslFree),
-            height: AppConfig.verticalBlockSize * 3,
-            width: AppConfig.horizontalBlockSize * 6,
-            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-          ),
-          Text("First consultation free",
-              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 13))
         ],
       ),
     ),

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -31,7 +30,7 @@ class RealInsightPopup extends BaseActivity {
 class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   num sliderVal;
   num chancesPercent = 25;
-  num reductionInPrice, half;
+  num half;
   TextEditingController _priceController = TextEditingController();
   ScrollController _scrollController = ScrollController();
   String failureCause;
@@ -47,43 +46,25 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
     _realInsight = widget.realInsight;
     _streamForIcon = StreamController.broadcast();
     _docHosMainInsightBloc = widget.docHosMainInsightBloc;
-    reductionInPrice = ((((_realInsight.userPrice.toDouble() / 2)) / 2) * 100) /
-        _realInsight.userPrice.toDouble();
     if (_realInsight.recommendation != null &&
         _realInsight.recommendation > 0) {
-//      print("${_realInsight.recommendation} rec ear");
-      _realInsight.recommendation = 100 - _realInsight.recommendation;
-//      print("${_realInsight.recommendation} rec lat");
-      sliderVal = ((_realInsight.userPrice / 100) * _realInsight.recommendation)
-          ?.toDouble();
-//      print("${_realInsight.recommendation} sliderVal $sliderVal");
-//      sliderVal = _realInsight.max - sliderVal;
-//      print("sliderVal $sliderVal");
-      half = ((_realInsight.userPrice / 100) * _realInsight.recommendation)
-          ?.toDouble();
-//      half = _realInsight.max - half;
+      var recommendation = 100 - _realInsight.recommendation;
+      sliderVal = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+      half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
       if (sliderVal < _realInsight.min) {
         sliderVal = _realInsight.min;
         half = _realInsight.min;
       }
-      try {
-        var val = (sliderVal * 100) / _realInsight.userPrice.floor().toDouble();
-        chancesPercent = double.tryParse((100 - val)?.toStringAsFixed(1));
-        if (chancesPercent >= 70) {
-          chancesPercent = 70;
-        }
-      } catch (e) {
-        print("Breaking here val");
-      }
+//      print("half $half  ye wala sliderVal $sliderVal  _realInsight.recommendation ${_realInsight.recommendation} _realInsight.userPrice ${_realInsight.userPrice}");
     } else if (_realInsight.suggested != null && _realInsight.suggested) {
       sliderVal = _realInsight.userPrice.toInt().toDouble();
       half = _realInsight.userPrice.toInt().toDouble();
     } else {
-      Navigator.pop(context); ///check this code
+      Navigator.pop(context);
     }
+    _setChancesOfConversion();
     if (sliderVal == null || sliderVal == 0) {
       chancesPercent = 0;
-      reductionInPrice = 0;
     }
     _timer = Timer.periodic(Duration(milliseconds: 1200), (timer) {
       if (_topMargin == 0) {
@@ -354,21 +335,30 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                       }
                                       newState(() {
                                         try {
-                                          var val = (newValue * 100) /
-                                              _realInsight.userPrice
-                                                  .floor()
-                                                  .toDouble();
-                                          reductionInPrice = ((newValue) *
-                                                  100) /
-                                              _realInsight.userPrice.toDouble();
-                                          reductionInPrice =
-                                              100 - reductionInPrice;
-
-                                          chancesPercent = double.tryParse(
-                                              (100 - val)?.toStringAsFixed(1));
+                                          var firstVal = (_realInsight.max -
+                                                  _realInsight.min) /
+                                              70;
+                                          var secVal =
+                                              (newValue - _realInsight.min) /
+                                                  firstVal;
+                                          var thirdVal = 70 - secVal;
+                                          chancesPercent =
+                                              thirdVal?.floor()?.toDouble() ??
+                                                  0;
+//                                          var val = (newValue * 100) /
+//                                              _realInsight.max
+//                                                  .floor()
+//                                                  .toDouble();
+//                                          reductionInPrice = ((newValue) *
+//                                                  100) /
+//                                              _realInsight.max.toDouble();
+//                                          reductionInPrice =
+//                                              100 - reductionInPrice;
+//
+//                                          chancesPercent = double.tryParse(
+//                                              (100 - val)?.toStringAsFixed(1));
                                         } catch (e) {
-                                          chancesPercent = 50;
-                                          reductionInPrice = 50;
+                                          chancesPercent = 0;
                                         }
                                         sliderVal = newValue;
                                         if (chancesPercent >= 70) {
@@ -875,6 +865,20 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
             );
           }),
     );
+  }
+
+  void _setChancesOfConversion() {
+    try {
+      var firstVal = (_realInsight.max - _realInsight.min) / 70;
+      var secVal = (sliderVal - _realInsight.min) / firstVal;
+      var thirdVal = 70 - secVal;
+      chancesPercent = thirdVal?.floor()?.toDouble() ?? 0;
+      if (chancesPercent >= 70) {
+        chancesPercent = 70;
+      }
+    } catch (e) {
+      print("Breaking here val");
+    }
   }
 }
 
