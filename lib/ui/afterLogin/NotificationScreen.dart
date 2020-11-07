@@ -368,12 +368,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
               builder: (context) =>
                   HomeScreen(screenNo: Constants.homeScreenNumber)),
           (_) => false);
-    } else if (result.notificationScreen == FirebaseNotification.plockrScreen) {
+    } else if (result.notificationScreen ==
+        FirebaseNotification.exploreScreen) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  HomeScreen(screenNo: Constants.plockerScreenNumber)),
+                  HomeScreen(screenNo: Constants.exploreScreenNumber)),
           (_) => false);
     }
   }

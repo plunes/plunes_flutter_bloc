@@ -119,7 +119,7 @@ class BookingRepo {
 
   Future<RequestState> cancelPayment(String bookingId) async {
     String url = Urls.cancelPaymentUrl + "$bookingId";
-    var result = await DioRequester().requestMethod(
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true,
         url: url);

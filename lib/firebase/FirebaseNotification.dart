@@ -51,7 +51,7 @@ class FirebaseNotification {
 
   static const String homeScreenName = "HomeScreen";
   static const String bookingScreen = "booking"; // for all
-  static const String plockrScreen = "plocks"; //"plockr";
+  static const String exploreScreen = "explore"; //"plockr";
   static const String solutionScreen = "solution";
   static const String reviewScreen = "review";
   int _notificationCount = 0, _plockrCount = 0;
@@ -149,10 +149,10 @@ class FirebaseNotification {
         widget = HomeScreen(
           screenNo: Constants.homeScreenNumber,
         );
-      } else if (payLoad["data"]['screen'] == plockrScreen) {
+      } else if (payLoad["data"]['screen'] == exploreScreen) {
         isHomeScreen = true;
         widget = HomeScreen(
-          screenNo: Constants.plockerScreenNumber,
+          screenNo: Constants.exploreScreenNumber,
         );
       } else if (payLoad["data"]['screen'] == bookingScreen) {
         widget = AppointmentMainScreen(bookingId: payLoad['data']['id']);
@@ -254,10 +254,10 @@ class FirebaseNotification {
       widget = HomeScreen(
         screenNo: Constants.homeScreenNumber,
       );
-    } else if (notificationModel.notificationType == plockrScreen) {
+    } else if (notificationModel.notificationType == exploreScreen) {
       isHomeScreen = true;
       widget = HomeScreen(
-        screenNo: Constants.plockerScreenNumber,
+        screenNo: Constants.exploreScreenNumber,
       );
     } else if (notificationModel.notificationType == bookingScreen) {
       widget = AppointmentMainScreen(
@@ -292,111 +292,7 @@ class FirebaseNotification {
             .push(MaterialPageRoute(builder: (context) => widget));
       }
     }
-
-//    return _navKey.currentState
-//        .push(MaterialPageRoute(builder: (context) => AppointmentMainScreen()));
   }
-
-//  Future<Null> _filterPopUp(String body, String userID) async {
-//    return
-//      showDialog<Null>(
-//        context: _navKey.currentContext,
-//        barrierDismissible: true, // user must tap button!
-//        builder: (BuildContext context) {
-//          return new Material(
-//              type: MaterialType.transparency,
-//              child: Container(
-//                alignment: Alignment.center,
-//                color: Colors.transparent,
-//                margin: EdgeInsets.fromLTRB(30.0, 0.0, 30.0, 50.0),
-//                child: Column(
-//                  mainAxisAlignment: MainAxisAlignment.center,
-//                  children: <Widget>[
-//                    Container(
-//                      padding: EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 10.0),
-//                      color: Colors.white,
-//                      alignment: Alignment.topLeft,
-//                      child: Text(
-//                        title,
-//                        textAlign: TextAlign.center,
-//                        style: TextStyle(
-//                            color: Colors.black,
-//                            fontWeight: FontWeight.bold,
-//                            fontSize: 16.0),
-//                      ),
-//                    ),
-//                    Container(
-//                      padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 10.0),
-//                      color: Colors.white,
-//                      alignment: Alignment.topLeft,
-//                      child: InkWell(
-//                        onLongPress: () {
-//                          Navigator.pop(context);
-//                          Clipboard.setData(new ClipboardData(text: body));
-//                          _scaffoldKeyNotification.currentState
-//                              .showSnackBar(new SnackBar(
-//                            content: new Text(
-//                              "Copied to Clipboard",
-//                              style: TextStyle(color: Colors.white),
-//                            ),
-//                            backgroundColor: Colors.black,
-//                          ));
-//                        },
-//                        child: Text(
-//                          body,
-//                          textAlign: TextAlign.center,
-//                          style: TextStyle(
-//                              color: Colors.black,
-//                              fontWeight: FontWeight.normal,
-//                              fontSize: 16.0),
-//                        ),
-//                      ),
-//                    ),
-//                    Container(
-//                      padding: EdgeInsets.only(
-//                          left: 20.0, right: 20.0, top: 20.0, bottom: 30.0),
-//                      color: Colors.white,
-//                      child: GestureDetector(
-//                        onTap: () {
-//                          Navigator.pop(context);
-//                        },
-//                        child: new Container(
-//                          padding:
-//                              const EdgeInsets.only(left: 10.0, right: 10.0),
-//                          margin: EdgeInsets.only(right: 10.0),
-//                          height: 30.0,
-//                          decoration: new BoxDecoration(
-//                              shape: BoxShape.rectangle,
-//                              borderRadius: BorderRadius.circular(5.0),
-//                              color: Colors.black26),
-//                          child: new Center(
-//                              child: new Text(
-//                            "DONE",
-//                            textAlign: TextAlign.center,
-//                            style: new TextStyle(
-//                              fontSize: 15.0,
-//                              color: Colors.white,
-//                              fontFamily: "openSans",
-//                            ),
-//                          )),
-//
-//                          // Add box decoration
-//                        ),
-//                      ),
-//                    ),
-//                  ],
-//                ),
-//              ));
-//        });
-//  }
-
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      key: _scaffoldKeyNotification,
-//      body: Container(),
-//    );
-//  }
 
   showLocalNotification(Map<String, dynamic> message) {
     if (Platform.isIOS) {
@@ -440,8 +336,8 @@ class FirebaseNotification {
           payLoad.containsKey("screen") &&
           payLoad['screen'] != null &&
           payLoad['screen'].toString().isNotEmpty) {
-        if (payLoad['screen'] == plockrScreen) {
-          screenName = plockrScreen;
+        if (payLoad['screen'] == exploreScreen) {
+          screenName = exploreScreen;
         } else if (payLoad['screen'] == bookingScreen) {
           screenName = bookingScreen;
         } else if (payLoad['screen'] == insightScreen) {
@@ -459,8 +355,8 @@ class FirebaseNotification {
           payLoad.containsKey("data") &&
           payLoad["data"]['screen'] != null &&
           payLoad["data"]['screen'].toString().isNotEmpty) {
-        if (payLoad["data"]['screen'] == plockrScreen) {
-          screenName = plockrScreen;
+        if (payLoad["data"]['screen'] == exploreScreen) {
+          screenName = exploreScreen;
         } else if (payLoad["data"]['screen'] == bookingScreen) {
           screenName = bookingScreen;
         } else if (payLoad["data"]['screen'] == insightScreen) {

@@ -237,8 +237,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             plunesImages.bidActiveIcon),
         bottomNavigationBarItem(
             PlunesStrings.explore.toUpperCase(),
-            PlunesImages.exploreInActiveIcon,
-            PlunesImages.exploreSelectedImage),
+            PlunesImages.exploreSelectedImage,
+            PlunesImages.exploreInActiveIcon),
         bottomNavigationBarItem(
             plunesStrings.notification,
             (FirebaseNotification().getNotificationCount() != null &&
@@ -281,7 +281,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         case Constants.homeScreenNumber:
           _selectedIndex = 0;
           break;
-        case Constants.plockerScreenNumber:
+        case Constants.exploreScreenNumber:
           _selectedIndex = 1;
           break;
         case Constants.notificationScreenNumber:

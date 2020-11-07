@@ -1046,13 +1046,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       "Your Booking ID is ${_initPaymentResponse.referenceId}",
                       plunesImages.checkIcon,
                       context,
-                      bookingId: _initPaymentResponse.referenceId)
-//                  PaymentSuccess(
-//                    referenceID: _initPaymentResponse.referenceId,
-//                    bookingId: _initPaymentResponse.referenceId,
-//                  )
-
-              ).then((value) {
+                      bookingId: _initPaymentResponse.referenceId)).then(
+              (value) {
             Navigator.pop(context, "pop");
           });
         } else {

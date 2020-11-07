@@ -8,8 +8,10 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/explore_bloc/explore_main_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/explore/explore_main_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -47,6 +49,13 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
     _getExploreData();
     _currentDotPosition = 0.0;
     _streamController = StreamController.broadcast();
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == FirebaseNotification.exploreScreen &&
+          mounted) {
+        _getExploreData();
+      }
+    });
     super.initState();
   }
 

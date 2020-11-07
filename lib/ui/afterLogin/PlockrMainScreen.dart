@@ -59,7 +59,7 @@ class _PlockrMainScreenState extends State<PlockrMainScreen>
     initialize();
     EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
       if (event != null &&
-          event.screenName == FirebaseNotification.plockrScreen &&
+          event.screenName == FirebaseNotification.exploreScreen &&
           mounted) {
         _getPlockrData();
       }

@@ -74,7 +74,8 @@ class Urls {
       'https://devapi.plunes.com/payment'; //'https://plunes.co/payment'; //dev
   static const String ZEST_MONEY_URL =
       PAYMENT_WEB_VIEW_URL + "Control/zestMoney";
-  static const String cancelPaymentUrl = "payment/viewClosed/";
+  static const String cancelPaymentUrl =
+      customBaseUrl + "paymentControl/viewClosed/";
   static const String PREV_SOLUTION_URL = "solution/search";
   static const String GENERATE_OTP_URL = "user/generateOtp";
   static const String FORGOT_PASSWORD_URL = "user/forgotPassword";

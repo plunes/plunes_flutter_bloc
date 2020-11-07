@@ -5,7 +5,7 @@
  */
 
 class Constants {
-  static const int plockerScreenNumber = 1;
+  static const int exploreScreenNumber = 1;
   static const int homeScreenNumber = 0;
   static const int notificationScreenNumber = 2;
   static String DEVICE_TOKEN = "device_token";
