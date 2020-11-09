@@ -561,7 +561,7 @@ class _HospitalOverviewScreenState
                                         fontWeight: FontWeight.normal,
                                       ),
                                     ),
-                                    Text('Business Lost',
+                                    Text('Potential Business',
                                         style: TextStyle(
                                             color: Colors.black54,
                                             fontSize: AppConfig.verySmallFont)),
