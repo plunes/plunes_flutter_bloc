@@ -13,7 +13,7 @@ class AnalyticsProvider {
   }
 
   void registerEvent(final String eventName) {
-    return;
+//    return;
     try {
       FirebaseNotification()
           .getAnalyticsInstance()

@@ -13,7 +13,7 @@ class SocketIoUtil {
   void initSocket() async {
     String _url =
         Urls.socketUrl + "?userId=" + UserManager().getUserDetails().uid;
-    print("_url $_url");
+//    print("_url $_url");
     _socket = IO.io(_url, <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
@@ -80,6 +80,6 @@ class SocketIoUtil {
   }
 
   void pprint(String s) {
-    print("data $s");
+//    print("data $s");
   }
 }
