@@ -610,8 +610,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                               _realInsight.serviceId,
                                               isSuggestive: true,
                                               suggestedPrice: num.tryParse(
-                                                  _priceController.text
-                                                      .trim()));
+                                                  _priceController.text.trim()),
+                                              realInsight: _realInsight);
                                     } else {
                                       if (sliderVal == null || sliderVal == 0) {
                                         failureCause = 'Price must not be 0.';
@@ -636,7 +636,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                                   (_realInsight.suggested !=
                                                           null &&
                                                       _realInsight.suggested),
-                                              suggestedPrice: sliderVal);
+                                              suggestedPrice: sliderVal,
+                                              realInsight: _realInsight);
                                     }
                                   },
                                   child: Container(

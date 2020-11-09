@@ -1,4 +1,5 @@
 import 'package:plunes/blocs/base_bloc.dart';
+import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/repositories/doc_hos_repo/doc_hos_main_screen_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
@@ -113,11 +114,15 @@ class DocHosMainInsightBloc extends BlocBase {
   }
 
   getUpdateRealTimeInsightPrice(num price, String solutionId, String serviceId,
-      {bool isSuggestive = false, num suggestedPrice}) async {
+      {bool isSuggestive = false,
+      num suggestedPrice,
+      RealInsight realInsight}) async {
     updateRealTimeInsightPriceStream(RequestInProgress());
     updateRealTimeInsightPriceStream(await DocHosMainRepo()
         .updateRealTimeInsightPrice(price, solutionId, serviceId,
-            isSuggestive: isSuggestive, suggestedPrice: suggestedPrice));
+            isSuggestive: isSuggestive,
+            suggestedPrice: suggestedPrice,
+            realInsight: realInsight));
   }
 
   getUpdateActionableInsightPrice(

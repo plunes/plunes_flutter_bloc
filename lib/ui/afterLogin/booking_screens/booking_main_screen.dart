@@ -76,14 +76,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   double _widgetSize = 0;
   ScrollController _scrollController;
   GlobalKey _selectedTimeSlotKey;
-
+  StreamController _showHideMapController;
   Completer<GoogleMapController> _googleMapController = Completer();
   GoogleMapController _mapController;
-  Set<Marker> _markers = {};
+  bool _webViewOpened = false;
 
   @override
   void initState() {
     _hasGotSize = false;
+    _webViewOpened = false;
+    _showHideMapController = StreamController.broadcast();
     _selectedTimeSlotKey = GlobalKey(debugLabel: "GlobalKey");
     _slotArray = [];
     _shouldUseCredit = false;
@@ -109,6 +111,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   @override
   void dispose() {
     _bookingBloc?.dispose();
+    _showHideMapController?.close();
     super.dispose();
   }
 
@@ -393,10 +396,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       onTap: () => _getDirections(),
                       child: Column(
                         children: <Widget>[
-                          Container(
-                            height: AppConfig.verticalBlockSize * 16,
-                            child: _showMapview(),
-                          ),
+                          StreamBuilder(
+                              stream: _showHideMapController.stream,
+                              builder: (context, snapshot) {
+                                if (_webViewOpened != null && _webViewOpened) {
+                                  return Container();
+                                }
+                                return Container(
+                                  height: AppConfig.verticalBlockSize * 16,
+                                  child: _showMapview(),
+                                );
+                              }),
                           Container(
                             padding: EdgeInsets.only(
                                 top: AppConfig.verticalBlockSize * 1),
@@ -1051,12 +1061,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             Navigator.pop(context, "pop");
           });
         } else {
+          _toogleWebViewValue(true);
           Navigator.of(context)
               .push(PageRouteBuilder(
                   opaque: false,
                   pageBuilder: (BuildContext context, _, __) =>
                       PaymentWebView(id: _initPaymentResponse.id)))
               .then((val) {
+            _toogleWebViewValue(false);
             if (val == null) {
               AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
               _bookingBloc.cancelPayment(_initPaymentResponse.id);
@@ -1350,8 +1362,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             _docProfileInfo.user.latitude.isEmpty ||
             _docProfileInfo.user.latitude == null ||
             _docProfileInfo.user.latitude.isEmpty)
-        ? widget.showInSnackBar(PlunesStrings.locationNotAvailable,
-            PlunesColors.BLACKCOLOR, scaffoldKey)
+        ? Container()
         : Stack(children: <Widget>[
             Positioned(
               child: Column(
@@ -1368,8 +1379,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                         _mapController = mapController;
                         _googleMapController.complete(_mapController);
                       },
-                      markers: _markers,
-                      // _hasAnimated ? _markers : _bigMarkers,
                       initialCameraPosition: CameraPosition(
                           target: LatLng(
                               double.parse(
@@ -1384,16 +1393,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 ],
               ),
             ),
-            // Positioned(
-            //   left: 0,
-            //   right: 0,
-            //   bottom: 0,
-            //   top: 0,
-            //   child: IgnorePointer(
-            //     child: Container(color: Colors.black12),
-            //     ignoring: true,
-            //   ),
-            // ),
           ]);
   }
 
@@ -1710,13 +1709,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   void _openWebViewWithDynamicUrl(ZestMoneyResponseModel zestMoneyResponseModel,
       InitPaymentResponse initPaymentResponse) {
+    _toogleWebViewValue(true);
     Navigator.of(context)
         .push(PageRouteBuilder(
             opaque: false,
             pageBuilder: (BuildContext context, _, __) =>
                 PaymentWebView(url: zestMoneyResponseModel.data)))
         .then((val) {
-      print("val $val");
+      _toogleWebViewValue(false);
       if (val == null) {
         AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
         _bookingBloc.cancelPayment(initPaymentResponse.id);
@@ -1743,6 +1743,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         _showInSnackBar("Payment Cancelled");
       }
     });
+  }
+
+  void _toogleWebViewValue(bool isOpened) {
+    _webViewOpened = isOpened;
+    _showHideMapController?.add(null);
   }
 }
 

@@ -76,7 +76,9 @@ class DocHosMainRepo {
 
   Future<RequestState> updateRealTimeInsightPrice(
       num price, String solutionId, String serviceId,
-      {bool isSuggestive = false, num suggestedPrice}) async {
+      {bool isSuggestive = false,
+      num suggestedPrice,
+      RealInsight realInsight}) async {
     Map<String, dynamic> postData;
     if (isSuggestive) {
       postData = {
@@ -88,7 +90,9 @@ class DocHosMainRepo {
       postData = {
         "solutionId": solutionId,
         "serviceId": serviceId,
-        "discount": price
+        "price": suggestedPrice,
+        "min": realInsight?.min,
+        "max": realInsight?.max
       };
     }
     var result = await DioRequester().requestMethod(
