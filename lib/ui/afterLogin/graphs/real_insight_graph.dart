@@ -65,7 +65,7 @@ class StackedAreaLineChart extends StatelessWidget {
         ],
         behaviors: [
           new charts.InitialSelection(selectedDataConfig: [
-            new charts.SeriesDatumConfig<int>('Graph', _userPrice)
+            new charts.SeriesDatumConfig<int>('Graph', _userPrice?.toInt() ?? 0)
           ]),
           new charts.LinePointHighlighter(
               symbolRenderer: CustomCircleSymbolRenderer()),
@@ -100,15 +100,16 @@ class StackedAreaLineChart extends StatelessWidget {
 //    LinearSales(57,5)];
     points.forEach((element) {
       print("element.x ${element.x}");
-      _dataSeries.add(LinearSales(element.x, element.y));
+      _dataSeries
+          .add(LinearSales(element.x?.toInt() ?? 0, element.y?.toInt() ?? 0));
     });
     return [
       new charts.Series<LinearSales, int>(
           id: 'Graph',
           colorFn: (_, __) =>
               charts.ColorUtil.fromDartColor(Colors.white.withOpacity(0.6)),
-          domainFn: (LinearSales sales, _) => sales.user,
-          measureFn: (LinearSales sales, _) => sales.price,
+          domainFn: (LinearSales sales, _) => sales.user?.toInt() ?? 0,
+          measureFn: (LinearSales sales, _) => sales.price?.toInt() ?? 0,
           data: _dataSeries,
           displayName: "Display name",
           areaColorFn: (_, s) => charts.ColorUtil.fromDartColor(
