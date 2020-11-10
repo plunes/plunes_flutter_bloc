@@ -1,7 +1,7 @@
 name: plunes
 description: A new Flutter application.
 
-version: 1.2.29+70
+version: 1.2.31+72
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
