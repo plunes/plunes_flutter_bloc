@@ -90,9 +90,11 @@ class BookingBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> requestInvoice(String bookingId,int index) async {
+  Future<RequestState> requestInvoice(
+      String bookingId, int index, bool shouldSendInvoice) async {
     addStateInRequestInvoiceProvider(RequestInProgress(requestCode: index));
-    var result = await BookingRepo().requestInvoice(bookingId,index);
+    var result =
+        await BookingRepo().requestInvoice(bookingId, index, shouldSendInvoice);
     addStateInRequestInvoiceProvider(result);
     return result;
   }
@@ -141,7 +143,8 @@ class BookingBloc extends BlocBase {
     addStateInGenericStream(_requestInvoiceProvider, state);
   }
 
-  Future<RequestState> processZestMoney(InitPayment initPayment,InitPaymentResponse initPaymentResponse) {
-    return BookingRepo().processZestMoney(initPayment,initPaymentResponse);
+  Future<RequestState> processZestMoney(
+      InitPayment initPayment, InitPaymentResponse initPaymentResponse) {
+    return BookingRepo().processZestMoney(initPayment, initPaymentResponse);
   }
 }

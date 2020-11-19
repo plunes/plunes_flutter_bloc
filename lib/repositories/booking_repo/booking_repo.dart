@@ -148,14 +148,25 @@ class BookingRepo {
     }
   }
 
-  Future<RequestState> requestInvoice(String bookingId, int index) async {
+  Future<RequestState> requestInvoice(
+      String bookingId, int index, bool shouldSendInvoice) async {
+    String url = Urls.REQUEST_INVOICE_URL +
+        "/$bookingId" +
+        "${shouldSendInvoice ? "/true" : ""}";
+    print("url $url");
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true,
-        url: Urls.REQUEST_INVOICE_URL + "/$bookingId");
+        url: url);
     if (result.isRequestSucceed) {
-      return RequestSuccess(
-          response: result.isRequestSucceed, requestCode: index);
+      print(result.response.data);
+      String pdfUrl;
+      if (result.response.data != null &&
+          result.response.data['data'] != null &&
+          result.response.data['data'].toString().isNotEmpty) {
+        pdfUrl = result.response.data['data'];
+      }
+      return RequestSuccess(response: pdfUrl, requestCode: index);
     } else {
       return RequestFailed(
           failureCause: result.failureCause, requestCode: index);

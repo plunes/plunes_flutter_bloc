@@ -15,7 +15,7 @@ class LauncherUtil {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      throw 'Could not open the map.';
+//      throw 'Could not open the url.';
     }
   }
 }

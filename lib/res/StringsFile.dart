@@ -362,6 +362,8 @@ class PlunesStrings {
   static const String priceValidThroughPlunes =
       "Prices valid exclusively on Plunes";
   static const String zestMoney = "ZestMoney";
+  static const String payOnWeb = "Pay On Web";
+  static const String payUpi = "Pay Through Upi";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

@@ -706,8 +706,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             _showSnackBar(PlunesStrings.pleasePayFull);
                             return;
                           }
-                          _bookingBloc.requestInvoice(
-                              appointmentModel.bookingId, index);
+                          _bookingBloc
+                              .requestInvoice(
+                                  appointmentModel.bookingId, index, false)
+                              .then((value) {});
                         },
                         onDoubleTap: () {},
                         child: StreamBuilder<RequestState>(
@@ -728,15 +730,20 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                     req.requestCode == index) {
                                   Future.delayed(Duration(milliseconds: 20))
                                       .then((value) async {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return CustomWidgets()
-                                              .requestInvoiceSuccessPopup(
-                                                  PlunesStrings
-                                                      .invoiceSuccessMessage,
-                                                  widget.globalKey);
-                                        });
+                                    if (req.response != null &&
+                                        req.response.toString().isNotEmpty) {
+                                      LauncherUtil.launchUrl(
+                                          req.response.toString());
+                                    }
+//                                    showDialog(
+//                                        context: context,
+//                                        builder: (context) {
+//                                          return CustomWidgets()
+//                                              .requestInvoiceSuccessPopup(
+//                                                  PlunesStrings
+//                                                      .invoiceSuccessMessage,
+//                                                  widget.globalKey);
+//                                        });
 //                                    widget.getAppointment();
                                   });
                                   _bookingBloc

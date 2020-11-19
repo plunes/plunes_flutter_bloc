@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/painting.dart';
+import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -37,6 +38,7 @@ import 'package:share/share.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:upi_pay/upi_pay.dart';
 import 'CommonMethods.dart';
 import 'app_config.dart';
 
@@ -6067,6 +6069,81 @@ class CustomWidgets {
           ),
         ),
       ],
+    );
+  }
+
+  Widget getUpiBasedPaymentOptionView(InitPaymentResponse initPaymentResponse,
+      List<ApplicationMeta> availableUpiApps, GlobalKey globalKey) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      insetPadding:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 5),
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.2,
+                  horizontal: AppConfig.horizontalBlockSize * 2),
+              child: GridView.count(
+                crossAxisCount: 2,
+                shrinkWrap: true,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 1.6,
+                physics: NeverScrollableScrollPhysics(),
+                children: availableUpiApps
+                    .map((it) => Material(
+                          key: ObjectKey(it.upiApplication),
+                          color: Colors.grey[200],
+                          child: InkWell(
+                            onTap: () {
+                              Map<String, dynamic> result = Map();
+                              result[PlunesStrings.payUpi] = it;
+                              Navigator.of(globalKey.currentState.context)
+                                  .pop(result);
+                            },
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Image.memory(
+                                  it.icon,
+                                  width: AppConfig.horizontalBlockSize * 15,
+                                  height: AppConfig.verticalBlockSize * 6,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(top: 4),
+                                  child: Text(
+                                    it.upiApplication.getAppName(),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 2),
+              child: InkWell(
+                onTap: () {
+                  Map<String, String> result = Map();
+                  result[PlunesStrings.payOnWeb] = PlunesStrings.payOnWeb;
+                  Navigator.of(globalKey.currentState.context).pop(result);
+                },
+                child: Container(
+                  child: Text("More Options"),
+                  padding: EdgeInsets.all(5),
+                  alignment: Alignment.center,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }

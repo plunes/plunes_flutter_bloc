@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/Utils/payment_web_view.dart';
+import 'package:plunes/Utils/upi_payment_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
@@ -32,6 +34,7 @@ import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popu
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
+import 'package:upi_pay/upi_pay.dart';
 
 // ignore: must_be_immutable
 class BookingMainScreen extends BaseActivity {
@@ -80,6 +83,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   Completer<GoogleMapController> _googleMapController = Completer();
   GoogleMapController _mapController;
   bool _webViewOpened = false;
+  List<ApplicationMeta> _availableUpiApps;
 
   @override
   void initState() {
@@ -98,7 +102,18 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _currentDate = DateTime.now();
     _selectedDate = _currentDate;
     _getDetails();
+    _getInstalledUpiApps();
     super.initState();
+  }
+
+  bool _isAndroid() {
+    return Platform.isAndroid ?? false;
+  }
+
+  _getInstalledUpiApps() async {
+    if (_isAndroid()) {
+      _availableUpiApps = await UpiPay.getInstalledUpiApplications();
+    }
   }
 
   _getDetails() {
@@ -1061,41 +1076,33 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             Navigator.pop(context, "pop");
           });
         } else {
-          _toogleWebViewValue(true);
-          Navigator.of(context)
-              .push(PageRouteBuilder(
-                  opaque: false,
-                  pageBuilder: (BuildContext context, _, __) =>
-                      PaymentWebView(id: _initPaymentResponse.id)))
-              .then((val) {
-            _toogleWebViewValue(false);
-            if (val == null) {
-              AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
-              _bookingBloc.cancelPayment(_initPaymentResponse.id);
-              return;
-            }
-            if (val.toString().contains("success")) {
-              AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
-              showDialog(
-                  context: context,
-                  builder: (
-                    BuildContext context,
-                  ) =>
-                      CustomWidgets().paymentStatusPopup(
-                          "Payment Success",
-                          "Your Booking ID is ${_initPaymentResponse.referenceId}",
-                          plunesImages.checkIcon,
-                          context,
-                          bookingId: _initPaymentResponse.referenceId)).then(
-                  (value) {
-                Navigator.pop(context, "pop");
-              });
-            } else if (val.toString().contains("fail")) {
-              _showInSnackBar("Payment Failed");
-            } else if (val.toString().contains("cancel")) {
-              _showInSnackBar("Payment Cancelled");
-            }
-          });
+          if (_availableUpiApps != null && _availableUpiApps.isNotEmpty) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomWidgets().getUpiBasedPaymentOptionView(
+                      _initPaymentResponse, _availableUpiApps, scaffoldKey);
+                }).then((value) {
+              if (value != null) {
+                Map result = value;
+                if (result.containsKey(PlunesStrings.payUpi)) {
+                  ApplicationMeta applicationMeta =
+                      result[PlunesStrings.payUpi];
+                  UpiUtil()
+                      .initPayment(applicationMeta, _initPaymentResponse)
+                      .then((value) {
+                    if (value != null) {
+                      _checkIfUpiPaymentSuccessOrNot(value);
+                    }
+                  });
+                } else {
+                  _openWebView(_initPaymentResponse);
+                }
+              }
+            });
+          } else {
+            _openWebView(_initPaymentResponse);
+          }
         }
       } else {
         _showInSnackBar(_initPaymentResponse.message);
@@ -1748,6 +1755,47 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   void _toogleWebViewValue(bool isOpened) {
     _webViewOpened = isOpened;
     _showHideMapController?.add(null);
+  }
+
+  void _openWebView(InitPaymentResponse _initPaymentResponse) {
+    _toogleWebViewValue(true);
+    Navigator.of(context)
+        .push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) =>
+                PaymentWebView(id: _initPaymentResponse.id)))
+        .then((val) {
+      _toogleWebViewValue(false);
+      if (val == null) {
+        AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
+        _bookingBloc.cancelPayment(_initPaymentResponse.id);
+        return;
+      }
+      if (val.toString().contains("success")) {
+        AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
+        showDialog(
+            context: context,
+            builder: (
+              BuildContext context,
+            ) =>
+                CustomWidgets().paymentStatusPopup(
+                    "Payment Success",
+                    "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                    plunesImages.checkIcon,
+                    context,
+                    bookingId: _initPaymentResponse.referenceId)).then((value) {
+          Navigator.pop(context, "pop");
+        });
+      } else if (val.toString().contains("fail")) {
+        _showInSnackBar("Payment Failed");
+      } else if (val.toString().contains("cancel")) {
+        _showInSnackBar("Payment Cancelled");
+      }
+    });
+  }
+
+  void _checkIfUpiPaymentSuccessOrNot(UpiTransactionResponse value) {
+    print(value?.toString());
   }
 }
 
