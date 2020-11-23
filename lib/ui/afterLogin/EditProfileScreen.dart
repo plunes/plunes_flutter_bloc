@@ -462,6 +462,14 @@ class _EditProfileState extends State<EditProfileScreen>
         return;
       }
     }
+    if (isDoctor && nameController.text.trim().length < 6) {
+      _showInSnackBar(plunesStrings.errorMsgEnterDoctorName);
+      return;
+    }
+    if (!isDoctor && nameController.text.trim().length < 2) {
+      _showInSnackBar(PlunesStrings.nameMustBeGreaterThanTwoChar);
+      return;
+    }
     var user = User(
         name: nameController.text.trim(),
         latitude: (_latitude == null || _latitude == "0.0")

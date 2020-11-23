@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -730,10 +733,20 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                     req.requestCode == index) {
                                   Future.delayed(Duration(milliseconds: 20))
                                       .then((value) async {
-                                    if (req.response != null &&
-                                        req.response.toString().isNotEmpty) {
-                                      LauncherUtil.launchUrl(
-                                          req.response.toString());
+                                    if (req.response != null) {
+                                      File file = req.response;
+                                      print("file path ${file.path}");
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return CustomWidgets()
+                                                .getInformativePopup(
+                                                    globalKey: widget.globalKey,
+                                                    message:
+                                                        "File saved at ${file.path}");
+                                          });
+//                                      LauncherUtil.launchUrl(
+//                                          file.path);
                                     }
 //                                    showDialog(
 //                                        context: context,

@@ -1019,10 +1019,11 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
 
   bool validation() {
     if (nameController.text.trim().isEmpty ||
-        (isDoctor && nameController.text.toString().length == 4)) {
-      errorMessage = _userType == Constants.hospital
-          ? plunesStrings.errorMsgEnterHosName
-          : plunesStrings.errorMsgEnterFullName;
+        (isDoctor && nameController.text.toString().length < 6) ||
+        (nameController.text.toString().length < 2)) {
+      errorMessage = isDoctor
+          ? plunesStrings.errorMsgEnterDoctorName
+          : PlunesStrings.nameMustBeGreaterThanTwoChar;
       return false;
     } else if ((_userType == Constants.hospital ||
             _userType == Constants.labDiagnosticCenter) &&

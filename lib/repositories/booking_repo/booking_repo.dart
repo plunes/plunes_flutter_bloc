@@ -1,3 +1,8 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/requester/dio_requester.dart';
@@ -153,18 +158,21 @@ class BookingRepo {
     String url = Urls.REQUEST_INVOICE_URL +
         "/$bookingId" +
         "${shouldSendInvoice ? "/true" : ""}";
-    print("url $url");
+//    print("url $url");
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true,
         url: url);
     if (result.isRequestSucceed) {
-      print(result.response.data);
       String pdfUrl;
       if (result.response.data != null &&
           result.response.data['data'] != null &&
           result.response.data['data'].toString().isNotEmpty) {
         pdfUrl = result.response.data['data'];
+        if (!shouldSendInvoice) {
+          return await _downloadInvoice(
+              bookingId, index, shouldSendInvoice, pdfUrl);
+        }
       }
       return RequestSuccess(response: pdfUrl, requestCode: index);
     } else {
@@ -175,7 +183,7 @@ class BookingRepo {
 
   Future<RequestState> processZestMoney(
       InitPayment initPayment, InitPaymentResponse initPaymentResponse) async {
-    print("Urls.ZEST_MONEY_URL ${Urls.ZEST_MONEY_URL}");
+//    print("Urls.ZEST_MONEY_URL ${Urls.ZEST_MONEY_URL}");
     var result = await DioRequester().requestMethodWithNoBaseUrl(
         requestType: HttpRequestMethods.HTTP_POST,
         headerIncluded: true,
@@ -186,6 +194,74 @@ class BookingRepo {
           response: ZestMoneyResponseModel.fromJson(result.response.data));
     } else {
       return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> _downloadInvoice(String bookingId, int index,
+      bool shouldSendInvoice, String pdfUrl) async {
+    String filePath = await _getStoragePath();
+    if (filePath == null) {
+      return RequestFailed(
+          failureCause: "Failed to get storage access", requestCode: index);
+    }
+    if (await File(filePath + "/$bookingId" + ".pdf").exists()) {
+      return RequestSuccess(
+          response: File(filePath + "/$bookingId" + ".pdf"),
+          requestCode: index,
+          additionalData: pdfUrl);
+    }
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
+        requestType: HttpRequestMethods.HTTP_GET,
+        url: pdfUrl,
+        savePath: filePath + "/$bookingId" + ".pdf");
+//    File _pdfFile;
+    if (result.isRequestSucceed) {
+      try {
+        return RequestSuccess(
+            response: File(filePath + "/$bookingId" + ".pdf"),
+            requestCode: index,
+            additionalData: pdfUrl);
+//        print(result.response.data);
+//        if (filePath == null || filePath.isEmpty) {
+//          return RequestFailed(
+//              failureCause: "Failed to get storage access", requestCode: index);
+//        }
+//        if (await File(filePath + "/$bookingId" + ".pdf").exists()) {
+//          return RequestSuccess(
+//              response: File(filePath + "/$bookingId" + ".pdf"),
+//              requestCode: index);
+//        }
+//        var fileByteData;
+//        if (result.response.data != null &&
+//            result.response.data.toString().isNotEmpty) {
+//          var file = File(filePath + "/$bookingId" + ".pdf");
+//          fileByteData = utf8.encode(result.response.data.toString());
+//          _pdfFile = await file.writeAsBytes(fileByteData);
+//          return RequestSuccess(response: _pdfFile, requestCode: index);
+//        }
+//        return RequestFailed(
+//            failureCause: "Failed to download file", requestCode: index);
+      } catch (e) {
+        return RequestFailed(
+            failureCause: "Failed to download file", requestCode: index);
+      }
+    } else {
+      return RequestFailed(
+          failureCause: result.failureCause, requestCode: index);
+    }
+  }
+
+  Future<String> _getStoragePath() async {
+    try {
+      if (Platform.isAndroid) {
+        return (await getExternalStorageDirectory()).path;
+      } else if (Platform.isIOS) {
+        return (await getApplicationDocumentsDirectory()).path;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return null;
     }
   }
 }

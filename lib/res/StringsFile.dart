@@ -364,6 +364,8 @@ class PlunesStrings {
   static const String zestMoney = "ZestMoney";
   static const String payOnWeb = "Pay On Web";
   static const String payUpi = "Pay Through Upi";
+  static const String nameMustBeGreaterThanTwoChar =
+      "Please enter valid name, name length should be greater than 2 characters";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
@@ -472,7 +474,8 @@ class PlunesStrings {
 
   get errorMsgEnterDocName => 'Please enter doctor name';
 
-  get errorMsgEnterHosName => 'Please enter hospital name';
+  get errorMsgEnterDoctorName =>
+      'Please enter valid name, name length should be greater than 5 characters';
 
   get errorValidEmailMsg => 'Please enter valid email id';
 

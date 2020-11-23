@@ -368,7 +368,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                     borderRadius: BorderRadius.circular(10),
                     child: CustomWidgets().getImageFromUrl(
                         sectionTwo.elements[itemIndex].imgUrl,
-                        boxFit: BoxFit.cover),
+                        boxFit: BoxFit.fill),
                   ),
                 ),
               ),

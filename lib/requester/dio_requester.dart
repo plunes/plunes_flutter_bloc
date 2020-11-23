@@ -150,7 +150,8 @@ class DioRequester {
       dynamic queryParameter,
       final String requestType,
       bool headerIncluded,
-      bool isMultipartEnabled = false}) async {
+      bool isMultipartEnabled = false,
+      String savePath}) async {
     RequestOutput response;
     try {
       AppLog.printLog(url);
@@ -170,7 +171,13 @@ class DioRequester {
       if (isMultipartEnabled) {
         options.contentType = "multipart/form-data";
       }
-      Response response = await _customClient.request(url,
+      Response response;
+      if (savePath != null) {
+        response = await _customClient.download(url, savePath);
+        return ResponseStatusCodeHandler()
+            .checkRequestResponseStatusCode(response);
+      }
+      response = await _customClient.request(url,
           data: postData,
           queryParameters: queryParameter,
           options: options, onSendProgress: (int sent, int total) {
