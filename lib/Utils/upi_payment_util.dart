@@ -6,7 +6,7 @@ class UpiUtil {
   Future<UpiTransactionResponse> initPayment(ApplicationMeta appMetaData,
       InitPaymentResponse initPaymentResponse) async {
     final paymentResult = await UpiPay.initiateTransaction(
-      amount: "",
+      amount: "10",
       app: appMetaData.upiApplication,
       receiverName: "Plunes",
       receiverUpiAddress: "9816199453@okbizaxis",
