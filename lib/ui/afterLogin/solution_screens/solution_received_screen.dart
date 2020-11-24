@@ -372,6 +372,9 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                   timeSlots: service.timeSlots,
                   docHosSolution: _solution,
                   bookInPrice: service.bookIn,
+                  serviceName: widget.catalogueData.service ??
+                      _searchedDocResults?.catalogueData?.service ??
+                      PlunesStrings.NA,
                   serviceIndex: 0,
                   service: service,
                 ))).then((value) {
@@ -1192,6 +1195,10 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                                   timeSlots: service.doctors[index].timeSlots,
                                   docHosSolution: _solution,
                                   bookInPrice: service.doctors[index].bookIn,
+                                  serviceName: widget.catalogueData.service ??
+                                      _searchedDocResults
+                                          ?.catalogueData?.service ??
+                                      PlunesStrings.NA,
                                   serviceIndex: 0,
                                   service: Services(
                                       price: service.doctors[index].price,

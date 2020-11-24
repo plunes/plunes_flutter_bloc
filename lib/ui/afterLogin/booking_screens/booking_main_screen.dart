@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -45,6 +46,7 @@ class BookingMainScreen extends BaseActivity {
   final String screenName = "BookingMainScreen";
   final int serviceIndex;
   final Services service;
+  final String serviceName;
   final AppointmentModel appointmentModel;
 
   BookingMainScreen(
@@ -57,6 +59,7 @@ class BookingMainScreen extends BaseActivity {
       this.serviceIndex,
       this.appointmentModel,
       this.service,
+      this.serviceName,
       this.docId});
 
   @override
@@ -84,9 +87,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   GoogleMapController _mapController;
   bool _webViewOpened = false;
   List<ApplicationMeta> _availableUpiApps;
+  TextEditingController _patientNameController,
+      _ageController,
+      _serviceNameController;
+
+  String _gender;
+  List<String> _genderList = ["Male", "Female", "Other"];
 
   @override
   void initState() {
+//    _gender = _genderList.first;
+    _patientNameController = TextEditingController();
+    _ageController = TextEditingController();
+    _serviceNameController = TextEditingController();
     _hasGotSize = false;
     _webViewOpened = false;
     _showHideMapController = StreamController.broadcast();
@@ -103,6 +116,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _selectedDate = _currentDate;
     _getDetails();
     _getInstalledUpiApps();
+
     super.initState();
   }
 
@@ -127,6 +141,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   void dispose() {
     _bookingBloc?.dispose();
     _showHideMapController?.close();
+    _patientNameController?.dispose();
+    _ageController?.dispose();
+    _serviceNameController?.dispose();
     super.dispose();
   }
 
@@ -195,16 +212,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           ),
           CustomWidgets().getSeparatorLine(),
           Container(
-            alignment: Alignment.center,
-            padding: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 1.5),
-            child: Text(
-              PlunesStrings.availableSlots,
-              style: TextStyle(
-                  color: PlunesColors.BLACKCOLOR,
-                  fontSize: AppConfig.mediumFont),
-            ),
-          ),
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.5),
+              child: _getPatientDetailsFillUpView()),
           _getDatePicker(),
           widget.getSpacer(AppConfig.verticalBlockSize * 1.8,
               AppConfig.verticalBlockSize * 1.8),
@@ -713,84 +724,94 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 )
               : Container(),
           Container(
+            width: double.infinity,
             padding: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 28,
                 bottom: AppConfig.verticalBlockSize * 1.5,
-                top: AppConfig.verticalBlockSize * 2.3,
-                right: AppConfig.horizontalBlockSize * 28),
-            child: StreamBuilder<Object>(
-                stream: _bookingBloc.rescheduleAppointmentStream,
-                builder: (context, snapshot) {
-                  if (snapshot.data != null &&
-                      snapshot.data is RequestInProgress) {
-                    return CustomWidgets().getProgressIndicator();
-                  }
-                  if (snapshot.data != null &&
-                      snapshot.data is RequestSuccess) {
-                    Future.delayed(Duration(milliseconds: 20))
-                        .then((value) async {
-                      _showInSnackBar(PlunesStrings.rescheduledSuccessMessage,
-                          shouldPop: true);
-                    });
-                  }
-                  if (snapshot.data != null && snapshot.data is RequestFailed) {
-                    RequestFailed requestFailed = snapshot.data;
-                    Future.delayed(Duration(milliseconds: 20))
-                        .then((value) async {
-                      _showInSnackBar(requestFailed.failureCause ??
-                          PlunesStrings.rescheduledFailedMessage);
-                    });
-                    _bookingBloc.addStateInRescheduledProvider(null);
-                  }
-                  return InkWell(
-                    onTap: () {
-                      (_selectedDate != null &&
-                              _selectedTimeSlot != null &&
-                              _selectedTimeSlot != PlunesStrings.noSlot)
-                          ? _doPaymentRelatedQueries()
-                          : _showInSnackBar(
-                              PlunesStrings.pleaseSelectValidSlot);
-                      return;
-                    },
+                top: AppConfig.verticalBlockSize * 2.3),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(
+                      right: AppConfig.horizontalBlockSize * 2.5),
+                  child: InkWell(
+                    onTap: () {},
                     onDoubleTap: () {},
                     child: CustomWidgets().getRoundedButton(
-                        widget.appointmentModel == null
-                            ? PlunesStrings.payNow
-                            : PlunesStrings.reschedule,
+                        PlunesStrings.bookLater,
                         AppConfig.horizontalBlockSize * 8,
-                        (_selectedDate != null &&
-                                _selectedTimeSlot != null &&
-                                _selectedTimeSlot != PlunesStrings.noSlot)
-                            ? PlunesColors.SPARKLINGGREEN
-                            : PlunesColors.WHITECOLOR,
+                        PlunesColors.WHITECOLOR,
                         AppConfig.horizontalBlockSize * 3,
                         AppConfig.verticalBlockSize * 1,
-                        (_selectedDate != null &&
-                                _selectedTimeSlot != null &&
-                                _selectedTimeSlot != PlunesStrings.noSlot)
-                            ? PlunesColors.WHITECOLOR
-                            : PlunesColors.BLACKCOLOR,
-                        hasBorder: (_selectedDate != null &&
-                                _selectedTimeSlot != null &&
-                                _selectedTimeSlot != PlunesStrings.noSlot)
-                            ? false
-                            : true),
-                  );
-                }),
+                        PlunesColors.SPARKLINGGREEN,
+                        borderColor: PlunesColors.SPARKLINGGREEN,
+                        hasBorder: true),
+                  ),
+                ),
+                StreamBuilder<Object>(
+                    stream: _bookingBloc.rescheduleAppointmentStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.data != null &&
+                          snapshot.data is RequestInProgress) {
+                        return CustomWidgets().getProgressIndicator();
+                      }
+                      if (snapshot.data != null &&
+                          snapshot.data is RequestSuccess) {
+                        Future.delayed(Duration(milliseconds: 20))
+                            .then((value) async {
+                          _showInSnackBar(
+                              PlunesStrings.rescheduledSuccessMessage,
+                              shouldPop: true);
+                        });
+                      }
+                      if (snapshot.data != null &&
+                          snapshot.data is RequestFailed) {
+                        RequestFailed requestFailed = snapshot.data;
+                        Future.delayed(Duration(milliseconds: 20))
+                            .then((value) async {
+                          _showInSnackBar(requestFailed.failureCause ??
+                              PlunesStrings.rescheduledFailedMessage);
+                        });
+                        _bookingBloc.addStateInRescheduledProvider(null);
+                      }
+                      return InkWell(
+                        onTap: () {
+                          (_selectedDate != null &&
+                                  _selectedTimeSlot != null &&
+                                  _selectedTimeSlot != PlunesStrings.noSlot)
+                              ? _doPaymentRelatedQueries()
+                              : _showInSnackBar(
+                                  PlunesStrings.pleaseSelectValidSlot);
+                          return;
+                        },
+                        onDoubleTap: () {},
+                        child: CustomWidgets().getRoundedButton(
+                            widget.appointmentModel == null
+                                ? PlunesStrings.payNow
+                                : PlunesStrings.reschedule,
+                            AppConfig.horizontalBlockSize * 8,
+                            (_selectedDate != null &&
+                                    _selectedTimeSlot != null &&
+                                    _selectedTimeSlot != PlunesStrings.noSlot)
+                                ? PlunesColors.SPARKLINGGREEN
+                                : PlunesColors.WHITECOLOR,
+                            AppConfig.horizontalBlockSize * 3,
+                            AppConfig.verticalBlockSize * 1,
+                            (_selectedDate != null &&
+                                    _selectedTimeSlot != null &&
+                                    _selectedTimeSlot != PlunesStrings.noSlot)
+                                ? PlunesColors.WHITECOLOR
+                                : PlunesColors.BLACKCOLOR,
+                            hasBorder: (_selectedDate != null &&
+                                    _selectedTimeSlot != null &&
+                                    _selectedTimeSlot != PlunesStrings.noSlot)
+                                ? false
+                                : true),
+                      );
+                    }),
+              ],
+            ),
           ),
-//          InkWell(
-//            onTap: () => LauncherUtil.launchUrl(urls.terms),
-//            onDoubleTap: () {},
-//            child: Padding(
-//              padding: const EdgeInsets.all(8.0),
-//              child: Text(
-//                PlunesStrings.tcApply,
-//                style: TextStyle(
-//                    decoration: TextDecoration.underline,
-//                    fontSize: AppConfig.smallFont),
-//              ),
-//            ),
-//          ),
         ],
       ),
     );
@@ -1014,6 +1035,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         await UserBloc().getUserProfile(UserManager().getUserDetails().uid);
     if (requestState is RequestSuccess) {
       _userProfileInfo = requestState.response;
+      if (_userProfileInfo != null || _userProfileInfo.user != null) {
+        _patientNameController.text = _userProfileInfo.user.name ?? "";
+        _serviceNameController.text = widget.serviceName ?? "";
+      }
     } else if (requestState is RequestFailed) {
       _userFailureCause = requestState.failureCause;
     }
@@ -1796,6 +1821,182 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   void _checkIfUpiPaymentSuccessOrNot(UpiTransactionResponse value) {
     print(value?.toString());
+  }
+
+  Widget _getPatientDetailsFillUpView() {
+    return (_userProfileInfo == null || _userProfileInfo.user == null)
+        ? Container()
+        : Column(
+            children: <Widget>[
+              Container(
+                alignment: Alignment.topLeft,
+                width: double.infinity,
+                child: Text(
+                  "Patient Details",
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: PlunesColors.BLACKCOLOR,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                            child: TextField(
+                          controller: _patientNameController,
+                          style: TextStyle(
+                              color: PlunesColors.BLACKCOLOR,
+                              fontSize: 15,
+                              fontWeight: FontWeight.normal),
+                          minLines: 1,
+                          decoration: InputDecoration(
+                              hintText: PlunesStrings.enterName,
+                              border: InputBorder.none,
+                              labelText: PlunesStrings.enterName,
+                              labelStyle: TextStyle(
+                                  color: PlunesColors.GREYCOLOR, fontSize: 13),
+                              hintStyle: TextStyle(
+                                  color: PlunesColors.GREYCOLOR, fontSize: 15)),
+                        )),
+                      ],
+                    ),
+                    getSeparatorLine()
+                  ],
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                            child: TextField(
+                                controller: _serviceNameController,
+                                maxLines: 1,
+                                readOnly: true,
+                                enabled: false,
+                                style: TextStyle(
+                                    color: PlunesColors.GREYCOLOR,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.normal),
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    labelText: "Enter procedure",
+                                    labelStyle: TextStyle(
+                                        color: PlunesColors.GREYCOLOR,
+                                        fontSize: 13)))),
+                      ],
+                    ),
+                    getSeparatorLine()
+                  ],
+                ),
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(
+                              right: AppConfig.horizontalBlockSize * 6),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: TextField(
+                                    controller: _ageController,
+                                    inputFormatters: [
+                                      WhitelistingTextInputFormatter.digitsOnly
+                                    ],
+                                    maxLength: 3,
+                                    style: TextStyle(
+                                        color: PlunesColors.BLACKCOLOR,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.normal),
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        counterText: "",
+                                        labelText: "Enter age",
+                                        labelStyle: TextStyle(
+                                            color: PlunesColors.GREYCOLOR,
+                                            fontSize: 13))),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          child: getSeparatorLine(),
+                          margin: EdgeInsets.only(
+                              right: AppConfig.horizontalBlockSize * 6),
+                        )
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: <Widget>[
+                        Container(
+                          margin: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 4),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    items: _genderList.map((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: new Text(value,
+                                            style: TextStyle(
+                                                color: PlunesColors.BLACKCOLOR,
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.normal)),
+                                      );
+                                    }).toList(),
+                                    value: _gender,
+                                    isExpanded: true,
+                                    hint: Text(
+                                      "Enter gender",
+                                      style: TextStyle(
+                                          color: PlunesColors.GREYCOLOR,
+                                          fontSize: 13),
+                                    ),
+                                    onChanged: (String gender) {
+                                      _gender = gender;
+                                      _setState();
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          child: getSeparatorLine(),
+                          margin: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 4,
+                              top: AppConfig.verticalBlockSize * 0.6),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            ],
+          );
+  }
+
+  Widget getSeparatorLine() {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1.5),
+      width: double.infinity,
+      height: 0.7,
+      color: PlunesColors.GREYCOLOR,
+    );
   }
 }
 
