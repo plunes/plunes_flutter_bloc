@@ -120,6 +120,9 @@ class PlunesImages {
       "assets/images/bottom_tabs/exploreSelectedImage.png";
   static const String pricesValidThroughAppIcon =
       "assets/images/pricesValidThroughAppIcon.png";
+  static const String addToCartSuccessImage =
+      "assets/images/add_to_cart_success_image.png";
+  static const String cartImage = "assets/images/cartImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

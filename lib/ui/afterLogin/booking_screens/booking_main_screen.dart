@@ -171,21 +171,24 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     return SafeArea(
         top: false,
         bottom: false,
-        child: Scaffold(
-          backgroundColor: PlunesColors.WHITECOLOR,
-          key: scaffoldKey,
-          appBar:
-              widget.getAppBar(context, PlunesStrings.confirmYourBooking, true),
-          body: Builder(builder: (context) {
-            return Container(
-                padding: CustomWidgets().getDefaultPaddingForScreens(),
-                child: _isFetchingDocHosInfo
-                    ? CustomWidgets().getProgressIndicator()
-                    : (_docProfileInfo == null || _docProfileInfo.user == null)
-                        ? CustomWidgets().errorWidget(_userFailureCause,
-                            onTap: () => _getDetails(), isSizeLess: true)
-                        : _getBody());
-          }),
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.dark,
+          child: Scaffold(
+            backgroundColor: PlunesColors.WHITECOLOR,
+            key: scaffoldKey,
+            appBar: _getAppBar(),
+            body: Builder(builder: (context) {
+              return Container(
+                  padding: CustomWidgets().getDefaultPaddingForScreens(),
+                  child: _isFetchingDocHosInfo
+                      ? CustomWidgets().getProgressIndicator()
+                      : (_docProfileInfo == null ||
+                              _docProfileInfo.user == null)
+                          ? CustomWidgets().errorWidget(_userFailureCause,
+                              onTap: () => _getDetails(), isSizeLess: true)
+                          : _getBody());
+            }),
+          ),
         ));
   }
 
@@ -735,7 +738,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   margin: EdgeInsets.only(
                       right: AppConfig.horizontalBlockSize * 2.5),
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return CustomWidgets()
+                                .showAddToCartSuccessPopup(scaffoldKey);
+                          });
+                    },
                     onDoubleTap: () {},
                     child: CustomWidgets().getRoundedButton(
                         PlunesStrings.bookLater,
@@ -1997,6 +2007,43 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       height: 0.7,
       color: PlunesColors.GREYCOLOR,
     );
+  }
+
+  PreferredSize _getAppBar() {
+    return PreferredSize(
+        child: Card(
+            color: Colors.white,
+            elevation: 3.0,
+            margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+            child: ListTile(
+              leading: Container(
+                  padding: EdgeInsets.all(5),
+                  child: IconButton(
+                    onPressed: () {
+                      Navigator.pop(context, false);
+                      return;
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: PlunesColors.BLACKCOLOR,
+                    ),
+                  )),
+              title: Text(
+                PlunesStrings.confirmYourBooking,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+              ),
+              trailing: StreamBuilder<Object>(
+                  stream: null,
+                  builder: (context, snapshot) {
+                    return Container(
+                      child: Image.asset(PlunesImages.cartImage),
+                      height: 30,
+                      width: 30,
+                    );
+                  }),
+            )),
+        preferredSize: Size(double.infinity, AppConfig.verticalBlockSize * 8));
   }
 }
 

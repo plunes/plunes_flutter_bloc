@@ -372,6 +372,8 @@ flutter:
     - assets/images/bottom_tabs/exploreSelectedImage.png
     - assets/images/bottom_tabs/exploreUnSelectedImage.png
     - assets/images/pricesValidThroughAppIcon.png
+    - assets/images/add_to_cart_success_image.png
+    - assets/images/cartImage.png
 
 
 

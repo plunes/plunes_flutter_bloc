@@ -6199,4 +6199,68 @@ class CustomWidgets {
       ),
     );
   }
+
+  Widget showAddToCartSuccessPopup(GlobalKey globalKey) {
+    return Dialog(
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+                height: AppConfig.verticalBlockSize * 10,
+                child: Image.asset(PlunesImages.addToCartSuccessImage),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 5,
+                    vertical: AppConfig.verticalBlockSize * 2.5),
+                child: Text(
+                  PlunesStrings.successfullyAddedToCart,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: PlunesColors.BLACKCOLOR,
+                      fontSize: 16,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              Container(
+                height: 0.5,
+                width: double.infinity,
+                color: PlunesColors.GREYCOLOR,
+              ),
+              Container(
+                height: AppConfig.verticalBlockSize * 6,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(16),
+                      bottomRight: Radius.circular(16)),
+                  child: FlatButton(
+                      highlightColor: Colors.transparent,
+                      hoverColor: Colors.transparent,
+                      splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                      focusColor: Colors.transparent,
+                      onPressed: () =>
+                          Navigator.of(globalKey.currentState.context).pop(),
+                      child: Container(
+                          height: AppConfig.verticalBlockSize * 6,
+                          width: double.infinity,
+                          child: Center(
+                            child: Text(
+                              'OK',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: AppConfig.mediumFont,
+                                  color: PlunesColors.SPARKLINGGREEN),
+                            ),
+                          ))),
+                ),
+              ),
+            ],
+          ),
+        ));
+  }
 }
