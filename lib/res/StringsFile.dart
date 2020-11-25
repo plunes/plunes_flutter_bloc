@@ -370,6 +370,7 @@ class PlunesStrings {
   static const String enterName = "Enter name";
   static const String successfullyAddedToCart =
       "Successfully added in the cart";
+  static const String myCart = "My Cart";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
