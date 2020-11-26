@@ -361,7 +361,7 @@ class PlunesStrings {
   static const String explore = "Explore";
   static const String priceValidThroughPlunes =
       "Prices valid exclusively on Plunes";
-  static const String zestMoney = "ZestMoney";
+  static const String zestMoney = "No Cost EMI";
   static const String payOnWeb = "Pay On Web";
   static const String payUpi = "Pay Through Upi";
   static const String nameMustBeGreaterThanTwoChar =
@@ -371,6 +371,8 @@ class PlunesStrings {
   static const String successfullyAddedToCart =
       "Successfully added in the cart";
   static const String myCart = "My Cart";
+  static const String priceExpiredNegotiateAgain =
+      "Prices have expired, Negotiate again to book";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

@@ -32,6 +32,7 @@ import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:plunes/resources/network/Urls.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
+import 'package:plunes/ui/afterLogin/cart_screens/add_to_cart_main_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
@@ -92,7 +93,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       _serviceNameController;
 
   String _gender;
-  List<String> _genderList = ["Male", "Female", "Other"];
 
   @override
   void initState() {
@@ -116,7 +116,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _selectedDate = _currentDate;
     _getDetails();
     _getInstalledUpiApps();
-
     super.initState();
   }
 
@@ -1957,7 +1956,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                               Expanded(
                                 child: DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
-                                    items: _genderList.map((String value) {
+                                    items: Constants.genderList
+                                        .map((String value) {
                                       return DropdownMenuItem<String>(
                                         value: value,
                                         child: new Text(value,
@@ -2036,10 +2036,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               trailing: StreamBuilder<Object>(
                   stream: null,
                   builder: (context, snapshot) {
-                    return Container(
-                      child: Image.asset(PlunesImages.cartImage),
-                      height: 30,
-                      width: 30,
+                    return InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddToCartMainScreen()));
+                        return;
+                      },
+                      child: Container(
+                        child: Image.asset(PlunesImages.cartImage),
+                        height: 30,
+                        width: 30,
+                      ),
                     );
                   }),
             )),

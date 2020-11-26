@@ -5,6 +5,7 @@
  */
 
 class Constants {
+  static const List<String> genderList = ["Male", "Female", "Other"];
   static const int exploreScreenNumber = 1;
   static const int homeScreenNumber = 0;
   static const int notificationScreenNumber = 2;

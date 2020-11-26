@@ -6263,8 +6263,4 @@ class CustomWidgets {
           ),
         ));
   }
-
-  Widget getCartCard() {
-    return Card();
-  }
 }
