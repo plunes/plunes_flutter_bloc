@@ -1,8 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
+import 'package:plunes/models/cart_models/cart_main_model.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -15,12 +22,54 @@ class AddToCartMainScreen extends BaseActivity {
 }
 
 class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
+  CartOuterModel _cartOuterModel;
+  CartMainBloc _cartMainBloc;
+  String _failureCause;
+  StreamController _timerStream;
+
+  @override
+  void initState() {
+    _timerStream = StreamController.broadcast();
+    _cartMainBloc = CartMainBloc();
+    _getCartItems();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _timerStream?.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
           appBar: widget.getAppBar(context, PlunesStrings.myCart, true),
-          body: _showBody(),
+          body: StreamBuilder<RequestState>(
+              stream: _cartMainBloc.cartMainStream,
+              initialData: _cartOuterModel == null ? RequestInProgress() : null,
+              builder: (context, snapshot) {
+                if (snapshot.data != null &&
+                    snapshot.data is RequestInProgress) {
+                  return CustomWidgets().getProgressIndicator();
+                }
+                if (snapshot.data != null && snapshot.data is RequestSuccess) {
+                  RequestSuccess requestSuccess = snapshot.data;
+                  _cartOuterModel = requestSuccess.response;
+                  _cartMainBloc.addStateInCartMainStream(null);
+                }
+                if (snapshot.data != null && snapshot.data is RequestFailed) {
+                  RequestFailed requestFailed = snapshot.data;
+                  _failureCause = requestFailed.failureCause;
+                  _cartMainBloc.addStateInCartMainStream(null);
+                }
+                return (_failureCause != null)
+                    ? CustomWidgets().errorWidget(
+                        _failureCause ?? "Unable to get data",
+                        onTap: () => _getCartItems())
+                    : _showBody();
+              }),
           key: scaffoldKey),
       top: false,
       bottom: false,
@@ -35,18 +84,27 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   Widget _getMainView() {
-    return Column(
-      children: <Widget>[Expanded(child: _getCartListView()), _getButtonView()],
-    );
+    return Column(children: <Widget>[
+      Expanded(child: _getCartListView()),
+      StreamBuilder<Object>(
+          stream: _timerStream.stream,
+          builder: (context, snapshot) {
+            return _getButtonView();
+          })
+    ]);
   }
 
   Widget _getCartListView() {
     return ListView.builder(
       shrinkWrap: true,
       itemBuilder: (context, index) {
-        return getCartCard(index);
+        return StreamBuilder<Object>(
+            stream: _timerStream.stream,
+            builder: (context, snapshot) {
+              return getCartCard(index, _cartOuterModel.data.bookingIds[index]);
+            });
       },
-      itemCount: 6,
+      itemCount: _cartOuterModel?.data?.bookingIds?.length ?? 0,
     );
   }
 
@@ -103,7 +161,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     );
   }
 
-  Widget getCartCard(int index) {
+  Widget getCartCard(int index, final BookingIds bookingIds) {
     return Card(
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -158,7 +216,8 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              "Dr. Nikita Tyagi",
+                              CommonMethods.getStringInCamelCase(
+                                  bookingIds.service?.name),
                               textAlign: TextAlign.left,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -169,7 +228,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                               margin: EdgeInsets.only(
                                   top: AppConfig.verticalBlockSize * 1.1),
                               child: Text(
-                                "Botox Treatment",
+                                bookingIds.serviceName ?? PlunesStrings.NA,
                                 textAlign: TextAlign.left,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -189,7 +248,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                       child: Image.asset(
                                           plunesImages.locationIcon)),
                                   Text(
-                                    "3.6 kms",
+                                    "${bookingIds.service?.distance?.toStringAsFixed(1) ?? 1} km",
                                     textAlign: TextAlign.left,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -220,7 +279,8 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                   color: PlunesColors.GREENCOLOR,
                                 ),
                                 Text(
-                                  "4.0" ?? PlunesStrings.NA,
+                                  "${bookingIds.service?.rating?.toStringAsFixed(1) ?? 4.0}" ??
+                                      PlunesStrings.NA,
                                   style: TextStyle(
                                       color: PlunesColors.BLACKCOLOR,
                                       fontSize: 17,
@@ -231,7 +291,8 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                             Container(
                               margin: EdgeInsets.only(
                                   top: AppConfig.verticalBlockSize * 2),
-                              child: Text("\u20B9 1140.00",
+                              child: Text(
+                                  "\u20B9 ${bookingIds.service?.newPrice?.first?.toStringAsFixed(2) ?? 0}",
                                   textAlign: TextAlign.left,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
@@ -266,7 +327,8 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
-                            "Botox Treatment",
+                            CommonMethods.getStringInCamelCase(
+                                bookingIds.patientName),
                             textAlign: TextAlign.left,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
@@ -277,7 +339,11 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                             margin: EdgeInsets.only(
                                 top: AppConfig.verticalBlockSize * 1.1),
                             child: Text(
-                              "29/2/2020, 11:30 AM",
+                              (bookingIds.service != null &&
+                                      bookingIds.appointmentTime != null &&
+                                      bookingIds.appointmentTime.isNotEmpty)
+                                  ? "${DateUtil.getDateFormat(DateTime.fromMillisecondsSinceEpoch(int.tryParse(bookingIds.appointmentTime)))}, ${DateUtil.getTimeWithAmAndPmFormat(DateTime.fromMillisecondsSinceEpoch(int.tryParse(bookingIds.appointmentTime)))}"
+                                  : PlunesStrings.NA,
                               textAlign: TextAlign.left,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
@@ -290,17 +356,72 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                     ),
                     Expanded(
                       child: InkWell(
+                        onTap: () {
+                          _cartMainBloc.deleteCartItem(bookingIds.sId);
+                          return;
+                        },
+                        onDoubleTap: () {},
                         child: Container(
                           alignment: Alignment.topRight,
-                          child: Container(
-                            margin: EdgeInsets.all(2.5),
-                            height: AppConfig.verticalBlockSize * 4,
-                            width: AppConfig.horizontalBlockSize * 6,
-                            child: Image.asset(
-                              PlunesImages.binImage,
-                              color: PlunesColors.BLACKCOLOR,
-                            ),
-                          ),
+                          child: StreamBuilder<RequestState>(
+                              stream: _cartMainBloc.deleteItemStream,
+                              builder: (context, snapshot) {
+                                if (snapshot.data is RequestInProgress) {
+                                  RequestInProgress _requestInProgress =
+                                      snapshot.data;
+                                  if (_requestInProgress.data != null &&
+                                      _requestInProgress.data.toString() ==
+                                          bookingIds.sId)
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: <Widget>[
+                                        CustomWidgets().getProgressIndicator(),
+                                      ],
+                                    );
+                                }
+                                if (snapshot.data != null &&
+                                    snapshot.data is RequestSuccess) {
+                                  RequestSuccess _requestSuccess =
+                                      snapshot.data;
+                                  if (_requestSuccess.response != null &&
+                                      _requestSuccess.response.toString() ==
+                                          bookingIds.sId) {
+                                    Future.delayed(Duration(milliseconds: 10))
+                                        .then((value) {
+                                      _showMessages(
+                                          PlunesStrings.deleteSuccessfully);
+                                      _getCartItems();
+                                    });
+                                    _cartMainBloc
+                                        .addStateInDeleteCartItemStream(null);
+                                  }
+                                }
+                                if (snapshot.data != null &&
+                                    snapshot.data is RequestFailed) {
+                                  RequestFailed requestFailed = snapshot.data;
+                                  if (requestFailed.response != null &&
+                                      requestFailed.response.toString() ==
+                                          bookingIds.sId) {
+                                    Future.delayed(Duration(milliseconds: 10))
+                                        .then((value) {
+                                      _showMessages(
+                                          requestFailed.failureCause ??
+                                              "Unable to delete item");
+                                    });
+                                    _cartMainBloc
+                                        .addStateInDeleteCartItemStream(null);
+                                  }
+                                }
+                                return Container(
+                                  margin: EdgeInsets.all(2.5),
+                                  height: AppConfig.verticalBlockSize * 4,
+                                  width: AppConfig.horizontalBlockSize * 6,
+                                  child: Image.asset(
+                                    PlunesImages.binImage,
+                                    color: PlunesColors.BLACKCOLOR,
+                                  ),
+                                );
+                              }),
                         ),
                       ),
                     ),
@@ -390,5 +511,19 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
         ],
       ),
     );
+  }
+
+  void _getCartItems() {
+    _failureCause = null;
+    _cartMainBloc.getCartItems();
+  }
+
+  void _showMessages(String message) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(message: message, globalKey: scaffoldKey);
+        });
   }
 }

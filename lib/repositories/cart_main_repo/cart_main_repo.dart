@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:plunes/models/cart_models/cart_main_model.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
 import 'package:plunes/models/plockr_model/plockr_shareable_report_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
@@ -39,16 +40,14 @@ class CartMainRepo {
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {
-      PlockrResponseModel plockrResponseModel =
-          PlockrResponseModel.fromJson(result.response.data);
-      if ((plockrResponseModel.uploadedReports == null ||
-              plockrResponseModel.uploadedReports.isEmpty) &&
-          (plockrResponseModel.sharedReports == null ||
-              plockrResponseModel.sharedReports.isEmpty)) {
-        return RequestFailed(
-            failureCause: PlunesStrings.noReportAvailabelMessage);
+      CartOuterModel cartOuterModel =
+          CartOuterModel.fromJson(result.response.data);
+      if (cartOuterModel.data == null ||
+          cartOuterModel.data.bookingIds == null ||
+          cartOuterModel.data.bookingIds.isEmpty) {
+        return RequestFailed(failureCause: "No items in cart");
       }
-      return RequestSuccess(response: plockrResponseModel);
+      return RequestSuccess(response: cartOuterModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
@@ -64,12 +63,14 @@ class CartMainRepo {
     if (result.isRequestSucceed) {
       if (result.response.data["success"] != null &&
           result.response.data["success"]) {
-        return RequestSuccess(response: result);
+        return RequestSuccess(response: bookingId);
       } else {
-        return RequestFailed(failureCause: PlunesStrings.unableToDelete);
+        return RequestFailed(
+            failureCause: PlunesStrings.unableToDelete, response: bookingId);
       }
     } else {
-      return RequestFailed(failureCause: result.failureCause);
+      return RequestFailed(
+          failureCause: result.failureCause, response: bookingId);
     }
   }
 }
