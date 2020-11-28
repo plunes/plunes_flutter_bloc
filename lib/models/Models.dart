@@ -185,6 +185,7 @@ class User {
   bool verifiedUser, notificationEnabled, isAdmin, isCentre, referralExpired;
   BankDetails bankDetails;
   num rating;
+  int cartCount;
 
   User(
       {this.uid,
@@ -218,6 +219,7 @@ class User {
       this.credits,
       this.userReferralCode,
       this.notificationEnabled,
+      this.cartCount,
       this.isAdmin,
       this.isCentre,
       this.rating,
@@ -316,6 +318,7 @@ class User {
             : null,
         googleLocation: json['googleAddress'],
         referralExpired: _referralExpired,
+        cartCount: json["cartCount"],
         rating: _rating);
   }
 

@@ -17,6 +17,7 @@ import 'package:plunes/Utils/payment_web_view.dart';
 import 'package:plunes/Utils/upi_payment_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
+import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
@@ -69,14 +70,21 @@ class BookingMainScreen extends BaseActivity {
 
 class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   DateTime _currentDate, _selectedDate, _tempSelectedDateTime;
-  int _selectedPaymentType, _paymentTypeCash = 0, _paymentTypeCoupon = 1;
+  int _selectedPaymentType,
+      _paymentTypeCash = 0,
+      _paymentTypeCoupon = 1,
+      _cartCount = 0;
   String _appointmentTime,
       _firstSlotTime,
       _secondSlotTime,
       _selectedTimeSlot,
       _notSelectedEntry,
       _userFailureCause;
-  bool _isFetchingDocHosInfo, _shouldUseCredit, _hasScrolledOnce, _hasGotSize;
+  bool _isFetchingDocHosInfo,
+      _isFetchingUserInfo,
+      _shouldUseCredit,
+      _hasScrolledOnce,
+      _hasGotSize;
   LoginPost _docProfileInfo, _userProfileInfo;
   BookingBloc _bookingBloc;
   List<String> _slotArray;
@@ -91,11 +99,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   TextEditingController _patientNameController,
       _ageController,
       _serviceNameController;
-
+  CartMainBloc _cartMainBloc;
   String _gender;
 
   @override
   void initState() {
+    _cartMainBloc = CartMainBloc();
 //    _gender = _genderList.first;
     _patientNameController = TextEditingController();
     _ageController = TextEditingController();
@@ -130,6 +139,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   _getDetails() {
+    _isFetchingUserInfo = true;
     _getDocHosInfo();
     _getUserInfo();
     _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
@@ -143,6 +153,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _patientNameController?.dispose();
     _ageController?.dispose();
     _serviceNameController?.dispose();
+    _cartMainBloc?.dispose();
     super.dispose();
   }
 
@@ -179,12 +190,16 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             body: Builder(builder: (context) {
               return Container(
                   padding: CustomWidgets().getDefaultPaddingForScreens(),
-                  child: _isFetchingDocHosInfo
+                  child: (_isFetchingDocHosInfo || _isFetchingUserInfo)
                       ? CustomWidgets().getProgressIndicator()
                       : (_docProfileInfo == null ||
-                              _docProfileInfo.user == null)
-                          ? CustomWidgets().errorWidget(_userFailureCause,
-                              onTap: () => _getDetails(), isSizeLess: true)
+                              _docProfileInfo.user == null ||
+                              _userProfileInfo == null ||
+                              _userProfileInfo.user == null)
+                          ? CustomWidgets().errorWidget(
+                              _userFailureCause ?? "Unable to get data",
+                              onTap: () => _getDetails(),
+                              isSizeLess: true)
                           : _getBody());
             }),
           ),
@@ -733,30 +748,74 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(
-                      right: AppConfig.horizontalBlockSize * 2.5),
-                  child: InkWell(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (context) {
-                            return CustomWidgets()
-                                .showAddToCartSuccessPopup(scaffoldKey);
-                          });
-                    },
-                    onDoubleTap: () {},
-                    child: CustomWidgets().getRoundedButton(
-                        PlunesStrings.bookLater,
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.WHITECOLOR,
-                        AppConfig.horizontalBlockSize * 3,
-                        AppConfig.verticalBlockSize * 1,
-                        PlunesColors.SPARKLINGGREEN,
-                        borderColor: PlunesColors.SPARKLINGGREEN,
-                        hasBorder: true),
-                  ),
-                ),
+                StreamBuilder<RequestState>(
+                    stream: _cartMainBloc.baseStream,
+                    builder: (context, snapshot) {
+                      if (snapshot.data != null &&
+                          snapshot.data is RequestInProgress) {
+                        return CustomWidgets().getProgressIndicator();
+                      }
+                      if (snapshot.data != null &&
+                          snapshot.data is RequestSuccess) {
+                        _cartCount++;
+                        Future.delayed(Duration(milliseconds: 20))
+                            .then((value) async {
+                          _setState();
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return CustomWidgets()
+                                    .showAddToCartSuccessPopup(scaffoldKey);
+                              });
+                        });
+                        _cartMainBloc.addIntoStream(null);
+                      }
+                      if (snapshot.data != null &&
+                          snapshot.data is RequestFailed) {
+                        RequestFailed requestFailed = snapshot.data;
+                        Future.delayed(Duration(milliseconds: 20))
+                            .then((value) async {
+                          _showInSnackBar(requestFailed.failureCause);
+                        });
+                        _cartMainBloc.addIntoStream(null);
+                      }
+                      return Container(
+                        margin: EdgeInsets.only(
+                            right: AppConfig.horizontalBlockSize * 2.5),
+                        child: InkWell(
+                          onTap: () {
+                            if (_selectedDate != null &&
+                                _selectedTimeSlot != null &&
+                                _selectedTimeSlot != PlunesStrings.noSlot) {
+                              if (_hasFilledDetails()) {
+                                var paymentSelector = PaymentSelector(
+                                    isInPercent: true,
+                                    paymentUnit: widget
+                                            .service.paymentOptions?.last
+                                            ?.toString() ??
+                                        "100");
+                                _initPayment(paymentSelector,
+                                    isAddToCart: true);
+                              }
+                            } else {
+                              _showInSnackBar(
+                                  PlunesStrings.pleaseSelectValidSlot);
+                            }
+                            return;
+                          },
+                          onDoubleTap: () {},
+                          child: CustomWidgets().getRoundedButton(
+                              PlunesStrings.bookLater,
+                              AppConfig.horizontalBlockSize * 8,
+                              PlunesColors.WHITECOLOR,
+                              AppConfig.horizontalBlockSize * 3,
+                              AppConfig.verticalBlockSize * 1,
+                              PlunesColors.SPARKLINGGREEN,
+                              borderColor: PlunesColors.SPARKLINGGREEN,
+                              hasBorder: true),
+                        ),
+                      );
+                    }),
                 StreamBuilder<Object>(
                     stream: _bookingBloc.rescheduleAppointmentStream,
                     builder: (context, snapshot) {
@@ -785,12 +844,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       }
                       return InkWell(
                         onTap: () {
-                          (_selectedDate != null &&
-                                  _selectedTimeSlot != null &&
-                                  _selectedTimeSlot != PlunesStrings.noSlot)
-                              ? _doPaymentRelatedQueries()
-                              : _showInSnackBar(
-                                  PlunesStrings.pleaseSelectValidSlot);
+                          if (_selectedDate != null &&
+                              _selectedTimeSlot != null &&
+                              _selectedTimeSlot != PlunesStrings.noSlot) {
+                            if (_hasFilledDetails()) _doPaymentRelatedQueries();
+                          } else {
+                            _showInSnackBar(
+                                PlunesStrings.pleaseSelectValidSlot);
+                          }
                           return;
                         },
                         onDoubleTap: () {},
@@ -1047,15 +1108,21 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       if (_userProfileInfo != null || _userProfileInfo.user != null) {
         _patientNameController.text = _userProfileInfo.user.name ?? "";
         _serviceNameController.text = widget.serviceName ?? "";
+        if (_userProfileInfo.user.cartCount != null &&
+            _userProfileInfo.user.cartCount > 0) {
+          _cartCount = _userProfileInfo.user.cartCount;
+        }
       }
     } else if (requestState is RequestFailed) {
       _userFailureCause = requestState.failureCause;
     }
+    _isFetchingUserInfo = false;
     _setState();
   }
 
   ///payment methods
-  _initPayment(PaymentSelector paymentSelector) async {
+  _initPayment(PaymentSelector paymentSelector,
+      {bool isAddToCart = false}) async {
 //    print("$_selectedTimeSlot _selectedTimeSlot _selectedDate $_selectedDate");
 //    print(DateUtil.getTimeWithAmAndPmFormat(_selectedDate));
     bool zestMoney = false;
@@ -1081,11 +1148,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         creditsUsed: _shouldUseCredit,
         user_id: UserManager().getUserDetails().uid,
         couponName: "",
+        patientAge: _ageController.text.trim(),
+        patientMobileNumber: UserManager().getUserDetails().mobileNumber,
+        patientName: _patientNameController.text.trim(),
+        patientSex: _gender,
         bookIn: zestMoney
             ? null
             : !(paymentSelector.isInPercent)
                 ? paymentSelector.paymentUnit
                 : null);
+    if (isAddToCart) {
+      _addToCart(_initPayment);
+      return;
+    }
 //    print("initiate payment ${_initPayment.initiatePaymentToJson()}");
     RequestState _requestState = await _bookingBloc.initPayment(_initPayment);
     if (_requestState is RequestSuccess) {
@@ -2033,26 +2108,68 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 textAlign: TextAlign.center,
                 style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
               ),
-              trailing: StreamBuilder<Object>(
-                  stream: null,
-                  builder: (context, snapshot) {
-                    return InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddToCartMainScreen()));
-                        return;
-                      },
+              trailing: InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddToCartMainScreen()));
+                  return;
+                },
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      child: Image.asset(PlunesImages.cartImage),
+                      height: 35,
+                      width: 35,
+                    ),
+                    Positioned(
+                      top: 0.0,
+                      left: 3.0,
+                      right: 0.0,
+                      bottom: 1.0,
                       child: Container(
-                        child: Image.asset(PlunesImages.cartImage),
-                        height: 30,
-                        width: 30,
+                        height: 20,
+                        width: 20,
+                        child: Center(
+                            child: Text(
+                          "$_cartCount",
+                          style: TextStyle(
+                              color: PlunesColors.BLACKCOLOR, fontSize: 12),
+                        )),
                       ),
-                    );
-                  }),
+                    )
+                  ],
+                ),
+              ),
             )),
         preferredSize: Size(double.infinity, AppConfig.verticalBlockSize * 8));
+  }
+
+  void _addToCart(InitPayment _initPayment) {
+    _cartMainBloc.addItemToCart(_initPayment.initiatePaymentToJson());
+  }
+
+  bool _hasFilledDetails() {
+    bool _hasFilledDetails = true;
+    String _message;
+    if (_patientNameController.text.trim().isEmpty ||
+        _patientNameController.text.trim().length < 2) {
+      _hasFilledDetails = false;
+      _message = PlunesStrings.nameMustBeGreaterThanTwoChar;
+    } else if (_ageController.text.trim().isEmpty ||
+        _ageController.text.trim() == "0" ||
+        int.tryParse(_ageController.text) < 0) {
+      _hasFilledDetails = false;
+      _message = PlunesStrings.enterValidAge;
+    } else if (_gender == null || _gender.isEmpty) {
+      _hasFilledDetails = false;
+      _message = PlunesStrings.pleaseSelectYourGender;
+    }
+    if (_message != null) {
+      _showInSnackBar(_message);
+    }
+    return _hasFilledDetails;
   }
 }
 

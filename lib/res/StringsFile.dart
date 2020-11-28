@@ -373,6 +373,8 @@ class PlunesStrings {
   static const String myCart = "My Cart";
   static const String priceExpiredNegotiateAgain =
       "Prices have expired, Negotiate again to book";
+  static const String enterValidAge = "Please enter a valid age";
+  static const String pleaseSelectYourGender = "Please select your gender";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

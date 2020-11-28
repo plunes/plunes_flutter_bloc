@@ -20,7 +20,7 @@ class Urls {
 //  static const String baseUrl =
 //      'https://api.plunes.com/v7/'; // production server
   static const String baseUrl =
-      'https://devapi.plunes.com/v61/'; // staging server
+      'https://devapi.plunes.com/v7/'; // staging server
 
 //  static const String customBaseUrl =
 //      'https://api.plunes.com/'; // production server
@@ -122,4 +122,7 @@ class Urls {
   static const String UPDATE_PRICE_IN_CATALOGUE_FROM_REAL_INSIGHT =
       "user/addServiceToCatalogue";
   static const String EXPLORE_URL = "explore/";
+  static const String ADD_TO_CART_URL = "cart/add";
+  static const String DELETE_FROM_CART = "cart/delete/";
+  static const String GET_CART_ITEMS = "cart/";
 }
