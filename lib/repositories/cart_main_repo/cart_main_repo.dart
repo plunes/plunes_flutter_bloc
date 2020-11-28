@@ -27,7 +27,13 @@ class CartMainRepo {
         headerIncluded: true,
         postData: postData);
     if (result.isRequestSucceed) {
-      return RequestSuccess(response: result);
+      String message;
+      if (result.response != null &&
+          result.response.data != null &&
+          result.response.data["msg"] != null) {
+        message = result.response.data["msg"];
+      }
+      return RequestSuccess(response: message);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
@@ -63,7 +69,13 @@ class CartMainRepo {
     if (result.isRequestSucceed) {
       if (result.response.data["success"] != null &&
           result.response.data["success"]) {
-        return RequestSuccess(response: bookingId);
+        String message;
+        if (result.response != null &&
+            result.response.data != null &&
+            result.response.data["msg"] != null) {
+          message = result.response.data["msg"];
+        }
+        return RequestSuccess(response: bookingId, additionalData: message);
       } else {
         return RequestFailed(
             failureCause: PlunesStrings.unableToDelete, response: bookingId);
@@ -71,6 +83,26 @@ class CartMainRepo {
     } else {
       return RequestFailed(
           failureCause: result.failureCause, response: bookingId);
+    }
+  }
+
+  Future<RequestState> reGenerateCartItem(String itemId) async {
+    String url = Urls.REGENERATE_CART_ITEM_URL + itemId;
+    var result = await DioRequester().requestMethod(
+      requestType: HttpRequestMethods.HTTP_GET,
+      url: url,
+      headerIncluded: true,
+    );
+    if (result.isRequestSucceed) {
+      if (result.response.data["success"] != null &&
+          result.response.data["success"]) {
+        return RequestSuccess(response: itemId);
+      } else {
+        return RequestFailed(
+            failureCause: plunesStrings.somethingWentWrong, response: itemId);
+      }
+    } else {
+      return RequestFailed(failureCause: result.failureCause, response: itemId);
     }
   }
 }

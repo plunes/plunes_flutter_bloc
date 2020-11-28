@@ -125,4 +125,5 @@ class Urls {
   static const String ADD_TO_CART_URL = "cart/add";
   static const String DELETE_FROM_CART = "cart/delete/";
   static const String GET_CART_ITEMS = "cart/";
+  static const String REGENERATE_CART_ITEM_URL = "cart/renegotiate/";
 }

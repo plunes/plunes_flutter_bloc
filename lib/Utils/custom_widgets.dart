@@ -6200,7 +6200,7 @@ class CustomWidgets {
     );
   }
 
-  Widget showAddToCartSuccessPopup(GlobalKey globalKey) {
+  Widget showAddToCartSuccessPopup(GlobalKey globalKey, String message) {
     return Dialog(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -6219,7 +6219,7 @@ class CustomWidgets {
                     horizontal: AppConfig.horizontalBlockSize * 5,
                     vertical: AppConfig.verticalBlockSize * 2.5),
                 child: Text(
-                  PlunesStrings.successfullyAddedToCart,
+                  message ?? PlunesStrings.successfullyAddedToCart,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: PlunesColors.BLACKCOLOR,

@@ -123,6 +123,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _bookingBloc = BookingBloc();
     _currentDate = DateTime.now();
     _selectedDate = _currentDate;
+    _patientNameController.text = UserManager().getUserDetails().name;
+    _serviceNameController.text = widget.serviceName ?? "";
     _getDetails();
     _getInstalledUpiApps();
     super.initState();
@@ -757,6 +759,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                       }
                       if (snapshot.data != null &&
                           snapshot.data is RequestSuccess) {
+                        RequestSuccess success = snapshot.data;
+                        String message = success.response.toString();
                         _cartCount++;
                         Future.delayed(Duration(milliseconds: 20))
                             .then((value) async {
@@ -765,7 +769,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                               context: context,
                               builder: (context) {
                                 return CustomWidgets()
-                                    .showAddToCartSuccessPopup(scaffoldKey);
+                                    .showAddToCartSuccessPopup(
+                                        scaffoldKey, message);
                               });
                         });
                         _cartMainBloc.addIntoStream(null);
@@ -1106,10 +1111,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     if (requestState is RequestSuccess) {
       _userProfileInfo = requestState.response;
       if (_userProfileInfo != null || _userProfileInfo.user != null) {
-        _patientNameController.text = _userProfileInfo.user.name ?? "";
-        _serviceNameController.text = widget.serviceName ?? "";
-        if (_userProfileInfo.user.cartCount != null &&
-            _userProfileInfo.user.cartCount > 0) {
+        if (_userProfileInfo.user.cartCount != null) {
           _cartCount = _userProfileInfo.user.cartCount;
         }
       }
@@ -2111,9 +2113,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               trailing: InkWell(
                 onTap: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => AddToCartMainScreen()));
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AddToCartMainScreen()))
+                      .then((value) {
+                    _isFetchingUserInfo = true;
+                    _setState();
+                    _getDetails();
+                  });
                   return;
                 },
                 child: Stack(

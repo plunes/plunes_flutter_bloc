@@ -12,6 +12,11 @@ class CartMainBloc extends BlocBase {
   Observable<RequestState> get deleteItemStream =>
       _deleteCartItemProvider.stream;
 
+  final _reGenerateCartItemProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get reGenerateCartItemStream =>
+      _reGenerateCartItemProvider.stream;
+
   Future<RequestState> addItemToCart(Map<String, dynamic> postData) async {
     addIntoStream(RequestInProgress());
     var result = await CartMainRepo().addItemToCart(postData);
@@ -33,6 +38,13 @@ class CartMainBloc extends BlocBase {
     return result;
   }
 
+  Future<RequestState> reGenerateCartItem(String itemId) async {
+    addStateInReGenerateCartItemStream(RequestInProgress(data: itemId));
+    var result = await CartMainRepo().reGenerateCartItem(itemId);
+    addStateInReGenerateCartItemStream(result);
+    return result;
+  }
+
   @override
   void addStateInGenericStream(
       PublishSubject publishSubject, RequestState data) {
@@ -48,6 +60,7 @@ class CartMainBloc extends BlocBase {
   void dispose() {
     _cartItemProvider?.close();
     _deleteCartItemProvider?.close();
+    _reGenerateCartItemProvider?.close();
     super.dispose();
   }
 
@@ -57,5 +70,9 @@ class CartMainBloc extends BlocBase {
 
   void addStateInDeleteCartItemStream(RequestState result) {
     addStateInGenericStream(_deleteCartItemProvider, result);
+  }
+
+  void addStateInReGenerateCartItemStream(RequestState result) {
+    addStateInGenericStream(_reGenerateCartItemProvider, result);
   }
 }
