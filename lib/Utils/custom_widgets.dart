@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/painting.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:flutter/cupertino.dart';
@@ -228,8 +229,7 @@ class CustomWidgets {
                           children: <Widget>[
                             RichText(
                                 text: TextSpan(
-                                    text: CommonMethods.getStringInCamelCase(
-                                            solutionList[index]?.service) ??
+                                    text: solutionList[index]?.service ??
                                         PlunesStrings.NA,
                                     style: TextStyle(
                                       fontSize: AppConfig.smallFont + 1,
@@ -426,8 +426,7 @@ class CustomWidgets {
                             children: <Widget>[
                               RichText(
                                   text: TextSpan(
-                                      text: CommonMethods.getStringInCamelCase(
-                                              solutionList[index]?.service) ??
+                                      text: solutionList[index]?.service ??
                                           PlunesStrings.NA,
                                       style: TextStyle(
                                         fontSize: AppConfig.smallFont + 1,
@@ -798,8 +797,7 @@ class CustomWidgets {
                         left: AppConfig.horizontalBlockSize * 2)),
                 Expanded(
                   child: Text(
-                    CommonMethods.getStringInCamelCase(
-                        testAndProcedures[index]?.sId),
+                    testAndProcedures[index]?.sId ?? PlunesStrings.NA,
                     style: TextStyle(
                         color: PlunesColors.BLACKCOLOR,
                         fontWeight: FontWeight.w500),
@@ -915,8 +913,7 @@ class CustomWidgets {
                                     top: AppConfig.verticalBlockSize * .5),
                                 alignment: Alignment.topLeft,
                                 child: Text(
-                                  CommonMethods.getStringInCamelCase(
-                                      solutions[index]?.name),
+                                  solutions[index]?.name ?? PlunesStrings.NA,
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
@@ -3960,9 +3957,7 @@ class CustomWidgets {
                                   22,
                                   plunesImages.expertiseIcon,
                                   plunesStrings.areaExpertise,
-                                  CommonMethods.getStringInCamelCase(
-                                          doctorsData?.department) ??
-                                      _getEmptyString()),
+                                  doctorsData?.department ?? _getEmptyString()),
                             ),
                       doctorsData.experience == null ||
                               doctorsData.experience.trim().isEmpty ||
@@ -4573,8 +4568,7 @@ class CustomWidgets {
                                   right: AppConfig.horizontalBlockSize * 2,
                                   top: AppConfig.verticalBlockSize * 0.8),
                               child: Text(
-                                CommonMethods.getStringInCamelCase(
-                                        appointmentModel?.serviceName) ??
+                                appointmentModel?.serviceName ??
                                     _getEmptyString(),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 16),
@@ -4857,9 +4851,7 @@ class CustomWidgets {
                                 radius: 22.5,
                               )
                             : CustomWidgets().getBackImageView(
-                                CommonMethods.getStringInCamelCase(
-                                        catalogues[index].name) ??
-                                    PlunesStrings.NA,
+                                catalogues[index].name ?? PlunesStrings.NA,
                                 width: 45,
                                 height: 45),
                         margin: EdgeInsets.only(
@@ -4880,9 +4872,7 @@ class CustomWidgets {
                                 }
                               },
                               child: Text(
-                                CommonMethods.getStringInCamelCase(
-                                        catalogues[index].name) ??
-                                    _getEmptyString(),
+                                catalogues[index].name ?? _getEmptyString(),
                                 maxLines: 2,
                                 overflow: TextOverflow.clip,
                                 style: TextStyle(
@@ -5658,6 +5648,114 @@ class CustomWidgets {
                                 color: PlunesColors.SPARKLINGGREEN),
                           ),
                         ))),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getInvoiceSuccessPopup(
+      {GlobalKey<ScaffoldState> globalKey, String message, String pdfUrl}) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 0.0,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+              height: AppConfig.verticalBlockSize * 10,
+              child: Image.asset(PlunesImages.common),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 5,
+                  vertical: AppConfig.verticalBlockSize * 2.5),
+              child: Text(
+                message ?? plunesStrings.somethingWentWrong,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
+            Container(
+              height: 0.5,
+              width: double.infinity,
+              color: PlunesColors.GREYCOLOR,
+            ),
+            Container(
+              height: AppConfig.verticalBlockSize * 6,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16)),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: FlatButton(
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          splashColor:
+                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          focusColor: Colors.transparent,
+                          onPressed: () {
+                            Navigator.of(globalKey.currentState.context).pop();
+                          },
+                          child: Container(
+                              width: double.infinity,
+                              height: AppConfig.verticalBlockSize * 6,
+                              child: Center(
+                                child: Text(
+                                  "Cancel",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.mediumFont,
+                                      color: PlunesColors.SPARKLINGGREEN),
+                                ),
+                              ))),
+                    ),
+                    Container(
+                      height: AppConfig.verticalBlockSize * 6,
+                      color: PlunesColors.GREYCOLOR,
+                      width: 0.5,
+                    ),
+                    Expanded(
+                      child: FlatButton(
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          splashColor:
+                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                          focusColor: Colors.transparent,
+                          onPressed: () {
+                            if (pdfUrl != null) {
+                              LauncherUtil.launchUrl(pdfUrl);
+                            }
+                            Navigator.of(globalKey.currentState.context).pop();
+                          },
+                          child: Container(
+                              width: double.infinity,
+                              height: AppConfig.verticalBlockSize * 6,
+                              alignment: Alignment.center,
+                              child: Center(
+                                child: Text(
+                                  "Show",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.mediumFont,
+                                      color: PlunesColors.SPARKLINGGREEN),
+                                ),
+                              ))),
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

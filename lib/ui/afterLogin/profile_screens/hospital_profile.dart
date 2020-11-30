@@ -676,8 +676,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
         itemList.add(DropdownMenuItem(
             value: item.id,
             child: Text(
-              CommonMethods.getStringInCamelCase(item?.speciality) ??
-                  _getEmptyString(),
+              item?.speciality ?? _getEmptyString(),
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontSize: 16,
@@ -1241,8 +1240,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                                     vertical:
                                         AppConfig.verticalBlockSize * 0.8),
                                 child: Text(
-                                  CommonMethods.getStringInCamelCase(
-                                          _catalogueList[index]?.service) ??
+                                  _catalogueList[index]?.service ??
                                       _getEmptyString(),
                                   maxLines: 2,
                                   textAlign: TextAlign.left,

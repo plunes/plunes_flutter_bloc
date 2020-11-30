@@ -901,8 +901,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                           left: AppConfig.horizontalBlockSize * 3)),
                   Expanded(
                     child: Text(
-                      CommonMethods.getStringInCamelCase(service?.name) ??
-                          PlunesStrings.NA,
+                      service?.name ?? PlunesStrings.NA,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

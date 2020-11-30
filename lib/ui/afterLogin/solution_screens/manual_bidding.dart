@@ -794,12 +794,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
     CommonMethods.catalogueLists.toSet().forEach((item) {
       if (item != null && item.id != null && item.id.isNotEmpty) {
         itemList.add(DropdownMenuItem(
-            value: CommonMethods.getStringInCamelCase(item?.speciality),
+            value: item?.speciality ?? PlunesStrings.NA,
             child: Container(
               alignment: Alignment.topLeft,
               child: Text(
-                CommonMethods.getStringInCamelCase(item?.speciality) ??
-                    PlunesStrings.NA,
+                item?.speciality ?? PlunesStrings.NA,
                 textAlign: TextAlign.center,
                 style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
               ),
@@ -819,8 +818,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                     value.toString().isNotEmpty &&
                     item.speciality != null &&
                     item.speciality.isNotEmpty &&
-                    value.toString() ==
-                        CommonMethods.getStringInCamelCase(item.speciality)) {
+                    value.toString() == item.speciality) {
 //                  print(
 //                      "${CommonMethods.getStringInCamelCase(item.speciality)} equal hai $value");
 //                  print("id is ${item.id}");

@@ -603,8 +603,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                 Expanded(
                   child: Container(
                     child: Text(
-                        CommonMethods.getStringInCamelCase(
-                            appointmentModel?.serviceName),
+                        appointmentModel?.serviceName ?? PlunesStrings.NA,
                         style: TextStyle(
                             fontSize: AppConfig.smallFont,
                             fontWeight: FontWeight.w500,
@@ -711,7 +710,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                           }
                           _bookingBloc
                               .requestInvoice(
-                                  appointmentModel.bookingId, index, false)
+                                  appointmentModel.bookingId, index, true)
                               .then((value) {});
                         },
                         onDoubleTap: () {},
@@ -740,10 +739,12 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                                           context: context,
                                           builder: (context) {
                                             return CustomWidgets()
-                                                .getInformativePopup(
+                                                .getInvoiceSuccessPopup(
                                                     globalKey: widget.globalKey,
                                                     message:
-                                                        "File saved at ${file.path}");
+                                                        "Invoice saved successfully ${file.path}",
+                                                    pdfUrl: req.additionalData
+                                                        ?.toString());
                                           });
 //                                      LauncherUtil.launchUrl(
 //                                          file.path);

@@ -259,8 +259,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              CommonMethods.getStringInCamelCase(
-                                  bookingIds.service?.name),
+                              bookingIds.service?.name ?? PlunesStrings.NA,
                               textAlign: TextAlign.left,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,

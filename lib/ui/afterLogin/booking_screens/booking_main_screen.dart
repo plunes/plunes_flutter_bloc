@@ -1231,6 +1231,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           _selectedTimeSlot);
       return;
     }
+    if (widget.service.paymentOptions != null &&
+        widget.service.paymentOptions.isNotEmpty &&
+        widget.service.paymentOptions.last < 5000) {
+      _initPayment(PaymentSelector(isInPercent: true, paymentUnit: "100"));
+      return;
+    }
     await showDialog(
         context: context,
         barrierDismissible: false,

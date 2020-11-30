@@ -543,8 +543,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                 Expanded(
                   child: Container(
                     child: Text(
-                        CommonMethods.getStringInCamelCase(
-                            appointmentModel?.serviceName),
+
+                            appointmentModel?.serviceName??PlunesStrings.NA,
                         style: TextStyle(
                             fontSize: AppConfig.smallFont,
                             fontWeight: FontWeight.w500,

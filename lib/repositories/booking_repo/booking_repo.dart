@@ -169,7 +169,7 @@ class BookingRepo {
           result.response.data['data'] != null &&
           result.response.data['data'].toString().isNotEmpty) {
         pdfUrl = result.response.data['data'];
-        if (!shouldSendInvoice) {
+        if (shouldSendInvoice) {
           return await _downloadInvoice(
               bookingId, index, shouldSendInvoice, pdfUrl);
         }
@@ -221,26 +221,6 @@ class BookingRepo {
             response: File(filePath + "/$bookingId" + ".pdf"),
             requestCode: index,
             additionalData: pdfUrl);
-//        print(result.response.data);
-//        if (filePath == null || filePath.isEmpty) {
-//          return RequestFailed(
-//              failureCause: "Failed to get storage access", requestCode: index);
-//        }
-//        if (await File(filePath + "/$bookingId" + ".pdf").exists()) {
-//          return RequestSuccess(
-//              response: File(filePath + "/$bookingId" + ".pdf"),
-//              requestCode: index);
-//        }
-//        var fileByteData;
-//        if (result.response.data != null &&
-//            result.response.data.toString().isNotEmpty) {
-//          var file = File(filePath + "/$bookingId" + ".pdf");
-//          fileByteData = utf8.encode(result.response.data.toString());
-//          _pdfFile = await file.writeAsBytes(fileByteData);
-//          return RequestSuccess(response: _pdfFile, requestCode: index);
-//        }
-//        return RequestFailed(
-//            failureCause: "Failed to download file", requestCode: index);
       } catch (e) {
         return RequestFailed(
             failureCause: "Failed to download file", requestCode: index);

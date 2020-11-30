@@ -130,7 +130,7 @@ class PlunesStrings {
   static const String availableCash = "Available Cash";
   static const String closed = "Closed";
   static const String reschedule = "Reschedule";
-  static const String requestInvoice = "Request Invoice";
+  static const String requestInvoice = "Download Invoice";
   static const String refund = "Request Refund";
   static const String visitAgain = "Visit Again";
   static const String appointmentScreenError = "Appointment Screen Error";
