@@ -375,6 +375,8 @@ class PlunesStrings {
       "Prices have expired, Negotiate again to book";
   static const String enterValidAge = "Please enter a valid age";
   static const String pleaseSelectYourGender = "Please select your gender";
+  static const String cartItemExpiredMessage =
+      "Sorry, looks like your selected appointment time isn't valid , try again";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

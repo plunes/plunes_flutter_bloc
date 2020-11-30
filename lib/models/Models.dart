@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
+
 class CatalogueList {
   final List<ProcedureList> posts;
   final bool empty;
@@ -179,7 +181,7 @@ class User {
       googleLocation;
 
   List<ProcedureList> specialities = [];
-  List<TimeSlotsData> timeSlots = [];
+  List<TimeSlots> timeSlots = [];
   List<DoctorsData> doctorsData = [];
   List<AchievementsData> achievements = [];
   bool verifiedUser, notificationEnabled, isAdmin, isCentre, referralExpired;
@@ -237,11 +239,11 @@ class User {
     bool _isAdmin = json['isAdmin'] ?? false;
     bool _isCenter = json['isCenter'] ?? false;
     bool _referralExpired = json['referralExpired'] ?? false;
-    List<TimeSlotsData> _timeSlots = [];
+    List<TimeSlots> _timeSlots = [];
     if (json['timeSlots'] != null) {
       Iterable iterable = json['timeSlots'];
       _timeSlots = iterable
-          .map((value) => TimeSlotsData.fromJson(value))
+          .map((value) => TimeSlots.fromJson(value))
           .toList(growable: true);
     }
     String lat = "0.0", long = "0.0";
@@ -405,7 +407,7 @@ class Location {
 
 class DoctorsData {
   List<ProcedureList> specialities = [];
-  List<TimeSlotsData> timeSlots = [];
+  List<TimeSlots> timeSlots = [];
   String id, name, education, designation, department, experience, imageUrl;
 
   DoctorsData(
@@ -434,8 +436,8 @@ class DoctorsData {
           parsedJson['specialities'].map((i) => ProcedureList.fromJson(i))),
       id: parsedJson['_id'] != null ? parsedJson['_id'] : '',
       imageUrl: parsedJson['imageUrl'] != null ? parsedJson['imageUrl'] : '',
-      timeSlots: List<TimeSlotsData>.from(
-          parsedJson['timeSlots'].map((i) => TimeSlotsData.fromJson(i))),
+      timeSlots: List<TimeSlots>.from(
+          parsedJson['timeSlots'].map((i) => TimeSlots.fromJson(i))),
     );
   }
 }
@@ -476,28 +478,28 @@ class AchievementsData {
   }
 }
 
-class TimeSlotsData {
-  final List<String> slots;
-  final String day;
-  final bool closed;
-
-  TimeSlotsData({this.slots, this.day, this.closed});
-
-  factory TimeSlotsData.fromJson(Map<String, dynamic> parsedJson) {
-    List<String> _slots = [];
-    if (parsedJson['slots'] != null) {
-      parsedJson['slots'].forEach((element) {
-        _slots.add(element.toString());
-      });
-    }
-
-    return new TimeSlotsData(
-      slots: _slots,
-      day: parsedJson['day'] != null ? parsedJson['day'] : '',
-      closed: parsedJson['closed'] != null ? parsedJson['closed'] : '',
-    );
-  }
-}
+//class TimeSlotsData {
+//  final List<String> slots;
+//  final String day;
+//  final bool closed;
+//
+//  TimeSlotsData({this.slots, this.day, this.closed});
+//
+//  factory TimeSlotsData.fromJson(Map<String, dynamic> parsedJson) {
+//    List<String> _slots = [];
+//    if (parsedJson['slots'] != null) {
+//      parsedJson['slots'].forEach((element) {
+//        _slots.add(element.toString());
+//      });
+//    }
+//
+//    return new TimeSlotsData(
+//      slots: _slots,
+//      day: parsedJson['day'] != null ? parsedJson['day'] : '',
+//      closed: parsedJson['closed'] != null ? parsedJson['closed'] : '',
+//    );
+//  }
+//}
 
 class AllNotificationsPost {
   final bool success;

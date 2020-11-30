@@ -105,4 +105,42 @@ class CartMainRepo {
       return RequestFailed(failureCause: result.failureCause, response: itemId);
     }
   }
+
+  Future<RequestState> saveEditedPatientDetails(
+      Map<String, dynamic> json) async {
+    var result = await DioRequester().requestMethod(
+      requestType: HttpRequestMethods.HTTP_PUT,
+      postData: json,
+      url: Urls.EDIT_CART_DETAIL_URL,
+      headerIncluded: true,
+    );
+    if (result.isRequestSucceed) {
+      if (result.response.data["success"] != null &&
+          result.response.data["success"]) {
+        return RequestSuccess(response: result.isRequestSucceed);
+      } else {
+        return RequestFailed(failureCause: plunesStrings.somethingWentWrong);
+      }
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> payCartItemBill(bool creditsUsed) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {"credits": creditsUsed},
+        url: Urls.PAY_CART_ITEMS_BILL_URL,
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      if (result.response.data["success"] != null &&
+          result.response.data["success"]) {
+        return RequestSuccess(response: result.isRequestSucceed);
+      } else {
+        return RequestFailed(failureCause: plunesStrings.somethingWentWrong);
+      }
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

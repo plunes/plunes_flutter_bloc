@@ -17,6 +17,15 @@ class CartMainBloc extends BlocBase {
   Observable<RequestState> get reGenerateCartItemStream =>
       _reGenerateCartItemProvider.stream;
 
+  final _editInfoStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get editInfoStream => _editInfoStreamProvider.stream;
+
+  final _payCartBillStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get payCartBillStream =>
+      _payCartBillStreamProvider.stream;
+
   Future<RequestState> addItemToCart(Map<String, dynamic> postData) async {
     addIntoStream(RequestInProgress());
     var result = await CartMainRepo().addItemToCart(postData);
@@ -61,6 +70,8 @@ class CartMainBloc extends BlocBase {
     _cartItemProvider?.close();
     _deleteCartItemProvider?.close();
     _reGenerateCartItemProvider?.close();
+    _editInfoStreamProvider?.close();
+    _payCartBillStreamProvider?.close();
     super.dispose();
   }
 
@@ -74,5 +85,28 @@ class CartMainBloc extends BlocBase {
 
   void addStateInReGenerateCartItemStream(RequestState result) {
     addStateInGenericStream(_reGenerateCartItemProvider, result);
+  }
+
+  Future<RequestState> saveEditedPatientDetails(
+      Map<String, dynamic> json) async {
+    addStateInEditDetailsStream(RequestInProgress());
+    var result = await CartMainRepo().saveEditedPatientDetails(json);
+    addStateInEditDetailsStream(result);
+    return result;
+  }
+
+  void addStateInEditDetailsStream(RequestState data) {
+    addStateInGenericStream(_editInfoStreamProvider, data);
+  }
+
+  Future<RequestState> payCartItemBill(bool creditsUsed) async {
+    addStatePaymentStream(RequestInProgress());
+    var result = await CartMainRepo().payCartItemBill(creditsUsed);
+    addStatePaymentStream(result);
+    return result;
+  }
+
+  void addStatePaymentStream(RequestState data) {
+    addStateInGenericStream(_payCartBillStreamProvider, data);
   }
 }

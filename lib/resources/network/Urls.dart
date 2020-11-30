@@ -126,4 +126,6 @@ class Urls {
   static const String DELETE_FROM_CART = "cart/delete/";
   static const String GET_CART_ITEMS = "cart/";
   static const String REGENERATE_CART_ITEM_URL = "cart/renegotiate/";
+  static const String EDIT_CART_DETAIL_URL = "booking/editPatient";
+  static const String PAY_CART_ITEMS_BILL_URL = "cart/checkout";
 }

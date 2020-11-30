@@ -1343,7 +1343,7 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
             .showDocPopup(doctorsData, context, _profileResponse?.user?.name));
   }
 
-  Widget _getSlotInfo(TimeSlotsData timeSlot) {
+  Widget _getSlotInfo(TimeSlots timeSlot) {
     return Container(
       margin: EdgeInsets.only(
           top: AppConfig.verticalBlockSize * 1,

@@ -6,6 +6,7 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -534,7 +535,7 @@ class _DocProfileState extends BaseState<DocProfile> {
           );
   }
 
-  Widget _getSlotInfo(TimeSlotsData timeSlot) {
+  Widget _getSlotInfo(TimeSlots timeSlot) {
     return Container(
       margin: EdgeInsets.only(
           top: AppConfig.verticalBlockSize * 1,

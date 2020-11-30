@@ -3421,7 +3421,8 @@ class CustomWidgets {
     );
   }
 
-  hospitalTiming(List<TimeSlotsData> timeSlots, BuildContext context) {
+  Widget hospitalTiming(List<TimeSlots> timeSlots, BuildContext context) {
+    print(timeSlots);
     return Material(
       child: Container(
         child: Column(
@@ -3501,13 +3502,12 @@ class CustomWidgets {
                             ),
                           ],
                         )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.only(
-                                  top: 3, bottom: 2, right: 2, left: 2),
-                              child: Text(
+                      : Container(
+                          padding: EdgeInsets.only(
+                              top: 3, bottom: 2, right: 2, left: 2),
+                          child: Column(
+                            children: <Widget>[
+                              Text(
                                 timeSlots[itemIndex]?.day?.toUpperCase() ??
                                     _getEmptyString(),
                                 textAlign: TextAlign.center,
@@ -3516,70 +3516,27 @@ class CustomWidgets {
                                     decorationThickness: 1,
                                     color: PlunesColors.BLACKCOLOR),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 4.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Container(
-                                    padding:
-                                        EdgeInsets.only(top: 3, bottom: 10),
-                                    child: Text(
-                                      (timeSlots[itemIndex] != null &&
-                                              timeSlots[itemIndex].slots !=
-                                                  null &&
-                                              timeSlots[itemIndex]
-                                                  .slots
-                                                  .isNotEmpty)
-                                          ? timeSlots[itemIndex].slots.first
-                                          : Text(PlunesStrings.NA),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.smallFont,
-                                          color: PlunesColors.GREYCOLOR),
-                                    ),
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.only(
-                                        top: 3, bottom: 10, right: 5, left: 5),
-                                    child: Text(
-                                      ";",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.smallFont,
-                                          color: PlunesColors.GREYCOLOR),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.symmetric(
-                                        vertical:
-                                            AppConfig.verticalBlockSize * .4),
-                                    padding:
-                                        EdgeInsets.only(top: 3, bottom: 10),
-                                    child: Text(
-                                      (timeSlots[itemIndex] != null &&
-                                              timeSlots[itemIndex].slots !=
-                                                  null &&
-                                              timeSlots[itemIndex]
-                                                  .slots
-                                                  .isNotEmpty &&
-                                              timeSlots[itemIndex]
-                                                      .slots
-                                                      .length ==
-                                                  2)
-                                          ? timeSlots[itemIndex].slots[1]
-                                          : "",
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.smallFont,
-                                          color: PlunesColors.GREYCOLOR),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                              ListView.builder(
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    print(
+                                        "timeSlots[itemIndex].slots.length ${timeSlots[itemIndex].slots.length}");
+                                    return Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Flexible(
+                                          child: Text(timeSlots[itemIndex]
+                                              .slotArray[index]),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                  itemCount:
+                                      timeSlots[itemIndex]?.slotArray?.length ??
+                                          0)
+                            ],
+                          ),
                         );
                 },
                 itemCount: timeSlots?.length ?? 0,
@@ -6360,5 +6317,9 @@ class CustomWidgets {
             ],
           ),
         ));
+  }
+
+  Widget openCartPaymentBillPopup() {
+    return Container();
   }
 }

@@ -1231,9 +1231,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
           _selectedTimeSlot);
       return;
     }
-    if (widget.service.paymentOptions != null &&
-        widget.service.paymentOptions.isNotEmpty &&
-        widget.service.paymentOptions.last < 5000) {
+    if (widget.service.newPrice != null &&
+        widget.service.newPrice.isNotEmpty != null &&
+        widget.service.newPrice.first < 5000) {
       _initPayment(PaymentSelector(isInPercent: true, paymentUnit: "100"));
       return;
     }

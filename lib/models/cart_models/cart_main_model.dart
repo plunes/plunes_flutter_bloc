@@ -130,7 +130,7 @@ class BookingIds {
 class Service {
   List<num> newPrice;
   List<TimeSlots> timeSlots;
-  String name, imageUrl;
+  String name, imageUrl, userType;
   double distance;
   double rating;
   int expirationTimer;
@@ -140,6 +140,7 @@ class Service {
       this.timeSlots,
       this.name,
       this.distance,
+      this.userType,
       this.rating,
       this.imageUrl,
       this.expirationTimer});
@@ -156,6 +157,7 @@ class Service {
     distance = json['distance'];
     rating = json['rating'];
     imageUrl = json['imageUrl'];
+    userType = json['userType'];
     expirationTimer = json['expirationTimer'];
   }
 

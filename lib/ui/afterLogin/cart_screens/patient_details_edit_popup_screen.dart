@@ -7,7 +7,10 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/models/cart_models/cart_main_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -15,8 +18,9 @@ import 'package:plunes/res/StringsFile.dart';
 // ignore: must_be_immutable
 class EditPatientDetailScreen extends BaseActivity {
   final BookingIds bookingIds;
+  CartMainBloc cartMainBloc;
 
-  EditPatientDetailScreen(this.bookingIds);
+  EditPatientDetailScreen(this.bookingIds, this.cartMainBloc);
 
   @override
   _EditPatientDetailScreenState createState() =>
@@ -31,9 +35,23 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
   ScrollController _scrollController;
   GlobalKey _selectedTimeSlotKey;
   double _widgetSize = 0;
+  CartMainBloc _cartMainBloc;
+  TextEditingController _patientNameController;
+  TextEditingController _serviceNameController;
+  TextEditingController _ageController;
 
   @override
   void initState() {
+    _patientNameController = TextEditingController();
+    _serviceNameController = TextEditingController();
+    _ageController = TextEditingController();
+    if (widget.bookingIds != null) {
+      _patientNameController.text = widget.bookingIds.patientName ?? "";
+      _serviceNameController.text = widget.bookingIds.serviceName ?? "";
+      _ageController.text = widget.bookingIds.patientAge ?? "";
+      _gender = widget.bookingIds.patientSex;
+    }
+    _cartMainBloc = widget.cartMainBloc;
     _currentDate = DateTime.now();
     _slotArray = [];
     _hasGotSize = false;
@@ -76,33 +94,56 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
               borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(16),
                   bottomRight: Radius.circular(16)),
-              child: FlatButton(
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                  focusColor: Colors.transparent,
-                  onPressed: () {
-                    if (_selectedDate != null &&
-                        _selectedTimeSlot != null &&
-                        _selectedTimeSlot != PlunesStrings.noSlot) {
-//                      if (_hasFilledDetails()) _doPaymentRelatedQueries();
-                    } else {
-                      _showInSnackBar(PlunesStrings.pleaseSelectValidSlot);
+              child: StreamBuilder<RequestState>(
+                  stream: _cartMainBloc.editInfoStream,
+                  builder: (context, snapshot) {
+                    if (snapshot != null &&
+                        snapshot.data is RequestInProgress) {
+                      return CustomWidgets().getProgressIndicator();
+                    } else if (snapshot != null &&
+                        snapshot.data is RequestSuccess) {
+                      Future.delayed(Duration(milliseconds: 10)).then((value) {
+                        Navigator.pop(context, true);
+                      });
+                      _cartMainBloc.addStateInEditDetailsStream(null);
+                    } else if (snapshot != null &&
+                        snapshot.data is RequestFailed) {
+                      RequestFailed _requestFailed = snapshot.data;
+                      Future.delayed(Duration(milliseconds: 10)).then((value) {
+                        _showInSnackBar(_requestFailed.failureCause);
+                      });
+                      _cartMainBloc.addStateInEditDetailsStream(null);
                     }
-                    return;
-                  },
-                  child: Container(
-                      height: AppConfig.verticalBlockSize * 6,
-                      width: double.infinity,
-                      child: Center(
-                        child: Text(
-                          PlunesStrings.save.substring(0, 4),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: PlunesColors.SPARKLINGGREEN),
-                        ),
-                      ))),
+                    return FlatButton(
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        splashColor:
+                            PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                        focusColor: Colors.transparent,
+                        onPressed: () {
+                          if (_selectedDate != null &&
+                              _selectedTimeSlot != null &&
+                              _selectedTimeSlot != PlunesStrings.noSlot) {
+                            if (_hasFilledDetails()) _saveInfo();
+                          } else {
+                            _showInSnackBar(
+                                PlunesStrings.pleaseSelectValidSlot);
+                          }
+                          return;
+                        },
+                        child: Container(
+                            height: AppConfig.verticalBlockSize * 6,
+                            width: double.infinity,
+                            child: Center(
+                              child: Text(
+                                PlunesStrings.save.substring(0, 4),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    color: PlunesColors.SPARKLINGGREEN),
+                              ),
+                            )));
+                  }),
             ),
           )
         ],
@@ -136,7 +177,7 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                 children: <Widget>[
                   Expanded(
                       child: TextField(
-//                        controller: _patientNameController,
+                    controller: _patientNameController,
                     style: TextStyle(
                         color: PlunesColors.BLACKCOLOR,
                         fontSize: 15,
@@ -165,7 +206,7 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                 children: <Widget>[
                   Expanded(
                       child: TextField(
-//                          controller: _serviceNameController,
+                          controller: _serviceNameController,
                           maxLines: 1,
                           readOnly: true,
                           enabled: false,
@@ -197,7 +238,7 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                       children: <Widget>[
                         Expanded(
                           child: TextField(
-//                              controller: _ageController,
+                              controller: _ageController,
                               inputFormatters: [
                                 WhitelistingTextInputFormatter.digitsOnly
                               ],
@@ -742,5 +783,40 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
         Navigator.pop(context);
       }
     });
+  }
+
+  bool _hasFilledDetails() {
+    bool _hasFilledDetails = true;
+    String _message;
+    if (_patientNameController.text.trim().isEmpty ||
+        _patientNameController.text.trim().length < 2) {
+      _hasFilledDetails = false;
+      _message = PlunesStrings.nameMustBeGreaterThanTwoChar;
+    } else if (_ageController.text.trim().isEmpty ||
+        _ageController.text.trim() == "0" ||
+        int.tryParse(_ageController.text) < 0) {
+      _hasFilledDetails = false;
+      _message = PlunesStrings.enterValidAge;
+    } else if (_gender == null || _gender.isEmpty) {
+      _hasFilledDetails = false;
+      _message = PlunesStrings.pleaseSelectYourGender;
+    }
+    if (_message != null) {
+      _showInSnackBar(_message);
+    }
+    return _hasFilledDetails;
+  }
+
+  _saveInfo() {
+    Map<String, dynamic> json = {
+      "patientName": _patientNameController.text.trim(),
+      "patientAge": _ageController.text.trim(),
+      "patientSex": _gender,
+      "patientMobileNumber": UserManager().getUserDetails().mobileNumber,
+      "bookingId": widget.bookingIds.sId,
+      "timeSlot": _selectedTimeSlot,
+      "appointmentTime": _selectedDate.millisecondsSinceEpoch.toString()
+    };
+    _cartMainBloc.saveEditedPatientDetails(json);
   }
 }
