@@ -2121,7 +2121,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                   Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => AddToCartMainScreen()))
+                              builder: (context) =>
+                                  AddToCartMainScreen(hasAppBar: true)))
                       .then((value) {
                     _isFetchingUserInfo = true;
                     _setState();
@@ -2132,7 +2133,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 child: Stack(
                   children: <Widget>[
                     Container(
-                      child: Image.asset(PlunesImages.cartImage),
+                      child: Image.asset(PlunesImages.cartUnSelectedImage),
                       height: 35,
                       width: 35,
                     ),

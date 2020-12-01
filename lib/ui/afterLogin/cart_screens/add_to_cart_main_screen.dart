@@ -18,6 +18,10 @@ import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 
 // ignore: must_be_immutable
 class AddToCartMainScreen extends BaseActivity {
+  bool hasAppBar;
+
+  AddToCartMainScreen({this.hasAppBar});
+
   @override
   _AddToCartMainScreenState createState() => _AddToCartMainScreenState();
 }
@@ -55,7 +59,9 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-          appBar: widget.getAppBar(context, PlunesStrings.myCart, true),
+          appBar: (widget.hasAppBar != null && widget.hasAppBar)
+              ? widget.getAppBar(context, PlunesStrings.myCart, true)
+              : null,
           body: StreamBuilder<RequestState>(
               stream: _cartMainBloc.cartMainStream,
               initialData: _cartOuterModel == null ? RequestInProgress() : null,
@@ -195,6 +201,9 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     int time = DateTime.now().millisecondsSinceEpoch;
     if (!_isSolutionExpired) {
       time = bookingIds.service.expirationTimer;
+    }
+    if (_appointmentTimeExpired(bookingIds)) {
+      return Container();
     }
     return Card(
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -528,17 +537,20 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
               ),
               _isSolutionExpired
                   ? Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                                begin: FractionalOffset.topCenter,
-                                end: FractionalOffset.bottomCenter,
-                                colors: [
-                              Colors.white60,
-                              Colors.white70
-                              // I don't know what Color this will be, so I can't use this
-                            ])),
-                        width: double.infinity,
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  begin: FractionalOffset.topCenter,
+                                  end: FractionalOffset.bottomCenter,
+                                  colors: [
+                                Colors.white60,
+                                Colors.white70
+                                // I don't know what Color this will be, so I can't use this
+                              ])),
+                          width: double.infinity,
+                        ),
                       ),
                     )
                   : Container(),
@@ -682,6 +694,20 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
       }
     }
     return _solutionExpired;
+  }
+
+  bool _appointmentTimeExpired(BookingIds bookingIds) {
+    bool _appointmentTimeExpired = false;
+    if (bookingIds.appointmentTime != null &&
+        bookingIds.appointmentTime.isNotEmpty) {
+      var duration = DateTime.now().difference(
+          DateTime.fromMillisecondsSinceEpoch(
+              int.tryParse(bookingIds.appointmentTime)));
+      if (duration.inSeconds > 1) {
+        _appointmentTimeExpired = true;
+      }
+    }
+    return _appointmentTimeExpired;
   }
 
   Widget _getNegotiateButton(BookingIds bookingIds) {

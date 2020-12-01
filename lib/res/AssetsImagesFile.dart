@@ -123,6 +123,10 @@ class PlunesImages {
   static const String addToCartSuccessImage =
       "assets/images/add_to_cart_success_image.png";
   static const String cartImage = "assets/images/cartImage.png";
+  static const String cartSelectedImage =
+      "assets/images/bottom_tabs/cartSelectedImage.png";
+  static const String cartUnSelectedImage =
+      "assets/images/bottom_tabs/cartUnSelectedImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

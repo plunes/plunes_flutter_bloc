@@ -3466,7 +3466,7 @@ class CustomWidgets {
                 bottom: AppConfig.verticalBlockSize * 4,
               ),
               child: ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
+//                physics: NeverScrollableScrollPhysics(),
                 itemBuilder: (context, itemIndex) {
                   return (timeSlots[itemIndex] != null &&
                           timeSlots[itemIndex].closed != null &&
@@ -3504,32 +3504,32 @@ class CustomWidgets {
                         )
                       : Container(
                           padding: EdgeInsets.only(
-                              top: 3, bottom: 2, right: 2, left: 2),
+                              top: 3, bottom: 5, right: 2, left: 2),
                           child: Column(
                             children: <Widget>[
-                              Text(
-                                timeSlots[itemIndex]?.day?.toUpperCase() ??
-                                    _getEmptyString(),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
-                                    decorationThickness: 1,
-                                    color: PlunesColors.BLACKCOLOR),
-                              ),
-                              ListView.builder(
+                              Container(
+                                  child: Text(
+                                    timeSlots[itemIndex]?.day?.toUpperCase() ??
+                                        _getEmptyString(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont,
+                                        decorationThickness: 1,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  ),
+                                  padding: EdgeInsets.only(bottom: 5)),
+                              GridView.builder(
                                   shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          childAspectRatio: 6),
                                   itemBuilder: (context, index) {
-                                    print(
-                                        "timeSlots[itemIndex].slots.length ${timeSlots[itemIndex].slots.length}");
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Flexible(
-                                          child: Text(timeSlots[itemIndex]
-                                              .slotArray[index]),
-                                        )
-                                      ],
+                                    return Text(
+                                      timeSlots[itemIndex].slotArray[index] ??
+                                          "",
+                                      textAlign: TextAlign.center,
                                     );
                                   },
                                   itemCount:

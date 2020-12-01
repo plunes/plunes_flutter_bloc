@@ -53,6 +53,7 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
     }
     _cartMainBloc = widget.cartMainBloc;
     _currentDate = DateTime.now();
+    _selectedDate = _currentDate;
     _slotArray = [];
     _hasGotSize = false;
     _hasScrolledOnce = false;
@@ -99,7 +100,10 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                   builder: (context, snapshot) {
                     if (snapshot != null &&
                         snapshot.data is RequestInProgress) {
-                      return CustomWidgets().getProgressIndicator();
+                      return Container(
+                        child: CustomWidgets().getProgressIndicator(),
+                        margin: EdgeInsets.only(bottom: 3),
+                      );
                     } else if (snapshot != null &&
                         snapshot.data is RequestSuccess) {
                       Future.delayed(Duration(milliseconds: 10)).then((value) {
@@ -114,35 +118,70 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
                       });
                       _cartMainBloc.addStateInEditDetailsStream(null);
                     }
-                    return FlatButton(
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        splashColor:
-                            PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                        focusColor: Colors.transparent,
-                        onPressed: () {
-                          if (_selectedDate != null &&
-                              _selectedTimeSlot != null &&
-                              _selectedTimeSlot != PlunesStrings.noSlot) {
-                            if (_hasFilledDetails()) _saveInfo();
-                          } else {
-                            _showInSnackBar(
-                                PlunesStrings.pleaseSelectValidSlot);
-                          }
-                          return;
-                        },
-                        child: Container(
-                            height: AppConfig.verticalBlockSize * 6,
-                            width: double.infinity,
-                            child: Center(
-                              child: Text(
-                                PlunesStrings.save.substring(0, 4),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
-                                    color: PlunesColors.SPARKLINGGREEN),
-                              ),
-                            )));
+                    return Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: FlatButton(
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              splashColor:
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              focusColor: Colors.transparent,
+                              onPressed: () {
+                                Navigator.pop(context);
+                                return;
+                              },
+                              child: Container(
+                                  height: AppConfig.verticalBlockSize * 8,
+                                  width: double.infinity,
+                                  child: Center(
+                                    child: Text(
+                                      'Cancel',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ),
+                                  ))),
+                        ),
+                        Container(
+                          height: AppConfig.verticalBlockSize * 8,
+                          color: PlunesColors.GREYCOLOR,
+                          width: 0.5,
+                        ),
+                        Expanded(
+                          child: FlatButton(
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              splashColor:
+                                  PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                              focusColor: Colors.transparent,
+                              onPressed: () {
+                                if (_selectedDate != null &&
+                                    _selectedTimeSlot != null &&
+                                    _selectedTimeSlot != PlunesStrings.noSlot) {
+                                  if (_hasFilledDetails()) _saveInfo();
+                                } else {
+                                  _showInSnackBar(
+                                      PlunesStrings.pleaseSelectValidSlot);
+                                }
+                                return;
+                              },
+                              child: Container(
+                                  height: AppConfig.verticalBlockSize * 6,
+                                  width: double.infinity,
+                                  child: Center(
+                                    child: Text(
+                                      PlunesStrings.save.substring(0, 4),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: AppConfig.mediumFont,
+                                          color: PlunesColors.SPARKLINGGREEN),
+                                    ),
+                                  ))),
+                        ),
+                      ],
+                    );
                   }),
             ),
           )
@@ -152,11 +191,7 @@ class _EditPatientDetailScreenState extends BaseState<EditPatientDetailScreen> {
   }
 
   Widget _getPatientDetailsFillUpView() {
-    return
-//      (_userProfileInfo == null || _userProfileInfo.user == null)
-//        ? Container()
-//        :
-        Column(
+    return Column(
       children: <Widget>[
         Container(
           alignment: Alignment.topLeft,
