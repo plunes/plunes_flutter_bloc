@@ -80,7 +80,7 @@ class PlunesStrings {
   static const String yrExp = "Years Experience";
   static const String NA = "NA";
   static const String negotiateForBestPrice =
-      "Negotiate for the best price solution near you";
+      "Discover The Prices Of Your Medical Treatment In One Click ";
   static const String previousActivities = "Previous Activities";
   static const String noSolutionsAvailable = "No solutions available";
   static const String searchSolutions = "";

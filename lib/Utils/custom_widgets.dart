@@ -3502,41 +3502,45 @@ class CustomWidgets {
                             ),
                           ],
                         )
-                      : Container(
-                          padding: EdgeInsets.only(
-                              top: 3, bottom: 5, right: 2, left: 2),
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                  child: Text(
-                                    timeSlots[itemIndex]?.day?.toUpperCase() ??
-                                        _getEmptyString(),
-                                    textAlign: TextAlign.center,
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.only(
+                                  top: 3, bottom: 3, right: 2, left: 2),
+                              child: Text(
+                                timeSlots[itemIndex]?.day?.toUpperCase() ??
+                                    _getEmptyString(),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    decorationThickness: 1,
+                                    color: PlunesColors.BLACKCOLOR),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 0.0),
+                              child: GridView.builder(
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2, childAspectRatio: 6),
+                                itemBuilder: (context, index) {
+                                  return Container(
+//                                    padding: EdgeInsets.only(bottom: 5,),
+                                      child: Text(
+                                    "${timeSlots[itemIndex].slots[index]} ",
+                                    textAlign: TextAlign.left,
                                     style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        decorationThickness: 1,
-                                        color: PlunesColors.BLACKCOLOR),
-                                  ),
-                                  padding: EdgeInsets.only(bottom: 5)),
-                              GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio: 6),
-                                  itemBuilder: (context, index) {
-                                    return Text(
-                                      timeSlots[itemIndex].slotArray[index] ??
-                                          "",
-                                      textAlign: TextAlign.center,
-                                    );
-                                  },
-                                  itemCount:
-                                      timeSlots[itemIndex]?.slotArray?.length ??
-                                          0)
-                            ],
-                          ),
+                                        fontSize: AppConfig.smallFont,
+                                        color: PlunesColors.GREYCOLOR),
+                                  ));
+                                },
+                                itemCount:
+                                    timeSlots[itemIndex]?.slots?.length ?? 0,
+                              ),
+                            ),
+                          ],
                         );
                 },
                 itemCount: timeSlots?.length ?? 0,
