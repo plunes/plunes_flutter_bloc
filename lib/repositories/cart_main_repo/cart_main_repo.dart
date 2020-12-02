@@ -51,7 +51,12 @@ class CartMainRepo {
       if (cartOuterModel.data == null ||
           cartOuterModel.data.bookingIds == null ||
           cartOuterModel.data.bookingIds.isEmpty) {
-        return RequestFailed(failureCause: "No items in cart");
+        return RequestFailed(
+            failureCause: (cartOuterModel != null &&
+                    cartOuterModel.msg != null &&
+                    cartOuterModel.msg.isNotEmpty)
+                ? cartOuterModel.msg
+                : "Your cart is still empty.Discover Price Of your Treatment Now!");
       }
       return RequestSuccess(response: cartOuterModel);
     } else {

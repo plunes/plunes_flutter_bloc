@@ -712,7 +712,8 @@ class CustomWidgets {
       {Function onTap,
       String buttonText,
       bool isSizeLess = false,
-      bool shouldNotShowImage = false}) {
+      bool shouldNotShowImage = false,
+      String imagePath}) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -724,7 +725,7 @@ class CustomWidgets {
                   margin: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 2.5),
                   child: Image.asset(
-                    PlunesImages.noServiceAvailable,
+                    imagePath ?? PlunesImages.noServiceAvailable,
                     height: AppConfig.verticalBlockSize * 14,
                     width: AppConfig.horizontalBlockSize * 45,
                   ),

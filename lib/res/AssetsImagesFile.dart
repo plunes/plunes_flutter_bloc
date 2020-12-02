@@ -127,6 +127,7 @@ class PlunesImages {
       "assets/images/bottom_tabs/cartSelectedImage.png";
   static const String cartUnSelectedImage =
       "assets/images/bottom_tabs/cartUnSelectedImage.png";
+  static const String emptyCartItemsImage="assets/images/emptyCartItemsImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

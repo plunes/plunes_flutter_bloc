@@ -376,6 +376,7 @@ flutter:
     - assets/images/pricesValidThroughAppIcon.png
     - assets/images/add_to_cart_success_image.png
     - assets/images/cartImage.png
+    - assets/images/emptyCartItemsImage.png
 
 
 

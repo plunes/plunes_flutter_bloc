@@ -12,6 +12,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/patient_details_edit_popup_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
@@ -19,8 +20,9 @@ import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 // ignore: must_be_immutable
 class AddToCartMainScreen extends BaseActivity {
   bool hasAppBar;
+  Function exploreMore;
 
-  AddToCartMainScreen({this.hasAppBar});
+  AddToCartMainScreen({this.hasAppBar, this.exploreMore});
 
   @override
   _AddToCartMainScreenState createState() => _AddToCartMainScreenState();
@@ -81,9 +83,19 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                   _cartMainBloc.addStateInCartMainStream(null);
                 }
                 return (_failureCause != null)
-                    ? CustomWidgets().errorWidget(
-                        _failureCause ?? "Unable to get data",
-                        onTap: () => _getCartItems())
+                    ? CustomWidgets().errorWidget(_failureCause,
+                        imagePath: PlunesImages.emptyCartItemsImage, onTap: () {
+                        if (_failureCause != null &&
+                            _failureCause != PlunesStrings.noInternet) {
+                          _doExplore();
+                        } else {
+                          _getCartItems();
+                        }
+                      },
+                        buttonText: (_failureCause != null &&
+                                _failureCause != PlunesStrings.noInternet)
+                            ? PlunesStrings.explore
+                            : null)
                     : _showBody();
               }),
           key: scaffoldKey),
@@ -786,5 +798,18 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
               bookingIds, scaffoldKey, price,
               credits: _cartOuterModel?.credits);
         });
+  }
+
+  void _doExplore() {
+    if (widget.hasAppBar != null && widget.hasAppBar) {
+      Navigator.pop(context, "pop");
+    } else {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.exploreScreenNumber)),
+          (_) => false);
+    }
   }
 }
