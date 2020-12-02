@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/painting.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
+import 'package:plunes/models/cart_models/cart_main_model.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -325,7 +326,7 @@ class CustomWidgets {
                           top: AppConfig.verticalBlockSize * 2,
                           right: AppConfig.horizontalBlockSize * 32),
                       child: getRoundedButton(
-                          "Negotiate",
+                          PlunesStrings.negotiate,
                           AppConfig.horizontalBlockSize * 8,
                           PlunesColors.GREENCOLOR,
                           AppConfig.horizontalBlockSize * 0,
@@ -512,7 +513,7 @@ class CustomWidgets {
                           top: AppConfig.verticalBlockSize * 2,
                           right: AppConfig.horizontalBlockSize * 32),
                       child: getRoundedButton(
-                          "Negotiate",
+                          PlunesStrings.negotiate,
                           AppConfig.horizontalBlockSize * 8,
                           PlunesColors.GREENCOLOR,
                           AppConfig.horizontalBlockSize * 0,
@@ -6323,7 +6324,261 @@ class CustomWidgets {
         ));
   }
 
-  Widget openCartPaymentBillPopup() {
-    return Container();
+  Widget openCartPaymentBillPopup(
+      List<BookingIds> bookingIds, GlobalKey globalKey, num price,
+      {num credits}) {
+    bool useCredits = false;
+    return Dialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16.0))),
+      child: SingleChildScrollView(
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 2,
+                    vertical: AppConfig.verticalBlockSize * 1.5),
+                child: Column(
+                  children: <Widget>[
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: AppConfig.horizontalBlockSize * 2,
+                                  vertical: AppConfig.verticalBlockSize * 1),
+                              child: Row(
+                                children: <Widget>[
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Container(
+                                          child: Text(
+                                            CommonMethods.getStringInCamelCase(
+                                                bookingIds[index]
+                                                    ?.service
+                                                    ?.name),
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: PlunesColors.BLACKCOLOR,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                        Container(
+                                          margin: EdgeInsets.only(
+                                              top: AppConfig.verticalBlockSize *
+                                                  2.0),
+                                          child: Text(
+                                            "${bookingIds[index]?.serviceName ?? PlunesStrings.NA}",
+                                            maxLines: 2,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: PlunesColors.BLACKCOLOR,
+                                                fontWeight: FontWeight.normal,
+                                                fontSize: 14),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Flexible(
+                                    child: Container(
+                                      alignment: Alignment.centerRight,
+                                      child: Text(
+                                        "\u20B9${bookingIds[index]?.service?.newPrice?.first ?? 0}",
+                                        style: TextStyle(
+                                            color: PlunesColors.BLACKCOLOR,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 15),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 0.5,
+                              width: double.infinity,
+                              color: PlunesColors.GREYCOLOR,
+                            ),
+                          ],
+                        );
+                      },
+                      itemCount: bookingIds?.length ?? 0,
+                    ),
+                    (credits != null && credits > 0)
+                        ? Container(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 2,
+                                      vertical:
+                                          AppConfig.verticalBlockSize * 0.1),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        child: Text(
+                                          PlunesStrings.useCredits,
+                                          style: TextStyle(
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18),
+                                        ),
+                                      ),
+                                      Expanded(child: Container()),
+                                      Container(
+                                        child: Text(
+                                          "${credits?.toStringAsFixed(1)}",
+                                          style: TextStyle(
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 18),
+                                        ),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 3),
+                                        child: StatefulBuilder(
+                                          builder: (context, newState) {
+                                            return Checkbox(
+                                                value: useCredits,
+                                                onChanged: (credits) {
+                                                  useCredits = credits;
+                                                  newState(() {});
+                                                });
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  height: 0.5,
+                                  width: double.infinity,
+                                  color: PlunesColors.GREYCOLOR,
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(),
+                  ],
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 2,
+                    vertical: AppConfig.verticalBlockSize * 2.8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Flexible(
+                      flex: 2,
+                      child: Text(
+                        "Subtotal (${bookingIds.length ?? 0} ${(bookingIds.length == 1) ? "item" : "items"}): ",
+                        maxLines: 2,
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal,
+                            color: PlunesColors.BLACKCOLOR,
+                            fontSize: 20),
+                      ),
+                    ),
+                    Flexible(
+                      child: Text("\u20B9 $price",
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontWeight: FontWeight.normal,
+                              color: PlunesColors.GREENCOLOR,
+                              fontSize: 15)),
+                    )
+                  ],
+                ),
+              ),
+              Container(
+                height: 0.5,
+                width: double.infinity,
+                color: PlunesColors.GREYCOLOR,
+              ),
+              Container(
+                height: AppConfig.verticalBlockSize * 6,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(16),
+                      bottomRight: Radius.circular(16)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: FlatButton(
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            splashColor:
+                                PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                            focusColor: Colors.transparent,
+                            onPressed: () {
+                              Navigator.of(globalKey.currentState.context)
+                                  .pop();
+                              return;
+                            },
+                            child: Container(
+                                height: AppConfig.verticalBlockSize * 6,
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    plunesStrings.cancel,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont,
+                                        color: PlunesColors.SPARKLINGGREEN),
+                                  ),
+                                ))),
+                      ),
+                      Container(
+                        height: AppConfig.verticalBlockSize * 6,
+                        color: PlunesColors.GREYCOLOR,
+                        width: 0.5,
+                      ),
+                      Expanded(
+                        child: FlatButton(
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            splashColor:
+                                PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                            focusColor: Colors.transparent,
+                            onPressed: () {
+                              return;
+                            },
+                            child: Container(
+                                height: AppConfig.verticalBlockSize * 6,
+                                width: double.infinity,
+                                child: Center(
+                                  child: Text(
+                                    PlunesStrings.proceedText,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: AppConfig.mediumFont,
+                                        color: PlunesColors.SPARKLINGGREEN),
+                                  ),
+                                ))),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -72,7 +72,7 @@ class PlunesStrings {
       "You are using an older version of the application, please update to continue using our services.";
   static const String newVersionAvailable = "New Version Available";
   static const String solutionSearched = "Solution Searched";
-  static const String negotiatedSolutions = "Negotiated Prices";
+  static const String negotiatedSolutions = "Discovered Prices";
   static const String validForOneHour = "Valid for ";
   static const String consultations = "Consultations";
   static const String tests = "Tests";
@@ -90,7 +90,7 @@ class PlunesStrings {
   static const String serviceNotAvailable =
       "Currently this service is not available";
   static const String weAreNegotiatingBestSolution =
-      'We are negotiating the best solutions for you';
+      'We are discovering the best solutions for you';
   static const String receiving = "Receiving...";
   static const String checkAvailability = "Availability";
   static const String bookIn = "Lock in";
@@ -102,7 +102,7 @@ class PlunesStrings {
   static const String book = "Book";
   static const String viewDetails = 'View Details';
   static const String confirmYourBooking = "Confirm your Booking";
-  static const String negotiating = "Negotiating ";
+  static const String negotiating = "Discovering ";
   static const String topSearches = "Top Searches";
   static const String switchToGurLoc =
       'To Negotiate with nearest facilities, turn on location services, or manually set location';
@@ -285,7 +285,7 @@ class PlunesStrings {
       "Negotiate with up to 5 more facilities near you";
   static const String searchFacilities = "Search Facilities";
   static const String chooseFacilities = "Choose Facilities";
-  static const String negotiate = "Negotiate";
+  static const String negotiate = "Discover";
 
   ///Manual Bidding
   static const String couldNotFindText =
@@ -378,6 +378,8 @@ class PlunesStrings {
   static const String cartItemExpiredMessage =
       "Sorry, looks like your selected appointment time isn't valid , try again";
   static const String cart = "Cart";
+  static const String useCredits = "Apply credits";
+  static const String proceedText = "Proceed";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

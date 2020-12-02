@@ -107,17 +107,19 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
           builder: (context, snapshot) {
             double price = 0;
             int itemCount = 0;
+            List<BookingIds> _bookingIds = [];
             if (_cartOuterModel.data.bookingIds != null &&
                 _cartOuterModel.data.bookingIds.isNotEmpty) {
               _cartOuterModel.data.bookingIds.forEach((element) {
                 bool _isSolutionExpired = _solutionExpired(element);
                 if (!_isSolutionExpired) {
                   price = price + element?.service?.newPrice?.first ?? 0;
+                  _bookingIds.add(element);
                   itemCount++;
                 }
               });
             }
-            return _getButtonView(price, itemCount);
+            return _getButtonView(price, itemCount, _bookingIds);
           })
     ]);
   }
@@ -137,7 +139,8 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     );
   }
 
-  Widget _getButtonView(double price, int itemCount) {
+  Widget _getButtonView(
+      double price, int itemCount, List<BookingIds> bookingIds) {
     if (itemCount == 0) {
       return Container();
     }
@@ -175,12 +178,12 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                   right: AppConfig.horizontalBlockSize * 32),
               child: InkWell(
                 onTap: () {
-                  _checkCreditAvailableAndPay();
+                  _checkCreditAvailableAndPay(bookingIds, price);
                   return;
                 },
                 onDoubleTap: () {},
                 child: CustomWidgets().getRoundedButton(
-                    PlunesStrings.payNow,
+                    PlunesStrings.continueText,
                     AppConfig.horizontalBlockSize * 8,
                     PlunesColors.GREENCOLOR,
                     AppConfig.horizontalBlockSize * 3,
@@ -737,7 +740,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                 requestFailed.response.toString() == bookingIds.sId) {
               Future.delayed(Duration(milliseconds: 10)).then((value) {
                 _showMessages(
-                    requestFailed.failureCause ?? "Unable to negotiate");
+                    requestFailed.failureCause ?? "Unable to discover");
               });
               _cartMainBloc.addStateInReGenerateCartItemStream(null);
             }
@@ -775,11 +778,13 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     }
   }
 
-  void _checkCreditAvailableAndPay() {
-//    showDialog(
-//        context: context,
-//        builder: (context) {
-//          return CustomWidgets().openCartPaymentBillPopup();
-//        });
+  void _checkCreditAvailableAndPay(List<BookingIds> bookingIds, double price) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets().openCartPaymentBillPopup(
+              bookingIds, scaffoldKey, price,
+              credits: _cartOuterModel?.credits);
+        });
   }
 }

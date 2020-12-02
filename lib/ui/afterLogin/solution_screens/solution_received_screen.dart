@@ -773,7 +773,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                               ),
                               Container(
                                 child: Text(
-                                  "We are negotiating the best fee for you."
+                                  "We are discovering the best fee for you."
                                   "It may take sometime, we'll update you.",
                                   style: TextStyle(
                                       fontSize: AppConfig.smallFont,

@@ -5,14 +5,17 @@ class CartOuterModel {
   CartItem data;
   int subTotal;
   String msg;
+  num credits;
 
-  CartOuterModel({this.success, this.data, this.subTotal, this.msg});
+  CartOuterModel(
+      {this.success, this.data, this.subTotal, this.msg, this.credits});
 
   CartOuterModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     data = json['data'] != null ? new CartItem.fromJson(json['data']) : null;
     subTotal = json['subTotal'];
     msg = json['msg'];
+    credits = json['credits'];
   }
 
   Map<String, dynamic> toJson() {
