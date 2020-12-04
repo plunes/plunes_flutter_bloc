@@ -624,6 +624,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 //  }
 
   _getApplyCouponAndCashWidget() {
+    return Container(
+      margin: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 3,
+          bottom: AppConfig.verticalBlockSize * 1),
+      width: double.infinity,
+      height: 0.5,
+      color: PlunesColors.GREYCOLOR,
+    );
     return (_userProfileInfo == null ||
             _userProfileInfo.user == null ||
             _userProfileInfo.user.credits == null ||
@@ -750,140 +758,148 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                StreamBuilder<RequestState>(
-                    stream: _cartMainBloc.baseStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.data != null &&
-                          snapshot.data is RequestInProgress) {
-                        return CustomWidgets().getProgressIndicator();
-                      }
-                      if (snapshot.data != null &&
-                          snapshot.data is RequestSuccess) {
-                        RequestSuccess success = snapshot.data;
-                        String message = success.response.toString();
-                        _cartCount++;
-                        Future.delayed(Duration(milliseconds: 20))
-                            .then((value) async {
-                          _setState();
-                          showDialog(
-                              context: context,
-                              builder: (context) {
-                                return CustomWidgets()
-                                    .showAddToCartSuccessPopup(
-                                        scaffoldKey, message);
-                              });
-                        });
-                        _cartMainBloc.addIntoStream(null);
-                      }
-                      if (snapshot.data != null &&
-                          snapshot.data is RequestFailed) {
-                        RequestFailed requestFailed = snapshot.data;
-                        Future.delayed(Duration(milliseconds: 20))
-                            .then((value) async {
-                          _showInSnackBar(requestFailed.failureCause);
-                        });
-                        _cartMainBloc.addIntoStream(null);
-                      }
-                      return Container(
-                        margin: EdgeInsets.only(
-                            right: AppConfig.horizontalBlockSize * 2.5),
-                        child: InkWell(
-                          onTap: () {
-                            if (_selectedDate != null &&
-                                _selectedTimeSlot != null &&
-                                _selectedTimeSlot != PlunesStrings.noSlot) {
-                              if (_hasFilledDetails()) {
-                                var paymentSelector = PaymentSelector(
-                                    isInPercent: true,
-                                    paymentUnit: widget
-                                            .service.paymentOptions?.last
-                                            ?.toString() ??
-                                        "100");
-                                _initPayment(paymentSelector,
-                                    isAddToCart: true);
-                              }
-                            } else {
-                              _showInSnackBar(
-                                  PlunesStrings.pleaseSelectValidSlot);
-                            }
-                            return;
-                          },
-                          onDoubleTap: () {},
-                          child: CustomWidgets().getRoundedButton(
-                              PlunesStrings.bookLater,
-                              AppConfig.horizontalBlockSize * 8,
-                              PlunesColors.WHITECOLOR,
-                              AppConfig.horizontalBlockSize * 3,
-                              AppConfig.verticalBlockSize * 1,
-                              PlunesColors.SPARKLINGGREEN,
-                              borderColor: PlunesColors.SPARKLINGGREEN,
-                              hasBorder: true),
-                        ),
-                      );
-                    }),
-                StreamBuilder<Object>(
-                    stream: _bookingBloc.rescheduleAppointmentStream,
-                    builder: (context, snapshot) {
-                      if (snapshot.data != null &&
-                          snapshot.data is RequestInProgress) {
-                        return CustomWidgets().getProgressIndicator();
-                      }
-                      if (snapshot.data != null &&
-                          snapshot.data is RequestSuccess) {
-                        Future.delayed(Duration(milliseconds: 20))
-                            .then((value) async {
-                          _showInSnackBar(
-                              PlunesStrings.rescheduledSuccessMessage,
-                              shouldPop: true);
-                        });
-                      }
-                      if (snapshot.data != null &&
-                          snapshot.data is RequestFailed) {
-                        RequestFailed requestFailed = snapshot.data;
-                        Future.delayed(Duration(milliseconds: 20))
-                            .then((value) async {
-                          _showInSnackBar(requestFailed.failureCause ??
-                              PlunesStrings.rescheduledFailedMessage);
-                        });
-                        _bookingBloc.addStateInRescheduledProvider(null);
-                      }
-                      return InkWell(
-                        onTap: () {
-                          if (_selectedDate != null &&
-                              _selectedTimeSlot != null &&
-                              _selectedTimeSlot != PlunesStrings.noSlot) {
-                            if (_hasFilledDetails()) _doPaymentRelatedQueries();
-                          } else {
-                            _showInSnackBar(
-                                PlunesStrings.pleaseSelectValidSlot);
+                widget.appointmentModel == null
+                    ? StreamBuilder<RequestState>(
+                        stream: _cartMainBloc.baseStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.data != null &&
+                              snapshot.data is RequestInProgress) {
+                            return CustomWidgets().getProgressIndicator();
                           }
-                          return;
-                        },
-                        onDoubleTap: () {},
-                        child: CustomWidgets().getRoundedButton(
-                            widget.appointmentModel == null
-                                ? PlunesStrings.payNow
-                                : PlunesStrings.reschedule,
-                            AppConfig.horizontalBlockSize * 8,
-                            (_selectedDate != null &&
+                          if (snapshot.data != null &&
+                              snapshot.data is RequestSuccess) {
+                            RequestSuccess success = snapshot.data;
+                            String message = success.response.toString();
+                            _cartCount++;
+                            Future.delayed(Duration(milliseconds: 20))
+                                .then((value) async {
+                              _setState();
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return CustomWidgets()
+                                        .showAddToCartSuccessPopup(
+                                            scaffoldKey, message);
+                                  });
+                            });
+                            _cartMainBloc.addIntoStream(null);
+                          }
+                          if (snapshot.data != null &&
+                              snapshot.data is RequestFailed) {
+                            RequestFailed requestFailed = snapshot.data;
+                            Future.delayed(Duration(milliseconds: 20))
+                                .then((value) async {
+                              _showInSnackBar(requestFailed.failureCause);
+                            });
+                            _cartMainBloc.addIntoStream(null);
+                          }
+                          return Container(
+                            margin: EdgeInsets.only(
+                                right: AppConfig.horizontalBlockSize * 2.5),
+                            child: InkWell(
+                              onTap: () {
+                                if (_selectedDate != null &&
                                     _selectedTimeSlot != null &&
-                                    _selectedTimeSlot != PlunesStrings.noSlot)
-                                ? PlunesColors.SPARKLINGGREEN
-                                : PlunesColors.WHITECOLOR,
-                            AppConfig.horizontalBlockSize * 3,
-                            AppConfig.verticalBlockSize * 1,
-                            (_selectedDate != null &&
-                                    _selectedTimeSlot != null &&
-                                    _selectedTimeSlot != PlunesStrings.noSlot)
-                                ? PlunesColors.WHITECOLOR
-                                : PlunesColors.BLACKCOLOR,
-                            hasBorder: (_selectedDate != null &&
-                                    _selectedTimeSlot != null &&
-                                    _selectedTimeSlot != PlunesStrings.noSlot)
-                                ? false
-                                : true),
-                      );
-                    }),
+                                    _selectedTimeSlot != PlunesStrings.noSlot) {
+                                  if (_hasFilledDetails()) {
+                                    var paymentSelector = PaymentSelector(
+                                        isInPercent: true,
+                                        paymentUnit: widget
+                                                .service.paymentOptions?.last
+                                                ?.toString() ??
+                                            "100");
+                                    _initPayment(paymentSelector,
+                                        isAddToCart: true);
+                                  }
+                                } else {
+                                  _showInSnackBar(
+                                      PlunesStrings.pleaseSelectValidSlot);
+                                }
+                                return;
+                              },
+                              onDoubleTap: () {},
+                              child: CustomWidgets().getRoundedButton(
+                                  PlunesStrings.bookLater,
+                                  AppConfig.horizontalBlockSize * 8,
+                                  PlunesColors.WHITECOLOR,
+                                  AppConfig.horizontalBlockSize * 3,
+                                  AppConfig.verticalBlockSize * 1,
+                                  PlunesColors.SPARKLINGGREEN,
+                                  borderColor: PlunesColors.SPARKLINGGREEN,
+                                  hasBorder: true),
+                            ),
+                          );
+                        })
+                    : Container(),
+                widget.appointmentModel == null
+                    ? Container()
+                    : StreamBuilder<Object>(
+                        stream: _bookingBloc.rescheduleAppointmentStream,
+                        builder: (context, snapshot) {
+                          if (snapshot.data != null &&
+                              snapshot.data is RequestInProgress) {
+                            return CustomWidgets().getProgressIndicator();
+                          }
+                          if (snapshot.data != null &&
+                              snapshot.data is RequestSuccess) {
+                            Future.delayed(Duration(milliseconds: 20))
+                                .then((value) async {
+                              _showInSnackBar(
+                                  PlunesStrings.rescheduledSuccessMessage,
+                                  shouldPop: true);
+                            });
+                          }
+                          if (snapshot.data != null &&
+                              snapshot.data is RequestFailed) {
+                            RequestFailed requestFailed = snapshot.data;
+                            Future.delayed(Duration(milliseconds: 20))
+                                .then((value) async {
+                              _showInSnackBar(requestFailed.failureCause ??
+                                  PlunesStrings.rescheduledFailedMessage);
+                            });
+                            _bookingBloc.addStateInRescheduledProvider(null);
+                          }
+                          return InkWell(
+                            onTap: () {
+                              if (_selectedDate != null &&
+                                  _selectedTimeSlot != null &&
+                                  _selectedTimeSlot != PlunesStrings.noSlot) {
+                                if (_hasFilledDetails())
+                                  _doPaymentRelatedQueries();
+                              } else {
+                                _showInSnackBar(
+                                    PlunesStrings.pleaseSelectValidSlot);
+                              }
+                              return;
+                            },
+                            onDoubleTap: () {},
+                            child: CustomWidgets().getRoundedButton(
+                                widget.appointmentModel == null
+                                    ? PlunesStrings.payNow
+                                    : PlunesStrings.reschedule,
+                                AppConfig.horizontalBlockSize * 8,
+                                (_selectedDate != null &&
+                                        _selectedTimeSlot != null &&
+                                        _selectedTimeSlot !=
+                                            PlunesStrings.noSlot)
+                                    ? PlunesColors.SPARKLINGGREEN
+                                    : PlunesColors.WHITECOLOR,
+                                AppConfig.horizontalBlockSize * 3,
+                                AppConfig.verticalBlockSize * 1,
+                                (_selectedDate != null &&
+                                        _selectedTimeSlot != null &&
+                                        _selectedTimeSlot !=
+                                            PlunesStrings.noSlot)
+                                    ? PlunesColors.WHITECOLOR
+                                    : PlunesColors.BLACKCOLOR,
+                                hasBorder: (_selectedDate != null &&
+                                        _selectedTimeSlot != null &&
+                                        _selectedTimeSlot !=
+                                            PlunesStrings.noSlot)
+                                    ? false
+                                    : true),
+                          );
+                        }),
               ],
             ),
           ),
@@ -1807,9 +1823,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   void _processZestMoneyQueries(
       InitPayment initPayment, InitPaymentResponse initPaymentResponse) {
-    _bookingBloc
-        .processZestMoney(initPayment, initPaymentResponse)
-        .then((value) {
+    _bookingBloc.processZestMoney(initPaymentResponse).then((value) {
       {
         if (value is RequestSuccess) {
           ZestMoneyResponseModel zestMoneyResponseModel = value.response;

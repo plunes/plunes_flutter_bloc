@@ -6557,6 +6557,8 @@ class CustomWidgets {
                                 PlunesColors.SPARKLINGGREEN.withOpacity(.1),
                             focusColor: Colors.transparent,
                             onPressed: () {
+                              Navigator.of(globalKey.currentState.context)
+                                  .pop(useCredits);
                               return;
                             },
                             child: Container(

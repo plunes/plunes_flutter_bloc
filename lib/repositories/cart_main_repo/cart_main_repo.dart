@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/cart_models/cart_main_model.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
 import 'package:plunes/models/plockr_model/plockr_shareable_report_model.dart';
@@ -131,16 +132,24 @@ class CartMainRepo {
     }
   }
 
-  Future<RequestState> payCartItemBill(bool creditsUsed) async {
+  Future<RequestState> payCartItemBill(bool creditsUsed, String cartId,
+      String paymentPercent, bool zestMoney) async {
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
-        postData: {"credits": creditsUsed},
+        postData: {
+          "credits": creditsUsed,
+          "cartId": cartId,
+          "paymentPercent": zestMoney ? null : paymentPercent,
+          "zestMoney": zestMoney
+        },
         url: Urls.PAY_CART_ITEMS_BILL_URL,
         headerIncluded: true);
     if (result.isRequestSucceed) {
       if (result.response.data["success"] != null &&
           result.response.data["success"]) {
-        return RequestSuccess(response: result.isRequestSucceed);
+        InitPaymentResponse initPaymentResponse =
+            InitPaymentResponse.fromJson(result.response.data);
+        return RequestSuccess(response: initPaymentResponse);
       } else {
         return RequestFailed(failureCause: plunesStrings.somethingWentWrong);
       }

@@ -1,3 +1,4 @@
+import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 
 class CartOuterModel {
@@ -32,7 +33,8 @@ class CartOuterModel {
 
 class CartItem {
   List<BookingIds> bookingIds;
-  List<int> paymentOptions;
+  List<num> paymentOptions;
+  List<PaymentStatus> paymentStatus;
   String sId;
   String userId;
   int iV;
@@ -43,6 +45,7 @@ class CartItem {
   CartItem(
       {this.bookingIds,
       this.paymentOptions,
+      this.paymentStatus,
       this.sId,
       this.userId,
       this.iV,
@@ -57,7 +60,18 @@ class CartItem {
         bookingIds.add(new BookingIds.fromJson(v));
       });
     }
-    paymentOptions = json['paymentOptions'].cast<int>();
+    if (json['paymentOptions'] != null && json['paymentOptions'].isNotEmpty) {
+      paymentOptions = json['paymentOptions'].cast<num>();
+    }
+    if (json['paymentProgress'] != null) {
+      Iterable _items = json['paymentProgress'];
+      paymentStatus = [];
+      if (_items != null && _items.isNotEmpty) {
+        paymentStatus = _items
+            .map((data) => PaymentStatus.fromJson(data))
+            .toList(growable: true);
+      }
+    }
     sId = json['_id'];
     userId = json['userId'];
     iV = json['__v'];

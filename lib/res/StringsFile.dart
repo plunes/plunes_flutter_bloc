@@ -26,7 +26,7 @@ class PlunesStrings {
   static const String seeHowItWorks =
       "India's First Utility Network which enables you to Negotiate on your Medical Bills. See How it Works !";
   static const String aboutUsDesc =
-      "Our AI will negotiate in real-time from curated doctors/hospitals & clinics nearest to you to get the best price solution. We help you find the best price solutions to all your medical concerns in just one click. Search instant solutions for all your treatments & medical procedures in Delhi NCR.";
+      "Our AI will discover in real-time from curated doctors/hospitals & clinics nearest to you to get the best price solution. We help you find the best price solutions to all your medical concerns in just one click. Search instant solutions for all your treatments & medical procedures in Delhi NCR.";
   static const String perksPrivileges = "Perks & Privileges";
   static const String perksDownloading =
       "The perks of Downloading PLUNES will include:";
@@ -56,7 +56,7 @@ class PlunesStrings {
   static const String receiveTimeOut = "Server timeout, please try again later";
 
   static const String pleaseSelectLocation =
-      "To Negotiate with nearest facilities, turn on location services, or tap to manually set location.";
+      "To discover nearest facilities, turn on location services, or tap to manually set location.";
 
   /////
   ///Solution strings
@@ -105,7 +105,7 @@ class PlunesStrings {
   static const String negotiating = "Discovering ";
   static const String topSearches = "Top Searches";
   static const String switchToGurLoc =
-      'To Negotiate with nearest facilities, turn on location services, or manually set location';
+      'To discover nearest facilities, turn on location services, or manually set location';
   static const String setYourTime = "Set your Time";
   static const String choose = "Choose";
   static const String locationNotAvailable = "Location not available";
@@ -231,10 +231,10 @@ class PlunesStrings {
   static const String invalidCredentials = "Invalid credentials";
 
   static const String turnOnLocationService =
-      "To Negotiate with nearest facilities, turn on location services, or tap to manually set location.";
+      "To discover nearest facilities, turn on location services, or tap to manually set location.";
 
   static const String pleaseSelectLocationPopup =
-      "Please select a valid location to negotiate with nearest facilities";
+      "Please select a valid location to discover nearest facilities";
 
   static const String ourTeamWillContactYou = "Our team will contact you soon";
   static const String ourTeamWillContactYouSoonOnCancel =
@@ -276,13 +276,13 @@ class PlunesStrings {
   static const String cantBookPriceExpired =
       "Can't book the appointment as the prices are valid for only one hour.";
   static const String cantNegotiateWithMoreFacilities =
-      "Can't negotiate with more facilities as the prices are valid for only one hour.";
+      "Can't discover more facilities as the prices are valid for only one hour.";
 
   ///More Facilities Screen
   static const String moreFacilities = "More Facilities";
   static const String congrats = "Congrats!";
   static const String negotiateWithFiveMore =
-      "Negotiate with up to 5 more facilities near you";
+      "Discover up to 5 more facilities near you";
   static const String searchFacilities = "Search Facilities";
   static const String chooseFacilities = "Choose Facilities";
   static const String negotiate = "Discover";
@@ -290,13 +290,13 @@ class PlunesStrings {
   ///Manual Bidding
   static const String couldNotFindText =
       "Couldn't find what you are looking for?";
-  static const String negotiateManually = "Negotiate Manually";
+  static const String negotiateManually = "Discover Manually";
   static const String enterProcedureAndTestDetails =
       "Enter Procedure & Test details";
   static const String makeSureTheDetailsText =
       "Enter the complete procedure details to get competitive bids from the selected facilities.";
   static const String selectTheFacilities =
-      "Select the facilities that you want to Negotiate with";
+      "Select the facilities that you want to discover";
   static const String makeSureToUpdatePrice =
       "Make sure to Update price in the Preferred time to ensure booking";
   static const String specialities = "Choose Speciality";
@@ -372,7 +372,7 @@ class PlunesStrings {
       "Successfully added in the cart";
   static const String myCart = "My Cart";
   static const String priceExpiredNegotiateAgain =
-      "Prices have expired, Negotiate again to book";
+      "Prices have expired, discover again to book";
   static const String enterValidAge = "Please enter a valid age";
   static const String pleaseSelectYourGender = "Please select your gender";
   static const String cartItemExpiredMessage =
@@ -398,7 +398,7 @@ class PlunesStrings {
         'Preferred Timing\nas Per Your\nAvailability',
         'Lock any procedure\nin Rs. 100 only',
         'Make Partial\nPayments',
-        'Negotiate with curated Hospitals & Doctors in Real Time',
+        'Discover curated Hospitals & Doctors in Real Time',
         'Automated Appointments & Payments',
       ];
 

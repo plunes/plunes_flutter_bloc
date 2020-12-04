@@ -1,21 +1,31 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/payment_web_view.dart';
+import 'package:plunes/Utils/upi_payment_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
+import 'package:plunes/models/booking_models/init_payment_model.dart';
+import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/cart_models/cart_main_model.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
+import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/patient_details_edit_popup_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:upi_pay/upi_pay.dart';
 
 // ignore: must_be_immutable
 class AddToCartMainScreen extends BaseActivity {
@@ -34,11 +44,14 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   String _failureCause;
   StreamController _timerStream;
   Timer _timer;
+  List<ApplicationMeta> _availableUpiApps;
+  BookingBloc _bookingBloc;
 
   @override
   void initState() {
     _timerStream = StreamController.broadcast();
     _cartMainBloc = CartMainBloc();
+    _bookingBloc = BookingBloc();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _timer = timer;
       if (mounted) {
@@ -46,7 +59,18 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
       }
     });
     _getCartItems();
+    _getInstalledUpiApps();
     super.initState();
+  }
+
+  _getInstalledUpiApps() async {
+    if (_isAndroid()) {
+      _availableUpiApps = await UpiPay.getInstalledUpiApplications();
+    }
+  }
+
+  bool _isAndroid() {
+    return Platform.isAndroid ?? false;
   }
 
   @override
@@ -54,6 +78,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     _timer?.cancel();
     _timerStream?.close();
     _cartMainBloc?.dispose();
+    _bookingBloc?.dispose();
     super.dispose();
   }
 
@@ -530,7 +555,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                                   }).then((value) {
                                 if (value != null && value) {
                                   _showMessages(
-                                      "Details submitted successfully");
+                                      "Details submitted successfully!");
                                   _getCartItems();
                                 }
                               });
@@ -797,7 +822,12 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
           return CustomWidgets().openCartPaymentBillPopup(
               bookingIds, scaffoldKey, price,
               credits: _cartOuterModel?.credits);
-        });
+        }).then((value) {
+      if (value != null) {
+        bool _value = value;
+        _queryPayment(_value);
+      }
+    });
   }
 
   void _doExplore() {
@@ -811,5 +841,188 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                   HomeScreen(screenNo: Constants.exploreScreenNumber)),
           (_) => false);
     }
+  }
+
+  void _queryPayment(bool credits) async {
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => PopupChoose(
+              services: Services(
+                  paymentOptions: _cartOuterModel?.data?.paymentOptions ?? [],
+                  zestMoney: _cartOuterModel?.data?.zestMoney ?? false),
+            )).then((returnedValue) {
+      if (returnedValue != null) {
+//        print("selected payment percenatge $returnedValue");
+        _initPayment(returnedValue, credits);
+      }
+    });
+  }
+
+  void _initPayment(PaymentSelector paymentSelector, bool credits) {
+    bool zestMoney = false;
+    if (paymentSelector.paymentUnit == PlunesStrings.zestMoney) {
+      zestMoney = true;
+    }
+    _cartMainBloc
+        .payCartItemBill(credits, _cartOuterModel?.data?.sId,
+            paymentSelector?.paymentUnit, zestMoney)
+        .then((response) {
+      RequestState _requestState = response;
+      if (_requestState is RequestSuccess) {
+        InitPaymentResponse _initPaymentResponse = _requestState.response;
+        if (_initPaymentResponse.success) {
+          if (zestMoney) {
+            _processZestMoneyQueries(_initPaymentResponse);
+            return;
+          }
+          if (_initPaymentResponse.status.contains("Confirmed")) {
+            AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => CustomWidgets()
+                    .paymentStatusPopup(
+                        "Payment Success",
+                        "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                        plunesImages.checkIcon,
+                        context,
+                        bookingId: _initPaymentResponse.referenceId)).then(
+                (value) {
+              Navigator.pop(context, "pop");
+            });
+          } else {
+            if (_availableUpiApps != null && _availableUpiApps.isNotEmpty) {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return CustomWidgets().getUpiBasedPaymentOptionView(
+                        _initPaymentResponse, _availableUpiApps, scaffoldKey);
+                  }).then((value) {
+                if (value != null) {
+                  Map result = value;
+                  if (result.containsKey(PlunesStrings.payUpi)) {
+                    ApplicationMeta applicationMeta =
+                        result[PlunesStrings.payUpi];
+                    UpiUtil()
+                        .initPayment(applicationMeta, _initPaymentResponse)
+                        .then((value) {
+                      if (value != null) {
+                        _checkIfUpiPaymentSuccessOrNot(value);
+                      }
+                    });
+                  } else {
+                    _openWebView(_initPaymentResponse);
+                  }
+                }
+              });
+            } else {
+              _openWebView(_initPaymentResponse);
+            }
+          }
+        } else {
+          _showMessages(_initPaymentResponse.message);
+        }
+      } else if (_requestState is RequestFailed) {
+        _showMessages(_requestState.failureCause);
+      }
+    });
+  }
+
+  void _checkIfUpiPaymentSuccessOrNot(UpiTransactionResponse value) {
+    print(value?.toString());
+  }
+
+  void _processZestMoneyQueries(InitPaymentResponse initPaymentResponse) {
+    _bookingBloc.processZestMoney(initPaymentResponse).then((value) {
+      {
+        if (value is RequestSuccess) {
+          ZestMoneyResponseModel zestMoneyResponseModel = value.response;
+          if (zestMoneyResponseModel != null &&
+              zestMoneyResponseModel.success != null &&
+              zestMoneyResponseModel.success &&
+              zestMoneyResponseModel.data != null &&
+              zestMoneyResponseModel.data.trim().isNotEmpty) {
+            _openWebViewWithDynamicUrl(
+                zestMoneyResponseModel, initPaymentResponse);
+            return;
+          } else {
+            _showMessages(zestMoneyResponseModel?.msg);
+          }
+        } else if (value is RequestFailed) {
+          _showMessages(value.failureCause);
+        }
+      }
+    });
+  }
+
+  void _openWebViewWithDynamicUrl(ZestMoneyResponseModel zestMoneyResponseModel,
+      InitPaymentResponse initPaymentResponse) {
+    Navigator.of(context)
+        .push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) =>
+                PaymentWebView(url: zestMoneyResponseModel.data)))
+        .then((val) {
+      if (val == null) {
+        AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
+        _bookingBloc.cancelPayment(initPaymentResponse.id);
+        return;
+      }
+      if (val.toString().contains("success")) {
+        AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
+        showDialog(
+            context: context,
+            builder: (
+              BuildContext context,
+            ) =>
+                CustomWidgets().paymentStatusPopup(
+                    "Payment Success",
+                    "Your Booking ID is ${initPaymentResponse.referenceId}",
+                    plunesImages.checkIcon,
+                    context,
+                    bookingId: initPaymentResponse.referenceId)).then((value) {
+          Navigator.pop(context, "pop");
+        });
+      } else if (val.toString().contains("fail")) {
+        _showMessages("Payment Failed");
+      } else if (val.toString().contains("cancel")) {
+        _showMessages("Payment Cancelled");
+      }
+    });
+  }
+
+  void _openWebView(InitPaymentResponse _initPaymentResponse) {
+    Navigator.of(context)
+        .push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) =>
+                PaymentWebView(id: _initPaymentResponse.id)))
+        .then((val) {
+      if (val == null) {
+        AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
+        _bookingBloc.cancelPayment(_initPaymentResponse.id);
+        return;
+      }
+      if (val.toString().contains("success")) {
+        AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
+        showDialog(
+            context: context,
+            builder: (
+              BuildContext context,
+            ) =>
+                CustomWidgets().paymentStatusPopup(
+                    "Payment Success",
+                    "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                    plunesImages.checkIcon,
+                    context,
+                    bookingId: _initPaymentResponse.referenceId)).then((value) {
+          Navigator.pop(context, "pop");
+        });
+      } else if (val.toString().contains("fail")) {
+        _showMessages("Payment Failed");
+      } else if (val.toString().contains("cancel")) {
+        _showMessages("Payment Cancelled");
+      }
+    });
   }
 }

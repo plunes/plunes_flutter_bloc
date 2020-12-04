@@ -28,8 +28,8 @@ class InitPaymentResponse {
           : '',
       message: json['msg'] != null ? json['msg'] : '',
       status: json["data"]['status'] != null ? json["data"]['status'] : '',
-      couponUsed:
-          json["data"]['couponUsed'] != null ? json["data"]['couponUsed'] : '',
+//      couponUsed:
+//          json["data"]['couponUsed'] != null ? json["data"]['couponUsed'] : '',
     );
   }
 }

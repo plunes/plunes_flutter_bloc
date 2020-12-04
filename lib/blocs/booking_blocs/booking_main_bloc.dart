@@ -144,7 +144,7 @@ class BookingBloc extends BlocBase {
   }
 
   Future<RequestState> processZestMoney(
-      InitPayment initPayment, InitPaymentResponse initPaymentResponse) {
-    return BookingRepo().processZestMoney(initPayment, initPaymentResponse);
+      InitPaymentResponse initPaymentResponse) {
+    return BookingRepo().processZestMoney(initPaymentResponse);
   }
 }

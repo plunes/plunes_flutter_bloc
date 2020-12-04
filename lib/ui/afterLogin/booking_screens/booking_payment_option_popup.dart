@@ -23,43 +23,42 @@ class _PopupChooseState extends State<PopupChoose> {
   @override
   void initState() {
     _paymentSelectionOptions = [];
-    if (widget.bookInPrice != null) {
+//    if (widget.bookInPrice != null) {
+//      _paymentSelectionOptions.add(PaymentSelector(
+//          isInPercent: false,
+//          isSelected: true,
+//          paymentUnit: "${widget.bookInPrice}"));
+//      widget.services.paymentOptions.forEach((option) {
+//        _paymentSelectionOptions.add(PaymentSelector(
+//            isInPercent: true,
+//            isSelected: false,
+//            paymentUnit:
+//                (widget.services.zestMoney != null && widget.services.zestMoney)
+//                    ? PlunesStrings.zestMoney
+//                    : "${option.toString()}"));
+//      });
+//      if (widget.services.zestMoney != null && widget.services.zestMoney) {
+//        _paymentSelectionOptions.add(PaymentSelector(
+//            isInPercent: false,
+//            isSelected: false,
+//            paymentUnit: PlunesStrings.zestMoney));
+//      }
+//    } else {
+    for (int pIndex = 0;
+        pIndex < widget.services.paymentOptions.length;
+        pIndex++) {
+      _paymentSelectionOptions.add(PaymentSelector(
+          isInPercent: true,
+          isSelected: pIndex == 0 ? true : false,
+          paymentUnit: "${widget.services.paymentOptions[pIndex].toString()}"));
+    }
+    if (widget.services.zestMoney != null && widget.services.zestMoney) {
       _paymentSelectionOptions.add(PaymentSelector(
           isInPercent: false,
-          isSelected: true,
-          paymentUnit: "${widget.bookInPrice}"));
-      widget.services.paymentOptions.forEach((option) {
-        _paymentSelectionOptions.add(PaymentSelector(
-            isInPercent: true,
-            isSelected: false,
-            paymentUnit:
-                (widget.services.zestMoney != null && widget.services.zestMoney)
-                    ? PlunesStrings.zestMoney
-                    : "${option.toString()}"));
-      });
-      if (widget.services.zestMoney != null && widget.services.zestMoney) {
-        _paymentSelectionOptions.add(PaymentSelector(
-            isInPercent: false,
-            isSelected: false,
-            paymentUnit: PlunesStrings.zestMoney));
-      }
-    } else {
-      for (int pIndex = 0;
-          pIndex < widget.services.paymentOptions.length;
-          pIndex++) {
-        _paymentSelectionOptions.add(PaymentSelector(
-            isInPercent: true,
-            isSelected: pIndex == 0 ? true : false,
-            paymentUnit:
-                "${widget.services.paymentOptions[pIndex].toString()}"));
-      }
-      if (widget.services.zestMoney != null && widget.services.zestMoney) {
-        _paymentSelectionOptions.add(PaymentSelector(
-            isInPercent: false,
-            isSelected: false,
-            paymentUnit: PlunesStrings.zestMoney));
-      }
+          isSelected: false,
+          paymentUnit: PlunesStrings.zestMoney));
     }
+//    }
 //    print("_paymentSelectionOptions${_paymentSelectionOptions.toString()}");
     super.initState();
   }

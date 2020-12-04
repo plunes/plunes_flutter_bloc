@@ -99,9 +99,11 @@ class CartMainBloc extends BlocBase {
     addStateInGenericStream(_editInfoStreamProvider, data);
   }
 
-  Future<RequestState> payCartItemBill(bool creditsUsed) async {
+  Future<RequestState> payCartItemBill(bool creditsUsed, String cartId,
+      String paymentPercent, bool zestMoney) async {
     addStatePaymentStream(RequestInProgress());
-    var result = await CartMainRepo().payCartItemBill(creditsUsed);
+    var result = await CartMainRepo()
+        .payCartItemBill(creditsUsed, cartId, paymentPercent, zestMoney);
     addStatePaymentStream(result);
     return result;
   }

@@ -182,7 +182,7 @@ class BookingRepo {
   }
 
   Future<RequestState> processZestMoney(
-      InitPayment initPayment, InitPaymentResponse initPaymentResponse) async {
+      InitPaymentResponse initPaymentResponse) async {
 //    print("Urls.ZEST_MONEY_URL ${Urls.ZEST_MONEY_URL}");
     var result = await DioRequester().requestMethodWithNoBaseUrl(
         requestType: HttpRequestMethods.HTTP_POST,
