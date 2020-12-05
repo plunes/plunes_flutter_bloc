@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/painting.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/cart_models/cart_main_model.dart';
@@ -2577,114 +2578,100 @@ class CustomWidgets {
   }
 
   Widget amountProgressBar(AppointmentModel appointmentModel) {
-    return (appointmentModel.paymentStatus == null ||
-            appointmentModel.paymentStatus.isEmpty)
-        ? Container()
-        : Container(
+    double percentage = 0;
+    if (appointmentModel.paidBookingAmount != null &&
+        appointmentModel.paidBookingAmount >= 0 &&
+        appointmentModel.totalAmount != null &&
+        appointmentModel.totalAmount >= 0) {
+      percentage =
+          appointmentModel.paidBookingAmount / appointmentModel.totalAmount;
+//      print("percentage $percentage");
+    }
+    if (percentage > 1) {
+      percentage = 1.0;
+    }
+    return (appointmentModel.paidBookingAmount != null &&
+            appointmentModel.paidBookingAmount >= 0 &&
+            appointmentModel.totalAmount != null &&
+            appointmentModel.totalAmount >= 0)
+        ? Container(
             child: Column(
               children: <Widget>[
+                LinearPercentIndicator(
+                  percent: percentage,
+                  animationDuration: 800,
+                  linearStrokeCap: LinearStrokeCap.roundAll,
+                  animation: true,
+                  lineHeight: 10.0,
+                  progressColor: PlunesColors.GREENCOLOR,
+                  backgroundColor: PlunesColors.GREYCOLOR.withOpacity(0.4),
+//                  width: double.infinity,
+                ),
                 Container(
-                  width: double.infinity,
-                  height: AppConfig.verticalBlockSize * 15,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      return Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 2,
+                      right: AppConfig.horizontalBlockSize * 2,
+                      top: AppConfig.verticalBlockSize * 1.5),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              PlunesStrings.amountPaidText,
+                              style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            Text(
+                              "\u20B9${appointmentModel.paidBookingAmount?.toStringAsFixed(1) ?? 0}",
+                              maxLines: 2,
+                              style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 14,
+                                color: Colors.black54,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.topRight,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              index == 0
-                                  ? Container()
-                                  : Container(
-                                      height: 1.5,
-                                      width: (appointmentModel
-                                                  .paymentStatus.length ==
-                                              2)
-                                          ? AppConfig.horizontalBlockSize * 50
-                                          : AppConfig.horizontalBlockSize * 15,
-                                      color: PlunesColors.GREENCOLOR,
-                                    ),
-                              (appointmentModel.paymentStatus[index].status)
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                          color: PlunesColors.GREENCOLOR,
-                                          shape: BoxShape.circle),
-                                      height: AppConfig.verticalBlockSize * 8,
-                                      width: AppConfig.horizontalBlockSize * 18,
-                                      child: Center(
-                                          child: Icon(
-                                        Icons.check,
-                                        color: PlunesColors.WHITECOLOR,
-                                      )),
-                                    )
-                                  : Container(
-                                      decoration: BoxDecoration(
-                                          color: PlunesColors.WHITECOLOR,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              width: AppConfig
-                                                      .horizontalBlockSize *
-                                                  0.5,
-                                              color:
-                                                  PlunesColors.LIGHTGREYCOLOR)),
-                                      height: AppConfig.verticalBlockSize * 8,
-                                      width: AppConfig.horizontalBlockSize * 18,
-                                      child: Center(
-                                        child: Text(
-                                          appointmentModel
-                                                  .paymentStatus[index].title ??
-                                              PlunesStrings.NA,
-                                          textAlign: TextAlign.center,
-                                          overflow: TextOverflow.clip,
-                                        ),
-                                      ),
-                                    )
-                            ],
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              index == 0
-                                  ? Container()
-                                  : Container(
-                                      width: (appointmentModel
-                                                  .paymentStatus.length ==
-                                              2)
-                                          ? AppConfig.horizontalBlockSize * 50
-                                          : AppConfig.horizontalBlockSize * 15,
-                                      color: PlunesColors.LIGHTGREYCOLOR,
-                                    ),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 2.5),
-                                child: Center(
-                                    child: Text(
-                                  (appointmentModel.paymentStatus.length == 3 &&
-                                          index == 0)
-                                      ? appointmentModel
-                                          .paymentStatus[index].title
-                                      : ' \u20B9 ${appointmentModel.paymentStatus[index].amount}',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: AppConfig.smallFont,
-                                      fontWeight: FontWeight.w600),
-                                )),
+                              Text(
+                                PlunesStrings.totalAmountText,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              Text(
+                                "\u20B9${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}",
+                                maxLines: 2,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: 14,
+                                  color: Colors.black54,
+                                ),
                               )
                             ],
                           ),
-                        ],
-                      );
-                    },
-                    itemCount: appointmentModel.paymentStatus?.length ?? 0,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                )
               ],
             ),
-          );
+          )
+        : Container();
   }
 
   refundPopup(BookingBloc bookingBloc, AppointmentModel appointmentModel) {
@@ -6244,7 +6231,7 @@ class CustomWidgets {
                 focusColor: Colors.transparent,
                 child: Container(
                   child: Text(
-                    "More payment option",
+                    "More payment options",
                     style: TextStyle(
                         fontWeight: FontWeight.normal,
                         fontSize: 16,

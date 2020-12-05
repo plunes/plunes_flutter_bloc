@@ -366,7 +366,7 @@ class PlunesStrings {
   static const String payUpi = "Pay Through Upi";
   static const String nameMustBeGreaterThanTwoChar =
       "Please enter valid name, name length should be greater than 2 characters";
-  static const String bookLater = "BOOK LATER";
+  static const String bookLater = "Add To Cart";
   static const String enterName = "Enter name";
   static const String successfullyAddedToCart =
       "Successfully added in the cart";
@@ -380,6 +380,9 @@ class PlunesStrings {
   static const String cart = "Cart";
   static const String useCredits = "Apply credits";
   static const String proceedText = "Proceed";
+  static const String amountPaidText = "Amount Paid";
+  static const String totalAmountText = "Total Amount";
+  static const String completePaymentText = "Complete Payment";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
@@ -396,7 +399,6 @@ class PlunesStrings {
   get aboutUsUser => [
         '100% \nRefundable Payment',
         'Preferred Timing\nas Per Your\nAvailability',
-        'Lock any procedure\nin Rs. 100 only',
         'Make Partial\nPayments',
         'Discover curated Hospitals & Doctors in Real Time',
         'Automated Appointments & Payments',

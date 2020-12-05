@@ -126,7 +126,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _patientNameController.text = UserManager().getUserDetails().name;
     _serviceNameController.text = widget.serviceName ?? "";
     _getDetails();
-    _getInstalledUpiApps();
+//    _getInstalledUpiApps();
     super.initState();
   }
 
@@ -213,28 +213,19 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       child: ListView(
         shrinkWrap: true,
         children: <Widget>[
-          // Container(
-          //   alignment: Alignment.center,
-          //   child: Text(
-          //     PlunesStrings.whyPlunes,
-          //     style: TextStyle(
-          //       fontSize: AppConfig.mediumFont,
-          //       color: PlunesColors.BLACKCOLOR,
-          //     ),
-          //   ),
-          // ),
-          // getWhyPlunesView(),
           Container(
             padding: EdgeInsets.symmetric(
                 vertical: AppConfig.verticalBlockSize * 1.5),
             child: _getDoctorDetailsView(),
           ),
           CustomWidgets().getSeparatorLine(),
-          Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 1.5),
-              child: _getPatientDetailsFillUpView()),
+          widget.appointmentModel != null
+              ? Container()
+              : Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 1.5),
+                  child: _getPatientDetailsFillUpView()),
           _getDatePicker(),
           widget.getSpacer(AppConfig.verticalBlockSize * 1.8,
               AppConfig.verticalBlockSize * 1.8),
@@ -2179,6 +2170,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   }
 
   bool _hasFilledDetails() {
+    if (widget.appointmentModel != null) {
+      return true;
+    }
     bool _hasFilledDetails = true;
     String _message;
     if (_patientNameController.text.trim().isEmpty ||

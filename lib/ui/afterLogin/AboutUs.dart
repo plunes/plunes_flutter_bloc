@@ -209,7 +209,7 @@ class _AboutUsState extends BaseState<AboutUs> {
             physics: ScrollPhysics(),
             shrinkWrap: true,
             padding: EdgeInsets.zero,
-            itemCount: 6,
+            itemCount: aboutUsUser.length,
             itemBuilder: (BuildContext context, int index) {
               return Container(
                 color: PlunesColors.WHITECOLOR,
@@ -330,7 +330,7 @@ class _AboutUsState extends BaseState<AboutUs> {
   }
 
   void getUserData() {
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 5; i++) {
       Map map = new Map();
       map['Image'] = plunesImages.aboutUsUserArray[i];
       map['Info'] = plunesStrings.aboutUsUser[i];

@@ -326,7 +326,7 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
                     title: PlunesStrings.moreFacilities,
                     description: PlunesStrings.moreFacilityDesc,
                     child: Text(
-                      "Negotiate with more facilities",
+                      "Discover more facilities",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,

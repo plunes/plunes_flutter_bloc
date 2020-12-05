@@ -78,7 +78,6 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                     PlunesStrings.NA,
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,
-//                                    fontWeight: FontWeight.w600,
                                     color: PlunesColors.BLACKCOLOR),
                                 children: (appointmentModel.centerLocation !=
                                             null &&
@@ -301,11 +300,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                   .then((value) async {
                                 _showErrorMessage(requestFailed.failureCause ??
                                     PlunesStrings.cancelFailedMessage);
-//                                widget.showInSnackBar(
-//                                    requestFailed.failureCause ??
-//                                        PlunesStrings.cancelFailedMessage,
-//                                    PlunesColors.BLACKCOLOR,
-//                                    widget.globalKey);
+//
                               });
                               _bookingBloc.addStateInCancelProvider(null);
                             }
@@ -390,10 +385,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                                         width: double.infinity,
                                                         color: PlunesColors
                                                             .GREYCOLOR,
-//                                                      margin: EdgeInsets.only(
-//                                                          top: AppConfig
-//                                                                  .verticalBlockSize *
-//                                                              1),
+//
                                                       ),
                                                       Container(
                                                         height: AppConfig
@@ -422,9 +414,6 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                                                     hoverColor: Colors.transparent,
                                                                     splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
                                                                     focusColor: Colors.transparent,
-//                                                          splashColor: Colors.redAccent.withOpacity(.2),
-//                                                          highlightColor: Colors.redAccent.withOpacity(.2),
-//                                                          focusColor: Colors.redAccent.withOpacity(.2),
                                                                     onPressed: () {
                                                                       Navigator.pop(
                                                                           context);
@@ -463,9 +452,6 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                                                     hoverColor: Colors.transparent,
                                                                     splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
                                                                     focusColor: Colors.transparent,
-//                                                          focusColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-//                                                          splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-//                                                          highlightColor: PlunesColors.SPARKLINGGREEN.withOpacity(.2),
                                                                     onPressed: () {
                                                                       _bookingBloc.cancelAppointment(
                                                                           appointmentModel
@@ -543,8 +529,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                 Expanded(
                   child: Container(
                     child: Text(
-
-                            appointmentModel?.serviceName??PlunesStrings.NA,
+                        appointmentModel?.serviceName ?? PlunesStrings.NA,
                         style: TextStyle(
                             fontSize: AppConfig.smallFont,
                             fontWeight: FontWeight.w500,
@@ -583,7 +568,6 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                       style: TextStyle(
                         fontSize: AppConfig.mediumFont,
                         fontWeight: FontWeight.w500,
-//                          decoration: TextDecoration.underline
                       )),
                   (widget.appointmentModel.isOpened != null &&
                           UserManager().getUserDetails().userType !=
@@ -688,33 +672,31 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
           return CustomWidgets().getInformativePopup(
               globalKey: widget.globalKey, message: message);
         });
-//    widget.showInSnackBar(message, PlunesColors.BLACKCOLOR, widget.globalKey);
   }
 
-  _getPaymentData(AppointmentModel appointmentModel) {
+  Widget _getPaymentData(AppointmentModel appointmentModel) {
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        // mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
           Container(
             child: CustomWidgets().amountProgressBar(appointmentModel),
           ),
           SizedBox(height: AppConfig.verticalBlockSize * 3),
-          (appointmentModel.amountDue == 0)
+          (appointmentModel.dueBookingAmount != null &&
+                  appointmentModel.dueBookingAmount == 0)
               ? Text("Payments done by patient",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: AppConfig.smallFont,
                       fontWeight: FontWeight.w500))
               : Text(
-                  '\u20B9 ${appointmentModel.amountDue}  remaining amount to be paid',
+                  '\u20B9 ${appointmentModel.dueBookingAmount}  remaining amount to be paid',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: AppConfig.smallFont + 2,
                     color: PlunesColors.GREENCOLOR,
-//                      decoration: TextDecoration.underline
                   )),
           SizedBox(
             height: AppConfig.verticalBlockSize * 5,

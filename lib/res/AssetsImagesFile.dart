@@ -151,7 +151,6 @@ class PlunesImages {
   get aboutUsUserArray => [
         'assets/images/Refundable.png',
         'assets/images/PrefferedTiming.png',
-        'assets/images/Lockin100.png',
         'assets/images/MakePayement.png',
         'assets/images/NegotiateIRealtime.png',
         'assets/images/AutomatedAppointment.png',

@@ -927,20 +927,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   }
 
   _getData(AppointmentModel appointmentModel) {
-    bool isPaymentCompleted = false;
-    if (appointmentModel.paymentStatus != null &&
-        appointmentModel.paymentStatus.isNotEmpty) {
-      for (int index = 0;
-          index < appointmentModel.paymentStatus.length;
-          index++) {
-        if (appointmentModel.paymentStatus[index].status != null &&
-            appointmentModel.paymentStatus[index].status) {
-          isPaymentCompleted = true;
-        } else {
-          isPaymentCompleted = false;
-          break;
-        }
-      }
+    bool isPaymentCompleted = true;
+    if (appointmentModel.dueBookingAmount != null &&
+        appointmentModel.dueBookingAmount > 0) {
+      isPaymentCompleted = false;
     }
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
@@ -957,47 +947,72 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               ? Text(AppointmentModel.cancelledStatus)
               : isPaymentCompleted
                   ? Text(PlunesStrings.paymentDone)
-                  : RichText(
-                      text: TextSpan(
-                          text: '${PlunesStrings.pay}',
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              color: Colors.black),
-                          children: appointmentModel.paymentStatus
-                                  .where((element) => !(element.status))
-                                  .map((paymentObj) {
-                                TapGestureRecognizer tapRecognizer =
-                                    TapGestureRecognizer()
-                                      ..onTap =
-                                          () => _openPaymentOption(paymentObj);
-                                return TextSpan(
-                                    text:
-                                        '      \u20B9${paymentObj.amount ?? 0}',
-                                    style: TextStyle(
-                                        fontSize: AppConfig.mediumFont,
-                                        color: PlunesColors.GREENCOLOR,
-                                        decoration: TextDecoration.none),
-                                    recognizer: tapRecognizer);
-                              }).toList() ??
-                              []),
+                  : Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 21.5),
+                      child: InkWell(
+                        onTap: () => _openPaymentOption(),
+                        onDoubleTap: () {},
+                        child: CustomWidgets().getRoundedButton(
+                            PlunesStrings.completePaymentText,
+                            18.0,
+                            PlunesColors.GREENCOLOR,
+                            AppConfig.horizontalBlockSize * 1.5,
+                            AppConfig.horizontalBlockSize * 2.5,
+                            PlunesColors.WHITECOLOR),
+                      ),
                     ),
+          isPaymentCompleted
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                  child: Text(
+                    "(Amount due \u20B9${appointmentModel.dueBookingAmount?.toStringAsFixed(1)})",
+                    style: TextStyle(
+                      fontWeight: FontWeight.normal,
+                      fontSize: 14,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ),
           (appointmentModel.service == null ||
                   appointmentModel.service.discount == null ||
                   appointmentModel.service.discount == 0 ||
                   appointmentModel.service.discount < 0)
               ? Container()
               : Container(
+                  alignment: Alignment.center,
                   margin: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 3,
                       horizontal: AppConfig.horizontalBlockSize * 3),
-                  child: Text(
-                      'Please make sure that you pay through app for ${appointmentModel?.service?.discount?.toStringAsFixed(2) ?? 0}% discount to be valid',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: AppConfig.verySmallFont,
-                        color: Colors.black87,
-                      )),
-                ),
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                        text: 'Please make sure that you pay through app for',
+                        style: TextStyle(
+                            fontSize: AppConfig.verySmallFont,
+                            wordSpacing: 1.5,
+                            color: Colors.black87),
+                        children: [
+                          TextSpan(
+                            text:
+                                ' ${appointmentModel?.service?.discount?.toStringAsFixed(2) ?? 0}%',
+                            style: TextStyle(
+                                fontSize: AppConfig.verySmallFont,
+                                wordSpacing: 1.5,
+                                color: PlunesColors.GREENCOLOR,
+                                decoration: TextDecoration.none),
+                          ),
+                          TextSpan(
+                            text: ' discount to be valid',
+                            style: TextStyle(
+                                fontSize: AppConfig.verySmallFont,
+                                wordSpacing: 1.5,
+                                color: Colors.black87,
+                                decoration: TextDecoration.none),
+                          ),
+                        ]),
+                  )),
         ],
       ),
     );
@@ -1025,11 +1040,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
         onDoubleTap: () {});
   }
 
-  _openPaymentOption(PaymentStatus paymentObj) async {
+  _openPaymentOption() async {
     var result = await _bookingBloc.payInstallment(BookingInstallment(
-            bookingId: widget.appointmentModel.bookingId,
-            creditsUsed: true,
-            paymentPercent: paymentObj.title.replaceAll("%", ""))
+            bookingId: widget.appointmentModel.bookingId, creditsUsed: true)
         .toJson());
     if (result is RequestSuccess) {
       InitPaymentResponse _initPaymentResponse = result.response;
@@ -1111,20 +1124,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   }
 
   bool _isPaymentCompleted() {
-    bool isPaymentCompleted = false;
-    if (widget.appointmentModel.paymentStatus != null &&
-        widget.appointmentModel.paymentStatus.isNotEmpty) {
-      for (int index = 0;
-          index < widget.appointmentModel.paymentStatus.length;
-          index++) {
-        if (widget.appointmentModel.paymentStatus[index].status != null &&
-            widget.appointmentModel.paymentStatus[index].status) {
-          isPaymentCompleted = true;
-        } else {
-          isPaymentCompleted = false;
-          break;
-        }
-      }
+    bool isPaymentCompleted = true;
+    if (widget.appointmentModel.dueBookingAmount != null &&
+        widget.appointmentModel.dueBookingAmount > 0) {
+      isPaymentCompleted = false;
     }
     return isPaymentCompleted;
   }
