@@ -98,9 +98,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                           appointmentModel.patientName != null
                               ? Container(
                                   child: Text(
-                                    CommonMethods.getStringInCamelCase(
-                                            appointmentModel?.patientName) ??
-                                        PlunesStrings.NA,
+                                    "Patient Name - ${CommonMethods.getStringInCamelCase(appointmentModel?.patientName) ?? PlunesStrings.NA}",
                                     style: TextStyle(
                                       fontSize: AppConfig.mediumFont,
                                     ),

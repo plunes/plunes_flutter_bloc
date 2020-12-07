@@ -771,7 +771,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                                     return CustomWidgets()
                                         .showAddToCartSuccessPopup(
                                             scaffoldKey, message);
-                                  });
+                                  }).then((value) {
+                                Navigator.pop(context);
+                              });
                             });
                             _cartMainBloc.addIntoStream(null);
                           }
