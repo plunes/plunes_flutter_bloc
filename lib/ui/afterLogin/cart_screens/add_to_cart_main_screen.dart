@@ -881,13 +881,9 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
             showDialog(
                 context: context,
                 builder: (BuildContext context) => CustomWidgets()
-                    .paymentStatusPopup(
-                        "Payment Success",
-                        "Your Booking ID is ${_initPaymentResponse.referenceId}",
-                        plunesImages.checkIcon,
-                        context,
-                        bookingId: _initPaymentResponse.referenceId)).then(
-                (value) {
+                    .paymentStatusPopup("", "Payment successfully done.",
+                        plunesImages.checkIcon, context,
+                        bookingId: "id")).then((value) {
               Navigator.pop(context, "pop");
             });
           } else {
@@ -976,11 +972,11 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
               BuildContext context,
             ) =>
                 CustomWidgets().paymentStatusPopup(
-                    "Payment Success",
-                    "Your Booking ID is ${initPaymentResponse.referenceId}",
+                    "",
+                    "Payment successfully done.",
                     plunesImages.checkIcon,
                     context,
-                    bookingId: initPaymentResponse.referenceId)).then((value) {
+                    bookingId: "id")).then((value) {
           Navigator.pop(context, "pop");
         });
       } else if (val.toString().contains("fail")) {
@@ -1011,11 +1007,11 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
               BuildContext context,
             ) =>
                 CustomWidgets().paymentStatusPopup(
-                    "Payment Success",
-                    "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                    "",
+                    "Payment successfully done.",
                     plunesImages.checkIcon,
                     context,
-                    bookingId: _initPaymentResponse.referenceId)).then((value) {
+                    bookingId: "id")).then((value) {
           Navigator.pop(context, "pop");
         });
       } else if (val.toString().contains("fail")) {

@@ -2129,9 +2129,15 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                               builder: (context) =>
                                   AddToCartMainScreen(hasAppBar: true)))
                       .then((value) {
-                    _isFetchingUserInfo = true;
-                    _setState();
-                    _getDetails();
+                    if (value != null &&
+                        value.runtimeType == "pop".runtimeType &&
+                        value.toString() == "pop") {
+                      Navigator.pop(context);
+                    } else {
+                      _isFetchingUserInfo = true;
+                      _setState();
+                      _getDetails();
+                    }
                   });
                   return;
                 },

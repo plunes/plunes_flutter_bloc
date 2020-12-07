@@ -74,7 +74,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           RichText(
                             text: TextSpan(
                                 text: CommonMethods.getStringInCamelCase(
-                                        appointmentModel.userName) ??
+                                        appointmentModel.patientName ??
+                                            appointmentModel.userName) ??
                                     PlunesStrings.NA,
                                 style: TextStyle(
                                     fontSize: AppConfig.mediumFont,

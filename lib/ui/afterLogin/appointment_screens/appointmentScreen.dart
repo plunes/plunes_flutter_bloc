@@ -95,6 +95,19 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                             ),
                           ),
                           SizedBox(height: 5),
+                          appointmentModel.patientName != null
+                              ? Container(
+                                  child: Text(
+                                    CommonMethods.getStringInCamelCase(
+                                            appointmentModel?.patientName) ??
+                                        PlunesStrings.NA,
+                                    style: TextStyle(
+                                      fontSize: AppConfig.mediumFont,
+                                    ),
+                                  ),
+                                )
+                              : Container(),
+                          SizedBox(height: 5),
                           InkWell(
                             onTap: () => _openProfile(),
                             onDoubleTap: () {},

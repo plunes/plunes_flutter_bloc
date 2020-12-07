@@ -2597,16 +2597,32 @@ class CustomWidgets {
         ? Container(
             child: Column(
               children: <Widget>[
-                LinearPercentIndicator(
-                  percent: percentage,
-                  animationDuration: 800,
-                  linearStrokeCap: LinearStrokeCap.roundAll,
-                  animation: true,
-                  lineHeight: 10.0,
-                  progressColor: PlunesColors.GREENCOLOR,
-                  backgroundColor: PlunesColors.GREYCOLOR.withOpacity(0.4),
+                (appointmentModel.paidBookingAmount != null &&
+                        appointmentModel.totalAmount != null &&
+                        appointmentModel.paidBookingAmount ==
+                            appointmentModel.totalAmount)
+                    ? LinearPercentIndicator(
+                        percent: 1.0,
+                        animationDuration: 800,
+                        linearStrokeCap: LinearStrokeCap.roundAll,
+                        animation: true,
+                        lineHeight: 10.0,
+                        progressColor: PlunesColors.GREENCOLOR,
+                        backgroundColor:
+                            PlunesColors.GREYCOLOR.withOpacity(0.4),
 //                  width: double.infinity,
-                ),
+                      )
+                    : LinearPercentIndicator(
+                        percent: percentage,
+                        animationDuration: 800,
+                        linearStrokeCap: LinearStrokeCap.roundAll,
+                        animation: true,
+                        lineHeight: 10.0,
+                        progressColor: PlunesColors.GREENCOLOR,
+                        backgroundColor:
+                            PlunesColors.GREYCOLOR.withOpacity(0.4),
+//                  width: double.infinity,
+                      ),
                 Container(
                   margin: EdgeInsets.only(
                       left: AppConfig.horizontalBlockSize * 2,
