@@ -12,10 +12,12 @@ import 'package:plunes/Utils/upi_payment_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
+import 'package:plunes/blocs/payment_bloc/payment_bloc.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/cart_models/cart_main_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
+import 'package:plunes/models/upi_payment_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -46,12 +48,16 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   Timer _timer;
   List<ApplicationMeta> _availableUpiApps;
   BookingBloc _bookingBloc;
+  ManagePaymentBloc _managePaymentBloc;
+  bool _isProcessing;
 
   @override
   void initState() {
+    _isProcessing = false;
     _timerStream = StreamController.broadcast();
     _cartMainBloc = CartMainBloc();
     _bookingBloc = BookingBloc();
+    _managePaymentBloc = ManagePaymentBloc();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _timer = timer;
       if (mounted) {
@@ -89,40 +95,46 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
           appBar: (widget.hasAppBar != null && widget.hasAppBar)
               ? widget.getAppBar(context, PlunesStrings.myCart, true)
               : null,
-          body: StreamBuilder<RequestState>(
-              stream: _cartMainBloc.cartMainStream,
-              initialData: _cartOuterModel == null ? RequestInProgress() : null,
-              builder: (context, snapshot) {
-                if (snapshot.data != null &&
-                    snapshot.data is RequestInProgress) {
-                  return CustomWidgets().getProgressIndicator();
-                }
-                if (snapshot.data != null && snapshot.data is RequestSuccess) {
-                  RequestSuccess requestSuccess = snapshot.data;
-                  _cartOuterModel = requestSuccess.response;
-                  _cartMainBloc.addStateInCartMainStream(null);
-                }
-                if (snapshot.data != null && snapshot.data is RequestFailed) {
-                  RequestFailed requestFailed = snapshot.data;
-                  _failureCause = requestFailed.failureCause;
-                  _cartMainBloc.addStateInCartMainStream(null);
-                }
-                return (_failureCause != null)
-                    ? CustomWidgets().errorWidget(_failureCause,
-                        imagePath: PlunesImages.emptyCartItemsImage, onTap: () {
-                        if (_failureCause != null &&
-                            _failureCause != PlunesStrings.noInternet) {
-                          _doExplore();
-                        } else {
-                          _getCartItems();
-                        }
-                      },
-                        buttonText: (_failureCause != null &&
-                                _failureCause != PlunesStrings.noInternet)
-                            ? PlunesStrings.explore
-                            : null)
-                    : _showBody();
-              }),
+          body: _isProcessing
+              ? CustomWidgets().getProgressIndicator()
+              : StreamBuilder<RequestState>(
+                  stream: _cartMainBloc.cartMainStream,
+                  initialData:
+                      _cartOuterModel == null ? RequestInProgress() : null,
+                  builder: (context, snapshot) {
+                    if (snapshot.data != null &&
+                        snapshot.data is RequestInProgress) {
+                      return CustomWidgets().getProgressIndicator();
+                    }
+                    if (snapshot.data != null &&
+                        snapshot.data is RequestSuccess) {
+                      RequestSuccess requestSuccess = snapshot.data;
+                      _cartOuterModel = requestSuccess.response;
+                      _cartMainBloc.addStateInCartMainStream(null);
+                    }
+                    if (snapshot.data != null &&
+                        snapshot.data is RequestFailed) {
+                      RequestFailed requestFailed = snapshot.data;
+                      _failureCause = requestFailed.failureCause;
+                      _cartMainBloc.addStateInCartMainStream(null);
+                    }
+                    return (_failureCause != null)
+                        ? CustomWidgets().errorWidget(_failureCause,
+                            imagePath: PlunesImages.emptyCartItemsImage,
+                            onTap: () {
+                            if (_failureCause != null &&
+                                _failureCause != PlunesStrings.noInternet) {
+                              _doExplore();
+                            } else {
+                              _getCartItems();
+                            }
+                          },
+                            buttonText: (_failureCause != null &&
+                                    _failureCause != PlunesStrings.noInternet)
+                                ? PlunesStrings.explore
+                                : null)
+                        : _showBody();
+                  }),
           key: scaffoldKey),
       top: false,
       bottom: false,
@@ -879,12 +891,12 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
           if (_initPaymentResponse.status.contains("Confirmed")) {
             AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
             showDialog(
-                context: context,
-                builder: (BuildContext context) => CustomWidgets()
-                    .paymentStatusPopup("", "Payment successfully done.",
-                        plunesImages.checkIcon, context,
-                        bookingId: "id")).then((value) {
-              Navigator.pop(context, "pop");
+                    context: context,
+                    builder: (BuildContext context) => CustomWidgets()
+                        .paymentStatusPopup("", "Payment successfully done.",
+                            plunesImages.checkIcon, context, bookingId: "id"))
+                .then((value) {
+              _popWhenSuccess();
             });
           } else {
             if (_availableUpiApps != null && _availableUpiApps.isNotEmpty) {
@@ -899,11 +911,39 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                   if (result.containsKey(PlunesStrings.payUpi)) {
                     ApplicationMeta applicationMeta =
                         result[PlunesStrings.payUpi];
-                    UpiUtil()
-                        .initPayment(applicationMeta, _initPaymentResponse)
-                        .then((value) {
-                      if (value != null) {
-                        _checkIfUpiPaymentSuccessOrNot(value);
+                    _isProcessing = true;
+                    _setState();
+                    _managePaymentBloc
+                        .getUpiDetails(_cartOuterModel?.data?.sId)
+                        .then((upiServerValue) {
+                      _isProcessing = false;
+                      _setState();
+                      if (upiServerValue is RequestSuccess) {
+                        RequestSuccess requestSuccess = upiServerValue;
+                        UpiModel upiResponse = requestSuccess.response;
+                        if (upiResponse == null ||
+                            (upiResponse.msg != null &&
+                                upiResponse.msg.trim().isNotEmpty) ||
+                            !UpiUtil().isValidUpiAddress(
+                                upiResponse.receiverUpiAddress)) {
+                          _showMessages((upiResponse.msg != null &&
+                                  upiResponse.msg.trim().isNotEmpty)
+                              ? upiResponse.msg
+                              : PlunesStrings.invalidPaymentDetails);
+                          return;
+                        }
+                        UpiUtil()
+                            .initPayment(applicationMeta, _initPaymentResponse,
+                                upiResponse)
+                            .then((value) {
+                          if (value != null) {
+                            _checkIfUpiPaymentSuccessOrNot(value, upiResponse);
+                          } else {
+                            _showMessages("Payment Failed");
+                          }
+                        });
+                      } else if (upiServerValue is RequestFailed) {
+                        _showMessages(upiServerValue.failureCause);
                       }
                     });
                   } else {
@@ -924,8 +964,44 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     });
   }
 
-  void _checkIfUpiPaymentSuccessOrNot(UpiTransactionResponse value) {
+  void _checkIfUpiPaymentSuccessOrNot(
+      UpiTransactionResponse value, UpiModel upiResponse) {
     print(value?.toString());
+    String status = value.status != null
+        ? value.status == UpiTransactionStatus.success
+            ? UpiUtil.success
+            : value.status == UpiTransactionStatus.failure
+                ? UpiUtil.failure
+                : value.status == UpiTransactionStatus.submitted
+                    ? UpiUtil.submitted
+                    : UpiUtil.submitted
+        : null;
+    _isProcessing = true;
+    _setState();
+    _managePaymentBloc
+        .sendUpiPaymentResponse(
+            upiResponse.bookingId, status, value?.txnId, value?.responseCode)
+        .then((paymentServerResponse) {
+      _isProcessing = false;
+      _setState();
+      if (paymentServerResponse is RequestSuccess) {
+        showDialog(
+            context: context,
+            builder: (
+              BuildContext context,
+            ) =>
+                CustomWidgets().paymentStatusPopup(
+                    "",
+                    "Payment successfully done.",
+                    plunesImages.checkIcon,
+                    context,
+                    bookingId: "id")).then((value) {
+          _popWhenSuccess();
+        });
+      } else if (paymentServerResponse is RequestFailed) {
+        _showMessages(paymentServerResponse.failureCause);
+      }
+    });
   }
 
   void _processZestMoneyQueries(InitPaymentResponse initPaymentResponse) {
@@ -977,7 +1053,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                     plunesImages.checkIcon,
                     context,
                     bookingId: "id")).then((value) {
-          Navigator.pop(context, "pop");
+          _popWhenSuccess();
         });
       } else if (val.toString().contains("fail")) {
         _showMessages("Payment Failed");
@@ -1012,7 +1088,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                     plunesImages.checkIcon,
                     context,
                     bookingId: "id")).then((value) {
-          Navigator.pop(context, "pop");
+          _popWhenSuccess();
         });
       } else if (val.toString().contains("fail")) {
         _showMessages("Payment Failed");
@@ -1020,5 +1096,17 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
         _showMessages("Payment Cancelled");
       }
     });
+  }
+
+  _setState() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  void _popWhenSuccess() {
+    if (widget.hasAppBar != null && widget.hasAppBar) {
+      Navigator.pop(context, "pop");
+    }
   }
 }

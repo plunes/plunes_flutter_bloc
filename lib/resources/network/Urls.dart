@@ -128,4 +128,7 @@ class Urls {
   static const String REGENERATE_CART_ITEM_URL = "cart/renegotiate/";
   static const String EDIT_CART_DETAIL_URL = "booking/editPatient";
   static const String PAY_CART_ITEMS_BILL_URL = "cart/checkout";
+  static const String UPI_PAYMENT_URL = customBaseUrl + "paymentControl/";
+  static const String CAPTURE_UPI_PAYMENT_URL =
+      "$UPI_PAYMENT_URL" + "captureUPIPayment";
 }

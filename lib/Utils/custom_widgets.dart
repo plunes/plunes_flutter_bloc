@@ -6308,7 +6308,7 @@ class CustomWidgets {
                       splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
                       focusColor: Colors.transparent,
                       onPressed: () =>
-                          Navigator.of(globalKey.currentState.context).pop(),
+                          Navigator.of(globalKey.currentState.context).pop(true),
                       child: Container(
                           height: AppConfig.verticalBlockSize * 6,
                           width: double.infinity,

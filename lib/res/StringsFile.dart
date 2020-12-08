@@ -383,6 +383,8 @@ class PlunesStrings {
   static const String amountPaidText = "Amount Paid";
   static const String totalAmountText = "Total Amount";
   static const String completePaymentText = "Complete Payment";
+  static const String invalidPaymentDetails =
+      "Invalid payment details, please try again later";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

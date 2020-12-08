@@ -274,6 +274,7 @@ flutter:
     - assets/images/bid/uncheck.png
     - assets/images/bid/tip.png
     - assets/images/solution/comment.png
+    - assets/images/bottom_tabs/itemInCartImage.png
 
     - assets/images/help/booking-appointment.png
     - assets/images/help/hospHelp.png

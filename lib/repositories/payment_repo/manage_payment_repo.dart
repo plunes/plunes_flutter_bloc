@@ -1,4 +1,5 @@
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/upi_payment_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -32,6 +33,38 @@ class ManagePaymentRepo {
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_PUT,
         postData: user.toJson());
+    if (result.isRequestSucceed) {
+      return RequestSuccess();
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getUpiDetails(String bookingId) async {
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
+        url: Urls.UPI_PAYMENT_URL,
+        headerIncluded: true,
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {"payment_id": bookingId});
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: UpiModel.fromJson(result.response.data));
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> sendUpiPaymentResponse(String bookingId, String status,
+      String txnId, String responseCode) async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.CAPTURE_UPI_PAYMENT_URL,
+        headerIncluded: true,
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {
+          "bookingId": bookingId,
+          "status": status,
+          "txnId": txnId,
+          "responseCode": responseCode
+        });
     if (result.isRequestSucceed) {
       return RequestSuccess();
     } else {

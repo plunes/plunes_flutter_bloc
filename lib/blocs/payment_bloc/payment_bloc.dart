@@ -11,4 +11,14 @@ class ManagePaymentBloc extends BlocBase {
   Future<RequestState> setBankDetails(User user) {
     return ManagePaymentRepo().setBankDetails(user);
   }
+
+  Future<RequestState> getUpiDetails(String bookingId) {
+    return ManagePaymentRepo().getUpiDetails(bookingId);
+  }
+
+  Future<RequestState> sendUpiPaymentResponse(
+      String bookingId, String status, String txnId, String responseCode) {
+    return ManagePaymentRepo()
+        .sendUpiPaymentResponse(bookingId, status, txnId, responseCode);
+  }
 }

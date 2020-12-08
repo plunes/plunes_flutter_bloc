@@ -772,7 +772,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                                         .showAddToCartSuccessPopup(
                                             scaffoldKey, message);
                                   }).then((value) {
-                                Navigator.pop(context);
+                                if (value != null) {
+                                  _openCartScreen();
+                                }
                               });
                             });
                             _cartMainBloc.addIntoStream(null);
@@ -1208,13 +1210,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 if (result.containsKey(PlunesStrings.payUpi)) {
                   ApplicationMeta applicationMeta =
                       result[PlunesStrings.payUpi];
-                  UpiUtil()
-                      .initPayment(applicationMeta, _initPaymentResponse)
-                      .then((value) {
-                    if (value != null) {
-                      _checkIfUpiPaymentSuccessOrNot(value);
-                    }
-                  });
+//                  UpiUtil()
+//                      .initPayment(applicationMeta, _initPaymentResponse)
+//                      .then((value) {
+//                    if (value != null) {
+//                      _checkIfUpiPaymentSuccessOrNot(value);
+//                    }
+//                  });
                 } else {
                   _openWebView(_initPaymentResponse);
                 }
@@ -2125,23 +2127,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
               ),
               trailing: InkWell(
                 onTap: () {
-                  Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  AddToCartMainScreen(hasAppBar: true)))
-                      .then((value) {
-                    if (value != null &&
-                        value.runtimeType == "pop".runtimeType &&
-                        value.toString() == "pop") {
-                      Navigator.pop(context);
-                    } else {
-                      _isFetchingUserInfo = true;
-                      _setState();
-                      _getDetails();
-                    }
-                  });
-                  return;
+                  _openCartScreen();
                 },
                 child: Stack(
                   children: <Widget>[
@@ -2200,6 +2186,25 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       _showInSnackBar(_message);
     }
     return _hasFilledDetails;
+  }
+
+  void _openCartScreen() {
+    Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddToCartMainScreen(hasAppBar: true)))
+        .then((value) {
+      if (value != null &&
+          value.runtimeType == "pop".runtimeType &&
+          value.toString() == "pop") {
+        Navigator.pop(context);
+      } else {
+        _isFetchingUserInfo = true;
+        _setState();
+        _getDetails();
+      }
+    });
+    return;
   }
 }
 
