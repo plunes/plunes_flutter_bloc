@@ -193,8 +193,10 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 (appointmentModel.doctorConfirmation == false &&
-                        appointmentModel.bookingStatus ==
-                            AppointmentModel.confirmedStatus)
+                        (appointmentModel.bookingStatus ==
+                                AppointmentModel.confirmedStatus ||
+                            appointmentModel.bookingStatus ==
+                                AppointmentModel.reservedStatus))
                     ? confirmAppointment(
                         "Click to Confirm", _bookingBloc, appointmentModel)
                     : Flexible(
@@ -210,6 +212,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           if (appointmentModel != null &&
                               appointmentModel.bookingStatus !=
                                   AppointmentModel.confirmedStatus &&
+                              appointmentModel.bookingStatus !=
+                                  AppointmentModel.reservedStatus &&
                               appointmentModel.appointmentTime != null &&
                               DateTime.fromMillisecondsSinceEpoch(int.parse(
                                       appointmentModel.appointmentTime))

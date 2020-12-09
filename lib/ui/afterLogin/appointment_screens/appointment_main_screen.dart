@@ -420,7 +420,9 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
         appointmentModel.doctorConfirmation == false &&
         (appointmentModel.bookingStatus == AppointmentModel.confirmedStatus ||
             appointmentModel.bookingStatus ==
-                AppointmentModel.requestCancellation)) {
+                AppointmentModel.requestCancellation ||
+            appointmentModel.bookingStatus ==
+                AppointmentModel.reservedStatus)) {
       _setTabIndex(0, appointmentModel.bookingId);
       _upComingAppointments.add(appointmentModel);
     }

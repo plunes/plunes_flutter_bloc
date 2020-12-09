@@ -74,6 +74,7 @@ class AppointmentModel {
   bool visitAgain;
   String serviceType;
   static const String confirmedStatus = "Confirmed";
+  static const String reservedStatus = "Reserved";
   static const String cancelledStatus = "Cancelled";
   static const String notRequested = "Not Requested";
   static const String requestCancellation = "Cancellation Requested";

@@ -1,8 +1,5 @@
 import 'dart:io';
-
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:open_file/open_file.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -94,17 +91,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 5),
-                          appointmentModel.patientName != null
-                              ? Container(
-                                  child: Text(
-                                    "Patient Name - ${CommonMethods.getStringInCamelCase(appointmentModel?.patientName) ?? PlunesStrings.NA}",
-                                    style: TextStyle(
-                                      fontSize: AppConfig.mediumFont,
-                                    ),
-                                  ),
-                                )
-                              : Container(),
                           SizedBox(height: 5),
                           InkWell(
                             onTap: () => _openProfile(),
@@ -209,7 +195,19 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                   ),
                 ]),
           ),
-          SizedBox(height: AppConfig.verticalBlockSize * 1.5),
+          SizedBox(height: 5),
+          appointmentModel.patientName != null
+              ? Container(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Patient Name - ${CommonMethods.getStringInCamelCase(appointmentModel?.patientName) ?? PlunesStrings.NA}",
+                    style: TextStyle(
+                      fontSize: AppConfig.mediumFont,
+                    ),
+                  ),
+                )
+              : Container(),
+          SizedBox(height: 3),
           _getProfessionalNumber(appointmentModel),
           (appointmentModel.centreNumber != null &&
                   appointmentModel.centreNumber.isNotEmpty &&
@@ -249,6 +247,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                     if (appointmentModel != null &&
                         appointmentModel.bookingStatus !=
                             AppointmentModel.confirmedStatus &&
+                        appointmentModel.bookingStatus !=
+                            AppointmentModel.reservedStatus &&
                         appointmentModel.appointmentTime != null &&
                         DateTime.fromMillisecondsSinceEpoch(
                                 int.parse(appointmentModel.appointmentTime))
@@ -705,14 +705,18 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: (appointmentModel.bookingStatus != null &&
-                      appointmentModel.bookingStatus ==
-                          AppointmentModel.confirmedStatus)
+                      (appointmentModel.bookingStatus ==
+                              AppointmentModel.confirmedStatus ||
+                          appointmentModel.bookingStatus ==
+                              AppointmentModel.reservedStatus))
                   ? MainAxisAlignment.spaceBetween
                   : MainAxisAlignment.end,
               children: <Widget>[
                 (appointmentModel.bookingStatus != null &&
-                        appointmentModel.bookingStatus ==
-                            AppointmentModel.confirmedStatus)
+                        (appointmentModel.bookingStatus ==
+                                AppointmentModel.confirmedStatus ||
+                            appointmentModel.bookingStatus ==
+                                AppointmentModel.reservedStatus))
                     ? InkWell(
                         onTap: () {
                           if (!_isPaymentCompleted()) {
@@ -798,8 +802,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                       )
                     : Container(),
                 (appointmentModel.bookingStatus != null &&
-                        appointmentModel.bookingStatus ==
-                            AppointmentModel.confirmedStatus &&
+                        (appointmentModel.bookingStatus ==
+                                AppointmentModel.confirmedStatus ||
+                            appointmentModel.bookingStatus ==
+                                AppointmentModel.reservedStatus) &&
                         _isPaymentCompleted())
                     ? Expanded(child: Container())
                     : Container(),
@@ -843,8 +849,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
             ),
           ),
           (_isPaymentCompleted() &&
-                  appointmentModel.bookingStatus ==
-                      AppointmentModel.confirmedStatus)
+                  (appointmentModel.bookingStatus ==
+                          AppointmentModel.confirmedStatus ||
+                      appointmentModel.bookingStatus ==
+                          AppointmentModel.reservedStatus))
               ? Container(
                   margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
                   child: InkWell(
