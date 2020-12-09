@@ -131,4 +131,5 @@ class Urls {
   static const String UPI_PAYMENT_URL = customBaseUrl + "paymentControl/";
   static const String CAPTURE_UPI_PAYMENT_URL =
       "$UPI_PAYMENT_URL" + "captureUPIPayment";
+  static const String CART_COUNT_URL = "cart/count/";
 }

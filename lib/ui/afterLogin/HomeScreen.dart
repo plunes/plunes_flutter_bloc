@@ -11,6 +11,7 @@ import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/bloc.dart';
+import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
@@ -89,17 +90,21 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   ];
   Preferences preferences;
   List<String> selectedPositions = new List();
+  CartMainBloc _cartBloc;
 
   @override
   void initState() {
-    super.initState();
+    _cartBloc = CartMainBloc();
     initialize();
     _getNotifications();
+    _getCartCount();
+    super.initState();
   }
 
   @override
   void dispose() {
     bloc.disposeProfileBloc();
+    _cartBloc?.dispose();
     super.dispose();
   }
 
@@ -241,8 +246,13 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             PlunesStrings.explore.toUpperCase(),
             PlunesImages.exploreSelectedImage,
             PlunesImages.exploreInActiveIcon),
-        bottomNavigationBarItem(PlunesStrings.cart.toUpperCase(),
-            PlunesImages.cartUnSelectedImage, PlunesImages.cartSelectedImage),
+        bottomNavigationBarItem(
+            PlunesStrings.cart.toUpperCase(),
+            (FirebaseNotification().getCartCount() != null &&
+                    FirebaseNotification().getCartCount() != 0)
+                ? PlunesImages.itemInCartImage
+                : PlunesImages.cartUnSelectedImage,
+            PlunesImages.cartSelectedImage),
         bottomNavigationBarItem(
             plunesStrings.notification,
             (FirebaseNotification().getNotificationCount() != null &&
@@ -746,6 +756,14 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             MaterialPageRoute(
                 builder: (context) =>
                     YoutubePlayerProvider(Constants.PLUNES_USER_VIDEO_DEMO)));
+      }
+    });
+  }
+
+  void _getCartCount() {
+    Future.delayed(Duration(milliseconds: 401)).then((value) {
+      if (_userType != null && _userType == Constants.user) {
+        _cartBloc.getCartCount();
       }
     });
   }

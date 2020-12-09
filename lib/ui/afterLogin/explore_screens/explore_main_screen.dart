@@ -10,6 +10,7 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/explore_bloc/explore_main_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/explore/explore_main_model.dart';
@@ -43,8 +44,11 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
   ExploreOuterModel _exploreModel;
   String _failedMessage;
 
+  CartMainBloc _cartBloc;
+
   @override
   void initState() {
+    _cartBloc = CartMainBloc();
     _exploreMainBloc = ExploreMainBloc();
     _getExploreData();
     _currentDotPosition = 0.0;
@@ -63,6 +67,7 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
   void dispose() {
     _streamController?.close();
     _exploreMainBloc?.dispose();
+    _cartBloc?.dispose();
     _whyPlunesWidgets = [];
     super.dispose();
   }
@@ -358,8 +363,10 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) => SolutionBiddingScreen(
-                                searchQuery: sectionTwo
-                                    .elements[itemIndex].serviceName)));
+                                searchQuery: sectionTwo.elements[itemIndex]
+                                    .serviceName))).then((value) {
+                      _getCartCount();
+                    });
                   }
                 },
                 child: Container(
@@ -529,8 +536,10 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                     context,
                     MaterialPageRoute(
                         builder: (context) => SolutionBiddingScreen(
-                            searchQuery:
-                                section4.elements[index].serviceName)));
+                            searchQuery: section4
+                                .elements[index].serviceName))).then((value) {
+                  _getCartCount();
+                });
               }
             },
             child: Card(
@@ -656,8 +665,10 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => SolutionBiddingScreen(
-                                  searchQuery:
-                                      section5.elements[index].serviceName)));
+                                  searchQuery: section5.elements[index]
+                                      .serviceName))).then((value) {
+                        _getCartCount();
+                      });
                     }
                   },
                   child: Card(
@@ -745,5 +756,9 @@ class _ExploreMainScreenState extends BaseState<ExploreMainScreen> {
   void _getExploreData() {
     _failedMessage = null;
     _exploreMainBloc.getExploreData();
+  }
+
+  void _getCartCount() {
+    _cartBloc.getCartCount();
   }
 }

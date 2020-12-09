@@ -9,6 +9,7 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
@@ -56,9 +57,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
   PanelController _panelController;
+  CartMainBloc _cartBloc;
 
   @override
   void initState() {
+    _cartBloc = CartMainBloc();
     _panelController = PanelController();
     _isPanelOpened = false;
     _highlightSearchBar();
@@ -138,6 +141,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     _controller?.close();
     _timer?.cancel();
     _prevMissSolutionBloc?.dispose();
+    _cartBloc?.dispose();
     super.dispose();
   }
 
@@ -511,6 +515,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     _canGoAhead = UserManager().getIsUserInServiceLocation();
     _setState();
     _getPreviousSolutions();
+    _getCartCount();
   }
 
   _onSolutionItemTapForTopSearches(CatalogueData catalogueData) async {
@@ -550,6 +555,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
     _canGoAhead = UserManager().getIsUserInServiceLocation();
     _setState();
     _getPreviousSolutions();
+    _getCartCount();
   }
 
   _getUserDetails() async {
@@ -810,6 +816,7 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
               _setState();
             }
             _getPreviousSolutions();
+            _getCartCount();
           },
           child: IgnorePointer(
             ignoring: true,
@@ -859,6 +866,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //                    ))
       ],
     );
+  }
+
+  void _getCartCount() {
+    _cartBloc.getCartCount();
   }
 }
 

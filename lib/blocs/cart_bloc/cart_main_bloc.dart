@@ -111,4 +111,8 @@ class CartMainBloc extends BlocBase {
   void addStatePaymentStream(RequestState data) {
     addStateInGenericStream(_payCartBillStreamProvider, data);
   }
+
+  Future<RequestState> getCartCount() {
+    return CartMainRepo().getCartCount();
+  }
 }

@@ -54,10 +54,10 @@ class FirebaseNotification {
   static const String exploreScreen = "explore"; //"plockr";
   static const String solutionScreen = "solution";
   static const String reviewScreen = "review";
-  int _notificationCount = 0, _plockrCount = 0;
+  int _notificationCount = 0, _cartCount = 0;
 
-  int getPlockrCount() {
-    return _plockrCount;
+  int getCartCount() {
+    return _cartCount;
   }
 
   FacebookAppEvents getFbInstance() {
@@ -72,8 +72,9 @@ class FirebaseNotification {
     return _notificationCount;
   }
 
-  void setPlockrCount(int count) {
-    _plockrCount = count;
+  void setCartCount(int count) {
+    _cartCount = count;
+    _notificationListener?.add(count);
   }
 
   void setNotificationCount(int count) {

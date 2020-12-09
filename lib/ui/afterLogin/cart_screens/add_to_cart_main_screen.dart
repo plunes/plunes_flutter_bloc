@@ -83,6 +83,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   void dispose() {
     _timer?.cancel();
     _timerStream?.close();
+    _cartMainBloc?.getCartCount();
     _cartMainBloc?.dispose();
     _bookingBloc?.dispose();
     super.dispose();

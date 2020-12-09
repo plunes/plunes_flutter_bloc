@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/cart_models/cart_main_model.dart';
 import 'package:plunes/models/plockr_model/plockr_response_model.dart';
@@ -150,6 +152,28 @@ class CartMainRepo {
         InitPaymentResponse initPaymentResponse =
             InitPaymentResponse.fromJson(result.response.data);
         return RequestSuccess(response: initPaymentResponse);
+      } else {
+        return RequestFailed(failureCause: plunesStrings.somethingWentWrong);
+      }
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getCartCount() async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_GET,
+        url: Urls.CART_COUNT_URL,
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      if (result.response.data["success"] != null &&
+          result.response.data["success"]) {
+        int count = 0;
+        if ((result.response.data["data"] != null)) {
+          count = result.response.data["data"];
+        }
+        FirebaseNotification().setCartCount(count);
+        return RequestSuccess(response: count);
       } else {
         return RequestFailed(failureCause: plunesStrings.somethingWentWrong);
       }
