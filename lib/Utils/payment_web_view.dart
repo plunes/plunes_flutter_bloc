@@ -23,7 +23,7 @@ class _PaymentWebViewState extends State<PaymentWebView> {
 
   @override
   void initState() {
-    print("${Urls.PAYMENT_WEB_VIEW_URL + "/" + id}widget.url ${widget.url}");
+//    print("${Urls.PAYMENT_WEB_VIEW_URL + "/" + id}widget.url ${widget.url}");
     super.initState();
     check();
   }

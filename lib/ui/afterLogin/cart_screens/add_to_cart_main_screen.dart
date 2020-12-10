@@ -65,7 +65,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
       }
     });
     _getCartItems();
-    _getInstalledUpiApps();
+//    _getInstalledUpiApps();
     super.initState();
   }
 
@@ -900,61 +900,62 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
               _popWhenSuccess();
             });
           } else {
-            if (_availableUpiApps != null && _availableUpiApps.isNotEmpty) {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return CustomWidgets().getUpiBasedPaymentOptionView(
-                        _initPaymentResponse, _availableUpiApps, scaffoldKey);
-                  }).then((value) {
-                if (value != null) {
-                  Map result = value;
-                  if (result.containsKey(PlunesStrings.payUpi)) {
-                    ApplicationMeta applicationMeta =
-                        result[PlunesStrings.payUpi];
-                    _isProcessing = true;
-                    _setState();
-                    _managePaymentBloc
-                        .getUpiDetails(_cartOuterModel?.data?.sId)
-                        .then((upiServerValue) {
-                      _isProcessing = false;
-                      _setState();
-                      if (upiServerValue is RequestSuccess) {
-                        RequestSuccess requestSuccess = upiServerValue;
-                        UpiModel upiResponse = requestSuccess.response;
-                        if (upiResponse == null ||
-                            (upiResponse.msg != null &&
-                                upiResponse.msg.trim().isNotEmpty) ||
-                            !UpiUtil().isValidUpiAddress(
-                                upiResponse.receiverUpiAddress)) {
-                          _showMessages((upiResponse.msg != null &&
-                                  upiResponse.msg.trim().isNotEmpty)
-                              ? upiResponse.msg
-                              : PlunesStrings.invalidPaymentDetails);
-                          return;
-                        }
-                        UpiUtil()
-                            .initPayment(applicationMeta, _initPaymentResponse,
-                                upiResponse)
-                            .then((value) {
-                          if (value != null) {
-                            _checkIfUpiPaymentSuccessOrNot(value, upiResponse);
-                          } else {
-                            _showMessages("Payment Failed");
-                          }
-                        });
-                      } else if (upiServerValue is RequestFailed) {
-                        _showMessages(upiServerValue.failureCause);
-                      }
-                    });
-                  } else {
-                    _openWebView(_initPaymentResponse);
-                  }
-                }
-              });
-            } else {
-              _openWebView(_initPaymentResponse);
-            }
+//            if (_availableUpiApps != null && _availableUpiApps.isNotEmpty) {
+//              showDialog(
+//                  context: context,
+//                  builder: (BuildContext context) {
+//                    return CustomWidgets().getUpiBasedPaymentOptionView(
+//                        _initPaymentResponse, _availableUpiApps, scaffoldKey);
+//                  }).then((value) {
+//                if (value != null) {
+//                  Map result = value;
+//                  if (result.containsKey(PlunesStrings.payUpi)) {
+//                    ApplicationMeta applicationMeta =
+//                        result[PlunesStrings.payUpi];
+//                    _isProcessing = true;
+//                    _setState();
+//                    _managePaymentBloc
+//                        .getUpiDetails(_cartOuterModel?.data?.sId)
+//                        .then((upiServerValue) {
+//                      _isProcessing = false;
+//                      _setState();
+//                      if (upiServerValue is RequestSuccess) {
+//                        RequestSuccess requestSuccess = upiServerValue;
+//                        UpiModel upiResponse = requestSuccess.response;
+//                        if (upiResponse == null ||
+//                            (upiResponse.msg != null &&
+//                                upiResponse.msg.trim().isNotEmpty) ||
+//                            !UpiUtil().isValidUpiAddress(
+//                                upiResponse.receiverUpiAddress)) {
+//                          _showMessages((upiResponse.msg != null &&
+//                                  upiResponse.msg.trim().isNotEmpty)
+//                              ? upiResponse.msg
+//                              : PlunesStrings.invalidPaymentDetails);
+//                          return;
+//                        }
+//                        UpiUtil()
+//                            .initPayment(applicationMeta, _initPaymentResponse,
+//                                upiResponse)
+//                            .then((value) {
+//                          if (value != null) {
+//                            _checkIfUpiPaymentSuccessOrNot(value, upiResponse);
+//                          } else {
+//                            _showMessages("Payment Failed");
+//                          }
+//                        });
+//                      } else if (upiServerValue is RequestFailed) {
+//                        _showMessages(upiServerValue.failureCause);
+//                      }
+//                    });
+//                  } else {
+//                    _openWebView(_initPaymentResponse);
+//                  }
+//                }
+//              });
+//            }
+//            else {
+            _openWebView(_initPaymentResponse);
+//            }
           }
         } else {
           _showMessages(_initPaymentResponse.message);
