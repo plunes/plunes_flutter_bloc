@@ -329,6 +329,7 @@ class PlunesStrings {
   static const String startNegotiating = "Start Negotiating";
   static const String pleasePayFull = "Please pay due amount to get Invoice";
   static const String continueText = "Continue";
+  static const String addMore = "Add more";
   static const String facilityNotAvailableMessage =
       "Sorry, the facility you are searching is currently not available";
   static const String emptyStr = "";

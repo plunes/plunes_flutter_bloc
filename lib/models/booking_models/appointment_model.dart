@@ -47,6 +47,7 @@ class AppointmentModel {
   String serviceName;
   bool rescheduled, zestMoney;
   Services service;
+  List<num> paymentOptions;
   bool isOpened = false;
   String lat, long;
   String paymentPercent;
@@ -123,9 +124,11 @@ class AppointmentModel {
       this.patientName,
       this.paidBookingAmount,
       this.zestMoney,
+      this.paymentOptions,
       this.totalAmount});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
+    print("json['paymentOptions'] ${json['paymentOptions']}");
     professionalId = json['professionalId'];
     solutionServiceId = json['solutionServiceId'];
     serviceId = json['serviceId'];
@@ -186,6 +189,9 @@ class AppointmentModel {
     paidBookingAmount = json['paidBookingAmount'];
     dueBookingAmount = json['dueBookingAmount'];
     zestMoney = json['zestMoney'];
+    if (json['paymentOptions'] != null && json['paymentOptions'].isNotEmpty) {
+      paymentOptions = json['paymentOptions'].cast<num>();
+    }
   }
 
   Map<String, dynamic> toJson() {

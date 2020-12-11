@@ -1068,8 +1068,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
         barrierDismissible: false,
         builder: (BuildContext context) => PopupChoose(
               services: Services(
-                  paymentOptions:
-                      widget.appointmentModel?.service?.paymentOptions ?? [],
+                  paymentOptions: widget.appointmentModel?.paymentOptions ?? [],
                   zestMoney: widget.appointmentModel?.zestMoney ?? false),
             )).then((returnedValue) {
       if (returnedValue != null) {

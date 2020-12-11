@@ -194,7 +194,12 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                   _cartOuterModel.data.bookingIds.length - 1);
             });
       },
-      itemCount: _cartOuterModel?.data?.bookingIds?.length ?? 0,
+      itemCount: (_cartOuterModel != null &&
+              _cartOuterModel.data != null &&
+              _cartOuterModel.data.bookingIds != null &&
+              _cartOuterModel.data.bookingIds.isNotEmpty)
+          ? (_cartOuterModel.data.bookingIds.length)
+          : 0,
     );
   }
 
@@ -230,27 +235,58 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                         fontSize: 15))
               ],
             ),
-            Container(
-              margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 2,
-                  left: AppConfig.horizontalBlockSize * 32,
-                  right: AppConfig.horizontalBlockSize * 32),
-              child: InkWell(
-                onTap: () {
-                  _checkCreditAvailableAndPay(bookingIds, price);
-                  return;
-                },
-                onDoubleTap: () {},
-                child: CustomWidgets().getRoundedButton(
-                    PlunesStrings.continueText,
-                    AppConfig.horizontalBlockSize * 8,
-                    PlunesColors.GREENCOLOR,
-                    AppConfig.horizontalBlockSize * 3,
-                    AppConfig.verticalBlockSize * 1,
-                    PlunesColors.WHITECOLOR,
-                    borderColor: PlunesColors.SPARKLINGGREEN,
-                    hasBorder: true),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 2,
+                      left: AppConfig.horizontalBlockSize * 3),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => HomeScreen(
+                                  screenNo: Constants.homeScreenNumber)),
+                          (_) => false);
+                      return;
+                    },
+                    onDoubleTap: () {},
+                    child: CustomWidgets().getRoundedButton(
+                        PlunesStrings.addMore,
+                        AppConfig.horizontalBlockSize * 8,
+                        PlunesColors.WHITECOLOR,
+                        AppConfig.horizontalBlockSize * 3,
+                        AppConfig.verticalBlockSize * 1,
+                        PlunesColors.GREENCOLOR,
+                        borderColor: PlunesColors.GREENCOLOR,
+                        hasBorder: true),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 2,
+                      left: AppConfig.horizontalBlockSize * 3),
+                  child: InkWell(
+                    onTap: () {
+                      _checkCreditAvailableAndPay(bookingIds, price);
+                      return;
+                    },
+                    onDoubleTap: () {},
+                    child: CustomWidgets().getRoundedButton(
+                        PlunesStrings.continueText,
+                        AppConfig.horizontalBlockSize * 8,
+                        PlunesColors.GREENCOLOR,
+                        AppConfig.horizontalBlockSize * 3,
+                        AppConfig.verticalBlockSize * 1,
+                        PlunesColors.WHITECOLOR,
+                        borderColor: PlunesColors.SPARKLINGGREEN,
+                        hasBorder: true),
+                  ),
+                ),
+              ],
             )
           ],
         ),

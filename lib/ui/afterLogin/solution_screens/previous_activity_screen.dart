@@ -94,7 +94,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                               ),
                             ),
                             Text(
-                              "You don't have any missed negotiations",
+                              "You don't have any missed prices",
                               textAlign: TextAlign.center,
                               style: TextStyle(fontSize: AppConfig.smallFont),
                             ),
@@ -208,7 +208,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                       margin: EdgeInsets.symmetric(
                           vertical: AppConfig.verticalBlockSize * 2),
                       child: Text(
-                        'Missed Negotiations',
+                        'Missed Prices',
                         style: TextStyle(
                             fontSize: AppConfig.mediumFont + 2,
                             fontWeight: FontWeight.w500),

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -113,51 +114,65 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
     CommonMethods.globalContext = context;
     globalHeight = MediaQuery.of(context).size.height;
     globalWidth = MediaQuery.of(context).size.width;
-    return Scaffold(
-        key: _scaffoldKey,
-        backgroundColor: Colors.white,
-        extendBodyBehindAppBar:
-            (_selectedIndex == 0 && _userType == Constants.user) ? true : false,
-        appBar: (_selectedIndex == 0 && _userType == Constants.user)
-            ? null
-            : widget.getHomeAppBar(
-                context,
-                _userType != Constants.user
-                    ? (_selectedIndex == 0
-                        ? CommonMethods.getStringInCamelCase(
-                                UserManager().getUserDetails().name) ??
-                            ""
-                        : _selectedIndex == 1
-                            ? plunesStrings.notifications
-                            : _selectedIndex == 3
-                                ? plunesStrings.profiles
-                                : _selectedIndex == 2
-                                    ? plunesStrings.notifications
-                                    : '')
-                    : (_selectedIndex == 1
-                        ? PlunesStrings.explore
-                        : _selectedIndex == 2
-                            ? PlunesStrings.cart
-                            : plunesStrings.notifications),
-                isSelected,
-                selectedPositions,
-                from,
-                this,
-                isSolutionPageSelected:
-                    (_selectedIndex == 0 && _userType == Constants.user)),
-        drawer: getDrawerView(),
-        body: GestureDetector(
-            onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()),
-        bottomNavigationBar: StreamBuilder(
-          builder: (context, snapshot) {
-            return _userType == Constants.user
-                ? getBottomNavigationViewForGeneralUser()
-                : _userType == Constants.doctor
-                    ? getBottomNavigationViewForDoctor()
-                    : getBottomNavigationHospitalView();
-          },
-          stream: FirebaseNotification().notificationStream,
-        ));
+    return WillPopScope(
+      onWillPop: () async {
+        if (_selectedIndex != 0) {
+          _selectedIndex = 0;
+          _setState();
+          return false;
+        } else {
+          SystemNavigator.pop();
+          return true;
+        }
+      },
+      child: Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: Colors.white,
+          extendBodyBehindAppBar:
+              (_selectedIndex == 0 && _userType == Constants.user)
+                  ? true
+                  : false,
+          appBar: (_selectedIndex == 0 && _userType == Constants.user)
+              ? null
+              : widget.getHomeAppBar(
+                  context,
+                  _userType != Constants.user
+                      ? (_selectedIndex == 0
+                          ? CommonMethods.getStringInCamelCase(
+                                  UserManager().getUserDetails().name) ??
+                              ""
+                          : _selectedIndex == 1
+                              ? plunesStrings.notifications
+                              : _selectedIndex == 3
+                                  ? plunesStrings.profiles
+                                  : _selectedIndex == 2
+                                      ? plunesStrings.notifications
+                                      : '')
+                      : (_selectedIndex == 1
+                          ? PlunesStrings.explore
+                          : _selectedIndex == 2
+                              ? PlunesStrings.cart
+                              : plunesStrings.notifications),
+                  isSelected,
+                  selectedPositions,
+                  from,
+                  this,
+                  isSolutionPageSelected:
+                      (_selectedIndex == 0 && _userType == Constants.user)),
+          drawer: getDrawerView(),
+          body: GestureDetector(
+              onTap: () => CommonMethods.hideSoftKeyboard(), child: bodyView()),
+          bottomNavigationBar: StreamBuilder(
+            builder: (context, snapshot) {
+              return _userType == Constants.user
+                  ? getBottomNavigationViewForGeneralUser()
+                  : _userType == Constants.doctor
+                      ? getBottomNavigationViewForDoctor()
+                      : getBottomNavigationHospitalView();
+            },
+            stream: FirebaseNotification().notificationStream,
+          )),
+    );
   }
 
   Widget getBottomNavigationHospitalView() {
