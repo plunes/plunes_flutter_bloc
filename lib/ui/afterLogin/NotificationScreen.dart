@@ -376,6 +376,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
               builder: (context) =>
                   HomeScreen(screenNo: Constants.exploreScreenNumber)),
           (_) => false);
+    } else if (result.notificationScreen ==
+        FirebaseNotification.cartScreenName) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(screenNo: Constants.cartScreenNumber)),
+          (_) => false);
     }
   }
 

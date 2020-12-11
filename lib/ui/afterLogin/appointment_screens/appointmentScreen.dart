@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/Utils/payment_web_view.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -20,6 +22,7 @@ import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
+import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 
@@ -970,7 +973,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                       margin: EdgeInsets.symmetric(
                           horizontal: AppConfig.horizontalBlockSize * 21.5),
                       child: InkWell(
-                        onTap: () => _openPaymentOption(),
+                        onTap: () => _queryPayment(),
                         onDoubleTap: () {},
                         child: CustomWidgets().getRoundedButton(
                             PlunesStrings.completePaymentText,
@@ -1059,13 +1062,41 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
         onDoubleTap: () {});
   }
 
-  _openPaymentOption() async {
+  void _queryPayment({bool credits}) async {
+    await showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => PopupChoose(
+              services: Services(
+                  paymentOptions:
+                      widget.appointmentModel?.service?.paymentOptions ?? [],
+                  zestMoney: widget.appointmentModel?.zestMoney ?? false),
+            )).then((returnedValue) {
+      if (returnedValue != null) {
+//        print("selected payment percenatge $returnedValue");
+        _openPaymentOption(returnedValue);
+      }
+    });
+  }
+
+  _openPaymentOption(PaymentSelector paymentSelector) async {
+    bool zestMoney = false;
+    if (paymentSelector.paymentUnit == PlunesStrings.zestMoney) {
+      zestMoney = true;
+    }
     var result = await _bookingBloc.payInstallment(BookingInstallment(
-            bookingId: widget.appointmentModel.bookingId, creditsUsed: true)
+            bookingId: widget.appointmentModel.bookingId,
+            creditsUsed: true,
+            paymentPercent: paymentSelector?.paymentUnit,
+            zestMoney: zestMoney)
         .toJson());
     if (result is RequestSuccess) {
       InitPaymentResponse _initPaymentResponse = result.response;
       if (_initPaymentResponse.success) {
+        if (zestMoney) {
+          _processZestMoneyQueries(_initPaymentResponse);
+          return;
+        }
         if (_initPaymentResponse.status.contains("Confirmed")) {
           showDialog(
               context: context,
@@ -1078,41 +1109,100 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
                       bookingId:
                           null)).then((value) => widget.getAppointment());
         } else {
-          Navigator.of(context)
-              .push(PageRouteBuilder(
-                  opaque: false,
-                  pageBuilder: (BuildContext context, _, __) =>
-                      PaymentWebView(id: widget.appointmentModel.bookingId)))
-              .then((val) {
-            if (val == null) {
-              _bookingBloc.cancelPayment(widget.appointmentModel.bookingId);
-              return;
-            }
-            if (val.toString().contains("success")) {
-              showDialog(
-                  context: context,
-                  builder: (
-                    BuildContext context,
-                  ) =>
-                      CustomWidgets().paymentStatusPopup(
-                          "Payment Success",
-                          "Your Booking ID is ${_initPaymentResponse.referenceId}",
-                          plunesImages.checkIcon,
-                          context,
-                          bookingId:
-                              null)).then((value) => widget.getAppointment());
-            } else if (val.toString().contains("fail")) {
-              _showSnackBar("Payment Failed");
-            } else if (val.toString().contains("cancel")) {
-              _showSnackBar("Payment Cancelled");
-            }
-          });
+          if (mounted)
+            Navigator.of(context)
+                .push(PageRouteBuilder(
+                    opaque: false,
+                    pageBuilder: (BuildContext context, _, __) =>
+                        PaymentWebView(id: widget.appointmentModel.bookingId)))
+                .then((val) {
+              if (val == null) {
+                _bookingBloc.cancelPayment(widget.appointmentModel.bookingId);
+                return;
+              }
+              if (val.toString().contains("success")) {
+                showDialog(
+                    context: context,
+                    builder: (
+                      BuildContext context,
+                    ) =>
+                        CustomWidgets().paymentStatusPopup(
+                            "Payment Success",
+                            "Your Booking ID is ${_initPaymentResponse.referenceId}",
+                            plunesImages.checkIcon,
+                            context,
+                            bookingId:
+                                null)).then((value) => widget.getAppointment());
+              } else if (val.toString().contains("fail")) {
+                _showSnackBar("Payment Failed");
+              } else if (val.toString().contains("cancel")) {
+                _showSnackBar("Payment Cancelled");
+              }
+            });
         }
       }
     } else if (result is RequestFailed) {
-      widget.showInSnackBar(
-          result.failureCause, PlunesColors.BLACKCOLOR, widget.globalKey);
+      _showSnackBar(result.failureCause);
     }
+  }
+
+  void _processZestMoneyQueries(InitPaymentResponse initPaymentResponse) {
+    _bookingBloc.processZestMoney(initPaymentResponse).then((value) {
+      {
+        if (value is RequestSuccess) {
+          ZestMoneyResponseModel zestMoneyResponseModel = value.response;
+          if (zestMoneyResponseModel != null &&
+              zestMoneyResponseModel.success != null &&
+              zestMoneyResponseModel.success &&
+              zestMoneyResponseModel.data != null &&
+              zestMoneyResponseModel.data.trim().isNotEmpty) {
+            _openWebViewWithDynamicUrl(
+                zestMoneyResponseModel, initPaymentResponse);
+            return;
+          } else {
+            _showSnackBar(zestMoneyResponseModel?.msg);
+          }
+        } else if (value is RequestFailed) {
+          _showSnackBar(value.failureCause);
+        }
+      }
+    });
+  }
+
+  void _openWebViewWithDynamicUrl(ZestMoneyResponseModel zestMoneyResponseModel,
+      InitPaymentResponse initPaymentResponse) {
+    if (mounted)
+      Navigator.of(context)
+          .push(PageRouteBuilder(
+              opaque: false,
+              pageBuilder: (BuildContext context, _, __) =>
+                  PaymentWebView(url: zestMoneyResponseModel.data)))
+          .then((val) {
+        if (val == null) {
+          AnalyticsProvider().registerEvent(AnalyticsKeys.beginCheckoutKey);
+          _bookingBloc.cancelPayment(initPaymentResponse.id);
+          return;
+        }
+        if (val.toString().contains("success")) {
+          AnalyticsProvider().registerEvent(AnalyticsKeys.inAppPurchaseKey);
+          showDialog(
+              context: context,
+              builder: (
+                BuildContext context,
+              ) =>
+                  CustomWidgets().paymentStatusPopup(
+                      "Payment Success",
+                      "Your Booking ID is ${initPaymentResponse.referenceId}",
+                      plunesImages.checkIcon,
+                      context,
+                      bookingId:
+                          null)).then((value) => widget.getAppointment());
+        } else if (val.toString().contains("fail")) {
+          _showSnackBar("Payment Failed");
+        } else if (val.toString().contains("cancel")) {
+          _showSnackBar("Payment Cancelled");
+        }
+      });
   }
 
   _openProfile() {

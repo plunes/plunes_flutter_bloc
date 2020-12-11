@@ -7,12 +7,14 @@ import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/payment_web_view.dart';
 import 'package:plunes/Utils/upi_payment_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/payment_bloc/payment_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/cart_models/cart_main_model.dart';
@@ -62,6 +64,13 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
       _timer = timer;
       if (mounted) {
         _timerStream.add(null);
+      }
+    });
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == FirebaseNotification.cartScreenName &&
+          mounted) {
+        _getCartItems();
       }
     });
     _getCartItems();

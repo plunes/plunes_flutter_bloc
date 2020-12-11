@@ -50,6 +50,7 @@ class FirebaseNotification {
   FirebaseAnalytics _analytics;
 
   static const String homeScreenName = "HomeScreen";
+  static const String cartScreenName = "CartScreen";
   static const String bookingScreen = "booking"; // for all
   static const String exploreScreen = "explore"; //"plockr";
   static const String solutionScreen = "solution";
@@ -154,6 +155,11 @@ class FirebaseNotification {
         isHomeScreen = true;
         widget = HomeScreen(
           screenNo: Constants.exploreScreenNumber,
+        );
+      } else if (payLoad["data"]['screen'] == cartScreenName) {
+        isHomeScreen = true;
+        widget = HomeScreen(
+          screenNo: Constants.cartScreenNumber,
         );
       } else if (payLoad["data"]['screen'] == bookingScreen) {
         widget = AppointmentMainScreen(bookingId: payLoad['data']['id']);
@@ -260,6 +266,11 @@ class FirebaseNotification {
       widget = HomeScreen(
         screenNo: Constants.exploreScreenNumber,
       );
+    } else if (notificationModel.notificationType == cartScreenName) {
+      isHomeScreen = true;
+      widget = HomeScreen(
+        screenNo: Constants.cartScreenNumber,
+      );
     } else if (notificationModel.notificationType == bookingScreen) {
       widget = AppointmentMainScreen(
         bookingId: notificationModel.id,
@@ -343,6 +354,8 @@ class FirebaseNotification {
           screenName = bookingScreen;
         } else if (payLoad['screen'] == insightScreen) {
           screenName = insightScreen;
+        } else if (payLoad['screen'] == cartScreenName) {
+          screenName = cartScreenName;
         }
         if (screenName != null && screenName.isNotEmpty) {
           EventProvider()
@@ -362,6 +375,8 @@ class FirebaseNotification {
           screenName = bookingScreen;
         } else if (payLoad["data"]['screen'] == insightScreen) {
           screenName = insightScreen;
+        } else if (payLoad["data"]['screen'] == cartScreenName) {
+          screenName = cartScreenName;
         }
         if (screenName != null && screenName.isNotEmpty) {
           EventProvider()

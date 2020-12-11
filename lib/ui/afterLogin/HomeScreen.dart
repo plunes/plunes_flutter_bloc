@@ -298,8 +298,11 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
         case Constants.exploreScreenNumber:
           _selectedIndex = 1;
           break;
-        case Constants.notificationScreenNumber:
+        case Constants.cartScreenNumber:
           _selectedIndex = 2;
+          break;
+        case Constants.notificationScreenNumber:
+          _selectedIndex = 3;
           break;
         default:
           _selectedIndex = 0;

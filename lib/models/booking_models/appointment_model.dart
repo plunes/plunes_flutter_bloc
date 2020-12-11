@@ -45,7 +45,7 @@ class AppointmentModel {
   String timeSlot;
   String appointmentTime;
   String serviceName;
-  bool rescheduled;
+  bool rescheduled, zestMoney;
   Services service;
   bool isOpened = false;
   String lat, long;
@@ -122,6 +122,7 @@ class AppointmentModel {
       this.dueBookingAmount,
       this.patientName,
       this.paidBookingAmount,
+      this.zestMoney,
       this.totalAmount});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
@@ -184,6 +185,7 @@ class AppointmentModel {
     totalAmount = json['totalAmount'];
     paidBookingAmount = json['paidBookingAmount'];
     dueBookingAmount = json['dueBookingAmount'];
+    zestMoney = json['zestMoney'];
   }
 
   Map<String, dynamic> toJson() {
