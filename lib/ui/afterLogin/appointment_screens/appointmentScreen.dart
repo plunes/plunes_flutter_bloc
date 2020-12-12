@@ -1086,7 +1086,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
     var result = await _bookingBloc.payInstallment(BookingInstallment(
             bookingId: widget.appointmentModel.bookingId,
             creditsUsed: true,
-            paymentPercent: paymentSelector?.paymentUnit,
+            paymentPercent: zestMoney ? null : paymentSelector?.paymentUnit,
             zestMoney: zestMoney)
         .toJson());
     if (result is RequestSuccess) {
