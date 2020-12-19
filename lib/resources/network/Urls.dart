@@ -17,18 +17,18 @@ class Urls {
       'https://control.msg91.com/api/sendotp.php?authkey=278069AIdfPwGj5ce79990&mobile=91';
   static const String googleApiKey = 'AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc';
 
+  // static const String baseUrl =
+  //     'https://api.plunes.com/v8/'; // production server
   static const String baseUrl =
-      'https://api.plunes.com/v8/'; // production server
-//  static const String baseUrl =
-//      'https://devapi.plunes.com/v7/'; // staging server
+      'https://devapi.plunes.com/v7/'; // staging server
 
+  // static const String customBaseUrl =
+  //     'https://api.plunes.com/'; // production server
   static const String customBaseUrl =
-      'https://api.plunes.com/'; // production server
-//  static const String customBaseUrl =
-//      'https://devapi.plunes.com/'; // staging server
+      'https://devapi.plunes.com/'; // staging server
 
-  static const String socketUrl = 'https://api.plunes.com'; // production server
-//  static const String socketUrl = 'https://devapi.plunes.com'; // staging server
+  // static const String socketUrl = 'https://api.plunes.com'; // production server
+  static const String socketUrl = 'https://devapi.plunes.com'; // staging server
 
   get catalogue => baseUrl + 'catalogue';
 
@@ -67,10 +67,10 @@ class Urls {
   static const String GET_DOC_HOS_API = "solution";
   static const String BOOKING_URL = 'booking';
 
+  // static const String PAYMENT_WEB_VIEW_URL =
+  //     "https://api.plunes.com/payment"; //production
   static const String PAYMENT_WEB_VIEW_URL =
-      "https://api.plunes.com/payment"; //production
-//  static const String PAYMENT_WEB_VIEW_URL =
-//      'https://devapi.plunes.com/payment'; //'https://plunes.co/payment'; //dev
+      'https://devapi.plunes.com/payment'; //'https://plunes.co/payment'; //dev
   static const String ZEST_MONEY_URL =
       PAYMENT_WEB_VIEW_URL + "Control/zestMoney";
   static const String cancelPaymentUrl =
