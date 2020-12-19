@@ -6,8 +6,6 @@ PODS:
   - connectivity (0.0.1):
     - Flutter
     - Reachability
-  - connectivity_macos (0.0.1):
-    - Flutter
   - Crashlytics (3.14.0):
     - Fabric (~> 1.10.2)
   - device_info (0.0.1):
@@ -74,12 +72,8 @@ PODS:
     - Firebase/CoreOnly (~> 6.26.0)
     - firebase_core
     - Flutter
-  - firebase_analytics_web (0.1.0):
-    - Flutter
   - firebase_core (0.5.0):
     - Firebase/CoreOnly (~> 6.26.0)
-    - Flutter
-  - firebase_core_web (0.1.0):
     - Flutter
   - firebase_crashlytics (0.0.1):
     - Crashlytics
@@ -151,11 +145,7 @@ PODS:
     - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
-  - flutter_plugin_android_lifecycle (0.0.1):
-    - Flutter
   - flutter_webview_plugin (0.0.1):
-    - Flutter
-  - flutter_windowmanager (0.0.1):
     - Flutter
   - fluttertoast (0.0.2):
     - Flutter
@@ -221,8 +211,6 @@ PODS:
     - Flutter
   - path_provider (0.0.1):
     - Flutter
-  - path_provider_macos (0.0.1):
-    - Flutter
   - permission (0.0.1):
     - Flutter
   - PromisesObjC (1.2.11)
@@ -237,10 +225,6 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
-  - shared_preferences_macos (0.0.1):
-    - Flutter
-  - shared_preferences_web (0.0.1):
-    - Flutter
   - sms_otp_auto_verify (0.0.1):
     - Flutter
   - Socket.IO-Client-Swift (15.2.0):
@@ -251,13 +235,7 @@ PODS:
   - Starscream (3.1.1)
   - SwiftyGif (5.3.0)
   - TOCropViewController (2.5.5)
-  - upi_pay (0.0.1):
-    - Flutter
   - url_launcher (0.0.1):
-    - Flutter
-  - url_launcher_macos (0.0.1):
-    - Flutter
-  - url_launcher_web (0.0.1):
     - Flutter
   - webview_flutter (0.0.1):
     - Flutter
@@ -265,14 +243,11 @@ PODS:
 DEPENDENCIES:
   - adhara_socket_io (from `.symlinks/plugins/adhara_socket_io/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
-  - connectivity_macos (from `.symlinks/plugins/connectivity_macos/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - facebook_app_events (from `.symlinks/plugins/facebook_app_events/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
-  - firebase_analytics_web (from `.symlinks/plugins/firebase_analytics_web/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
-  - firebase_core_web (from `.symlinks/plugins/firebase_core_web/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
@@ -280,9 +255,7 @@ DEPENDENCIES:
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
-  - flutter_plugin_android_lifecycle (from `.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
-  - flutter_windowmanager (from `.symlinks/plugins/flutter_windowmanager/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - geocoder (from `.symlinks/plugins/geocoder/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
@@ -294,19 +267,13 @@ DEPENDENCIES:
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
-  - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - permission (from `.symlinks/plugins/permission/ios`)
   - searchable_dropdown (from `.symlinks/plugins/searchable_dropdown/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
-  - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
-  - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
   - sms_otp_auto_verify (from `.symlinks/plugins/sms_otp_auto_verify/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - upi_pay (from `.symlinks/plugins/upi_pay/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
-  - url_launcher_macos (from `.symlinks/plugins/url_launcher_macos/ios`)
-  - url_launcher_web (from `.symlinks/plugins/url_launcher_web/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
@@ -347,8 +314,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/adhara_socket_io/ios"
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
-  connectivity_macos:
-    :path: ".symlinks/plugins/connectivity_macos/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
   facebook_app_events:
@@ -357,12 +322,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/file_picker/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
-  firebase_analytics_web:
-    :path: ".symlinks/plugins/firebase_analytics_web/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
-  firebase_core_web:
-    :path: ".symlinks/plugins/firebase_core_web/ios"
   firebase_crashlytics:
     :path: ".symlinks/plugins/firebase_crashlytics/ios"
   firebase_messaging:
@@ -377,12 +338,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
-  flutter_plugin_android_lifecycle:
-    :path: ".symlinks/plugins/flutter_plugin_android_lifecycle/ios"
   flutter_webview_plugin:
     :path: ".symlinks/plugins/flutter_webview_plugin/ios"
-  flutter_windowmanager:
-    :path: ".symlinks/plugins/flutter_windowmanager/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
   geocoder:
@@ -405,8 +362,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
-  path_provider_macos:
-    :path: ".symlinks/plugins/path_provider_macos/ios"
   permission:
     :path: ".symlinks/plugins/permission/ios"
   searchable_dropdown:
@@ -415,29 +370,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
-  shared_preferences_macos:
-    :path: ".symlinks/plugins/shared_preferences_macos/ios"
-  shared_preferences_web:
-    :path: ".symlinks/plugins/shared_preferences_web/ios"
   sms_otp_auto_verify:
     :path: ".symlinks/plugins/sms_otp_auto_verify/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  upi_pay:
-    :path: ".symlinks/plugins/upi_pay/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
-  url_launcher_macos:
-    :path: ".symlinks/plugins/url_launcher_macos/ios"
-  url_launcher_web:
-    :path: ".symlinks/plugins/url_launcher_web/ios"
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
   adhara_socket_io: a2f8b3079a0de70a1a3f5080a8429a4fb7ae9bea
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
-  connectivity_macos: e2e9731b6b22dda39eb1b128f6969d574460e191
   Crashlytics: 9220f5bc89e7a618df411b4f639389dbfb0e03d2
   device_info: 3ebad48f726348f69abd802f3334a8d1ed795fbd
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
@@ -448,9 +392,7 @@ SPEC CHECKSUMS:
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
   firebase_analytics: 3ad65aa7be059752b2c1a6392bfafe030b4ab9fa
-  firebase_analytics_web: 7d539061ea4af07563a0e21044af89cab70efec0
   firebase_core: 3134fe79d257d430f163b558caf52a10a87efe8a
-  firebase_core_web: d501d8b946b60c8af265428ce483b0fff5ad52d1
   firebase_crashlytics: bd8c58df07f107cb7e1a20cb190b9a468e0a69fd
   firebase_messaging: 21344b3b3a7d9d325d63a70e3750c0c798fe1e03
   firebase_remote_config: 7297b33f88ca82beacff00cc60cc1230bd9fc4c5
@@ -468,9 +410,7 @@ SPEC CHECKSUMS:
   flutter_inappwebview: 69dfbac46157b336ffbec19ca6dfd4638c7bf189
   flutter_keyboard_visibility: 6195387fb6d8f46e5cd6dda4a4154e41f800f545
   flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
-  flutter_plugin_android_lifecycle: dc0b544e129eebb77a6bfb1239d4d1c673a60a35
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
-  flutter_windowmanager: cb93216bc445af67b3b8f07cf7c07945cf168b38
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoder: 3cfab70531a0b367e917bafe82df4c30f6d4c45a
@@ -488,7 +428,6 @@ SPEC CHECKSUMS:
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
-  path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   permission: 51e2d3a8ef3490da0537667d7f1a6a1c5ba8ec47
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
@@ -497,20 +436,15 @@ SPEC CHECKSUMS:
   searchable_dropdown: 5058be32fdc5e0481d300ff2087129072e71bd62
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
-  shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
-  shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
   sms_otp_auto_verify: 201803ac25e13feedaae96eda8b70b10c55b3338
   Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
   Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
   SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
   TOCropViewController: da59f531f8ac8a94ef6d6c0fc34009350f9e8bfe
-  upi_pay: 75cef2fa2d0046297e6ca235ded58b9825a833e9
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
-  url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
-  url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
 
-PODFILE CHECKSUM: 4de2c97257000eb66bc0eb28a7de76d232f61858
+PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
-COCOAPODS: 1.9.3
+COCOAPODS: 1.10.0
