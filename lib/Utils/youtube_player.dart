@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -36,14 +37,21 @@ class _YoutubePlayerProviderState extends BaseState<YoutubePlayerProvider> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        top: false,
-        bottom: false,
-        child: Scaffold(
-          key: scaffoldKey,
-          appBar: widget.getAppBar(context, "App tutorial", true),
-          body: _getPlayer(),
-        ));
+    return WillPopScope(
+      onWillPop: () async {
+        await _portraitUp();
+        return true;
+      },
+      child: SafeArea(
+          top: false,
+          bottom: false,
+          child: Scaffold(
+            key: scaffoldKey,
+            appBar: widget.getAppBar(context, "App tutorial", true,
+                func: () => _portraitUp()),
+            body: _getPlayer(),
+          )),
+    );
   }
 
   Widget _getPlayer() {
@@ -63,26 +71,13 @@ class _YoutubePlayerProviderState extends BaseState<YoutubePlayerProvider> {
                     return;
                   },
                   actionsPadding: EdgeInsets.all(8.0),
-                  bottomActions: <Widget>[
-                    const SizedBox(width: 14.0),
-                    CurrentPosition(),
-                    const SizedBox(width: 8.0),
-                    Flexible(
-                      child: ProgressBar(
-                        isExpanded: false,
-                        colors: ProgressBarColors(
-                            backgroundColor: PlunesColors.GREENCOLOR,
-                            bufferedColor: PlunesColors.GREENCOLOR,
-                            handleColor: PlunesColors.GREENCOLOR,
-                            playedColor: PlunesColors.GREENCOLOR),
-                      ),
-                    ),
-                    RemainingDuration(),
-                    const PlaybackSpeedButton(),
-                  ],
                 ),
                 builder: (context, player) {
-                  return player;
+                  return Column(
+                    children: [
+                      player,
+                    ],
+                  );
                 },
               ),
             )),
@@ -96,8 +91,14 @@ class _YoutubePlayerProviderState extends BaseState<YoutubePlayerProvider> {
         builder: (context) {
           return CustomWidgets().getInformativePopup(
               message: "Thanks for watching!", globalKey: scaffoldKey);
-        }).then((value) {
+        }).then((value) async {
+      await _portraitUp();
       Navigator.pop(context);
     });
+  }
+
+  _portraitUp() async {
+    return await SystemChrome.setPreferredOrientations(
+        [DeviceOrientation.portraitUp]);
   }
 }
