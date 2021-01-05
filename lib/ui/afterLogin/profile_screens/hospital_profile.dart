@@ -1275,7 +1275,9 @@ class _HospitalProfileState extends BaseState<HospitalProfile> {
                   },
                   itemCount: _isServiceListOpened
                       ? _catalogueList?.length
-                      : _catalogueList.length < 4 ? _catalogueList?.length : 3,
+                      : _catalogueList.length < 4
+                          ? _catalogueList?.length
+                          : 3,
                 ),
               ),
             ),

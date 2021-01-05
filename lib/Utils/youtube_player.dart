@@ -7,9 +7,9 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ignore: must_be_immutable
 class YoutubePlayerProvider extends BaseActivity {
-  final String videoLink;
+  final String videoLink, title;
 
-  YoutubePlayerProvider(this.videoLink);
+  YoutubePlayerProvider(this.videoLink, {this.title});
 
   @override
   _YoutubePlayerProviderState createState() => _YoutubePlayerProviderState();
@@ -47,7 +47,8 @@ class _YoutubePlayerProviderState extends BaseState<YoutubePlayerProvider> {
           bottom: false,
           child: Scaffold(
             key: scaffoldKey,
-            appBar: widget.getAppBar(context, "App tutorial", true,
+            appBar: widget.getAppBar(
+                context, widget.title ?? "App tutorial", true,
                 func: () => _portraitUp()),
             body: _getPlayer(),
           )),

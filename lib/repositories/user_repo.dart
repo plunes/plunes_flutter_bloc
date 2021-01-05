@@ -6,6 +6,7 @@ import 'package:plunes/Utils/Preferences.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/doc_hos_models/common_models/media_content_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -502,6 +503,22 @@ class UserManager {
                 .toJson());
       }
       return updateResult;
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getMediaContent(String profId) async {
+    //5f6eee7464b4fe7d98a04e4f
+    var result = await DioRequester().requestMethod(
+        url: Urls.MEDIA_CONTENT_URL,
+        requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {"professionalId": profId},
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      MediaContentModel _mediaContentModel =
+          MediaContentModel.fromJson(result.response.data);
+      return RequestSuccess(response: _mediaContentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

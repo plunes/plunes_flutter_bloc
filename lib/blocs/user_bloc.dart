@@ -23,6 +23,11 @@ class UserBloc extends BlocBase {
 
   Observable<RequestState> get profileStream => _profileImageProvider.stream;
 
+  final _mediaContentStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get mediaContentStream =>
+      _mediaContentStreamProvider.stream;
+
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
       {String address, bool isFromPopup = false, String region}) {
     return UserManager().isUserInServiceLocation(latitude, longitude,
@@ -101,6 +106,7 @@ class UserBloc extends BlocBase {
     _serviceStreamProvider?.close();
     _reviewStreamProvider?.close();
     _profileImageProvider?.close();
+    _mediaContentStreamProvider?.close();
     super.dispose();
   }
 
@@ -150,11 +156,23 @@ class UserBloc extends BlocBase {
     return result;
   }
 
+  Future<RequestState> getMediaContent(String profId,
+      {int initialIndex = 0}) async {
+    addStateInMediaContentStream(RequestInProgress());
+    var result = await UserManager().getMediaContent(profId);
+    addStateInMediaContentStream(result);
+    return result;
+  }
+
   addStateInReviewStream(RequestState data) {
     addStateInGenericStream(_reviewStreamProvider, data);
   }
 
   addStateInProfileStream(RequestState data) {
     addStateInGenericStream(_profileImageProvider, data);
+  }
+
+  addStateInMediaContentStream(RequestState data) {
+    addStateInGenericStream(_mediaContentStreamProvider, data);
   }
 }

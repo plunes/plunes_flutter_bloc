@@ -19,6 +19,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
@@ -858,13 +859,13 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
       Widget route;
       if (service.userType.toLowerCase() ==
           Constants.doctor.toString().toLowerCase()) {
-        route = DocProfile(
-            userId: service.professionalId,
-            rating: service.rating.toStringAsFixed(1));
+        route = DoctorInfo(service.professionalId);
+        // rating: service.rating.toStringAsFixed(1));
       } else {
-        route = HospitalProfile(
-            userID: service.professionalId,
-            rating: service.rating.toStringAsFixed(1));
+        route = DoctorInfo(
+          service.professionalId,
+          // rating: service.rating.toStringAsFixed(1)
+        );
       }
       Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
