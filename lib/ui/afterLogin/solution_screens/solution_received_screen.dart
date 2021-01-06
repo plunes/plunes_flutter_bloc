@@ -857,16 +857,17 @@ class _SolutionReceivedScreenState extends BaseState<SolutionReceivedScreen> {
   _viewProfile(Services service) {
     if (service.userType != null && service.professionalId != null) {
       Widget route;
-      if (service.userType.toLowerCase() ==
-          Constants.doctor.toString().toLowerCase()) {
-        route = DoctorInfo(service.professionalId);
-        // rating: service.rating.toStringAsFixed(1));
-      } else {
-        route = DoctorInfo(
-          service.professionalId,
-          // rating: service.rating.toStringAsFixed(1)
-        );
-      }
+      // if (service.userType.toLowerCase() ==
+      //     Constants.doctor.toString().toLowerCase()) {
+      //   route = DoctorInfo(service.professionalId);
+      //   // rating: service.rating.toStringAsFixed(1));
+      // } else {
+      route = DoctorInfo(
+        service.professionalId,
+        isDoc: (service.userType.toLowerCase() ==
+            Constants.doctor.toString().toLowerCase()),
+      );
+      // }
       Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
   }

@@ -26,7 +26,9 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 class DoctorInfo extends BaseActivity {
   final String userID;
 
-  DoctorInfo(this.userID);
+  bool isDoc;
+
+  DoctorInfo(this.userID, {this.isDoc});
 
   @override
   _DoctorInfoState createState() => _DoctorInfoState();
@@ -46,7 +48,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   StreamController _streamController;
   MediaContentModel _mediaContent;
   List<RateAndReview> _rateAndReviewList = [];
-  bool _reviewApiHitOnce = false, _mediaContentApiHitOnce = false;
+  bool _reviewApiHitOnce = false, _mediaContentApiHitOnce = false, _isDoc;
 
   List<Widget> _tabsForDoc = [
     ClipRRect(
@@ -78,8 +80,48 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     ),
   ];
 
+  List<Widget> _tabsForHospital = [
+    ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+          child: Text(
+        'Photos/Videos',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+    ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+          child: Text(
+        'Review',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+    ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+          child: Text(
+        'Achievements',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+    ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+          child: Text(
+        'Team of Experts',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+  ];
+
   @override
   void initState() {
+    _isDoc = widget.isDoc ?? false;
     _rateAndReviewList = [];
     _streamController = StreamController.broadcast();
     _userBloc = UserBloc();
@@ -314,10 +356,13 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      CommonMethods.getStringInCamelCase(
-                          _profileResponse.user?.name),
-                      style: TextStyle(color: Colors.black, fontSize: 20.0),
+                    Flexible(
+                      child: Text(
+                        CommonMethods.getStringInCamelCase(
+                            _profileResponse.user?.name),
+                        maxLines: 2,
+                        style: TextStyle(color: Colors.black, fontSize: 20.0),
+                      ),
                     ),
                     Row(
                       children: [
@@ -464,12 +509,16 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: TabBar(
                       unselectedLabelColor: Colors.black,
+                      isScrollable: true,
+                      labelPadding: EdgeInsets.all(12.0),
                       labelColor: Colors.white,
                       controller: TabController(
-                        length: 3,
+                        length: _isDoc
+                            ? _tabsForDoc.length
+                            : _tabsForHospital.length,
                         vsync: this,
                         initialIndex: _selectedIndex,
                       ),
@@ -483,66 +532,22 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                           _selectedIndex = i;
                         });
                       },
-                      tabs: _tabsForDoc,
+                      tabs: _isDoc ? _tabsForDoc : _tabsForHospital,
                     ),
                   ),
                 ),
-                [
-                  StreamBuilder<RequestState>(
-                      stream: _userBloc.mediaContentStream,
-                      builder: (context, snapshot) {
-                        if (_mediaContentApiHitOnce == null ||
-                            !_mediaContentApiHitOnce) {
-                          _mediaContentApiHitOnce = true;
-                          _getMediaContent();
-                        }
-                        if (snapshot.data is RequestInProgress) {
-                          return CustomWidgets().getProgressIndicator();
-                        } else if (snapshot.data is RequestSuccess) {
-                          RequestSuccess _requestSuccess = snapshot.data;
-                          _mediaContent = _requestSuccess.response;
-                          _userBloc.addStateInMediaContentStream(null);
-                        } else if (snapshot.data is RequestFailed) {
-                          RequestFailed _requestFailed = snapshot.data;
-                          _failureCauseForMediaContent =
-                              _requestFailed.failureCause;
-                          _userBloc.addStateInMediaContentStream(null);
-                        }
-                        return (_failureCauseForMediaContent != null ||
-                                _mediaContent == null ||
-                                _mediaContent.success == null ||
-                                !_mediaContent.success)
-                            ? Container(
-                                height: AppConfig.verticalBlockSize * 10,
-                                child: Center(
-                                  child: Text(_failureCauseForMediaContent ??
-                                      "No photos/videos available yet"),
-                                ),
-                              )
-                            : PhotosWidget(_mediaContent);
-                      }),
-                  StreamBuilder<RequestState>(
-                      stream: _userBloc.rateAndReviewStream,
-                      builder: (context, snapshot) {
-                        if (_reviewApiHitOnce == null || !_reviewApiHitOnce) {
-                          _reviewApiHitOnce = true;
-                          _getReviews();
-                        }
-                        if (snapshot.data is RequestInProgress) {
-                          return CustomWidgets().getProgressIndicator();
-                        } else if (snapshot.data is RequestSuccess) {
-                          RequestSuccess _requestSuccess = snapshot.data;
-                          _rateAndReviewList = _requestSuccess.response;
-                          _userBloc.addStateInReviewStream(null);
-                        } else if (snapshot.data is RequestFailed) {
-                          RequestFailed _requestFailed = snapshot.data;
-                          _failureForReview = _requestFailed.failureCause;
-                          _userBloc.addStateInReviewStream(null);
-                        }
-                        return ReviewWidget(_rateAndReviewList);
-                      }),
-                  AchievementWidget(_profileResponse?.user?.achievements),
-                ][_selectedIndex],
+                _isDoc
+                    ? [
+                        _getPhotoWidget(),
+                        _getRateAndReviewWidget(),
+                        AchievementWidget(_profileResponse?.user?.achievements),
+                      ][_selectedIndex]
+                    : [
+                        _getPhotoWidget(),
+                        _getRateAndReviewWidget(),
+                        AchievementWidget(_profileResponse?.user?.achievements),
+                        _getTeamOfExpertsWidget()
+                      ][_selectedIndex],
                 SizedBox(
                   height: 10,
                 ),
@@ -652,6 +657,182 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
 
   void _getMediaContent() {
     _userBloc.getMediaContent(widget.userID);
+  }
+
+  Widget _getPhotoWidget() {
+    return StreamBuilder<RequestState>(
+        stream: _userBloc.mediaContentStream,
+        builder: (context, snapshot) {
+          if (_mediaContentApiHitOnce == null || !_mediaContentApiHitOnce) {
+            _mediaContentApiHitOnce = true;
+            _getMediaContent();
+          }
+          if (snapshot.data is RequestInProgress) {
+            return CustomWidgets().getProgressIndicator();
+          } else if (snapshot.data is RequestSuccess) {
+            RequestSuccess _requestSuccess = snapshot.data;
+            _mediaContent = _requestSuccess.response;
+            _userBloc.addStateInMediaContentStream(null);
+          } else if (snapshot.data is RequestFailed) {
+            RequestFailed _requestFailed = snapshot.data;
+            _failureCauseForMediaContent = _requestFailed.failureCause;
+            _userBloc.addStateInMediaContentStream(null);
+          }
+          return (_failureCauseForMediaContent != null ||
+                  _mediaContent == null ||
+                  _mediaContent.success == null ||
+                  !_mediaContent.success)
+              ? Container(
+                  height: AppConfig.verticalBlockSize * 10,
+                  child: Center(
+                    child: Text(_failureCauseForMediaContent ??
+                        "No photos/videos available yet"),
+                  ),
+                )
+              : PhotosWidget(_mediaContent);
+        });
+  }
+
+  Widget _getRateAndReviewWidget() {
+    return StreamBuilder<RequestState>(
+        stream: _userBloc.rateAndReviewStream,
+        builder: (context, snapshot) {
+          if (_reviewApiHitOnce == null || !_reviewApiHitOnce) {
+            _reviewApiHitOnce = true;
+            _getReviews();
+          }
+          if (snapshot.data is RequestInProgress) {
+            return CustomWidgets().getProgressIndicator();
+          } else if (snapshot.data is RequestSuccess) {
+            RequestSuccess _requestSuccess = snapshot.data;
+            _rateAndReviewList = _requestSuccess.response;
+            _userBloc.addStateInReviewStream(null);
+          } else if (snapshot.data is RequestFailed) {
+            RequestFailed _requestFailed = snapshot.data;
+            _failureForReview = _requestFailed.failureCause;
+            _userBloc.addStateInReviewStream(null);
+          }
+          return ReviewWidget(_rateAndReviewList);
+        });
+  }
+
+  _openDocDetails(DoctorsData doctorsData) {
+    showDialog(
+        context: context,
+        builder: (_) => CustomWidgets()
+            .showDocPopup(doctorsData, context, _profileResponse?.user?.name));
+  }
+
+  Widget _getTeamOfExpertsWidget() {
+    return (_profileResponse.user.doctorsData == null ||
+            _profileResponse.user.doctorsData.isEmpty)
+        ? Container()
+        : Container(
+            height: 250,
+            child: ListView.builder(
+              itemCount: _profileResponse.user.doctorsData.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return Card(
+                    margin: EdgeInsets.only(right: 15, bottom: 10, top: 10),
+                    child: InkWell(
+                      splashColor: PlunesColors.GREENCOLOR.withOpacity(0.5),
+                      onTap: () => _openDocDetails(
+                          _profileResponse.user.doctorsData[index]),
+                      child: Container(
+                        width: AppConfig.horizontalBlockSize * 42,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                width: double.infinity,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(16),
+                                      topRight: Radius.circular(16)),
+                                  child: CustomWidgets().getImageFromUrl(
+                                      _profileResponse
+                                          .user.doctorsData[index].imageUrl,
+                                      boxFit: BoxFit.fill,
+                                      placeHolderPath:
+                                          PlunesImages.doc_placeholder),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 2),
+                              child: Text(
+                                CommonMethods.getStringInCamelCase(
+                                        _profileResponse
+                                            .user?.doctorsData[index]?.name) ??
+                                    _getEmptyString(),
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#4E4E4E")),
+                                    fontSize: 16.0),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 2),
+                              child: Text(
+                                _profileResponse
+                                        .user?.doctorsData[index].designation ??
+                                    PlunesStrings.emptyStr,
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#969696")),
+                                    fontSize: 14.0),
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 2),
+                              child: Text(
+                                _getExpr(index) ?? PlunesStrings.emptyStr,
+                                textAlign: TextAlign.center,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#4E4E4E")),
+                                    fontSize: 16.0),
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                          ],
+                        ),
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(16),
+                            bottomRight: Radius.circular(16),
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16))));
+              },
+            ),
+          );
+  }
+
+  String _getExpr(int itemIndex) {
+    return _profileResponse.user.doctorsData[itemIndex].experience == null ||
+            _profileResponse.user.doctorsData[itemIndex].experience == "0"
+        ? null
+        : "Expr ${_profileResponse.user.doctorsData[itemIndex].experience} years";
   }
 }
 
@@ -799,17 +980,6 @@ class _PhotosWidgetState extends State<PhotosWidget> {
       ),
     );
   }
-
-// Future<Uint8List> _getVideoThumbnail(String videoUrl) async {
-//   final uint8list = await VideoThumbnail.thumbnailData(
-//     video:
-//     ,
-//     imageFormat: ImageFormat.JPEG,
-//     maxHeight: 150,
-//     quality: 60,
-//   );
-//   return uint8list;
-// }
 }
 
 // ignore: must_be_immutable
