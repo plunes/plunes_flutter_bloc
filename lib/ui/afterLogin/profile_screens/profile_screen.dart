@@ -49,6 +49,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   MediaContentModel _mediaContent;
   List<RateAndReview> _rateAndReviewList = [];
   bool _reviewApiHitOnce = false, _mediaContentApiHitOnce = false, _isDoc;
+  List<SpecialityModel> _specialityList;
 
   List<Widget> _tabsForDoc = [
     ClipRRect(
@@ -121,6 +122,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
 
   @override
   void initState() {
+    _specialityList = [];
     _isDoc = widget.isDoc ?? false;
     _rateAndReviewList = [];
     _streamController = StreamController.broadcast();
@@ -131,6 +133,16 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
 
   void _getReviews() {
     _userBloc.getRateAndReviews(widget.userID);
+  }
+
+  void _getSpecialities() {
+    _userBloc.getUserSpecificSpecialities(widget.userID).then((value) {
+      if (value is RequestSuccess) {
+        RequestSuccess requestSuccess = value;
+        _specialityList = requestSuccess.response;
+      }
+      _setState();
+    });
   }
 
   @override
@@ -165,10 +177,10 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
           RequestSuccess requestSuccess = snapshot.data;
           if (requestSuccess != null && requestSuccess.response != null) {
             _profileResponse = requestSuccess.response;
-            // if (_profileResponse.user != null) {
-            //   Future.delayed(Duration(milliseconds: 10))
-            //       .then((value) => _getSpecialities());
-            // }
+            if (_profileResponse.user != null) {
+              Future.delayed(Duration(milliseconds: 10))
+                  .then((value) => _getSpecialities());
+            }
           }
           _userBloc.addIntoStream(null);
         } else if (snapshot.data is RequestFailed) {
@@ -469,8 +481,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
                       return Card(
+                          margin: EdgeInsets.only(right: 20,bottom: 2),
                           child: Container(
-                            margin: EdgeInsets.only(right: 20),
                             child: Column(
                               children: [
                                 Expanded(
@@ -487,10 +499,16 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                     ),
                                   ),
                                 ),
+                                SizedBox(
+                                  height: 8,
+                                ),
                                 Text(
-                                  'covid safe',
+                                  'Covid safe',
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 16.0),
+                                ),
+                                SizedBox(
+                                  height: 8,
                                 ),
                               ],
                             ),
@@ -508,7 +526,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
-                  child: Padding(
+                  child: Container(
+                    alignment: Alignment.center,
                     padding: const EdgeInsets.symmetric(vertical: 12.0),
                     child: TabBar(
                       unselectedLabelColor: Colors.black,
@@ -569,21 +588,29 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
           Container(
               margin: EdgeInsets.symmetric(horizontal: 13),
               child: DottedLine()),
-          SizedBox(
-            height: 25,
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 13),
-            child: Text(
-              'Specialization',
-              style: TextStyle(fontSize: 18),
-            ),
-          ),
-          SizedBox(height: 20),
-          Container(
-            child: SpecialisationWidget(),
-            margin: EdgeInsets.symmetric(horizontal: 13),
-          )
+          (_specialityList == null || _specialityList.isEmpty)
+              ? Container()
+              : SizedBox(
+                  height: 25,
+                ),
+          (_specialityList == null || _specialityList.isEmpty)
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.symmetric(horizontal: 13),
+                  child: Text(
+                    'Specialization',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+          (_specialityList == null || _specialityList.isEmpty)
+              ? Container()
+              : SizedBox(height: 20),
+          (_specialityList == null || _specialityList.isEmpty)
+              ? Container()
+              : Container(
+                  child: SpecialisationWidget(_specialityList),
+                  margin: EdgeInsets.symmetric(horizontal: 13),
+                )
         ],
       )),
     );
@@ -632,13 +659,13 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
               itemCount: _slotArray.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) => Container(
-                padding: EdgeInsets.all(8),
+                padding: EdgeInsets.all(10),
                 margin:
                     EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
                 decoration: BoxDecoration(
                     color: PlunesColors.WHITECOLOR,
                     shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.all(Radius.circular(18)),
+                    borderRadius: BorderRadius.all(Radius.circular(30)),
                     border:
                         Border.all(color: PlunesColors.BLACKCOLOR, width: .8)),
                 alignment: Alignment.center,
@@ -726,7 +753,13 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   Widget _getTeamOfExpertsWidget() {
     return (_profileResponse.user.doctorsData == null ||
             _profileResponse.user.doctorsData.isEmpty)
-        ? Container()
+        ? Container(
+            height: AppConfig.verticalBlockSize * 10,
+            child: Center(
+              child: Text(_failureCauseForMediaContent ??
+                  "No experts available currently"),
+            ),
+          )
         : Container(
             height: 250,
             child: ListView.builder(
@@ -833,6 +866,10 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
             _profileResponse.user.doctorsData[itemIndex].experience == "0"
         ? null
         : "Expr ${_profileResponse.user.doctorsData[itemIndex].experience} years";
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
   }
 }
 
@@ -1230,7 +1267,12 @@ class _AchievementWidgetState extends State<AchievementWidget> {
   }
 }
 
+// ignore: must_be_immutable
 class SpecialisationWidget extends StatefulWidget {
+  List<SpecialityModel> specialityList;
+
+  SpecialisationWidget(this.specialityList);
+
   @override
   _SpecialisationWidgetState createState() => _SpecialisationWidgetState();
 }
@@ -1240,31 +1282,55 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
   Widget build(BuildContext context) {
     return Container(
       height: 200,
+      margin: EdgeInsets.only(bottom: 8),
       child: ListView.builder(
-        itemCount: 20,
+        itemCount: widget.specialityList.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           return Card(
+              margin: EdgeInsets.only(right: 20, bottom: 2),
               child: Container(
-                margin: EdgeInsets.only(right: 20),
                 child: Column(
                   children: [
                     Expanded(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(6),
-                            bottomRight: Radius.circular(6),
-                            topLeft: Radius.circular(13),
-                            topRight: Radius.circular(13)),
-                        child: CustomWidgets().getImageFromUrl(
-                            'https://images.pexels.com/photos/4173239/pexels-photo-4173239.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                            boxFit: BoxFit.fill),
+                      child: InkWell(
+                        onTap: () {
+                          List<Photo> photos = [];
+                          widget.specialityList.forEach((element) {
+                            if (widget.specialityList[index].specialityImageUrl
+                                    .isNotEmpty &&
+                                (widget.specialityList[index].specialityImageUrl
+                                    .contains("http"))) {
+                              photos.add(
+                                  Photo(assetName: element.specialityImageUrl));
+                            }
+                          });
+                          if (photos != null && photos.isNotEmpty) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PageSlider(photos, index)));
+                          }
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(6),
+                              bottomRight: Radius.circular(6),
+                              topLeft: Radius.circular(13),
+                              topRight: Radius.circular(13)),
+                          child: CustomWidgets().getImageFromUrl(
+                              widget.specialityList[index].specialityImageUrl,
+                              boxFit: BoxFit.fill),
+                        ),
                       ),
                     ),
+                    SizedBox(height: 5),
                     Text(
-                      'Covid safe',
+                      widget.specialityList[index].speciality ?? "",
                       style: TextStyle(color: Colors.black, fontSize: 16.0),
                     ),
+                    SizedBox(height: 8),
                   ],
                 ),
               ),

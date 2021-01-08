@@ -663,7 +663,7 @@ class SpecialityOuterModel {
 
 class SpecialityModel {
   String speciality;
-  String id;
+  String id, specialityImageUrl;
 
   @override
   bool operator ==(Object other) =>
@@ -675,11 +675,12 @@ class SpecialityModel {
   @override
   int get hashCode => id.hashCode;
 
-  SpecialityModel({this.speciality, this.id});
+  SpecialityModel({this.speciality, this.id, this.specialityImageUrl});
 
   SpecialityModel.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
     id = json['specialityId'];
+    specialityImageUrl = json['specializationImage'];
   }
 
   Map<String, dynamic> toJson() {
