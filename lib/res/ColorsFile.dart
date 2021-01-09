@@ -79,6 +79,8 @@ class PlunesColors {
   static final Color RED = Color(CommonMethods.getColorHexFromStr("#E0825F"));
   static final Color LIGHTESTGREYCOLOR =
       Color(CommonMethods.getColorHexFromStr("#EFEFEF"));
+  static final Color PARROTGREEN =
+      Color(CommonMethods.getColorHexFromStr("#25B281"));
 }
 
 final hexColorCode = HexColorCode();
