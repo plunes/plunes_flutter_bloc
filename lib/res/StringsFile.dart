@@ -388,6 +388,9 @@ class PlunesStrings {
       "Invalid payment details, please try again later";
   static const String discoverMoreFacilityButtonText = "Discover more facility";
   static const String discoverPrice = "Discover price";
+  static const String discoverFacilityNearYou = "Discover facilities near you";
+  static const String experienceText = "Experience";
+  static const String selectedFacilities = "Selected facilities";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

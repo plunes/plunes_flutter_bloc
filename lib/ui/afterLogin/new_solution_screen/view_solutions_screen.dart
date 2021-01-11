@@ -7,6 +7,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/discover_near_facilities_scr.dart';
 
 // ignore: must_be_immutable
 class ViewSolutionsScreen extends BaseActivity {
@@ -86,45 +87,49 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
           GoogleMap(
             initialCameraPosition:
                 CameraPosition(target: LatLng(28.443, 78.3222)),
+            zoomControlsEnabled: false,
           ),
-          DraggableScrollableSheet(
-            initialChildSize: 0.4,
-            minChildSize: 0.4,
-            maxChildSize: 0.9,
-            builder: (context, controller) {
-              return Card(
-                margin: EdgeInsets.all(0),
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(35),
-                        topRight: Radius.circular(35))),
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 3.8,
-                      vertical: AppConfig.verticalBlockSize * 2.8),
-                  child: ListView(
-                    controller: controller,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 38,
-                            right: AppConfig.horizontalBlockSize * 38),
-                        height: 3,
-                        decoration: BoxDecoration(
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#707070")),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
-                      ),
-                      _getBenefitsWidget(),
-                      _getSolutionListWidget(),
-                      _getDiscoverPriceButton()
-                    ],
+          Container(
+            alignment: Alignment.bottomCenter,
+            child: DraggableScrollableSheet(
+              initialChildSize: 0.3,
+              minChildSize: 0.3,
+              maxChildSize: 0.9,
+              builder: (context, controller) {
+                return Card(
+                  margin: EdgeInsets.all(0),
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(35),
+                          topRight: Radius.circular(35))),
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 3.8,
+                        vertical: AppConfig.verticalBlockSize * 2.8),
+                    child: ListView(
+                      controller: controller,
+                      children: [
+                        Container(
+                          margin: EdgeInsets.only(
+                              left: AppConfig.horizontalBlockSize * 38,
+                              right: AppConfig.horizontalBlockSize * 38),
+                          height: 3,
+                          decoration: BoxDecoration(
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#707070")),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10))),
+                        ),
+                        _getBenefitsWidget(),
+                        _getSolutionListWidget(),
+                        _getDiscoverPriceButton()
+                      ],
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           )
         ],
       ),
@@ -173,16 +178,22 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
               margin: EdgeInsets.symmetric(
                   horizontal: AppConfig.horizontalBlockSize * 20,
                   vertical: AppConfig.verticalBlockSize * 1),
-              child: CustomWidgets().getRoundedButton(
-                  PlunesStrings.discoverMoreFacilityButtonText,
-                  AppConfig.horizontalBlockSize * 8,
-                  PlunesColors.WHITECOLOR,
-                  AppConfig.horizontalBlockSize * 3,
-                  AppConfig.verticalBlockSize * 1,
-                  Color(CommonMethods.getColorHexFromStr("#25B281")),
-                  borderColor:
-                      Color(CommonMethods.getColorHexFromStr("#25B281")),
-                  hasBorder: true),
+              child: InkWell(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => DiscoverMoreFacility())),
+                child: CustomWidgets().getRoundedButton(
+                    PlunesStrings.discoverMoreFacilityButtonText,
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.WHITECOLOR,
+                    AppConfig.horizontalBlockSize * 3,
+                    AppConfig.verticalBlockSize * 1,
+                    Color(CommonMethods.getColorHexFromStr("#25B281")),
+                    borderColor:
+                        Color(CommonMethods.getColorHexFromStr("#25B281")),
+                    hasBorder: true),
+              ),
             );
           }
           return CommonWidgets().getSolutionViewWidget();
