@@ -8,6 +8,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/discover_near_facilities_scr.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 
 // ignore: must_be_immutable
 class ViewSolutionsScreen extends BaseActivity {
@@ -213,14 +214,20 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             left: AppConfig.horizontalBlockSize * 28,
             right: AppConfig.horizontalBlockSize * 28,
             bottom: AppConfig.verticalBlockSize * 2),
-        child: CustomWidgets().getRoundedButton(
-            PlunesStrings.discoverPrice,
-            AppConfig.horizontalBlockSize * 8,
-            PlunesColors.PARROTGREEN,
-            AppConfig.horizontalBlockSize * 3,
-            AppConfig.verticalBlockSize * 1,
-            PlunesColors.WHITECOLOR,
-            hasBorder: false),
+        child: InkWell(
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SolutionShowPriceScreen())),
+          child: CustomWidgets().getRoundedButton(
+              PlunesStrings.discoverPrice,
+              AppConfig.horizontalBlockSize * 8,
+              PlunesColors.PARROTGREEN,
+              AppConfig.horizontalBlockSize * 3,
+              AppConfig.verticalBlockSize * 1,
+              PlunesColors.WHITECOLOR,
+              hasBorder: false),
+        ),
       ),
     );
   }

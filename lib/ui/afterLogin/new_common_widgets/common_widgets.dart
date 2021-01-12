@@ -478,4 +478,295 @@ class CommonWidgets {
       );
     });
   }
+
+  Widget getBookProfessionalWidget() {
+    return Card(
+      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16))),
+      child: Column(
+        children: [
+          Container(
+            height: AppConfig.verticalBlockSize * 25,
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+              child: SizedBox.expand(
+                child: CustomWidgets().getImageFromUrl(
+                    "https://media.istockphoto.com/photos/doctor-holding-digital-tablet-at-meeting-room-picture-id1189304032?k=6&m=1189304032&s=612x612&w=0&h=SJPF2M715kIFAKoYHGbb1uAyptbz6Tn7-LxPsm5msPE=",
+                    boxFit: BoxFit.cover),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 3.2,
+                right: AppConfig.horizontalBlockSize * 3.2,
+                top: AppConfig.verticalBlockSize * 1.2),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Dr. Atul Mishra",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: PlunesColors.BLACKCOLOR,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                          ),
+                          Text(
+                            " 4.5",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Fortis Healthcare",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: PlunesColors.BLACKCOLOR,
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        margin: EdgeInsets.only(left: 3),
+                        child: Text(
+                          "22 Years Experience",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: PlunesColors.BLACKCOLOR,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+                ),
+                DottedLine(
+                  dashColor: Colors.grey,
+                ),
+                Container(
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+                ),
+                Container(
+                  margin:
+                      EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                                textAlign: TextAlign.left,
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                    text: "MRP \u20B9",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#A2A2A2"))),
+                                  ),
+                                  TextSpan(
+                                      text: "600",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          decoration:
+                                              TextDecoration.lineThrough,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#A2A2A2")))),
+                                ])),
+                            Container(
+                              margin: EdgeInsets.only(top: 2.5),
+                              child: RichText(
+                                  textAlign: TextAlign.left,
+                                  text: TextSpan(children: [
+                                    TextSpan(
+                                        text: "\u20B9",
+                                        style: TextStyle(
+                                            fontSize: 22,
+                                            color: PlunesColors.BLACKCOLOR)),
+                                    TextSpan(
+                                        text: "400",
+                                        style: TextStyle(
+                                            fontSize: 22,
+                                            color: PlunesColors.BLACKCOLOR)),
+                                  ])),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 2.5),
+                              child: Text(
+                                PlunesStrings.homeCollectionAvailable,
+                                style: TextStyle(
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#A2A2A2")),
+                                    fontSize: 12),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Flexible(
+                          child: Container(
+                        margin: EdgeInsets.only(left: 3),
+                        alignment: Alignment.centerRight,
+                        child: InkWell(
+                          onTap: () {},
+                          child: CustomWidgets().getRoundedButton(
+                              PlunesStrings.book,
+                              AppConfig.horizontalBlockSize * 8,
+                              PlunesColors.PARROTGREEN,
+                              AppConfig.horizontalBlockSize * 4,
+                              AppConfig.verticalBlockSize * 1,
+                              PlunesColors.WHITECOLOR,
+                              hasBorder: false),
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+                1 == 1
+                    ? Container(
+                        height: AppConfig.verticalBlockSize * 10,
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)),
+                                  border: Border.all(
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#25B281")),
+                                      width: 0.8)),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: AppConfig.horizontalBlockSize * 4,
+                                  vertical: AppConfig.verticalBlockSize * 1.5),
+                              margin: EdgeInsets.only(
+                                  right: AppConfig.horizontalBlockSize * 2.3),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("FUI",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: PlunesColors.BLACKCOLOR,
+                                          fontSize: 18)),
+                                  Container(
+                                    alignment: Alignment.centerLeft,
+                                    margin: EdgeInsets.only(top: 3),
+                                    child: Text("Technique",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#515151")),
+                                            fontSize: 16)),
+                                  )
+                                ],
+                              ),
+                            );
+                          },
+                          itemCount: 4,
+                        ),
+                      )
+                    : Container(),
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  child: 1 != 1
+                      ? InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "View More ",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#01D35A"))),
+                                ),
+                                Icon(Icons.keyboard_arrow_down,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#01D35A")),
+                                    size: 15)
+                              ],
+                            ),
+                          ),
+                        )
+                      : InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text("View Less ",
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#01D35A")))),
+                                Icon(
+                                  Icons.keyboard_arrow_up,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#01D35A")),
+                                  size: 15,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
 }
