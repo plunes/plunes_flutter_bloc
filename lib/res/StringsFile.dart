@@ -391,6 +391,15 @@ class PlunesStrings {
   static const String discoverFacilityNearYou = "Discover facilities near you";
   static const String experienceText = "Experience";
   static const String selectedFacilities = "Selected facilities";
+  static const String bookYourProcedure = "Book Your Procedure";
+  static const String enterAdditionalDetails =
+      "Enter Additional Details for the required service";
+  static const String next = "Next";
+  static const String previousText = "Previous";
+  static const String haveYouEverBeenTreatedPreviously =
+      "Have You Ever Been Treated Previously ?";
+  static const String pleaseDescribePreviousCondition =
+      "Please Describe Your Condition of previous treatment";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

@@ -24,6 +24,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
 import 'package:plunes/ui/afterLogin/explore_screens/explore_main_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
@@ -808,8 +809,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //                                    scaffoldKey);
 //                                return;
 //                              }
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ViewSolutionsScreen()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => EnterAdditionalUserDetailScr()));
             return;
             await Navigator.push(
                 context,
