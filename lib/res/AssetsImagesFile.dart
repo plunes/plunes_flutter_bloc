@@ -132,6 +132,14 @@ class PlunesImages {
   static const String itemInCartImage =
       "assets/images/bottom_tabs/itemInCartImage.png";
 
+  ///new solution images
+  static const String videoUploadIcon =
+      "assets/images/new_sol_img/uploadVideoIcon.png";
+  static const String imageUploadIcon =
+      "assets/images/new_sol_img/cameraIcon.png";
+  static const String docUploadIcon =
+      "assets/images/new_sol_img/documentIcon.png";
+
   static var imageArray = [
     'assets/images/sliders/bidding.png',
     'assets/images/sliders/search.png',

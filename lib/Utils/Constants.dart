@@ -21,6 +21,9 @@ class Constants {
   static const String VIDEO_STATUS_FOR_USER = "VIDEO_STATUS_FOR_USER";
   static const String PLUNES_USER_VIDEO_DEMO =
       "https://www.youtube.com/watch?v=sITYg1awTPE";
+  static const String consultationKey = "Consultation";
+  static const String procedureKey = "Procedure";
+  static const String testKey = "Test";
 
   static get hospital => 'Hospital';
 

@@ -10,6 +10,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 
 // ignore: must_be_immutable
 class EnterAdditionalUserDetailScr extends BaseActivity {
@@ -246,7 +247,11 @@ class _EnterAdditionalUserDetailScrState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Image.asset(PlunesImages.userProfileIcon),
+              Image.asset(
+                PlunesImages.videoUploadIcon,
+                height: 49,
+                width: 49,
+              ),
               Container(
                 width: double.infinity,
                 alignment: Alignment.center,
@@ -287,7 +292,11 @@ class _EnterAdditionalUserDetailScrState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Image.asset(PlunesImages.userProfileIcon),
+              Image.asset(
+                PlunesImages.imageUploadIcon,
+                height: 49,
+                width: 49,
+              ),
               Container(
                 width: double.infinity,
                 alignment: Alignment.center,
@@ -328,7 +337,11 @@ class _EnterAdditionalUserDetailScrState
           child: Column(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Image.asset(PlunesImages.userProfileIcon),
+              Image.asset(
+                PlunesImages.docUploadIcon,
+                height: 49,
+                width: 49,
+              ),
               Container(
                 width: double.infinity,
                 alignment: Alignment.center,
@@ -408,6 +421,11 @@ class _EnterAdditionalUserDetailScrState
                       InkWell(
                         onTap: () {
                           if (_pageController.page.toInt() == 1) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ViewSolutionsScreen()));
                             //submit
                           } else {
                             _pageController

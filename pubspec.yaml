@@ -380,6 +380,10 @@ flutter:
     - assets/images/cartImage.png
     - assets/images/emptyCartItemsImage.png
 
+    - assets/images/new_sol_img/cameraIcon.png
+    - assets/images/new_sol_img/documentIcon.png
+    - assets/images/new_sol_img/uploadVideoIcon.png
+
 
 
 #permission:

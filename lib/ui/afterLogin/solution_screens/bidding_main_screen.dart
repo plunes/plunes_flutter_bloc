@@ -939,7 +939,7 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         InkWell(
           onTap: () {
@@ -948,117 +948,130 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
           },
           child: Padding(
             padding: const EdgeInsets.all(16.0),
-            child: CustomWidgets().getShowCase(widget.two,
-                child: Icon(
-                  Icons.menu,
-                  color: PlunesColors.BLACKCOLOR,
-                ),
-                title: PlunesStrings.menu,
-                description: PlunesStrings.menuDesc),
+            child: Icon(
+              Icons.menu,
+              color: PlunesColors.BLACKCOLOR,
+            ),
           ),
         ),
         Expanded(child: Container()),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: FutureBuilder<RequestState>(
-            future: _getLocationStatusForTop(),
-            builder: (context, snapshot) {
-              if (snapshot.data is RequestSuccess) {
-                RequestSuccess reqSuccess = snapshot.data;
-                LocationAppBarModel locationModel = reqSuccess.response;
-                if (locationModel != null && locationModel.hasLocation) {
-                  return Container(
-                    alignment: Alignment.topRight,
-                    child: InkWell(
-                      onTap: widget.onSetLocationManually,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                            child: Image.asset(plunesImages.locationIcon),
-                            height: AppConfig.verticalBlockSize * 3,
-                            width: AppConfig.horizontalBlockSize * 5,
-                          ),
-                          Flexible(
-                            child: CustomWidgets().getShowCase(
-                              widget.one,
-                              description:
-                                  PlunesStrings.youCanChangeLocationFromHere,
-                              title: PlunesStrings.locationDesc,
-                              child: Container(
-                                margin: EdgeInsets.only(left: 12.0),
-                                child: Tooltip(
-                                    message: locationModel.address,
-                                    margin: EdgeInsets.symmetric(
-                                        horizontal:
-                                            AppConfig.horizontalBlockSize * 5),
-                                    preferBelow: true,
-                                    child: Text(
-                                      locationModel.address,
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.clip,
-                                      softWrap: false,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        decoration: TextDecoration.underline,
-                                        decorationStyle:
-                                            TextDecorationStyle.dashed,
-                                        decorationThickness: 2.0,
-                                      ),
-                                    )),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+        Container(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                child: IconButton(
+                    icon: Image.asset(
+                      plunesImages.locationIcon,
+                      color: PlunesColors.BLACKCOLOR,
+                      height: AppConfig.verticalBlockSize * 3,
+                      width: AppConfig.horizontalBlockSize * 5,
                     ),
-                    width: AppConfig.horizontalBlockSize * 48,
-                  );
-                } else {
-                  return Container(
-                      width: AppConfig.horizontalBlockSize * 40,
-                      child: Column(
-                        children: <Widget>[
-                          InkWell(
-                            onTap: widget.onSetLocationTap,
-                            child: Row(
-                              children: <Widget>[
-                                Expanded(
-                                  child: CustomWidgets().getShowCase(
-                                    widget.one,
-                                    description: PlunesStrings
-                                        .youCanChangeLocationFromHere,
-                                    title: PlunesStrings.locationDesc,
-                                    child: Text(
-                                      locationModel.address ??
-                                          PlunesStrings.enterYourLocation,
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ),
-                                  flex: 10,
-                                ),
-                                Flexible(
-                                  child: Icon(Icons.radio_button_checked,
-                                      size: 16.0),
-                                  flex: 1,
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                              margin: EdgeInsets.only(top: 3.0),
-                              width: double.infinity,
-                              height: 1,
-                              color: PlunesColors.GREYCOLOR)
-                        ],
-                      ));
-                }
-              }
-              return Text(PlunesStrings.processing);
-            },
+                    onPressed: () {}),
+              ),
+              Container(
+                child: IconButton(
+                  icon: Image.asset(
+                    PlunesImages.cartImage,
+                    color: PlunesColors.BLACKCOLOR,
+                    height: AppConfig.verticalBlockSize * 3,
+                    width: AppConfig.horizontalBlockSize * 5,
+                  ),
+                  onPressed: () {},
+                ),
+              ),
+            ],
           ),
         )
+        // Padding(
+        //   padding: const EdgeInsets.all(16.0),
+        //   child: FutureBuilder<RequestState>(
+        //     future: _getLocationStatusForTop(),
+        //     builder: (context, snapshot) {
+        //       if (snapshot.data is RequestSuccess) {
+        //         RequestSuccess reqSuccess = snapshot.data;
+        //         LocationAppBarModel locationModel = reqSuccess.response;
+        //         if (locationModel != null && locationModel.hasLocation) {
+        //           return Container(
+        //             alignment: Alignment.topRight,
+        //             child: InkWell(
+        //               onTap: widget.onSetLocationManually,
+        //               child: Row(
+        //                 mainAxisAlignment: MainAxisAlignment.end,
+        //                 children: <Widget>[
+        //                   Container(
+        //                     child: Image.asset(plunesImages.locationIcon),
+        //                     height: AppConfig.verticalBlockSize * 3,
+        //                     width: AppConfig.horizontalBlockSize * 5,
+        //                   ),
+        //                   Flexible(
+        //                     child: Container(
+        //                       margin: EdgeInsets.only(left: 12.0),
+        //                       child: Tooltip(
+        //                           message: locationModel.address,
+        //                           margin: EdgeInsets.symmetric(
+        //                               horizontal:
+        //                                   AppConfig.horizontalBlockSize * 5),
+        //                           preferBelow: true,
+        //                           child: Text(
+        //                             locationModel.address,
+        //                             textAlign: TextAlign.center,
+        //                             overflow: TextOverflow.clip,
+        //                             softWrap: false,
+        //                             maxLines: 1,
+        //                             style: TextStyle(
+        //                               fontSize: 15,
+        //                               decoration: TextDecoration.underline,
+        //                               decorationStyle:
+        //                                   TextDecorationStyle.dashed,
+        //                               decorationThickness: 2.0,
+        //                             ),
+        //                           )),
+        //                     ),
+        //                   ),
+        //                 ],
+        //               ),
+        //             ),
+        //             width: AppConfig.horizontalBlockSize * 48,
+        //           );
+        //         } else {
+        //           return Container(
+        //               width: AppConfig.horizontalBlockSize * 40,
+        //               child: Column(
+        //                 children: <Widget>[
+        //                   InkWell(
+        //                     onTap: widget.onSetLocationTap,
+        //                     child: Row(
+        //                       children: <Widget>[
+        //                         Expanded(
+        //                           child: Text(
+        //                             locationModel.address ??
+        //                                 PlunesStrings.enterYourLocation,
+        //                             style: TextStyle(fontSize: 15),
+        //                           ),
+        //                           flex: 10,
+        //                         ),
+        //                         Flexible(
+        //                           child: Icon(Icons.radio_button_checked,
+        //                               size: 16.0),
+        //                           flex: 1,
+        //                         )
+        //                       ],
+        //                     ),
+        //                   ),
+        //                   Container(
+        //                       margin: EdgeInsets.only(top: 3.0),
+        //                       width: double.infinity,
+        //                       height: 1,
+        //                       color: PlunesColors.GREYCOLOR)
+        //                 ],
+        //               ));
+        //         }
+        //       }
+        //       return Text(PlunesStrings.processing);
+        //     },
+        //   ),
+        // )
       ],
     );
   }

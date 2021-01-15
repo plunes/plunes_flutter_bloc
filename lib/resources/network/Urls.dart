@@ -133,4 +133,8 @@ class Urls {
   static const String CAPTURE_UPI_PAYMENT_URL =
       "$UPI_PAYMENT_URL" + "captureUPIPayment";
   static const String CART_COUNT_URL = "cart/count/";
+
+  //////////////////////////////////////////////////////////////////////////////new flow api's
+  static const String GET_HOME_SCREEN_CATEGORY_DATA_URL =
+      "catalogue/getCategories";
 }
