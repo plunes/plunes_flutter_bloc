@@ -5,7 +5,9 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
+import 'package:plunes/models/new_solution_model/card_by_id_image_scr.dart';
 import 'package:plunes/models/new_solution_model/solution_home_scr_model.dart';
+import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
@@ -29,9 +31,12 @@ class NewSolutionHomePage extends BaseActivity {
 class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   HomeScreenMainBloc _homeScreenMainBloc;
   SolutionHomeScreenModel _solutionHomeScreenModel;
+  WhyUsModel _whyUsModel;
   String _failedMessage;
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
+
+  String _failedMessageForWhyUsSection;
 
   @override
   void initState() {
@@ -90,6 +95,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   if (snapshot.data is RequestSuccess) {
                     RequestSuccess successObject = snapshot.data;
                     _solutionHomeScreenModel = successObject.response;
+                    _getOtherData();
                     _homeScreenMainBloc
                         ?.addIntoSolutionHomePageCategoryData(null);
                   } else if (snapshot.data is RequestFailed) {
@@ -261,33 +267,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             ),
             _proceduresGrid(),
             // heading - why us
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 5,
-                  left: AppConfig.horizontalBlockSize * 4.3,
-                  right: AppConfig.horizontalBlockSize * 3),
-              child: _sectionHeading('Why Us'),
-            ),
-
-            // horizontal list view of cards
-            Container(
-              height: AppConfig.verticalBlockSize * 44,
-              margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _customBigCard(
-                      kDefaultImageUrl, 'Top Rated Medical Facilities'),
-                  _customBigCard(kDefaultImageUrl,
-                      'Sit back, relax, and plan your treatment in just one click'),
-                  _customBigCard(
-                      kDefaultImageUrl, 'Top Rated Medical Facilities'),
-                  _customBigCard(kDefaultImageUrl,
-                      'Sit back, relax, and plan your treatment in just one click'),
-                ],
-              ),
-            ),
+            _getWhyUsSection(),
 
             // heading - top facilities
             Container(
@@ -447,6 +427,131 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       ),
     );
   }
+
+  void _getOtherData() {
+    _getWhyUsData();
+    _getKnowYourProcedureData();
+    _getTopFacilities();
+    _getTopSearch();
+    _getSpecialities();
+    _getVideos();
+    _getReviews();
+  }
+
+  void _getWhyUsData() {
+    _homeScreenMainBloc.getWhyUsData();
+  }
+
+  void _getKnowYourProcedureData() {}
+
+  void _getTopFacilities() {}
+
+  void _getTopSearch() {}
+
+  void _getSpecialities() {}
+
+  void _getVideos() {}
+
+  void _getReviews() {}
+
+  Widget _getWhyUsSection() {
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.topLeft,
+          margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 5,
+              left: AppConfig.horizontalBlockSize * 4.3,
+              right: AppConfig.horizontalBlockSize * 3),
+          child: _sectionHeading('Why Us'),
+        ),
+
+        // horizontal list view of cards
+        Container(
+          height: AppConfig.verticalBlockSize * 44,
+          margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+          child: StreamBuilder<RequestState>(
+              stream: _homeScreenMainBloc.getWhyUsStream,
+              builder: (context, snapshot) {
+                if (snapshot.data is RequestSuccess) {
+                  RequestSuccess successObject = snapshot.data;
+                  _whyUsModel = successObject.response;
+                  _homeScreenMainBloc?.addIntoGetWhyUsDataStream(null);
+                } else if (snapshot.data is RequestFailed) {
+                  RequestFailed _failedObj = snapshot.data;
+                  _failedMessageForWhyUsSection = _failedObj?.failureCause;
+                  _homeScreenMainBloc?.addIntoGetWhyUsDataStream(null);
+                } else if (snapshot.data is RequestInProgress) {
+                  return CustomWidgets().getProgressIndicator();
+                }
+                return (_whyUsModel == null ||
+                        (_whyUsModel.success != null && !_whyUsModel.success) ||
+                        _whyUsModel.data == null ||
+                        _whyUsModel.data.isEmpty)
+                    ? CustomWidgets().errorWidget(_failedMessageForWhyUsSection,
+                        onTap: () => _getWhyUsData(), isSizeLess: true)
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return _getWhyUsCard(
+                              _whyUsModel.data[index].titleImage,
+                              _whyUsModel.data[index].title ?? "",
+                              _whyUsModel.data[index].sId);
+                        },
+                        itemCount: _whyUsModel?.data?.length ?? 0,
+                      );
+              }),
+        ),
+      ],
+    );
+  }
+
+  Widget _getWhyUsCard(String imageUrl, String heading, String id) {
+    return Container(
+      width: AppConfig.horizontalBlockSize * 62,
+      margin: EdgeInsets.only(
+          right: AppConfig.horizontalBlockSize * 2,
+          left: AppConfig.horizontalBlockSize * 1.5),
+      child: InkWell(
+        onTap: () {
+          if (id != null && id.isNotEmpty) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => WhyUsCardsByIdScreen(id)));
+          }
+        },
+        onDoubleTap: () {},
+        child: Column(
+          children: [
+            Container(
+                height: AppConfig.verticalBlockSize * 33,
+                width: double.infinity,
+                child: ClipRRect(
+                  child: _imageFittedBox(imageUrl, boxFit: BoxFit.fitWidth),
+                  borderRadius: BorderRadius.all(Radius.circular(13)),
+                )),
+            Flexible(
+              child: Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.only(
+                    top: AppConfig.verticalBlockSize * 2,
+                    left: AppConfig.horizontalBlockSize * 1),
+                child: Text(
+                  heading,
+                  maxLines: 3,
+                  style: TextStyle(
+                    fontSize: AppConfig.mediumFont,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // Functions
@@ -539,40 +644,6 @@ Widget _proceduresCard(String url, String label, String text) {
           )
         ],
       ),
-    ),
-  );
-}
-
-Widget _customBigCard(String imageUrl, String heading) {
-  return Container(
-    width: AppConfig.horizontalBlockSize * 62,
-    margin: EdgeInsets.only(
-        right: AppConfig.horizontalBlockSize * 2,
-        left: AppConfig.horizontalBlockSize * 1.5),
-    child: Column(
-      children: [
-        Container(
-            height: AppConfig.verticalBlockSize * 33,
-            child: ClipRRect(
-              child: _imageFittedBox(imageUrl),
-              borderRadius: BorderRadius.all(Radius.circular(13)),
-            )),
-        Flexible(
-          child: Container(
-            alignment: Alignment.topLeft,
-            padding: EdgeInsets.only(
-                top: AppConfig.verticalBlockSize * 2,
-                left: AppConfig.horizontalBlockSize * 1),
-            child: Text(
-              heading,
-              maxLines: 3,
-              style: TextStyle(
-                fontSize: AppConfig.mediumFont,
-              ),
-            ),
-          ),
-        )
-      ],
     ),
   );
 }

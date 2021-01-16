@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
@@ -18,9 +20,25 @@ class ViewSolutionsScreen extends BaseActivity {
 
 class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
   bool _shouldExpand;
+  IconGenerator _iconGen;
+  BitmapDescriptor hosImage2XGreenBgDesc;
+  Set<Marker> _markers = {};
 
   @override
   void initState() {
+    _markers = {};
+    _iconGen = IconGenerator();
+    _iconGen
+        .getBytesFromAsset(PlunesImages.hosImage2XGreenBg, 180)
+        .then((value) {
+      hosImage2XGreenBgDesc = BitmapDescriptor.fromBytes(value);
+      _markers.add(Marker(
+          icon: hosImage2XGreenBgDesc,
+          position: LatLng(28.443, 78.3222),
+          markerId: MarkerId("ds"),
+          onTap: () => _doSomething()));
+      if (mounted) setState(() {});
+    });
     super.initState();
   }
 
@@ -89,6 +107,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             initialCameraPosition:
                 CameraPosition(target: LatLng(28.443, 78.3222)),
             zoomControlsEnabled: false,
+            markers: _markers,
           ),
           Container(
             alignment: Alignment.bottomCenter,
@@ -230,5 +249,19 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
         ),
       ),
     );
+  }
+
+  _doSomething() {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CommonWidgets().getSolutionViewWidget(),
+            ],
+          );
+        });
   }
 }

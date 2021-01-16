@@ -30,6 +30,10 @@ class Urls {
   // static const String socketUrl = 'https://api.plunes.com'; // production server
   static const String socketUrl = 'https://devapi.plunes.com'; // staging server
 
+  //static const String mcmBaseUrl = "https://api.plunes.com/mcm/"; // production server
+  static const String mcmBaseUrl =
+      "https://devapi.plunes.com/mcm/"; // staging server
+
   get catalogue => baseUrl + 'catalogue';
 
   get logout => baseUrl + 'user/logout';
@@ -137,4 +141,6 @@ class Urls {
   //////////////////////////////////////////////////////////////////////////////new flow api's
   static const String GET_HOME_SCREEN_CATEGORY_DATA_URL =
       "catalogue/getCategories";
+  static const String GET_WHY_US_URL = mcmBaseUrl + "plunes/getWhyus";
+  static const String GET_WHY_US_BY_ID_URL = mcmBaseUrl + "plunes/whyus/";
 }

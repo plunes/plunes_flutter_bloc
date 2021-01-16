@@ -400,6 +400,7 @@ class PlunesStrings {
       "Have You Ever Been Treated Previously ?";
   static const String pleaseDescribePreviousCondition =
       "Please Describe Your Condition of previous treatment";
+  static const String whyUs = "Why us";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',
