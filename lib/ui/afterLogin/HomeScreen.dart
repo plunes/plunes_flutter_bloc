@@ -26,6 +26,7 @@ import 'package:plunes/ui/afterLogin/AvailabilitySelectionScreen.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/add_to_cart_main_screen.dart';
 import 'package:plunes/ui/afterLogin/doc_hos_screen/hosptal_overview_screen.dart';
 import 'package:plunes/ui/afterLogin/explore_screens/explore_main_screen.dart';
+import 'package:plunes/ui/afterLogin/explore_screens/new_explore_screen.dart';
 import 'package:plunes/ui/afterLogin/fill_coupon.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/new_home_scr.dart';
 import 'package:plunes/ui/afterLogin/payment/manage_payment.dart';
@@ -74,7 +75,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   bool _showBadge = false, progress = false, isSelected = false;
   final List<Widget> _widgetOptionsForUser = [
     NewSolutionHomePage(() => _scaffoldKey.currentState.openDrawer()),
-    ExploreMainScreen(),
+    NewExploreScreen(),
     AddToCartMainScreen(),
 //    PlockrMainScreen(),
     NotificationScreen(),

@@ -770,11 +770,15 @@ Widget _specialCard(String imageUrl, String label, String text) {
       ),
       child: Column(
         children: [
-          Container(
-            child: ClipRRect(
-              child: _imageFittedBox(imageUrl),
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              child: ClipRRect(
+                child: _imageFittedBox(imageUrl, boxFit: BoxFit.fitWidth),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10)),
+              ),
             ),
           ),
           ListTile(
@@ -785,7 +789,7 @@ Widget _specialCard(String imageUrl, String label, String text) {
             ),
             subtitle: Text(
               text,
-              maxLines: 3,
+              maxLines: 2,
               style: TextStyle(fontSize: AppConfig.verySmallFont),
             ),
           )
