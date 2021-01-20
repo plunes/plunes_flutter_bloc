@@ -31,6 +31,7 @@ import 'package:plunes/ui/afterLogin/fill_coupon.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/new_home_scr.dart';
 import 'package:plunes/ui/afterLogin/payment/manage_payment.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/previous_activity_screen.dart';
 
 import 'AboutUs.dart';
 import 'EditProfileScreen.dart';
@@ -76,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   final List<Widget> _widgetOptionsForUser = [
     NewSolutionHomePage(() => _scaffoldKey.currentState.openDrawer()),
     NewExploreScreen(),
-    AddToCartMainScreen(),
+    PreviousActivity(),
 //    PlockrMainScreen(),
     NotificationScreen(),
   ];
@@ -264,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             PlunesImages.exploreSelectedImage,
             PlunesImages.exploreInActiveIcon),
         bottomNavigationBarItem(
-            PlunesStrings.cart.toUpperCase(),
+            PlunesStrings.previousActivities.toUpperCase(),
             (FirebaseNotification().getCartCount() != null &&
                     FirebaseNotification().getCartCount() != 0)
                 ? PlunesImages.itemInCartImage
