@@ -16,12 +16,17 @@ class HomeScreenMainBloc extends BlocBase {
 
   Observable<RequestState> get getWhyUsCardByIdStream =>
       _whyUsCardByIdStreamProvider.stream;
+  final _knowYourProcedureStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get knowYourProcedureStream =>
+      _knowYourProcedureStreamProvider.stream;
 
   @override
   void dispose() {
     _categoryStreamProvider?.close();
     _whyUsStreamProvider?.close();
     _whyUsCardByIdStreamProvider?.close();
+    _knowYourProcedureStreamProvider?.close();
     super.dispose();
   }
 
@@ -56,5 +61,16 @@ class HomeScreenMainBloc extends BlocBase {
 
   void addIntoGetWhyUsDataByIdStream(RequestState state) {
     addStateInGenericStream(_whyUsCardByIdStreamProvider, state);
+  }
+
+  Future<RequestState> getKnowYourProcedureData() async {
+    addIntoKnowYourProcedureDataStream(RequestInProgress());
+    var result = await HomeScreenMainRepo().getKnowYourProcedureData();
+    addIntoKnowYourProcedureDataStream(result);
+    return result;
+  }
+
+  void addIntoKnowYourProcedureDataStream(RequestState state) {
+    addStateInGenericStream(_knowYourProcedureStreamProvider, state);
   }
 }

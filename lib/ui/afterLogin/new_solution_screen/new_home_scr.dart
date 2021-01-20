@@ -6,14 +6,17 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/models/new_solution_model/card_by_id_image_scr.dart';
+import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
 import 'package:plunes/models/new_solution_model/solution_home_scr_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/view_procedure_and_professional_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/testNproceduresMainScreen.dart';
+import 'package:readmore/readmore.dart';
 
 const kDefaultImageUrl =
     'https://goqii.com/blog/wp-content/uploads/Doctor-Consultation.jpg';
@@ -32,14 +35,18 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   HomeScreenMainBloc _homeScreenMainBloc;
   SolutionHomeScreenModel _solutionHomeScreenModel;
   WhyUsModel _whyUsModel;
+  KnowYourProcedureModel _knowYourProcedureModel;
   String _failedMessage;
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
 
   String _failedMessageForWhyUsSection;
+  String _failedMessageForKnowYourProcedureSection;
+  bool _isProcedureListOpened;
 
   @override
   void initState() {
+    _isProcedureListOpened = false;
     _homeScreenMainBloc = HomeScreenMainBloc();
     _getCategoryData();
     super.initState();
@@ -256,16 +263,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             ),
             // services box row
             _servicesRow(),
-            // heading - procedure
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 7,
-                  left: AppConfig.horizontalBlockSize * 4.3,
-                  right: AppConfig.horizontalBlockSize * 3),
-              child: _sectionHeading('Know Your procedure'),
-            ),
-            _proceduresGrid(),
+            _getProcedureWidget(),
             // heading - why us
             _getWhyUsSection(),
 
@@ -442,7 +440,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _homeScreenMainBloc.getWhyUsData();
   }
 
-  void _getKnowYourProcedureData() {}
+  void _getKnowYourProcedureData() {
+    _homeScreenMainBloc.getKnowYourProcedureData();
+  }
 
   void _getTopFacilities() {}
 
@@ -460,7 +460,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         Container(
           alignment: Alignment.topLeft,
           margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 5,
+              top: AppConfig.verticalBlockSize * 4,
               left: AppConfig.horizontalBlockSize * 4.3,
               right: AppConfig.horizontalBlockSize * 3),
           child: _sectionHeading('Why Us'),
@@ -552,6 +552,196 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       ),
     );
   }
+
+  Widget _getProcedureWidget() {
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.topLeft,
+          margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 7,
+              left: AppConfig.horizontalBlockSize * 4.3,
+              right: AppConfig.horizontalBlockSize * 3),
+          child: _sectionHeading('Know your procedure'),
+        ),
+        StreamBuilder<RequestState>(
+            stream: _homeScreenMainBloc.knowYourProcedureStream,
+            initialData:
+                _knowYourProcedureModel == null ? RequestInProgress() : null,
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestSuccess) {
+                RequestSuccess successObject = snapshot.data;
+                _knowYourProcedureModel = successObject.response;
+                _homeScreenMainBloc?.addIntoKnowYourProcedureDataStream(null);
+              } else if (snapshot.data is RequestFailed) {
+                RequestFailed _failedObj = snapshot.data;
+                _failedMessageForKnowYourProcedureSection =
+                    _failedObj?.failureCause;
+                _homeScreenMainBloc?.addIntoKnowYourProcedureDataStream(null);
+              } else if (snapshot.data is RequestInProgress) {
+                return Container(
+                  child: CustomWidgets().getProgressIndicator(),
+                  height: AppConfig.verticalBlockSize * 35,
+                  color: PlunesColors.WHITECOLOR,
+                );
+              }
+              return (_knowYourProcedureModel == null ||
+                      _knowYourProcedureModel.data == null ||
+                      _knowYourProcedureModel.data.isEmpty)
+                  ? Container(
+                      height: AppConfig.verticalBlockSize * 35,
+                      color: PlunesColors.WHITECOLOR,
+                      margin: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 3,
+                          right: AppConfig.horizontalBlockSize * 3),
+                      child: CustomWidgets().errorWidget(
+                          _knowYourProcedureModel?.message ??
+                              _failedMessageForKnowYourProcedureSection,
+                          onTap: () => _getKnowYourProcedureData(),
+                          isSizeLess: true),
+                    )
+                  : Column(
+                      children: [
+                        _proceduresGrid(),
+                        _getViewMoreButtonForProcedure()
+                      ],
+                    );
+            }),
+      ],
+    );
+  }
+
+  Widget _proceduresGrid() {
+    return Container(
+      color: PlunesColors.WHITECOLOR,
+      margin: EdgeInsets.only(
+          left: AppConfig.horizontalBlockSize * 3,
+          right: AppConfig.horizontalBlockSize * 3),
+      child: GridView.count(
+          shrinkWrap: true,
+          crossAxisCount: 2,
+          childAspectRatio: 0.93,
+          physics: NeverScrollableScrollPhysics(),
+          children: _getProcedureAlteredList()),
+    );
+  }
+
+  Widget _getViewMoreButtonForProcedure() {
+    return Container(
+      width: double.infinity,
+      alignment: Alignment.center,
+      margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+      child: InkWell(
+        onDoubleTap: () {},
+        onTap: () {
+          _isProcedureListOpened = !_isProcedureListOpened;
+          _homeScreenMainBloc?.addIntoKnowYourProcedureDataStream(null);
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(
+              horizontal: AppConfig.horizontalBlockSize * 2,
+              vertical: AppConfig.verticalBlockSize * 1),
+          child: Text(
+            _isProcedureListOpened ? "View less" : "View more",
+            style: TextStyle(color: PlunesColors.GREENCOLOR, fontSize: 13),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _getProcedureAlteredList() {
+    List<Widget> list = [];
+    if (_isProcedureListOpened) {
+      int length = (_knowYourProcedureModel.data.length > 6)
+          ? 6
+          : _knowYourProcedureModel.data.length;
+      for (int index = 0; index < length; index++) {
+        var data = _knowYourProcedureModel.data[index];
+        list.add(_proceduresCard(data.familyImage ?? "", data.familyName ?? "",
+            data.details ?? "", data));
+      }
+    } else {
+      int length = (_knowYourProcedureModel.data.length > 4)
+          ? 4
+          : _knowYourProcedureModel.data.length;
+      for (int index = 0; index < length; index++) {
+        var data = _knowYourProcedureModel.data[index];
+        list.add(_proceduresCard(data.familyImage ?? "", data.familyName ?? "",
+            data.details ?? "", data));
+      }
+    }
+    return list;
+  }
+
+  Widget _proceduresCard(
+      String url, String label, String text, ProcedureData procedureData) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => ViewProcedureAndProfessional(
+                      procedureData: procedureData,
+                    )));
+      },
+      onDoubleTap: () {},
+      child: Card(
+        elevation: 5.0,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                child: _imageFittedBox(url),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10)),
+              ),
+              Flexible(
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 2,
+                      right: AppConfig.horizontalBlockSize * 2,
+                      top: AppConfig.verticalBlockSize * 0.1),
+                  child: Text(
+                    label,
+                    textAlign: TextAlign.left,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: AppConfig.smallFont),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  alignment: Alignment.topLeft,
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 2,
+                      top: AppConfig.verticalBlockSize * 0.2,
+                      right: AppConfig.horizontalBlockSize * 2),
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: ReadMoreText(text,
+                        textAlign: TextAlign.left,
+                        trimLines: 2,
+                        trimExpandedText: "Read more",
+                        trimMode: TrimMode.Line,
+                        style: TextStyle(
+                          fontSize: AppConfig.verySmallFont,
+                          color: Color(0xff444444),
+                        )),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // Functions
@@ -567,83 +757,6 @@ Widget _sectionHeading(String text) {
     style: TextStyle(
       fontSize: AppConfig.largeFont,
       color: Color(0xff000000),
-    ),
-  );
-}
-
-Widget _proceduresGrid() {
-  return Container(
-    height: AppConfig.verticalBlockSize * 58,
-    color: PlunesColors.WHITECOLOR,
-    margin: EdgeInsets.only(
-        left: AppConfig.horizontalBlockSize * 3,
-        right: AppConfig.horizontalBlockSize * 3),
-    child: GridView.count(
-      crossAxisCount: 2,
-      childAspectRatio: 0.93,
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        _proceduresCard(kDefaultImageUrl, 'CT Scan',
-            'Lorem ipsum lorem ipsum lorem ipsum...'),
-        _proceduresCard(kDefaultImageUrl, 'Laser Hair Removal',
-            'Lorem ipsum lorem ipsum lorem ipsum...'),
-        _proceduresCard(kDefaultImageUrl, 'CT Scan',
-            'Lorem ipsum lorem ipsum lorem ipsum...'),
-        _proceduresCard(kDefaultImageUrl, 'Laser Hair Removal',
-            'Lorem ipsum lorem ipsum lorem ipsum...'),
-      ],
-    ),
-  );
-}
-
-Widget _proceduresCard(String url, String label, String text) {
-  return Card(
-    elevation: 10.0,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-    child: Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            child: _imageFittedBox(url),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-          ),
-          Flexible(
-            child: Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(
-                  left: AppConfig.horizontalBlockSize * 2,
-                  right: AppConfig.horizontalBlockSize * 2,
-                  top: AppConfig.verticalBlockSize * 0.1),
-              child: Text(
-                label,
-                textAlign: TextAlign.left,
-                maxLines: 2,
-                style: TextStyle(fontSize: AppConfig.smallFont),
-              ),
-            ),
-          ),
-          Flexible(
-            child: Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(
-                  left: AppConfig.horizontalBlockSize * 2,
-                  top: AppConfig.verticalBlockSize * 0.2,
-                  right: AppConfig.horizontalBlockSize * 2),
-              child: Text(
-                text,
-                textAlign: TextAlign.left,
-                maxLines: 2,
-                style: TextStyle(
-                  fontSize: AppConfig.verySmallFont,
-                  color: Color(0xff444444),
-                ),
-              ),
-            ),
-          )
-        ],
-      ),
     ),
   );
 }

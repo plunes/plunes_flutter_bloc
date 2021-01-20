@@ -143,4 +143,6 @@ class Urls {
       "catalogue/getCategories";
   static const String GET_WHY_US_URL = mcmBaseUrl + "plunes/getWhyus";
   static const String GET_WHY_US_BY_ID_URL = mcmBaseUrl + "plunes/whyus/";
+  static const String KNOW_YOUR_PROCEDURE_URL =
+      mcmBaseUrl + "mcmCatalogue/getServiceFamily";
 }

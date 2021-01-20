@@ -207,6 +207,192 @@ class CommonWidgets {
     );
   }
 
+  Widget getProfessionalWidgetForSearchDesiredServiceScreen(int index) {
+    return Card(
+      margin: EdgeInsets.only(
+          bottom: AppConfig.verticalBlockSize * 2.8,
+          left: AppConfig.horizontalBlockSize * 1.2,
+          right: AppConfig.horizontalBlockSize * 1.2),
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16))),
+      child: Column(
+        children: [
+          Container(
+            height: AppConfig.verticalBlockSize * 20,
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+              child: SizedBox.expand(
+                child: CustomWidgets().getImageFromUrl(
+                    "https://media.istockphoto.com/photos/doctor-holding-digital-tablet-at-meeting-room-picture-id1189304032?k=6&m=1189304032&s=612x612&w=0&h=SJPF2M715kIFAKoYHGbb1uAyptbz6Tn7-LxPsm5msPE=",
+                    boxFit: BoxFit.cover),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 3.2,
+                right: AppConfig.horizontalBlockSize * 3.2,
+                top: AppConfig.verticalBlockSize * 1.2,
+                bottom: AppConfig.verticalBlockSize * 2.5),
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Dr. Atul Mishra",
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: PlunesColors.BLACKCOLOR,
+                          ),
+                        ),
+                        Text(
+                          "Fortis Healthcare",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#707070")),
+                          ),
+                        ),
+                      ],
+                    )),
+                    Container(
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            color: Colors.yellow,
+                          ),
+                          Text(
+                            " 4.5",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+                Container(
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
+                ),
+                DottedLine(
+                  dashColor: Colors.grey,
+                ),
+                Container(
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
+                ),
+                Container(
+                  width: double.infinity,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Specialization",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#707070"))),
+                            ),
+                            Text(
+                              "Leaser Hair Reduction",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                            )
+                          ],
+                        ),
+                      ),
+                      index % 2 == 0
+                          ? Container()
+                          : Expanded(
+                              child: Container(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  "View Profile",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: PlunesColors.GREENCOLOR),
+                                ),
+                              ),
+                            ),
+                    ],
+                  ),
+                ),
+                index % 2 == 0
+                    ? Container(
+                        margin: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 2.1),
+                      )
+                    : Container(),
+                index % 2 == 0
+                    ? Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Experience",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#707070"))),
+                                ),
+                                Text(
+                                  "20 year",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: PlunesColors.BLACKCOLOR),
+                                )
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.centerRight,
+                              child: Text(
+                                "View Profile",
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: PlunesColors.GREENCOLOR),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container()
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget getManualBiddingProfessionalWidget() {
     Widget profWidget = _getProfessionalDetailWidget();
     return Card(
