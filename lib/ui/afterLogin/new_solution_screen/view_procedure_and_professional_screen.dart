@@ -4,7 +4,10 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
+import 'package:plunes/models/new_solution_model/professional_model.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
@@ -23,6 +26,32 @@ class ViewProcedureAndProfessional extends BaseActivity {
 
 class _ViewProcedureAndProfessionalState
     extends BaseState<ViewProcedureAndProfessional> {
+  HomeScreenMainBloc _homeScreenMainBloc;
+  ProfessionDataModel _professionDataModel;
+
+  String _mediaFailedMessage;
+
+  @override
+  void initState() {
+    _homeScreenMainBloc = HomeScreenMainBloc();
+    _getData();
+    super.initState();
+  }
+
+  _getData() {
+    _getProfessionals();
+    _getVideos();
+    _getReviews();
+  }
+
+  _getProfessionals() {
+    _homeScreenMainBloc.getProfessionalsForService(widget.procedureData.sId);
+  }
+
+  _getVideos() {}
+
+  _getReviews() {}
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -178,7 +207,7 @@ class _ViewProcedureAndProfessionalState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "2-5 minutes",
+                            widget.procedureData?.duration ?? "",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -208,7 +237,7 @@ class _ViewProcedureAndProfessionalState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Depends on case",
+                            widget.procedureData?.sittings ?? "Depends on case",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -251,7 +280,7 @@ class _ViewProcedureAndProfessionalState
                   margin:
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
                   child: ReadMoreText(
-                    "A Botox treatment is a minimally invasive, safe, effective treatment for fine lines and wrinkles around the eyes. It can also be used on the forehead between the eyes. Botox is priced per unit.",
+                    widget.procedureData?.details ?? "",
                     colorClickableText: PlunesColors.SPARKLINGGREEN,
                     trimLines: 3,
                     trimMode: TrimMode.Line,
@@ -316,21 +345,67 @@ class _ViewProcedureAndProfessionalState
   }
 
   Widget _getProfessionalListWidget() {
-    return StreamBuilder<Object>(
-        stream: null,
-        builder: (context, snapshot) {
-          return Container(
-            child: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return CommonWidgets()
-                    .getProfessionalWidgetForSearchDesiredServiceScreen(index);
-              },
-              shrinkWrap: true,
-              itemCount: 5,
-            ),
-          );
-        });
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.topLeft,
+          margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 1.5,
+              bottom: AppConfig.verticalBlockSize * 0.01),
+          child: Text(
+            "Facility",
+            style: TextStyle(
+                fontSize: 18,
+                color: PlunesColors.BLACKCOLOR,
+                fontWeight: FontWeight.normal),
+          ),
+        ),
+        StreamBuilder<RequestState>(
+            stream: _homeScreenMainBloc.professionalForServiceStream,
+            initialData:
+                _professionDataModel == null ? RequestInProgress() : null,
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestSuccess) {
+                RequestSuccess successObject = snapshot.data;
+                _professionDataModel = successObject.response;
+                _homeScreenMainBloc
+                    ?.addIntoGetProfessionalForServiceDataStream(null);
+              } else if (snapshot.data is RequestFailed) {
+                RequestFailed _failedObj = snapshot.data;
+                _mediaFailedMessage = _failedObj?.failureCause;
+                _homeScreenMainBloc
+                    ?.addIntoGetProfessionalForServiceDataStream(null);
+              } else if (snapshot.data is RequestInProgress) {
+                return Container(
+                  child: CustomWidgets().getProgressIndicator(),
+                  height: AppConfig.verticalBlockSize * 28,
+                );
+              }
+              return (_professionDataModel == null ||
+                      _professionDataModel.data == null ||
+                      _professionDataModel.data.isEmpty)
+                  ? Container(
+                      margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                      child: CustomWidgets().errorWidget(_mediaFailedMessage,
+                          onTap: () => _getProfessionals(), isSizeLess: true),
+                    )
+                  : Container(
+                      child: ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return CommonWidgets()
+                              .getProfessionalWidgetForSearchDesiredServiceScreen(
+                                  index,
+                                  _professionDataModel.data[index],
+                                  widget.procedureData?.speciality);
+                        },
+                        shrinkWrap: true,
+                        itemCount: 5,
+                      ),
+                    );
+            }),
+      ],
+    );
   }
 
   Widget _getVideoWidget() {

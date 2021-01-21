@@ -20,6 +20,18 @@ class HomeScreenMainBloc extends BlocBase {
 
   Observable<RequestState> get knowYourProcedureStream =>
       _knowYourProcedureStreamProvider.stream;
+  final _getProfessionalForServiceStreamProvider =
+      PublishSubject<RequestState>();
+
+  Observable<RequestState> get professionalForServiceStream =>
+      _getProfessionalForServiceStreamProvider.stream;
+  final _getCommonSpecialityDataStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get commonSpecialityStream =>
+      _getCommonSpecialityDataStreamProvider.stream;
+  final _mediaStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get mediaStream => _mediaStreamProvider.stream;
 
   @override
   void dispose() {
@@ -27,6 +39,9 @@ class HomeScreenMainBloc extends BlocBase {
     _whyUsStreamProvider?.close();
     _whyUsCardByIdStreamProvider?.close();
     _knowYourProcedureStreamProvider?.close();
+    _getProfessionalForServiceStreamProvider?.close();
+    _getCommonSpecialityDataStreamProvider?.close();
+    _mediaStreamProvider?.close();
     super.dispose();
   }
 
@@ -72,5 +87,39 @@ class HomeScreenMainBloc extends BlocBase {
 
   void addIntoKnowYourProcedureDataStream(RequestState state) {
     addStateInGenericStream(_knowYourProcedureStreamProvider, state);
+  }
+
+  Future<RequestState> getProfessionalsForService(String familyId) async {
+    addIntoGetProfessionalForServiceDataStream(RequestInProgress());
+    var result =
+        await HomeScreenMainRepo().getProfessionalsForService(familyId);
+    addIntoGetProfessionalForServiceDataStream(result);
+    return result;
+  }
+
+  void addIntoGetProfessionalForServiceDataStream(RequestState state) {
+    addStateInGenericStream(_getProfessionalForServiceStreamProvider, state);
+  }
+
+  Future<RequestState> getCommonSpecialities() async {
+    addIntoGetCommonSpecialitiesDataStream(RequestInProgress());
+    var result = await HomeScreenMainRepo().getCommonSpecialities();
+    addIntoGetCommonSpecialitiesDataStream(result);
+    return result;
+  }
+
+  void addIntoGetCommonSpecialitiesDataStream(RequestState state) {
+    addStateInGenericStream(_getCommonSpecialityDataStreamProvider, state);
+  }
+
+  Future<RequestState> getMediaContent() async {
+    addIntoMediaStream(RequestInProgress());
+    var result = await HomeScreenMainRepo().getMediaContent();
+    addIntoMediaStream(result);
+    return result;
+  }
+
+  void addIntoMediaStream(RequestState state) {
+    addStateInGenericStream(_mediaStreamProvider, state);
   }
 }

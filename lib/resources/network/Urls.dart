@@ -145,4 +145,10 @@ class Urls {
   static const String GET_WHY_US_BY_ID_URL = mcmBaseUrl + "plunes/whyus/";
   static const String KNOW_YOUR_PROCEDURE_URL =
       mcmBaseUrl + "mcmCatalogue/getServiceFamily";
+  static const String GET_PROFESSIONAL_FOR_SERVICE_URL =
+      "user/getProfessionalsFromServices";
+  static const String GET_COMMON_SPECIALITIES_URL =
+      mcmBaseUrl + "mcmCatalogue/getCommonSpecialities";
+  static const String GET_PLUNES_MEDIA_URL =
+      mcmBaseUrl + "campaign/getPlunesMedia";
 }

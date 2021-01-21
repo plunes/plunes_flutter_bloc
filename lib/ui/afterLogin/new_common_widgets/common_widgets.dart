@@ -2,8 +2,10 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/models/new_solution_model/professional_model.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -207,7 +209,8 @@ class CommonWidgets {
     );
   }
 
-  Widget getProfessionalWidgetForSearchDesiredServiceScreen(int index) {
+  Widget getProfessionalWidgetForSearchDesiredServiceScreen(
+      int index, ProfData profData, String specialization) {
     return Card(
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2.8,
@@ -224,8 +227,7 @@ class CommonWidgets {
               borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(16), topRight: Radius.circular(16)),
               child: SizedBox.expand(
-                child: CustomWidgets().getImageFromUrl(
-                    "https://media.istockphoto.com/photos/doctor-holding-digital-tablet-at-meeting-room-picture-id1189304032?k=6&m=1189304032&s=612x612&w=0&h=SJPF2M715kIFAKoYHGbb1uAyptbz6Tn7-LxPsm5msPE=",
+                child: CustomWidgets().getImageFromUrl(profData?.imageUrl ?? "",
                     boxFit: BoxFit.cover),
               ),
             ),
@@ -247,14 +249,14 @@ class CommonWidgets {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Dr. Atul Mishra",
+                          CommonMethods.getStringInCamelCase(profData?.name),
                           style: TextStyle(
                             fontSize: 20,
                             color: PlunesColors.BLACKCOLOR,
                           ),
                         ),
                         Text(
-                          "Fortis Healthcare",
+                          "",
                           style: TextStyle(
                             fontSize: 18,
                             color: Color(
@@ -271,7 +273,7 @@ class CommonWidgets {
                             color: Colors.yellow,
                           ),
                           Text(
-                            " 4.5",
+                            " ${profData?.rating?.toStringAsFixed(1) ?? 4.5}",
                             style: TextStyle(
                               fontSize: 18,
                               color: PlunesColors.BLACKCOLOR,
@@ -310,7 +312,7 @@ class CommonWidgets {
                                       "#707070"))),
                             ),
                             Text(
-                              "Leaser Hair Reduction",
+                              specialization ?? "",
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -319,7 +321,10 @@ class CommonWidgets {
                           ],
                         ),
                       ),
-                      index % 2 == 0
+                      (profData != null &&
+                              profData.userType != null &&
+                              profData.userType.toLowerCase() ==
+                                  Constants.doctor.toString().toLowerCase())
                           ? Container()
                           : Expanded(
                               child: Container(
@@ -337,13 +342,19 @@ class CommonWidgets {
                     ],
                   ),
                 ),
-                index % 2 == 0
+                (profData != null &&
+                        profData.userType != null &&
+                        profData.userType.toLowerCase() ==
+                            Constants.doctor.toString().toLowerCase())
                     ? Container(
                         margin: EdgeInsets.only(
                             top: AppConfig.verticalBlockSize * 2.1),
                       )
                     : Container(),
-                index % 2 == 0
+                (profData != null &&
+                        profData.userType != null &&
+                        profData.userType.toLowerCase() ==
+                            Constants.doctor.toString().toLowerCase())
                     ? Row(
                         children: [
                           Expanded(
@@ -359,7 +370,7 @@ class CommonWidgets {
                                               "#707070"))),
                                 ),
                                 Text(
-                                  "20 year",
+                                  "${(profData.experience != null && profData.experience > 0) ? profData.experience : 1} year",
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(

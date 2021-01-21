@@ -1,4 +1,8 @@
+import 'package:plunes/models/doc_hos_models/common_models/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
+import 'package:plunes/models/new_solution_model/media_content_model.dart';
+import 'package:plunes/models/new_solution_model/new_speciality_model.dart';
+import 'package:plunes/models/new_solution_model/professional_model.dart';
 import 'package:plunes/models/new_solution_model/solution_home_scr_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
@@ -57,6 +61,49 @@ class HomeScreenMainRepo {
     if (result.isRequestSucceed) {
       KnowYourProcedureModel solutionHomeScreenModel =
           KnowYourProcedureModel.fromJson(result.response.data);
+      return RequestSuccess(response: solutionHomeScreenModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getProfessionalsForService(String familyId) async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.GET_PROFESSIONAL_FOR_SERVICE_URL,
+        headerIncluded: true,
+        queryParameter: {"familyId": familyId},
+        requestType: HttpRequestMethods.HTTP_GET);
+    if (result.isRequestSucceed) {
+      ProfessionDataModel solutionHomeScreenModel =
+          ProfessionDataModel.fromJson(result.response.data);
+      return RequestSuccess(response: solutionHomeScreenModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getCommonSpecialities() async {
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
+        url: Urls.GET_COMMON_SPECIALITIES_URL,
+        headerIncluded: true,
+        requestType: HttpRequestMethods.HTTP_GET);
+    if (result.isRequestSucceed) {
+      NewSpecialityModel solutionHomeScreenModel =
+          NewSpecialityModel.fromJson(result.response.data);
+      return RequestSuccess(response: solutionHomeScreenModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getMediaContent() async {
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
+        url: Urls.GET_PLUNES_MEDIA_URL,
+        headerIncluded: true,
+        requestType: HttpRequestMethods.HTTP_GET);
+    if (result.isRequestSucceed) {
+      MediaContentPlunes solutionHomeScreenModel =
+          MediaContentPlunes.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);

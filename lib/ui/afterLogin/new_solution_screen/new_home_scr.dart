@@ -3,10 +3,13 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/models/new_solution_model/card_by_id_image_scr.dart';
 import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
+import 'package:plunes/models/new_solution_model/media_content_model.dart';
+import 'package:plunes/models/new_solution_model/new_speciality_model.dart';
 import 'package:plunes/models/new_solution_model/solution_home_scr_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -17,6 +20,7 @@ import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/testNproceduresMainScreen.dart';
 import 'package:readmore/readmore.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 const kDefaultImageUrl =
     'https://goqii.com/blog/wp-content/uploads/Doctor-Consultation.jpg';
@@ -36,6 +40,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   SolutionHomeScreenModel _solutionHomeScreenModel;
   WhyUsModel _whyUsModel;
   KnowYourProcedureModel _knowYourProcedureModel;
+  NewSpecialityModel _newSpecialityModel;
+  MediaContentPlunes _mediaContentPlunes;
   String _failedMessage;
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
@@ -43,6 +49,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _failedMessageForWhyUsSection;
   String _failedMessageForKnowYourProcedureSection;
   bool _isProcedureListOpened;
+
+  String _failedMessageForCommonSpeciality;
+
+  String _mediaFailedMessage;
 
   @override
   void initState() {
@@ -304,44 +314,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               ),
             ),
 
-            // heading - speciality
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 5,
-                  left: AppConfig.horizontalBlockSize * 4.3,
-                  right: AppConfig.horizontalBlockSize * 3),
-              child: _sectionHeading('Speciality'),
-            ),
+            _getSpecialityWidget(),
 
-            // horizontal list view of specialities
-            Container(
-              height: AppConfig.verticalBlockSize * 28,
-              margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _specialCard(kDefaultImageUrl, 'Pathology',
-                      'Lorem ipsumLorem ipsumLorem ipsumLorem Read More'),
-                  _specialCard(kDefaultImageUrl, 'Dentist',
-                      'Lorem ipsumLorem ipsumLorem ipsumLorem Read More'),
-                  _specialCard(kDefaultImageUrl, 'Dermatology',
-                      'Lorem ipsumLorem ipsumLorem ipsumLorem Read More'),
-                ],
-              ),
-            ),
-
-            // section heading - vedio
-            Container(
-                margin: EdgeInsets.only(
-                    top: AppConfig.verticalBlockSize * 5,
-                    left: AppConfig.horizontalBlockSize * 1,
-                    right: AppConfig.horizontalBlockSize * 70),
-                child: _sectionHeading('Video')),
-
-            // vedio card
-            _hospitalCard(kDefaultImageUrl, 'An Introduction to PLUNES',
-                'Discover the best prices from top rated doctors for any medical treatment in Delhi, Noida, Gurgaon, Dwarka at exclusive discounts.'),
+            _getVideoWidget(),
 
             // section heading - reviews
             Container(
@@ -448,9 +423,13 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   void _getTopSearch() {}
 
-  void _getSpecialities() {}
+  void _getSpecialities() {
+    _homeScreenMainBloc.getCommonSpecialities();
+  }
 
-  void _getVideos() {}
+  void _getVideos() {
+    _homeScreenMainBloc.getMediaContent();
+  }
 
   void _getReviews() {}
 
@@ -742,6 +721,214 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       ),
     );
   }
+
+  Widget _getSpecialityWidget() {
+    return Column(
+      children: [
+        // heading - speciality
+        Container(
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 5,
+              left: AppConfig.horizontalBlockSize * 4.3,
+              right: AppConfig.horizontalBlockSize * 3),
+          child: _sectionHeading('Speciality'),
+        ),
+
+        // horizontal list view of specialities
+        StreamBuilder<RequestState>(
+            stream: _homeScreenMainBloc.commonSpecialityStream,
+            initialData:
+                _newSpecialityModel == null ? RequestInProgress() : null,
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestSuccess) {
+                RequestSuccess successObject = snapshot.data;
+                _newSpecialityModel = successObject.response;
+                _homeScreenMainBloc
+                    ?.addIntoGetCommonSpecialitiesDataStream(null);
+              } else if (snapshot.data is RequestFailed) {
+                RequestFailed _failedObj = snapshot.data;
+                _failedMessageForCommonSpeciality = _failedObj?.failureCause;
+                _homeScreenMainBloc
+                    ?.addIntoGetCommonSpecialitiesDataStream(null);
+              } else if (snapshot.data is RequestInProgress) {
+                return Container(
+                  child: CustomWidgets().getProgressIndicator(),
+                  height: AppConfig.verticalBlockSize * 28,
+                  margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                );
+              }
+              return (_newSpecialityModel == null ||
+                      _newSpecialityModel.data == null ||
+                      _newSpecialityModel.data.isEmpty)
+                  ? Container(
+                      margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                      child: CustomWidgets().errorWidget(
+                          _newSpecialityModel?.message ??
+                              _failedMessageForCommonSpeciality,
+                          onTap: () => _getSpecialities(),
+                          isSizeLess: true),
+                    )
+                  : Container(
+                      height: AppConfig.verticalBlockSize * 28,
+                      margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          // print("${_newSpecialityModel.data[index]?.specailizationImage}");
+                          return _specialCard(
+                              _newSpecialityModel
+                                      .data[index]?.specailizationImage ??
+                                  "",
+                              _newSpecialityModel.data[index]?.speciality,
+                              _newSpecialityModel.data[index]?.definition ??
+                                  "");
+                        },
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: _newSpecialityModel.data.length ?? 0,
+                      ),
+                    );
+            }),
+      ],
+    );
+  }
+
+  Widget _getVideoWidget() {
+    return Column(
+      children: [
+        // section heading - vedio
+        Container(
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 5,
+                left: AppConfig.horizontalBlockSize * 1,
+                right: AppConfig.horizontalBlockSize * 70),
+            child: _sectionHeading('Video')),
+
+        // vedio card
+        StreamBuilder<RequestState>(
+            stream: _homeScreenMainBloc.mediaStream,
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestSuccess) {
+                RequestSuccess successObject = snapshot.data;
+                _mediaContentPlunes = successObject.response;
+                _homeScreenMainBloc?.addIntoMediaStream(null);
+              } else if (snapshot.data is RequestFailed) {
+                RequestFailed _failedObj = snapshot.data;
+                _mediaFailedMessage = _failedObj?.failureCause;
+                _homeScreenMainBloc?.addIntoMediaStream(null);
+              } else if (snapshot.data is RequestInProgress) {
+                return Container(
+                  child: CustomWidgets().getProgressIndicator(),
+                  height: AppConfig.verticalBlockSize * 28,
+                );
+              }
+              return (_mediaContentPlunes == null ||
+                      _mediaContentPlunes.data == null ||
+                      _mediaContentPlunes.data.isEmpty)
+                  ? Container(
+                      margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                      child: CustomWidgets().errorWidget(_mediaFailedMessage,
+                          onTap: () => _getVideos(), isSizeLess: true),
+                    )
+                  : Container(
+                      height: AppConfig.verticalBlockSize * 38,
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return _getVideoCard(
+                              "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
+                              _mediaContentPlunes.data[index]?.service ?? "",
+                              _mediaContentPlunes.data[index].testimonial,
+                              _mediaContentPlunes.data[index]?.mediaUrl);
+                        },
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: _mediaContentPlunes?.data?.length ?? 0,
+                      ),
+                    );
+            })
+      ],
+    );
+  }
+
+  Widget _getVideoCard(
+      String imageUrl, String label, String text, String mediaUrl) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: AppConfig.horizontalBlockSize * 3,
+          top: AppConfig.verticalBlockSize * 1,
+          bottom: AppConfig.verticalBlockSize * 1,
+          right: AppConfig.horizontalBlockSize * 1),
+      width: AppConfig.horizontalBlockSize * 88,
+      child: InkWell(
+        onTap: () {
+          if (mediaUrl == null || mediaUrl.trim().isEmpty) {
+            return;
+          }
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => YoutubePlayerProvider(
+                        mediaUrl,
+                        title: label,
+                      )));
+        },
+        child: Card(
+          elevation: 10.0,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          child: Column(
+            children: [
+              Container(
+                child: ClipRRect(
+                  child: _imageFittedBox(imageUrl, boxFit: BoxFit.fitWidth),
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(10),
+                      topLeft: Radius.circular(10)),
+                ),
+                height: AppConfig.verticalBlockSize * 26,
+                width: double.infinity,
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 2,
+                    right: AppConfig.horizontalBlockSize * 2,
+                    top: AppConfig.verticalBlockSize * 0.3),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        label,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontSize: AppConfig.mediumFont,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 2,
+                      right: AppConfig.horizontalBlockSize * 2,
+                      top: AppConfig.verticalBlockSize * 0.3),
+                  child: Text(
+                    text,
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: AppConfig.verySmallFont,
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // Functions
@@ -884,26 +1071,29 @@ Widget _specialCard(String imageUrl, String label, String text) {
       child: Column(
         children: [
           Expanded(
+            flex: 2,
             child: Container(
               width: double.infinity,
               child: ClipRRect(
-                child: _imageFittedBox(imageUrl, boxFit: BoxFit.fitWidth),
+                child: _imageFittedBox(imageUrl, boxFit: BoxFit.cover),
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10)),
               ),
             ),
           ),
-          ListTile(
-            title: Text(
-              label,
-              maxLines: 2,
-              style: TextStyle(fontSize: AppConfig.smallFont),
-            ),
-            subtitle: Text(
-              text,
-              maxLines: 2,
-              style: TextStyle(fontSize: AppConfig.verySmallFont),
+          Flexible(
+            child: ListTile(
+              title: Text(
+                label,
+                maxLines: 2,
+                style: TextStyle(fontSize: AppConfig.smallFont),
+              ),
+              subtitle: Text(
+                text,
+                maxLines: 2,
+                style: TextStyle(fontSize: AppConfig.verySmallFont),
+              ),
             ),
           )
         ],
