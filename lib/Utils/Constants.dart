@@ -24,6 +24,8 @@ class Constants {
   static const String consultationKey = "Consultation";
   static const String procedureKey = "Procedure";
   static const String testKey = "Test";
+  static const String USER_TESTIMONIAL = "USER_TESTIMONIAL";
+  static const String PROFESSIONAL_TESTIMONIAL = "PROFESSIONAL_TESTIMONIAL";
 
   static get hospital => 'Hospital';
 

@@ -191,6 +191,8 @@ flutter:
     - assets/images/bottom_tabs/notification_inactive-icon.png
     - assets/images/bottom_tabs/cartSelectedImage.png
     - assets/images/bottom_tabs/cartUnSelectedImage.png
+    - assets/images/bottom_tabs/previousActivitySelectedIcon.png
+    - assets/images/bottom_tabs/previousActivityUnselectedIcon.png
 
     - assets/images/sliders/bidding.png
     - assets/images/sliders/search.png

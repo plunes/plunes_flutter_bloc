@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
+import 'package:plunes/models/new_solution_model/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/professional_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
-import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:readmore/readmore.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ignore: must_be_immutable
 class ViewProcedureAndProfessional extends BaseActivity {
@@ -28,8 +33,17 @@ class _ViewProcedureAndProfessionalState
     extends BaseState<ViewProcedureAndProfessional> {
   HomeScreenMainBloc _homeScreenMainBloc;
   ProfessionDataModel _professionDataModel;
+  MediaContentPlunes _mediaContentPlunes;
 
   String _mediaFailedMessage;
+
+  String _professionalFailedMessage;
+
+  @override
+  void dispose() {
+    _homeScreenMainBloc?.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -48,7 +62,9 @@ class _ViewProcedureAndProfessionalState
     _homeScreenMainBloc.getProfessionalsForService(widget.procedureData.sId);
   }
 
-  _getVideos() {}
+  _getVideos() {
+    _homeScreenMainBloc.getMediaContent(mediaType: Constants.USER_TESTIMONIAL);
+  }
 
   _getReviews() {}
 
@@ -131,16 +147,27 @@ class _ViewProcedureAndProfessionalState
                     borderRadius: BorderRadius.all(Radius.circular(24))),
                 margin: EdgeInsets.symmetric(
                     horizontal: AppConfig.horizontalBlockSize * 8),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 6,
-                      vertical: AppConfig.verticalBlockSize * 1.6),
-                  child: Text(
-                    "Search service",
-                    textAlign: TextAlign.left,
-                    style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SolutionBiddingScreen()));
+                  },
+                  onDoubleTap: () {},
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 6,
+                        vertical: AppConfig.verticalBlockSize * 1.6),
+                    child: Text(
+                      "Search service",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                    ),
                   ),
                 ),
               ),
@@ -162,7 +189,7 @@ class _ViewProcedureAndProfessionalState
           _getProcedureDetailWidget(),
           _getProfessionalListWidget(),
           _getVideoWidget(),
-          _getReviewSection()
+          // _getReviewSection()
         ],
       ),
     );
@@ -372,7 +399,7 @@ class _ViewProcedureAndProfessionalState
                     ?.addIntoGetProfessionalForServiceDataStream(null);
               } else if (snapshot.data is RequestFailed) {
                 RequestFailed _failedObj = snapshot.data;
-                _mediaFailedMessage = _failedObj?.failureCause;
+                _professionalFailedMessage = _failedObj?.failureCause;
                 _homeScreenMainBloc
                     ?.addIntoGetProfessionalForServiceDataStream(null);
               } else if (snapshot.data is RequestInProgress) {
@@ -386,8 +413,10 @@ class _ViewProcedureAndProfessionalState
                       _professionDataModel.data.isEmpty)
                   ? Container(
                       margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
-                      child: CustomWidgets().errorWidget(_mediaFailedMessage,
-                          onTap: () => _getProfessionals(), isSizeLess: true),
+                      child: CustomWidgets().errorWidget(
+                          _professionalFailedMessage,
+                          onTap: () => _getProfessionals(),
+                          isSizeLess: true),
                     )
                   : Container(
                       child: ListView.builder(
@@ -397,7 +426,9 @@ class _ViewProcedureAndProfessionalState
                               .getProfessionalWidgetForSearchDesiredServiceScreen(
                                   index,
                                   _professionDataModel.data[index],
-                                  widget.procedureData?.speciality);
+                                  widget.procedureData?.speciality,
+                                  onTap: () => _openProfileScreen(
+                                      _professionDataModel.data[index]));
                         },
                         shrinkWrap: true,
                         itemCount: 5,
@@ -419,7 +450,7 @@ class _ViewProcedureAndProfessionalState
                 left: AppConfig.horizontalBlockSize * 4.3,
                 right: AppConfig.horizontalBlockSize * 3),
             child: Text(
-              "Video",
+              "Videos",
               maxLines: 1,
               style: TextStyle(
                 fontSize: AppConfig.largeFont,
@@ -430,7 +461,38 @@ class _ViewProcedureAndProfessionalState
           Container(
             height: AppConfig.verticalBlockSize * 33,
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
-            child: _getVideoList(),
+            child: StreamBuilder<RequestState>(
+                stream: _homeScreenMainBloc.mediaStream,
+                initialData:
+                    _mediaContentPlunes == null ? RequestInProgress() : null,
+                builder: (context, snapshot) {
+                  if (snapshot.data is RequestSuccess) {
+                    RequestSuccess successObject = snapshot.data;
+                    _mediaContentPlunes = successObject.response;
+                    _homeScreenMainBloc?.addIntoMediaStream(null);
+                  } else if (snapshot.data is RequestFailed) {
+                    RequestFailed _failedObj = snapshot.data;
+                    _mediaFailedMessage = _failedObj?.failureCause;
+                    _homeScreenMainBloc?.addIntoMediaStream(null);
+                  } else if (snapshot.data is RequestInProgress) {
+                    return Container(
+                      child: CustomWidgets().getProgressIndicator(),
+                      height: AppConfig.verticalBlockSize * 28,
+                    );
+                  }
+                  return (_mediaContentPlunes == null ||
+                          _mediaContentPlunes.data == null ||
+                          _mediaContentPlunes.data.isEmpty)
+                      ? Container(
+                          margin:
+                              EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                          child: CustomWidgets().errorWidget(
+                              _mediaFailedMessage,
+                              onTap: () => _getVideos(),
+                              isSizeLess: true),
+                        )
+                      : _getVideoList();
+                }),
           )
         ],
       ),
@@ -547,26 +609,48 @@ class _ViewProcedureAndProfessionalState
               borderRadius: BorderRadius.only(
                   bottomRight: Radius.circular(10),
                   bottomLeft: Radius.circular(10))),
-          child: Container(
+          child: InkWell(
+            onTap: () {
+              String mediaUrl = _mediaContentPlunes?.data[index]?.mediaUrl;
+              if (mediaUrl == null || mediaUrl.trim().isEmpty) {
+                return;
+              }
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => YoutubePlayerProvider(
+                            mediaUrl,
+                            title: _mediaContentPlunes?.data[index]?.name,
+                          )));
+            },
+            onDoubleTap: () {},
             child: Column(
               children: [
                 Container(
                   child: ClipRRect(
-                    child: CustomWidgets().getImageFromUrl(kDefaultImageUrl),
+                    child: CustomWidgets().getImageFromUrl(
+                        "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
+                        boxFit: BoxFit.fill),
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(10),
                         topRight: Radius.circular(10)),
                   ),
                   height: AppConfig.verticalBlockSize * 26,
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 1.2),
-                  width: AppConfig.horizontalBlockSize * 80,
-                  child: Text(
-                    "Video Name",
-                    style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 1.2),
+                    padding: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 3),
+                    width: AppConfig.horizontalBlockSize * 80,
+                    child: Text(
+                      _mediaContentPlunes.data[index]?.name ?? "Video",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                    ),
                   ),
                 )
               ],
@@ -574,7 +658,24 @@ class _ViewProcedureAndProfessionalState
           ),
         );
       },
-      itemCount: 5,
+      itemCount: _mediaContentPlunes?.data?.length ?? 0,
     );
+  }
+
+  _openProfileScreen(ProfData data) {
+    if (data != null &&
+        data.userType != null &&
+        data.userType.isNotEmpty &&
+        data.sId != null &&
+        data.sId.isNotEmpty) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DoctorInfo(
+                    data.sId,
+                    isDoc: (data.userType.toLowerCase() ==
+                        Constants.doctor.toString().toLowerCase()),
+                  )));
+    }
   }
 }

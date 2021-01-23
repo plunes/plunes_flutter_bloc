@@ -266,11 +266,8 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
             PlunesImages.exploreInActiveIcon),
         bottomNavigationBarItem(
             PlunesStrings.previousActivities.toUpperCase(),
-            (FirebaseNotification().getCartCount() != null &&
-                    FirebaseNotification().getCartCount() != 0)
-                ? PlunesImages.itemInCartImage
-                : PlunesImages.cartUnSelectedImage,
-            PlunesImages.cartSelectedImage),
+            PlunesImages.previousActivityUnselectedIcon,
+            PlunesImages.previousActivitySelectedIcon),
         bottomNavigationBarItem(
             plunesStrings.notification,
             (FirebaseNotification().getNotificationCount() != null &&
@@ -284,12 +281,17 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
 
   BottomNavigationBarItem bottomNavigationBarItem(
       String title, String icon, String activeIcon) {
+    double iconSize = 32;
+    if (PlunesStrings.previousActivities.toUpperCase() == title) {
+      iconSize = 26;
+    }
     return BottomNavigationBarItem(
         icon: (_showBadge && title == plunesStrings.notification)
             ? badgeIconWidget(icon, 32, 32)
-            : widget.getAssetIconWidget(icon, 32, 32, BoxFit.contain),
-        activeIcon:
-            widget.getAssetIconWidget(activeIcon, 32, 32, BoxFit.contain),
+            : widget.getAssetIconWidget(
+                icon, iconSize, iconSize, BoxFit.contain),
+        activeIcon: widget.getAssetIconWidget(
+            activeIcon, iconSize, iconSize, BoxFit.contain),
         title: widget.createTextWithoutColor(
             title, 11.0, TextAlign.center, FontWeight.normal));
   }

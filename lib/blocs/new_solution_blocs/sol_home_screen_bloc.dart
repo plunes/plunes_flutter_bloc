@@ -112,9 +112,10 @@ class HomeScreenMainBloc extends BlocBase {
     addStateInGenericStream(_getCommonSpecialityDataStreamProvider, state);
   }
 
-  Future<RequestState> getMediaContent() async {
+  Future<RequestState> getMediaContent({String mediaType}) async {
     addIntoMediaStream(RequestInProgress());
-    var result = await HomeScreenMainRepo().getMediaContent();
+    var result =
+        await HomeScreenMainRepo().getMediaContent(mediaType: mediaType);
     addIntoMediaStream(result);
     return result;
   }

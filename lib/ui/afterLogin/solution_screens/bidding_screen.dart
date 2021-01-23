@@ -130,48 +130,48 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
             ),
             widget.getSpacer(AppConfig.verticalBlockSize * 1,
                 AppConfig.verticalBlockSize * 1),
-            Container(
-              padding: EdgeInsets.only(
-                  left: AppConfig.horizontalBlockSize * 3,
-                  right: AppConfig.horizontalBlockSize * 3),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: CustomWidgets().rectangularButtonWithPadding(
-                        buttonColor: PlunesColors.WHITECOLOR,
-                        buttonText: PlunesStrings.consultations,
-                        textColor: PlunesColors.GREYCOLOR,
-                        borderColor: PlunesColors.LIGHTGREYCOLOR,
-                        horizontalPadding: AppConfig.horizontalBlockSize * 4,
-                        verticalPadding: AppConfig.verticalBlockSize * 1,
-                        onTap: () => _onConsultationButtonClick()),
-                  ),
-                  Expanded(
-                    child: CustomWidgets().rectangularButtonWithPadding(
-                        buttonColor: PlunesColors.WHITECOLOR,
-                        buttonText: PlunesStrings.tests,
-                        textColor: PlunesColors.GREYCOLOR,
-                        borderColor: PlunesColors.LIGHTGREYCOLOR,
-                        horizontalPadding: AppConfig.horizontalBlockSize * 11,
-                        verticalPadding: AppConfig.verticalBlockSize * 1,
-                        onTap: () => _onTestAndProcedureButtonClick(
-                            PlunesStrings.tests, false)),
-                  ),
-                  Expanded(
-                    child: CustomWidgets().rectangularButtonWithPadding(
-                        buttonColor: PlunesColors.WHITECOLOR,
-                        buttonText: PlunesStrings.procedures,
-                        textColor: PlunesColors.GREYCOLOR,
-                        borderColor: PlunesColors.LIGHTGREYCOLOR,
-                        horizontalPadding: AppConfig.horizontalBlockSize * 5,
-                        verticalPadding: AppConfig.verticalBlockSize * 1,
-                        onTap: () => _onTestAndProcedureButtonClick(
-                            PlunesStrings.procedures, true)),
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   padding: EdgeInsets.only(
+            //       left: AppConfig.horizontalBlockSize * 3,
+            //       right: AppConfig.horizontalBlockSize * 3),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: <Widget>[
+            //       Expanded(
+            //         child: CustomWidgets().rectangularButtonWithPadding(
+            //             buttonColor: PlunesColors.WHITECOLOR,
+            //             buttonText: PlunesStrings.consultations,
+            //             textColor: PlunesColors.GREYCOLOR,
+            //             borderColor: PlunesColors.LIGHTGREYCOLOR,
+            //             horizontalPadding: AppConfig.horizontalBlockSize * 4,
+            //             verticalPadding: AppConfig.verticalBlockSize * 1,
+            //             onTap: () => _onConsultationButtonClick()),
+            //       ),
+            //       Expanded(
+            //         child: CustomWidgets().rectangularButtonWithPadding(
+            //             buttonColor: PlunesColors.WHITECOLOR,
+            //             buttonText: PlunesStrings.tests,
+            //             textColor: PlunesColors.GREYCOLOR,
+            //             borderColor: PlunesColors.LIGHTGREYCOLOR,
+            //             horizontalPadding: AppConfig.horizontalBlockSize * 11,
+            //             verticalPadding: AppConfig.verticalBlockSize * 1,
+            //             onTap: () => _onTestAndProcedureButtonClick(
+            //                 PlunesStrings.tests, false)),
+            //       ),
+            //       Expanded(
+            //         child: CustomWidgets().rectangularButtonWithPadding(
+            //             buttonColor: PlunesColors.WHITECOLOR,
+            //             buttonText: PlunesStrings.procedures,
+            //             textColor: PlunesColors.GREYCOLOR,
+            //             borderColor: PlunesColors.LIGHTGREYCOLOR,
+            //             horizontalPadding: AppConfig.horizontalBlockSize * 5,
+            //             verticalPadding: AppConfig.verticalBlockSize * 1,
+            //             onTap: () => _onTestAndProcedureButtonClick(
+            //                 PlunesStrings.procedures, true)),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             widget.getSpacer(AppConfig.verticalBlockSize * 1,
                 AppConfig.verticalBlockSize * 1),
             Expanded(

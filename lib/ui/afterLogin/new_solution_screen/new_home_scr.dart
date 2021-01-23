@@ -319,13 +319,13 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             _getVideoWidget(),
 
             // section heading - reviews
-            Container(
-              margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 5,
-                  left: AppConfig.horizontalBlockSize * 2,
-                  right: AppConfig.horizontalBlockSize * 60),
-              child: _sectionHeading('Reviews'),
-            ),
+            // Container(
+            //   margin: EdgeInsets.only(
+            //       top: AppConfig.verticalBlockSize * 5,
+            //       left: AppConfig.horizontalBlockSize * 2,
+            //       right: AppConfig.horizontalBlockSize * 60),
+            //   child: _sectionHeading('Reviews'),
+            // ),
 
             // review card
           ],
@@ -336,7 +336,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   Widget _servicesRow() {
     return Container(
-      margin: EdgeInsets.only(top: AppConfig.horizontalBlockSize * 4.35),
+      margin: EdgeInsets.only(
+          top: AppConfig.horizontalBlockSize * 4.35,
+          left: AppConfig.horizontalBlockSize * 2.8,
+          right: AppConfig.horizontalBlockSize * 2.8),
       child: Row(
         children: _solutionHomeScreenModel?.data
                 ?.map((e) =>
@@ -364,7 +367,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
           }
         },
         child: Card(
-          elevation: 10.0,
+          elevation: 5.0,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Container(
@@ -836,7 +839,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         itemBuilder: (context, index) {
                           return _getVideoCard(
                               "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
-                              _mediaContentPlunes.data[index]?.service ?? "",
+                              _mediaContentPlunes.data[index]?.service ??
+                                  _mediaContentPlunes.data[index]?.name ??
+                                  "",
                               _mediaContentPlunes.data[index].testimonial,
                               _mediaContentPlunes.data[index]?.mediaUrl);
                         },
@@ -873,8 +878,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         title: label,
                       )));
         },
+        onDoubleTap: () {},
         child: Card(
-          elevation: 10.0,
+          elevation: 5.0,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Column(
@@ -955,7 +961,7 @@ Widget _hospitalCard(String imageUrl, String label, String text) {
         vertical: AppConfig.verticalBlockSize * 1),
     height: AppConfig.verticalBlockSize * 38,
     child: Card(
-      elevation: 10.0,
+      elevation: 5.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: Column(
         children: [

@@ -139,6 +139,10 @@ class PlunesImages {
       "assets/images/new_sol_img/cameraIcon.png";
   static const String docUploadIcon =
       "assets/images/new_sol_img/documentIcon.png";
+  static const String previousActivitySelectedIcon =
+      "assets/images/bottom_tabs/previousActivitySelectedIcon.png";
+  static const String previousActivityUnselectedIcon =
+      "assets/images/bottom_tabs/previousActivityUnselectedIcon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

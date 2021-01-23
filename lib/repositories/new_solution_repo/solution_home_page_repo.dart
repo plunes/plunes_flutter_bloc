@@ -96,10 +96,11 @@ class HomeScreenMainRepo {
     }
   }
 
-  Future<RequestState> getMediaContent() async {
+  Future<RequestState> getMediaContent({String mediaType}) async {
     var result = await DioRequester().requestMethodWithNoBaseUrl(
         url: Urls.GET_PLUNES_MEDIA_URL,
         headerIncluded: true,
+        queryParameter: {"mediaType": mediaType},
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       MediaContentPlunes solutionHomeScreenModel =

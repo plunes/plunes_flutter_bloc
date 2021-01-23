@@ -1,14 +1,24 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/explore_bloc/explore_main_bloc.dart';
+import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/models/explore/explore_main_model.dart';
+import 'package:plunes/models/new_solution_model/media_content_model.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ignore: must_be_immutable
 class NewExploreScreen extends BaseActivity {
@@ -19,6 +29,47 @@ class NewExploreScreen extends BaseActivity {
 class _NewExploreScreenState extends BaseState<NewExploreScreen> {
   String kDefaultImageUrl =
       'https://goqii.com/blog/wp-content/uploads/Doctor-Consultation.jpg';
+  ExploreMainBloc _exploreMainBloc;
+  ExploreOuterModel _exploreModel;
+  String _failedMessageForExploreData;
+  StreamController _streamController;
+  double _currentDotPosition = 0.0;
+  final CarouselController _controller = CarouselController();
+  String _mediaFailedMessage;
+  HomeScreenMainBloc _homeScreenMainBloc;
+  MediaContentPlunes _mediaContentPlunes;
+  List<MediaData> _doctorVideos, _customerVideos;
+
+  @override
+  void initState() {
+    _exploreMainBloc = ExploreMainBloc();
+    _homeScreenMainBloc = HomeScreenMainBloc();
+    _streamController = StreamController.broadcast();
+    _currentDotPosition = 0.0;
+    _getData();
+    super.initState();
+  }
+
+  _getData() {
+    _getExploreData();
+    _getVideos();
+  }
+
+  _getVideos() {
+    _homeScreenMainBloc.getMediaContent();
+  }
+
+  @override
+  void dispose() {
+    _exploreMainBloc?.dispose();
+    _streamController?.close();
+    super.dispose();
+  }
+
+  void _getExploreData() {
+    _failedMessageForExploreData = null;
+    _exploreMainBloc.getExploreData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,18 +122,6 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
         child: Column(
           children: [
             ListTile(
-              // leading: Container(
-              //     padding: EdgeInsets.all(5),
-              //     child: IconButton(
-              //       onPressed: () {
-              //         Navigator.pop(context, false);
-              //         return;
-              //       },
-              //       icon: Icon(
-              //         Icons.arrow_back_ios,
-              //         color: PlunesColors.BLACKCOLOR,
-              //       ),
-              //     )),
               title: Text(
                 PlunesStrings.knowYourProcedure,
                 textAlign: TextAlign.center,
@@ -100,16 +139,27 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                     borderRadius: BorderRadius.all(Radius.circular(24))),
                 margin: EdgeInsets.symmetric(
                     horizontal: AppConfig.horizontalBlockSize * 8),
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 6,
-                      vertical: AppConfig.verticalBlockSize * 1.6),
-                  child: Text(
-                    "Search Service",
-                    textAlign: TextAlign.left,
-                    style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                child: InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SolutionBiddingScreen()));
+                  },
+                  onDoubleTap: () {},
+                  child: Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 6,
+                        vertical: AppConfig.verticalBlockSize * 1.6),
+                    child: Text(
+                      "Search Service",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                    ),
                   ),
                 ),
               ),
@@ -124,16 +174,15 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     return SingleChildScrollView(
       child: Column(
         children: [
-          _getSectionTwoWidget(null),
-          _getDoctorVideoSection(),
-          _getCustomerVideos(),
-          _getReviewSection()
+          _getSectionTwoWidget(),
+          _getVideosSection()
+          // _getReviewSection()
         ],
       ),
     );
   }
 
-  Widget _getSectionTwoWidget(Section3 sectionTwo) {
+  Widget _getSectionTwoWidget() {
     return Container(
       margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
       child: Column(
@@ -141,7 +190,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
           Container(
             alignment: Alignment.topLeft,
             child: Text(
-              sectionTwo?.heading ?? "Offers",
+              _exploreModel?.data?.first?.section2?.heading ?? "Offers",
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontWeight: FontWeight.w600,
@@ -151,57 +200,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                 vertical: AppConfig.verticalBlockSize * 2,
                 horizontal: AppConfig.horizontalBlockSize * 2),
           ),
-          CarouselSlider.builder(
-            itemCount: 3,
-            options: CarouselOptions(
-                height: AppConfig.verticalBlockSize * 28,
-                aspectRatio: 16 / 9,
-                initialPage: 0,
-                enableInfiniteScroll: false,
-                pageSnapping: true,
-                reverse: false,
-                enlargeCenterPage: true,
-                viewportFraction: 1.0,
-                scrollDirection: Axis.horizontal),
-            itemBuilder: (BuildContext context, int itemIndex) => Container(
-              width: double.infinity,
-              child: InkWell(
-                onTap: () {},
-                child: Container(
-                  margin: EdgeInsets.all(10.0),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CustomWidgets()
-                        .getImageFromUrl(kDefaultImageUrl, boxFit: BoxFit.fill),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          StreamBuilder<Object>(
-              // stream: _streamController.stream,
-              builder: (context, snapshot) {
-            return Container(
-              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.5),
-              child: DotsIndicator(
-                dotsCount: 3,
-                // dotsCount: sectionTwo.elements.length > 8
-                //     ? 8
-                //     : sectionTwo.elements.length,
-                position: 0,
-                axis: Axis.horizontal,
-                decorator: _decorator,
-                onTap: (pos) {
-                  // _controller.animateToPage(pos.toInt(),
-                  //     curve: Curves.easeInOut,
-                  //     duration: Duration(milliseconds: 300));
-                  // _currentDotPosition = pos;
-                  // _streamController?.add(null);
-                  // return;
-                },
-              ),
-            );
-          })
+          _getOfferMainWidget()
         ],
       ),
     );
@@ -211,7 +210,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
       activeColor: PlunesColors.BLACKCOLOR,
       color: Color(CommonMethods.getColorHexFromStr("#E4E4E4")));
 
-  Widget _getDoctorVideoSection() {
+  Widget _getDoctorVideoSection(videos) {
     return Container(
       child: Column(
         children: [
@@ -229,7 +228,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                 horizontal: AppConfig.horizontalBlockSize * 2),
           ),
           Container(
-            child: _getVideoWidget(),
+            child: _getVideoWidget(videos),
             height: AppConfig.verticalBlockSize * 38,
           ),
         ],
@@ -237,7 +236,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     );
   }
 
-  Widget _getCustomerVideos() {
+  Widget _getCustomerVideos(List<MediaData> videos) {
     return Container(
       child: Column(
         children: [
@@ -255,7 +254,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                 horizontal: AppConfig.horizontalBlockSize * 2),
           ),
           Container(
-            child: _getVideoWidget(),
+            child: _getVideoWidget(videos),
             height: AppConfig.verticalBlockSize * 38,
           ),
         ],
@@ -393,58 +392,290 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     );
   }
 
-  Widget _getVideoWidget() {
-    return Card(
-      elevation: 10.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: Column(
-        children: [
-          Container(
-            child: ClipRRect(
-              child: CustomWidgets()
-                  .getImageFromUrl(kDefaultImageUrl, boxFit: BoxFit.fill),
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10), topLeft: Radius.circular(10)),
-            ),
-            height: AppConfig.verticalBlockSize * 26,
-            width: double.infinity,
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 2,
-                right: AppConfig.horizontalBlockSize * 2,
-                top: AppConfig.verticalBlockSize * 0.3),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    "An Introduction to PLUNES",
-                    maxLines: 2,
-                    style: TextStyle(
-                      fontSize: AppConfig.mediumFont,
+  Widget _getVideoWidget(List<MediaData> videos) {
+    return ListView.builder(
+        itemCount: videos?.length ?? 0,
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return Container(
+            width: AppConfig.horizontalBlockSize * 88,
+            margin: EdgeInsets.only(right: 3, bottom: 3),
+            child: Card(
+              elevation: 5.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: InkWell(
+                onTap: () {
+                  String mediaUrl = videos[index]?.mediaUrl;
+                  if (mediaUrl == null || mediaUrl.trim().isEmpty) {
+                    return;
+                  }
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => YoutubePlayerProvider(
+                                mediaUrl,
+                                title: videos[index]?.service ?? "Video",
+                              )));
+                },
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                child: Column(
+                  children: [
+                    Container(
+                      child: ClipRRect(
+                        child: CustomWidgets().getImageFromUrl(
+                            "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(videos[index].mediaUrl ?? "")}/0.jpg",
+                            boxFit: BoxFit.fill),
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(10),
+                            topLeft: Radius.circular(10)),
+                      ),
+                      height: AppConfig.verticalBlockSize * 26,
+                      width: double.infinity,
                     ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Flexible(
-            child: Container(
-              margin: EdgeInsets.only(
-                  left: AppConfig.horizontalBlockSize * 2,
-                  right: AppConfig.horizontalBlockSize * 2,
-                  top: AppConfig.verticalBlockSize * 0.3),
-              child: Text(
-                "Discover the best prices from top rated doctors for any medical treatment in Delhi, Noida, Gurgaon, Dwarka at exclusive discounts.",
-                maxLines: 2,
-                style: TextStyle(
-                  fontSize: AppConfig.verySmallFont,
+                    Container(
+                      margin: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 2,
+                          right: AppConfig.horizontalBlockSize * 2,
+                          top: AppConfig.verticalBlockSize * 0.3),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              videos[index]?.service ??
+                                  videos[index]?.name ??
+                                  "Video",
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                              style: TextStyle(
+                                fontSize: AppConfig.mediumFont,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 2,
+                            right: AppConfig.horizontalBlockSize * 2,
+                            top: AppConfig.verticalBlockSize * 0.3),
+                        child: Text(
+                          videos[index]?.testimonial ?? "",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: AppConfig.verySmallFont,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
-          )
-        ],
-      ),
+          );
+        });
+  }
+
+  Widget _getOfferMainWidget() {
+    return Container(
+      child: StreamBuilder<RequestState>(
+          stream: _exploreMainBloc.baseStream,
+          initialData: (_exploreModel == null || _exploreModel.data == null)
+              ? RequestInProgress()
+              : null,
+          builder: (context, snapshot) {
+            if (snapshot.data is RequestSuccess) {
+              RequestSuccess successObject = snapshot.data;
+              _exploreModel = successObject.response;
+            } else if (snapshot.data is RequestFailed) {
+              RequestFailed _failedObj = snapshot.data;
+              _failedMessageForExploreData = _failedObj?.failureCause;
+            } else if (snapshot.data is RequestInProgress) {
+              return Container(
+                child: CustomWidgets().getProgressIndicator(),
+                height: AppConfig.verticalBlockSize * 35,
+              );
+            }
+            return (_exploreModel == null ||
+                    _exploreModel.data == null ||
+                    _exploreModel.data.isEmpty ||
+                    _exploreModel.data.first == null ||
+                    _exploreModel.data.first.section2 == null ||
+                    _exploreModel.data.first.section2.elements == null ||
+                    _exploreModel.data.first.section2.elements.isEmpty)
+                ? Container(
+                    child: CustomWidgets().errorWidget(
+                        _failedMessageForExploreData,
+                        onTap: () => _getExploreData(),
+                        isSizeLess: true),
+                    height: AppConfig.verticalBlockSize * 35,
+                  )
+                : Column(
+                    children: [
+                      CarouselSlider.builder(
+                        carouselController: _controller,
+                        itemCount: (_exploreModel
+                                    .data.first.section2.elements.length >
+                                8)
+                            ? 8
+                            : _exploreModel.data.first.section2.elements.length,
+                        options: CarouselOptions(
+                            height: AppConfig.verticalBlockSize * 28,
+                            aspectRatio: 16 / 9,
+                            initialPage: 0,
+                            enableInfiniteScroll: false,
+                            pageSnapping: true,
+                            autoPlay: true,
+                            reverse: false,
+                            enlargeCenterPage: true,
+                            viewportFraction: 1.0,
+                            onPageChanged: (index, _) {
+                              if (_currentDotPosition.toInt() != index) {
+                                _currentDotPosition = index.toDouble();
+                                _streamController?.add(null);
+                              }
+                            },
+                            scrollDirection: Axis.horizontal),
+                        itemBuilder: (BuildContext context, int itemIndex) =>
+                            Container(
+                          width: double.infinity,
+                          child: InkWell(
+                            onTap: () {
+                              if (_exploreModel.data.first.section2
+                                          .elements[itemIndex].serviceName !=
+                                      null &&
+                                  _exploreModel.data.first.section2
+                                      .elements[itemIndex].serviceName
+                                      .trim()
+                                      .isNotEmpty) {
+                                Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SolutionBiddingScreen(
+                                                    searchQuery: _exploreModel
+                                                        .data
+                                                        .first
+                                                        .section2
+                                                        .elements[itemIndex]
+                                                        .serviceName)))
+                                    .then((value) {
+                                  // _getCartCount();
+                                });
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.all(10.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: CustomWidgets().getImageFromUrl(
+                                    _exploreModel.data.first.section2
+                                            .elements[itemIndex].imgUrl ??
+                                        "",
+                                    boxFit: BoxFit.fill),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      StreamBuilder<Object>(
+                          stream: _streamController.stream,
+                          builder: (context, snapshot) {
+                            return Container(
+                              margin: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 0.5),
+                              child: DotsIndicator(
+                                dotsCount: (_exploreModel.data.first.section2
+                                            .elements.length >
+                                        8)
+                                    ? 8
+                                    : _exploreModel
+                                        .data.first.section2.elements.length,
+                                position: _currentDotPosition,
+                                axis: Axis.horizontal,
+                                decorator: _decorator,
+                                onTap: (pos) {
+                                  _controller.animateToPage(pos.toInt(),
+                                      curve: Curves.easeInOut,
+                                      duration: Duration(milliseconds: 300));
+                                  _currentDotPosition = pos;
+                                  _streamController?.add(null);
+                                  return;
+                                },
+                              ),
+                            );
+                          })
+                    ],
+                  );
+          }),
     );
+  }
+
+  Widget _getVideosSection() {
+    return StreamBuilder<RequestState>(
+        stream: _homeScreenMainBloc.mediaStream,
+        initialData: _mediaContentPlunes == null ? RequestInProgress() : null,
+        builder: (context, snapshot) {
+          if (snapshot.data is RequestSuccess) {
+            RequestSuccess successObject = snapshot.data;
+            _mediaContentPlunes = successObject.response;
+            _filterVideos();
+            _homeScreenMainBloc?.addIntoMediaStream(null);
+          } else if (snapshot.data is RequestFailed) {
+            RequestFailed _failedObj = snapshot.data;
+            _mediaFailedMessage = _failedObj?.failureCause;
+            _homeScreenMainBloc?.addIntoMediaStream(null);
+          } else if (snapshot.data is RequestInProgress) {
+            return Container(
+              child: CustomWidgets().getProgressIndicator(),
+              height: AppConfig.verticalBlockSize * 28,
+            );
+          }
+          return (_mediaContentPlunes == null ||
+                  _mediaContentPlunes.data == null ||
+                  _mediaContentPlunes.data.isEmpty)
+              ? Container(
+                  margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                  child: CustomWidgets().errorWidget(_mediaFailedMessage,
+                      onTap: () => _getVideos(), isSizeLess: true),
+                )
+              : Container(
+                  child: Column(
+                    children: [
+                      (_doctorVideos == null || _doctorVideos.isEmpty)
+                          ? Container()
+                          : _getDoctorVideoSection(_doctorVideos),
+                      (_customerVideos == null || _customerVideos.isEmpty)
+                          ? Container()
+                          : _getCustomerVideos(_customerVideos),
+                    ],
+                  ),
+                );
+        });
+  }
+
+  void _filterVideos() {
+    _doctorVideos = [];
+    _customerVideos = [];
+    if (_mediaContentPlunes != null &&
+        _mediaContentPlunes.data != null &&
+        _mediaContentPlunes.data.isNotEmpty) {
+      _mediaContentPlunes.data.forEach((element) {
+        if (element.mediaType != null && element.mediaType.trim().isNotEmpty) {
+          if (element.mediaType.toLowerCase() ==
+              Constants.USER_TESTIMONIAL.toString().toLowerCase()) {
+            _customerVideos.add(element);
+          } else if (element.mediaType.toLowerCase() ==
+              Constants.PROFESSIONAL_TESTIMONIAL.toString().toLowerCase()) {
+            _doctorVideos.add(element);
+          }
+        }
+      });
+    }
   }
 }

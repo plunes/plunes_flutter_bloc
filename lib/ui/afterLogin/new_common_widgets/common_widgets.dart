@@ -210,7 +210,8 @@ class CommonWidgets {
   }
 
   Widget getProfessionalWidgetForSearchDesiredServiceScreen(
-      int index, ProfData profData, String specialization) {
+      int index, ProfData profData, String specialization,
+      {Function onTap}) {
     return Card(
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2.8,
@@ -219,114 +220,179 @@ class CommonWidgets {
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16))),
-      child: Column(
-        children: [
-          Container(
-            height: AppConfig.verticalBlockSize * 20,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-              child: SizedBox.expand(
-                child: CustomWidgets().getImageFromUrl(profData?.imageUrl ?? "",
-                    boxFit: BoxFit.cover),
+      child: InkWell(
+        onTap: () {
+          if (onTap != null) {
+            onTap();
+          }
+        },
+        onDoubleTap: () {},
+        child: Column(
+          children: [
+            Container(
+              height: AppConfig.verticalBlockSize * 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16)),
+                child: SizedBox.expand(
+                  child: CustomWidgets().getImageFromUrl(
+                      profData?.imageUrl ?? "",
+                      boxFit: BoxFit.cover),
+                ),
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 3.2,
-                right: AppConfig.horizontalBlockSize * 3.2,
-                top: AppConfig.verticalBlockSize * 1.2,
-                bottom: AppConfig.verticalBlockSize * 2.5),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          CommonMethods.getStringInCamelCase(profData?.name),
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: PlunesColors.BLACKCOLOR,
-                          ),
-                        ),
-                        Text(
-                          "",
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#707070")),
-                          ),
-                        ),
-                      ],
-                    )),
-                    Container(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                          ),
-                          Text(
-                            " ${profData?.rating?.toStringAsFixed(1) ?? 4.5}",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: PlunesColors.BLACKCOLOR,
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
-                ),
-                DottedLine(
-                  dashColor: Colors.grey,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
-                ),
-                Container(
-                  width: double.infinity,
-                  child: Row(
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 3.2,
+                  right: AppConfig.horizontalBlockSize * 3.2,
+                  top: AppConfig.verticalBlockSize * 1.2,
+                  bottom: AppConfig.verticalBlockSize * 2.5),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            CommonMethods.getStringInCamelCase(profData?.name),
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          ),
+                          Text(
+                            "",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#707070")),
+                            ),
+                          ),
+                        ],
+                      )),
+                      Container(
+                        child: Row(
                           children: [
-                            Text(
-                              "Specialization",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#707070"))),
+                            Icon(
+                              Icons.star,
+                              color: Colors.yellow,
                             ),
                             Text(
-                              specialization ?? "",
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                              " ${profData?.rating?.toStringAsFixed(1) ?? 4.5}",
                               style: TextStyle(
-                                  fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                                fontSize: 18,
+                                color: PlunesColors.BLACKCOLOR,
+                              ),
                             )
                           ],
                         ),
-                      ),
-                      (profData != null &&
-                              profData.userType != null &&
-                              profData.userType.toLowerCase() ==
-                                  Constants.doctor.toString().toLowerCase())
-                          ? Container()
-                          : Expanded(
+                      )
+                    ],
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
+                  ),
+                  DottedLine(
+                    dashColor: Colors.grey,
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Specialization",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#707070"))),
+                              ),
+                              Text(
+                                specialization ?? "",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: PlunesColors.BLACKCOLOR),
+                              )
+                            ],
+                          ),
+                        ),
+                        (profData != null &&
+                                profData.userType != null &&
+                                profData.userType.toLowerCase() ==
+                                    Constants.doctor.toString().toLowerCase())
+                            ? Container()
+                            : Expanded(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    "View Profile",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: PlunesColors.GREENCOLOR),
+                                  ),
+                                ),
+                              ),
+                      ],
+                    ),
+                  ),
+                  (profData != null &&
+                          profData.userType != null &&
+                          profData.userType.toLowerCase() ==
+                              Constants.doctor.toString().toLowerCase())
+                      ? Container(
+                          margin: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 2.1),
+                        )
+                      : Container(),
+                  (profData != null &&
+                          profData.userType != null &&
+                          profData.userType.toLowerCase() ==
+                              Constants.doctor.toString().toLowerCase())
+                      ? Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Experience",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#707070"))),
+                                  ),
+                                  Text(
+                                    "${(profData.experience != null && profData.experience > 0) ? profData.experience : 1} year",
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Expanded(
                               child: Container(
                                 alignment: Alignment.centerRight,
                                 child: Text(
@@ -339,67 +405,14 @@ class CommonWidgets {
                                 ),
                               ),
                             ),
-                    ],
-                  ),
-                ),
-                (profData != null &&
-                        profData.userType != null &&
-                        profData.userType.toLowerCase() ==
-                            Constants.doctor.toString().toLowerCase())
-                    ? Container(
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 2.1),
-                      )
-                    : Container(),
-                (profData != null &&
-                        profData.userType != null &&
-                        profData.userType.toLowerCase() ==
-                            Constants.doctor.toString().toLowerCase())
-                    ? Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  "Experience",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#707070"))),
-                                ),
-                                Text(
-                                  "${(profData.experience != null && profData.experience > 0) ? profData.experience : 1} year",
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: PlunesColors.BLACKCOLOR),
-                                )
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                "View Profile",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    color: PlunesColors.GREENCOLOR),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : Container()
-              ],
-            ),
-          )
-        ],
+                          ],
+                        )
+                      : Container()
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

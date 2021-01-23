@@ -150,5 +150,5 @@ class Urls {
   static const String GET_COMMON_SPECIALITIES_URL =
       mcmBaseUrl + "mcmCatalogue/getCommonSpecialities";
   static const String GET_PLUNES_MEDIA_URL =
-      mcmBaseUrl + "campaign/getPlunesMedia";
+      mcmBaseUrl + "plunes/getPlunesMedia";
 }
