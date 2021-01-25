@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
                       : (_selectedIndex == 1
                           ? PlunesStrings.explore
                           : _selectedIndex == 2
-                              ? PlunesStrings.cart
+                              ? PlunesStrings.previousActivities
                               : plunesStrings.notifications),
                   isSelected,
                   selectedPositions,
@@ -283,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       String title, String icon, String activeIcon) {
     double iconSize = 32;
     if (PlunesStrings.previousActivities.toUpperCase() == title) {
-      iconSize = 26;
+      iconSize = 25;
     }
     return BottomNavigationBarItem(
         icon: (_showBadge && title == plunesStrings.notification)

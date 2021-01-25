@@ -151,4 +151,5 @@ class Urls {
       mcmBaseUrl + "mcmCatalogue/getCommonSpecialities";
   static const String GET_PLUNES_MEDIA_URL =
       mcmBaseUrl + "plunes/getPlunesMedia";
+  static const String TOP_SEARCH_URL = "analytics/topSearched";
 }

@@ -4,6 +4,7 @@ import 'package:plunes/models/new_solution_model/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/new_speciality_model.dart';
 import 'package:plunes/models/new_solution_model/professional_model.dart';
 import 'package:plunes/models/new_solution_model/solution_home_scr_model.dart';
+import 'package:plunes/models/new_solution_model/top_search_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -105,6 +106,20 @@ class HomeScreenMainRepo {
     if (result.isRequestSucceed) {
       MediaContentPlunes solutionHomeScreenModel =
           MediaContentPlunes.fromJson(result.response.data);
+      return RequestSuccess(response: solutionHomeScreenModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getTopSearches() async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.TOP_SEARCH_URL,
+        headerIncluded: true,
+        requestType: HttpRequestMethods.HTTP_GET);
+    if (result.isRequestSucceed) {
+      TopSearchOuterModel solutionHomeScreenModel =
+          TopSearchOuterModel.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);

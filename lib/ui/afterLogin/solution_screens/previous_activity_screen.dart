@@ -316,7 +316,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                       Container(
                         alignment: Alignment.topLeft,
                         child: Text(
-                          "You have missed",
+                          catalogueData?.service ?? "",
                           maxLines: 2,
                           style: TextStyle(fontSize: 17),
                         ),

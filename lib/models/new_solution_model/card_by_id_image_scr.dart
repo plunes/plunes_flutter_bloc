@@ -91,6 +91,7 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
   }
 
   Widget _getPage(Description desc) {
+    print(desc.image);
     return Column(
       children: [
         Container(
@@ -101,12 +102,14 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
 
         // text label
         Container(
-          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
-          width: AppConfig.horizontalBlockSize * 80,
+          margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 4,
+              left: AppConfig.horizontalBlockSize * 4),
+          // width: AppConfig.horizontalBlockSize * 80,
           child: Text(
             _whyUsByIdModel.data.title ?? "",
             maxLines: 3,
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.left,
             style: TextStyle(
               fontSize: AppConfig.extraLargeFont,
               fontWeight: FontWeight.bold,

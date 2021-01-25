@@ -11,6 +11,7 @@ import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
 import 'package:plunes/models/new_solution_model/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/new_speciality_model.dart';
 import 'package:plunes/models/new_solution_model/solution_home_scr_model.dart';
+import 'package:plunes/models/new_solution_model/top_search_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -42,6 +43,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   KnowYourProcedureModel _knowYourProcedureModel;
   NewSpecialityModel _newSpecialityModel;
   MediaContentPlunes _mediaContentPlunes;
+  TopSearchOuterModel _topSearchOuterModel;
   String _failedMessage;
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
@@ -53,6 +55,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _failedMessageForCommonSpeciality;
 
   String _mediaFailedMessage;
+
+  String _failedMessageTopSearch;
 
   @override
   void initState() {
@@ -290,29 +294,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             // vertical view of cards
             _getTopFacilitiesWidget(),
 
-            // heading - top search
-            Container(
-              alignment: Alignment.centerLeft,
-              margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 5,
-                  left: AppConfig.horizontalBlockSize * 4.3,
-                  right: AppConfig.horizontalBlockSize * 3),
-              child: _sectionHeading('Top Search'),
-            ),
-
-            // horizontal list view of top search cards
-            Container(
-              height: AppConfig.verticalBlockSize * 24,
-              margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                children: [
-                  _topSearchCard(kDefaultImageUrl, 'CT Scan'),
-                  _topSearchCard(kDefaultImageUrl, 'CT Scan'),
-                  _topSearchCard(kDefaultImageUrl, 'CT Scan'),
-                ],
-              ),
-            ),
+            _getTopSearchWidget(),
 
             _getSpecialityWidget(),
 
@@ -367,7 +349,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
           }
         },
         child: Card(
-          elevation: 5.0,
+          elevation: 2.0,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Container(
@@ -390,7 +372,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       right: 2),
                   alignment: Alignment.center,
                   child: Text(
-                    label,
+                    label ?? "",
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     style: TextStyle(fontSize: 15),
@@ -424,7 +406,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   void _getTopFacilities() {}
 
-  void _getTopSearch() {}
+  void _getTopSearch() {
+    _homeScreenMainBloc.getTopSearches();
+  }
 
   void _getSpecialities() {
     _homeScreenMainBloc.getCommonSpecialities();
@@ -519,12 +503,13 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 alignment: Alignment.topLeft,
                 padding: EdgeInsets.only(
                     top: AppConfig.verticalBlockSize * 2,
-                    left: AppConfig.horizontalBlockSize * 1),
+                    left: AppConfig.horizontalBlockSize * 1,
+                    right: AppConfig.horizontalBlockSize * 1),
                 child: Text(
-                  heading,
+                  heading ?? "",
                   maxLines: 3,
                   style: TextStyle(
-                    fontSize: AppConfig.mediumFont,
+                    fontSize: 18,
                   ),
                 ),
               ),
@@ -602,7 +587,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       child: GridView.count(
           shrinkWrap: true,
           crossAxisCount: 2,
-          childAspectRatio: 0.93,
+          crossAxisSpacing: 4,
+          mainAxisSpacing: 4,
+          childAspectRatio: 0.88,
           physics: NeverScrollableScrollPhysics(),
           children: _getProcedureAlteredList()),
     );
@@ -669,7 +656,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       },
       onDoubleTap: () {},
       child: Card(
-        elevation: 5.0,
+        elevation: 2.0,
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: Container(
@@ -690,10 +677,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       right: AppConfig.horizontalBlockSize * 2,
                       top: AppConfig.verticalBlockSize * 0.1),
                   child: Text(
-                    label,
+                    label ?? "",
                     textAlign: TextAlign.left,
                     maxLines: 2,
-                    style: TextStyle(fontSize: AppConfig.smallFont),
+                    style: TextStyle(fontSize: 15),
                   ),
                 ),
               ),
@@ -706,13 +693,13 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       right: AppConfig.horizontalBlockSize * 2),
                   child: IgnorePointer(
                     ignoring: true,
-                    child: ReadMoreText(text,
+                    child: ReadMoreText(text ?? "",
                         textAlign: TextAlign.left,
                         trimLines: 2,
                         trimExpandedText: "Read more",
                         trimMode: TrimMode.Line,
                         style: TextStyle(
-                          fontSize: AppConfig.verySmallFont,
+                          fontSize: 12,
                           color: Color(0xff444444),
                         )),
                   ),
@@ -773,7 +760,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                           isSizeLess: true),
                     )
                   : Container(
-                      height: AppConfig.verticalBlockSize * 28,
+                      height: AppConfig.verticalBlockSize * 30,
                       margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
                       child: ListView.builder(
                         itemBuilder: (context, index) {
@@ -880,7 +867,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         },
         onDoubleTap: () {},
         child: Card(
-          elevation: 5.0,
+          elevation: 2.0,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Column(
@@ -904,11 +891,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   children: [
                     Expanded(
                       child: Text(
-                        label,
-                        maxLines: 2,
+                        label ?? "",
+                        maxLines: 1,
                         style: TextStyle(
-                          fontSize: AppConfig.mediumFont,
-                        ),
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
                     ),
                   ],
@@ -921,10 +907,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       right: AppConfig.horizontalBlockSize * 2,
                       top: AppConfig.verticalBlockSize * 0.3),
                   child: Text(
-                    text,
+                    text ?? "",
                     maxLines: 2,
                     style: TextStyle(
-                      fontSize: AppConfig.verySmallFont,
+                      fontSize: 14,
                     ),
                   ),
                 ),
@@ -933,6 +919,72 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _getTopSearchWidget() {
+    return Column(
+      children: [
+        // heading - top search
+        Container(
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 5,
+              left: AppConfig.horizontalBlockSize * 4.3,
+              right: AppConfig.horizontalBlockSize * 3),
+          child: _sectionHeading('Top Search'),
+        ),
+
+        // horizontal list view of top search cards
+        StreamBuilder<RequestState>(
+            stream: _homeScreenMainBloc.topSearchStream,
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestSuccess) {
+                RequestSuccess successObject = snapshot.data;
+                _topSearchOuterModel = successObject.response;
+                _homeScreenMainBloc?.addIntoTopSearchStream(null);
+              } else if (snapshot.data is RequestFailed) {
+                RequestFailed _failedObj = snapshot.data;
+                _failedMessageTopSearch = _failedObj?.failureCause;
+                _homeScreenMainBloc?.addIntoTopSearchStream(null);
+              } else if (snapshot.data is RequestInProgress) {
+                return Container(
+                  child: CustomWidgets().getProgressIndicator(),
+                  height: AppConfig.verticalBlockSize * 25,
+                );
+              }
+              return (_topSearchOuterModel == null ||
+                      (_topSearchOuterModel.success != null &&
+                          !_topSearchOuterModel.success) ||
+                      _topSearchOuterModel.data == null ||
+                      _topSearchOuterModel.data.isEmpty)
+                  ? Container(
+                      height: AppConfig.verticalBlockSize * 38,
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 3),
+                      child: CustomWidgets().errorWidget(
+                          _failedMessageTopSearch,
+                          onTap: () => _getTopSearch(),
+                          isSizeLess: true),
+                    )
+                  : Container(
+                      height: AppConfig.verticalBlockSize * 24,
+                      margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return _topSearchCard(
+                              _topSearchOuterModel
+                                      .data[index].specializationImage ??
+                                  "",
+                              _topSearchOuterModel.data[index].service ?? "");
+                        },
+                        itemCount: _topSearchOuterModel.data.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                      ),
+                    );
+            }),
+      ],
     );
   }
 }
@@ -945,10 +997,10 @@ Widget _imageFittedBox(String imageUrl, {BoxFit boxFit = BoxFit.cover}) {
 
 Widget _sectionHeading(String text) {
   return Text(
-    text,
+    text ?? "",
     maxLines: 2,
     style: TextStyle(
-      fontSize: AppConfig.largeFont,
+      fontSize: 20,
       color: Color(0xff000000),
     ),
   );
@@ -961,7 +1013,7 @@ Widget _hospitalCard(String imageUrl, String label, String text) {
         vertical: AppConfig.verticalBlockSize * 1),
     height: AppConfig.verticalBlockSize * 38,
     child: Card(
-      elevation: 5.0,
+      elevation: 2.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
       child: Column(
         children: [
@@ -983,10 +1035,10 @@ Widget _hospitalCard(String imageUrl, String label, String text) {
               children: [
                 Expanded(
                   child: Text(
-                    label,
+                    label ?? "",
                     maxLines: 2,
                     style: TextStyle(
-                      fontSize: AppConfig.mediumFont,
+                      fontSize: 19,
                     ),
                   ),
                 ),
@@ -999,7 +1051,7 @@ Widget _hospitalCard(String imageUrl, String label, String text) {
                         color: Colors.yellow,
                       ),
                       Text(
-                        " 4.5",
+                        " 4.5" ?? "",
                         style: TextStyle(
                           fontSize: 18,
                           color: PlunesColors.BLACKCOLOR,
@@ -1018,10 +1070,10 @@ Widget _hospitalCard(String imageUrl, String label, String text) {
                   right: AppConfig.horizontalBlockSize * 2,
                   top: AppConfig.verticalBlockSize * 0.3),
               child: Text(
-                text,
+                text ?? "",
                 maxLines: 2,
                 style: TextStyle(
-                  fontSize: AppConfig.verySmallFont,
+                  fontSize: 12,
                 ),
               ),
             ),
@@ -1036,7 +1088,7 @@ Widget _topSearchCard(String imageUrl, String text) {
   return Container(
     width: AppConfig.horizontalBlockSize * 45,
     child: Card(
-      elevation: 5.0,
+      elevation: 2.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
@@ -1053,10 +1105,12 @@ Widget _topSearchCard(String imageUrl, String text) {
           Flexible(
             child: ListTile(
               title: Text(
-                text,
+                text ?? "",
                 maxLines: 2,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: AppConfig.mediumFont),
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Color(CommonMethods.getColorHexFromStr("#444444"))),
               ),
             ),
           )
@@ -1070,14 +1124,14 @@ Widget _specialCard(String imageUrl, String label, String text) {
   return Container(
     width: AppConfig.horizontalBlockSize * 45,
     child: Card(
-      elevation: 5.0,
+      elevation: 2.0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Column(
         children: [
           Expanded(
-            flex: 2,
+            flex: 3,
             child: Container(
               width: double.infinity,
               child: ClipRRect(
@@ -1089,19 +1143,35 @@ Widget _specialCard(String imageUrl, String label, String text) {
             ),
           ),
           Flexible(
-            child: ListTile(
-              title: Text(
-                label,
+            child: Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 2, vertical: 3),
+              child: Text(
+                label ?? "",
+                textAlign: TextAlign.left,
                 maxLines: 2,
-                style: TextStyle(fontSize: AppConfig.smallFont),
-              ),
-              subtitle: Text(
-                text,
-                maxLines: 2,
-                style: TextStyle(fontSize: AppConfig.verySmallFont),
+                style: TextStyle(fontSize: 16),
               ),
             ),
-          )
+          ),
+          Flexible(
+              child: Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 2,
+                      vertical: 1),
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: ReadMoreText(text,
+                        textAlign: TextAlign.left,
+                        trimLines: 2,
+                        trimExpandedText: "Read more",
+                        trimMode: TrimMode.Line,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Color(0xff444444),
+                        )),
+                  )))
         ],
       ),
     ),

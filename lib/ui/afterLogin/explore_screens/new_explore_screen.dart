@@ -133,7 +133,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                   top: AppConfig.verticalBlockSize * 0.8,
                   bottom: AppConfig.verticalBlockSize * 2.8),
               child: Card(
-                elevation: 4.0,
+                elevation: 2.0,
                 color: Colors.white,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(24))),
@@ -281,7 +281,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                 horizontal: AppConfig.horizontalBlockSize * 2),
           ),
           Card(
-              elevation: 10.0,
+              elevation: 2.0,
               margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
@@ -402,7 +402,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
             width: AppConfig.horizontalBlockSize * 88,
             margin: EdgeInsets.only(right: 3, bottom: 3),
             child: Card(
-              elevation: 5.0,
+              elevation: 2.0,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: InkWell(
