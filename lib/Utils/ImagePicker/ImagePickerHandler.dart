@@ -32,10 +32,13 @@ class ImagePickerHandler {
 
   openCamera() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker.pickImage(
-        source: ImageSource.camera, maxWidth: 1000, maxHeight: 1000);
+    var image = await ImagePicker()
+        .getImage(source: ImageSource.camera, maxWidth: 1000, maxHeight: 1000);
+    if (image == null || image.path == null) {
+      return;
+    }
     print("cameraImagePath: " + image.path);
-    cropImage(image);
+    cropImage(image.path);
 
     /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
 //    _listener.fetchImageCallBack(image);
@@ -43,9 +46,12 @@ class ImagePickerHandler {
 
   openCameraForVideo() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker.pickVideo(source: ImageSource.camera);
+    var image = await ImagePicker().getVideo(source: ImageSource.camera);
+    if (image == null || image.path == null) {
+      return;
+    }
     print("VideoCameraPath: " + image.path);
-    cropImage(image);
+    cropImage(image.path);
 
     /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
 //    _listener.fetchImageCallBack(image);
@@ -53,10 +59,13 @@ class ImagePickerHandler {
 
   openGallery() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, maxWidth: 1000, maxHeight: 1000);
+    var image = await ImagePicker()
+        .getImage(source: ImageSource.gallery, maxWidth: 1000, maxHeight: 1000);
+    if (image == null || image.path == null) {
+      return;
+    }
     print("GalleryImagePath: " + image.path);
-    cropImage(image);
+    cropImage(image.path);
 
     /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
     //    _listener.fetchImageCallBack(image);
@@ -64,17 +73,20 @@ class ImagePickerHandler {
 
   openGalleryForVideo() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker.pickVideo(source: ImageSource.gallery);
+    var image = await ImagePicker().getVideo(source: ImageSource.gallery);
+    if (image == null || image.path == null) {
+      return;
+    }
     print("VideoGalleryPath: " + image.path);
-    cropImage(image);
+    cropImage(image.path);
 
     /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
 //    _listener.fetchImageCallBack(image);
   }
 
-  Future<File> cropImage(File imageFile) async {
+  Future<File> cropImage(String imageFile) async {
     File croppedFile = await ImageCropper.cropImage(
-        sourcePath: imageFile.path, maxWidth: 1080, maxHeight: 1080);
+        sourcePath: imageFile, maxWidth: 1080, maxHeight: 1080);
     _listener.fetchImageCallBack(croppedFile);
     return croppedFile;
   }

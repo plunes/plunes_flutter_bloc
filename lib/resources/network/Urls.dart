@@ -152,4 +152,6 @@ class Urls {
   static const String GET_PLUNES_MEDIA_URL =
       mcmBaseUrl + "plunes/getPlunesMedia";
   static const String TOP_SEARCH_URL = "analytics/topSearched";
+  static const String SUBMIT_USER_MEDICAL_DETAIL_URL = "user/submitReport";
+  static const String UPLOAD_MEDICAL_FILE_URL = "user/userReport";
 }

@@ -809,10 +809,10 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 //                                    scaffoldKey);
 //                                return;
 //                              }
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => EnterAdditionalUserDetailScr()));
+//             Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                     builder: (context) => EnterAdditionalUserDetailScr()));
             return;
             await Navigator.push(
                 context,

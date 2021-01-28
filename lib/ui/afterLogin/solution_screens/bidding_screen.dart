@@ -12,6 +12,7 @@ import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/manual_bidding.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
@@ -273,10 +274,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => BiddingLoading(
-                  catalogueData: _catalogues[index],
-                  searchQuery: _searchController.text.trim(),
-                )));
+            builder: (context) => EnterAdditionalUserDetailScr(
+                _catalogues[index], _searchController.text.trim())));
   }
 
   _onViewMoreTap(int solution) {

@@ -26,6 +26,12 @@ class Constants {
   static const String testKey = "Test";
   static const String USER_TESTIMONIAL = "USER_TESTIMONIAL";
   static const String PROFESSIONAL_TESTIMONIAL = "PROFESSIONAL_TESTIMONIAL";
+  static const String pdfExtension = "pdf";
+  static const String xlsxExtension = "xlsx";
+  static const String docxExtension = "docx";
+  static const String typeImage = "IMAGE";
+  static const String typeVideo = "VIDEO";
+  static const String typeReport = "REPORT";
 
   static get hospital => 'Hospital';
 

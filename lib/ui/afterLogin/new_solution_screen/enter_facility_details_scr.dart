@@ -1,41 +1,77 @@
 import 'dart:async';
-
+import 'dart:io';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/ImagePicker/ImagePickerHandler.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/new_solution_blocs/user_medical_detail_bloc.dart';
+import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
+import 'package:file_picker/file_picker.dart';
 
 // ignore: must_be_immutable
 class EnterAdditionalUserDetailScr extends BaseActivity {
+  final CatalogueData catalogueData;
+  final String searchQuery;
+
+  EnterAdditionalUserDetailScr(this.catalogueData, this.searchQuery);
+
   @override
   _EnterAdditionalUserDetailScrState createState() =>
       _EnterAdditionalUserDetailScrState();
 }
 
 class _EnterAdditionalUserDetailScrState
-    extends BaseState<EnterAdditionalUserDetailScr> {
+    extends BaseState<EnterAdditionalUserDetailScr>
+    with TickerProviderStateMixin, ImagePickerListener {
   PageController _pageController;
   StreamController _pageStream;
+  SubmitUserMedicalDetailBloc _submitUserMedicalDetailBloc;
+  TextEditingController _additionalDetailController,
+      _previousMedicalConditionController;
+  bool _hasTreatedPreviously = false;
+  AnimationController _animationController;
+  ImagePickerHandler _imagePicker;
+  List<Map<String, dynamic>> _docUrls, _imageUrls;
 
   @override
   void initState() {
     _pageStream = StreamController.broadcast();
     _pageController = PageController(initialPage: 0);
+    _submitUserMedicalDetailBloc = SubmitUserMedicalDetailBloc();
+    _additionalDetailController = TextEditingController();
+    _previousMedicalConditionController = TextEditingController();
+    _initializeForImageFetching();
     super.initState();
+  }
+
+  _initializeForImageFetching() {
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    _imagePicker = ImagePickerHandler(this, _animationController, false);
+    _imagePicker.init();
   }
 
   @override
   void dispose() {
     _pageStream?.close();
     _pageController?.dispose();
+    _animationController?.dispose();
     super.dispose();
+  }
+
+  _uploadFile(File file, {String fileType}) async {
+    _submitUserMedicalDetailBloc.uploadFile(file, fileType: fileType);
   }
 
   @override
@@ -47,24 +83,67 @@ class _EnterAdditionalUserDetailScrState
           value: SystemUiOverlayStyle.dark,
           child: Scaffold(
             key: scaffoldKey,
-            body: _getBody(),
+            body: StreamBuilder<RequestState>(
+                stream: _submitUserMedicalDetailBloc.uploadFileStream,
+                builder: (context, snapshot) {
+                  if (snapshot.data is RequestInProgress) {
+                    return CustomWidgets().getProgressIndicator();
+                  } else if (snapshot.data is RequestSuccess) {
+                    RequestSuccess data = snapshot.data;
+                    if (data.additionalData != null &&
+                        data.additionalData.toString() == Constants.typeImage) {
+                      _setImageUrls(data.response);
+                    } else if (data.additionalData != null &&
+                        data.additionalData.toString() ==
+                            Constants.typeReport) {
+                      _setReportUrls(data.response);
+                    }
+                    _submitUserMedicalDetailBloc.addIntoSubmitFileStream(null);
+                  } else if (snapshot.data is RequestFailed) {
+                    RequestFailed _reqFailObj = snapshot.data;
+                    Future.delayed(Duration(milliseconds: 10)).then((value) {
+                      _showMessagePopup(_reqFailObj?.failureCause);
+                    });
+                    _submitUserMedicalDetailBloc.addIntoSubmitFileStream(null);
+                  }
+                  return _getBody();
+                }),
           ),
         ));
   }
 
   Widget _getBody() {
-    return Container(
-      margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
-      child: Column(
-        children: [
-          _getAppAndSearchBarWidget(),
-          Expanded(
-            child: _getPageViewWidget(),
-          ),
-          _getNavigatorBar()
-        ],
-      ),
-    );
+    return StreamBuilder<RequestState>(
+        stream: _submitUserMedicalDetailBloc.submitDetailStream,
+        builder: (context, snapshot) {
+          if (snapshot.data is RequestInProgress) {
+            return CustomWidgets().getProgressIndicator();
+          } else if (snapshot.data is RequestSuccess) {
+            RequestSuccess data = snapshot.data;
+            if (data.response != null && data.response) {
+              _navigateToNextScreen();
+            }
+            _submitUserMedicalDetailBloc.addIntoSubmitMedicalDetailStream(null);
+          } else if (snapshot.data is RequestFailed) {
+            RequestFailed _reqFailObj = snapshot.data;
+            Future.delayed(Duration(milliseconds: 10)).then((value) {
+              _showMessagePopup(_reqFailObj?.failureCause);
+            });
+            _submitUserMedicalDetailBloc.addIntoSubmitMedicalDetailStream(null);
+          }
+          return Container(
+            margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+            child: Column(
+              children: [
+                _getAppAndSearchBarWidget(),
+                Expanded(
+                  child: _getPageViewWidget(),
+                ),
+                _getNavigatorBar()
+              ],
+            ),
+          );
+        });
   }
 
   Widget _getAppAndSearchBarWidget() {
@@ -123,8 +202,10 @@ class _EnterAdditionalUserDetailScrState
                       horizontal: AppConfig.horizontalBlockSize * 6,
                       vertical: AppConfig.verticalBlockSize * 1.6),
                   child: Text(
-                    "Laser Hair Removal",
+                    widget.catalogueData?.service ?? "",
                     textAlign: TextAlign.left,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style:
                         TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
                   ),
@@ -154,12 +235,16 @@ class _EnterAdditionalUserDetailScrState
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Text(
-              PlunesStrings.enterAdditionalDetails,
-              maxLines: 2,
-              style: TextStyle(
-                  fontSize: 18,
-                  color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+            Container(
+              width: double.infinity,
+              child: Text(
+                PlunesStrings.enterAdditionalDetails,
+                textAlign: TextAlign.left,
+                maxLines: 2,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+              ),
             ),
             Card(
               margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
@@ -181,6 +266,7 @@ class _EnterAdditionalUserDetailScrState
                       Flexible(
                           child: TextField(
                         maxLines: 10,
+                        controller: _additionalDetailController,
                         style: TextStyle(
                           color: PlunesColors.BLACKCOLOR,
                           fontSize: 16,
@@ -198,10 +284,12 @@ class _EnterAdditionalUserDetailScrState
               ),
             ),
             Container(
+              width: double.infinity,
               margin: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 2.5),
               child: Text(
                 "Upload Pictures of Your Medical Concern (Reports/Videos) to get Best Prices from Medical Professionals",
+                textAlign: TextAlign.left,
                 style: TextStyle(
                     color: PlunesColors.BLACKCOLOR.withOpacity(0.8),
                     fontSize: 18),
@@ -276,39 +364,45 @@ class _EnterAdditionalUserDetailScrState
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(18))),
       elevation: 2.5,
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(18)),
-            gradient: LinearGradient(colors: [
-              Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
-              Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+      child: InkWell(
+        onTap: () {
+          _imagePicker?.showDialog(context);
+        },
+        onDoubleTap: () {},
         child: Container(
-          margin: EdgeInsets.only(
-              left: AppConfig.horizontalBlockSize * 4,
-              right: AppConfig.horizontalBlockSize * 4,
-              top: AppConfig.verticalBlockSize * 3,
-              bottom: AppConfig.verticalBlockSize * 1.5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Image.asset(
-                PlunesImages.imageUploadIcon,
-                height: 49,
-                width: 49,
-              ),
-              Container(
-                width: double.infinity,
-                alignment: Alignment.center,
-                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
-                child: Text(
-                  "Upload Photo",
-                  textAlign: TextAlign.center,
-                  style:
-                      TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 14),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+              gradient: LinearGradient(colors: [
+                Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
+              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          child: Container(
+            margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 4,
+                right: AppConfig.horizontalBlockSize * 4,
+                top: AppConfig.verticalBlockSize * 3,
+                bottom: AppConfig.verticalBlockSize * 1.5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Image.asset(
+                  PlunesImages.imageUploadIcon,
+                  height: 49,
+                  width: 49,
                 ),
-              )
-            ],
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
+                  child: Text(
+                    "Upload Photo",
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 14),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -321,39 +415,62 @@ class _EnterAdditionalUserDetailScrState
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(18))),
       elevation: 2.5,
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(18)),
-            gradient: LinearGradient(colors: [
-              Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
-              Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+      child: InkWell(
+        onTap: () {
+          FilePicker.getFile(type: FileType.any).then((value) {
+            if (value != null &&
+                value.path != null &&
+                value.path.trim().isNotEmpty &&
+                value.path.contains(".")) {
+              print("path ${value.path}");
+              String _fileExtension = value.path.split(".")?.last;
+              if (_fileExtension != null &&
+                  (_fileExtension.toLowerCase() ==
+                      Constants.pdfExtension.toLowerCase())) {
+                _uploadFile(value, fileType: Constants.typeReport);
+              } else {
+                _showMessagePopup(PlunesStrings.selectValidDocWarningText);
+              }
+            } else {
+              _showMessagePopup(PlunesStrings.selectValidDocWarningText);
+            }
+          });
+        },
+        onDoubleTap: () {},
         child: Container(
-          margin: EdgeInsets.only(
-              left: AppConfig.horizontalBlockSize * 4,
-              right: AppConfig.horizontalBlockSize * 4,
-              top: AppConfig.verticalBlockSize * 3,
-              bottom: AppConfig.verticalBlockSize * 1.5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Image.asset(
-                PlunesImages.docUploadIcon,
-                height: 49,
-                width: 49,
-              ),
-              Container(
-                width: double.infinity,
-                alignment: Alignment.center,
-                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
-                child: Text(
-                  "Upload Report",
-                  textAlign: TextAlign.center,
-                  style:
-                      TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 14),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+              gradient: LinearGradient(colors: [
+                Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
+              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          child: Container(
+            margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 4,
+                right: AppConfig.horizontalBlockSize * 4,
+                top: AppConfig.verticalBlockSize * 3,
+                bottom: AppConfig.verticalBlockSize * 1.5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Image.asset(
+                  PlunesImages.docUploadIcon,
+                  height: 49,
+                  width: 49,
                 ),
-              )
-            ],
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
+                  child: Text(
+                    "Upload Report",
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 14),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -378,7 +495,6 @@ class _EnterAdditionalUserDetailScrState
             child: StreamBuilder<Object>(
                 stream: _pageStream.stream,
                 builder: (context, snapshot) {
-                  print("snapshot aya${_pageController?.page?.toInt()}");
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -419,13 +535,10 @@ class _EnterAdditionalUserDetailScrState
                             color: PlunesColors.GREYCOLOR),
                       ),
                       InkWell(
+                        onDoubleTap: () {},
                         onTap: () {
                           if (_pageController.page.toInt() == 1) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ViewSolutionsScreen()));
+                            _submitUserDetail();
                             //submit
                           } else {
                             _pageController
@@ -469,12 +582,16 @@ class _EnterAdditionalUserDetailScrState
       child: SingleChildScrollView(
         child: Column(
           children: [
-            Text(
-              PlunesStrings.haveYouEverBeenTreatedPreviously,
-              maxLines: 2,
-              style: TextStyle(
-                  fontSize: 18,
-                  color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+            Container(
+              width: double.infinity,
+              child: Text(
+                PlunesStrings.haveYouEverBeenTreatedPreviously,
+                textAlign: TextAlign.left,
+                maxLines: 2,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+              ),
             ),
             Container(
               margin: EdgeInsets.symmetric(
@@ -484,7 +601,29 @@ class _EnterAdditionalUserDetailScrState
                 children: [
                   InkWell(
                     onTap: () {},
-                    child: _getSelectedButton(),
+                    child: _hasTreatedPreviously
+                        ? InkWell(
+                            child: _getSelectedButton(),
+                            onDoubleTap: () {},
+                            onTap: () {
+                              _hasTreatedPreviously = true;
+                              _setState();
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                          )
+                        : InkWell(
+                            child: _getUnselectedButton(),
+                            onDoubleTap: () {},
+                            onTap: () {
+                              _hasTreatedPreviously = true;
+                              _setState();
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                          ),
                   ),
                   Container(
                     margin: EdgeInsets.only(
@@ -503,7 +642,29 @@ class _EnterAdditionalUserDetailScrState
                   ),
                   InkWell(
                     onTap: () {},
-                    child: _getUnselectedButton(),
+                    child: _hasTreatedPreviously
+                        ? InkWell(
+                            child: _getUnselectedButton(),
+                            onDoubleTap: () {},
+                            onTap: () {
+                              _hasTreatedPreviously = false;
+                              _setState();
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                          )
+                        : InkWell(
+                            child: _getSelectedButton(),
+                            onDoubleTap: () {},
+                            onTap: () {
+                              _hasTreatedPreviously = false;
+                              _setState();
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                          ),
                   ),
                   Container(
                     margin: EdgeInsets.only(
@@ -519,12 +680,16 @@ class _EnterAdditionalUserDetailScrState
                 ],
               ),
             ),
-            Text(
-              PlunesStrings.pleaseDescribePreviousCondition,
-              maxLines: 2,
-              style: TextStyle(
-                  fontSize: 18,
-                  color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+            Container(
+              width: double.infinity,
+              child: Text(
+                PlunesStrings.pleaseDescribePreviousCondition,
+                textAlign: TextAlign.left,
+                maxLines: 2,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+              ),
             ),
             Card(
               margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
@@ -546,6 +711,7 @@ class _EnterAdditionalUserDetailScrState
                       Flexible(
                           child: TextField(
                         maxLines: 10,
+                        controller: _previousMedicalConditionController,
                         style: TextStyle(
                           color: PlunesColors.BLACKCOLOR,
                           fontSize: 16,
@@ -588,5 +754,73 @@ class _EnterAdditionalUserDetailScrState
           borderRadius: BorderRadius.all(Radius.circular(12)),
           border: Border.all(color: PlunesColors.GREYCOLOR)),
     );
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  fetchImageCallBack(File image) {
+    if (image != null && image.path != null) {
+      print(image.path);
+      _uploadFile(image, fileType: Constants.typeImage);
+    }
+  }
+
+  void _showMessagePopup(String message) {
+    if (mounted) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets()
+                .getInformativePopup(globalKey: scaffoldKey, message: message);
+          });
+    }
+  }
+
+  void _setImageUrls(var response) {
+    MedicalFileResponseModel _medicalFileResponseModel = response;
+    if (_imageUrls == null) {
+      _imageUrls = [];
+    }
+    if (_medicalFileResponseModel.data != null &&
+        _medicalFileResponseModel.data.reports != null &&
+        _medicalFileResponseModel.data.reports.isNotEmpty) {
+      _imageUrls.add(_medicalFileResponseModel.data.reports.first.toJson());
+    }
+  }
+
+  void _setReportUrls(var response) {
+    MedicalFileResponseModel _medicalFileResponseModel = response;
+    if (_docUrls == null) {
+      _docUrls = [];
+    }
+    if (_medicalFileResponseModel.data != null &&
+        _medicalFileResponseModel.data.reports != null &&
+        _medicalFileResponseModel.data.reports.isNotEmpty) {
+      _docUrls.add(_medicalFileResponseModel.data.reports.first.toJson());
+    }
+  }
+
+  void _submitUserDetail() {
+    Map<String, dynamic> _postData = {
+      "serviceId": widget.catalogueData?.serviceId,
+      "reportUrls": _docUrls ?? [],
+      "imageUrls": _imageUrls ?? [],
+      "videoUrls": [],
+      "treatedPreviously": _hasTreatedPreviously,
+      "description": _previousMedicalConditionController.text.trim(),
+      "additionalDetails": _additionalDetailController.text.trim()
+    };
+    print("data $_postData");
+    _submitUserMedicalDetailBloc.submitUserMedicalDetail(_postData);
+  }
+
+  void _navigateToNextScreen() {
+    Future.delayed(Duration(milliseconds: 10)).then((value) {
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => ViewSolutionsScreen()));
+    });
   }
 }

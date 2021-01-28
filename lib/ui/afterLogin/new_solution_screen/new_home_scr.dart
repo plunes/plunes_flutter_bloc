@@ -18,6 +18,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_procedure_and_professional_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/testNproceduresMainScreen.dart';
 import 'package:readmore/readmore.dart';
@@ -193,6 +194,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 ),
                 // heading text
                 Container(
+                  alignment: Alignment.center,
                   margin: EdgeInsets.only(
                       top: AppConfig.verticalBlockSize * 8,
                       left: AppConfig.verticalBlockSize * 4,
@@ -232,8 +234,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  EnterAdditionalUserDetailScr()));
+                              builder: (context) => SolutionBiddingScreen()));
                     },
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -902,12 +903,14 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               ),
               Flexible(
                 child: Container(
+                  width: double.infinity,
                   margin: EdgeInsets.only(
                       left: AppConfig.horizontalBlockSize * 2,
                       right: AppConfig.horizontalBlockSize * 2,
                       top: AppConfig.verticalBlockSize * 0.3),
                   child: Text(
                     text ?? "",
+                    textAlign: TextAlign.left,
                     maxLines: 2,
                     style: TextStyle(
                       fontSize: 14,
@@ -1065,6 +1068,7 @@ Widget _hospitalCard(String imageUrl, String label, String text) {
           ),
           Flexible(
             child: Container(
+              alignment: Alignment.topLeft,
               margin: EdgeInsets.only(
                   left: AppConfig.horizontalBlockSize * 2,
                   right: AppConfig.horizontalBlockSize * 2,
@@ -1157,6 +1161,7 @@ Widget _specialCard(String imageUrl, String label, String text) {
           ),
           Flexible(
               child: Container(
+                  alignment: Alignment.centerLeft,
                   margin: EdgeInsets.symmetric(
                       horizontal: AppConfig.horizontalBlockSize * 2,
                       vertical: 1),
