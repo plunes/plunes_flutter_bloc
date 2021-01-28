@@ -89,6 +89,9 @@ class _EnterAdditionalUserDetailScrState
                   if (snapshot.data is RequestInProgress) {
                     return CustomWidgets().getProgressIndicator();
                   } else if (snapshot.data is RequestSuccess) {
+                    Future.delayed(Duration(milliseconds: 10)).then((value) {
+                      _showMessagePopup(PlunesStrings.uplaodSuccessMessage);
+                    });
                     RequestSuccess data = snapshot.data;
                     if (data.additionalData != null &&
                         data.additionalData.toString() == Constants.typeImage) {
@@ -813,14 +816,19 @@ class _EnterAdditionalUserDetailScrState
       "description": _previousMedicalConditionController.text.trim(),
       "additionalDetails": _additionalDetailController.text.trim()
     };
-    print("data $_postData");
+    // print("data $_postData");
     _submitUserMedicalDetailBloc.submitUserMedicalDetail(_postData);
   }
 
   void _navigateToNextScreen() {
     Future.delayed(Duration(milliseconds: 10)).then((value) {
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => ViewSolutionsScreen()));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ViewSolutionsScreen(
+                    searchQuery: widget.searchQuery,
+                    catalogueData: widget.catalogueData,
+                  )));
     });
   }
 }

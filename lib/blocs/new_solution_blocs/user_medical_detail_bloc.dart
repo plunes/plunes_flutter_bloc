@@ -31,7 +31,7 @@ class SubmitUserMedicalDetailBloc extends BlocBase {
     super.dispose();
   }
 
-  void addIntoSubmitMedicalDetailStream(RequestInProgress data) {
+  void addIntoSubmitMedicalDetailStream(RequestState data) {
     super.addStateInGenericStream(_submitDetailStreamProvider, data);
   }
 

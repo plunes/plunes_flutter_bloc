@@ -148,7 +148,7 @@ class PlunesStrings {
   static const String thankYouMessage = "Thank You!";
   static const String refundSuccessMessage =
       "We have received your refund request . Our team will get in touch with you soon regarding the same";
-  static String uplaodSuccessMessage = "Report uploaded successfully!";
+  static String uplaodSuccessMessage = "File uploaded successfully!";
   static String plockrViewer = 'PLUNES PLOCKR VIEWER';
 
   ///Catalogue View Screen

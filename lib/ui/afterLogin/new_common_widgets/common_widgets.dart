@@ -6,6 +6,8 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/models/new_solution_model/professional_model.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -69,7 +71,8 @@ class CommonWidgets {
     );
   }
 
-  Widget getSolutionViewWidget() {
+  Widget getSolutionViewWidget(
+      Services service, CatalogueData catalogueData, Function openProfile) {
     return Card(
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2.8,
@@ -78,133 +81,146 @@ class CommonWidgets {
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16))),
-      child: Column(
-        children: [
-          Container(
-            height: AppConfig.verticalBlockSize * 20,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16), topRight: Radius.circular(16)),
-              child: SizedBox.expand(
-                child: CustomWidgets().getImageFromUrl(
-                    "https://media.istockphoto.com/photos/doctor-holding-digital-tablet-at-meeting-room-picture-id1189304032?k=6&m=1189304032&s=612x612&w=0&h=SJPF2M715kIFAKoYHGbb1uAyptbz6Tn7-LxPsm5msPE=",
-                    boxFit: BoxFit.cover),
+      child: InkWell(
+        onTap: () {
+          if (openProfile != null) {
+            openProfile();
+          }
+        },
+        onDoubleTap: () {},
+        child: Column(
+          children: [
+            Container(
+              height: AppConfig.verticalBlockSize * 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16)),
+                child: SizedBox.expand(
+                  child: CustomWidgets().getImageFromUrl(
+                      service?.imageUrl ?? "",
+                      boxFit: BoxFit.cover),
+                ),
               ),
             ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 3.2,
-                right: AppConfig.horizontalBlockSize * 3.2,
-                top: AppConfig.verticalBlockSize * 1.2,
-                bottom: AppConfig.verticalBlockSize * 2.5),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Dr. Atul Mishra",
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: PlunesColors.BLACKCOLOR,
-                          ),
-                        ),
-                        Text(
-                          "Fortis Healthcare",
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#707070")),
-                          ),
-                        ),
-                      ],
-                    )),
-                    Container(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.yellow,
-                          ),
-                          Text(
-                            " 4.5",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: PlunesColors.BLACKCOLOR,
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
-                ),
-                DottedLine(
-                  dashColor: Colors.grey,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 3.2,
+                  right: AppConfig.horizontalBlockSize * 3.2,
+                  top: AppConfig.verticalBlockSize * 1.2,
+                  bottom: AppConfig.verticalBlockSize * 2.5),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Specialization",
+                            CommonMethods.getStringInCamelCase(service?.name),
                             style: TextStyle(
-                                fontSize: 14,
-                                color: Color(CommonMethods.getColorHexFromStr(
-                                    "#707070"))),
+                              fontSize: 20,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
                           ),
-                          Text(
-                            "Leaser Hair Reduction",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 16, color: PlunesColors.BLACKCOLOR),
-                          )
+                          // Text(
+                          //   CommonMethods.getStringInCamelCase(service?),
+                          //   style: TextStyle(
+                          //     fontSize: 18,
+                          //     color: Color(
+                          //         CommonMethods.getColorHexFromStr("#707070")),
+                          //   ),
+                          // ),
                         ],
+                      )),
+                      Container(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                            ),
+                            Text(
+                              " ${service?.rating?.toStringAsFixed(1) ?? 4.5}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: PlunesColors.BLACKCOLOR,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
+                  ),
+                  DottedLine(
+                    dashColor: Colors.grey,
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Specialization",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#707070"))),
+                            ),
+                            Text(
+                              catalogueData?.speciality ?? "",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            PlunesStrings.experienceText,
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Color(CommonMethods.getColorHexFromStr(
-                                    "#707070"))),
-                          ),
-                          Text(
-                            "20 year",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 16, color: PlunesColors.BLACKCOLOR),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          )
-        ],
+                      (service.experience == null || service.experience <= 0)
+                          ? Container()
+                          : Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    PlunesStrings.experienceText,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#707070"))),
+                                  ),
+                                  Text(
+                                    "${service?.experience} year",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  )
+                                ],
+                              ),
+                            ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
       ),
     );
   }
