@@ -431,7 +431,7 @@ class _ViewProcedureAndProfessionalState
                                       _professionDataModel.data[index]));
                         },
                         shrinkWrap: true,
-                        itemCount: 5,
+                        itemCount: _professionDataModel.data?.length ?? 0,
                       ),
                     );
             }),

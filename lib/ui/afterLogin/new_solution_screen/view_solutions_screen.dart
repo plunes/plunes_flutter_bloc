@@ -37,7 +37,6 @@ class ViewSolutionsScreen extends BaseActivity {
 }
 
 class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
-  bool _shouldExpand;
   IconGenerator _iconGen;
   BitmapDescriptor hosImage2XGreenBgDesc;
   Set<Marker> _markers = {};
@@ -358,7 +357,10 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                   Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => SolutionShowPriceScreen()));
+                          builder: (context) => SolutionShowPriceScreen(
+                                catalogueData: widget.catalogueData,
+                                searchQuery: widget.searchQuery,
+                              )));
                 });
               } else if (snapshot.data is RequestFailed) {
                 RequestFailed _reqFailed = snapshot.data;
