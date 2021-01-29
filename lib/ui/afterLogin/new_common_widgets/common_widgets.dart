@@ -225,6 +225,486 @@ class CommonWidgets {
     );
   }
 
+  Widget getSolutionViewWidgetPopUp(Services service,
+      CatalogueData catalogueData, Function openProfile, BuildContext context) {
+    return Card(
+      margin: EdgeInsets.only(
+          bottom: AppConfig.verticalBlockSize * 2.8,
+          left: AppConfig.horizontalBlockSize * 1.2,
+          right: AppConfig.horizontalBlockSize * 1.2),
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16))),
+      child: InkWell(
+        focusColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        onTap: () {
+          if (openProfile != null) {
+            openProfile();
+          }
+        },
+        onDoubleTap: () {},
+        child: Column(
+          children: [
+            Container(
+              height: AppConfig.verticalBlockSize * 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16)),
+                child: SizedBox.expand(
+                  child: CustomWidgets().getImageFromUrl(
+                      service?.imageUrl ?? "",
+                      boxFit: BoxFit.cover),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 3.2,
+                  right: AppConfig.horizontalBlockSize * 3.2,
+                  top: AppConfig.verticalBlockSize * 1.2,
+                  bottom: AppConfig.verticalBlockSize * 2.5),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            CommonMethods.getStringInCamelCase(service?.name),
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          ),
+                          // Text(
+                          //   CommonMethods.getStringInCamelCase(service?),
+                          //   style: TextStyle(
+                          //     fontSize: 18,
+                          //     color: Color(
+                          //         CommonMethods.getColorHexFromStr("#707070")),
+                          //   ),
+                          // ),
+                        ],
+                      )),
+                      Container(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                            ),
+                            Text(
+                              " ${service?.rating?.toStringAsFixed(1) ?? 4.5}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: PlunesColors.BLACKCOLOR,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
+                  ),
+                  DottedLine(
+                    dashColor: Colors.grey,
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Specialization",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#707070"))),
+                            ),
+                            Text(
+                              catalogueData?.speciality ?? "",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                            )
+                          ],
+                        ),
+                      ),
+                      (service.experience == null || service.experience <= 0)
+                          ? Container()
+                          : Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    PlunesStrings.experienceText,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#707070"))),
+                                  ),
+                                  Text(
+                                    "${service?.experience} year",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  )
+                                ],
+                              ),
+                            ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            CustomWidgets().getSingleCommonButton(context, PlunesStrings.close)
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getSolutionViewWidgetForHospitalDoc(Services service,
+      CatalogueData catalogueData, Function openProfile, int docIndex) {
+    return Card(
+      margin: EdgeInsets.only(
+          bottom: AppConfig.verticalBlockSize * 2.8,
+          left: AppConfig.horizontalBlockSize * 1.2,
+          right: AppConfig.horizontalBlockSize * 1.2),
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16))),
+      child: InkWell(
+        onTap: () {
+          if (openProfile != null) {
+            openProfile();
+          }
+        },
+        onDoubleTap: () {},
+        child: Column(
+          children: [
+            Container(
+              height: AppConfig.verticalBlockSize * 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16)),
+                child: SizedBox.expand(
+                  child: CustomWidgets().getImageFromUrl(
+                      service.doctors[docIndex].imageUrl ?? "",
+                      boxFit: BoxFit.cover),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 3.2,
+                  right: AppConfig.horizontalBlockSize * 3.2,
+                  top: AppConfig.verticalBlockSize * 1.2,
+                  bottom: AppConfig.verticalBlockSize * 2.5),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            CommonMethods.getStringInCamelCase(
+                                service.doctors[docIndex].name),
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          ),
+                          Text(
+                            CommonMethods.getStringInCamelCase(service.name),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#707070")),
+                            ),
+                          ),
+                        ],
+                      )),
+                      Container(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                            ),
+                            Text(
+                              " ${service?.rating?.toStringAsFixed(1) ?? 4.5}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: PlunesColors.BLACKCOLOR,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
+                  ),
+                  DottedLine(
+                    dashColor: Colors.grey,
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Specialization",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#707070"))),
+                            ),
+                            Text(
+                              catalogueData?.speciality ?? "",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                            )
+                          ],
+                        ),
+                      ),
+                      (service.doctors[docIndex].experience == null ||
+                              service.doctors[docIndex].experience <= 0)
+                          ? Container()
+                          : Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    PlunesStrings.experienceText,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#707070"))),
+                                  ),
+                                  Text(
+                                    "${service.doctors[docIndex]?.experience} year",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  )
+                                ],
+                              ),
+                            ),
+                    ],
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getSolutionViewWidgetForHospitalDocPopup(
+      Services service,
+      CatalogueData catalogueData,
+      Function openProfile,
+      int docIndex,
+      BuildContext context) {
+    return Card(
+      margin: EdgeInsets.only(
+          bottom: AppConfig.verticalBlockSize * 2.8,
+          left: AppConfig.horizontalBlockSize * 1.2,
+          right: AppConfig.horizontalBlockSize * 1.2),
+      color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(16))),
+      child: InkWell(
+        focusColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        onTap: () {
+          if (openProfile != null) {
+            openProfile();
+          }
+        },
+        onDoubleTap: () {},
+        child: Column(
+          children: [
+            Container(
+              height: AppConfig.verticalBlockSize * 20,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16)),
+                child: SizedBox.expand(
+                  child: CustomWidgets().getImageFromUrl(
+                      service.doctors[docIndex].imageUrl ?? "",
+                      boxFit: BoxFit.cover),
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 3.2,
+                  right: AppConfig.horizontalBlockSize * 3.2,
+                  top: AppConfig.verticalBlockSize * 1.2,
+                  bottom: AppConfig.verticalBlockSize * 2.5),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            CommonMethods.getStringInCamelCase(
+                                service.doctors[docIndex].name),
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          ),
+                          Text(
+                            CommonMethods.getStringInCamelCase(service.name),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#707070")),
+                            ),
+                          ),
+                        ],
+                      )),
+                      Container(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.star,
+                              color: Colors.yellow,
+                            ),
+                            Text(
+                              " ${service?.rating?.toStringAsFixed(1) ?? 4.5}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: PlunesColors.BLACKCOLOR,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
+                  ),
+                  DottedLine(
+                    dashColor: Colors.grey,
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Specialization",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#707070"))),
+                            ),
+                            Text(
+                              catalogueData?.speciality ?? "",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                            )
+                          ],
+                        ),
+                      ),
+                      (service.doctors[docIndex].experience == null ||
+                              service.doctors[docIndex].experience <= 0)
+                          ? Container()
+                          : Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    PlunesStrings.experienceText,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#707070"))),
+                                  ),
+                                  Text(
+                                    "${service.doctors[docIndex]?.experience} year",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  )
+                                ],
+                              ),
+                            ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+            CustomWidgets().getSingleCommonButton(context, PlunesStrings.close)
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget getProfessionalWidgetForSearchDesiredServiceScreen(
       int index, ProfData profData, String specialization,
       {Function onTap}) {

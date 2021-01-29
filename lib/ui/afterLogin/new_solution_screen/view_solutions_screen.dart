@@ -315,10 +315,17 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
               ),
             );
           }
-          return CommonWidgets().getSolutionViewWidget(
-              _searchedDocResults.solution.services[index],
-              widget.catalogueData,
-              () => _openProfile(_searchedDocResults.solution.services[index]));
+          return (_searchedDocResults.solution.services[index].doctors !=
+                      null &&
+                  _searchedDocResults
+                      .solution.services[index].doctors.isNotEmpty)
+              ? _getDoctorListWidget(
+                  _searchedDocResults.solution.services[index])
+              : CommonWidgets().getSolutionViewWidget(
+                  _searchedDocResults.solution.services[index],
+                  widget.catalogueData,
+                  () => _openProfile(
+                      _searchedDocResults.solution.services[index]));
         },
         itemCount: _searchedDocResults.solution.services.length + 1,
         shrinkWrap: true,
@@ -353,18 +360,38 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
     );
   }
 
-  _doSomething(
+  _showProfessionalPopup(
       Services service, CatalogueData catalogueData, Function openProfile) {
     showDialog(
         context: context,
         barrierDismissible: true,
         builder: (context) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CommonWidgets()
-                  .getSolutionViewWidget(service, catalogueData, openProfile),
-            ],
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 3),
+            child: SingleChildScrollView(
+              child: CommonWidgets().getSolutionViewWidgetPopUp(
+                  service, catalogueData, openProfile, context),
+            ),
+          );
+        });
+  }
+
+  _showHospitalDoctorPopup(Services service, CatalogueData catalogueData,
+      Function openProfile, int index) {
+    showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 3),
+            child: SingleChildScrollView(
+              child: CommonWidgets().getSolutionViewWidgetForHospitalDocPopup(
+                  service, catalogueData, openProfile, index, context),
+            ),
           );
         });
   }
@@ -392,12 +419,22 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
               .forEach((doctor) {
             var key = GlobalKey();
             _globalKeys.add(key);
-            _functions.add(() => _doSomething(
+            _functions.add(() => _showHospitalDoctorPopup(
                 _searchedDocResults.solution.services[index],
                 widget.catalogueData,
-                () => _openProfile(
-                    _searchedDocResults.solution.services[index])));
-            _customServices.add(_searchedDocResults.solution.services[index]);
+                () =>
+                    _openProfile(_searchedDocResults.solution.services[index]),
+                _searchedDocResults.solution.services[index].doctors
+                    .indexOf(doctor)));
+            Services service = Services(
+                name: doctor?.name ?? "",
+                sId: _searchedDocResults.solution.services[index].sId,
+                latitude: _searchedDocResults.solution.services[index].latitude,
+                longitude:
+                    _searchedDocResults.solution.services[index].longitude,
+                distance:
+                    _searchedDocResults.solution.services[index].distance);
+            _customServices.add(service);
             _mapWidgets.add(RepaintBoundary(
               child: Container(
                 child: Column(
@@ -433,7 +470,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
         } else {
           var key = GlobalKey();
           _globalKeys.add(key);
-          _functions.add(() => _doSomething(
+          _functions.add(() => _showProfessionalPopup(
               _searchedDocResults.solution.services[index],
               widget.catalogueData,
               () =>
@@ -508,7 +545,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                 onTap: () => _functions[index](),
                 title: _customServices[index].name,
                 snippet:
-                    "${_customServices[index].distance?.toStringAsFixed(1)} km")));
+                    "${_customServices[index].distance?.toStringAsFixed(1) ?? 1} km")));
         _setState();
       }
     } catch (e) {}
@@ -557,5 +594,19 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                 bearing: 10)));
       }
     });
+  }
+
+  Widget _getDoctorListWidget(Services service) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (context, index) {
+        return Container(
+          child: CommonWidgets().getSolutionViewWidgetForHospitalDoc(service,
+              widget.catalogueData, () => _openProfile(service), index),
+        );
+      },
+      itemCount: service?.doctors?.length ?? 0,
+    );
   }
 }
