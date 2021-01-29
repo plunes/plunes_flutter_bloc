@@ -55,6 +55,7 @@ class DocHosSolution {
       this.expirationTimer});
 
   DocHosSolution.fromJson(Map<String, dynamic> json) {
+    // print("serviceId ${json['serviceId']} solId ${json['_id']}");
     booked = json['booked'];
     sId = json['_id'];
     serviceId = json['serviceId'];

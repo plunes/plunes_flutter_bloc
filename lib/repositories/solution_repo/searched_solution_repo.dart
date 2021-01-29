@@ -217,4 +217,22 @@ class SearchedSolutionRepo {
       return RequestFailed(failureCause: serverResponse.failureCause);
     }
   }
+
+  Future<RequestState> discoverPrice(
+      String solutionId, String serviceId) async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        url: Urls.DISCOVER_PRICE_API,
+        headerIncluded: true,
+        postData: {
+          "solutionId": solutionId,
+          "serviceId": serviceId,
+          "suggestedInsights": true
+        });
+    if (result.isRequestSucceed) {
+      return RequestSuccess(response: true);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
 }

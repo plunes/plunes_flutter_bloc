@@ -76,6 +76,9 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
 
   @override
   void dispose() {
+    _globalKeys = [];
+    _functions = [];
+    _customServices = [];
     _searchSolutionBloc?.dispose();
     super.dispose();
   }
@@ -113,6 +116,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                 : Container(
                     child: Scaffold(
                       body: _getBody(),
+                      key: scaffoldKey,
                       appBar: PreferredSize(
                           child: Card(
                               color: Colors.white,
@@ -342,20 +346,44 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             left: AppConfig.horizontalBlockSize * 28,
             right: AppConfig.horizontalBlockSize * 28,
             bottom: AppConfig.verticalBlockSize * 2),
-        child: InkWell(
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SolutionShowPriceScreen())),
-          child: CustomWidgets().getRoundedButton(
-              PlunesStrings.discoverPrice,
-              AppConfig.horizontalBlockSize * 8,
-              PlunesColors.PARROTGREEN,
-              AppConfig.horizontalBlockSize * 3,
-              AppConfig.verticalBlockSize * 1,
-              PlunesColors.WHITECOLOR,
-              hasBorder: false),
-        ),
+        child: StreamBuilder<RequestState>(
+            stream: _searchSolutionBloc.discoverPriceStream,
+            initialData: null,
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestInProgress) {
+                return CustomWidgets().getProgressIndicator();
+              } else if (snapshot.data is RequestSuccess) {
+                _searchSolutionBloc.addStateInDiscoverPriceStream(null);
+                Future.delayed(Duration(milliseconds: 10)).then((value) {
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SolutionShowPriceScreen()));
+                });
+              } else if (snapshot.data is RequestFailed) {
+                RequestFailed _reqFailed = snapshot.data;
+                Future.delayed(Duration(milliseconds: 10)).then((value) {
+                  _showMessagePopup(_reqFailed?.failureCause);
+                });
+                _searchSolutionBloc.addStateInDiscoverPriceStream(null);
+              }
+              return InkWell(
+                onTap: () {
+                  _searchSolutionBloc.discoverPrice(
+                      _searchedDocResults?.solution?.sId,
+                      _searchedDocResults?.solution?.serviceId);
+                },
+                onDoubleTap: () {},
+                child: CustomWidgets().getRoundedButton(
+                    PlunesStrings.discoverPrice,
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.PARROTGREEN,
+                    AppConfig.horizontalBlockSize * 3,
+                    AppConfig.verticalBlockSize * 1,
+                    PlunesColors.WHITECOLOR,
+                    hasBorder: false),
+              );
+            }),
       ),
     );
   }
@@ -608,5 +636,16 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
       },
       itemCount: service?.doctors?.length ?? 0,
     );
+  }
+
+  void _showMessagePopup(String message) {
+    if (mounted) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets()
+                .getInformativePopup(globalKey: scaffoldKey, message: message);
+          });
+    }
   }
 }

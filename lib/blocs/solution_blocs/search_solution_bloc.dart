@@ -17,6 +17,10 @@ class SearchSolutionBloc extends BlocBase {
   final _facilitiesAdditionProvider = PublishSubject<RequestState>();
   final _manualBiddingFacilitiesProvider = PublishSubject<RequestState>();
   final _manualBiddingAdditionProvider = PublishSubject<RequestState>();
+  final _discoverPriceStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get discoverPriceStream =>
+      _discoverPriceStreamProvider.stream;
 
   Observable<RequestState> getDefaultCatalogueStream() =>
       _defaultStreamProvider.stream;
@@ -84,6 +88,7 @@ class SearchSolutionBloc extends BlocBase {
     _facilitiesAdditionProvider?.close();
     _manualBiddingFacilitiesProvider?.close();
     _manualBiddingAdditionProvider?.close();
+    _discoverPriceStreamProvider?.close();
     super.dispose();
   }
 
@@ -161,5 +166,18 @@ class SearchSolutionBloc extends BlocBase {
 
   void addStateInManualBiddingAdditionStream(RequestState requestState) {
     super.addStateInGenericStream(_manualBiddingAdditionProvider, requestState);
+  }
+
+  Future<RequestState> discoverPrice(
+      String solutionId, String serviceId) async {
+    addStateInDiscoverPriceStream(RequestInProgress());
+    var result =
+        await SearchedSolutionRepo().discoverPrice(solutionId, serviceId);
+    addStateInDiscoverPriceStream(result);
+    return result;
+  }
+
+  void addStateInDiscoverPriceStream(RequestState requestState) {
+    super.addStateInGenericStream(_discoverPriceStreamProvider, requestState);
   }
 }
