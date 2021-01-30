@@ -2,15 +2,42 @@ class SolutionHomeScreenModel {
   bool success;
   String backgroundImage;
   int count;
+  String knowYourProcedure,
+      whyUs,
+      topFacilities,
+      topSearch,
+      speciality,
+      videos,
+      heading,
+      searchBarText;
   List<HomeScreenButtonInfo> data;
 
   SolutionHomeScreenModel(
-      {this.success, this.backgroundImage, this.count, this.data});
+      {this.success,
+      this.backgroundImage,
+      this.count,
+      this.data,
+      this.speciality,
+      this.videos,
+      this.knowYourProcedure,
+      this.topFacilities,
+      this.topSearch,
+      this.whyUs,
+      this.heading,
+      this.searchBarText});
 
   SolutionHomeScreenModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     backgroundImage = json['backgroundImage'];
     count = json['count'];
+    knowYourProcedure = json['knowYourProcedure'];
+    whyUs = json['whyUs'];
+    topFacilities = json['topFacilities'];
+    topSearch = json['topSearch'];
+    speciality = json['speciality'];
+    videos = json['videos'];
+    heading = json['homeTitle'];
+    searchBarText = json['searchText'];
     if (json['data'] != null) {
       data = new List<HomeScreenButtonInfo>();
       json['data'].forEach((v) {

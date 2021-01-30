@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,11 +17,15 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
 import 'package:readmore/readmore.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
+
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 // ignore: must_be_immutable
 class SolutionShowPriceScreen extends BaseActivity {
@@ -50,15 +53,24 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   GoogleMapController _mapController;
   Completer<GoogleMapController> _googleMapController = Completer();
   User _user;
+  DocHosSolution _solution;
+  StreamController _totalDiscountController;
+  num _gainedDiscount = 0, _gainedDiscountPercentage = 0;
+  Timer _discountCalculationTimer;
 
   @override
   void initState() {
+    _totalDiscountController = StreamController.broadcast();
     _user = UserManager().getUserDetails();
     _mapWidgets = [];
     _markers = {};
     _iconGen = IconGenerator();
     _searchSolutionBloc = SearchSolutionBloc();
     _getFacilities();
+    _discountCalculationTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+      _discountCalculationTimer = timer;
+      _getTotalDiscount();
+    });
     _iconGen
         .getBytesFromAsset(PlunesImages.hosImage2XGreenBg, 180)
         .then((value) {
@@ -73,12 +85,59 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     super.initState();
   }
 
+  num _getTotalDiscount() {
+    num totalDiscount = 0, _origPrice = 0, _highestDiscount = 0;
+    try {
+      if (_searchedDocResults != null &&
+          _searchedDocResults.solution != null &&
+          _searchedDocResults.solution.services != null &&
+          _searchedDocResults.solution.services.isNotEmpty) {
+        _searchedDocResults.solution.services.forEach((service) {
+          if (service.doctors != null && service.doctors.isNotEmpty) {
+            service.doctors.forEach((element) {
+              if (element.discount != null && element.discount > 0) {
+                if (((element.price[0] - element.newPrice[0])) >
+                    _highestDiscount) {
+                  _highestDiscount = (element.price[0] - element.newPrice[0]);
+                  _origPrice = element.price[0];
+                }
+              }
+            });
+          } else {
+            if (service.discount != null && service.discount > 0) {
+              if ((service.price[0] - service.newPrice[0]) > _highestDiscount) {
+                _highestDiscount = (service.price[0] - service.newPrice[0]);
+                _origPrice = service.price[0];
+              }
+            }
+          }
+        });
+      }
+    } catch (e) {
+//      print("error in _getTotalDiscount ${e.toString()}");
+      totalDiscount = 0;
+    }
+    _gainedDiscount = _highestDiscount;
+    if (_origPrice != null &&
+        _origPrice > 0 &&
+        _gainedDiscount != null &&
+        _gainedDiscount > 0) {
+      _gainedDiscountPercentage = double.tryParse(
+          ((_gainedDiscount / _origPrice) * 100)?.toStringAsFixed(0));
+      _totalDiscountController.add(null);
+    }
+    totalDiscount = _gainedDiscount;
+    return totalDiscount;
+  }
+
   @override
   void dispose() {
     _globalKeys = [];
     _functions = [];
     _customServices = [];
     _searchSolutionBloc?.dispose();
+    _totalDiscountController?.close();
+    _discountCalculationTimer?.cancel();
     super.dispose();
   }
 
@@ -205,12 +264,88 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         preferredSize: Size(double.infinity, AppConfig.verticalBlockSize * 8));
   }
 
+  Widget _getNegotiatedPriceTotalView() {
+    return StreamBuilder(
+      builder: (context, data) {
+        if (_gainedDiscount == null || _gainedDiscount == 0) {
+          return Container();
+        }
+        String time = "NA";
+        var duration = DateTime.now().difference(
+            DateTime.fromMillisecondsSinceEpoch(
+                _searchedDocResults?.solution?.expirationTimer ?? 0));
+        if (duration.inHours < 24 && duration.inHours >= 1) {
+          time =
+              "${duration.inHours} ${duration.inHours == 1 ? "hour" : "hours"}";
+        } else if (duration.inHours >= 24) {
+          time = "${duration.inDays} ${duration.inDays == 1 ? "day" : "days"}";
+        } else if (duration.inMinutes < 1) {
+          time = "${duration.inSeconds} secs";
+        } else {
+          time =
+              "${duration.inMinutes} ${duration.inMinutes == 1 ? "min" : "mins"}";
+        }
+        return Container(
+          margin: EdgeInsets.only(
+              left: AppConfig.horizontalBlockSize * 4,
+              right: AppConfig.horizontalBlockSize * 4,
+              top: AppConfig.verticalBlockSize * 0.1),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Container(
+                width: double.infinity,
+                alignment: Alignment.center,
+                child: Container(
+                  child: Image.asset(PlunesImages.savedMoneyImage),
+                  height: AppConfig.verticalBlockSize * 4,
+                  width: AppConfig.horizontalBlockSize * 10,
+                ),
+              ),
+              Padding(padding: EdgeInsets.only(top: 2.0)),
+              RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      text: "We managed to save ",
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16),
+                      children: [
+                        TextSpan(
+                            text:
+                                "\u20B9${_gainedDiscount?.toStringAsFixed(0)} ",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16)),
+                        TextSpan(
+                            text: "for you in last ",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16)),
+                        TextSpan(
+                            text: "$time !",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 16))
+                      ]))
+            ],
+          ),
+        );
+      },
+      stream: _totalDiscountController.stream,
+      initialData: _gainedDiscount,
+    );
+  }
+
   Widget _getBody() {
     return Stack(
       children: [
-        Container(
-          child: ListView(children: _mapWidgets ?? []),
-        ),
+        Container(child: ListView(children: _mapWidgets ?? [])),
         Container(
           width: double.infinity,
           height: double.infinity,
@@ -278,6 +413,16 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                             ),
+                            _getNegotiatedPriceTotalView(),
+                            StreamBuilder<Object>(
+                                stream: _totalDiscountController?.stream,
+                                builder: (context, snapshot) {
+                                  if (_gainedDiscountPercentage == null ||
+                                      _gainedDiscountPercentage <= 0) {
+                                    return Container();
+                                  }
+                                  return _getDialerWidget();
+                                }),
                             _getTypeOfFacilityWidget(),
                             _getFacilityDefinitionWidget(),
                             _getProfessionalListWidget(),
@@ -307,7 +452,10 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                 _searchedDocResults.solution.services[index]);
           }
           return CommonWidgets().getBookProfessionalWidget(
-              _searchedDocResults.solution.services[index]);
+              _searchedDocResults.solution.services[index],
+              () => _openProfile(_searchedDocResults.solution.services[index]),
+              () => _bookFacilityAppointment(
+                  _searchedDocResults.solution.services[index]));
         },
         itemCount: _searchedDocResults?.solution?.services?.length ?? 0,
       ),
@@ -320,7 +468,9 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       shadowColor: Color(CommonMethods.getColorHexFromStr("#00000029")),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16))),
-      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
+      margin: EdgeInsets.only(
+          bottom: AppConfig.verticalBlockSize * 2,
+          top: AppConfig.verticalBlockSize * 2),
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(
@@ -339,20 +489,35 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
             Expanded(
               child: Container(
                 alignment: Alignment.centerRight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Text(
-                      PlunesStrings.viewOnMap,
-                      style: TextStyle(
-                          color: PlunesColors.GREENCOLOR, fontSize: 16),
-                    ),
-                    Container(
-                      height: AppConfig.verticalBlockSize * 3,
-                      width: AppConfig.horizontalBlockSize * 5,
-                      child: Image.asset(plunesImages.locationIcon),
-                    )
-                  ],
+                child: InkWell(
+                  onDoubleTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SolutionMap(
+                                    _searchedDocResults, widget.catalogueData)))
+                        .then((value) {
+                      if (value != null && value) {
+                        Navigator.pop(context, true);
+                      }
+                    });
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        PlunesStrings.viewOnMap,
+                        style: TextStyle(
+                            color: PlunesColors.GREENCOLOR, fontSize: 16),
+                      ),
+                      Container(
+                        height: AppConfig.verticalBlockSize * 3,
+                        width: AppConfig.horizontalBlockSize * 5,
+                        child: Image.asset(plunesImages.locationIcon),
+                      )
+                    ],
+                  ),
                 ),
               ),
             )
@@ -382,10 +547,9 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               Flexible(
                 child: Container(
                   alignment: Alignment.topLeft,
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
                   child: ReadMoreText(
-                    "A Botox treatment is a minimally invasive, safe, effective treatment for fine lines and wrinkles around the eyes. It can also be used on the forehead between the eyes. Botox is priced per unit.",
+                    _searchedDocResults?.catalogueData?.details ?? "",
                     colorClickableText: PlunesColors.SPARKLINGGREEN,
                     trimLines: 3,
                     trimMode: TrimMode.Line,
@@ -401,61 +565,74 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               ),
             ],
           ),
-          Row(
-            children: [
-              Expanded(
-                child: Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "2-5 minutes",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.normal),
+          Container(
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 2,
+                bottom: AppConfig.verticalBlockSize * 2),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Card(
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _searchedDocResults?.catalogueData?.duration ??
+                                "Depends on case",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal),
+                          ),
+                          Text(
+                            "Duration",
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#515151")),
+                                fontWeight: FontWeight.normal),
+                          ),
+                        ],
                       ),
-                      Text(
-                        "Duration",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#515151")),
-                            fontWeight: FontWeight.normal),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Depends on case",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.normal),
+                Expanded(
+                  child: Card(
+                    child: Container(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _searchedDocResults?.catalogueData?.sitting ??
+                                "Depends on case",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal),
+                          ),
+                          Text(
+                            "Session",
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#515151")),
+                                fontWeight: FontWeight.normal),
+                          ),
+                        ],
                       ),
-                      Text(
-                        "Session",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#515151")),
-                            fontWeight: FontWeight.normal),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -498,32 +675,57 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
             _customServices.add(service);
             _mapWidgets.add(RepaintBoundary(
               child: Container(
-                child: Column(
-                  children: [
-                    ClipOval(
-                      child: Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                            color: Colors.transparent, shape: BoxShape.circle),
-                        child: CustomWidgets().getImageFromUrl(
-                            doctor.imageUrl ?? "",
-                            placeHolderPath: PlunesImages.labMapImage,
-                            boxFit: BoxFit.fill),
+                child: (1 == 1)
+                    ? Row(
+                        children: [
+                          Expanded(child: Container()),
+                          Container(
+                            padding: EdgeInsets.all(11),
+                            decoration: BoxDecoration(
+                                color: PlunesColors.WHITECOLOR,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(18)),
+                                border: Border.all(
+                                    width: 0.9,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#70707038")))),
+                            child: Text(
+                              "\u20B9 ${doctor?.newPrice?.first?.toStringAsFixed(1) ?? "0.0"}",
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                            ),
+                          ),
+                          Expanded(child: Container()),
+                        ],
+                      )
+                    : Column(
+                        children: [
+                          ClipOval(
+                            child: Container(
+                              width: 70,
+                              height: 70,
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  shape: BoxShape.circle),
+                              child: CustomWidgets().getImageFromUrl(
+                                  doctor.imageUrl ?? "",
+                                  placeHolderPath: PlunesImages.labMapImage,
+                                  boxFit: BoxFit.fill),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          Container(
+                            height: 12,
+                            width: 12,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.indigo.withOpacity(0.4)),
+                          )
+                        ],
                       ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Container(
-                      height: 12,
-                      width: 12,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.indigo.withOpacity(0.4)),
-                    )
-                  ],
-                ),
               ),
               key: key,
             ));
@@ -539,32 +741,59 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
           _customServices.add(_searchedDocResults.solution.services[index]);
           _mapWidgets.add(RepaintBoundary(
             child: Container(
-              child: Column(
-                children: [
-                  ClipOval(
-                    child: Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                          color: Colors.transparent, shape: BoxShape.circle),
-                      child: CustomWidgets().getImageFromUrl(
-                          _searchedDocResults.solution.services[index].imageUrl,
-                          placeHolderPath: PlunesImages.labMapImage,
-                          boxFit: BoxFit.fill),
+              child: (1 == 1)
+                  ? Row(
+                      children: [
+                        Expanded(child: Container()),
+                        Container(
+                          padding: EdgeInsets.all(11),
+                          decoration: BoxDecoration(
+                              color: PlunesColors.WHITECOLOR,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(18)),
+                              border: Border.all(
+                                  width: 0.9,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#70707038")))),
+                          child: Text(
+                            "\u20B9 ${_searchedDocResults.solution?.services[index]?.newPrice?.first?.toStringAsFixed(1) ?? "0.0"}",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(),
+                        )
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        ClipOval(
+                          child: Container(
+                            width: 70,
+                            height: 70,
+                            decoration: BoxDecoration(
+                                color: Colors.transparent,
+                                shape: BoxShape.circle),
+                            child: CustomWidgets().getImageFromUrl(
+                                _searchedDocResults
+                                    .solution.services[index].imageUrl,
+                                placeHolderPath: PlunesImages.labMapImage,
+                                boxFit: BoxFit.fill),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4,
+                        ),
+                        Container(
+                          height: 12,
+                          width: 12,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.indigo.withOpacity(0.4)),
+                        )
+                      ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Container(
-                    height: 12,
-                    width: 12,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.indigo.withOpacity(0.4)),
-                  )
-                ],
-              ),
             ),
             key: key,
           ));
@@ -668,8 +897,12 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
             insetPadding: EdgeInsets.symmetric(
                 horizontal: AppConfig.horizontalBlockSize * 3),
             child: SingleChildScrollView(
-              child: CommonWidgets().getSolutionViewWidgetForHospitalDocPopup(
-                  service, catalogueData, openProfile, index, context),
+              child: CommonWidgets().getBookProfessionalPopupForHospitalDoc(
+                  service,
+                  openProfile,
+                  index,
+                  () => _bookAppointmentWithHosDoctor(service, index),
+                  context),
             ),
           );
         });
@@ -686,8 +919,11 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
             insetPadding: EdgeInsets.symmetric(
                 horizontal: AppConfig.horizontalBlockSize * 3),
             child: SingleChildScrollView(
-              child: CommonWidgets().getSolutionViewWidgetPopUp(
-                  service, catalogueData, openProfile, context),
+              child: CommonWidgets().getBookProfessionalPopup(
+                  service,
+                  openProfile,
+                  () => _bookFacilityAppointment(service),
+                  context),
             ),
           );
         });
@@ -700,10 +936,196 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       itemBuilder: (context, index) {
         return Container(
           child: CommonWidgets().getBookProfessionalWidgetForHospitalDocs(
-              service, () => _openProfile(service), index),
+              service,
+              () => _openProfile(service),
+              index,
+              () => _bookAppointmentWithHosDoctor(service, index)),
         );
       },
       itemCount: service?.doctors?.length ?? 0,
+    );
+  }
+
+  _bookFacilityAppointment(Services service) {
+    if (!_canGoAhead()) {
+      _showSnackBar(PlunesStrings.cantBookPriceExpired, shouldPop: true);
+      return;
+    }
+    _solution = _searchedDocResults.solution;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BookingMainScreen(
+                  price: service.newPrice?.first?.toString(),
+                  profId: service.professionalId,
+                  searchedSolutionServiceId: service.sId,
+                  timeSlots: service.timeSlots,
+                  docHosSolution: _solution,
+                  bookInPrice: service.bookIn,
+                  serviceName: widget.catalogueData.service ??
+                      _searchedDocResults?.catalogueData?.service ??
+                      PlunesStrings.NA,
+                  serviceIndex: 0,
+                  service: service,
+                ))).then((value) {
+      if (value != null &&
+          value.runtimeType == "pop".runtimeType &&
+          value.toString() == "pop") {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  _bookAppointmentWithHosDoctor(Services service, int docIndex) {
+    if (!_canGoAhead()) {
+      _showSnackBar(PlunesStrings.cantBookPriceExpired, shouldPop: true);
+      return;
+    }
+    _solution = _searchedDocResults.solution;
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BookingMainScreen(
+                  price: service.doctors[docIndex]?.newPrice?.first?.toString(),
+                  profId: service.professionalId,
+                  docId: service.doctors[docIndex].professionalId,
+                  searchedSolutionServiceId: service.sId,
+                  timeSlots: service.doctors[docIndex].timeSlots,
+                  docHosSolution: _solution,
+                  bookInPrice: service.doctors[docIndex].bookIn,
+                  serviceName: widget.catalogueData.service ??
+                      _searchedDocResults?.catalogueData?.service ??
+                      PlunesStrings.NA,
+                  serviceIndex: 0,
+                  service: Services(
+                      price: service.doctors[docIndex].price,
+                      zestMoney: service.doctors[docIndex].zestMoney,
+                      newPrice: service.doctors[docIndex].newPrice,
+                      paymentOptions: service.paymentOptions),
+                ))).then((value) {
+      if (value != null &&
+          value.runtimeType == "pop".runtimeType &&
+          value.toString() == "pop") {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  bool _canGoAhead() {
+    bool _canGoAhead = true;
+    var duration = DateTime.now().difference(
+        DateTime.fromMillisecondsSinceEpoch(
+            _searchedDocResults?.solution?.expirationTimer ?? 0));
+    if (duration.inHours >= 1) {
+      _canGoAhead = false;
+    }
+    return _canGoAhead;
+  }
+
+  void _showSnackBar(String message, {bool shouldPop = false}) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets()
+              .getInformativePopup(globalKey: scaffoldKey, message: message);
+        }).then((value) {
+      if (shouldPop) {
+        Navigator.pop(context);
+      }
+    });
+  }
+
+  Widget _getDialerWidget() {
+    return Container(
+      margin: EdgeInsets.only(
+          left: AppConfig.horizontalBlockSize * 4,
+          right: AppConfig.horizontalBlockSize * 4,
+          top: AppConfig.verticalBlockSize * 2),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: AppConfig.horizontalBlockSize * 40,
+            height: AppConfig.verticalBlockSize * 12.5,
+            child: SfRadialGauge(axes: <RadialAxis>[
+              RadialAxis(
+                  pointers: [
+                    RangePointer(
+                        value: _gainedDiscountPercentage,
+                        width: 0.3,
+                        sizeUnit: GaugeSizeUnit.factor,
+                        cornerStyle: CornerStyle.bothFlat,
+                        gradient: SweepGradient(colors: <Color>[
+                          PlunesColors.GREENCOLOR,
+                          PlunesColors.GREENCOLOR
+                        ], stops: <double>[
+                          0.25,
+                          0.75
+                        ])),
+                  ],
+                  minimum: 0,
+                  maximum: 100,
+                  showLabels: false,
+                  showTicks: false,
+                  startAngle: 270,
+                  endAngle: 270,
+                  annotations: <GaugeAnnotation>[
+                    GaugeAnnotation(
+                        positionFactor: 0.1,
+                        angle: 90,
+                        widget: Text(
+                          "$_gainedDiscountPercentage%",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: PlunesColors.BLACKCOLOR,
+                              fontWeight: FontWeight.w600),
+                        ))
+                  ])
+            ]),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "Real Time Saving",
+                  style: TextStyle(
+                      color: PlunesColors.BLACKCOLOR,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16),
+                ),
+                Padding(
+                  padding:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.5),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        "$_gainedDiscountPercentage%",
+                        style: TextStyle(
+                            color: PlunesColors.GREENCOLOR,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 22),
+                      ),
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 4.0),
+                          child: Text(
+                            "on original price",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontWeight: FontWeight.normal,
+                                fontSize: 15),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

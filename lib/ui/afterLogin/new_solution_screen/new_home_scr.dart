@@ -15,7 +15,6 @@ import 'package:plunes/models/new_solution_model/top_search_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
-import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_procedure_and_professional_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
@@ -204,15 +203,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       maxLines: 2,
                       text: TextSpan(children: [
                         TextSpan(
-                            text: 'Book Your Medical Treatment'
-                                    ?.split(" ")
-                                    ?.first ??
-                                "Book",
+                            text: _getHeading()?.split(" ")?.first ?? "Book",
                             style: TextStyle(
                                 color: PlunesColors.GREENCOLOR, fontSize: 35)),
                         TextSpan(
-                            text: _getTextAfterFirstWord(
-                                'Book Your Medical Treatment'),
+                            text: _getTextAfterFirstWord(_getHeading()),
                             style: TextStyle(
                                 color: PlunesColors.BLACKCOLOR, fontSize: 35))
                       ])),
@@ -258,7 +253,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                 onTap: () {},
                                 decoration: InputDecoration(
                                   hintMaxLines: 1,
-                                  hintText: 'Search the desired service',
+                                  hintText:
+                                      _solutionHomeScreenModel?.searchBarText ??
+                                          'Search the desired service',
                                   hintStyle: TextStyle(
                                     color: Color(0xffB1B1B1).withOpacity(1.0),
                                     fontSize: AppConfig.mediumFont,
@@ -289,7 +286,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   top: AppConfig.verticalBlockSize * 5,
                   left: AppConfig.horizontalBlockSize * 4.3,
                   right: AppConfig.horizontalBlockSize * 3),
-              child: _sectionHeading('Top facilities'),
+              child: _sectionHeading(
+                  _solutionHomeScreenModel?.topFacilities ?? 'Top facilities'),
             ),
 
             // vertical view of cards
@@ -430,7 +428,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               top: AppConfig.verticalBlockSize * 4,
               left: AppConfig.horizontalBlockSize * 4.3,
               right: AppConfig.horizontalBlockSize * 3),
-          child: _sectionHeading('Why Us'),
+          child: _sectionHeading(_solutionHomeScreenModel?.whyUs ?? 'Why Us'),
         ),
 
         // horizontal list view of cards
@@ -530,7 +528,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               top: AppConfig.verticalBlockSize * 7,
               left: AppConfig.horizontalBlockSize * 4.3,
               right: AppConfig.horizontalBlockSize * 3),
-          child: _sectionHeading('Know your procedure'),
+          child: _sectionHeading(_solutionHomeScreenModel?.knowYourProcedure ??
+              'Know your procedure'),
         ),
         StreamBuilder<RequestState>(
             stream: _homeScreenMainBloc.knowYourProcedureStream,
@@ -723,7 +722,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               top: AppConfig.verticalBlockSize * 5,
               left: AppConfig.horizontalBlockSize * 4.3,
               right: AppConfig.horizontalBlockSize * 3),
-          child: _sectionHeading('Speciality'),
+          child: _sectionHeading(
+              _solutionHomeScreenModel?.speciality ?? 'Speciality'),
         ),
 
         // horizontal list view of specialities
@@ -793,7 +793,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 top: AppConfig.verticalBlockSize * 5,
                 left: AppConfig.horizontalBlockSize * 1,
                 right: AppConfig.horizontalBlockSize * 70),
-            child: _sectionHeading('Video')),
+            child:
+                _sectionHeading(_solutionHomeScreenModel?.videos ?? 'Video')),
 
         // vedio card
         StreamBuilder<RequestState>(
@@ -935,7 +936,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               top: AppConfig.verticalBlockSize * 5,
               left: AppConfig.horizontalBlockSize * 4.3,
               right: AppConfig.horizontalBlockSize * 3),
-          child: _sectionHeading('Top Search'),
+          child: _sectionHeading(
+              _solutionHomeScreenModel?.topSearch ?? 'Top Search'),
         ),
 
         // horizontal list view of top search cards
@@ -989,6 +991,16 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             }),
       ],
     );
+  }
+
+  String _getHeading() {
+    if (_solutionHomeScreenModel == null ||
+        _solutionHomeScreenModel.heading == null ||
+        _solutionHomeScreenModel.heading.trim().isEmpty) {
+      return 'Book Your Medical Treatment';
+    } else {
+      return _solutionHomeScreenModel.heading;
+    }
   }
 }
 
