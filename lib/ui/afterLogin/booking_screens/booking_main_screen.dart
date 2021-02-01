@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/Utils/ImagePicker/ImagePickerHandler.dart';
 import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -23,6 +26,7 @@ import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
+import 'package:plunes/models/new_solution_model/insurance_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -68,7 +72,8 @@ class BookingMainScreen extends BaseActivity {
   _BookingMainScreenState createState() => _BookingMainScreenState();
 }
 
-class _BookingMainScreenState extends BaseState<BookingMainScreen> {
+class _BookingMainScreenState extends BaseState<BookingMainScreen>
+    with TickerProviderStateMixin, ImagePickerListener {
   DateTime _currentDate, _selectedDate, _tempSelectedDateTime;
   int _selectedPaymentType,
       _paymentTypeCash = 0,
@@ -81,11 +86,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       _notSelectedEntry,
       _userFailureCause;
   bool _isFetchingDocHosInfo,
+      _fetchingInsuranceList,
       _isFetchingUserInfo,
       _shouldUseCredit,
       _hasScrolledOnce,
       _hasGotSize;
   LoginPost _docProfileInfo, _userProfileInfo;
+  InsuranceModel _insuranceModel;
+  List<InsuranceProvider> _searchedItemList;
   BookingBloc _bookingBloc;
   List<String> _slotArray;
   double _widgetSize = 0;
@@ -98,17 +106,51 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
   List<ApplicationMeta> _availableUpiApps;
   TextEditingController _patientNameController,
       _ageController,
-      _serviceNameController;
+      _serviceNameController,
+      _policyNumberController,
+      _policySearchController;
   CartMainBloc _cartMainBloc;
   String _gender;
+  InsuranceProvider _insuranceProvider;
+  ImagePickerHandler _imagePicker;
+  AnimationController _animationController;
+
+  int _selectedIndex = 0;
+  List<Widget> _tabs = [
+    ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+          child: Text(
+        'I have insurance',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+    ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+          child: Text(
+        "I don't have insurance",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+  ];
+
+  String _insuranceFileUrl;
 
   @override
   void initState() {
+    _searchedItemList = [];
+    _fetchingInsuranceList = true;
     _cartMainBloc = CartMainBloc();
 //    _gender = _genderList.first;
     _patientNameController = TextEditingController();
     _ageController = TextEditingController();
     _serviceNameController = TextEditingController();
+    _policyNumberController = TextEditingController();
+    _policySearchController = TextEditingController();
+    _initializeForImageFetching();
     _hasGotSize = false;
     _webViewOpened = false;
     _showHideMapController = StreamController.broadcast();
@@ -130,6 +172,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     super.initState();
   }
 
+  _initializeForImageFetching() {
+    _animationController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
+    _imagePicker = ImagePickerHandler(this, _animationController, false);
+    _imagePicker.init();
+  }
+
   bool _isAndroid() {
     return Platform.isAndroid ?? false;
   }
@@ -142,8 +191,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
 
   _getDetails() {
     _isFetchingUserInfo = true;
+    _fetchingInsuranceList = true;
     _getDocHosInfo();
     _getUserInfo();
+    _getInsuranceList();
     _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
 //    _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
   }
@@ -156,6 +207,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
     _ageController?.dispose();
     _serviceNameController?.dispose();
     _cartMainBloc?.dispose();
+    _policyNumberController?.dispose();
+    _policySearchController?.dispose();
+    _animationController?.dispose();
     super.dispose();
   }
 
@@ -192,7 +246,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             body: Builder(builder: (context) {
               return Container(
                   padding: CustomWidgets().getDefaultPaddingForScreens(),
-                  child: (_isFetchingDocHosInfo || _isFetchingUserInfo)
+                  child: (_isFetchingDocHosInfo ||
+                          _isFetchingUserInfo ||
+                          _fetchingInsuranceList)
                       ? CustomWidgets().getProgressIndicator()
                       : (_docProfileInfo == null ||
                               _docProfileInfo.user == null ||
@@ -218,14 +274,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                 vertical: AppConfig.verticalBlockSize * 1.5),
             child: _getDoctorDetailsView(),
           ),
-          CustomWidgets().getSeparatorLine(),
-          widget.appointmentModel != null
-              ? Container()
-              : Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 1.5),
-                  child: _getPatientDetailsFillUpView()),
+          DottedLine(),
+          (_insuranceModel == null ||
+                  _insuranceModel.data == null ||
+                  _insuranceModel.data.isEmpty)
+              ? _getPatientDetailWidget()
+              : _getInsuranceTabBar(),
           _getDatePicker(),
           widget.getSpacer(AppConfig.verticalBlockSize * 1.8,
               AppConfig.verticalBlockSize * 1.8),
@@ -796,7 +850,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
                                 if (_selectedDate != null &&
                                     _selectedTimeSlot != null &&
                                     _selectedTimeSlot != PlunesStrings.noSlot) {
-                                  if (_hasFilledDetails()) {
+                                  if (_hasFilledDetails() &&
+                                      _checkIfInsuranceFilled()) {
                                     var paymentSelector = PaymentSelector(
                                         isInPercent: true,
                                         paymentUnit: widget
@@ -1147,7 +1202,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
             _selectedDate.toUtc().millisecondsSinceEpoch.toString(),
         percentage: zestMoney
             ? "100"
-            : paymentSelector.isInPercent ? paymentSelector.paymentUnit : null,
+            : paymentSelector.isInPercent
+                ? paymentSelector.paymentUnit
+                : null,
         price_pos: widget.serviceIndex,
         //negotiate prev id
         docHosServiceId: widget.docHosSolution.serviceId,
@@ -1165,6 +1222,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
         patientMobileNumber: UserManager().getUserDetails().mobileNumber,
         patientName: _patientNameController.text.trim(),
         patientSex: _gender,
+        haveInsurance: (_insuranceProvider != null && _selectedIndex == 0),
+        insuranceDetail: (_insuranceProvider != null && _selectedIndex == 0)
+            ? InsuranceDetail(
+                insuranceId: _insuranceProvider?.sId,
+                insuranceImage: _insuranceFileUrl,
+                insurancePartner: _insuranceProvider?.insurancePartner,
+                policyNumber: _policyNumberController.text.trim())
+            : null,
         bookIn: zestMoney
             ? null
             : !(paymentSelector.isInPercent)
@@ -2205,6 +2270,406 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen> {
       }
     });
     return;
+  }
+
+  Widget _getInsuranceTabBar() {
+    return Column(
+      children: [
+        Card(
+          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+          child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            child: TabBar(
+              unselectedLabelColor: Colors.black,
+              isScrollable: true,
+              labelPadding: EdgeInsets.all(12.0),
+              labelColor: Colors.white,
+              controller: TabController(
+                length: 2,
+                vsync: this,
+                initialIndex: _selectedIndex,
+              ),
+              indicator: new BubbleTabIndicator(
+                indicatorHeight: 40.0,
+                indicatorColor: PlunesColors.PARROTGREEN,
+                tabBarIndicatorSize: TabBarIndicatorSize.tab,
+              ),
+              onTap: (i) {
+                _selectedIndex = i;
+                _setState();
+              },
+              tabs: _tabs,
+            ),
+          ),
+        ),
+        _selectedIndex == 0
+            ? _getHaveInsuranceWidget()
+            : _getNotHaveInsuranceWidget()
+      ],
+    );
+  }
+
+  Widget _getHaveInsuranceWidget() {
+    return Container(
+      child: Column(
+        children: [
+          _getPatientDetailWidget(),
+          _getEnterInsuranceDetailsWidget(),
+          _getEnterPolicyNumberWidget(),
+          _getUploadPolicyImageWidget()
+        ],
+      ),
+    );
+  }
+
+  Widget _getNotHaveInsuranceWidget() {
+    return _getPatientDetailWidget();
+  }
+
+  Widget _getPatientDetailWidget() {
+    return widget.appointmentModel != null
+        ? Container()
+        : Column(
+            children: [
+              Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 1.5),
+                  child: _getPatientDetailsFillUpView()),
+              DottedLine(),
+              Container(
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5))
+            ],
+          );
+  }
+
+  Widget _getEnterInsuranceDetailsWidget() {
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            child: Text("Enter Insurance details"),
+            width: double.infinity,
+            alignment: Alignment.centerLeft,
+          ),
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+                gradient: LinearGradient(colors: [
+                  Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                  Color(CommonMethods.getColorHexFromStr("#F6F6F6")),
+                ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+            padding: EdgeInsets.symmetric(horizontal: 2, vertical: 4),
+            child: Column(
+              children: [_getSearchBar(), _getInsuranceListWidget()],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getUploadPolicyImageWidget() {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 2,
+                bottom: AppConfig.verticalBlockSize * 0.5),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Upload card/policy photo",
+              style: TextStyle(fontSize: 14, color: PlunesColors.BLACKCOLOR),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 2.5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+                gradient: LinearGradient(colors: [
+                  Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                  Color(CommonMethods.getColorHexFromStr("#F6F6F6")),
+                ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+            child: InkWell(
+              onTap: () {
+                _imagePicker?.showDialog(context);
+              },
+              onDoubleTap: () {},
+              child: Container(
+                height: AppConfig.verticalBlockSize * 18,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      PlunesImages.videoUploadIcon,
+                      height: 49,
+                      width: 49,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.8),
+                      child: Text(
+                        "Upload/Take Image",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR, fontSize: 12),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getSearchBar() {
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 1.5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Expanded(
+                  child: TextField(
+                controller: _policySearchController,
+                onChanged: (text) {
+                  if (_insuranceProvider != null) {
+                    return;
+                  }
+                  if (text != null &&
+                      text.trim().isNotEmpty &&
+                      _insuranceModel != null &&
+                      _insuranceModel.data != null &&
+                      _insuranceModel.data.isNotEmpty) {
+                    _searchedItemList = [];
+                    _insuranceModel.data.forEach((element) {
+                      if (element.insurancePartner != null &&
+                          element.insurancePartner.trim().isNotEmpty &&
+                          element.insurancePartner
+                              .toLowerCase()
+                              .contains(text.trim().toLowerCase())) {
+                        _searchedItemList.add(element);
+                      }
+                    });
+                    _setState();
+                  }
+                },
+                readOnly: _insuranceProvider == null ? false : true,
+                decoration: InputDecoration(
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: PlunesColors.BLACKCOLOR,
+                  ),
+                  hintText: "Search insurance provider",
+                  isDense: false,
+                  hintStyle: TextStyle(
+                      fontSize: 12,
+                      color:
+                          Color(CommonMethods.getColorHexFromStr("#333333"))),
+                  border: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  errorBorder: InputBorder.none,
+                  disabledBorder: InputBorder.none,
+                ),
+              )),
+              _insuranceProvider != null
+                  ? InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.edit),
+                      ),
+                      onTap: () {
+                        _policySearchController.text = "";
+                        _insuranceProvider = null;
+                        _searchedItemList = [];
+                        _setState();
+                      },
+                      onDoubleTap: () {},
+                    )
+                  : Container(),
+            ],
+          ),
+        ),
+        _insuranceProvider == null
+            ? Container(
+                child: DottedLine(),
+                margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 3),
+              )
+            : Container()
+      ],
+    );
+  }
+
+  Widget _getInsuranceListWidget() {
+    List<InsuranceProvider> _list = [];
+    return (_insuranceProvider != null)
+        ? Container()
+        : Container(
+            margin: EdgeInsets.symmetric(vertical: 2),
+            padding: EdgeInsets.symmetric(horizontal: 3.5),
+            constraints: BoxConstraints(
+              maxHeight: AppConfig.verticalBlockSize * 35,
+              minHeight: AppConfig.verticalBlockSize * 0.5,
+            ),
+            child: _getILISTWidget((_policySearchController.text
+                        .trim()
+                        .isNotEmpty &&
+                    _insuranceProvider == null &&
+                    (_searchedItemList == null || _searchedItemList.isEmpty))
+                ? _list
+                : (_searchedItemList != null && _searchedItemList.isNotEmpty)
+                    ? _searchedItemList
+                    : _insuranceModel?.data),
+          );
+  }
+
+  void _getInsuranceList() async {
+    _fetchingInsuranceList = true;
+    RequestState requestState =
+        await UserBloc().getInsuranceList(widget.profId);
+    if (requestState is RequestSuccess) {
+      _insuranceModel = requestState.response;
+    } else if (requestState is RequestFailed) {
+      // _userFailureCause = requestState.failureCause;
+    }
+    _fetchingInsuranceList = false;
+    _setState();
+  }
+
+  void _uploadInsuranceFile(File file) {
+    _isFetchingDocHosInfo = true;
+    _setState();
+    UserBloc().uploadInsuranceFile(file).then((value) {
+      _isFetchingDocHosInfo = false;
+      _setState();
+      if (value is RequestSuccess) {
+        _insuranceFileUrl = value.response?.toString();
+        Future.delayed(Duration(milliseconds: 10)).then((value) {
+          _showErrorMessage("File uploaded successfully!");
+        });
+      } else if (value is RequestFailed) {
+        _showErrorMessage(value?.failureCause);
+      }
+    });
+  }
+
+  Widget _getEnterPolicyNumberWidget() {
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 2,
+                bottom: AppConfig.verticalBlockSize * 0.5),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Please make sure policy is not expired",
+              style: TextStyle(fontSize: 14, color: PlunesColors.BLACKCOLOR),
+            ),
+          ),
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 2.5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(16)),
+                gradient: LinearGradient(colors: [
+                  Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                  Color(CommonMethods.getColorHexFromStr("#F6F6F6")),
+                ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+            child: TextField(
+              maxLines: 1,
+              controller: _policyNumberController,
+              decoration: InputDecoration(
+                hintText: "Enter Policy Number",
+                isDense: false,
+                hintStyle: TextStyle(
+                    fontSize: 12,
+                    color: Color(CommonMethods.getColorHexFromStr("#979797"))),
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getILISTWidget(List<InsuranceProvider> list) {
+    return ListView.builder(
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        return InkWell(
+          onDoubleTap: () {},
+          onTap: () {
+            _insuranceProvider = list[index];
+            _policySearchController.text =
+                _insuranceProvider?.insurancePartner ?? "";
+            _setState();
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Text(
+              "${list[index]?.insurancePartner ?? ""}",
+              style: TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
+            ),
+          ),
+        );
+      },
+      itemCount: list?.length ?? 0,
+    );
+  }
+
+  @override
+  fetchImageCallBack(File _image) {
+    if (_image != null && _image.path != null) {
+      _uploadInsuranceFile(_image);
+    }
+  }
+
+  bool _checkIfInsuranceFilled() {
+    if (widget.appointmentModel != null) {
+      return true;
+    } else if (_insuranceModel != null &&
+        _insuranceModel.data != null &&
+        _insuranceModel.data.isNotEmpty &&
+        _selectedIndex == 0) {
+      bool _hasFilledDetails = true;
+      String _message;
+      if (_insuranceProvider == null) {
+        _hasFilledDetails = false;
+        _message = "Please select your policy provider";
+      } else if (_policyNumberController.text.trim().isEmpty) {
+        _hasFilledDetails = false;
+        _message = "Please fill your policy number";
+      }
+      if (_message != null) {
+        _showInSnackBar(_message);
+      }
+      return _hasFilledDetails;
+    } else {
+      return true;
+    }
   }
 }
 

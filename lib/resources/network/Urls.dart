@@ -155,4 +155,7 @@ class Urls {
   static const String SUBMIT_USER_MEDICAL_DETAIL_URL = "user/submitReport";
   static const String UPLOAD_MEDICAL_FILE_URL = "user/userReport";
   static const String DISCOVER_PRICE_API = "solution/discover";
+  static const String GET_INSURANCE_NAMES_URL =
+      "professional/insurancesByProfessionalId";
+  static const String UPLOAD_INSURANCE_URL = "user/uploadInsurance";
 }

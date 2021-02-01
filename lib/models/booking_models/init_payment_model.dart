@@ -16,6 +16,8 @@ class InitPayment {
       patientMobileNumber,
       patientAge,
       patientSex;
+  bool haveInsurance;
+  InsuranceDetail insuranceDetail;
 
   InitPayment(
       {this.docHosServiceId,
@@ -34,7 +36,9 @@ class InitPayment {
       this.patientMobileNumber,
       this.patientName,
       this.patientSex,
-      this.doctorId});
+      this.doctorId,
+      this.insuranceDetail,
+      this.haveInsurance});
 
   Map<String, dynamic> initiatePaymentToJson() {
     Map<String, dynamic> body = {
@@ -53,7 +57,9 @@ class InitPayment {
       "patientAge": patientAge,
       "patientMobileNumber": patientMobileNumber,
       "patientName": patientName,
-      "patientSex": patientSex
+      "patientSex": patientSex,
+      "haveInsurance": this.haveInsurance,
+      "insuranceDetails": this.insuranceDetail?.toJson()
     };
     return body;
   }
@@ -95,5 +101,27 @@ class ZestMoneyResponseModel {
     data['data'] = this.data;
     data['msg'] = this.msg;
     return data;
+  }
+}
+
+class InsuranceDetail {
+  String insuranceId;
+  String policyNumber;
+  String insuranceImage;
+  String insurancePartner;
+
+  InsuranceDetail(
+      {this.insurancePartner,
+      this.insuranceId,
+      this.insuranceImage,
+      this.policyNumber});
+
+  Map<String, dynamic> toJson() {
+    return {
+      "insuranceId": this.insuranceId,
+      "policyNumber": this.policyNumber,
+      "insuranceImage": this.insuranceImage,
+      "insurancePartner": this.insurancePartner
+    };
   }
 }

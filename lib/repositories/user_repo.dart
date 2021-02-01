@@ -7,6 +7,7 @@ import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/media_content_model.dart';
+import 'package:plunes/models/new_solution_model/insurance_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -519,6 +520,47 @@ class UserManager {
       MediaContentModel _mediaContentModel =
           MediaContentModel.fromJson(result.response.data);
       return RequestSuccess(response: _mediaContentModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getInsuranceList(String profId) async {
+    //5f6eee7464b4fe7d98a04e4f
+    var result = await DioRequester().requestMethod(
+        url: Urls.GET_INSURANCE_NAMES_URL,
+        requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {"professionalId": profId},
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      InsuranceModel _mediaContentModel =
+          InsuranceModel.fromJson(result.response.data);
+      return RequestSuccess(response: _mediaContentModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> uploadInsuranceFile(File file) async {
+    Map<String, dynamic> postData = {
+      "file": await MultipartFile.fromFile(file.path?.toString())
+    };
+    var result = await DioRequester().requestMethod(
+        url: Urls.UPLOAD_INSURANCE_URL,
+        headerIncluded: true,
+        isMultipartEnabled: true,
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: FormData.fromMap(postData));
+    if (result.isRequestSucceed) {
+      String imageUrl;
+      print("upload file response ${result?.response?.data}");
+      if (result.response.data != null &&
+          result.response.data["data"] != null &&
+          result.response.data["data"]["reports"] != null &&
+          result.response.data["data"]["reports"]["url"] != null) {
+        imageUrl = result.response.data["data"]["reports"]["url"];
+      }
+      return RequestSuccess(response: imageUrl);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

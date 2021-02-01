@@ -28,6 +28,16 @@ class UserBloc extends BlocBase {
   Observable<RequestState> get mediaContentStream =>
       _mediaContentStreamProvider.stream;
 
+  final _insuranceStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get insuranceStream =>
+      _insuranceStreamProvider.stream;
+
+  final _insuranceFileUploadStrreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get insuranceFileUploadStream =>
+      _insuranceFileUploadStrreamProvider.stream;
+
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
       {String address, bool isFromPopup = false, String region}) {
     return UserManager().isUserInServiceLocation(latitude, longitude,
@@ -107,6 +117,8 @@ class UserBloc extends BlocBase {
     _reviewStreamProvider?.close();
     _profileImageProvider?.close();
     _mediaContentStreamProvider?.close();
+    _insuranceStreamProvider?.close();
+    _insuranceFileUploadStrreamProvider?.close();
     super.dispose();
   }
 
@@ -164,6 +176,13 @@ class UserBloc extends BlocBase {
     return result;
   }
 
+  Future<RequestState> getInsuranceList(String profId) async {
+    addStateInInsuranceListStream(RequestInProgress());
+    var result = await UserManager().getInsuranceList(profId);
+    addStateInInsuranceListStream(result);
+    return result;
+  }
+
   addStateInReviewStream(RequestState data) {
     addStateInGenericStream(_reviewStreamProvider, data);
   }
@@ -172,7 +191,22 @@ class UserBloc extends BlocBase {
     addStateInGenericStream(_profileImageProvider, data);
   }
 
+  addStateInUploadInsuranceFileStream(RequestState data) {
+    addStateInGenericStream(_insuranceFileUploadStrreamProvider, data);
+  }
+
   addStateInMediaContentStream(RequestState data) {
     addStateInGenericStream(_mediaContentStreamProvider, data);
+  }
+
+  addStateInInsuranceListStream(RequestState data) {
+    addStateInGenericStream(_insuranceStreamProvider, data);
+  }
+
+  Future<RequestState> uploadInsuranceFile(File file) async {
+    addStateInUploadInsuranceFileStream(RequestInProgress());
+    var result = await UserManager().uploadInsuranceFile(file);
+    addStateInUploadInsuranceFileStream(result);
+    return result;
   }
 }
