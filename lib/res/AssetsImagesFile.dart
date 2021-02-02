@@ -143,6 +143,10 @@ class PlunesImages {
       "assets/images/bottom_tabs/previousActivitySelectedIcon.png";
   static const String previousActivityUnselectedIcon =
       "assets/images/bottom_tabs/previousActivityUnselectedIcon.png";
+  static const String selectedFacilityIcon =
+      "assets/images/selectedfacilityIcon.png";
+  static const String unselectedFacilityIcon =
+      "assets/images/unselectedFacilityIcon.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

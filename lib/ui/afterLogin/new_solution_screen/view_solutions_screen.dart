@@ -24,6 +24,7 @@ import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_scr
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 
 // ignore: must_be_immutable
 class ViewSolutionsScreen extends BaseActivity {
@@ -304,7 +305,13 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => DiscoverMoreFacility())),
+                        builder: (context) => MoreFacilityScreen(
+                              catalogueData: _searchedDocResults.catalogueData,
+                              docHosSolution: _searchedDocResults.solution,
+                              searchSolutionBloc: _searchSolutionBloc,
+                            ))).then((value) {
+                  _getFacilities();
+                }),
                 child: CustomWidgets().getRoundedButton(
                     PlunesStrings.discoverMoreFacilityButtonText,
                     AppConfig.horizontalBlockSize * 8,

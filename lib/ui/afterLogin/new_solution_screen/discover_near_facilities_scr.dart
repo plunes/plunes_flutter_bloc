@@ -41,15 +41,15 @@ class _DiscoverMoreFacilityState extends BaseState<DiscoverMoreFacility> {
     return Container(
       child: Column(
         children: [
-          Container(
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 1.5,
-                horizontal: AppConfig.horizontalBlockSize * 5),
-            child: CommonWidgets().getSearchBarForManualBidding(
-                searchController: _searchController,
-                isRounded: true,
-                hintText: "Search the desired service"),
-          ),
+          // Container(
+          //   margin: EdgeInsets.symmetric(
+          //       vertical: AppConfig.verticalBlockSize * 1.5,
+          //       horizontal: AppConfig.horizontalBlockSize * 5),
+          //   child: CommonWidgets().getSearchBarForManualBidding(
+          //       searchController: _searchController,
+          //       isRounded: true,
+          //       hintText: "Search the desired service"),
+          // ),
           Expanded(
             child: Stack(
               children: [
@@ -166,7 +166,7 @@ class _DiscoverMoreFacilityState extends BaseState<DiscoverMoreFacility> {
           ListView.builder(
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return CommonWidgets().getManualBiddingProfessionalWidget();
+              // return CommonWidgets().getManualBiddingProfessionalWidget();
             },
             itemCount: 6,
             shrinkWrap: true,
@@ -179,7 +179,7 @@ class _DiscoverMoreFacilityState extends BaseState<DiscoverMoreFacility> {
   List<Widget> _getChildren() {
     List<Widget> widgets = [];
     for (int index = 0; index < 6; index++) {
-      widgets.add(CommonWidgets().getHorizontalProfessionalWidget());
+      // widgets.add(CommonWidgets().getHorizontalProfessionalWidget());
     }
     return widgets;
   }

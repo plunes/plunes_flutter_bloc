@@ -8,6 +8,7 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/models/new_solution_model/professional_model.dart';
+import 'package:plunes/models/solution_models/more_facilities_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -932,8 +933,11 @@ class CommonWidgets {
     );
   }
 
-  Widget getManualBiddingProfessionalWidget() {
-    Widget profWidget = _getProfessionalDetailWidget();
+  Widget getManualBiddingProfessionalWidget(
+      List<MoreFacility> catalogues, int index,
+      {bool isSelected = false, Function onTap, Function onProfileTap}) {
+    Widget profWidget = _getProfessionalDetailWidget(
+        catalogues, index, PlunesImages.unselectedFacilityIcon);
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
       shape: RoundedRectangleBorder(
@@ -942,44 +946,62 @@ class CommonWidgets {
               topRight: Radius.circular(2),
               bottomLeft: Radius.circular(12),
               bottomRight: Radius.circular(2))),
-      child: Container(
-        child: Stack(
-          children: [
-            Row(children: [profWidget]),
-            Positioned.fill(child: Container(color: Colors.white)),
-            Positioned.fill(
-              child: Row(
-                children: [
-                  Container(
-                    width: AppConfig.horizontalBlockSize * 25,
-                    child: SizedBox.expand(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12)),
-                        child: CustomWidgets().getImageFromUrl(
-                            "https://media.istockphoto.com/photos/doctor-holding-digital-tablet-at-meeting-room-picture-id1189304032?k=6&m=1189304032&s=612x612&w=0&h=SJPF2M715kIFAKoYHGbb1uAyptbz6Tn7-LxPsm5msPE=",
-                            boxFit: BoxFit.cover),
+      child: InkWell(
+        onDoubleTap: () {},
+        onTap: () {
+          if (onTap != null) {
+            onTap();
+          }
+        },
+        child: Container(
+          child: Stack(
+            children: [
+              Row(children: [profWidget]),
+              Positioned.fill(child: Container(color: Colors.white)),
+              Positioned.fill(
+                child: Row(
+                  children: [
+                    Container(
+                      width: AppConfig.horizontalBlockSize * 25,
+                      child: SizedBox.expand(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              bottomLeft: Radius.circular(12)),
+                          child: InkWell(
+                            onTap: () {
+                              if (onProfileTap != null) {
+                                onProfileTap();
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: CustomWidgets().getImageFromUrl(
+                                catalogues[index]?.imageUrl ?? "",
+                                boxFit: BoxFit.cover,
+                                placeHolderPath: PlunesImages.doc_placeholder),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
+                ),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(width: AppConfig.horizontalBlockSize * 25),
+                  profWidget
                 ],
               ),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(width: AppConfig.horizontalBlockSize * 25),
-                profWidget
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _getProfessionalDetailWidget() {
+  Widget _getProfessionalDetailWidget(
+      List<MoreFacility> catalogues, int index, String icon) {
     return Expanded(
         flex: 7,
         child: Container(
@@ -997,30 +1019,32 @@ class CommonWidgets {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Dr. Atul Mishra",
+                            catalogues[index]?.name ?? "",
                             maxLines: 2,
                             style: TextStyle(
                               fontSize: 20,
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
-                          Text(
-                            "Fortis Healthcare",
-                            maxLines: 2,
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#707070")),
-                            ),
-                          ),
+                          // Text(
+                          //   "Fortis Healthcare",
+                          //   maxLines: 2,
+                          //   style: TextStyle(
+                          //     fontSize: 18,
+                          //     color: Color(
+                          //         CommonMethods.getColorHexFromStr("#707070")),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
                     Container(
                       alignment: Alignment.topRight,
-                      child: Image.asset(PlunesImages.greenCheck),
-                      height: 20,
-                      width: 40,
+                      child: Image.asset(
+                        icon,
+                        height: 30,
+                        width: 40,
+                      ),
                     ),
                   ],
                 ),
@@ -1030,25 +1054,30 @@ class CommonWidgets {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              PlunesStrings.experienceText,
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#707070"))),
-                            ),
-                            Text(
-                              "20 year",
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 16, color: PlunesColors.BLACKCOLOR),
-                            )
-                          ],
-                        ),
+                        child: (catalogues[index].experience != null &&
+                                catalogues[index].experience > 0)
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    PlunesStrings.experienceText,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#707070"))),
+                                  ),
+                                  Text(
+                                    "${catalogues[index].experience} year",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  )
+                                ],
+                              )
+                            : Container(),
                       ),
                       Container(
                         child: Row(
@@ -1058,7 +1087,7 @@ class CommonWidgets {
                               color: Colors.yellow,
                             ),
                             Text(
-                              " 4.5",
+                              " ${catalogues[index]?.rating?.toStringAsFixed(1) ?? 4.5}",
                               style: TextStyle(
                                 fontSize: 18,
                                 color: PlunesColors.BLACKCOLOR,
@@ -1074,8 +1103,11 @@ class CommonWidgets {
             )));
   }
 
-  Widget getHorizontalProfessionalWidget() {
-    Widget profWidget = _getProfessionalDetailWidget();
+  Widget getHorizontalProfessionalWidget(
+      List<MoreFacility> catalogues, int index,
+      {bool isSelected = false, Function onTap, Function onProfileTap}) {
+    Widget profWidget = _getProfessionalDetailWidget(
+        catalogues, index, PlunesImages.selectedFacilityIcon);
     return Card(
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2.5,
@@ -1086,41 +1118,50 @@ class CommonWidgets {
               topRight: Radius.circular(2),
               bottomLeft: Radius.circular(12),
               bottomRight: Radius.circular(2))),
-      child: Container(
-        width: AppConfig.horizontalBlockSize * 93,
-        child: Stack(
-          children: [
-            Row(children: [profWidget]),
-            Positioned.fill(child: Container(color: Colors.white)),
-            Positioned.fill(
-              child: Row(
+      child: InkWell(
+        onDoubleTap: () {},
+        onTap: () {
+          if (onTap != null) {
+            onTap();
+          }
+        },
+        child: Container(
+          width: AppConfig.horizontalBlockSize * 93,
+          child: Stack(
+            children: [
+              Row(children: [profWidget]),
+              Positioned.fill(child: Container(color: Colors.white)),
+              Positioned.fill(
+                child: Row(
+                  children: [
+                    Container(
+                      width: AppConfig.horizontalBlockSize * 25,
+                      child: SizedBox.expand(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              bottomLeft: Radius.circular(12)),
+                          child: CustomWidgets().getImageFromUrl(
+                              catalogues[index]?.imageUrl ?? "",
+                              placeHolderPath: PlunesImages.doc_placeholder,
+                              boxFit: BoxFit.cover),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
                     width: AppConfig.horizontalBlockSize * 25,
-                    child: SizedBox.expand(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12)),
-                        child: CustomWidgets().getImageFromUrl(
-                            "https://media.istockphoto.com/photos/doctor-holding-digital-tablet-at-meeting-room-picture-id1189304032?k=6&m=1189304032&s=612x612&w=0&h=SJPF2M715kIFAKoYHGbb1uAyptbz6Tn7-LxPsm5msPE=",
-                            boxFit: BoxFit.cover),
-                      ),
-                    ),
                   ),
+                  profWidget
                 ],
               ),
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: AppConfig.horizontalBlockSize * 25,
-                ),
-                profWidget
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

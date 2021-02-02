@@ -130,13 +130,26 @@ class SearchedSolutionRepo {
   }
 
   Future<RequestState> getMoreFacilities(DocHosSolution catalogueData,
-      {String searchQuery, int pageIndex}) async {
+      {String searchQuery,
+      int pageIndex,
+      String userTypeFilter,
+      String facilityLocationFilter,
+      String allLocationKey}) async {
+    var userDetail = UserManager().getUserDetails();
+    double latitude = double.tryParse(userDetail?.latitude ?? 0.0);
+    double longitude = double.tryParse(userDetail?.longitude ?? 0.0);
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
         postData: {
           "solutionId": catalogueData.sId,
           "page": pageIndex,
-          "searchQuery": searchQuery ?? ""
+          "searchQuery": searchQuery ?? "",
+          "userType":
+              (allLocationKey == userTypeFilter) ? null : userTypeFilter,
+          "latitude":
+              (facilityLocationFilter == allLocationKey) ? null : latitude,
+          "longitude":
+              (facilityLocationFilter == allLocationKey) ? null : longitude,
         },
         headerIncluded: true,
         url: Urls.MORE_FACILITIES_URL);

@@ -107,10 +107,18 @@ class SearchSolutionBloc extends BlocBase {
   }
 
   Future<RequestState> getMoreFacilities(final DocHosSolution catalogueData,
-      {final String searchQuery, int pageIndex = initialIndex}) async {
+      {final String searchQuery,
+      int pageIndex = initialIndex,
+      String userTypeFilter,
+      String facilityLocationFilter,
+      String allLocationKey}) async {
     addIntoMoreFacilitiesStream(RequestInProgress());
     var result = await SearchedSolutionRepo().getMoreFacilities(catalogueData,
-        searchQuery: searchQuery, pageIndex: pageIndex);
+        searchQuery: searchQuery,
+        pageIndex: pageIndex,
+        allLocationKey: allLocationKey,
+        userTypeFilter: userTypeFilter,
+        facilityLocationFilter: facilityLocationFilter);
     addIntoMoreFacilitiesStream(result);
     return result;
   }

@@ -385,6 +385,8 @@ flutter:
     - assets/images/new_sol_img/cameraIcon.png
     - assets/images/new_sol_img/documentIcon.png
     - assets/images/new_sol_img/uploadVideoIcon.png
+    - assets/images/unselectedFacilityIcon.png
+    - assets/images/selectedfacilityIcon.png
 
 
 
