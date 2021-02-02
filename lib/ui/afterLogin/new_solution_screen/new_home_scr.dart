@@ -11,11 +11,13 @@ import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
 import 'package:plunes/models/new_solution_model/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/new_speciality_model.dart';
 import 'package:plunes/models/new_solution_model/solution_home_scr_model.dart';
+import 'package:plunes/models/new_solution_model/top_facility_model.dart';
 import 'package:plunes/models/new_solution_model/top_search_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_procedure_and_professional_screen.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
@@ -44,6 +46,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   NewSpecialityModel _newSpecialityModel;
   MediaContentPlunes _mediaContentPlunes;
   TopSearchOuterModel _topSearchOuterModel;
+  TopFacilityModel _topFacilityModel;
   String _failedMessage;
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
@@ -57,6 +60,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _mediaFailedMessage;
 
   String _failedMessageTopSearch;
+
+  String _failedMessageTopFacility;
 
   @override
   void initState() {
@@ -158,20 +163,95 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   Widget _getTopFacilitiesWidget() {
-    return Container(
-      child: ListView.builder(
-        padding: EdgeInsets.zero,
-        physics: NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemBuilder: (context, index) {
-          return _hospitalCard(
-            kDefaultImageUrl,
-            'Fortis Healthcare',
-            'Lorem ipsumLorem ipsumLorem ipsum ipsumLorem Lorem ipsum ipsumLorem Lorem ipsum ipsumLore...View Profile',
-          );
-        },
-        itemCount: 4,
-      ),
+    return Column(
+      children: [
+        // heading - top facilities
+        Container(
+          alignment: Alignment.topLeft,
+          margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 5,
+              left: AppConfig.horizontalBlockSize * 4.3,
+              right: AppConfig.horizontalBlockSize * 3),
+          child: _sectionHeading(
+              _solutionHomeScreenModel?.topFacilities ?? 'Top facilities'),
+        ),
+        StreamBuilder<RequestState>(
+            stream: _homeScreenMainBloc.topFacilityStream,
+            initialData:
+                (_topFacilityModel == null) ? RequestInProgress() : null,
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestSuccess) {
+                RequestSuccess successObject = snapshot.data;
+                _topFacilityModel = successObject.response;
+                _homeScreenMainBloc?.addIntoTopFacilityStream(null);
+              } else if (snapshot.data is RequestFailed) {
+                RequestFailed _failedObj = snapshot.data;
+                _failedMessageTopFacility = _failedObj?.failureCause;
+                _homeScreenMainBloc?.addIntoTopFacilityStream(null);
+              } else if (snapshot.data is RequestInProgress) {
+                return Container(
+                  child: CustomWidgets().getProgressIndicator(),
+                  height: AppConfig.verticalBlockSize * 25,
+                );
+              }
+              return (_topFacilityModel == null ||
+                      (_topFacilityModel.success != null &&
+                          !_topFacilityModel.success) ||
+                      _topFacilityModel.data == null ||
+                      _topFacilityModel.data.isEmpty)
+                  ? Container(
+                      height: AppConfig.verticalBlockSize * 38,
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 3),
+                      child: CustomWidgets().errorWidget(
+                          _failedMessageTopFacility,
+                          onTap: () => _getTopFacilities(),
+                          isSizeLess: true),
+                    )
+                  : Container(
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              if (_topFacilityModel.data[index] != null &&
+                                  _topFacilityModel.data[index].userType !=
+                                      null &&
+                                  _topFacilityModel
+                                          .data[index].professionalId !=
+                                      null) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DoctorInfo(
+                                            _topFacilityModel
+                                                .data[index].professionalId,
+                                            isDoc: (_topFacilityModel
+                                                    .data[index].userType
+                                                    .toLowerCase() ==
+                                                Constants.doctor
+                                                    .toString()
+                                                    .toLowerCase()))));
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: _hospitalCard(
+                                _topFacilityModel.data[index]?.imageUrl ?? '',
+                                CommonMethods.getStringInCamelCase(
+                                    _topFacilityModel.data[index].name),
+                                _topFacilityModel.data[index].biography ?? '',
+                                _topFacilityModel.data[index]?.rating),
+                          );
+                        },
+                        itemCount: (_topFacilityModel.data.length > 6)
+                            ? 5
+                            : _topFacilityModel.data.length,
+                      ),
+                    );
+            }),
+      ],
     );
   }
 
@@ -278,17 +358,6 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             _getProcedureWidget(),
             // heading - why us
             _getWhyUsSection(),
-
-            // heading - top facilities
-            Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 5,
-                  left: AppConfig.horizontalBlockSize * 4.3,
-                  right: AppConfig.horizontalBlockSize * 3),
-              child: _sectionHeading(
-                  _solutionHomeScreenModel?.topFacilities ?? 'Top facilities'),
-            ),
 
             // vertical view of cards
             _getTopFacilitiesWidget(),
@@ -403,7 +472,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _homeScreenMainBloc.getKnowYourProcedureData();
   }
 
-  void _getTopFacilities() {}
+  void _getTopFacilities() {
+    _homeScreenMainBloc.getTopFacilities();
+  }
 
   void _getTopSearch() {
     _homeScreenMainBloc.getTopSearches();
@@ -1021,7 +1092,8 @@ Widget _sectionHeading(String text) {
   );
 }
 
-Widget _hospitalCard(String imageUrl, String label, String text) {
+Widget _hospitalCard(
+    String imageUrl, String label, String text, double rating) {
   return Container(
     margin: EdgeInsets.symmetric(
         horizontal: AppConfig.horizontalBlockSize * 3,
@@ -1066,7 +1138,7 @@ Widget _hospitalCard(String imageUrl, String label, String text) {
                         color: Colors.yellow,
                       ),
                       Text(
-                        " 4.5" ?? "",
+                        " ${rating?.toStringAsFixed(1) ?? 4.5}",
                         style: TextStyle(
                           fontSize: 18,
                           color: PlunesColors.BLACKCOLOR,

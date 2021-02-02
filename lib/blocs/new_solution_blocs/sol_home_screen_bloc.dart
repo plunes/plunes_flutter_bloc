@@ -37,6 +37,10 @@ class HomeScreenMainBloc extends BlocBase {
 
   Observable<RequestState> get topSearchStream =>
       _topSearchStreamProvider.stream;
+  final _topFacilityStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get topFacilityStream =>
+      _topFacilityStreamProvider.stream;
 
   @override
   void dispose() {
@@ -48,6 +52,7 @@ class HomeScreenMainBloc extends BlocBase {
     _getCommonSpecialityDataStreamProvider?.close();
     _mediaStreamProvider?.close();
     _topSearchStreamProvider?.close();
+    _topFacilityStreamProvider?.close();
     super.dispose();
   }
 
@@ -139,5 +144,16 @@ class HomeScreenMainBloc extends BlocBase {
 
   void addIntoTopSearchStream(RequestState state) {
     addStateInGenericStream(_topSearchStreamProvider, state);
+  }
+
+  Future<RequestState> getTopFacilities() async {
+    addIntoTopFacilityStream(RequestInProgress());
+    var result = await HomeScreenMainRepo().getTopFacilities();
+    addIntoTopFacilityStream(result);
+    return result;
+  }
+
+  void addIntoTopFacilityStream(RequestState state) {
+    addStateInGenericStream(_topFacilityStreamProvider, state);
   }
 }

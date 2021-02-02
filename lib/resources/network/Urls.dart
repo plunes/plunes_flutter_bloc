@@ -158,4 +158,8 @@ class Urls {
   static const String GET_INSURANCE_NAMES_URL =
       "professional/insurancesByProfessionalId";
   static const String UPLOAD_INSURANCE_URL = "user/uploadInsurance";
+  static const String TOP_FACILITY_URL = "solution/prioritisedFacilities";
+  static const String GET_ALL_SERVICE_BY_SPECIALITY_ID =
+      "professional/getProfessionalServiceBySpecilityId";
+  static const String FACILITY_HAVE_URL = mcmBaseUrl + "plunes/getcuration";
 }
