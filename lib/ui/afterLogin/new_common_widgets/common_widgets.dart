@@ -1,4 +1,3 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -1245,9 +1244,8 @@ class CommonWidgets {
     });
   }
 
-  Widget getBookProfessionalWidget(
-      Services service, Function openProfile, Function bookAppointment) {
-    int _currentIndex = 0;
+  Widget getBookProfessionalWidget(Services service, Function openProfile,
+      Function bookAppointment, Function checkInsurance) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -1481,7 +1479,11 @@ class CommonWidgets {
                           width: double.infinity,
                           alignment: Alignment.centerRight,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              if (checkInsurance != null) {
+                                checkInsurance();
+                              }
+                            },
                             onDoubleTap: () {},
                             child: Padding(
                               child: Text(
@@ -1510,16 +1512,11 @@ class CommonWidgets {
                           children: [
                             Container(
                               height: AppConfig.verticalBlockSize * 10,
-                              child: CarouselSlider.builder(
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                shrinkWrap: true,
                                 itemBuilder: (context, index) {
                                   return Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(12)),
-                                        border: Border.all(
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr("#25B281")),
-                                            width: 0.8)),
                                     padding: EdgeInsets.symmetric(
                                         horizontal:
                                             AppConfig.horizontalBlockSize * 4,
@@ -1528,63 +1525,50 @@ class CommonWidgets {
                                     margin: EdgeInsets.only(
                                         right: AppConfig.horizontalBlockSize *
                                             2.3),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    child: Row(
                                       children: [
-                                        Text("FUI",
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                color: PlunesColors.BLACKCOLOR,
-                                                fontSize: 18)),
-                                        Container(
-                                          alignment: Alignment.centerLeft,
-                                          margin: EdgeInsets.only(top: 3),
-                                          child: Text("Technique",
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                  color: Color(CommonMethods
-                                                      .getColorHexFromStr(
-                                                          "#515151")),
-                                                  fontSize: 16)),
-                                        )
+                                        index == 0
+                                            ? Container()
+                                            : Container(
+                                                margin: EdgeInsets.only(
+                                                    top: 8,
+                                                    bottom: 8,
+                                                    right: 20),
+                                                width: 1,
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#333333")),
+                                              ),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text("FUI",
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    color:
+                                                        PlunesColors.BLACKCOLOR,
+                                                    fontSize: 18)),
+                                            Container(
+                                              alignment: Alignment.centerLeft,
+                                              margin: EdgeInsets.only(top: 3),
+                                              child: Text("Technique",
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                      color: Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#515151")),
+                                                      fontSize: 16)),
+                                            )
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   );
                                 },
-                                options: CarouselOptions(
-                                    height: AppConfig.verticalBlockSize * 12,
-                                    aspectRatio: 16 / 9,
-                                    initialPage: 0,
-                                    enableInfiniteScroll: false,
-                                    pageSnapping: true,
-                                    reverse: false,
-                                    enlargeCenterPage: true,
-                                    viewportFraction: 1.0,
-                                    autoPlay: true,
-                                    scrollDirection: Axis.horizontal,
-                                    onPageChanged: (index, _) {
-                                      // if (_currentDotPosition.toInt() != index) {
-                                      //   _currentDotPosition = index.toDouble();
-                                      //   _streamController?.add(null);
-                                      // }
-                                      newState(() {
-                                        _currentIndex = index;
-                                      });
-                                    }),
                                 itemCount: 4,
                               ),
                             ),
-                            Container(
-                              margin: EdgeInsets.only(
-                                  top: AppConfig.verticalBlockSize * 0.5),
-                              child: DotsIndicator(
-                                dotsCount: 4,
-                                position: _currentIndex?.toDouble(),
-                                axis: Axis.horizontal,
-                                decorator: _decorator,
-                              ),
-                            )
                           ],
                         );
                       })
@@ -1651,7 +1635,7 @@ class CommonWidgets {
   }
 
   Widget getBookProfessionalPopup(Services service, Function openProfile,
-      Function bookAppointment, BuildContext context) {
+      Function bookAppointment, BuildContext context, Function checkInsurance) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -1887,7 +1871,11 @@ class CommonWidgets {
                           width: double.infinity,
                           alignment: Alignment.centerRight,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              if (checkInsurance != null) {
+                                checkInsurance();
+                              }
+                            },
                             onDoubleTap: () {},
                             child: Padding(
                               child: Text(
@@ -1918,37 +1906,52 @@ class CommonWidgets {
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             return Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
-                                  border: Border.all(
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#25B281")),
-                                      width: 0.8)),
+                              // decoration: BoxDecoration(
+                              //     borderRadius:
+                              //         BorderRadius.all(Radius.circular(12)),
+                              //     border: Border.all(
+                              //         color: Color(
+                              //             CommonMethods.getColorHexFromStr(
+                              //                 "#25B281")),
+                              //         width: 0.8)),
                               padding: EdgeInsets.symmetric(
                                   horizontal: AppConfig.horizontalBlockSize * 4,
                                   vertical: AppConfig.verticalBlockSize * 1.5),
                               margin: EdgeInsets.only(
                                   right: AppConfig.horizontalBlockSize * 2.3),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
                                 children: [
-                                  Text("FUI",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          color: PlunesColors.BLACKCOLOR,
-                                          fontSize: 18)),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    margin: EdgeInsets.only(top: 3),
-                                    child: Text("Technique",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr("#515151")),
-                                            fontSize: 16)),
-                                  )
+                                  index == 0
+                                      ? Container()
+                                      : Container(
+                                          margin: EdgeInsets.only(
+                                              top: 8, bottom: 8, right: 20),
+                                          width: 1,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#333333"))),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("FUI",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontSize: 18)),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin: EdgeInsets.only(top: 3),
+                                        child: Text("Technique",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#515151")),
+                                                fontSize: 16)),
+                                      )
+                                    ],
+                                  ),
                                 ],
                               ),
                             );
@@ -2019,8 +2022,12 @@ class CommonWidgets {
     );
   }
 
-  Widget getBookProfessionalWidgetForHospitalDocs(Services service,
-      Function openProfile, int docIndex, Function bookAppointment) {
+  Widget getBookProfessionalWidgetForHospitalDocs(
+      Services service,
+      Function openProfile,
+      int docIndex,
+      Function bookAppointment,
+      Function checkInsurance) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -2270,7 +2277,11 @@ class CommonWidgets {
                           width: double.infinity,
                           alignment: Alignment.centerRight,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              if (checkInsurance != null) {
+                                checkInsurance();
+                              }
+                            },
                             onDoubleTap: () {},
                             child: Padding(
                               child: Text(
@@ -2301,37 +2312,45 @@ class CommonWidgets {
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             return Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
-                                  border: Border.all(
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#25B281")),
-                                      width: 0.8)),
                               padding: EdgeInsets.symmetric(
                                   horizontal: AppConfig.horizontalBlockSize * 4,
                                   vertical: AppConfig.verticalBlockSize * 1.5),
                               margin: EdgeInsets.only(
                                   right: AppConfig.horizontalBlockSize * 2.3),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
                                 children: [
-                                  Text("FUI",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          color: PlunesColors.BLACKCOLOR,
-                                          fontSize: 18)),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    margin: EdgeInsets.only(top: 3),
-                                    child: Text("Technique",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr("#515151")),
-                                            fontSize: 16)),
-                                  )
+                                  index == 0
+                                      ? Container()
+                                      : Container(
+                                          margin: EdgeInsets.only(
+                                              top: 8, bottom: 8, right: 20),
+                                          width: 1,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#333333")),
+                                        ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("FUI",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontSize: 18)),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin: EdgeInsets.only(top: 3),
+                                        child: Text("Technique",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#515151")),
+                                                fontSize: 16)),
+                                      )
+                                    ],
+                                  ),
                                 ],
                               ),
                             );
@@ -2406,7 +2425,8 @@ class CommonWidgets {
       Function openProfile,
       int docIndex,
       Function bookAppointment,
-      BuildContext context) {
+      BuildContext context,
+      Function checkInsurance) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -2656,7 +2676,11 @@ class CommonWidgets {
                           width: double.infinity,
                           alignment: Alignment.centerRight,
                           child: InkWell(
-                            onTap: () {},
+                            onTap: () {
+                              if (checkInsurance != null) {
+                                checkInsurance();
+                              }
+                            },
                             onDoubleTap: () {},
                             child: Padding(
                               child: Text(
@@ -2687,37 +2711,45 @@ class CommonWidgets {
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
                             return Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
-                                  border: Border.all(
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#25B281")),
-                                      width: 0.8)),
                               padding: EdgeInsets.symmetric(
                                   horizontal: AppConfig.horizontalBlockSize * 4,
                                   vertical: AppConfig.verticalBlockSize * 1.5),
                               margin: EdgeInsets.only(
                                   right: AppConfig.horizontalBlockSize * 2.3),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
                                 children: [
-                                  Text("FUI",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          color: PlunesColors.BLACKCOLOR,
-                                          fontSize: 18)),
-                                  Container(
-                                    alignment: Alignment.centerLeft,
-                                    margin: EdgeInsets.only(top: 3),
-                                    child: Text("Technique",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr("#515151")),
-                                            fontSize: 16)),
-                                  )
+                                  index == 0
+                                      ? Container()
+                                      : Container(
+                                          margin: EdgeInsets.only(
+                                              top: 8, bottom: 8, right: 20),
+                                          width: 1,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#333333")),
+                                        ),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("FUI",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontSize: 18)),
+                                      Container(
+                                        alignment: Alignment.centerLeft,
+                                        margin: EdgeInsets.only(top: 3),
+                                        child: Text("Technique",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#515151")),
+                                                fontSize: 16)),
+                                      )
+                                    ],
+                                  ),
                                 ],
                               ),
                             );

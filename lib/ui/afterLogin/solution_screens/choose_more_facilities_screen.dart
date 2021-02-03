@@ -391,6 +391,16 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   Widget _showResultsFromBackend(AsyncSnapshot<RequestState> snapShot) {
     return Column(
       children: <Widget>[
+        Container(
+          margin: EdgeInsets.only(
+              left: AppConfig.horizontalBlockSize * 38,
+              right: AppConfig.horizontalBlockSize * 38,
+              bottom: 2),
+          height: 3,
+          decoration: BoxDecoration(
+              color: Color(CommonMethods.getColorHexFromStr("#CDCDCD")),
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+        ),
         StreamBuilder<Object>(
             stream: _selectUnselectController.stream,
             builder: (context, snapshot) {

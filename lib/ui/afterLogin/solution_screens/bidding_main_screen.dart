@@ -23,6 +23,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/HealthSoulutionNear.dart';
+import 'package:plunes/ui/afterLogin/cart_screens/add_to_cart_main_screen.dart';
 import 'package:plunes/ui/afterLogin/explore_screens/explore_main_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
@@ -977,7 +978,14 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                     height: AppConfig.verticalBlockSize * 3,
                     width: AppConfig.horizontalBlockSize * 5,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddToCartMainScreen(
+                                  hasAppBar: true,
+                                )));
+                  },
                 ),
               ),
             ],

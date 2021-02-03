@@ -296,34 +296,40 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
           if (_searchedDocResults.solution.services.length == index) {
-            return Container(
-              padding: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 20,
-                  vertical: AppConfig.verticalBlockSize * 1),
-              child: InkWell(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => MoreFacilityScreen(
-                              catalogueData: _searchedDocResults.catalogueData,
-                              docHosSolution: _searchedDocResults.solution,
-                              searchSolutionBloc: _searchSolutionBloc,
-                            ))).then((value) {
-                  _getFacilities();
-                }),
-                child: CustomWidgets().getRoundedButton(
-                    PlunesStrings.discoverMoreFacilityButtonText,
-                    AppConfig.horizontalBlockSize * 8,
-                    PlunesColors.WHITECOLOR,
-                    AppConfig.horizontalBlockSize * 3,
-                    AppConfig.verticalBlockSize * 1,
-                    Color(CommonMethods.getColorHexFromStr("#25B281")),
-                    borderColor:
-                        Color(CommonMethods.getColorHexFromStr("#25B281")),
-                    hasBorder: true),
-              ),
-            );
+            if (_searchedDocResults.solution.showAdditionalFacilities != null &&
+                _searchedDocResults.solution.showAdditionalFacilities) {
+              return Container(
+                padding:
+                    EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 20,
+                    vertical: AppConfig.verticalBlockSize * 1),
+                child: InkWell(
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MoreFacilityScreen(
+                                catalogueData:
+                                    _searchedDocResults.catalogueData,
+                                docHosSolution: _searchedDocResults.solution,
+                                searchSolutionBloc: _searchSolutionBloc,
+                              ))).then((value) {
+                    _getFacilities();
+                  }),
+                  child: CustomWidgets().getRoundedButton(
+                      PlunesStrings.discoverMoreFacilityButtonText,
+                      AppConfig.horizontalBlockSize * 8,
+                      PlunesColors.WHITECOLOR,
+                      AppConfig.horizontalBlockSize * 3,
+                      AppConfig.verticalBlockSize * 1,
+                      Color(CommonMethods.getColorHexFromStr("#25B281")),
+                      borderColor:
+                          Color(CommonMethods.getColorHexFromStr("#25B281")),
+                      hasBorder: true),
+                ),
+              );
+            }
+            return Container();
           }
           return (_searchedDocResults.solution.services[index].doctors !=
                       null &&

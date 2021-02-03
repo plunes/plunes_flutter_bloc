@@ -21,6 +21,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/doc_hos_screen/facility_detail_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/show_insurance_list_screen.dart';
 import 'package:readmore/readmore.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -208,6 +209,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        key: scaffoldKey,
         appBar: widget.getAppBar(context, plunesStrings.profile, true),
         body: _getBodyWidget());
   }
@@ -571,7 +573,13 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
               : Container(
                   child: SpecialisationWidget(_specialityList, widget.userID),
                   margin: EdgeInsets.symmetric(horizontal: 13),
-                )
+                ),
+          Container(
+              padding:
+                  EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
+              child: ShowInsuranceListScreen(
+                  profId: widget.userID, shouldShowAppBar: false),
+              height: AppConfig.verticalBlockSize * 45)
         ],
       )),
     );

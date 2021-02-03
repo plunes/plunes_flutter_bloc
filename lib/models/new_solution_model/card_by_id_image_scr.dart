@@ -10,6 +10,7 @@ import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 
 const kDefaultImageUrl =
     'https://goqii.com/blog/wp-content/uploads/Doctor-Consultation.jpg';
@@ -147,7 +148,8 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
             margin: EdgeInsets.only(
               bottom: AppConfig.verticalBlockSize * 3,
             ),
-            child: _roundedButton('Book Your Procedure', Color(0xff25B281)),
+            child: _roundedButton(
+                'Book Your Procedure', Color(0xff25B281), context),
           ),
         ),
         Positioned(
@@ -180,7 +182,7 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
   }
 }
 
-Widget _roundedButton(String text, Color color) {
+Widget _roundedButton(String text, Color color, BuildContext context) {
   return Container(
     margin:
         EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 20),
@@ -192,7 +194,10 @@ Widget _roundedButton(String text, Color color) {
         hoverColor: Colors.transparent,
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        onPressed: () => {},
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => SolutionBiddingScreen()));
+        },
         child: Text(
           text,
           style: TextStyle(color: Colors.white),

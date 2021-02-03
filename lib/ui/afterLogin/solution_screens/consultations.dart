@@ -8,6 +8,7 @@ import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 
 // ignore: must_be_immutable
@@ -119,8 +120,7 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => BiddingLoading(
-                  catalogueData: _catalogueList[index],
-                )));
+            builder: (context) =>
+                EnterAdditionalUserDetailScr(_catalogueList[index], "")));
   }
 }

@@ -528,11 +528,11 @@ class UserManager {
   }
 
   Future<RequestState> getInsuranceList(String profId) async {
-    //5f6eee7464b4fe7d98a04e4f
+    //5df0982dfb5abb03b4ea6d96
     var result = await DioRequester().requestMethod(
         url: Urls.GET_INSURANCE_NAMES_URL,
         requestType: HttpRequestMethods.HTTP_GET,
-        queryParameter: {"professionalId": profId},
+        queryParameter: {"professionalId": "5df0982dfb5abb03b4ea6d96"},
         headerIncluded: true);
     if (result.isRequestSucceed) {
       InsuranceModel _mediaContentModel =

@@ -19,6 +19,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/show_insurance_list_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
 import 'package:readmore/readmore.dart';
@@ -151,6 +152,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     return Material(
       child: StreamBuilder<RequestState>(
           stream: _searchSolutionBloc.getDocHosStream(),
+          initialData:
+              (_searchedDocResults == null) ? RequestInProgress() : null,
           builder: (context, snapshot) {
             if (snapshot.data is RequestInProgress) {
               return CustomWidgets().getProgressIndicator();
@@ -455,6 +458,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               _searchedDocResults.solution.services[index],
               () => _openProfile(_searchedDocResults.solution.services[index]),
               () => _bookFacilityAppointment(
+                  _searchedDocResults.solution.services[index]),
+              () => _openInsuranceScreen(
                   _searchedDocResults.solution.services[index]));
         },
         itemCount: _searchedDocResults?.solution?.services?.length ?? 0,
@@ -639,7 +644,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     );
   }
 
-  void _calculateMapData() {
+  void _calculateMapData() async {
+    await Future.delayed(Duration(milliseconds: 20));
     if (_searchedDocResults != null &&
         _searchedDocResults.solution != null &&
         _searchedDocResults.solution.services != null &&
@@ -878,11 +884,9 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DoctorInfo(
-                    service.professionalId,
-                    isDoc: (service.userType.toLowerCase() ==
-                        Constants.doctor.toString().toLowerCase()),
-                  )));
+              builder: (context) => DoctorInfo(service.professionalId,
+                  isDoc: (service.userType.toLowerCase() ==
+                      Constants.doctor.toString().toLowerCase()))));
     }
   }
 
@@ -902,7 +906,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                   openProfile,
                   index,
                   () => _bookAppointmentWithHosDoctor(service, index),
-                  context),
+                  context,
+                  () => _openInsuranceScreen(service)),
             ),
           );
         });
@@ -923,7 +928,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                   service,
                   openProfile,
                   () => _bookFacilityAppointment(service),
-                  context),
+                  context,
+                  () => _openInsuranceScreen(service)),
             ),
           );
         });
@@ -939,7 +945,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               service,
               () => _openProfile(service),
               index,
-              () => _bookAppointmentWithHosDoctor(service, index)),
+              () => _bookAppointmentWithHosDoctor(service, index),
+              () => _openInsuranceScreen(service)),
         );
       },
       itemCount: service?.doctors?.length ?? 0,
@@ -1013,6 +1020,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
 
   bool _canGoAhead() {
     bool _canGoAhead = true;
+    return _canGoAhead;
     var duration = DateTime.now().difference(
         DateTime.fromMillisecondsSinceEpoch(
             _searchedDocResults?.solution?.expirationTimer ?? 0));
@@ -1127,5 +1135,17 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         ],
       ),
     );
+  }
+
+  void _openInsuranceScreen(Services service) {
+    if (service != null &&
+        service.professionalId != null &&
+        service.professionalId.trim().isNotEmpty) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  ShowInsuranceListScreen(profId: service.professionalId)));
+    }
   }
 }

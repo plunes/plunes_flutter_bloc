@@ -11,6 +11,7 @@ import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 
 // ignore: must_be_immutable
@@ -302,9 +303,8 @@ class _TestProcedureSubScreenState
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => BiddingLoading(
-                  catalogueData: catalogueData,
-                )));
+            builder: (context) =>
+                EnterAdditionalUserDetailScr(catalogueData, "")));
   }
 
   _onViewMoreTap(CatalogueData catalogueData) {

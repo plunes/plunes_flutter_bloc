@@ -327,43 +327,60 @@ class _ViewProcedureAndProfessionalState
             color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
             margin:
                 EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
-            child: ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 1.5,
-                      vertical: AppConfig.verticalBlockSize * 1.2),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        height: 6,
-                        width: 6,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: PlunesColors.BLACKCOLOR,
-                        ),
-                      ),
-                      Flexible(
-                          child: Container(
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 2.5),
-                        child: Text(
-                          widget.procedureData.dnd[index] ?? "",
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#4E4E4E"))),
-                        ),
-                      ))
-                    ],
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 5,
+                      top: AppConfig.horizontalBlockSize * 1.5),
+                  child: Text(
+                    "Dos and Don'ts",
+                    style: TextStyle(
+                        fontSize: 18,
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#4E4E4E"))),
                   ),
-                );
-              },
-              itemCount: widget.procedureData?.dnd?.length ?? 0,
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 1.5,
+                          vertical: AppConfig.verticalBlockSize * 1.2),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            height: 6,
+                            width: 6,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          ),
+                          Flexible(
+                              child: Container(
+                            margin: EdgeInsets.only(
+                                left: AppConfig.horizontalBlockSize * 2.5),
+                            child: Text(
+                              widget.procedureData.dnd[index] ?? "",
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#4E4E4E"))),
+                            ),
+                          ))
+                        ],
+                      ),
+                    );
+                  },
+                  itemCount: widget.procedureData?.dnd?.length ?? 0,
+                ),
+              ],
             ),
           )
         ],
