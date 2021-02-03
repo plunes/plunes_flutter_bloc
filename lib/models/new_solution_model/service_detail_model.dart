@@ -61,6 +61,7 @@ class ServiceDetailDataModel {
   String category;
   String sittings;
   String duration;
+  bool isExpanded;
 
   ServiceDetailDataModel(
       {this.service,
@@ -72,7 +73,8 @@ class ServiceDetailDataModel {
       this.definitions,
       this.category,
       this.sittings,
-      this.duration});
+      this.duration,
+      this.isExpanded});
 
   ServiceDetailDataModel.fromJson(Map<String, dynamic> json) {
     service = json['service'];
@@ -85,6 +87,7 @@ class ServiceDetailDataModel {
     category = json['category'];
     sittings = json['sittings'];
     duration = json['duration'];
+    isExpanded = false;
   }
 
   Map<String, dynamic> toJson() {

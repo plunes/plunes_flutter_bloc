@@ -38,6 +38,18 @@ class UserBloc extends BlocBase {
   Observable<RequestState> get insuranceFileUploadStream =>
       _insuranceFileUploadStrreamProvider.stream;
 
+  final _serviceRelatedToSpecilaityStreamProvider =
+      PublishSubject<RequestState>();
+
+  Observable<RequestState> get serviceRelatedToSpecialityStream =>
+      _serviceRelatedToSpecilaityStreamProvider.stream;
+
+  final _facilityAvailableInHospitalStreamProvider =
+      PublishSubject<RequestState>();
+
+  Observable<RequestState> get facilityOfHospitalStream =>
+      _facilityAvailableInHospitalStreamProvider.stream;
+
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
       {String address, bool isFromPopup = false, String region}) {
     return UserManager().isUserInServiceLocation(latitude, longitude,
@@ -119,6 +131,8 @@ class UserBloc extends BlocBase {
     _mediaContentStreamProvider?.close();
     _insuranceStreamProvider?.close();
     _insuranceFileUploadStrreamProvider?.close();
+    _serviceRelatedToSpecilaityStreamProvider?.close();
+    _facilityAvailableInHospitalStreamProvider?.close();
     super.dispose();
   }
 
@@ -203,10 +217,36 @@ class UserBloc extends BlocBase {
     addStateInGenericStream(_insuranceStreamProvider, data);
   }
 
+  addStateInServiceRelatedToSpecialityStream(RequestState data) {
+    addStateInGenericStream(_serviceRelatedToSpecilaityStreamProvider, data);
+  }
+
+  addStateInFacilityProviderStream(RequestState data) {
+    addStateInGenericStream(_facilityAvailableInHospitalStreamProvider, data);
+  }
+
   Future<RequestState> uploadInsuranceFile(File file) async {
     addStateInUploadInsuranceFileStream(RequestInProgress());
     var result = await UserManager().uploadInsuranceFile(file);
     addStateInUploadInsuranceFileStream(result);
+    return result;
+  }
+
+  Future<RequestState> getServicesOfSpeciality(
+      String specialityId, String profId) async {
+    addStateInServiceRelatedToSpecialityStream(RequestInProgress());
+    var result =
+        await UserManager().getServicesOfSpeciality(profId, specialityId);
+    addStateInServiceRelatedToSpecialityStream(result);
+    return result;
+  }
+
+  Future<RequestState> getFacilitiesProvidedByHospitalOrDoc(
+      String profId) async {
+    addStateInFacilityProviderStream(RequestInProgress());
+    var result =
+        await UserManager().getFacilitiesProvidedByHospitalOrDoc(profId);
+    addStateInFacilityProviderStream(result);
     return result;
   }
 }

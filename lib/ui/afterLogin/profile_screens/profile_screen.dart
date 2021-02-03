@@ -14,11 +14,13 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/media_content_model.dart';
+import 'package:plunes/models/new_solution_model/facility_have_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
+import 'package:plunes/ui/afterLogin/doc_hos_screen/facility_detail_screen.dart';
 import 'package:readmore/readmore.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
@@ -50,6 +52,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   List<RateAndReview> _rateAndReviewList = [];
   bool _reviewApiHitOnce = false, _mediaContentApiHitOnce = false, _isDoc;
   List<SpecialityModel> _specialityList;
+  FacilityHaveModel _facilityHaveModel;
 
   List<Widget> _tabsForDoc = [
     ClipRRect(
@@ -120,6 +123,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     ),
   ];
 
+  String _failureMessageForFacilityHave;
+
   @override
   void initState() {
     _specialityList = [];
@@ -178,8 +183,10 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
           if (requestSuccess != null && requestSuccess.response != null) {
             _profileResponse = requestSuccess.response;
             if (_profileResponse.user != null) {
-              Future.delayed(Duration(milliseconds: 10))
-                  .then((value) => _getSpecialities());
+              Future.delayed(Duration(milliseconds: 10)).then((value) {
+                _getFacilitiesProvidedByHospitalOrDoc();
+                _getSpecialities();
+              });
             }
           }
           _userBloc.addIntoStream(null);
@@ -475,53 +482,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 SizedBox(
                   height: 20,
                 ),
-                Container(
-                  height: 200,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      return Card(
-                          margin: EdgeInsets.only(right: 20,bottom: 2),
-                          child: Container(
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(6),
-                                        bottomRight: Radius.circular(6),
-                                        topLeft: Radius.circular(13),
-                                        topRight: Radius.circular(13)),
-                                    child: Container(
-                                      child: CustomWidgets().getImageFromUrl(
-                                        'https://images.pexels.com/photos/4173239/pexels-photo-4173239.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Text(
-                                  'Covid safe',
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 16.0),
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                              ],
-                            ),
-                          ),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(6),
-                                  bottomRight: Radius.circular(6),
-                                  topLeft: Radius.circular(13),
-                                  topRight: Radius.circular(13))));
-                    },
-                  ),
-                ),
+                _getFacilityHaveWidget(),
                 SizedBox(height: 20),
                 Card(
                   shape: RoundedRectangleBorder(
@@ -608,7 +569,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
           (_specialityList == null || _specialityList.isEmpty)
               ? Container()
               : Container(
-                  child: SpecialisationWidget(_specialityList),
+                  child: SpecialisationWidget(_specialityList, widget.userID),
                   margin: EdgeInsets.symmetric(horizontal: 13),
                 )
         ],
@@ -870,6 +831,126 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
 
   void _setState() {
     if (mounted) setState(() {});
+  }
+
+  void _getFacilitiesProvidedByHospitalOrDoc() {
+    _userBloc.getFacilitiesProvidedByHospitalOrDoc(widget.userID);
+  }
+
+  Widget _getFacilityHaveWidget() {
+    return StreamBuilder<RequestState>(
+        stream: _userBloc.facilityOfHospitalStream,
+        initialData: (_facilityHaveModel == null) ? RequestInProgress() : null,
+        builder: (context, snapshot) {
+          if (snapshot.data is RequestSuccess) {
+            RequestSuccess successObject = snapshot.data;
+            _facilityHaveModel = successObject.response;
+            _userBloc?.addStateInFacilityProviderStream(null);
+          } else if (snapshot.data is RequestFailed) {
+            RequestFailed _failedObj = snapshot.data;
+            _failureMessageForFacilityHave = _failedObj?.failureCause;
+            _userBloc?.addStateInFacilityProviderStream(null);
+          } else if (snapshot.data is RequestInProgress) {
+            return Container(
+              child: CustomWidgets().getProgressIndicator(),
+              height: AppConfig.verticalBlockSize * 25,
+            );
+          }
+          return (_facilityHaveModel == null ||
+                  (_facilityHaveModel.success != null &&
+                      !_facilityHaveModel.success) ||
+                  _facilityHaveModel.data == null ||
+                  _facilityHaveModel.data.isEmpty)
+              ? Container(
+                  height: AppConfig.verticalBlockSize * 38,
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 3),
+                  child: CustomWidgets().errorWidget(
+                      _failureMessageForFacilityHave,
+                      onTap: () => _getFacilitiesProvidedByHospitalOrDoc(),
+                      isSizeLess: true),
+                )
+              : Container(
+                  height: 200,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _facilityHaveModel.data.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return Card(
+                          margin: EdgeInsets.only(right: 20, bottom: 2),
+                          child: InkWell(
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            onTap: () {
+                              List<Photo> photos = [];
+                              _facilityHaveModel.data.forEach((element) {
+                                if (element.titleImage != null &&
+                                    element.titleImage.isNotEmpty &&
+                                    (element.titleImage.contains("http"))) {
+                                  photos.add(
+                                      Photo(assetName: element.titleImage));
+                                }
+                              });
+                              if (photos != null && photos.isNotEmpty) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            PageSlider(photos, index)));
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: Container(
+                              width: AppConfig.horizontalBlockSize * 50,
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                          bottomLeft: Radius.circular(6),
+                                          bottomRight: Radius.circular(6),
+                                          topLeft: Radius.circular(13),
+                                          topRight: Radius.circular(13)),
+                                      child: Container(
+                                        child: CustomWidgets().getImageFromUrl(
+                                            _facilityHaveModel
+                                                    .data[index]?.titleImage ??
+                                                '',
+                                            boxFit: BoxFit.cover),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    margin: EdgeInsets.symmetric(horizontal: 1),
+                                    child: Text(
+                                      _facilityHaveModel.data[index]?.title ??
+                                          '',
+                                      maxLines: 1,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 16.0),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(6),
+                                  bottomRight: Radius.circular(6),
+                                  topLeft: Radius.circular(13),
+                                  topRight: Radius.circular(13))));
+                    },
+                  ),
+                );
+        });
   }
 }
 
@@ -1270,8 +1351,9 @@ class _AchievementWidgetState extends State<AchievementWidget> {
 // ignore: must_be_immutable
 class SpecialisationWidget extends StatefulWidget {
   List<SpecialityModel> specialityList;
+  final String profId;
 
-  SpecialisationWidget(this.specialityList);
+  SpecialisationWidget(this.specialityList, this.profId);
 
   @override
   _SpecialisationWidgetState createState() => _SpecialisationWidgetState();
@@ -1289,30 +1371,45 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
         itemBuilder: (context, index) {
           return Card(
               margin: EdgeInsets.only(right: 20, bottom: 2),
-              child: Container(
+              child: InkWell(
+                onTap: () {
+                  if (widget.specialityList[index].id != null &&
+                      widget.specialityList[index].id.isNotEmpty) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FacilityDetailScreen(
+                                  profId: widget.profId,
+                                  speciality:
+                                      widget.specialityList[index].speciality,
+                                  specialityId: widget.specialityList[index].id,
+                                )));
+                  }
+                },
+                onDoubleTap: () {},
                 child: Column(
                   children: [
                     Expanded(
                       child: InkWell(
-                        onTap: () {
-                          List<Photo> photos = [];
-                          widget.specialityList.forEach((element) {
-                            if (widget.specialityList[index].specialityImageUrl
-                                    .isNotEmpty &&
-                                (widget.specialityList[index].specialityImageUrl
-                                    .contains("http"))) {
-                              photos.add(
-                                  Photo(assetName: element.specialityImageUrl));
-                            }
-                          });
-                          if (photos != null && photos.isNotEmpty) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        PageSlider(photos, index)));
-                          }
-                        },
+                        // onTap: () {
+                        //   List<Photo> photos = [];
+                        //   widget.specialityList.forEach((element) {
+                        //     if (widget.specialityList[index].specialityImageUrl
+                        //             .isNotEmpty &&
+                        //         (widget.specialityList[index].specialityImageUrl
+                        //             .contains("http"))) {
+                        //       photos.add(
+                        //           Photo(assetName: element.specialityImageUrl));
+                        //     }
+                        //   });
+                        //   if (photos != null && photos.isNotEmpty) {
+                        //     Navigator.push(
+                        //         context,
+                        //         MaterialPageRoute(
+                        //             builder: (context) =>
+                        //                 PageSlider(photos, index)));
+                        //   }
+                        // },
                         child: ClipRRect(
                           borderRadius: BorderRadius.only(
                               bottomLeft: Radius.circular(6),
