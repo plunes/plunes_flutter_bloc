@@ -6,6 +6,7 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/models/new_solution_model/card_by_id_image_scr.dart';
 import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
@@ -52,21 +53,18 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _failedMessage;
   GlobalKey _one = GlobalKey();
   GlobalKey _two = GlobalKey();
-
+  CartMainBloc _cartBloc;
   String _failedMessageForWhyUsSection;
   String _failedMessageForKnowYourProcedureSection;
   bool _isProcedureListOpened;
-
   String _failedMessageForCommonSpeciality;
-
   String _mediaFailedMessage;
-
   String _failedMessageTopSearch;
-
   String _failedMessageTopFacility;
 
   @override
   void initState() {
+    _cartBloc = CartMainBloc();
     _isProcedureListOpened = false;
     _homeScreenMainBloc = HomeScreenMainBloc();
     _getCategoryData();
@@ -86,9 +84,15 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     super.initState();
   }
 
+  void _getCartCount() {
+    _cartBloc.getCartCount();
+  }
+
   @override
   void dispose() {
+    _getCartCount();
     _homeScreenMainBloc?.dispose();
+    _cartBloc?.dispose();
     super.dispose();
   }
 
@@ -97,8 +101,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   _onConsultationButtonClick() {
-    return Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ConsultationScreen()));
+    return Navigator.push(context,
+            MaterialPageRoute(builder: (context) => ConsultationScreen()))
+        .then((value) {
+      _getCartCount();
+    });
   }
 
   _onTestAndProcedureButtonClick(String title, bool isProcedure) {
@@ -108,7 +115,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             builder: (context) => TestAndProcedureScreen(
                   screenTitle: title,
                   isProcedure: isProcedure,
-                )));
+                ))).then((value) {
+      _getCartCount();
+    });
   }
 
   @override
@@ -324,7 +333,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => SolutionBiddingScreen()));
+                              builder: (context) =>
+                                  SolutionBiddingScreen())).then((value) {
+                        _getCartCount();
+                      });
                     },
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -568,9 +580,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         onTap: () {
           if (id != null && id.isNotEmpty) {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => WhyUsCardsByIdScreen(id)));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => WhyUsCardsByIdScreen(id)))
+                .then((value) {
+              _getCartCount();
+            });
           }
         },
         onDoubleTap: () {},
@@ -738,7 +753,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             MaterialPageRoute(
                 builder: (context) => ViewProcedureAndProfessional(
                       procedureData: procedureData,
-                    )));
+                    ))).then((value) {
+          _getCartCount();
+        });
       },
       onDoubleTap: () {},
       child: Card(

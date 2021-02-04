@@ -13,6 +13,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
@@ -976,22 +977,33 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
             children: [
               Flexible(child: _getLocationWidget()),
               Container(
-                child: IconButton(
-                  icon: Image.asset(
-                    PlunesImages.cartImage,
-                    color: PlunesColors.BLACKCOLOR,
-                    height: AppConfig.verticalBlockSize * 3,
-                    width: AppConfig.horizontalBlockSize * 5,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => AddToCartMainScreen(
-                                  hasAppBar: true,
-                                )));
-                  },
-                ),
+                child: StreamBuilder<Object>(
+                    stream: FirebaseNotification().notificationStream,
+                    builder: (context, snapshot) {
+                      return IconButton(
+                        icon: Image.asset(
+                          (FirebaseNotification().getCartCount() != null &&
+                                  FirebaseNotification().getCartCount() != 0)
+                              ? PlunesImages.itemInCartImage
+                              : PlunesImages.cartImage,
+                          color: (FirebaseNotification().getCartCount() !=
+                                      null &&
+                                  FirebaseNotification().getCartCount() != 0)
+                              ? null
+                              : PlunesColors.BLACKCOLOR,
+                          height: AppConfig.verticalBlockSize * 3,
+                          width: AppConfig.horizontalBlockSize * 5,
+                        ),
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => AddToCartMainScreen(
+                                        hasAppBar: true,
+                                      )));
+                        },
+                      );
+                    }),
               ),
             ],
           ),

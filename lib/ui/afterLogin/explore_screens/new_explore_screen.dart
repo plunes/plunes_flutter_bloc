@@ -10,6 +10,7 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/explore_bloc/explore_main_bloc.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/models/explore/explore_main_model.dart';
@@ -39,15 +40,21 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
   HomeScreenMainBloc _homeScreenMainBloc;
   MediaContentPlunes _mediaContentPlunes;
   List<MediaData> _doctorVideos, _customerVideos;
+  CartMainBloc _cartBloc;
 
   @override
   void initState() {
+    _cartBloc = CartMainBloc();
     _exploreMainBloc = ExploreMainBloc();
     _homeScreenMainBloc = HomeScreenMainBloc();
     _streamController = StreamController.broadcast();
     _currentDotPosition = 0.0;
     _getData();
     super.initState();
+  }
+
+  void _getCartCount() {
+    _cartBloc.getCartCount();
   }
 
   _getData() {
@@ -61,8 +68,10 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
 
   @override
   void dispose() {
+    _getCartCount();
     _exploreMainBloc?.dispose();
     _streamController?.close();
+    _cartBloc?.dispose();
     super.dispose();
   }
 

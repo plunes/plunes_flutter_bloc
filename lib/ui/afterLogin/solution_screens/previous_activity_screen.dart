@@ -1,8 +1,8 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -10,9 +10,6 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
-import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
-import 'package:flutter/gestures.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
@@ -34,9 +31,11 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   bool _isProcessing;
   StreamController _streamController;
   Timer _timerForTimeUpdation;
+  CartMainBloc _cartBloc;
 
   @override
   void initState() {
+    _cartBloc = CartMainBloc();
     _streamController = StreamController.broadcast();
     _timerForTimeUpdation = Timer.periodic(Duration(seconds: 1), (timer) {
       _timerForTimeUpdation = timer;
@@ -50,11 +49,17 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     super.initState();
   }
 
+  void _getCartCount() {
+    _cartBloc.getCartCount();
+  }
+
   @override
   void dispose() {
+    _getCartCount();
     _streamController?.close();
     _prevMissSolutionBloc?.dispose();
     _timerForTimeUpdation?.cancel();
+    _cartBloc?.dispose();
     super.dispose();
   }
 
