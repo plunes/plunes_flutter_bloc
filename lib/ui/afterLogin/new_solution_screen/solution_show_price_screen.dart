@@ -25,7 +25,6 @@ import 'package:plunes/ui/afterLogin/solution_screens/solution_map_screen.dart';
 import 'package:readmore/readmore.dart';
 import 'package:flutter/rendering.dart';
 import 'dart:ui' as ui;
-
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 // ignore: must_be_immutable

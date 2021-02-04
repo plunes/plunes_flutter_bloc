@@ -1,10 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'package:flutter/gestures.dart';
@@ -27,9 +32,16 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   List<CatalogueData> _prevSolutions = [], _missedSolutions = [];
   String _failureCause;
   bool _isProcessing;
+  StreamController _streamController;
+  Timer _timerForTimeUpdation;
 
   @override
   void initState() {
+    _streamController = StreamController.broadcast();
+    _timerForTimeUpdation = Timer.periodic(Duration(seconds: 1), (timer) {
+      _timerForTimeUpdation = timer;
+      _streamController?.add(null);
+    });
     _isProcessing = true;
     _prevSolutions = [];
     _missedSolutions = [];
@@ -40,7 +52,9 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
   @override
   void dispose() {
+    _streamController?.close();
     _prevMissSolutionBloc?.dispose();
+    _timerForTimeUpdation?.cancel();
     super.dispose();
   }
 
@@ -147,7 +161,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 //             )));
 //   }
 
-  _getPreviousView() {
+  Widget _getPreviousView() {
     return Expanded(
         child: Card(
             margin: EdgeInsets.all(0.0),
@@ -193,9 +207,6 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                       _prevSolutions[index].toShowSearched)) {
                                 return Container();
                               }
-                              TapGestureRecognizer tapRecognizer =
-                                  TapGestureRecognizer()
-                                    ..onTap = () => _onViewMoreTap(index);
                               return _getPreviousActivityCard(
                                   _prevSolutions[index]);
                             },
@@ -238,21 +249,34 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     });
   }
 
-  _onViewMoreTap(int index) {}
-
   _onSolutionItemTap(CatalogueData catalogueData) async {
     catalogueData.isFromNotification = true;
-    if (catalogueData.createdAt != null &&
-        catalogueData.createdAt != 0 &&
-        DateTime.fromMillisecondsSinceEpoch(catalogueData.createdAt)
-                .difference(DateTime.now())
-                .inHours ==
-            0) {
-      await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  SolutionReceivedScreen(catalogueData: catalogueData)));
+    var nowTime = DateTime.now();
+    if (catalogueData.solutionExpiredAt != null &&
+        catalogueData.solutionExpiredAt != 0) {
+      var solExpireTime =
+          DateTime.fromMillisecondsSinceEpoch(catalogueData.solutionExpiredAt);
+      var diff = nowTime.difference(solExpireTime);
+      if (diff.inSeconds < 5) {
+        ///when price discovered and solution is active
+        if (catalogueData.priceDiscovered != null &&
+            catalogueData.priceDiscovered) {
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SolutionShowPriceScreen(
+                      catalogueData: catalogueData, searchQuery: "")));
+        } else {
+          ///when price not discovered but solution is active
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ViewSolutionsScreen(
+                      catalogueData: catalogueData, searchQuery: "")));
+        }
+
+        _getPreviousSolutions();
+      }
     } else {
       catalogueData.isFromNotification = false;
       if (!UserManager().getIsUserInServiceLocation()) {
@@ -269,11 +293,10 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       await Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => BiddingLoading(
-                    catalogueData: catalogueData,
-                  )));
+              builder: (context) => ViewSolutionsScreen(
+                  catalogueData: catalogueData, searchQuery: "")));
+      _getPreviousSolutions();
     }
-    _getPreviousSolutions();
   }
 
   void _setState() {
@@ -288,85 +311,133 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
             vertical: AppConfig.verticalBlockSize * 1),
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-        child: Container(
-          margin: EdgeInsets.symmetric(
-              horizontal: AppConfig.horizontalBlockSize * 2,
-              vertical: AppConfig.horizontalBlockSize * 2),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                color: Colors.transparent,
-                height: AppConfig.horizontalBlockSize * 14,
-                width: AppConfig.horizontalBlockSize * 14,
-                child: (catalogueData == null ||
-                        catalogueData.speciality == null ||
-                        catalogueData.speciality.isEmpty)
-                    ? Image.asset(PlunesImages.basicImage, fit: BoxFit.contain)
-                    : CustomWidgets().getImageFromUrl(
-                        "https://specialities.s3.ap-south-1.amazonaws.com/${catalogueData.speciality}.png",
-                        boxFit: BoxFit.contain),
-              ),
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 3),
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          catalogueData?.service ?? "",
-                          maxLines: 2,
-                          style: TextStyle(fontSize: 17),
+        child: InkWell(
+          onDoubleTap: () {},
+          onTap: () => _onSolutionItemTap(catalogueData),
+          child: Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 2,
+                vertical: AppConfig.horizontalBlockSize * 2),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  color: Colors.transparent,
+                  height: AppConfig.horizontalBlockSize * 14,
+                  width: AppConfig.horizontalBlockSize * 14,
+                  child: (catalogueData == null ||
+                          catalogueData.speciality == null ||
+                          catalogueData.speciality.isEmpty)
+                      ? Image.asset(PlunesImages.basicImage,
+                          fit: BoxFit.contain)
+                      : CustomWidgets().getImageFromUrl(
+                          "https://specialities.s3.ap-south-1.amazonaws.com/${catalogueData.speciality}.png",
+                          boxFit: BoxFit.contain),
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 3),
+                    child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            catalogueData?.service ?? "",
+                            maxLines: 2,
+                            style: TextStyle(fontSize: 17),
+                          ),
                         ),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: (catalogueData.createdAt == null ||
-                                catalogueData.createdAt == 0)
-                            ? Container()
-                            : Text(
-                                DateUtil.getDuration(catalogueData.createdAt),
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: PlunesColors.GREYCOLOR)),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: (!(catalogueData.isActive) &&
-                                catalogueData.maxDiscount != null &&
-                                catalogueData.maxDiscount != 0 &&
-                                (catalogueData.booked == null ||
-                                    !(catalogueData.booked)))
-                            ? Padding(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 2),
-                                child: Text(
-                                  "You have missed ${catalogueData.maxDiscount.toStringAsFixed(0)}% on your ${catalogueData.service ?? PlunesStrings.NA} Previously",
-                                  maxLines: 4,
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: (catalogueData.createdAt == null ||
+                                  catalogueData.createdAt == 0)
+                              ? Container()
+                              : Text(
+                                  DateUtil.getDuration(catalogueData.createdAt),
                                   style: TextStyle(
-                                      fontSize: 14, color: Colors.black),
-                                ))
-                            : Container(),
-                      ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 1),
-                        child: Text(
-                          "3 Day's remaining",
-                          maxLines: 2,
-                          style:
-                              TextStyle(fontSize: 14, color: Color(0xff1D3861)),
+                                      fontSize: 14,
+                                      color: PlunesColors.GREYCOLOR)),
                         ),
-                      )
-                    ],
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: (!(catalogueData.isActive) &&
+                                  catalogueData.maxDiscount != null &&
+                                  catalogueData.maxDiscount != 0 &&
+                                  (catalogueData.booked == null ||
+                                      !(catalogueData.booked)))
+                              ? Padding(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 2),
+                                  child: Text(
+                                    "You have missed ${catalogueData.maxDiscount.toStringAsFixed(0)}% on your ${catalogueData.service ?? PlunesStrings.NA} Previously",
+                                    maxLines: 4,
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.black),
+                                  ))
+                              : Container(),
+                        ),
+                        StreamBuilder<Object>(
+                            stream: _streamController?.stream,
+                            builder: (context, snapshot) {
+                              return Container(
+                                alignment: Alignment.topLeft,
+                                margin: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 1),
+                                child: Text(
+                                  _getRemainingTimeOfSolutionExpiration(
+                                      catalogueData),
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color:
+                                          (_getRemainingTimeOfSolutionExpiration(
+                                                          catalogueData) ==
+                                                      catalogueData
+                                                          ?.expirationMessage ??
+                                                  _expirationMessage)
+                                              ? Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#CEDD00"))
+                                              : Color(
+                                                  CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#1D3861"))),
+                                ),
+                              );
+                            })
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ));
+  }
+
+  final String _expirationMessage = "Your card is expired";
+
+  String _getRemainingTimeOfSolutionExpiration(CatalogueData solution) {
+    String timeRemaining = "";
+    if (solution.solutionExpiredAt == null) {
+      return solution.expirationMessage ?? _expirationMessage;
+    }
+    var now = DateTime.now();
+    var expireTime =
+        DateTime.fromMillisecondsSinceEpoch(solution?.solutionExpiredAt ?? 0);
+    var duration = expireTime.difference(now);
+    if (duration.inDays > 1) {
+      timeRemaining = "${duration.inDays} days remaining";
+    } else if (duration.inHours > 1) {
+      timeRemaining = "${duration.inHours} hours remaining";
+    } else if (duration.inMinutes > 1) {
+      timeRemaining = "${duration.inMinutes} minutes remaining";
+    } else if (duration.inSeconds > 1) {
+      timeRemaining = "${duration.inSeconds} seconds remaining";
+    } else {
+      timeRemaining = solution.expirationMessage ?? _expirationMessage;
+    }
+    return timeRemaining;
   }
 }

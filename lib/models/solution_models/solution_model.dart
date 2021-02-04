@@ -3,11 +3,11 @@ class CatalogueData {
   String details;
   String dnd;
   String category;
-  bool isSelected = false, isActive, topSearch, toShowSearched;
+  bool isSelected = false, isActive, topSearch, toShowSearched, priceDiscovered;
   String speciality;
   String specialityId;
   String serviceId;
-  String sitting;
+  String sitting, expirationMessage;
 
   @override
   String toString() {
@@ -15,7 +15,7 @@ class CatalogueData {
   }
 
   String duration;
-  int iV, createdAt;
+  int iV, createdAt, solutionExpiredAt;
   num maxDiscount;
   bool isFromNotification, booked;
   String solutionId;
@@ -28,6 +28,7 @@ class CatalogueData {
       this.serviceId,
       this.specialityId,
       this.isSelected = false,
+      this.priceDiscovered,
       this.iV,
       this.isActive,
       this.sitting,
@@ -39,7 +40,9 @@ class CatalogueData {
       this.solutionId,
       this.booked,
       this.topSearch,
-      this.toShowSearched});
+      this.solutionExpiredAt,
+      this.toShowSearched,
+      this.expirationMessage});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
@@ -59,6 +62,9 @@ class CatalogueData {
     booked = json['booked'];
     topSearch = json['topSearch'];
     toShowSearched = json['toShowSearched'];
+    priceDiscovered = json['discoverPrice'];
+    solutionExpiredAt = json["expiredAt"];
+    expirationMessage = json['expirationMessage'];
   }
 
   Map<String, dynamic> toJson() {

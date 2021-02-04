@@ -4035,7 +4035,7 @@ class CustomWidgets {
         if (isProgressing) {
           return getProgressIndicator();
         }
-        return Container(
+        return SingleChildScrollView(
           child: Column(
             children: <Widget>[
               Container(
@@ -4050,7 +4050,7 @@ class CustomWidgets {
                 ),
               ),
               Container(
-                  height: AppConfig.verticalBlockSize * 34,
+                  // height: AppConfig.verticalBlockSize * 34,
                   margin: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 1),
                   child: SingleChildScrollView(

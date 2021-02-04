@@ -19,7 +19,6 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
-import 'package:plunes/ui/afterLogin/new_solution_screen/discover_near_facilities_scr.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'dart:ui' as ui;
