@@ -402,7 +402,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   style: TextStyle(color: Color(0xff4F4F4F)),
                 ),
                 SizedBox(height: 15),
-                DottedLine(),
+                DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#70707059")),
+                  lineThickness: 1,
+                ),
                 SizedBox(height: 15),
                 Text(
                   plunesStrings.introduction,
@@ -423,7 +427,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 SizedBox(
                   height: 22,
                 ),
-                DottedLine(),
+                DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#70707059")),
+                  lineThickness: 1,
+                ),
                 SizedBox(
                   height: 22,
                 ),
@@ -473,7 +481,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 SizedBox(
                   height: 22,
                 ),
-                DottedLine(),
+                DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#70707059")),
+                  lineThickness: 1,
+                ),
                 SizedBox(
                   height: 22,
                 ),
@@ -533,7 +545,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 SizedBox(
                   height: 10,
                 ),
-                DottedLine(),
+                DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#70707059")),
+                  lineThickness: 1,
+                ),
                 SizedBox(
                   height: 10,
                 ),
@@ -550,7 +566,10 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
           ),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 13),
-              child: DottedLine()),
+              child: DottedLine(
+                dashColor: Color(CommonMethods.getColorHexFromStr("#70707059")),
+                lineThickness: 1,
+              )),
           (_specialityList == null || _specialityList.isEmpty)
               ? Container()
               : SizedBox(
@@ -1067,9 +1086,22 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                             topLeft: Radius.circular(13),
                                             topRight: Radius.circular(13)),
                                         child: InkWell(
-                                          child: CustomWidgets().getImageFromUrl(
-                                              "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(widget.mediaContent.data.serviceVideo[index].videoUrl)}/0.jpg",
-                                              boxFit: BoxFit.cover),
+                                          child: Stack(
+                                            children: [
+                                              CustomWidgets().getImageFromUrl(
+                                                  "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(widget.mediaContent.data.serviceVideo[index].videoUrl)}/0.jpg",
+                                                  boxFit: BoxFit.cover),
+                                              Positioned.fill(
+                                                child: Center(
+                                                  child: Image.asset(
+                                                    PlunesImages.pauseVideoIcon,
+                                                    height: 50,
+                                                    width: 50,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                           onTap: () {
                                             Navigator.push(
                                                 context,

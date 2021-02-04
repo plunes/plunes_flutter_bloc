@@ -170,7 +170,9 @@ class CommonWidgets {
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
                   DottedLine(
-                    dashColor: Colors.grey,
+                    dashColor:
+                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                    lineThickness: 1,
                   ),
                   Container(
                     margin:
@@ -328,7 +330,9 @@ class CommonWidgets {
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
                   DottedLine(
-                    dashColor: Colors.grey,
+                    dashColor:
+                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                    lineThickness: 1,
                   ),
                   Container(
                     margin:
@@ -488,7 +492,9 @@ class CommonWidgets {
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
                   DottedLine(
-                    dashColor: Colors.grey,
+                    dashColor:
+                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                    lineThickness: 1,
                   ),
                   Container(
                     margin:
@@ -653,7 +659,9 @@ class CommonWidgets {
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
                   DottedLine(
-                    dashColor: Colors.grey,
+                    dashColor:
+                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                    lineThickness: 1,
                   ),
                   Container(
                     margin:
@@ -814,7 +822,9 @@ class CommonWidgets {
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
                   DottedLine(
-                    dashColor: Colors.grey,
+                    dashColor:
+                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                    lineThickness: 1,
                   ),
                   Container(
                     margin:
@@ -1354,7 +1364,11 @@ class CommonWidgets {
                   margin:
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
                 ),
-                DottedLine(dashColor: Colors.grey),
+                DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                  lineThickness: 1,
+                ),
                 Container(
                   margin:
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
@@ -1502,7 +1516,11 @@ class CommonWidgets {
                     ],
                   ),
                 ),
-                DottedLine(dashColor: Colors.grey),
+                DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                  lineThickness: 1,
+                ),
                 Container(
                     margin: EdgeInsets.only(
                         bottom: AppConfig.verticalBlockSize * 1.8)),
@@ -1745,7 +1763,9 @@ class CommonWidgets {
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
                 ),
                 DottedLine(
-                  dashColor: Colors.grey,
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                  lineThickness: 1,
                 ),
                 Container(
                   margin:
@@ -1894,7 +1914,11 @@ class CommonWidgets {
                     ],
                   ),
                 ),
-                DottedLine(dashColor: Colors.grey),
+                DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                  lineThickness: 1,
+                ),
                 Container(
                     margin: EdgeInsets.only(
                         bottom: AppConfig.verticalBlockSize * 1.8)),
@@ -2144,7 +2168,9 @@ class CommonWidgets {
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
                 ),
                 DottedLine(
-                  dashColor: Colors.grey,
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                  lineThickness: 1,
                 ),
                 Container(
                   margin:
@@ -2300,7 +2326,11 @@ class CommonWidgets {
                     ],
                   ),
                 ),
-                DottedLine(dashColor: Colors.grey),
+                DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                  lineThickness: 1,
+                ),
                 Container(
                     margin: EdgeInsets.only(
                         bottom: AppConfig.verticalBlockSize * 1.8)),
@@ -2543,7 +2573,9 @@ class CommonWidgets {
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
                 ),
                 DottedLine(
-                  dashColor: Colors.grey,
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                  lineThickness: 1,
                 ),
                 Container(
                   margin:
@@ -2699,7 +2731,11 @@ class CommonWidgets {
                     ],
                   ),
                 ),
-                DottedLine(dashColor: Colors.grey),
+                DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                  lineThickness: 1,
+                ),
                 Container(
                     margin: EdgeInsets.only(
                         bottom: AppConfig.verticalBlockSize * 1.8)),

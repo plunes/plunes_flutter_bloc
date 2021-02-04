@@ -387,6 +387,7 @@ flutter:
     - assets/images/new_sol_img/uploadVideoIcon.png
     - assets/images/unselectedFacilityIcon.png
     - assets/images/selectedfacilityIcon.png
+    - assets/images/pauseVideoIcon.png
 
 
 

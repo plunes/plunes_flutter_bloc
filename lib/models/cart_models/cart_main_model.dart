@@ -150,7 +150,7 @@ class Service {
   String name, imageUrl, userType;
   double distance;
   double rating;
-  int expirationTimer;
+  int expirationTimer, expiredAt;
 
   Service(
       {this.newPrice,
@@ -160,7 +160,8 @@ class Service {
       this.userType,
       this.rating,
       this.imageUrl,
-      this.expirationTimer});
+      this.expirationTimer,
+      this.expiredAt});
 
   Service.fromJson(Map<String, dynamic> json) {
     newPrice = json['newPrice'].cast<num>();
@@ -176,6 +177,7 @@ class Service {
     imageUrl = json['imageUrl'];
     userType = json['userType'];
     expirationTimer = json['expirationTimer'];
+    expiredAt = json['expiredAt'];
   }
 
   Map<String, dynamic> toJson() {

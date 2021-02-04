@@ -171,6 +171,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                 _cartOuterModel.data.bookingIds.isNotEmpty) {
               _cartOuterModel.data.bookingIds.forEach((element) {
                 bool _isSolutionExpired = _solutionExpired(element);
+                print("isEss $_isSolutionExpired");
                 if (!_isSolutionExpired) {
                   price = price + element?.service?.newPrice?.first ?? 0;
                   _bookingIds.add(element);
@@ -296,10 +297,10 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
 
   Widget getCartCard(int index, final BookingIds bookingIds, int totalItems) {
     bool _isSolutionExpired = _solutionExpired(bookingIds);
-    int time = DateTime.now().millisecondsSinceEpoch;
-    if (!_isSolutionExpired) {
-      time = bookingIds.service.expirationTimer;
-    }
+    // int time = DateTime.now().millisecondsSinceEpoch;
+    // if (!_isSolutionExpired) {
+    //   // time = bookingIds.service.expirationTimer;
+    // }
     if (_appointmentTimeExpired(bookingIds)) {
       return Container();
     }
@@ -694,7 +695,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                         PlunesImages.validForOneHourOnlyWatch,
                         scale: 3,
                       ),
-                      _getTimerForTop(time)
+                      _getTimerForTop(bookingIds)
                     ],
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -705,64 +706,65 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     );
   }
 
-  Widget _getTimerForTop(int _expirationTimer) {
-    return StreamBuilder<Object>(
-        stream: _timerStream.stream,
-        builder: (context, snapshot) {
-          String value = "Valid for 1 hour only";
-          bool shouldShowRichText = false;
-          if (_expirationTimer != null) {
-            var dateTimeNow = DateTime.now();
-            if (dateTimeNow
-                    .difference(
-                        DateTime.fromMillisecondsSinceEpoch(_expirationTimer))
-                    .inMinutes >=
-                60) {
-              value = "Prices Expired";
-            } else if (dateTimeNow
-                        .difference(DateTime.fromMillisecondsSinceEpoch(
-                            _expirationTimer))
-                        .inMinutes <
-                    60 &&
-                dateTimeNow
-                        .difference(DateTime.fromMillisecondsSinceEpoch(
-                            _expirationTimer))
-                        .inMinutes >
-                    0) {
-              value =
-                  "${60 - dateTimeNow.difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer)).inMinutes} min";
-              shouldShowRichText = true;
-            }
-          }
-          return shouldShowRichText
-              ? Padding(
-                  child: RichText(
-                    text: TextSpan(
-                        children: [
-                          TextSpan(
-                              text: value ?? "",
-                              style: TextStyle(
-                                  color: PlunesColors.GREENCOLOR,
-                                  fontSize: 16)),
-                          TextSpan(
-                              text: " only",
-                              style: TextStyle(
-                                  color: PlunesColors.GREYCOLOR, fontSize: 15)),
-                        ],
-                        text: PlunesStrings.validForOneHour,
-                        style: TextStyle(
-                            color: PlunesColors.GREYCOLOR, fontSize: 15)),
-                  ),
-                  padding: EdgeInsets.only(left: 4.0),
-                )
-              : Container(
-                  margin:
-                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
-                  child: Text(value,
-                      style: TextStyle(
-                          color: PlunesColors.GREYCOLOR, fontSize: 15)),
-                );
-        });
+  Widget _getTimerForTop(BookingIds bookingIdData) {
+    return Container();
+    // return StreamBuilder<Object>(
+    //     stream: _timerStream.stream,
+    //     builder: (context, snapshot) {
+    //       String value = "Valid for 1 hour only";
+    //       bool shouldShowRichText = false;
+    //       if (_expirationTimer != null) {
+    //         var dateTimeNow = DateTime.now();
+    //         if (dateTimeNow
+    //                 .difference(
+    //                     DateTime.fromMillisecondsSinceEpoch(_expirationTimer))
+    //                 .inMinutes >=
+    //             60) {
+    //           value = "Prices Expired";
+    //         } else if (dateTimeNow
+    //                     .difference(DateTime.fromMillisecondsSinceEpoch(
+    //                         _expirationTimer))
+    //                     .inMinutes <
+    //                 60 &&
+    //             dateTimeNow
+    //                     .difference(DateTime.fromMillisecondsSinceEpoch(
+    //                         _expirationTimer))
+    //                     .inMinutes >
+    //                 0) {
+    //           value =
+    //               "${60 - dateTimeNow.difference(DateTime.fromMillisecondsSinceEpoch(_expirationTimer)).inMinutes} min";
+    //           shouldShowRichText = true;
+    //         }
+    //       }
+    //       return shouldShowRichText
+    //           ? Padding(
+    //               child: RichText(
+    //                 text: TextSpan(
+    //                     children: [
+    //                       TextSpan(
+    //                           text: value ?? "",
+    //                           style: TextStyle(
+    //                               color: PlunesColors.GREENCOLOR,
+    //                               fontSize: 16)),
+    //                       TextSpan(
+    //                           text: " only",
+    //                           style: TextStyle(
+    //                               color: PlunesColors.GREYCOLOR, fontSize: 15)),
+    //                     ],
+    //                     text: PlunesStrings.validForOneHour,
+    //                     style: TextStyle(
+    //                         color: PlunesColors.GREYCOLOR, fontSize: 15)),
+    //               ),
+    //               padding: EdgeInsets.only(left: 4.0),
+    //             )
+    //           : Container(
+    //               margin:
+    //                   EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
+    //               child: Text(value,
+    //                   style: TextStyle(
+    //                       color: PlunesColors.GREYCOLOR, fontSize: 15)),
+    //             );
+    //     });
   }
 
   void _getCartItems() {
@@ -782,6 +784,15 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   bool _solutionExpired(BookingIds bookingIds) {
     bool _solutionExpired = false;
     if (bookingIds.service != null &&
+        bookingIds.service.expiredAt != null &&
+        bookingIds.service.expiredAt > 0) {
+      var duration = DateTime.now().difference(
+          DateTime.fromMillisecondsSinceEpoch(bookingIds.service.expiredAt));
+      if (duration.inSeconds > 1) {
+        _solutionExpired = true;
+      }
+      print("uper wala");
+    } else if (bookingIds.service != null &&
         bookingIds.service.expirationTimer != null &&
         bookingIds.service.expirationTimer > 0) {
       var duration = DateTime.now().difference(
@@ -790,13 +801,24 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
       if (duration.inHours >= 1) {
         _solutionExpired = true;
       }
+      print("niche wala");
     }
     return _solutionExpired;
   }
 
   bool _appointmentTimeExpired(BookingIds bookingIds) {
+    print("${DateTime.fromMillisecondsSinceEpoch(
+        int.tryParse(bookingIds.appointmentTime))}uper wala ${bookingIds.appointmentTime}");
     bool _appointmentTimeExpired = false;
-    if (bookingIds.appointmentTime != null &&
+    if (bookingIds.service != null &&
+        bookingIds.service.expiredAt != null &&
+        bookingIds.service.expiredAt > 0) {
+      var duration = DateTime.now().difference(
+          DateTime.fromMillisecondsSinceEpoch(bookingIds.service.expiredAt));
+      if (duration.inSeconds > 1) {
+        _appointmentTimeExpired = true;
+      }
+    } else if (bookingIds.appointmentTime != null &&
         bookingIds.appointmentTime.isNotEmpty) {
       var duration = DateTime.now().difference(
           DateTime.fromMillisecondsSinceEpoch(
@@ -890,8 +912,6 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
 
   void _doExplore() {
     if (widget.hasAppBar != null && widget.hasAppBar) {
-      Navigator.pop(context, "pop");
-    } else {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

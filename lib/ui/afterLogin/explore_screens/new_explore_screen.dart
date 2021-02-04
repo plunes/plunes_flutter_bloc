@@ -16,6 +16,7 @@ import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/models/explore/explore_main_model.dart';
 import 'package:plunes/models/new_solution_model/media_content_model.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
@@ -432,17 +433,30 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                 splashColor: Colors.transparent,
                 child: Column(
                   children: [
-                    Container(
-                      child: ClipRRect(
-                        child: CustomWidgets().getImageFromUrl(
-                            "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(videos[index].mediaUrl ?? "")}/0.jpg",
-                            boxFit: BoxFit.fill),
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(10),
-                            topLeft: Radius.circular(10)),
-                      ),
-                      height: AppConfig.verticalBlockSize * 26,
-                      width: double.infinity,
+                    Stack(
+                      children: [
+                        Container(
+                          child: ClipRRect(
+                            child: CustomWidgets().getImageFromUrl(
+                                "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(videos[index].mediaUrl ?? "")}/0.jpg",
+                                boxFit: BoxFit.fill),
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(10),
+                                topLeft: Radius.circular(10)),
+                          ),
+                          height: AppConfig.verticalBlockSize * 26,
+                          width: double.infinity,
+                        ),
+                        Positioned.fill(
+                          child: Center(
+                            child: Image.asset(
+                              PlunesImages.pauseVideoIcon,
+                              height: 50,
+                              width: 50,
+                            ),
+                          ),
+                        )
+                      ],
                     ),
                     Container(
                       margin: EdgeInsets.only(
@@ -641,7 +655,24 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
             _homeScreenMainBloc?.addIntoMediaStream(null);
           } else if (snapshot.data is RequestInProgress) {
             return Container(
-              child: CustomWidgets().getProgressIndicator(),
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.topLeft,
+                    child: Text(
+                      "Videos",
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18),
+                    ),
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 2,
+                        horizontal: AppConfig.horizontalBlockSize * 2),
+                  ),
+                  CustomWidgets().getProgressIndicator(),
+                ],
+              ),
               height: AppConfig.verticalBlockSize * 28,
             );
           }

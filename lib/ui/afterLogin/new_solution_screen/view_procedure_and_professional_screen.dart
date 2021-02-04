@@ -11,6 +11,7 @@ import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
 import 'package:plunes/models/new_solution_model/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/professional_model.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
@@ -331,15 +332,12 @@ class _ViewProcedureAndProfessionalState
               children: [
                 Container(
                   width: double.infinity,
-                  margin: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 5,
-                      top: AppConfig.horizontalBlockSize * 1.5),
+                  margin:
+                      EdgeInsets.only(top: AppConfig.horizontalBlockSize * 1.8),
                   child: Text(
                     "Dos and Don'ts",
-                    style: TextStyle(
-                        fontSize: 18,
-                        color:
-                            Color(CommonMethods.getColorHexFromStr("#4E4E4E"))),
+                    style:
+                        TextStyle(fontSize: 18, color: PlunesColors.BLACKCOLOR),
                   ),
                 ),
                 ListView.builder(
@@ -643,16 +641,29 @@ class _ViewProcedureAndProfessionalState
             onDoubleTap: () {},
             child: Column(
               children: [
-                Container(
-                  child: ClipRRect(
-                    child: CustomWidgets().getImageFromUrl(
-                        "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
-                        boxFit: BoxFit.fill),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
-                  ),
-                  height: AppConfig.verticalBlockSize * 26,
+                Stack(
+                  children: [
+                    Container(
+                      child: ClipRRect(
+                        child: CustomWidgets().getImageFromUrl(
+                            "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
+                            boxFit: BoxFit.fill),
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                      ),
+                      height: AppConfig.verticalBlockSize * 26,
+                    ),
+                    Positioned.fill(
+                      child: Center(
+                        child: Image.asset(
+                          PlunesImages.pauseVideoIcon,
+                          height: 50,
+                          width: 50,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
                 Flexible(
                   child: Container(

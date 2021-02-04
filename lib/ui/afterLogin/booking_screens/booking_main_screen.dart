@@ -274,7 +274,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                 vertical: AppConfig.verticalBlockSize * 1.5),
             child: _getDoctorDetailsView(),
           ),
-          DottedLine(),
+          DottedLine(
+            dashColor: Color(CommonMethods.getColorHexFromStr("#7070703B")),
+            lineThickness: 1,
+          ),
           (_insuranceModel == null ||
                   _insuranceModel.data == null ||
                   _insuranceModel.data.isEmpty)
@@ -2339,7 +2342,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                   padding: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 1.5),
                   child: _getPatientDetailsFillUpView()),
-              DottedLine(),
+              DottedLine(
+                dashColor: Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                lineThickness: 1,
+              ),
               Container(
                   margin:
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5))
@@ -2508,7 +2514,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         ),
         _insuranceProvider == null
             ? Container(
-                child: DottedLine(),
+                child: DottedLine(
+                  dashColor:
+                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                  lineThickness: 1,
+                ),
                 margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 3),
               )
             : Container()
