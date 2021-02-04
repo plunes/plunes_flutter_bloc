@@ -68,7 +68,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     _iconGen = IconGenerator();
     _searchSolutionBloc = SearchSolutionBloc();
     _getFacilities();
-    _discountCalculationTimer = Timer.periodic(Duration(seconds: 4), (timer) {
+    _discountCalculationTimer = Timer.periodic(Duration(seconds: 2), (timer) {
       _discountCalculationTimer = timer;
       _getTotalDiscount();
     });
@@ -195,7 +195,6 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   }
 
   PreferredSize _getAppBar() {
-    String value = "Valid for 1 hour only";
     return PreferredSize(
         child: Card(
             color: Colors.white,
@@ -236,28 +235,43 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                           PlunesImages.validForOneHourOnlyWatch,
                           scale: 3,
                         ),
-                        Padding(
-                          child: RichText(
-                            text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                      text: "7 days" ?? "",
-                                      style: TextStyle(
-                                          color: PlunesColors.GREENCOLOR,
-                                          fontSize: 16)),
-                                  TextSpan(
-                                      text: " only",
-                                      style: TextStyle(
-                                          color: PlunesColors.GREYCOLOR,
-                                          fontSize: 15)),
-                                ],
-                                text: PlunesStrings.validForOneHour,
-                                style: TextStyle(
-                                    color: PlunesColors.GREYCOLOR,
-                                    fontSize: 15)),
-                          ),
-                          padding: EdgeInsets.only(left: 4.0),
-                        )
+                        StreamBuilder<Object>(
+                            stream: _totalDiscountController?.stream,
+                            builder: (context, snapshot) {
+                              if (_canGoAhead()) {
+                                String remainingTime =
+                                    _getRemainingTimeOfSolutionExpiration();
+                                return Padding(
+                                  child: RichText(
+                                    text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                              text: remainingTime ?? "",
+                                              style: TextStyle(
+                                                  color:
+                                                      PlunesColors.GREENCOLOR,
+                                                  fontSize: 16)),
+                                          TextSpan(
+                                              text: " only",
+                                              style: TextStyle(
+                                                  color: PlunesColors.GREYCOLOR,
+                                                  fontSize: 15)),
+                                        ],
+                                        text: PlunesStrings.validForOneHour,
+                                        style: TextStyle(
+                                            color: PlunesColors.GREYCOLOR,
+                                            fontSize: 15)),
+                                  ),
+                                  padding: EdgeInsets.only(left: 4.0),
+                                );
+                              } else if (!_canGoAhead()) {
+                                return Text("Prices expired",
+                                    style: TextStyle(
+                                        color: PlunesColors.GREENCOLOR,
+                                        fontSize: 15));
+                              }
+                              return Container();
+                            })
                       ],
                     )
                   ],
@@ -1020,11 +1034,12 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
 
   bool _canGoAhead() {
     bool _canGoAhead = true;
-    return _canGoAhead;
-    var duration = DateTime.now().difference(
-        DateTime.fromMillisecondsSinceEpoch(
-            _searchedDocResults?.solution?.expirationTimer ?? 0));
-    if (duration.inHours >= 1) {
+    var now = DateTime.now();
+    var expireTime = DateTime.fromMillisecondsSinceEpoch(
+        _searchedDocResults?.solution?.expiredAt ?? 0);
+    var duration = now.difference(expireTime);
+    // print("now ${now?.toString()} expireTime ${expireTime?.toString()}");
+    if (duration.inSeconds > 1) {
       _canGoAhead = false;
     }
     return _canGoAhead;
@@ -1147,5 +1162,23 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               builder: (context) =>
                   ShowInsuranceListScreen(profId: service.professionalId)));
     }
+  }
+
+  String _getRemainingTimeOfSolutionExpiration() {
+    String timeRemaining = "";
+    var now = DateTime.now();
+    var expireTime = DateTime.fromMillisecondsSinceEpoch(
+        _searchedDocResults?.solution?.expiredAt ?? 0);
+    var duration = expireTime.difference(now);
+    if (duration.inDays > 1) {
+      timeRemaining = " ${duration.inDays} days";
+    } else if (duration.inHours > 1) {
+      timeRemaining = " ${duration.inHours} hours";
+    } else if (duration.inMinutes > 1) {
+      timeRemaining = " ${duration.inMinutes} minutes";
+    } else if (duration.inSeconds > 1) {
+      timeRemaining = " ${duration.inSeconds} seconds";
+    }
+    return timeRemaining;
   }
 }

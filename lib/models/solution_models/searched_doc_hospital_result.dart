@@ -37,7 +37,7 @@ class DocHosSolution {
   String userId;
   String name;
   String imageUrl;
-  int createdTime, expirationTimer;
+  int createdTime, expirationTimer, expiredAt;
   List<Services> services;
   int iV;
 
@@ -52,7 +52,8 @@ class DocHosSolution {
       this.services,
       this.iV,
       this.showAdditionalFacilities,
-      this.expirationTimer});
+      this.expirationTimer,
+      this.expiredAt});
 
   DocHosSolution.fromJson(Map<String, dynamic> json) {
     // print("serviceId ${json['serviceId']} solId ${json['_id']}");
@@ -72,6 +73,7 @@ class DocHosSolution {
     iV = json['__v'];
     showAdditionalFacilities = json['showAdditionalFacilities'];
     expirationTimer = json['expirationTimer'];
+    expiredAt = json['expiredAt'];
   }
 
   Map<String, dynamic> toJson() {
