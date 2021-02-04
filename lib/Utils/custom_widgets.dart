@@ -4022,7 +4022,8 @@ class CustomWidgets {
     );
   }
 
-  Widget fetchLocationPopUp(BuildContext context) {
+  Widget fetchLocationPopUp(BuildContext context,
+      {bool isCalledFromHomeScreen = false}) {
     String message;
     bool isProgressing = false;
     return Card(
@@ -4065,7 +4066,10 @@ class CustomWidgets {
                                       horizontal:
                                           AppConfig.horizontalBlockSize * 5),
                                   child: Text(
-                                    PlunesStrings.pleaseSelectLocationPopup,
+                                    isCalledFromHomeScreen
+                                        ? "Please select your location to discover nearest facilities"
+                                        : PlunesStrings
+                                            .pleaseSelectLocationPopup,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         color: PlunesColors.BLACKCOLOR,
@@ -6308,7 +6312,8 @@ class CustomWidgets {
                       splashColor: PlunesColors.SPARKLINGGREEN.withOpacity(.1),
                       focusColor: Colors.transparent,
                       onPressed: () =>
-                          Navigator.of(globalKey.currentState.context).pop(true),
+                          Navigator.of(globalKey.currentState.context)
+                              .pop(true),
                       child: Container(
                           height: AppConfig.verticalBlockSize * 6,
                           width: double.infinity,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:permission/permission.dart';
+import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -906,6 +907,18 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
     super.initState();
   }
 
+  _showLocationDialog(bool isCalledFromHomeScreen) async {
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return CustomWidgets().fetchLocationPopUp(context,
+              isCalledFromHomeScreen: isCalledFromHomeScreen);
+        },
+        barrierDismissible: false);
+    // _canGoAhead = UserManager().getIsUserInServiceLocation();
+    _setState();
+  }
+
   Future<RequestState> _getLocationStatusForTop() async {
     RequestState _requestState;
     var user = UserManager().getUserDetails();
@@ -955,21 +968,13 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
             ),
           ),
         ),
-        Expanded(child: Container()),
-        Container(
+        Expanded(
+            child: Container(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                child: IconButton(
-                    icon: Image.asset(
-                      plunesImages.locationIcon,
-                      color: PlunesColors.BLACKCOLOR,
-                      height: AppConfig.verticalBlockSize * 3,
-                      width: AppConfig.horizontalBlockSize * 5,
-                    ),
-                    onPressed: () {}),
-              ),
+              Flexible(child: _getLocationWidget()),
               Container(
                 child: IconButton(
                   icon: Image.asset(
@@ -990,97 +995,167 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
               ),
             ],
           ),
-        )
-        // Padding(
-        //   padding: const EdgeInsets.all(16.0),
-        //   child: FutureBuilder<RequestState>(
-        //     future: _getLocationStatusForTop(),
-        //     builder: (context, snapshot) {
-        //       if (snapshot.data is RequestSuccess) {
-        //         RequestSuccess reqSuccess = snapshot.data;
-        //         LocationAppBarModel locationModel = reqSuccess.response;
-        //         if (locationModel != null && locationModel.hasLocation) {
-        //           return Container(
-        //             alignment: Alignment.topRight,
-        //             child: InkWell(
-        //               onTap: widget.onSetLocationManually,
-        //               child: Row(
-        //                 mainAxisAlignment: MainAxisAlignment.end,
-        //                 children: <Widget>[
-        //                   Container(
-        //                     child: Image.asset(plunesImages.locationIcon),
-        //                     height: AppConfig.verticalBlockSize * 3,
-        //                     width: AppConfig.horizontalBlockSize * 5,
-        //                   ),
-        //                   Flexible(
-        //                     child: Container(
-        //                       margin: EdgeInsets.only(left: 12.0),
-        //                       child: Tooltip(
-        //                           message: locationModel.address,
-        //                           margin: EdgeInsets.symmetric(
-        //                               horizontal:
-        //                                   AppConfig.horizontalBlockSize * 5),
-        //                           preferBelow: true,
-        //                           child: Text(
-        //                             locationModel.address,
-        //                             textAlign: TextAlign.center,
-        //                             overflow: TextOverflow.clip,
-        //                             softWrap: false,
-        //                             maxLines: 1,
-        //                             style: TextStyle(
-        //                               fontSize: 15,
-        //                               decoration: TextDecoration.underline,
-        //                               decorationStyle:
-        //                                   TextDecorationStyle.dashed,
-        //                               decorationThickness: 2.0,
-        //                             ),
-        //                           )),
-        //                     ),
-        //                   ),
-        //                 ],
-        //               ),
-        //             ),
-        //             width: AppConfig.horizontalBlockSize * 48,
-        //           );
-        //         } else {
-        //           return Container(
-        //               width: AppConfig.horizontalBlockSize * 40,
-        //               child: Column(
-        //                 children: <Widget>[
-        //                   InkWell(
-        //                     onTap: widget.onSetLocationTap,
-        //                     child: Row(
-        //                       children: <Widget>[
-        //                         Expanded(
-        //                           child: Text(
-        //                             locationModel.address ??
-        //                                 PlunesStrings.enterYourLocation,
-        //                             style: TextStyle(fontSize: 15),
-        //                           ),
-        //                           flex: 10,
-        //                         ),
-        //                         Flexible(
-        //                           child: Icon(Icons.radio_button_checked,
-        //                               size: 16.0),
-        //                           flex: 1,
-        //                         )
-        //                       ],
-        //                     ),
-        //                   ),
-        //                   Container(
-        //                       margin: EdgeInsets.only(top: 3.0),
-        //                       width: double.infinity,
-        //                       height: 1,
-        //                       color: PlunesColors.GREYCOLOR)
-        //                 ],
-        //               ));
-        //         }
-        //       }
-        //       return Text(PlunesStrings.processing);
-        //     },
-        //   ),
-        // )
+        )),
       ],
+    );
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
+
+  Widget _getLocationWidget() {
+    return Container(
+      margin: const EdgeInsets.only(left: 15.0, right: 5),
+      child: FutureBuilder<RequestState>(
+        future: _getLocationStatusForTop(),
+        builder: (context, snapshot) {
+          if (snapshot.data is RequestSuccess) {
+            RequestSuccess reqSuccess = snapshot.data;
+            LocationAppBarModel locationModel = reqSuccess.response;
+            if (locationModel != null && locationModel.hasLocation) {
+              return InkWell(
+                onTap: () {
+                  _showLocationDialog(false);
+                  return;
+                },
+                onDoubleTap: () {},
+                focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Image.asset(
+                        plunesImages.locationIcon,
+                        color: PlunesColors.BLACKCOLOR,
+                        height: AppConfig.verticalBlockSize * 3,
+                        width: AppConfig.horizontalBlockSize * 5,
+                      ),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 5.0, right: 3),
+                          child: Tooltip(
+                              message: locationModel.address,
+                              margin: EdgeInsets.symmetric(
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 5),
+                              preferBelow: true,
+                              child: Text(
+                                locationModel.address,
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.clip,
+                                softWrap: false,
+                                maxLines: 1,
+                                style: TextStyle(fontSize: 15),
+                              )),
+                        ),
+                      ),
+                      Container(
+                        child: Center(
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#4F4F4F")),
+                            size: 20,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            } else {
+              return InkWell(
+                onDoubleTap: () {},
+                onTap: () {
+                  _showLocationDialog(true);
+                  return;
+                },
+                focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        plunesImages.locationIcon,
+                        color: PlunesColors.BLACKCOLOR,
+                        height: AppConfig.verticalBlockSize * 3,
+                        width: AppConfig.horizontalBlockSize * 5,
+                      ),
+                      Flexible(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 5.0, right: 3),
+                          child: Text(
+                            "Please enter your location",
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.clip,
+                            softWrap: false,
+                            maxLines: 1,
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        child: Center(
+                          child: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#4F4F4F")),
+                            size: 20,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            }
+          }
+          return Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  plunesImages.locationIcon,
+                  color: PlunesColors.BLACKCOLOR,
+                  height: AppConfig.verticalBlockSize * 3,
+                  width: AppConfig.horizontalBlockSize * 5,
+                ),
+                Flexible(
+                  child: Container(
+                      margin: EdgeInsets.only(left: 5.0, right: 3),
+                      child: Text(
+                        PlunesStrings.processing,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.clip,
+                        softWrap: false,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 15),
+                      )),
+                ),
+                Container(
+                  child: Center(
+                    child: Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Color(CommonMethods.getColorHexFromStr("#4F4F4F")),
+                      size: 20,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

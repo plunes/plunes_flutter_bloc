@@ -3,6 +3,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
@@ -16,6 +17,7 @@ import 'package:plunes/models/new_solution_model/top_search_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_procedure_and_professional_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
@@ -68,6 +70,19 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _isProcedureListOpened = false;
     _homeScreenMainBloc = HomeScreenMainBloc();
     _getCategoryData();
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == EditProfileScreen.tag &&
+          mounted) {
+        _setState();
+        // _getUserDetails();
+      }
+      // else if (event != null &&
+      //     event.screenName == HealthSolutionNear.tag &&
+      //     mounted) {
+      //   _getPreviousSolutions();
+      // }
+    });
     super.initState();
   }
 
@@ -1072,6 +1087,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     } else {
       return _solutionHomeScreenModel.heading;
     }
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
   }
 }
 
