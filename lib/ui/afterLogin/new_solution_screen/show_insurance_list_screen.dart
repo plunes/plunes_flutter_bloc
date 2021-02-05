@@ -97,7 +97,7 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 3.5),
             child: Text(
-              "Insurance excepted in facility",
+              "Insurance accepted in facility",
               style: TextStyle(fontSize: 20, color: PlunesColors.BLACKCOLOR),
             ),
             alignment: Alignment.topLeft,

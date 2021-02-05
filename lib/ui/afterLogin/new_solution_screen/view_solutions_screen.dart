@@ -244,7 +244,6 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                             ),
                             _getBenefitsWidget(),
                             _getSolutionListWidget(),
-                            _getDiscoverPriceButton()
                           ],
                         ),
                       ),
@@ -255,6 +254,11 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             ],
           ),
         ),
+        Positioned(
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: _getDiscoverPriceButton())
       ],
     );
   }
@@ -352,11 +356,11 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
     return Card(
       margin: EdgeInsets.all(0),
       child: Container(
-        width: double.infinity,
         margin: EdgeInsets.only(
             left: AppConfig.horizontalBlockSize * 28,
             right: AppConfig.horizontalBlockSize * 28,
-            bottom: AppConfig.verticalBlockSize * 2),
+            bottom: AppConfig.verticalBlockSize * 2,
+            top: AppConfig.verticalBlockSize * 1),
         child: StreamBuilder<RequestState>(
             stream: _searchSolutionBloc.discoverPriceStream,
             initialData: null,

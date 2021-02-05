@@ -74,15 +74,15 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
         style: TextStyle(fontSize: 14),
       )),
     ),
-    ClipRRect(
-      borderRadius: BorderRadius.circular(30),
-      child: Container(
-          child: Text(
-        'Achievements',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14),
-      )),
-    ),
+    // ClipRRect(
+    //   borderRadius: BorderRadius.circular(30),
+    //   child: Container(
+    //       child: Text(
+    //     'Achievements',
+    //     textAlign: TextAlign.center,
+    //     style: TextStyle(fontSize: 14),
+    //   )),
+    // ),
   ];
 
   List<Widget> _tabsForHospital = [
@@ -104,15 +104,15 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
         style: TextStyle(fontSize: 14),
       )),
     ),
-    ClipRRect(
-      borderRadius: BorderRadius.circular(30),
-      child: Container(
-          child: Text(
-        'Achievements',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14),
-      )),
-    ),
+    // ClipRRect(
+    //   borderRadius: BorderRadius.circular(30),
+    //   child: Container(
+    //       child: Text(
+    //     'Achievements',
+    //     textAlign: TextAlign.center,
+    //     style: TextStyle(fontSize: 14),
+    //   )),
+    // ),
     ClipRRect(
       borderRadius: BorderRadius.circular(30),
       child: Container(
@@ -534,12 +534,12 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                     ? [
                         _getPhotoWidget(),
                         _getRateAndReviewWidget(),
-                        AchievementWidget(_profileResponse?.user?.achievements),
+                        // AchievementWidget(_profileResponse?.user?.achievements),
                       ][_selectedIndex]
                     : [
                         _getPhotoWidget(),
                         _getRateAndReviewWidget(),
-                        AchievementWidget(_profileResponse?.user?.achievements),
+                        // AchievementWidget(_profileResponse?.user?.achievements),
                         _getTeamOfExpertsWidget()
                       ][_selectedIndex],
                 SizedBox(
@@ -1403,7 +1403,7 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 200,
+      height: AppConfig.verticalBlockSize * 20,
       margin: EdgeInsets.only(bottom: 8),
       child: ListView.builder(
         itemCount: widget.specialityList.length,
@@ -1411,64 +1411,74 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
         itemBuilder: (context, index) {
           return Card(
               margin: EdgeInsets.only(right: 20, bottom: 2),
-              child: InkWell(
-                onTap: () {
-                  if (widget.specialityList[index].id != null &&
-                      widget.specialityList[index].id.isNotEmpty) {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FacilityDetailScreen(
-                                  profId: widget.profId,
-                                  speciality:
-                                      widget.specialityList[index].speciality,
-                                  specialityId: widget.specialityList[index].id,
-                                )));
-                  }
-                },
-                onDoubleTap: () {},
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: InkWell(
-                        // onTap: () {
-                        //   List<Photo> photos = [];
-                        //   widget.specialityList.forEach((element) {
-                        //     if (widget.specialityList[index].specialityImageUrl
-                        //             .isNotEmpty &&
-                        //         (widget.specialityList[index].specialityImageUrl
-                        //             .contains("http"))) {
-                        //       photos.add(
-                        //           Photo(assetName: element.specialityImageUrl));
-                        //     }
-                        //   });
-                        //   if (photos != null && photos.isNotEmpty) {
-                        //     Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //             builder: (context) =>
-                        //                 PageSlider(photos, index)));
-                        //   }
-                        // },
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(6),
-                              bottomRight: Radius.circular(6),
-                              topLeft: Radius.circular(13),
-                              topRight: Radius.circular(13)),
-                          child: CustomWidgets().getImageFromUrl(
-                              widget.specialityList[index].specialityImageUrl,
-                              boxFit: BoxFit.fill),
+              child: Container(
+                width: AppConfig.horizontalBlockSize * 45,
+                child: InkWell(
+                  onTap: () {
+                    if (widget.specialityList[index].id != null &&
+                        widget.specialityList[index].id.isNotEmpty) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => FacilityDetailScreen(
+                                    profId: widget.profId,
+                                    speciality:
+                                        widget.specialityList[index].speciality,
+                                    specialityId:
+                                        widget.specialityList[index].id,
+                                  )));
+                    }
+                  },
+                  onDoubleTap: () {},
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: InkWell(
+                          // onTap: () {
+                          //   List<Photo> photos = [];
+                          //   widget.specialityList.forEach((element) {
+                          //     if (widget.specialityList[index].specialityImageUrl
+                          //             .isNotEmpty &&
+                          //         (widget.specialityList[index].specialityImageUrl
+                          //             .contains("http"))) {
+                          //       photos.add(
+                          //           Photo(assetName: element.specialityImageUrl));
+                          //     }
+                          //   });
+                          //   if (photos != null && photos.isNotEmpty) {
+                          //     Navigator.push(
+                          //         context,
+                          //         MaterialPageRoute(
+                          //             builder: (context) =>
+                          //                 PageSlider(photos, index)));
+                          //   }
+                          // },
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(6),
+                                bottomRight: Radius.circular(6),
+                                topLeft: Radius.circular(13),
+                                topRight: Radius.circular(13)),
+                            child: CustomWidgets().getImageFromUrl(
+                                widget.specialityList[index].specialityImageUrl,
+                                boxFit: BoxFit.fill),
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      widget.specialityList[index].speciality ?? "",
-                      style: TextStyle(color: Colors.black, fontSize: 16.0),
-                    ),
-                    SizedBox(height: 8),
-                  ],
+                      SizedBox(height: 5),
+                      Container(
+                        margin: EdgeInsets.symmetric(horizontal: 1),
+                        alignment: Alignment.center,
+                        child: Text(
+                          widget.specialityList[index].speciality ?? "",
+                          maxLines: 1,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.black, fontSize: 16.0),
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                    ],
+                  ),
                 ),
               ),
               shape: RoundedRectangleBorder(

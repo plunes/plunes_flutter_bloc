@@ -161,26 +161,26 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   Widget _getMainView() {
     return Column(children: <Widget>[
       Expanded(child: _getCartListView()),
-      StreamBuilder<Object>(
-          stream: _timerStream.stream,
-          builder: (context, snapshot) {
-            double price = 0;
-            int itemCount = 0;
-            List<BookingIds> _bookingIds = [];
-            if (_cartOuterModel.data.bookingIds != null &&
-                _cartOuterModel.data.bookingIds.isNotEmpty) {
-              _cartOuterModel.data.bookingIds.forEach((element) {
-                bool _isSolutionExpired = _solutionExpired(element);
-                print("isEss $_isSolutionExpired");
-                if (!_isSolutionExpired) {
-                  price = price + element?.service?.newPrice?.first ?? 0;
-                  _bookingIds.add(element);
-                  itemCount++;
-                }
-              });
-            }
-            return _getButtonView(price, itemCount, _bookingIds);
-          })
+      // StreamBuilder<Object>(
+      //     stream: _timerStream.stream,
+      //     builder: (context, snapshot) {
+      //       double price = 0;
+      //       int itemCount = 0;
+      //       List<BookingIds> _bookingIds = [];
+      //       if (_cartOuterModel.data.bookingIds != null &&
+      //           _cartOuterModel.data.bookingIds.isNotEmpty) {
+      //         _cartOuterModel.data.bookingIds.forEach((element) {
+      //           bool _isSolutionExpired = _solutionExpired(element);
+      //           print("isEss $_isSolutionExpired");
+      //           if (!_isSolutionExpired) {
+      //             price = price + element?.service?.newPrice?.first ?? 0;
+      //             _bookingIds.add(element);
+      //             itemCount++;
+      //           }
+      //         });
+      //       }
+      //       return _getButtonView(price, itemCount, _bookingIds);
+      //     })
     ]);
   }
 
