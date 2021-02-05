@@ -9,6 +9,7 @@ import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/facility_have_model.dart';
 import 'package:plunes/models/new_solution_model/insurance_model.dart';
+import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/new_solution_model/service_detail_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
@@ -532,7 +533,7 @@ class UserManager {
     var result = await DioRequester().requestMethod(
         url: Urls.GET_INSURANCE_NAMES_URL,
         requestType: HttpRequestMethods.HTTP_GET,
-        queryParameter: {"professionalId": "5df0982dfb5abb03b4ea6d96"},
+        queryParameter: {"professionalId": profId},
         headerIncluded: true);
     if (result.isRequestSucceed) {
       InsuranceModel _mediaContentModel =
@@ -571,7 +572,9 @@ class UserManager {
   Future<RequestState> getServicesOfSpeciality(
       String profId, String specialityId) async {
     var result = await DioRequester().requestMethod(
-        url: Urls.GET_ALL_SERVICE_BY_SPECIALITY_ID,
+        url: (profId == null)
+            ? Urls.SPECIALITY_RELATED_SERVICES_URL
+            : Urls.GET_ALL_SERVICE_BY_SPECIALITY_ID,
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {
           "professionalId": profId,
@@ -596,6 +599,20 @@ class UserManager {
     if (result.isRequestSucceed) {
       FacilityHaveModel _mediaContentModel =
           FacilityHaveModel.fromJson(result.response.data);
+      return RequestSuccess(response: _mediaContentModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getPremiumBenefitsForUsers() async {
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
+        url: Urls.PREMIUM_BENEFITS_FOR_USER_URL,
+        requestType: HttpRequestMethods.HTTP_GET,
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      PremiumBenefitsModel _mediaContentModel =
+          PremiumBenefitsModel.fromJson(result.response.data);
       return RequestSuccess(response: _mediaContentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);

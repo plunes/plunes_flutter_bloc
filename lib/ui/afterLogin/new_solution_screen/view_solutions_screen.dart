@@ -10,7 +10,9 @@ import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
@@ -50,9 +52,12 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
   GoogleMapController _mapController;
   Completer<GoogleMapController> _googleMapController = Completer();
   User _user;
+  PremiumBenefitsModel _premiumBenefitsModel;
+  UserBloc _userBloc;
 
   @override
   void initState() {
+    _userBloc = UserBloc();
     _user = UserManager().getUserDetails();
     _mapWidgets = [];
     _markers = {};
@@ -73,12 +78,22 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
     super.initState();
   }
 
+  _getPremiumBenefitsForUsers() {
+    _userBloc.getPremiumBenefitsForUsers().then((value) {
+      if (value is RequestSuccess) {
+        _premiumBenefitsModel = value.response;
+      } else if (value is RequestFailed) {}
+      _setState();
+    });
+  }
+
   @override
   void dispose() {
     _globalKeys = [];
     _functions = [];
     _customServices = [];
     _searchSolutionBloc?.dispose();
+    _userBloc?.dispose();
     super.dispose();
   }
 
@@ -95,6 +110,11 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             } else if (snapshot.data is RequestSuccess) {
               RequestSuccess data = snapshot.data;
               _searchedDocResults = data.response;
+              if (_premiumBenefitsModel == null ||
+                  _premiumBenefitsModel.data == null ||
+                  _premiumBenefitsModel.data.isEmpty) {
+                _getPremiumBenefitsForUsers();
+              }
               _calculateMapData();
               _searchSolutionBloc.addIntoDocHosStream(null);
             } else if (snapshot.data is RequestFailed) {
@@ -264,8 +284,15 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
   }
 
   Widget _getBenefitsWidget() {
+    if (_premiumBenefitsModel == null ||
+        _premiumBenefitsModel.data == null ||
+        _premiumBenefitsModel.data.isEmpty) {
+      return Container();
+    }
     return Container(
-      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.8),
+      margin: EdgeInsets.symmetric(
+          vertical: AppConfig.verticalBlockSize * 1.8,
+          horizontal: AppConfig.horizontalBlockSize * 1.2),
       child: Column(
         children: [
           Container(
@@ -276,16 +303,18 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+            margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 1.8,
+            ),
           ),
           Container(
-            height: AppConfig.verticalBlockSize * 18,
+            height: AppConfig.verticalBlockSize * 25,
             child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) =>
-                  CommonWidgets().getPremiumBenefitsWidget(),
-              itemCount: 5,
+              itemBuilder: (context, index) => CommonWidgets()
+                  .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
+              itemCount: _premiumBenefitsModel.data.length,
             ),
           )
         ],
@@ -478,6 +507,9 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                 latitude: _searchedDocResults.solution.services[index].latitude,
                 longitude:
                     _searchedDocResults.solution.services[index].longitude,
+                professionalPhotos: _searchedDocResults
+                        .solution.services[index].professionalPhotos ??
+                    [],
                 distance:
                     _searchedDocResults.solution.services[index].distance);
             _customServices.add(service);

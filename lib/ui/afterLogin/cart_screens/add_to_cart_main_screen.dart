@@ -51,11 +51,14 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   List<ApplicationMeta> _availableUpiApps;
   BookingBloc _bookingBloc;
   ManagePaymentBloc _managePaymentBloc;
-  bool _isProcessing;
+  bool _isProcessing, _isScreenRefresherStared;
+  bool _hasItemOnScreen;
 
   @override
   void initState() {
     _isProcessing = false;
+    _isScreenRefresherStared = false;
+    _hasItemOnScreen = true;
     _timerStream = StreamController.broadcast();
     _cartMainBloc = CartMainBloc();
     _bookingBloc = BookingBloc();
@@ -63,6 +66,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _timer = timer;
       if (mounted) {
+        _checkScreenAgainstSolutionExpirationTime();
         _timerStream.add(null);
       }
     });
@@ -76,6 +80,29 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     _getCartItems();
 //    _getInstalledUpiApps();
     super.initState();
+  }
+
+  _checkScreenAgainstSolutionExpirationTime() {
+    if (_isScreenRefresherStared != null && _isScreenRefresherStared) {
+      bool hasItemOnScreen = false;
+      if (_cartOuterModel == null ||
+          _cartOuterModel.data == null ||
+          _cartOuterModel.data.bookingIds == null ||
+          _cartOuterModel.data.bookingIds.isEmpty) {
+        return;
+      }
+      _cartOuterModel.data.bookingIds.forEach((element) {
+        if (!_appointmentTimeExpired(element)) {
+          hasItemOnScreen = true;
+        }
+      });
+      _hasItemOnScreen = hasItemOnScreen;
+      if (!hasItemOnScreen) {
+        // _isScreenRefresherStared = false;
+        _failureCause = "No items added to cart";
+        _setState();
+      }
+    }
   }
 
   _getInstalledUpiApps() async {
@@ -128,19 +155,23 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                       _failureCause = requestFailed.failureCause;
                       _cartMainBloc.addStateInCartMainStream(null);
                     }
-                    return (_failureCause != null)
+                    return (_failureCause != null || (!_hasItemOnScreen))
                         ? CustomWidgets().errorWidget(_failureCause,
                             imagePath: PlunesImages.emptyCartItemsImage,
                             onTap: () {
-                            if (_failureCause != null &&
-                                _failureCause != PlunesStrings.noInternet) {
+                            if ((_failureCause != null &&
+                                    _failureCause !=
+                                        PlunesStrings.noInternet) ||
+                                (!_hasItemOnScreen)) {
                               _doExplore();
                             } else {
                               _getCartItems();
                             }
                           },
-                            buttonText: (_failureCause != null &&
-                                    _failureCause != PlunesStrings.noInternet)
+                            buttonText: ((_failureCause != null &&
+                                        _failureCause !=
+                                            PlunesStrings.noInternet) ||
+                                    (!_hasItemOnScreen))
                                 ? PlunesStrings.explore
                                 : null)
                         : _showBody();
@@ -161,26 +192,26 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   Widget _getMainView() {
     return Column(children: <Widget>[
       Expanded(child: _getCartListView()),
-      // StreamBuilder<Object>(
-      //     stream: _timerStream.stream,
-      //     builder: (context, snapshot) {
-      //       double price = 0;
-      //       int itemCount = 0;
-      //       List<BookingIds> _bookingIds = [];
-      //       if (_cartOuterModel.data.bookingIds != null &&
-      //           _cartOuterModel.data.bookingIds.isNotEmpty) {
-      //         _cartOuterModel.data.bookingIds.forEach((element) {
-      //           bool _isSolutionExpired = _solutionExpired(element);
-      //           print("isEss $_isSolutionExpired");
-      //           if (!_isSolutionExpired) {
-      //             price = price + element?.service?.newPrice?.first ?? 0;
-      //             _bookingIds.add(element);
-      //             itemCount++;
-      //           }
-      //         });
-      //       }
-      //       return _getButtonView(price, itemCount, _bookingIds);
-      //     })
+      StreamBuilder<Object>(
+          stream: _timerStream.stream,
+          builder: (context, snapshot) {
+            double price = 0;
+            int itemCount = 0;
+            List<BookingIds> _bookingIds = [];
+            if (_cartOuterModel.data.bookingIds != null &&
+                _cartOuterModel.data.bookingIds.isNotEmpty) {
+              _cartOuterModel.data.bookingIds.forEach((element) {
+                bool _isSolutionExpired = _solutionExpired(element);
+                // print("isEss $_isSolutionExpired");
+                if (!_isSolutionExpired) {
+                  price = price + element?.service?.newPrice?.first ?? 0;
+                  _bookingIds.add(element);
+                  itemCount++;
+                }
+              });
+            }
+            return _getButtonView(price, itemCount, _bookingIds);
+          })
     ]);
   }
 
@@ -296,14 +327,15 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   Widget getCartCard(int index, final BookingIds bookingIds, int totalItems) {
-    bool _isSolutionExpired = _solutionExpired(bookingIds);
-    // int time = DateTime.now().millisecondsSinceEpoch;
-    // if (!_isSolutionExpired) {
-    //   // time = bookingIds.service.expirationTimer;
-    // }
+    Future.delayed(Duration(milliseconds: 20)).then((value) {
+      if (_isScreenRefresherStared != null && !(_isScreenRefresherStared)) {
+        _isScreenRefresherStared = true;
+      }
+    });
     if (_appointmentTimeExpired(bookingIds)) {
       return Container();
     }
+    bool _isSolutionExpired = _solutionExpired(bookingIds);
     return Card(
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -782,16 +814,18 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   bool _solutionExpired(BookingIds bookingIds) {
+    // print(
+    //     "${bookingIds.service.expirationTimer} solution expired time ${DateTime.fromMillisecondsSinceEpoch(bookingIds.service.expirationTimer)}");
     bool _solutionExpired = false;
     if (bookingIds.service != null &&
         bookingIds.service.expiredAt != null &&
         bookingIds.service.expiredAt > 0) {
       var duration = DateTime.now().difference(
           DateTime.fromMillisecondsSinceEpoch(bookingIds.service.expiredAt));
+      // print("duration ${duration.inSeconds}");
       if (duration.inSeconds > 1) {
         _solutionExpired = true;
       }
-      print("uper wala");
     } else if (bookingIds.service != null &&
         bookingIds.service.expirationTimer != null &&
         bookingIds.service.expirationTimer > 0) {
@@ -801,24 +835,24 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
       if (duration.inHours >= 1) {
         _solutionExpired = true;
       }
-      print("niche wala");
     }
     return _solutionExpired;
   }
 
   bool _appointmentTimeExpired(BookingIds bookingIds) {
-    print("${DateTime.fromMillisecondsSinceEpoch(
-        int.tryParse(bookingIds.appointmentTime))}uper wala ${bookingIds.appointmentTime}");
+    // print(
+    //     "${DateTime.fromMillisecondsSinceEpoch(int.tryParse(bookingIds.appointmentTime))}uper wala ${bookingIds.appointmentTime}");
     bool _appointmentTimeExpired = false;
-    if (bookingIds.service != null &&
-        bookingIds.service.expiredAt != null &&
-        bookingIds.service.expiredAt > 0) {
-      var duration = DateTime.now().difference(
-          DateTime.fromMillisecondsSinceEpoch(bookingIds.service.expiredAt));
-      if (duration.inSeconds > 1) {
-        _appointmentTimeExpired = true;
-      }
-    } else if (bookingIds.appointmentTime != null &&
+    // if ((bookingIds.service != null &&
+    //     bookingIds.service.expiredAt != null &&
+    //     bookingIds.service.expiredAt > 0) && ) {
+    //   var duration = DateTime.now().difference(
+    //       DateTime.fromMillisecondsSinceEpoch(bookingIds.service.expiredAt));
+    //   if (duration.inSeconds > 1) {
+    //     _appointmentTimeExpired = true;
+    //   }
+    // } else
+    if (bookingIds.appointmentTime != null &&
         bookingIds.appointmentTime.isNotEmpty) {
       var duration = DateTime.now().difference(
           DateTime.fromMillisecondsSinceEpoch(

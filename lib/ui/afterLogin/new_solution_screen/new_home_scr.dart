@@ -20,6 +20,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
+import 'package:plunes/ui/afterLogin/doc_hos_screen/facility_detail_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_procedure_and_professional_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
@@ -893,7 +894,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                       "",
                                   _newSpecialityModel.data[index]?.speciality,
                                   _newSpecialityModel.data[index]?.definition ??
-                                      "");
+                                      "",
+                                  _newSpecialityModel.data[index]);
                             },
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
@@ -1155,6 +1157,81 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   void _setState() {
     if (mounted) setState(() {});
   }
+
+  Widget _specialCard(
+      String imageUrl, String label, String text, SpecData specialityData) {
+    return Container(
+      width: AppConfig.horizontalBlockSize * 45,
+      margin: EdgeInsets.only(right: 4),
+      child: Card(
+        elevation: 2.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FacilityDetailScreen(
+                          profId: null,
+                          speciality: specialityData?.speciality,
+                          specialityId: specialityData?.specialityId,
+                        )));
+          },
+          onDoubleTap: () {},
+          child: Column(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Container(
+                  width: double.infinity,
+                  child: ClipRRect(
+                    child: _imageFittedBox(imageUrl, boxFit: BoxFit.cover),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 2,
+                      vertical: 3),
+                  child: Text(
+                    label ?? "",
+                    textAlign: TextAlign.left,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+              Flexible(
+                  child: Container(
+                      alignment: Alignment.centerLeft,
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 2,
+                          vertical: 1),
+                      child: IgnorePointer(
+                        ignoring: true,
+                        child: ReadMoreText(text,
+                            textAlign: TextAlign.left,
+                            trimLines: 2,
+                            trimExpandedText: "Read more",
+                            trimMode: TrimMode.Line,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Color(0xff444444),
+                            )),
+                      )))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 // Functions
@@ -1283,66 +1360,6 @@ Widget _topSearchCard(String imageUrl, String text) {
               ),
             ),
           )
-        ],
-      ),
-    ),
-  );
-}
-
-Widget _specialCard(String imageUrl, String label, String text) {
-  return Container(
-    width: AppConfig.horizontalBlockSize * 45,
-    margin: EdgeInsets.only(right: 4),
-    child: Card(
-      elevation: 2.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            flex: 3,
-            child: Container(
-              width: double.infinity,
-              child: ClipRRect(
-                child: _imageFittedBox(imageUrl, boxFit: BoxFit.cover),
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10)),
-              ),
-            ),
-          ),
-          Flexible(
-            child: Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 2, vertical: 3),
-              child: Text(
-                label ?? "",
-                textAlign: TextAlign.left,
-                maxLines: 2,
-                style: TextStyle(fontSize: 16),
-              ),
-            ),
-          ),
-          Flexible(
-              child: Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 2,
-                      vertical: 1),
-                  child: IgnorePointer(
-                    ignoring: true,
-                    child: ReadMoreText(text,
-                        textAlign: TextAlign.left,
-                        trimLines: 2,
-                        trimExpandedText: "Read more",
-                        trimMode: TrimMode.Line,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xff444444),
-                        )),
-                  )))
         ],
       ),
     ),

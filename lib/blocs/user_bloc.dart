@@ -50,6 +50,11 @@ class UserBloc extends BlocBase {
   Observable<RequestState> get facilityOfHospitalStream =>
       _facilityAvailableInHospitalStreamProvider.stream;
 
+  final _premiumBenefitsStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get premiumBenefitsStream =>
+      _premiumBenefitsStreamProvider.stream;
+
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
       {String address, bool isFromPopup = false, String region}) {
     return UserManager().isUserInServiceLocation(latitude, longitude,
@@ -133,6 +138,7 @@ class UserBloc extends BlocBase {
     _insuranceFileUploadStrreamProvider?.close();
     _serviceRelatedToSpecilaityStreamProvider?.close();
     _facilityAvailableInHospitalStreamProvider?.close();
+    _premiumBenefitsStreamProvider?.close();
     super.dispose();
   }
 
@@ -225,6 +231,10 @@ class UserBloc extends BlocBase {
     addStateInGenericStream(_facilityAvailableInHospitalStreamProvider, data);
   }
 
+  addStateInPremiumBenefitsProviderStream(RequestState data) {
+    addStateInGenericStream(_premiumBenefitsStreamProvider, data);
+  }
+
   Future<RequestState> uploadInsuranceFile(File file) async {
     addStateInUploadInsuranceFileStream(RequestInProgress());
     var result = await UserManager().uploadInsuranceFile(file);
@@ -247,6 +257,13 @@ class UserBloc extends BlocBase {
     var result =
         await UserManager().getFacilitiesProvidedByHospitalOrDoc(profId);
     addStateInFacilityProviderStream(result);
+    return result;
+  }
+
+  Future<RequestState> getPremiumBenefitsForUsers() async {
+    addStateInPremiumBenefitsProviderStream(RequestInProgress());
+    var result = await UserManager().getPremiumBenefitsForUsers();
+    addStateInPremiumBenefitsProviderStream(result);
     return result;
   }
 }

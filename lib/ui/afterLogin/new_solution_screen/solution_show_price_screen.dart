@@ -9,7 +9,9 @@ import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
@@ -57,9 +59,12 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   StreamController _totalDiscountController;
   num _gainedDiscount = 0, _gainedDiscountPercentage = 0;
   Timer _discountCalculationTimer;
+  PremiumBenefitsModel _premiumBenefitsModel;
+  UserBloc _userBloc;
 
   @override
   void initState() {
+    _userBloc = UserBloc();
     _totalDiscountController = StreamController.broadcast();
     _user = UserManager().getUserDetails();
     _mapWidgets = [];
@@ -138,12 +143,22 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     _searchSolutionBloc?.dispose();
     _totalDiscountController?.close();
     _discountCalculationTimer?.cancel();
+    _userBloc?.dispose();
     super.dispose();
   }
 
   void _getFacilities() {
     _searchSolutionBloc.getDocHosSolution(widget.catalogueData,
         searchQuery: widget.searchQuery);
+  }
+
+  _getPremiumBenefitsForUsers() {
+    _userBloc.getPremiumBenefitsForUsers().then((value) {
+      if (value is RequestSuccess) {
+        _premiumBenefitsModel = value.response;
+      } else if (value is RequestFailed) {}
+      _setState();
+    });
   }
 
   @override
@@ -159,6 +174,11 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
             } else if (snapshot.data is RequestSuccess) {
               RequestSuccess data = snapshot.data;
               _searchedDocResults = data.response;
+              if (_premiumBenefitsModel == null ||
+                  _premiumBenefitsModel.data == null ||
+                  _premiumBenefitsModel.data.isEmpty) {
+                _getPremiumBenefitsForUsers();
+              }
               _calculateMapData();
               _searchSolutionBloc.addIntoDocHosStream(null);
             } else if (snapshot.data is RequestFailed) {
@@ -442,13 +462,14 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                             _getTypeOfFacilityWidget(),
                             _getFacilityDefinitionWidget(),
                             _getProfessionalListWidget(),
+                            _getBenefitsWidget()
                           ],
                         ),
                       ),
                     );
                   },
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -689,6 +710,9 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                 latitude: _searchedDocResults.solution.services[index].latitude,
                 longitude:
                     _searchedDocResults.solution.services[index].longitude,
+                professionalPhotos: _searchedDocResults
+                        .solution.services[index].professionalPhotos ??
+                    [],
                 distance:
                     _searchedDocResults.solution.services[index].distance);
             _customServices.add(service);
@@ -1179,5 +1203,46 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       timeRemaining = " ${duration.inSeconds} seconds";
     }
     return timeRemaining;
+  }
+
+  Widget _getBenefitsWidget() {
+    if (_premiumBenefitsModel == null ||
+        _premiumBenefitsModel.data == null ||
+        _premiumBenefitsModel.data.isEmpty) {
+      return Container();
+    }
+    return Container(
+      margin: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 0.4,
+          bottom: AppConfig.verticalBlockSize * 1.8,
+          left: AppConfig.horizontalBlockSize * 1.2,
+          right: AppConfig.horizontalBlockSize * 1.2),
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Premium Benefits for Our Users",
+              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 1.8,
+            ),
+          ),
+          Container(
+            height: AppConfig.verticalBlockSize * 25,
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) => CommonWidgets()
+                  .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
+              itemCount: _premiumBenefitsModel.data.length,
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

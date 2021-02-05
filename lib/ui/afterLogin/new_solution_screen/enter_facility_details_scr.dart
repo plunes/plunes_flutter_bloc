@@ -10,12 +10,15 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/new_solution_blocs/user_medical_detail_bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
+import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -43,9 +46,13 @@ class _EnterAdditionalUserDetailScrState
   AnimationController _animationController;
   ImagePickerHandler _imagePicker;
   List<Map<String, dynamic>> _docUrls, _imageUrls;
+  UserBloc _userBloc;
+  PremiumBenefitsModel _premiumBenefitsModel;
 
   @override
   void initState() {
+    _userBloc = UserBloc();
+    _getPremiumBenefitsForUsers();
     _pageStream = StreamController.broadcast();
     _pageController = PageController(initialPage: 0);
     _submitUserMedicalDetailBloc = SubmitUserMedicalDetailBloc();
@@ -67,7 +74,17 @@ class _EnterAdditionalUserDetailScrState
     _pageStream?.close();
     _pageController?.dispose();
     _animationController?.dispose();
+    _userBloc?.dispose();
     super.dispose();
+  }
+
+  _getPremiumBenefitsForUsers() {
+    _userBloc.getPremiumBenefitsForUsers().then((value) {
+      if (value is RequestSuccess) {
+        _premiumBenefitsModel = value.response;
+      } else if (value is RequestFailed) {}
+      _setState();
+    });
   }
 
   _uploadFile(File file, {String fileType}) async {
@@ -309,7 +326,8 @@ class _EnterAdditionalUserDetailScrState
                   Expanded(child: _getUploadReportCard()),
                 ],
               ),
-            )
+            ),
+            _getPremiumBenefitsForUserWidget()
           ],
         ),
       ),
@@ -731,6 +749,12 @@ class _EnterAdditionalUserDetailScrState
                 ),
               ),
             ),
+            Container(
+              child: _getPremiumBenefitsForUserWidget(),
+              margin: EdgeInsets.only(
+                  top: AppConfig.verticalBlockSize * 2.5,
+                  bottom: AppConfig.verticalBlockSize * 1.5),
+            )
           ],
         ),
       ),
@@ -830,5 +854,37 @@ class _EnterAdditionalUserDetailScrState
                     catalogueData: widget.catalogueData,
                   )));
     });
+  }
+
+  Widget _getPremiumBenefitsForUserWidget() {
+    if (_premiumBenefitsModel == null ||
+        _premiumBenefitsModel.data == null ||
+        _premiumBenefitsModel.data.isEmpty) {
+      return Container();
+    }
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Premium Benefits for Our Users",
+            style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+        ),
+        Container(
+          height: AppConfig.verticalBlockSize * 25,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) => CommonWidgets()
+                .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
+            itemCount: _premiumBenefitsModel.data.length,
+          ),
+        ),
+      ],
+    );
   }
 }

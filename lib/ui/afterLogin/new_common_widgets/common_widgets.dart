@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/new_solution_model/professional_model.dart';
 import 'package:plunes/models/solution_models/more_facilities_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -26,11 +28,13 @@ class CommonWidgets {
     return _instance;
   }
 
+  final CarouselController _controller = CarouselController();
+
   var _decorator = DotsDecorator(
       activeColor: PlunesColors.BLACKCOLOR,
       color: Color(CommonMethods.getColorHexFromStr("#E4E4E4")));
 
-  Widget getPremiumBenefitsWidget() {
+  Widget getPremiumBenefitsWidget(PremiumBenefitData premiumBenefitData) {
     return Card(
       margin: EdgeInsets.only(
           right: AppConfig.horizontalBlockSize * 3.5, bottom: 1.8),
@@ -41,37 +45,12 @@ class CommonWidgets {
               bottomLeft: Radius.circular(16),
               bottomRight: Radius.circular(16))),
       child: Container(
-        width: AppConfig.horizontalBlockSize * 80,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Flexible(
-              flex: 3,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    bottomLeft: Radius.circular(16)),
-                child: SizedBox.expand(
-                  child: CustomWidgets().getImageFromUrl(
-                      "https://media.istockphoto.com/photos/doctor-holding-digital-tablet-at-meeting-room-picture-id1189304032?k=6&m=1189304032&s=612x612&w=0&h=SJPF2M715kIFAKoYHGbb1uAyptbz6Tn7-LxPsm5msPE=",
-                      boxFit: BoxFit.cover),
-                ),
-              ),
-            ),
-            Expanded(
-                flex: 7,
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 4),
-                  child: Text(
-                    "Get upto 50% off ",
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                    style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 15),
-                  ),
-                ))
-          ],
+        width: AppConfig.horizontalBlockSize * 50,
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          child: CustomWidgets().getImageFromUrl(
+              premiumBenefitData?.titleImage ?? '',
+              boxFit: BoxFit.fill),
         ),
       ),
     );
@@ -102,16 +81,20 @@ class CommonWidgets {
           children: [
             Container(
               height: AppConfig.verticalBlockSize * 20,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16)),
-                child: SizedBox.expand(
-                  child: CustomWidgets().getImageFromUrl(
-                      service?.imageUrl ?? "",
-                      boxFit: BoxFit.cover),
-                ),
-              ),
+              child: (service != null &&
+                      service.professionalPhotos != null &&
+                      service.professionalPhotos.isNotEmpty)
+                  ? _getImageArrayOfProfessional(service)
+                  : ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16)),
+                      child: SizedBox.expand(
+                        child: CustomWidgets().getImageFromUrl(
+                            service?.imageUrl ?? "",
+                            boxFit: BoxFit.cover),
+                      ),
+                    ),
             ),
             Container(
               margin: EdgeInsets.only(
@@ -262,16 +245,20 @@ class CommonWidgets {
           children: [
             Container(
               height: AppConfig.verticalBlockSize * 20,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16)),
-                child: SizedBox.expand(
-                  child: CustomWidgets().getImageFromUrl(
-                      service?.imageUrl ?? "",
-                      boxFit: BoxFit.cover),
-                ),
-              ),
+              child: (service != null &&
+                      service.professionalPhotos != null &&
+                      service.professionalPhotos.isNotEmpty)
+                  ? _getImageArrayOfProfessional(service)
+                  : ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16)),
+                      child: SizedBox.expand(
+                        child: CustomWidgets().getImageFromUrl(
+                            service?.imageUrl ?? "",
+                            boxFit: BoxFit.cover),
+                      ),
+                    ),
             ),
             Container(
               margin: EdgeInsets.only(
@@ -423,16 +410,20 @@ class CommonWidgets {
           children: [
             Container(
               height: AppConfig.verticalBlockSize * 20,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16)),
-                child: SizedBox.expand(
-                  child: CustomWidgets().getImageFromUrl(
-                      service.doctors[docIndex].imageUrl ?? "",
-                      boxFit: BoxFit.cover),
-                ),
-              ),
+              child: (service != null &&
+                      service.professionalPhotos != null &&
+                      service.professionalPhotos.isNotEmpty)
+                  ? _getImageArrayOfProfessional(service)
+                  : ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16)),
+                      child: SizedBox.expand(
+                        child: CustomWidgets().getImageFromUrl(
+                            service.doctors[docIndex].imageUrl ?? "",
+                            boxFit: BoxFit.cover),
+                      ),
+                    ),
             ),
             Container(
               margin: EdgeInsets.only(
@@ -589,17 +580,21 @@ class CommonWidgets {
           children: [
             Container(
               height: AppConfig.verticalBlockSize * 20,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16)),
-                child: SizedBox.expand(
-                  child: CustomWidgets().getImageFromUrl(
-                      service.doctors[docIndex].imageUrl ?? "",
-                      placeHolderPath: PlunesImages.doc_placeholder,
-                      boxFit: BoxFit.cover),
-                ),
-              ),
+              child: (service != null &&
+                      service.professionalPhotos != null &&
+                      service.professionalPhotos.isNotEmpty)
+                  ? _getImageArrayOfProfessional(service)
+                  : ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16)),
+                      child: SizedBox.expand(
+                        child: CustomWidgets().getImageFromUrl(
+                            service.doctors[docIndex].imageUrl ?? "",
+                            placeHolderPath: PlunesImages.doc_placeholder,
+                            boxFit: BoxFit.cover),
+                      ),
+                    ),
             ),
             Container(
               margin: EdgeInsets.only(
@@ -1280,10 +1275,15 @@ class CommonWidgets {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16)),
-                child: SizedBox.expand(
-                  child: CustomWidgets().getImageFromUrl(service.imageUrl ?? "",
-                      boxFit: BoxFit.cover),
-                ),
+                child: (service != null &&
+                        service.professionalPhotos != null &&
+                        service.professionalPhotos.isNotEmpty)
+                    ? _getImageArrayOfProfessional(service)
+                    : SizedBox.expand(
+                        child: CustomWidgets().getImageFromUrl(
+                            service.imageUrl ?? "",
+                            boxFit: BoxFit.cover),
+                      ),
               ),
             ),
           ),
@@ -1674,15 +1674,20 @@ class CommonWidgets {
             hoverColor: Colors.transparent,
             child: Container(
               height: AppConfig.verticalBlockSize * 25,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16)),
-                child: SizedBox.expand(
-                  child: CustomWidgets().getImageFromUrl(service.imageUrl ?? "",
-                      boxFit: BoxFit.cover),
-                ),
-              ),
+              child: (service != null &&
+                      service.professionalPhotos != null &&
+                      service.professionalPhotos.isNotEmpty)
+                  ? _getImageArrayOfProfessional(service)
+                  : ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(16),
+                          topRight: Radius.circular(16)),
+                      child: SizedBox.expand(
+                        child: CustomWidgets().getImageFromUrl(
+                            service.imageUrl ?? "",
+                            boxFit: BoxFit.cover),
+                      ),
+                    ),
             ),
           ),
           Container(
@@ -2076,12 +2081,16 @@ class CommonWidgets {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16)),
-                child: SizedBox.expand(
-                  child: CustomWidgets().getImageFromUrl(
-                      service.doctors[docIndex]?.imageUrl ?? "",
-                      placeHolderPath: PlunesImages.doc_placeholder,
-                      boxFit: BoxFit.cover),
-                ),
+                child: (service != null &&
+                        service.professionalPhotos != null &&
+                        service.professionalPhotos.isNotEmpty)
+                    ? _getImageArrayOfProfessional(service)
+                    : SizedBox.expand(
+                        child: CustomWidgets().getImageFromUrl(
+                            service.doctors[docIndex]?.imageUrl ?? "",
+                            placeHolderPath: PlunesImages.doc_placeholder,
+                            boxFit: BoxFit.cover),
+                      ),
               ),
             ),
           ),
@@ -2481,12 +2490,16 @@ class CommonWidgets {
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16),
                     topRight: Radius.circular(16)),
-                child: SizedBox.expand(
-                  child: CustomWidgets().getImageFromUrl(
-                      service.doctors[docIndex]?.imageUrl ?? "",
-                      placeHolderPath: PlunesImages.doc_placeholder,
-                      boxFit: BoxFit.cover),
-                ),
+                child: (service != null &&
+                        service.professionalPhotos != null &&
+                        service.professionalPhotos.isNotEmpty)
+                    ? _getImageArrayOfProfessional(service)
+                    : SizedBox.expand(
+                        child: CustomWidgets().getImageFromUrl(
+                            service.doctors[docIndex]?.imageUrl ?? "",
+                            placeHolderPath: PlunesImages.doc_placeholder,
+                            boxFit: BoxFit.cover),
+                      ),
               ),
             ),
           ),
@@ -2853,6 +2866,67 @@ class CommonWidgets {
           CustomWidgets().getSingleCommonButton(context, PlunesStrings.close)
         ],
       ),
+    );
+  }
+
+  Widget _getImageArrayOfProfessional(Services service) {
+    double _currentDotPosition = 0.0;
+    return StatefulBuilder(
+      builder: (context, newState) {
+        return Stack(
+          children: [
+            CarouselSlider.builder(
+              carouselController: _controller,
+              itemCount: service.professionalPhotos.length > 10
+                  ? 10
+                  : service.professionalPhotos.length,
+              options: CarouselOptions(
+                  height: AppConfig.verticalBlockSize * 28,
+                  aspectRatio: 16 / 9,
+                  initialPage: 0,
+                  enableInfiniteScroll: false,
+                  pageSnapping: true,
+                  autoPlay: true,
+                  reverse: false,
+                  enlargeCenterPage: true,
+                  viewportFraction: 1.0,
+                  onPageChanged: (index, _) {
+                    if (_currentDotPosition.toInt() != index) {
+                      _currentDotPosition = index.toDouble();
+                    }
+                    newState(() {});
+                  },
+                  scrollDirection: Axis.horizontal),
+              itemBuilder: (BuildContext context, int itemIndex) => Container(
+                width: double.infinity,
+                child: Container(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16)),
+                    child: CustomWidgets().getImageFromUrl(
+                        service.professionalPhotos[itemIndex] ?? '',
+                        boxFit: BoxFit.cover),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 0.0,
+              right: 0.0,
+              bottom: 5,
+              child: DotsIndicator(
+                dotsCount: service.professionalPhotos.length > 10
+                    ? 10
+                    : service.professionalPhotos.length,
+                position: _currentDotPosition,
+                axis: Axis.horizontal,
+                decorator: _decorator,
+              ),
+            )
+          ],
+        );
+      },
     );
   }
 }
