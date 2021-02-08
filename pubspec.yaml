@@ -24,7 +24,7 @@ dependencies:
   date_format: ^1.0.6
   date_picker_timeline: ^1.2.0
   intl: ^0.16.0
-  image_picker: ^0.6.7+21
+  image_picker: 0.6.7+21
   pinput: ^0.1.10
   percent_indicator: ^2.0.0
   flutter_webview_plugin: ^0.3.8
@@ -87,9 +87,10 @@ dependencies:
   carousel_slider: ^2.3.1
   dots_indicator: ^1.2.0
   flutter_windowmanager: ^0.0.2
-  upi_pay: ^0.2.4
+#  upi_pay: ^0.2.4
   bubble_tab_indicator: ^0.1.4
   dotted_line: ^2.0.2
+  video_compress: ^2.1.0
   permission:
     git:
       url: https://github.com/plunes/permission.git

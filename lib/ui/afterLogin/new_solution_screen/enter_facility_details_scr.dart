@@ -21,6 +21,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:plunes/ui/afterLogin/upload_video_for_treatment.dart';
 
 // ignore: must_be_immutable
 class EnterAdditionalUserDetailScr extends BaseActivity {
@@ -45,7 +46,7 @@ class _EnterAdditionalUserDetailScrState
   bool _hasTreatedPreviously = false;
   AnimationController _animationController;
   ImagePickerHandler _imagePicker;
-  List<Map<String, dynamic>> _docUrls, _imageUrls;
+  List<Map<String, dynamic>> _docUrls, _imageUrls, _videoUrls;
   UserBloc _userBloc;
   PremiumBenefitsModel _premiumBenefitsModel;
 
@@ -340,39 +341,63 @@ class _EnterAdditionalUserDetailScrState
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(18))),
       elevation: 2.5,
-      child: Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(18)),
-            gradient: LinearGradient(colors: [
-              Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
-              Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
-            ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => UploadVideoForTreatment(
+                        submitUserMedicalDetailBloc:
+                            _submitUserMedicalDetailBloc,
+                      ))).then((value) {
+            _submitUserMedicalDetailBloc?.addIntoSubmitFileStream(null);
+            if (value != null) {
+              if (_videoUrls == null) {
+                _videoUrls = [];
+              }
+              if (_videoUrls.isNotEmpty) {
+                _videoUrls.addAll(value);
+              } else {
+                _videoUrls = value;
+              }
+            }
+          });
+        },
+        onDoubleTap: () {},
         child: Container(
-          margin: EdgeInsets.only(
-              left: AppConfig.horizontalBlockSize * 4,
-              right: AppConfig.horizontalBlockSize * 4,
-              top: AppConfig.verticalBlockSize * 3,
-              bottom: AppConfig.verticalBlockSize * 1.5),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Image.asset(
-                PlunesImages.videoUploadIcon,
-                height: 49,
-                width: 49,
-              ),
-              Container(
-                width: double.infinity,
-                alignment: Alignment.center,
-                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
-                child: Text(
-                  "Upload Video",
-                  textAlign: TextAlign.center,
-                  style:
-                      TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 14),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+              gradient: LinearGradient(colors: [
+                Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
+              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+          child: Container(
+            margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 4,
+                right: AppConfig.horizontalBlockSize * 4,
+                top: AppConfig.verticalBlockSize * 3,
+                bottom: AppConfig.verticalBlockSize * 1.5),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Image.asset(
+                  PlunesImages.videoUploadIcon,
+                  height: 49,
+                  width: 49,
                 ),
-              )
-            ],
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 4),
+                  child: Text(
+                    "Upload Video",
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 14),
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),

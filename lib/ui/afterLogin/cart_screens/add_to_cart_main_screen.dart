@@ -9,7 +9,6 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/payment_web_view.dart';
-import 'package:plunes/Utils/upi_payment_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
@@ -29,7 +28,7 @@ import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popu
 import 'package:plunes/ui/afterLogin/cart_screens/patient_details_edit_popup_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
-import 'package:upi_pay/upi_pay.dart';
+// import 'package:upi_pay/upi_pay.dart';
 
 // ignore: must_be_immutable
 class AddToCartMainScreen extends BaseActivity {
@@ -48,7 +47,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   String _failureCause;
   StreamController _timerStream;
   Timer _timer;
-  List<ApplicationMeta> _availableUpiApps;
+  // List<ApplicationMeta> _availableUpiApps;
   BookingBloc _bookingBloc;
   ManagePaymentBloc _managePaymentBloc;
   bool _isProcessing, _isScreenRefresherStared;
@@ -105,11 +104,11 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     }
   }
 
-  _getInstalledUpiApps() async {
-    if (_isAndroid()) {
-      _availableUpiApps = await UpiPay.getInstalledUpiApplications();
-    }
-  }
+  // _getInstalledUpiApps() async {
+  //   if (_isAndroid()) {
+  //     _availableUpiApps = await UpiPay.getInstalledUpiApplications();
+  //   }
+  // }
 
   bool _isAndroid() {
     return Platform.isAndroid ?? false;
@@ -1065,45 +1064,45 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     });
   }
 
-  void _checkIfUpiPaymentSuccessOrNot(
-      UpiTransactionResponse value, UpiModel upiResponse) {
-    print(value?.toString());
-    String status = value.status != null
-        ? value.status == UpiTransactionStatus.success
-            ? UpiUtil.success
-            : value.status == UpiTransactionStatus.failure
-                ? UpiUtil.failure
-                : value.status == UpiTransactionStatus.submitted
-                    ? UpiUtil.submitted
-                    : UpiUtil.submitted
-        : null;
-    _isProcessing = true;
-    _setState();
-    _managePaymentBloc
-        .sendUpiPaymentResponse(
-            upiResponse.bookingId, status, value?.txnId, value?.responseCode)
-        .then((paymentServerResponse) {
-      _isProcessing = false;
-      _setState();
-      if (paymentServerResponse is RequestSuccess) {
-        showDialog(
-            context: context,
-            builder: (
-              BuildContext context,
-            ) =>
-                CustomWidgets().paymentStatusPopup(
-                    "",
-                    "Payment successfully done.",
-                    plunesImages.checkIcon,
-                    context,
-                    bookingId: "id")).then((value) {
-          _popWhenSuccess();
-        });
-      } else if (paymentServerResponse is RequestFailed) {
-        _showMessages(paymentServerResponse.failureCause);
-      }
-    });
-  }
+  // void _checkIfUpiPaymentSuccessOrNot(
+  //     UpiTransactionResponse value, UpiModel upiResponse) {
+  //   print(value?.toString());
+  //   String status = value.status != null
+  //       ? value.status == UpiTransactionStatus.success
+  //           ? UpiUtil.success
+  //           : value.status == UpiTransactionStatus.failure
+  //               ? UpiUtil.failure
+  //               : value.status == UpiTransactionStatus.submitted
+  //                   ? UpiUtil.submitted
+  //                   : UpiUtil.submitted
+  //       : null;
+  //   _isProcessing = true;
+  //   _setState();
+  //   _managePaymentBloc
+  //       .sendUpiPaymentResponse(
+  //           upiResponse.bookingId, status, value?.txnId, value?.responseCode)
+  //       .then((paymentServerResponse) {
+  //     _isProcessing = false;
+  //     _setState();
+  //     if (paymentServerResponse is RequestSuccess) {
+  //       showDialog(
+  //           context: context,
+  //           builder: (
+  //             BuildContext context,
+  //           ) =>
+  //               CustomWidgets().paymentStatusPopup(
+  //                   "",
+  //                   "Payment successfully done.",
+  //                   plunesImages.checkIcon,
+  //                   context,
+  //                   bookingId: "id")).then((value) {
+  //         _popWhenSuccess();
+  //       });
+  //     } else if (paymentServerResponse is RequestFailed) {
+  //       _showMessages(paymentServerResponse.failureCause);
+  //     }
+  //   });
+  // }
 
   void _processZestMoneyQueries(InitPaymentResponse initPaymentResponse) {
     _bookingBloc.processZestMoney(initPaymentResponse).then((value) {

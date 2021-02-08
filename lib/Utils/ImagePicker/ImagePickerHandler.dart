@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import './ImagePickerDialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:video_compress/video_compress.dart';
 
 /*
  * Created by - Plunes Technologies.
@@ -32,8 +33,8 @@ class ImagePickerHandler {
 
   openCamera() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker()
-        .getImage(source: ImageSource.camera, maxWidth: 1000, maxHeight: 1000);
+    var image = await ImagePicker.pickImage(
+        source: ImageSource.camera, maxWidth: 1000, maxHeight: 1000);
     if (image == null || image.path == null) {
       return;
     }
@@ -46,12 +47,12 @@ class ImagePickerHandler {
 
   openCameraForVideo() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker().getVideo(source: ImageSource.camera);
+    var image = await ImagePicker.pickVideo(source: ImageSource.camera);
     if (image == null || image.path == null) {
       return;
     }
     print("VideoCameraPath: " + image.path);
-    cropImage(image.path);
+    cropVideo(image.path);
 
     /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
 //    _listener.fetchImageCallBack(image);
@@ -59,8 +60,8 @@ class ImagePickerHandler {
 
   openGallery() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker()
-        .getImage(source: ImageSource.gallery, maxWidth: 1000, maxHeight: 1000);
+    var image = await ImagePicker.pickImage(
+        source: ImageSource.gallery, maxWidth: 1000, maxHeight: 1000);
     if (image == null || image.path == null) {
       return;
     }
@@ -73,12 +74,12 @@ class ImagePickerHandler {
 
   openGalleryForVideo() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker().getVideo(source: ImageSource.gallery);
+    var image = await ImagePicker.pickVideo(source: ImageSource.gallery);
     if (image == null || image.path == null) {
       return;
     }
     print("VideoGalleryPath: " + image.path);
-    cropImage(image.path);
+    cropVideo(image.path);
 
     /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
 //    _listener.fetchImageCallBack(image);
@@ -89,6 +90,16 @@ class ImagePickerHandler {
         sourcePath: imageFile, maxWidth: 1080, maxHeight: 1080);
     _listener.fetchImageCallBack(croppedFile);
     return croppedFile;
+  }
+
+  Future<File> cropVideo(String videoFile) async {
+    MediaInfo mediaInfo = await VideoCompress.compressVideo(
+      videoFile, duration: 10, includeAudio: true,
+      quality: VideoQuality.DefaultQuality,
+      deleteOrigin: false, // It's false by default
+    );
+    _listener.fetchImageCallBack(mediaInfo.file);
+    return mediaInfo.file;
   }
 }
 
