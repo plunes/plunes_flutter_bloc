@@ -34,11 +34,17 @@ class RealInsight {
   String userName;
   String profName, centerLocation;
   String serviceName, expirationMessage, imageUrl, professionalId;
-  bool negotiating, expired, booked, professionalBooked, priceUpdated;
+  bool negotiating,
+      expired,
+      booked,
+      professionalBooked,
+      priceUpdated,
+      isCardOpened;
   int timeRemaining, expirationTimer;
   num userPrice, compRate, distance, recommendation, min, max;
   int createdAt;
   List<DataPoint> dataPoints;
+  final List<String> images=["","","",""];
 
   @override
   String toString() {
@@ -72,7 +78,8 @@ class RealInsight {
       this.distance,
       this.recommendation,
       this.min,
-      this.max});
+      this.max,
+      this.isCardOpened});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
 //    print("json insight $json");
@@ -106,6 +113,7 @@ class RealInsight {
     recommendation = json['recommendation'];
     min = json['min'];
     max = json['max'];
+    isCardOpened = false;
   }
 
   Map<String, dynamic> toJson() {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -245,201 +246,202 @@ class _HospitalOverviewScreenState
                                 return _returnCard();
                               }
                               itemIndex--;
-                              return Card(
-                                elevation: 2.0,
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(
-                                      vertical: AppConfig.verticalBlockSize * 2,
-                                      horizontal:
-                                          AppConfig.horizontalBlockSize * 4),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      PatientServiceInfo(
-                                        patientName: _realTimeInsightsResponse
-                                            .data[itemIndex].userName,
-                                        serviceName: "is looking for " +
-                                            "${_realTimeInsightsResponse.data[itemIndex].serviceName ?? _getNaString()}",
-                                        remainingTime:
-                                            (_realTimeInsightsResponse
-                                                            .data[itemIndex] !=
-                                                        null &&
-                                                    _realTimeInsightsResponse
-                                                            .data[itemIndex]
-                                                            .booked !=
-                                                        null &&
-                                                    _realTimeInsightsResponse
-                                                        .data[itemIndex].booked)
-                                                ? 0
-                                                : _realTimeInsightsResponse
-                                                    .data[itemIndex]
-                                                    .expirationTimer,
-                                        centreLocation:
-                                            _realTimeInsightsResponse
-                                                .data[itemIndex].centerLocation,
-                                        imageUrl: _realTimeInsightsResponse
-                                            .data[itemIndex].imageUrl,
-                                        getRealTimeInsights: () =>
-                                            _getRealTimeInsights(),
-                                        realInsight: _realTimeInsightsResponse
-                                            .data[itemIndex],
-                                        openInsightPopup: () =>
-                                            _openRealTimeInsightPriceUpdateWidget(
+                              return Container(
+                                margin: EdgeInsets.only(
+                                    bottom: AppConfig.verticalBlockSize * 1),
+                                child: Stack(
+                                  children: [
+                                    _realTimeInsightsResponse
+                                            .data[itemIndex].isCardOpened
+                                        ? Container()
+                                        : Positioned(
+                                            bottom: 0.0,
+                                            left: 0.0,
+                                            right: 0.0,
+                                            child: _getCardOpenButton(
                                                 _realTimeInsightsResponse
                                                     .data[itemIndex]),
-                                      ),
-//                                      StreamBuilder<Object>(
-//                                          stream: _timeUpdater.stream,
-//                                          builder: (context, snapshot) {
-//                                            return Container(
-//                                              margin: EdgeInsets.only(
-//                                                  left: (AppConfig
-//                                                              .horizontalBlockSize *
-//                                                          2) +
-//                                                      45,
-//                                                  top: (_realTimeInsightsResponse
-//                                                                      .data[
-//                                                                  itemIndex] !=
-//                                                              null &&
-//                                                          _realTimeInsightsResponse
-//                                                                  .data[
-//                                                                      itemIndex]
-//                                                                  .expired !=
-//                                                              null &&
-//                                                          _realTimeInsightsResponse
-//                                                              .data[itemIndex]
-//                                                              .expired)
-//                                                      ? AppConfig
-//                                                              .verticalBlockSize *
-//                                                          1
-//                                                      : 0),
-//                                              child: Text(
-//                                                DateUtil.getDuration(
-//                                                    _realTimeInsightsResponse
-//                                                            .data[itemIndex]
-//                                                            ?.expirationTimer ??
-//                                                        0),
-//                                                style: TextStyle(
-//                                                    fontSize:
-//                                                        AppConfig.smallFont,
-//                                                    fontWeight:
-//                                                        FontWeight.normal,
-//                                                    color: Color(CommonMethods
-//                                                        .getColorHexFromStr(
-//                                                            "#171717"))),
-//                                              ),
-//                                            );
-//                                          }),
-                                      (_realTimeInsightsResponse.data[itemIndex]
-                                                      .suggested !=
-                                                  null &&
-                                              _realTimeInsightsResponse
-                                                  .data[itemIndex].suggested)
-                                          ? Row(
-                                              children: <Widget>[
-                                                Expanded(
-                                                    flex: 2,
-                                                    child: Container(
-                                                      margin: EdgeInsets.only(
-                                                          left: AppConfig
-                                                                      .horizontalBlockSize *
-                                                                  2 +
-                                                              45,
-                                                          top: 3),
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          3)),
-                                                          border: Border.all(
-                                                              color: Color(CommonMethods
-                                                                  .getColorHexFromStr(
-                                                                      "#1473E6")))),
-                                                      child: InkWell(
-                                                        onTap: () {
-                                                          showDialog(
-                                                              context: context,
-                                                              builder:
-                                                                  (context) {
-                                                                return CustomWidgets().turnOffNotificationPopup(
-                                                                    scaffoldKey,
-                                                                    _realTimeInsightsResponse
-                                                                            .data[
-                                                                        itemIndex],
-                                                                    _docHosMainInsightBloc);
-                                                              }).then((value) {
-                                                            _docHosMainInsightBloc
-                                                                .addStateInDoNotDisturbStream(
-                                                                    null);
-                                                            _getRealTimeInsights();
-                                                          });
-                                                          return;
-                                                        },
-                                                        splashColor:
-                                                            Colors.transparent,
-                                                        highlightColor:
-                                                            Colors.transparent,
-                                                        child: Container(
-                                                          padding: EdgeInsets.symmetric(
-                                                              horizontal: AppConfig
-                                                                      .horizontalBlockSize *
-                                                                  1.2,
-                                                              vertical: AppConfig
-                                                                      .verticalBlockSize *
-                                                                  0.6),
-                                                          color: Color(CommonMethods
-                                                              .getColorHexFromStr(
-                                                                  "#D7E7FB")),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: <Widget>[
-                                                              Image.asset(
-                                                                PlunesImages
-                                                                    .serviceNotAvail,
-                                                                height: AppConfig
-                                                                        .verticalBlockSize *
-                                                                    2.6,
-                                                                width: AppConfig
-                                                                        .horizontalBlockSize *
-                                                                    8,
-                                                              ),
-                                                              Flexible(
-                                                                  child: Text(
-                                                                PlunesStrings
-                                                                    .serviceNotAvailableText,
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Color(
-                                                                      CommonMethods
-                                                                          .getColorHexFromStr(
-                                                                              "#1473E6")),
-                                                                  fontSize:
-                                                                      AppConfig
-                                                                              .smallFont -
-                                                                          2,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .normal,
+                                          ),
+                                    Card(
+                                      elevation: 2.0,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(10))),
+                                      margin: EdgeInsets.only(
+                                          top: 5,
+                                          left: 5,
+                                          right: 5,
+                                          bottom: _realTimeInsightsResponse
+                                                  .data[itemIndex].isCardOpened
+                                              ? 0.0
+                                              : AppConfig.verticalBlockSize *
+                                                  4.2),
+                                      child: Container(
+                                        margin: EdgeInsets.symmetric(
+                                            vertical:
+                                                AppConfig.verticalBlockSize * 2,
+                                            horizontal:
+                                                AppConfig.horizontalBlockSize *
+                                                    4),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            PatientServiceInfo(
+                                              patientName:
+                                                  _realTimeInsightsResponse
+                                                      .data[itemIndex].userName,
+                                              serviceName: "is looking for " +
+                                                  "${_realTimeInsightsResponse.data[itemIndex].serviceName ?? _getNaString()}",
+                                              remainingTime: (_realTimeInsightsResponse
+                                                                  .data[
+                                                              itemIndex] !=
+                                                          null &&
+                                                      _realTimeInsightsResponse
+                                                              .data[itemIndex]
+                                                              .booked !=
+                                                          null &&
+                                                      _realTimeInsightsResponse
+                                                          .data[itemIndex]
+                                                          .booked)
+                                                  ? 0
+                                                  : _realTimeInsightsResponse
+                                                      .data[itemIndex]
+                                                      .expirationTimer,
+                                              centreLocation:
+                                                  _realTimeInsightsResponse
+                                                      .data[itemIndex]
+                                                      .centerLocation,
+                                              imageUrl:
+                                                  _realTimeInsightsResponse
+                                                      .data[itemIndex].imageUrl,
+                                              getRealTimeInsights: () =>
+                                                  _getRealTimeInsights(),
+                                              realInsight:
+                                                  _realTimeInsightsResponse
+                                                      .data[itemIndex],
+                                              openInsightPopup: () =>
+                                                  _openRealTimeInsightPriceUpdateWidget(
+                                                      _realTimeInsightsResponse
+                                                          .data[itemIndex]),
+                                            ),
+                                            (_realTimeInsightsResponse
+                                                            .data[itemIndex]
+                                                            .suggested !=
+                                                        null &&
+                                                    _realTimeInsightsResponse
+                                                        .data[itemIndex]
+                                                        .suggested)
+                                                ? Row(
+                                                    children: <Widget>[
+                                                      Expanded(
+                                                          flex: 2,
+                                                          child: Container(
+                                                            margin: EdgeInsets.only(
+                                                                left: AppConfig
+                                                                            .horizontalBlockSize *
+                                                                        2 +
+                                                                    45,
+                                                                top: 3),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            3)),
+                                                                border: Border.all(
+                                                                    color: Color(
+                                                                        CommonMethods.getColorHexFromStr(
+                                                                            "#1473E6")))),
+                                                            child: InkWell(
+                                                              onTap: () {
+                                                                showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (context) {
+                                                                      return CustomWidgets().turnOffNotificationPopup(
+                                                                          scaffoldKey,
+                                                                          _realTimeInsightsResponse
+                                                                              .data[itemIndex],
+                                                                          _docHosMainInsightBloc);
+                                                                    }).then((value) {
+                                                                  _docHosMainInsightBloc
+                                                                      .addStateInDoNotDisturbStream(
+                                                                          null);
+                                                                  _getRealTimeInsights();
+                                                                });
+                                                                return;
+                                                              },
+                                                              splashColor: Colors
+                                                                  .transparent,
+                                                              highlightColor:
+                                                                  Colors
+                                                                      .transparent,
+                                                              child: Container(
+                                                                padding: EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        AppConfig.horizontalBlockSize *
+                                                                            1.2,
+                                                                    vertical:
+                                                                        AppConfig.verticalBlockSize *
+                                                                            0.6),
+                                                                color: Color(
+                                                                    CommonMethods
+                                                                        .getColorHexFromStr(
+                                                                            "#D7E7FB")),
+                                                                child: Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .center,
+                                                                  children: <
+                                                                      Widget>[
+                                                                    Image.asset(
+                                                                      PlunesImages
+                                                                          .serviceNotAvail,
+                                                                      height:
+                                                                          AppConfig.verticalBlockSize *
+                                                                              2.6,
+                                                                      width:
+                                                                          AppConfig.horizontalBlockSize *
+                                                                              8,
+                                                                    ),
+                                                                    Flexible(
+                                                                        child:
+                                                                            Text(
+                                                                      PlunesStrings
+                                                                          .serviceNotAvailableText,
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Color(
+                                                                            CommonMethods.getColorHexFromStr("#1473E6")),
+                                                                        fontSize:
+                                                                            AppConfig.smallFont -
+                                                                                2,
+                                                                        fontWeight:
+                                                                            FontWeight.normal,
+                                                                      ),
+                                                                    ))
+                                                                  ],
                                                                 ),
-                                                              ))
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )),
-                                                Expanded(child: Container())
-                                              ],
-                                            )
-                                          : Container()
-                                    ],
-                                  ),
+                                                              ),
+                                                            ),
+                                                          )),
+                                                      Expanded(
+                                                          child: Container())
+                                                    ],
+                                                  )
+                                                : Container(),
+                                            _getViewMoreWidgetForRealInsight(
+                                                _realTimeInsightsResponse
+                                                    .data[itemIndex])
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               );
                             },
@@ -846,19 +848,12 @@ class _HospitalOverviewScreenState
   }
 
   _openRealTimeInsightPriceUpdateWidget(final RealInsight realInsight) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) => Dialog(
-            insetPadding: EdgeInsets.symmetric(horizontal: 0),
-            child: RealInsightPopup(
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => RealInsightPopup(
                 docHosMainInsightBloc: _docHosMainInsightBloc,
-                realInsight: realInsight))
-//            CustomWidgets().updatePricePopUp(
-//            docHosMainInsightBloc: _docHosMainInsightBloc,
-//            realInsight: realInsight)
-
-        ).then((value) {
+                realInsight: realInsight))).then((value) {
       if (value != null && value) {
         if (realInsight.suggested != null && realInsight.suggested) {
           showDialog(
@@ -876,6 +871,31 @@ class _HospitalOverviewScreenState
         }
       }
     });
+    // showDialog(
+    //     context: context,
+    //     barrierDismissible: false,
+    //     builder: (BuildContext context) => Dialog(
+    //         insetPadding: EdgeInsets.symmetric(horizontal: 0),
+    //         child: RealInsightPopup(
+    //             docHosMainInsightBloc: _docHosMainInsightBloc,
+    //             realInsight: realInsight))).then((value) {
+    //   if (value != null && value) {
+    //     if (realInsight.suggested != null && realInsight.suggested) {
+    //       showDialog(
+    //           context: context,
+    //           builder: (context) {
+    //             return CustomWidgets().savePriceInCatalogue(
+    //                 realInsight, scaffoldKey, _docHosMainInsightBloc);
+    //           }).then((value) {
+    //         _docHosMainInsightBloc.addStatePriceUpdationInCatalogueStream(null);
+    //         _getRealTimeInsights();
+    //       });
+    //     } else {
+    //       _showSnackBar(PlunesStrings.priceUpdateSuccessMessage);
+    //       _getRealTimeInsights();
+    //     }
+    //   }
+    // });
   }
 
   Widget _selectDayDropDown() {
@@ -1067,40 +1087,6 @@ class _HospitalOverviewScreenState
               margin: EdgeInsets.only(top: 5, left: 5, right: 5),
               child: Column(
                 children: <Widget>[
-//                  Container(
-//                    width: double.infinity,
-//                    child: Card(
-//                      elevation: 2.0,
-//                      child: Padding(
-//                        padding: const EdgeInsets.all(5.0),
-//                        child: Row(
-//                          children: <Widget>[
-//                            Container(
-//                              child: Image.asset(PlunesImages.labMapImage),
-//                              height: AppConfig.verticalBlockSize * 4,
-//                              width: AppConfig.horizontalBlockSize * 14,
-//                            ),
-//                            Flexible(
-//                              child: Padding(
-//                                padding: EdgeInsets.only(
-//                                    left: AppConfig.horizontalBlockSize * 2),
-//                                child: Text(
-//                                  CommonMethods.getStringInCamelCase(
-//                                          _user?.name) ??
-//                                      _getNaString(),
-//                                  maxLines: 1,
-//                                  overflow: TextOverflow.clip,
-//                                  style: TextStyle(
-//                                      fontSize: 18,
-//                                      fontWeight: FontWeight.w500),
-//                                ),
-//                              ),
-//                            ),
-//                          ],
-//                        ),
-//                      ),
-//                    ),
-//                  ),
                   _getRealTimeInsightView(),
                   _getTotalBusinessWidgetForNonAdmin(),
                   _getActionableInsightWidget(),
@@ -1240,9 +1226,6 @@ class _HospitalOverviewScreenState
                   child: StreamBuilder<Object>(
                       stream: _docHosMainInsightBloc.realTimeInsightStream,
                       builder: (context, snapshot) {
-//                        if (_realTimeInsightsResponse != null &&
-//                            _realTimeInsightsResponse.timer !=
-//                                null) {
                         return (_realTimeInsightsResponse == null ||
                                 _realTimeInsightsResponse.data == null ||
                                 _realTimeInsightsResponse.data.isEmpty)
@@ -1254,8 +1237,6 @@ class _HospitalOverviewScreenState
                                     color: PlunesColors.GREYCOLOR
                                         .withOpacity(0.65)),
                               );
-//                        }
-//                        return Container();
                       }),
                   flex: 2,
                 ),
@@ -1272,6 +1253,277 @@ class _HospitalOverviewScreenState
             )
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _getViewMoreWidgetForRealInsight(RealInsight data) {
+    return data.isCardOpened
+        ? Container(
+            margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 4,
+                right: AppConfig.horizontalBlockSize * 3),
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 2.8),
+                  child: DottedLine(
+                    dashColor:
+                        Color(CommonMethods.getColorHexFromStr("#70707038")),
+                  ),
+                ),
+                Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(right: 4),
+                          child: Column(
+                            children: [
+                              Container(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Additional Details of the service ",
+                                  maxLines: 2,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontSize: 18),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 12),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        colors: [
+                                      Color(CommonMethods.getColorHexFromStr(
+                                          "#FEFEFE")),
+                                      Color(CommonMethods.getColorHexFromStr(
+                                          "#F6F6F6")),
+                                    ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter)),
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut nibh aliquam erat voluptat ut wisi enim ad minim veniam, quis exe",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#4E4E4E"))),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 4),
+                          child: Column(
+                            children: [
+                              Container(
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Additional Details of the service ",
+                                  maxLines: 2,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontSize: 18),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 12),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                        colors: [
+                                      Color(CommonMethods.getColorHexFromStr(
+                                          "#FEFEFE")),
+                                      Color(CommonMethods.getColorHexFromStr(
+                                          "#F6F6F6")),
+                                    ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter)),
+                                alignment: Alignment.topLeft,
+                                child: Text(
+                                  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut nibh aliquam erat voluptat ut wisi enim ad minim veniam, quis exe",
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#4E4E4E"))),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                _getMediaWidget(data),
+                InkWell(
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  child: Container(
+                    margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 2.4,
+                        bottom: AppConfig.verticalBlockSize * 0.2),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "View Less ",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#01D35A"))),
+                        ),
+                        Icon(Icons.keyboard_arrow_down,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#01D35A")),
+                            size: 15)
+                      ],
+                    ),
+                  ),
+                  onTap: () {
+                    data.isCardOpened = !data.isCardOpened;
+                    _setState();
+                  },
+                  onDoubleTap: () {},
+                ),
+              ],
+            ))
+        : Container();
+  }
+
+  Widget _getCardOpenButton(RealInsight data) {
+    return Card(
+        elevation: 2.0,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(10),
+                bottomRight: Radius.circular(10))),
+        margin: EdgeInsets.only(
+            left: AppConfig.horizontalBlockSize * 10,
+            right: AppConfig.horizontalBlockSize * 10),
+        child: InkWell(
+          focusColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          onTap: () {
+            data.isCardOpened = !data.isCardOpened;
+            _setState();
+          },
+          onDoubleTap: () {},
+          child: Container(
+            height: AppConfig.verticalBlockSize * 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  "View More ",
+                  style: TextStyle(
+                      fontSize: 12,
+                      color:
+                          Color(CommonMethods.getColorHexFromStr("#01D35A"))),
+                ),
+                Icon(Icons.keyboard_arrow_down,
+                    color: Color(CommonMethods.getColorHexFromStr("#01D35A")),
+                    size: 15)
+              ],
+            ),
+          ),
+        ));
+  }
+
+  Widget _getMediaWidget(RealInsight data) {
+    return Container(
+      margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.topLeft,
+            child: Text(
+              "Photos/Video",
+              textAlign: TextAlign.left,
+              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.2),
+            height: AppConfig.verticalBlockSize * 12,
+            alignment: Alignment.centerLeft,
+            width: double.infinity,
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              scrollDirection: Axis.horizontal,
+              itemCount: (data.images.length > 1) ? 2 : data.images,
+              itemBuilder: (context, index) {
+                if (index == 1) {
+                  return Stack(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            color: Colors.red),
+                        width: AppConfig.horizontalBlockSize * 30,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
+                          child: SizedBox.expand(
+                            child: CustomWidgets()
+                                .getImageFromUrl("", boxFit: BoxFit.cover),
+                          ),
+                        ),
+                      ),
+                      data.images.length > 2
+                          ? Positioned.fill(
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "+${data.images.length}",
+                                  style: TextStyle(
+                                      color: PlunesColors.GREYCOLOR,
+                                      fontSize: 60),
+                                ),
+                              ),
+                            )
+                          : Container()
+                    ],
+                  );
+                }
+                return Container(
+                  margin: EdgeInsets.only(right: 5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      color: Colors.red),
+                  width: AppConfig.horizontalBlockSize * 30,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(12)),
+                    child: SizedBox.expand(
+                      child: CustomWidgets()
+                          .getImageFromUrl("", boxFit: BoxFit.cover),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -1369,7 +1621,7 @@ class PatientServiceInfo extends StatefulWidget {
 
 class _PatientServiceInfoState extends State<PatientServiceInfo> {
   Timer _timer, _timerForSolutionExpire;
-  int _secondVal = 60, _secFixVal = 60;
+  int _secondVal = 60;
   int _countDownValue = 59, _prevMinValue;
   String _timeValue = "00:00";
   RealInsight _realInsight;
@@ -1482,40 +1734,41 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                         ),
                       )
                     : Container(),
-                ((_realInsight != null &&
-                            _realInsight.expired != null &&
-                            _realInsight.expired) ||
-                        (_realInsight != null &&
-                            _realInsight.booked != null &&
-                            _realInsight.booked) ||
-                        showShowWidget())
-                    ? Container()
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          FlatButtonLinks(
-                              PlunesStrings.kindlyUpdateYourPrice,
-                              AppConfig.smallFont + 2,
-                              null,
-                              0,
-                              true,
-                              () => widget.openInsightPopup()),
-                          InkWell(
-                            onTap: () => widget.openInsightPopup(),
-                            highlightColor: Colors.white,
-                            child: Container(
-                              padding: EdgeInsets.only(
-                                  left: .1, right: 6.0, top: 6.0, bottom: 6.0),
-                              child: Icon(
-                                Icons.arrow_forward,
-                                color: PlunesColors.GREENCOLOR,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ],
+                // ((_realInsight != null &&
+                //             _realInsight.expired != null &&
+                //             _realInsight.expired) ||
+                //         (_realInsight != null &&
+                //             _realInsight.booked != null &&
+                //             _realInsight.booked) ||
+                //         showShowWidget())
+                //     ? Container()
+                //     :
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    FlatButtonLinks(
+                        PlunesStrings.kindlyUpdateYourPrice,
+                        AppConfig.smallFont + 2,
+                        null,
+                        0,
+                        true,
+                        () => widget.openInsightPopup()),
+                    InkWell(
+                      onTap: () => widget.openInsightPopup(),
+                      highlightColor: Colors.white,
+                      child: Container(
+                        padding: EdgeInsets.only(
+                            left: .1, right: 6.0, top: 6.0, bottom: 6.0),
+                        child: Icon(
+                          Icons.arrow_forward,
+                          color: PlunesColors.GREENCOLOR,
+                          size: 16,
+                        ),
                       ),
+                    ),
+                  ],
+                ),
                 ((_realInsight != null &&
                             _realInsight.expired != null &&
                             _realInsight.expired) ||
@@ -1581,14 +1834,6 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-//                    Image.asset(
-//                      (_realInsight.professionalBooked != null &&
-//                              _realInsight.professionalBooked)
-//                          ? PlunesImages.happyEmoji
-//                          : PlunesImages.bookingLostEmoji,
-//                      height: AppConfig.verticalBlockSize * 2.6,
-//                      width: AppConfig.horizontalBlockSize * 8,
-//                    )
                           ],
                         ),
                       )
