@@ -75,7 +75,7 @@ class SearchedSolutionRepo {
   }
 
   Future<RequestState> getDocHosSolution(final CatalogueData catalogueData,
-      {final String searchQuery}) async {
+      {final String searchQuery, final String userReportId}) async {
     User _user = UserManager().getUserDetails();
     double lat;
     double long;
@@ -109,6 +109,7 @@ class SearchedSolutionRepo {
       }
       queryParams = {
         "serviceId": catalogueData.serviceId,
+        "userReportId": userReportId,
         "latitude": lat,
         "longitude": long,
         "searchQuery": searchQuery,

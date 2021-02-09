@@ -107,10 +107,16 @@ class _EnterAdditionalUserDetailScrState
                   if (snapshot.data is RequestInProgress) {
                     return CustomWidgets().getProgressIndicator();
                   } else if (snapshot.data is RequestSuccess) {
-                    Future.delayed(Duration(milliseconds: 10)).then((value) {
-                      _showMessagePopup(PlunesStrings.uplaodSuccessMessage);
-                    });
                     RequestSuccess data = snapshot.data;
+                    Future.delayed(Duration(milliseconds: 10)).then((value) {
+                      if (data.additionalData != null &&
+                          (data.additionalData.toString() ==
+                                  Constants.typeImage ||
+                              data.additionalData.toString() ==
+                                  Constants.typeReport)) {
+                        _showMessagePopup(PlunesStrings.uplaodSuccessMessage);
+                      }
+                    });
                     if (data.additionalData != null &&
                         data.additionalData.toString() == Constants.typeImage) {
                       _setImageUrls(data.response);
@@ -123,7 +129,12 @@ class _EnterAdditionalUserDetailScrState
                   } else if (snapshot.data is RequestFailed) {
                     RequestFailed _reqFailObj = snapshot.data;
                     Future.delayed(Duration(milliseconds: 10)).then((value) {
-                      _showMessagePopup(_reqFailObj?.failureCause);
+                      if (_reqFailObj.response != null &&
+                          (_reqFailObj.response.toString() ==
+                                  Constants.typeImage ||
+                              _reqFailObj.response.toString() ==
+                                  Constants.typeReport))
+                        _showMessagePopup(_reqFailObj?.failureCause);
                     });
                     _submitUserMedicalDetailBloc.addIntoSubmitFileStream(null);
                   }
@@ -142,7 +153,7 @@ class _EnterAdditionalUserDetailScrState
           } else if (snapshot.data is RequestSuccess) {
             RequestSuccess data = snapshot.data;
             if (data.response != null && data.response) {
-              _navigateToNextScreen();
+              _navigateToNextScreen(data?.additionalData?.toString());
             }
             _submitUserMedicalDetailBloc.addIntoSubmitMedicalDetailStream(null);
           } else if (snapshot.data is RequestFailed) {
@@ -734,7 +745,9 @@ class _EnterAdditionalUserDetailScrState
                 maxLines: 2,
                 style: TextStyle(
                     fontSize: 18,
-                    color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+                    color: _hasTreatedPreviously
+                        ? PlunesColors.BLACKCOLOR.withOpacity(0.8)
+                        : PlunesColors.BLACKCOLOR.withOpacity(0.4)),
               ),
             ),
             Card(
@@ -757,6 +770,7 @@ class _EnterAdditionalUserDetailScrState
                       Flexible(
                           child: TextField(
                         maxLines: 10,
+                        readOnly: _hasTreatedPreviously ? false : true,
                         controller: _previousMedicalConditionController,
                         style: TextStyle(
                           color: PlunesColors.BLACKCOLOR,
@@ -860,16 +874,18 @@ class _EnterAdditionalUserDetailScrState
       "serviceId": widget.catalogueData?.serviceId,
       "reportUrls": _docUrls ?? [],
       "imageUrls": _imageUrls ?? [],
-      "videoUrls": [],
+      "videoUrls": _videoUrls ?? [],
       "treatedPreviously": _hasTreatedPreviously,
-      "description": _previousMedicalConditionController.text.trim(),
+      "description": _hasTreatedPreviously
+          ? _previousMedicalConditionController.text.trim()
+          : null,
       "additionalDetails": _additionalDetailController.text.trim()
     };
     // print("data $_postData");
     _submitUserMedicalDetailBloc.submitUserMedicalDetail(_postData);
   }
 
-  void _navigateToNextScreen() {
+  void _navigateToNextScreen(String reportId) {
     Future.delayed(Duration(milliseconds: 10)).then((value) {
       Navigator.pushReplacement(
           context,
@@ -877,6 +893,7 @@ class _EnterAdditionalUserDetailScrState
               builder: (context) => ViewSolutionsScreen(
                     searchQuery: widget.searchQuery,
                     catalogueData: widget.catalogueData,
+                    reportId: reportId,
                   )));
     });
   }
@@ -900,7 +917,7 @@ class _EnterAdditionalUserDetailScrState
           margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
         ),
         Container(
-          height: AppConfig.verticalBlockSize * 25,
+          height: 300,
           child: ListView.builder(
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,

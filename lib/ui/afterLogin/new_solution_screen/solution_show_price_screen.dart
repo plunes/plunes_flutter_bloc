@@ -1232,7 +1232,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
             ),
           ),
           Container(
-            height: AppConfig.verticalBlockSize * 25,
+            height: 300,
             child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,

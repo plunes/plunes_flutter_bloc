@@ -69,45 +69,52 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: widget.getAppBar(context, "Upload Video", true),
-        key: scaffoldKey,
-        body: Builder(
-          builder: (context) {
-            return StreamBuilder<RequestState>(
-                stream: widget?.submitUserMedicalDetailBloc?.uploadFileStream,
-                builder: (context, snapshot) {
-                  if (snapshot.data is RequestInProgress) {
-                    return CustomWidgets().getProgressIndicator();
-                  } else if (snapshot.data is RequestSuccess) {
-                    Future.delayed(Duration(milliseconds: 10)).then((value) {
-                      _showMessagePopup(
-                        PlunesStrings.uplaodSuccessMessage,
-                      );
-                    });
-                    RequestSuccess data = snapshot.data;
-                    if (data.additionalData != null &&
-                        data.additionalData.toString() == Constants.typeImage) {
-                      _setImageUrls(data.response);
-                    }
-                    widget?.submitUserMedicalDetailBloc
-                        ?.addIntoSubmitFileStream(null);
-                  } else if (snapshot.data is RequestFailed) {
-                    RequestFailed _reqFailObj = snapshot.data;
-                    Future.delayed(Duration(milliseconds: 10)).then((value) {
-                      _showMessagePopup(_reqFailObj?.failureCause);
-                    });
-                    widget?.submitUserMedicalDetailBloc
-                        ?.addIntoSubmitFileStream(null);
-                  }
-                  return _getBody();
+    return Material(
+      child: SafeArea(
+        child: StreamBuilder<RequestState>(
+            stream: widget?.submitUserMedicalDetailBloc?.uploadFileStream,
+            builder: (context, snapshot) {
+              if (snapshot.data is RequestInProgress) {
+                return CustomWidgets().getProgressIndicator();
+              } else if (snapshot.data is RequestSuccess) {
+                Future.delayed(Duration(milliseconds: 10)).then((value) {
+                  _showMessagePopup(PlunesStrings.uplaodSuccessMessage,
+                      shouldPop: false);
                 });
-          },
-        ),
+                RequestSuccess data = snapshot.data;
+                if (data.additionalData != null &&
+                    data.additionalData.toString() == Constants.typeVideo) {
+                  _setImageUrls(data.response);
+                }
+                widget?.submitUserMedicalDetailBloc
+                    ?.addIntoSubmitFileStream(null);
+              } else if (snapshot.data is RequestFailed) {
+                RequestFailed _reqFailObj = snapshot.data;
+                Future.delayed(Duration(milliseconds: 10)).then((value) {
+                  _showMessagePopup(_reqFailObj?.failureCause);
+                });
+                widget?.submitUserMedicalDetailBloc
+                    ?.addIntoSubmitFileStream(null);
+              }
+              return WillPopScope(
+                onWillPop: () async {
+                  Navigator.pop(context, _videoUrls);
+                  return true;
+                },
+                child: Scaffold(
+                  appBar: widget.getAppBar(context, "Upload Video", true),
+                  key: scaffoldKey,
+                  body: Builder(
+                    builder: (context) {
+                      return _getBody();
+                    },
+                  ),
+                ),
+              );
+            }),
+        bottom: false,
+        top: false,
       ),
-      bottom: false,
-      top: false,
     );
   }
 
@@ -132,7 +139,6 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
     return InkWell(
       onTap: () {
         _imagePicker?.showDialog(context);
-        widget?.submitUserMedicalDetailBloc?.addIntoSubmitFileStream(null);
         return;
       },
       onDoubleTap: () {},

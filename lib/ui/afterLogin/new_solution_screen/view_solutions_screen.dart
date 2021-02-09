@@ -29,10 +29,10 @@ import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_scr
 
 // ignore: must_be_immutable
 class ViewSolutionsScreen extends BaseActivity {
-  final String searchQuery;
+  final String searchQuery, reportId;
   final CatalogueData catalogueData;
 
-  ViewSolutionsScreen({this.catalogueData, this.searchQuery});
+  ViewSolutionsScreen({this.catalogueData, this.searchQuery, this.reportId});
 
   @override
   _ViewSolutionsScreenState createState() => _ViewSolutionsScreenState();
@@ -308,7 +308,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             ),
           ),
           Container(
-            height: AppConfig.verticalBlockSize * 25,
+            height: 300,
             child: ListView.builder(
               shrinkWrap: true,
               scrollDirection: Axis.horizontal,
@@ -473,7 +473,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
 
   void _getFacilities() {
     _searchSolutionBloc.getDocHosSolution(widget.catalogueData,
-        searchQuery: widget.searchQuery);
+        searchQuery: widget.searchQuery, userReportId: widget.reportId);
   }
 
   void _calculateMapData() {

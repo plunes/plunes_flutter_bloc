@@ -93,9 +93,9 @@ class SearchSolutionBloc extends BlocBase {
   }
 
   Future<RequestState> getDocHosSolution(final CatalogueData catalogueData,
-      {final String searchQuery}) async {
-    var result = await SearchedSolutionRepo()
-        .getDocHosSolution(catalogueData, searchQuery: searchQuery);
+      {final String searchQuery, String userReportId}) async {
+    var result = await SearchedSolutionRepo().getDocHosSolution(catalogueData,
+        searchQuery: searchQuery, userReportId: userReportId);
     addIntoDocHosStream(result);
     return result;
   }

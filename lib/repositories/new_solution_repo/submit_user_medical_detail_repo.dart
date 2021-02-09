@@ -27,12 +27,19 @@ class SubmitMedicalDetailRepo {
         postData: postData);
     if (result.isRequestSucceed) {
       bool isSuccess = false;
+      String reportData;
       if (result.response != null &&
           result.response.data != null &&
           result.response.data["success"] != null) {
         isSuccess = result.response.data["success"];
       }
-      return RequestSuccess(response: isSuccess);
+      if (result.response != null &&
+          result.response.data != null &&
+          result.response.data["data"] != null &&
+          result.response.data["data"]['_id'] != null) {
+        reportData = result.response.data["data"]['_id'];
+      }
+      return RequestSuccess(response: isSuccess, additionalData: reportData);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
@@ -55,7 +62,8 @@ class SubmitMedicalDetailRepo {
       return RequestSuccess(
           response: _medicalFileResponseModel, additionalData: fileType);
     } else {
-      return RequestFailed(failureCause: result.failureCause);
+      return RequestFailed(
+          failureCause: result.failureCause, response: fileType);
     }
   }
 }

@@ -36,16 +36,18 @@ class CommonWidgets {
 
   Widget getPremiumBenefitsWidget(PremiumBenefitData premiumBenefitData) {
     return Card(
+      color: Colors.transparent,
       margin: EdgeInsets.only(
           right: AppConfig.horizontalBlockSize * 3.5, bottom: 1.8),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-              bottomLeft: Radius.circular(16),
-              bottomRight: Radius.circular(16))),
+      // shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.only(
+      //         topLeft: Radius.circular(16),
+      //         topRight: Radius.circular(16),
+      //         bottomLeft: Radius.circular(16),
+      //         bottomRight: Radius.circular(16))),
       child: Container(
-        width: AppConfig.horizontalBlockSize * 50,
+        color: Colors.transparent,
+        width: 230,
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(16)),
           child: CustomWidgets().getImageFromUrl(
