@@ -33,6 +33,9 @@ class Constants {
   static const String typeVideo = "VIDEO";
   static const String typeReport = "REPORT";
 
+  static const String policyKey = "POLICY";
+  static const String cardKey = "CARD";
+
   static get hospital => 'Hospital';
 
   static get doctor => 'Doctor';

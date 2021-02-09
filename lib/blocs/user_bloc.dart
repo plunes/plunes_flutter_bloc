@@ -235,9 +235,10 @@ class UserBloc extends BlocBase {
     addStateInGenericStream(_premiumBenefitsStreamProvider, data);
   }
 
-  Future<RequestState> uploadInsuranceFile(File file) async {
+  Future<RequestState> uploadInsuranceFile(File file, {String fileType}) async {
     addStateInUploadInsuranceFileStream(RequestInProgress());
-    var result = await UserManager().uploadInsuranceFile(file);
+    var result =
+        await UserManager().uploadInsuranceFile(file, fileType: fileType);
     addStateInUploadInsuranceFileStream(result);
     return result;
   }

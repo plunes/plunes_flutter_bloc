@@ -44,6 +44,7 @@ class _EnterAdditionalUserDetailScrState
   TextEditingController _additionalDetailController,
       _previousMedicalConditionController;
   bool _hasTreatedPreviously = false;
+  bool _isInsuranceCovered = false;
   AnimationController _animationController;
   ImagePickerHandler _imagePicker;
   List<Map<String, dynamic>> _docUrls, _imageUrls, _videoUrls;
@@ -789,6 +790,105 @@ class _EnterAdditionalUserDetailScrState
               ),
             ),
             Container(
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.3),
+              width: double.infinity,
+              child: Text(
+                PlunesStrings.isInsuranceCovered,
+                textAlign: TextAlign.left,
+                maxLines: 2,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: () {},
+                    child: _isInsuranceCovered
+                        ? InkWell(
+                            child: _getSelectedButton(),
+                            onDoubleTap: () {},
+                            onTap: () {
+                              _isInsuranceCovered = true;
+                              _setState();
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                          )
+                        : InkWell(
+                            child: _getUnselectedButton(),
+                            onDoubleTap: () {},
+                            onTap: () {
+                              _isInsuranceCovered = true;
+                              _setState();
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                          ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 3),
+                    child: Text(
+                      "Yes",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#979797"))),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 10),
+                  ),
+                  InkWell(
+                    onTap: () {},
+                    child: _isInsuranceCovered
+                        ? InkWell(
+                            child: _getUnselectedButton(),
+                            onDoubleTap: () {},
+                            onTap: () {
+                              _isInsuranceCovered = false;
+                              _setState();
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                          )
+                        : InkWell(
+                            child: _getSelectedButton(),
+                            onDoubleTap: () {},
+                            onTap: () {
+                              _isInsuranceCovered = false;
+                              _setState();
+                            },
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                          ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 3),
+                    child: Text(
+                      "No",
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#979797"))),
+                    ),
+                  )
+                ],
+              ),
+            ),
+            Container(
               child: _getPremiumBenefitsForUserWidget(),
               margin: EdgeInsets.only(
                   top: AppConfig.verticalBlockSize * 2.5,
@@ -879,7 +979,8 @@ class _EnterAdditionalUserDetailScrState
       "description": _hasTreatedPreviously
           ? _previousMedicalConditionController.text.trim()
           : null,
-      "additionalDetails": _additionalDetailController.text.trim()
+      "additionalDetails": _additionalDetailController.text.trim(),
+      "insurance": _isInsuranceCovered
     };
     // print("data $_postData");
     _submitUserMedicalDetailBloc.submitUserMedicalDetail(_postData);

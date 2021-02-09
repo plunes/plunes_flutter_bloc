@@ -544,7 +544,7 @@ class UserManager {
     }
   }
 
-  Future<RequestState> uploadInsuranceFile(File file) async {
+  Future<RequestState> uploadInsuranceFile(File file, {String fileType}) async {
     Map<String, dynamic> postData = {
       "file": await MultipartFile.fromFile(file.path?.toString())
     };
@@ -552,6 +552,7 @@ class UserManager {
         url: Urls.UPLOAD_INSURANCE_URL,
         headerIncluded: true,
         isMultipartEnabled: true,
+        queryParameter: {"insuranceType": fileType},
         requestType: HttpRequestMethods.HTTP_POST,
         postData: FormData.fromMap(postData));
     if (result.isRequestSucceed) {

@@ -400,6 +400,8 @@ class PlunesStrings {
       "Have You Ever Been Treated Previously ?";
   static const String pleaseDescribePreviousCondition =
       "Please Describe Your Condition of previous treatment";
+  static const String isInsuranceCovered =
+      "Do you have your insurance covered ?";
   static const String whyUs = "Why us";
   static const String knowYourProcedure = "Know your procedure";
   static const String selectValidDocWarningText =

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:dotted_line/dotted_line.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -101,6 +102,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   Completer<GoogleMapController> _googleMapController = Completer();
   GoogleMapController _mapController;
   bool _webViewOpened = false;
+
   // List<ApplicationMeta> _availableUpiApps;
   TextEditingController _patientNameController,
       _ageController,
@@ -1289,7 +1291,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 //               }
 //             });
 //           } else {
-            _openWebView(_initPaymentResponse);
+          _openWebView(_initPaymentResponse);
           // }
         }
       } else {
@@ -2392,50 +2394,121 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
               style: TextStyle(fontSize: 14, color: PlunesColors.BLACKCOLOR),
             ),
           ),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 2.5),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(16)),
-                gradient: LinearGradient(colors: [
-                  Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
-                  Color(CommonMethods.getColorHexFromStr("#F6F6F6")),
-                ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-            child: InkWell(
-              onTap: () {
-                _imagePicker?.showDialog(context);
-              },
-              onDoubleTap: () {},
-              child: Container(
-                height: AppConfig.verticalBlockSize * 18,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Image.asset(
-                      PlunesImages.videoUploadIcon,
-                      height: 49,
-                      width: 49,
-                    ),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(
-                          top: AppConfig.verticalBlockSize * 1.8),
-                      child: Text(
-                        "Upload/Take Image",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR, fontSize: 12),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          )
+          Row(
+            children: [
+              Expanded(child: _getUploadImageCard()),
+              Expanded(child: _getUploadReportCard()),
+            ],
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _getUploadImageCard() {
+    return Container(
+      width: double.infinity,
+      padding:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2.5),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          gradient: LinearGradient(colors: [
+            Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+            Color(CommonMethods.getColorHexFromStr("#F6F6F6")),
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+      child: InkWell(
+        onTap: () {
+          _imagePicker?.showDialog(context);
+        },
+        onDoubleTap: () {},
+        child: Container(
+          height: AppConfig.verticalBlockSize * 18,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                PlunesImages.videoUploadIcon,
+                height: 49,
+                width: 49,
+              ),
+              Container(
+                width: double.infinity,
+                alignment: Alignment.center,
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+                child: Text(
+                  "Upload/Take Image",
+                  textAlign: TextAlign.center,
+                  style:
+                      TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 12),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _getUploadReportCard() {
+    return Container(
+      width: double.infinity,
+      padding:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2.5),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          gradient: LinearGradient(colors: [
+            Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+            Color(CommonMethods.getColorHexFromStr("#F6F6F6")),
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+      child: InkWell(
+        onTap: () {
+          FilePicker.getFile(type: FileType.any).then((value) {
+            if (value != null &&
+                value.path != null &&
+                value.path.trim().isNotEmpty &&
+                value.path.contains(".")) {
+              print("path ${value.path}");
+              String _fileExtension = value.path.split(".")?.last;
+              if (_fileExtension != null &&
+                  (_fileExtension.toLowerCase() ==
+                      Constants.pdfExtension.toLowerCase())) {
+                _uploadInsuranceFile(value,
+                    fileType: Constants.policyKey.toString());
+              } else {
+                _showMessagePopup(PlunesStrings.selectValidDocWarningText);
+              }
+            } else {
+              _showMessagePopup(PlunesStrings.selectValidDocWarningText);
+            }
+          });
+        },
+        onDoubleTap: () {},
+        child: Container(
+          height: AppConfig.verticalBlockSize * 18,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                PlunesImages.docUploadIcon,
+                height: 49,
+                width: 49,
+              ),
+              Container(
+                width: double.infinity,
+                alignment: Alignment.center,
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+                child: Text(
+                  "Upload Report",
+                  textAlign: TextAlign.center,
+                  style:
+                      TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 12),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -2560,10 +2633,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     _setState();
   }
 
-  void _uploadInsuranceFile(File file) {
+  void _uploadInsuranceFile(File file, {String fileType}) {
     _isFetchingDocHosInfo = true;
     _setState();
-    UserBloc().uploadInsuranceFile(file).then((value) {
+    UserBloc().uploadInsuranceFile(file, fileType: fileType).then((value) {
       _isFetchingDocHosInfo = false;
       _setState();
       if (value is RequestSuccess) {
@@ -2575,6 +2648,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         _showErrorMessage(value?.failureCause);
       }
     });
+  }
+
+  void _showMessagePopup(String message) {
+    if (mounted) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets()
+                .getInformativePopup(globalKey: scaffoldKey, message: message);
+          });
+    }
   }
 
   Widget _getEnterPolicyNumberWidget() {
@@ -2651,7 +2735,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   @override
   fetchImageCallBack(File _image) {
     if (_image != null && _image.path != null) {
-      _uploadInsuranceFile(_image);
+      _uploadInsuranceFile(_image, fileType: Constants.cardKey.toString());
     }
   }
 
