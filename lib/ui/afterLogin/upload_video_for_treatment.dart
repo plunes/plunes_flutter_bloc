@@ -11,6 +11,7 @@ import 'package:plunes/blocs/new_solution_blocs/user_medical_detail_bloc.dart';
 import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
+import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 
 // ignore: must_be_immutable
@@ -102,7 +103,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
                   return true;
                 },
                 child: Scaffold(
-                  appBar: widget.getAppBar(context, "Upload Video", true),
+                  appBar: getAppBar(context, "Upload Video", true),
                   key: scaffoldKey,
                   body: Builder(
                     builder: (context) {
@@ -116,6 +117,30 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
         top: false,
       ),
     );
+  }
+
+  Widget getAppBar(BuildContext context, String title, bool isIosBackButton,
+      {Function func}) {
+    return AppBar(
+        automaticallyImplyLeading: isIosBackButton,
+        backgroundColor: Colors.white,
+        brightness: Brightness.light,
+        iconTheme: IconThemeData(color: Colors.black),
+        centerTitle: true,
+        leading: isIosBackButton
+            ? IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  if (func != null) {
+                    func();
+                  }
+                  Navigator.pop(context, _videoUrls);
+                  return;
+                },
+              )
+            : Container(),
+        title: widget.createTextViews(
+            title, 18, colorsFile.black, TextAlign.center, FontWeight.w500));
   }
 
   _uploadVideo(File _image) {

@@ -41,6 +41,7 @@ import 'package:share/share.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+
 // import 'package:upi_pay/upi_pay.dart';
 import 'CommonMethods.dart';
 import 'app_config.dart';
@@ -3170,6 +3171,34 @@ class CustomWidgets {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Text("Allow Plunes to access your location."),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                FlatButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text("No")),
+                FlatButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: Text(
+                      "Yes",
+                      style: TextStyle(color: PlunesColors.GREENCOLOR),
+                    )),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget showPermissionPopUp(BuildContext context, String permissionName) {
+    return AlertDialog(
+      content: Container(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+                "Allow Plunes to access this device's ${permissionName?.split(".")?.last}."),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:permission/permission.dart';
+import 'package:plunes/Utils/permissionUtil.dart';
 import './ImagePickerDialog.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -17,6 +19,7 @@ class ImagePickerHandler {
   AnimationController _controller;
   ImagePickerListener _listener;
   bool _forVideo;
+  BuildContext _context;
 
   ImagePickerHandler(this._listener, this._controller, this._forVideo);
 
@@ -28,61 +31,110 @@ class ImagePickerHandler {
   }
 
   showDialog(BuildContext context) {
+    if (_context == null) _context = context;
     imagePicker.getImage(context);
   }
 
   openCamera() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker.pickImage(
-        source: ImageSource.camera, maxWidth: 1000, maxHeight: 1000);
-    if (image == null || image.path == null) {
-      return;
+    if (!await _hasCameraPermission()) {
+      // print("does not have camera permission");
+      await Future.delayed(Duration(milliseconds: 500));
+      await _requestCameraPermission();
+      if (!await _hasCameraPermission()) {
+        // print("denied camera permission");
+        return;
+      }
     }
-    print("cameraImagePath: " + image.path);
-    cropImage(image.path);
+    try {
+      var image = await ImagePicker().getImage(
+          source: ImageSource.camera, maxWidth: 1000, maxHeight: 1000);
+      if (image == null || image.path == null) {
+        return;
+      }
+      print("cameraImagePath: " + image.path);
+      cropImage(image.path);
 
-    /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
+      /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
 //    _listener.fetchImageCallBack(image);
+    } catch (e) {
+      print("error openCamera ${e.toString()}");
+    }
   }
 
   openCameraForVideo() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker.pickVideo(source: ImageSource.camera);
-    if (image == null || image.path == null) {
-      return;
+    if (!await _hasCameraPermission()) {
+      // print("does not have camera permission");
+      await Future.delayed(Duration(milliseconds: 500));
+      await _requestCameraPermission();
+      if (!await _hasCameraPermission()) {
+        // print("denied camera permission");
+        return;
+      }
     }
-    print("VideoCameraPath: " + image.path);
-    cropVideo(image.path);
+    try {
+      var image = await ImagePicker().getVideo(source: ImageSource.camera);
+      if (image == null || image.path == null) {
+        return;
+      }
+      // print("VideoCameraPath: " + image.path);
+      cropVideo(image.path);
 
-    /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
+      /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
 //    _listener.fetchImageCallBack(image);
+    } catch (e) {}
   }
 
   openGallery() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker.pickImage(
-        source: ImageSource.gallery, maxWidth: 1000, maxHeight: 1000);
-    if (image == null || image.path == null) {
-      return;
+    if (!await _hasStoragePermission()) {
+      // print("does not have storage permission");
+      await Future.delayed(Duration(milliseconds: 500));
+      await _requestStoragePermission();
+      if (!await _hasStoragePermission()) {
+        // print("denied storage permission");
+        return;
+      }
     }
-    print("GalleryImagePath: " + image.path);
-    cropImage(image.path);
+    try {
+      var image = await ImagePicker().getImage(
+          source: ImageSource.gallery, maxWidth: 1000, maxHeight: 1000);
+      if (image == null || image.path == null) {
+        return;
+      }
+      print("GalleryImagePath: " + image.path);
+      cropImage(image.path);
 
-    /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
-    //    _listener.fetchImageCallBack(image);
+      /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
+      //    _listener.fetchImageCallBack(image);
+    } catch (e) {
+      print("error openGallery ${e.toString()}");
+    }
   }
 
   openGalleryForVideo() async {
     imagePicker.dismissDialog();
-    var image = await ImagePicker.pickVideo(source: ImageSource.gallery);
-    if (image == null || image.path == null) {
-      return;
+    if (!await _hasStoragePermission()) {
+      // print("does not have storage permission");
+      await Future.delayed(Duration(milliseconds: 500));
+      await _requestStoragePermission();
+      if (!await _hasStoragePermission()) {
+        // print("denied storage permission");
+        return;
+      }
     }
-    print("VideoGalleryPath: " + image.path);
-    cropVideo(image.path);
+    try {
+      var image = await ImagePicker().getVideo(source: ImageSource.gallery);
+      if (image == null || image.path == null) {
+        return;
+      }
+      print("VideoGalleryPath: " + image.path);
+      cropVideo(image.path);
 
-    /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
+      /// Comment this line if you don't want to crop an image. and Uncomment bellow line for getting image path
 //    _listener.fetchImageCallBack(image);
+    } catch (e) {}
   }
 
   Future<File> cropImage(String imageFile) async {
@@ -100,6 +152,68 @@ class ImagePickerHandler {
     );
     _listener.fetchImageCallBack(mediaInfo.file);
     return mediaInfo.file;
+  }
+
+  Future<bool> _hasCameraPermission() async {
+    bool hasCameraPermission = false;
+    if (Platform.isIOS) {
+      PermissionStatus status =
+          await Permission.getSinglePermissionStatus(PermissionName.Camera);
+      // print("ios camera permission status $status");
+      hasCameraPermission = (status == PermissionStatus.allow ||
+          status == PermissionStatus.always ||
+          status == PermissionStatus.whenInUse);
+    } else if (Platform.isAndroid) {
+      var permissionList =
+          await Permission.getPermissionsStatus([PermissionName.Camera]);
+      permissionList.forEach((element) {
+        // print(
+        //     " ${element.permissionStatus} element.permissionName ${element.permissionName}");
+        if (element.permissionName == PermissionName.Camera &&
+            (element.permissionStatus == PermissionStatus.allow ||
+                element.permissionStatus == PermissionStatus.always ||
+                element.permissionStatus == PermissionStatus.whenInUse)) {
+          hasCameraPermission = true;
+        }
+      });
+    }
+    return hasCameraPermission;
+  }
+
+  Future<bool> _hasStoragePermission() async {
+    bool hasStoragePermission = false;
+    if (Platform.isIOS) {
+      PermissionStatus status =
+          await Permission.getSinglePermissionStatus(PermissionName.Storage);
+      // print("ios storage permission status $status");
+      hasStoragePermission = (status == PermissionStatus.allow ||
+          status == PermissionStatus.always ||
+          status == PermissionStatus.whenInUse);
+    } else if (Platform.isAndroid) {
+      var permissionList =
+          await Permission.getPermissionsStatus([PermissionName.Storage]);
+      permissionList.forEach((element) {
+        // print(
+        //     " ${element.permissionStatus} element.permissionName ${element.permissionName}");
+        if (element.permissionName == PermissionName.Storage &&
+            (element.permissionStatus == PermissionStatus.allow ||
+                element.permissionStatus == PermissionStatus.always ||
+                element.permissionStatus == PermissionStatus.whenInUse)) {
+          hasStoragePermission = true;
+        }
+      });
+    }
+    return hasStoragePermission;
+  }
+
+  Future<bool> _requestStoragePermission() {
+    return PermissionUtil.requestSpecificPermission(PermissionName.Storage,
+        context: _context);
+  }
+
+  Future<bool> _requestCameraPermission() {
+    return PermissionUtil.requestSpecificPermission(PermissionName.Camera,
+        context: _context);
   }
 }
 
