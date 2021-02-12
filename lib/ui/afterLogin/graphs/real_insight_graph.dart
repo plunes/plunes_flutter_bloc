@@ -1,6 +1,7 @@
 /// Example of a stacked area chart.
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/ui/afterLogin/graphs/circle_rend.dart';
@@ -29,17 +30,22 @@ class StackedAreaLineChart extends StatelessWidget {
       ignoring: true,
       child: new charts.LineChart(
         seriesList,
-        defaultRenderer:
-            new charts.LineRendererConfig(includeArea: true, stacked: true),
+        defaultRenderer: new charts.LineRendererConfig(
+          includeArea: true,
+          stacked: true,
+          includeLine: true,
+          includePoints: true,
+          roundEndCaps: true,
+        ),
         animate: animate,
         primaryMeasureAxis: new charts.NumericAxisSpec(
           tickProviderSpec: new charts.BasicNumericTickProviderSpec(
-              desiredTickCount: 3, zeroBound: false),
+              desiredTickCount: 4, zeroBound: false),
           showAxisLine: true,
           renderSpec: charts.SmallTickRendererSpec(
               labelRotation: 0,
               labelStyle: charts.TextStyleSpec(
-                color: charts.Color.white,
+                color: charts.Color.fromHex(code: "#9AA1A9"),
               ),
               axisLineStyle: charts.LineStyleSpec(
                 color: charts.Color.white,
@@ -48,11 +54,11 @@ class StackedAreaLineChart extends StatelessWidget {
         ),
         domainAxis: charts.NumericAxisSpec(
             tickProviderSpec: charts.BasicNumericTickProviderSpec(
-                desiredTickCount: 0, zeroBound: false),
+                desiredTickCount: 4, zeroBound: false),
             renderSpec: charts.SmallTickRendererSpec(
                 labelRotation: 0,
                 labelStyle: charts.TextStyleSpec(
-                  color: charts.Color.white,
+                  color: charts.Color.fromHex(code: "#9AA1A9"),
                 ),
                 axisLineStyle: charts.LineStyleSpec(
                   color: charts.Color.white,
@@ -69,20 +75,20 @@ class StackedAreaLineChart extends StatelessWidget {
           ]),
           new charts.LinePointHighlighter(
               symbolRenderer: CustomCircleSymbolRenderer()),
-          charts.ChartTitle('user',
+          charts.ChartTitle('Facility',
               behaviorPosition: charts.BehaviorPosition.start,
               innerPadding: 5,
               titleOutsideJustification:
                   charts.OutsideJustification.middleDrawArea,
               titleStyleSpec: charts.TextStyleSpec(
-                  color: charts.Color.white, fontSize: 14)),
-          new charts.ChartTitle('price',
+                  color: charts.Color.white, fontSize: 16)),
+          new charts.ChartTitle('Price',
               behaviorPosition: charts.BehaviorPosition.bottom,
-              innerPadding: 0,
+              innerPadding: 5,
               titleOutsideJustification:
                   charts.OutsideJustification.middleDrawArea,
               titleStyleSpec: charts.TextStyleSpec(
-                  color: charts.Color.white, fontSize: 14)),
+                  color: charts.Color.white, fontSize: 16)),
         ],
       ),
     );
@@ -99,22 +105,23 @@ class StackedAreaLineChart extends StatelessWidget {
 //    LinearSales(68,4),
 //    LinearSales(57,5)];
     points.forEach((element) {
-      print("element.x ${element.x}");
+      // print("element.x ${element.x}");
       _dataSeries
           .add(LinearSales(element.x?.toInt() ?? 0, element.y?.toInt() ?? 0));
     });
     return [
       new charts.Series<LinearSales, int>(
           id: 'Graph',
-          colorFn: (_, __) =>
-              charts.ColorUtil.fromDartColor(Colors.white.withOpacity(0.6)),
+          colorFn: (_, __) => charts.ColorUtil.fromDartColor(
+              Color(CommonMethods.getColorHexFromStr("#FF6C40"))
+                  .withOpacity(1)),
           domainFn: (LinearSales sales, _) => sales.user?.toInt() ?? 0,
           measureFn: (LinearSales sales, _) => sales.price?.toInt() ?? 0,
           data: _dataSeries,
           displayName: "Display name",
           areaColorFn: (_, s) => charts.ColorUtil.fromDartColor(
-              Color(CommonMethods.getColorHexFromStr("#FFFFF"))
-                  .withOpacity(0.2))),
+              Color(CommonMethods.getColorHexFromStr("#FF6C40"))
+                  .withOpacity(0.25))),
     ];
   }
 

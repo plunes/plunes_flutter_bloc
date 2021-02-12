@@ -328,600 +328,11 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     ],
                   ),
                 ),
-                Container(
-                  child: Column(
-                    children: <Widget>[
-                      StatefulBuilder(builder: (context, newState) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            // Container(
-                            //   margin: EdgeInsets.symmetric(
-                            //       horizontal: AppConfig.horizontalBlockSize * 3),
-                            //   child: Text(
-                            //     _realInsight?.serviceName ?? PlunesStrings.NA,
-                            //     style: TextStyle(
-                            //       color: Colors.white,
-                            //       fontSize: AppConfig.mediumFont,
-                            //     ),
-                            //     textAlign: TextAlign.center,
-                            //   ),
-                            // ),
-                            // Container(
-                            //   margin: EdgeInsets.symmetric(
-                            //       horizontal: AppConfig.horizontalBlockSize * 3),
-                            //   padding: EdgeInsets.only(
-                            //       left: AppConfig.horizontalBlockSize * 3,
-                            //       right: AppConfig.horizontalBlockSize * 3,
-                            //       top: AppConfig.verticalBlockSize * 2.5,
-                            //       bottom: AppConfig.verticalBlockSize * 1.2),
-                            //   child: Text(
-                            //     'Update your best price for maximum bookings',
-                            //     style: TextStyle(
-                            //         color: Colors.white,
-                            //         fontSize: AppConfig.mediumFont),
-                            //     textAlign: TextAlign.center,
-                            //   ),
-                            // ),
-                            Column(
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          AppConfig.horizontalBlockSize * 3),
-                                  child: SliderTheme(
-                                    data: SliderTheme.of(context).copyWith(
-                                      activeTrackColor: Color.lerp(
-                                          Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#CEFFE2")),
-                                          Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#01D35A")),
-                                          0.7),
-                                      inactiveTrackColor:
-                                          PlunesColors.WHITECOLOR,
-                                      trackShape: RoundedRectSliderTrackShape(),
-                                      trackHeight: 8.5,
-                                      thumbColor: PlunesColors.LIGHTGREENCOLOR,
-                                      thumbShape: SliderThumbShape(
-                                        enabledThumbRadius: 12,
-                                      ),
-                                      overlayColor:
-                                          PlunesColors.GREENCOLOR.withAlpha(32),
-                                      overlayShape: RoundSliderOverlayShape(
-                                          overlayRadius: 28.0),
-                                    ),
-                                    child: Slider(
-                                      value: sliderVal?.toDouble(),
-                                      min: _realInsight.min?.toDouble() ?? 0,
-                                      max: _realInsight.max?.toDouble() ??
-                                          ((_realInsight.min ?? 0) + 1),
-                                      divisions: 100,
-                                      onChanged: (newValue) {
-                                        if (shouldShowField) {
-                                          return;
-                                        }
-                                        newState(() {
-                                          try {
-                                            var firstVal = (_realInsight.max -
-                                                    _realInsight.min) /
-                                                70;
-                                            var secVal =
-                                                (newValue - _realInsight.min) /
-                                                    firstVal;
-                                            var thirdVal = 70 - secVal;
-                                            chancesPercent =
-                                                thirdVal?.floor()?.toDouble() ??
-                                                    0;
-                                          } catch (e) {
-                                            chancesPercent = 0;
-                                          }
-                                          sliderVal = newValue;
-                                          if (chancesPercent >= 70) {
-                                            chancesPercent = 70;
-                                          }
-                                        });
-                                      },
-                                      label: "${sliderVal.toStringAsFixed(1)}",
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                      horizontal:
-                                          AppConfig.horizontalBlockSize * 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Text(
-                                        ' \u20B9 ${(_realInsight.min)?.toStringAsFixed(0)}',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: AppConfig.mediumFont - 1,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      (half != null && half != 0)
-                                          ? Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: <Widget>[
-                                                Text(
-                                                  '${half?.toStringAsFixed(1) ?? ""}',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize:
-                                                          AppConfig.mediumFont -
-                                                              1,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                                StreamBuilder<Object>(
-                                                    stream:
-                                                        _streamForIcon?.stream,
-                                                    builder:
-                                                        (context, snapshot) {
-                                                      return Container(
-                                                        height: 15,
-                                                        child:
-                                                            AnimatedContainer(
-                                                          margin: EdgeInsets.only(
-                                                              top: _topMargin),
-                                                          duration: Duration(
-                                                              milliseconds:
-                                                                  600),
-                                                          curve:
-                                                              Curves.easeInOut,
-                                                          child: Icon(
-                                                            Icons.arrow_drop_up,
-                                                            color: PlunesColors
-                                                                .GREENCOLOR,
-                                                            size: 20,
-                                                          ),
-                                                        ),
-                                                      );
-                                                    }),
-                                                Text(
-                                                  'Recommended',
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize:
-                                                          AppConfig.mediumFont -
-                                                              1,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                              ],
-                                            )
-                                          : Container(),
-                                      Text(
-                                        ' \u20B9 ${_realInsight.max?.toStringAsFixed(0)}',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: AppConfig.mediumFont - 1,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                  ),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.symmetric(
-                                        vertical:
-                                            AppConfig.verticalBlockSize * 1.2,
-                                        horizontal:
-                                            AppConfig.horizontalBlockSize * 3),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            AppConfig.horizontalBlockSize * 15),
-                                    child: (_realInsight.suggested != null &&
-                                            _realInsight.suggested &&
-                                            shouldShowField)
-                                        ? Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: <Widget>[
-                                              Flexible(
-                                                child: TextField(
-                                                  controller: _priceController,
-                                                  inputFormatters: [
-                                                    WhitelistingTextInputFormatter
-                                                        .digitsOnly
-                                                  ],
-                                                  maxLines: 1,
-                                                  autofocus: true,
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  textAlignVertical:
-                                                      TextAlignVertical.bottom,
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Colors.white70,
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap: () {
-                                                  shouldShowField = false;
-                                                  newState(() {});
-                                                },
-                                                child: Container(
-                                                  margin: EdgeInsets.only(
-                                                      left: AppConfig
-                                                              .horizontalBlockSize *
-                                                          3),
-                                                  padding: EdgeInsets.all(5.0),
-                                                  alignment:
-                                                      Alignment.bottomRight,
-                                                  child: Icon(
-                                                    Icons.mode_edit,
-                                                    color:
-                                                        PlunesColors.GREENCOLOR,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          )
-                                        : Row(
-                                            mainAxisAlignment: (_realInsight
-                                                            .suggested !=
-                                                        null &&
-                                                    _realInsight.suggested &&
-                                                    shouldShowField)
-                                                ? MainAxisAlignment.end
-                                                : MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: <Widget>[
-                                              Flexible(
-                                                flex: 2,
-                                                child: Text(
-                                                  ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
-                                                  style: TextStyle(
-                                                      color: Colors.white70,
-                                                      fontSize:
-                                                          AppConfig.largeFont,
-                                                      fontWeight:
-                                                          FontWeight.w600),
-                                                ),
-                                              ),
-                                              (_realInsight.suggested != null &&
-                                                      _realInsight.suggested)
-                                                  ? Flexible(
-                                                      child: InkWell(
-                                                      onTap: () {
-                                                        shouldShowField = true;
-                                                        newState(() {});
-                                                      },
-                                                      child: Container(
-                                                        padding:
-                                                            EdgeInsets.all(5.0),
-                                                        alignment:
-                                                            Alignment.topCenter,
-                                                        child: Icon(
-                                                          Icons.mode_edit,
-                                                          color: PlunesColors
-                                                              .WHITECOLOR,
-                                                        ),
-                                                      ),
-                                                    ))
-                                                  : Container()
-                                            ],
-                                          )),
-                                FlatButton(
-                                    focusColor: Colors.transparent,
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onPressed: () {
-                                      if (_realInsight.suggested != null &&
-                                          _realInsight.suggested &&
-                                          shouldShowField) {
-                                        if (_priceController.text
-                                                .trim()
-                                                .isEmpty ||
-                                            _priceController.text
-                                                    .trim()
-                                                    .substring(0) ==
-                                                "0" ||
-                                            (double.tryParse(_priceController
-                                                    .text
-                                                    .trim()) <
-                                                1)) {
-                                          failureCause =
-                                              'Price must not be lesser than 1 or empty';
-                                          newState(() {});
-                                          return;
-                                        }
-                                        _docHosMainInsightBloc
-                                            .updateRealTimeInsightPriceStream(
-                                                RequestInProgress());
-                                        _docHosMainInsightBloc
-                                            .getUpdateRealTimeInsightPrice(
-                                                num.tryParse(_priceController
-                                                    .text
-                                                    .trim()),
-                                                _realInsight.solutionId,
-                                                _realInsight.serviceId,
-                                                isSuggestive: true,
-                                                suggestedPrice: num.tryParse(
-                                                    _priceController.text
-                                                        .trim()),
-                                                realInsight: _realInsight);
-                                      } else {
-                                        if (sliderVal == null ||
-                                            sliderVal == 0) {
-                                          failureCause = 'Price must not be 0.';
-                                          newState(() {});
-                                          return;
-                                        } else if (sliderVal ==
-                                            _realInsight.userPrice) {
-                                          failureCause =
-                                              'Sorry, Make sure Updated Price is not equal to Original Price !';
-                                          newState(() {});
-                                          return;
-                                        }
-                                        _docHosMainInsightBloc
-                                            .updateRealTimeInsightPriceStream(
-                                                RequestInProgress());
-                                        _docHosMainInsightBloc
-                                            .getUpdateRealTimeInsightPrice(
-                                                chancesPercent,
-                                                _realInsight.solutionId,
-                                                _realInsight.serviceId,
-                                                isSuggestive:
-                                                    (_realInsight.suggested !=
-                                                            null &&
-                                                        _realInsight.suggested),
-                                                suggestedPrice: sliderVal,
-                                                realInsight: _realInsight);
-                                      }
-                                    },
-                                    child: Container(
-                                        height: AppConfig.verticalBlockSize * 4,
-                                        width: double.infinity,
-                                        child: Center(
-                                          child: Text(
-                                            'Apply here',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontSize:
-                                                    AppConfig.largeFont + 2,
-                                                color: PlunesColors.GREENCOLOR),
-                                          ),
-                                        ))),
-                                failureCause != null
-                                    ? Container(
-                                        margin: EdgeInsets.only(
-                                            top: AppConfig.verticalBlockSize *
-                                                1.2,
-                                            left:
-                                                AppConfig.horizontalBlockSize *
-                                                    10,
-                                            right:
-                                                AppConfig.horizontalBlockSize *
-                                                    10),
-                                        child: Text(
-                                          failureCause,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: AppConfig.smallFont,
-                                              color: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      "#FF9194")),
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                        alignment: Alignment.center)
-                                    : Container(),
-                                chancesPercent != null
-                                    ? Container(
-                                        margin: EdgeInsets.only(
-                                            top: AppConfig.verticalBlockSize *
-                                                1.2,
-                                            bottom:
-                                                AppConfig.verticalBlockSize * 2,
-                                            left:
-                                                AppConfig.horizontalBlockSize *
-                                                    3,
-                                            right:
-                                                AppConfig.horizontalBlockSize *
-                                                    3),
-                                        child: Text(
-                                          'Chances of Conversion increases by',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: AppConfig.mediumFont,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(),
-                                Container(
-                                  width: AppConfig.horizontalBlockSize * 40,
-                                  height: AppConfig.verticalBlockSize * 12.5,
-                                  child: SfRadialGauge(axes: <RadialAxis>[
-                                    RadialAxis(
-                                        pointers: [
-                                          RangePointer(
-                                              value: chancesPercent == null ||
-                                                      chancesPercent == 0 ||
-                                                      chancesPercent < 0
-                                                  ? 0
-                                                  : double.parse(chancesPercent
-                                                      .toStringAsFixed(0)),
-                                              width: 0.25,
-                                              sizeUnit: GaugeSizeUnit.factor,
-                                              cornerStyle: CornerStyle.bothFlat,
-                                              gradient: SweepGradient(
-                                                  colors: <Color>[
-                                                    PlunesColors.GREENCOLOR,
-                                                    PlunesColors.GREENCOLOR
-                                                  ],
-                                                  stops: <double>[
-                                                    0.25,
-                                                    0.75
-                                                  ])),
-                                        ],
-                                        minimum: 0,
-                                        maximum: 70,
-                                        showLabels: false,
-                                        showTicks: false,
-                                        startAngle: 270,
-                                        endAngle: 270,
-                                        annotations: <GaugeAnnotation>[
-                                          GaugeAnnotation(
-                                              positionFactor: 0.1,
-                                              angle: 90,
-                                              widget: Text(
-                                                chancesPercent == null ||
-                                                        chancesPercent == 0 ||
-                                                        chancesPercent < 0
-                                                    ? "0 %"
-                                                    : "${chancesPercent.toStringAsFixed(0)} %",
-                                                style: TextStyle(
-                                                    fontSize: 16,
-                                                    color: PlunesColors
-                                                        .WHITECOLOR),
-                                              ))
-                                        ])
-                                  ]),
-                                ),
-                                (_realInsight.compRate == null ||
-                                        _realInsight.compRate <= 0)
-                                    ? Container()
-                                    : Container(
-                                        padding: EdgeInsets.symmetric(
-                                            horizontal:
-                                                AppConfig.horizontalBlockSize *
-                                                    10),
-                                        margin: EdgeInsets.only(
-                                            top: AppConfig.verticalBlockSize *
-                                                2),
-                                        child: LinearPercentIndicator(
-                                          animation: true,
-                                          lineHeight: 12.0,
-                                          animationDuration: 2000,
-                                          percent: (_realInsight.compRate !=
-                                                      null &&
-                                                  _realInsight.compRate != 0)
-                                              ? _realInsight.compRate / 100
-                                              : 0,
-                                          linearStrokeCap:
-                                              LinearStrokeCap.roundAll,
-                                          center: Text(
-                                            "${_realInsight.compRate?.toStringAsFixed(0) ?? 0} %",
-                                            style: TextStyle(
-                                                color: PlunesColors.BLACKCOLOR,
-                                                fontSize: 10),
-                                          ),
-                                          progressColor: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#F3CF3D")),
-                                        ),
-                                      ),
-                                (_realInsight.compRate == null ||
-                                        _realInsight.compRate <= 0)
-                                    ? Container()
-                                    : Container(
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: <Widget>[
-                                            Icon(
-                                              Icons.arrow_drop_up,
-                                              color: PlunesColors.GREENCOLOR,
-                                              size: 20,
-                                            ),
-                                            Text(
-                                              'Competition Rate',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize:
-                                                      AppConfig.mediumFont - 1,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                          ],
-                                        ),
-                                        margin: EdgeInsets.only(
-                                            bottom:
-                                                AppConfig.verticalBlockSize *
-                                                    2.5),
-                                      ),
-                                (_realInsight != null &&
-                                        _realInsight.dataPoints != null &&
-                                        _realInsight.dataPoints.isNotEmpty)
-                                    ? Container(
-                                        width: double.infinity,
-                                        height: 0.8,
-                                        margin: EdgeInsets.only(
-                                            left:
-                                                AppConfig.horizontalBlockSize *
-                                                    8,
-                                            right:
-                                                AppConfig.horizontalBlockSize *
-                                                    8,
-                                            bottom:
-                                                AppConfig.verticalBlockSize *
-                                                    1.5),
-                                        color: Colors.white.withOpacity(0.5),
-                                      )
-                                    : Container(),
-                                (_realInsight != null &&
-                                        _realInsight.dataPoints != null &&
-                                        _realInsight.dataPoints.isNotEmpty)
-                                    ? Container(
-                                        alignment: Alignment.topLeft,
-                                        margin: EdgeInsets.only(
-                                            left:
-                                                AppConfig.horizontalBlockSize *
-                                                    8,
-                                            right:
-                                                AppConfig.horizontalBlockSize *
-                                                    8,
-                                            bottom:
-                                                AppConfig.verticalBlockSize *
-                                                    3.5),
-                                        child: Text(
-                                          "Competition Insight",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            color: PlunesColors.WHITECOLOR,
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ],
-                        );
-                      }),
-                      (_realInsight != null &&
-                              _realInsight.dataPoints != null &&
-                              _realInsight.dataPoints.isNotEmpty)
-                          ? Container(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal:
-                                      AppConfig.horizontalBlockSize * 8),
-                              height: AppConfig.verticalBlockSize * 20,
-                              width: double.infinity,
-                              child: StackedAreaLineChart.withSampleData(
-                                  _realInsight.dataPoints,
-                                  _realInsight.userPrice),
-                            )
-                          : Container(),
-                    ],
-                  ),
-                ),
+                _getSliderWidget(),
+                _getGraphWidget(),
                 _getAddonAndSpecialOfferProviderWidget(),
+                _getFacilityProvidingOffersWidget(),
+                _getSubmitButton()
               ],
             ),
           );
@@ -1099,7 +510,784 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   }
 
   Widget _getAddonAndSpecialOfferProviderWidget() {
-    return Container();
+    return Container(
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text("Details",
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                        fontSize: 21, color: PlunesColors.WHITECOLOR)),
+                Expanded(
+                    child: Container(
+                  margin:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
+                  height: 0.8,
+                  width: double.infinity,
+                  color: Colors.white38,
+                ))
+              ],
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.all(8),
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                color: Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
+            child: Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 5),
+                    child: Text("Price",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 20, color: PlunesColors.WHITECOLOR)),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(2)),
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#535264")),
+                        border: Border.all(
+                            color: PlunesColors.WHITECOLOR, width: 0.8)),
+                    child: TextField(
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#9B9B9B"))),
+                      decoration: InputDecoration.collapsed(
+                          hintText: "Enter price",
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(
+                              fontSize: 12,
+                              color: Color(CommonMethods.getColorHexFromStr(
+                                  "#9B9B9B")))),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 5, top: AppConfig.verticalBlockSize * 1.5),
+                    child: Text("Technology/Technique",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 20, color: PlunesColors.WHITECOLOR)),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(2)),
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#535264")),
+                        border: Border.all(
+                            color: PlunesColors.WHITECOLOR, width: 0.8)),
+                    child: TextField(
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#9B9B9B"))),
+                      decoration: InputDecoration.collapsed(
+                          hintText: "Enter price",
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(
+                              fontSize: 12,
+                              color: Color(CommonMethods.getColorHexFromStr(
+                                  "#9B9B9B")))),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 5, top: AppConfig.verticalBlockSize * 1.5),
+                    child: Text("Add on's",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 20, color: PlunesColors.WHITECOLOR)),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 5, top: AppConfig.verticalBlockSize * 1.2),
+                    child: Text("Enter add on's for better conversion chances",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 14, color: PlunesColors.WHITECOLOR)),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(2)),
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#535264")),
+                        border: Border.all(
+                            color: PlunesColors.WHITECOLOR, width: 0.8)),
+                    child: TextField(
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#9B9B9B"))),
+                      decoration: InputDecoration.collapsed(
+                          hintText: "Enter price",
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(
+                              fontSize: 12,
+                              color: Color(CommonMethods.getColorHexFromStr(
+                                  "#9B9B9B")))),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        left: 5, top: AppConfig.verticalBlockSize * 1.5),
+                    child: Text("Special offers",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 20, color: PlunesColors.WHITECOLOR)),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(2)),
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#535264")),
+                        border: Border.all(
+                            color: PlunesColors.WHITECOLOR, width: 0.8)),
+                    child: TextField(
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                          fontSize: 12,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#9B9B9B"))),
+                      decoration: InputDecoration.collapsed(
+                          hintText: "Enter price",
+                          border: InputBorder.none,
+                          hintStyle: TextStyle(
+                              fontSize: 12,
+                              color: Color(CommonMethods.getColorHexFromStr(
+                                  "#9B9B9B")))),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getFacilityProvidingOffersWidget() {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            width: double.infinity,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                color: Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
+            child: Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 5),
+                    child: Text("Facility providing offers",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 16, color: PlunesColors.WHITECOLOR)),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 1.5),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#535264")),
+                            border: Border.all(
+                                color: PlunesColors.WHITECOLOR, width: 0.8)),
+                        child: Row(
+                          children: [
+                            Container(
+                              child: CustomWidgets().getImageFromUrl(""),
+                              height: 35,
+                              width: 35,
+                              margin: EdgeInsets.only(right: 15),
+                            ),
+                            Expanded(
+                              child: Text(
+                                "Some offer here",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: PlunesColors.WHITECOLOR),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    itemCount: 5,
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getSubmitButton() {
+    return Container(
+      margin: EdgeInsets.symmetric(
+          vertical: AppConfig.verticalBlockSize * 1.8,
+          horizontal: AppConfig.horizontalBlockSize * 30),
+      child: CustomWidgets().getRoundedButton(
+          plunesStrings.submit,
+          AppConfig.horizontalBlockSize * 8,
+          Color(CommonMethods.getColorHexFromStr("#25B281")),
+          AppConfig.horizontalBlockSize * 3,
+          AppConfig.verticalBlockSize * 1,
+          PlunesColors.WHITECOLOR,
+          borderColor: PlunesColors.SPARKLINGGREEN,
+          hasBorder: true),
+    );
+  }
+
+  Widget _getSliderWidget() {
+    return Container(
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.only(top: 10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          color: Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
+      child: StatefulBuilder(builder: (context, newState) {
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // Container(
+            //   margin: EdgeInsets.symmetric(
+            //       horizontal: AppConfig.horizontalBlockSize * 3),
+            //   child: Text(
+            //     _realInsight?.serviceName ?? PlunesStrings.NA,
+            //     style: TextStyle(
+            //       color: Colors.white,
+            //       fontSize: AppConfig.mediumFont,
+            //     ),
+            //     textAlign: TextAlign.center,
+            //   ),
+            // ),
+            // Container(
+            //   margin: EdgeInsets.symmetric(
+            //       horizontal: AppConfig.horizontalBlockSize * 3),
+            //   padding: EdgeInsets.only(
+            //       left: AppConfig.horizontalBlockSize * 3,
+            //       right: AppConfig.horizontalBlockSize * 3,
+            //       top: AppConfig.verticalBlockSize * 2.5,
+            //       bottom: AppConfig.verticalBlockSize * 1.2),
+            //   child: Text(
+            //     'Update your best price for maximum bookings',
+            //     style: TextStyle(
+            //         color: Colors.white,
+            //         fontSize: AppConfig.mediumFont),
+            //     textAlign: TextAlign.center,
+            //   ),
+            // ),
+            Column(
+              children: <Widget>[
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 3),
+                  child: SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      activeTrackColor: Color.lerp(
+                          Color(CommonMethods.getColorHexFromStr("#CEFFE2")),
+                          Color(CommonMethods.getColorHexFromStr("#01D35A")),
+                          0.7),
+                      inactiveTrackColor: PlunesColors.WHITECOLOR,
+                      trackShape: RoundedRectSliderTrackShape(),
+                      trackHeight: 8.5,
+                      thumbColor: PlunesColors.LIGHTGREENCOLOR,
+                      thumbShape: SliderThumbShape(
+                        enabledThumbRadius: 12,
+                      ),
+                      overlayColor: PlunesColors.GREENCOLOR.withAlpha(32),
+                      overlayShape:
+                          RoundSliderOverlayShape(overlayRadius: 28.0),
+                    ),
+                    child: Slider(
+                      value: sliderVal?.toDouble(),
+                      min: _realInsight.min?.toDouble() ?? 0,
+                      max: _realInsight.max?.toDouble() ??
+                          ((_realInsight.min ?? 0) + 1),
+                      divisions: 100,
+                      onChanged: (newValue) {
+                        if (shouldShowField) {
+                          return;
+                        }
+                        newState(() {
+                          try {
+                            var firstVal =
+                                (_realInsight.max - _realInsight.min) / 70;
+                            var secVal =
+                                (newValue - _realInsight.min) / firstVal;
+                            var thirdVal = 70 - secVal;
+                            chancesPercent = thirdVal?.floor()?.toDouble() ?? 0;
+                          } catch (e) {
+                            chancesPercent = 0;
+                          }
+                          sliderVal = newValue;
+                          if (chancesPercent >= 70) {
+                            chancesPercent = 70;
+                          }
+                        });
+                      },
+                      label: "${sliderVal.toStringAsFixed(1)}",
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        ' \u20B9 ${(_realInsight.min)?.toStringAsFixed(0)}',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: AppConfig.mediumFont - 1,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      (half != null && half != 0)
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  '${half?.toStringAsFixed(1) ?? ""}',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: AppConfig.mediumFont - 1,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                StreamBuilder<Object>(
+                                    stream: _streamForIcon?.stream,
+                                    builder: (context, snapshot) {
+                                      return Container(
+                                        height: 15,
+                                        child: AnimatedContainer(
+                                          margin:
+                                              EdgeInsets.only(top: _topMargin),
+                                          duration: Duration(milliseconds: 600),
+                                          curve: Curves.easeInOut,
+                                          child: Icon(
+                                            Icons.arrow_drop_up,
+                                            color: PlunesColors.GREENCOLOR,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                Text(
+                                  'Recommended',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: AppConfig.mediumFont - 1,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            )
+                          : Container(),
+                      Text(
+                        ' \u20B9 ${_realInsight.max?.toStringAsFixed(0)}',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: AppConfig.mediumFont - 1,
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                ),
+                Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 1.2,
+                        horizontal: AppConfig.horizontalBlockSize * 3),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 15),
+                    child: (_realInsight.suggested != null &&
+                            _realInsight.suggested &&
+                            shouldShowField)
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Flexible(
+                                child: TextField(
+                                  controller: _priceController,
+                                  inputFormatters: [
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  maxLines: 1,
+                                  autofocus: true,
+                                  keyboardType: TextInputType.number,
+                                  textAlignVertical: TextAlignVertical.bottom,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  shouldShowField = false;
+                                  newState(() {});
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      left: AppConfig.horizontalBlockSize * 3),
+                                  padding: EdgeInsets.all(5.0),
+                                  alignment: Alignment.bottomRight,
+                                  child: Icon(
+                                    Icons.mode_edit,
+                                    color: PlunesColors.GREENCOLOR,
+                                  ),
+                                ),
+                              )
+                            ],
+                          )
+                        : Row(
+                            mainAxisAlignment:
+                                (_realInsight.suggested != null &&
+                                        _realInsight.suggested &&
+                                        shouldShowField)
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: <Widget>[
+                              Flexible(
+                                flex: 2,
+                                child: Text(
+                                  ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
+                                  style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: AppConfig.largeFont,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                              (_realInsight.suggested != null &&
+                                      _realInsight.suggested)
+                                  ? Flexible(
+                                      child: InkWell(
+                                      onTap: () {
+                                        shouldShowField = true;
+                                        newState(() {});
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(5.0),
+                                        alignment: Alignment.topCenter,
+                                        child: Icon(
+                                          Icons.mode_edit,
+                                          color: PlunesColors.WHITECOLOR,
+                                        ),
+                                      ),
+                                    ))
+                                  : Container()
+                            ],
+                          )),
+                FlatButton(
+                    focusColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onPressed: () {
+                      if (_realInsight.suggested != null &&
+                          _realInsight.suggested &&
+                          shouldShowField) {
+                        if (_priceController.text.trim().isEmpty ||
+                            _priceController.text.trim().substring(0) == "0" ||
+                            (double.tryParse(_priceController.text.trim()) <
+                                1)) {
+                          failureCause =
+                              'Price must not be lesser than 1 or empty';
+                          newState(() {});
+                          return;
+                        }
+                        _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
+                            RequestInProgress());
+                        _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
+                            num.tryParse(_priceController.text.trim()),
+                            _realInsight.solutionId,
+                            _realInsight.serviceId,
+                            isSuggestive: true,
+                            suggestedPrice:
+                                num.tryParse(_priceController.text.trim()),
+                            realInsight: _realInsight);
+                      } else {
+                        if (sliderVal == null || sliderVal == 0) {
+                          failureCause = 'Price must not be 0.';
+                          newState(() {});
+                          return;
+                        } else if (sliderVal == _realInsight.userPrice) {
+                          failureCause =
+                              'Sorry, Make sure Updated Price is not equal to Original Price !';
+                          newState(() {});
+                          return;
+                        }
+                        _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
+                            RequestInProgress());
+                        _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
+                            chancesPercent,
+                            _realInsight.solutionId,
+                            _realInsight.serviceId,
+                            isSuggestive: (_realInsight.suggested != null &&
+                                _realInsight.suggested),
+                            suggestedPrice: sliderVal,
+                            realInsight: _realInsight);
+                      }
+                    },
+                    child: Container(
+                        height: AppConfig.verticalBlockSize * 4,
+                        width: double.infinity,
+                        child: Center(
+                          child: Text(
+                            'Apply here',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: AppConfig.largeFont + 2,
+                                color: PlunesColors.GREENCOLOR),
+                          ),
+                        ))),
+                failureCause != null
+                    ? Container(
+                        margin: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 1.2,
+                            left: AppConfig.horizontalBlockSize * 10,
+                            right: AppConfig.horizontalBlockSize * 10),
+                        child: Text(
+                          failureCause,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: AppConfig.smallFont,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#FF9194")),
+                              fontWeight: FontWeight.w600),
+                        ),
+                        alignment: Alignment.center)
+                    : Container(),
+                chancesPercent != null
+                    ? Container(
+                        margin: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 1.2,
+                            bottom: AppConfig.verticalBlockSize * 2,
+                            left: AppConfig.horizontalBlockSize * 3,
+                            right: AppConfig.horizontalBlockSize * 3),
+                        child: Text(
+                          'Chances of Conversion increases by',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: AppConfig.mediumFont,
+                          ),
+                        ),
+                      )
+                    : Container(),
+                Container(
+                  width: AppConfig.horizontalBlockSize * 40,
+                  height: AppConfig.verticalBlockSize * 12.5,
+                  child: SfRadialGauge(axes: <RadialAxis>[
+                    RadialAxis(
+                        pointers: [
+                          RangePointer(
+                              value: chancesPercent == null ||
+                                      chancesPercent == 0 ||
+                                      chancesPercent < 0
+                                  ? 0
+                                  : double.parse(
+                                      chancesPercent.toStringAsFixed(0)),
+                              width: 0.25,
+                              sizeUnit: GaugeSizeUnit.factor,
+                              cornerStyle: CornerStyle.bothFlat,
+                              gradient: SweepGradient(colors: <Color>[
+                                PlunesColors.GREENCOLOR,
+                                PlunesColors.GREENCOLOR
+                              ], stops: <double>[
+                                0.25,
+                                0.75
+                              ])),
+                        ],
+                        minimum: 0,
+                        maximum: 70,
+                        showLabels: false,
+                        showTicks: false,
+                        startAngle: 270,
+                        endAngle: 270,
+                        annotations: <GaugeAnnotation>[
+                          GaugeAnnotation(
+                              positionFactor: 0.1,
+                              angle: 90,
+                              widget: Text(
+                                chancesPercent == null ||
+                                        chancesPercent == 0 ||
+                                        chancesPercent < 0
+                                    ? "0 %"
+                                    : "${chancesPercent.toStringAsFixed(0)} %",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: PlunesColors.WHITECOLOR),
+                              ))
+                        ])
+                  ]),
+                ),
+                (_realInsight.compRate == null || _realInsight.compRate <= 0)
+                    ? Container()
+                    : Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 10),
+                        margin: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 2),
+                        child: LinearPercentIndicator(
+                          animation: true,
+                          lineHeight: 12.0,
+                          animationDuration: 2000,
+                          percent: (_realInsight.compRate != null &&
+                                  _realInsight.compRate != 0)
+                              ? _realInsight.compRate / 100
+                              : 0,
+                          linearStrokeCap: LinearStrokeCap.roundAll,
+                          center: Text(
+                            "${_realInsight.compRate?.toStringAsFixed(0) ?? 0} %",
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR, fontSize: 10),
+                          ),
+                          progressColor: Color(
+                              CommonMethods.getColorHexFromStr("#F3CF3D")),
+                        ),
+                      ),
+                (_realInsight.compRate == null || _realInsight.compRate <= 0)
+                    ? Container()
+                    : Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.arrow_drop_up,
+                              color: PlunesColors.GREENCOLOR,
+                              size: 20,
+                            ),
+                            Text(
+                              'Competition Rate',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: AppConfig.mediumFont - 1,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 2.5),
+                      ),
+                (_realInsight != null &&
+                        _realInsight.dataPoints != null &&
+                        _realInsight.dataPoints.isNotEmpty)
+                    ? Container(
+                        width: double.infinity,
+                        height: 0.8,
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 8,
+                            right: AppConfig.horizontalBlockSize * 8,
+                            bottom: AppConfig.verticalBlockSize * 1.5),
+                        color: Colors.white.withOpacity(0.5),
+                      )
+                    : Container(),
+                (_realInsight != null &&
+                        _realInsight.dataPoints != null &&
+                        _realInsight.dataPoints.isNotEmpty)
+                    ? Container(
+                        alignment: Alignment.topLeft,
+                        margin: EdgeInsets.only(
+                            left: AppConfig.horizontalBlockSize * 8,
+                            right: AppConfig.horizontalBlockSize * 8,
+                            bottom: AppConfig.verticalBlockSize * 3.5),
+                        child: Text(
+                          "Competition Insight",
+                          textAlign: TextAlign.left,
+                          style: TextStyle(
+                            color: PlunesColors.WHITECOLOR,
+                            fontWeight: FontWeight.normal,
+                            fontSize: 16,
+                          ),
+                        ),
+                      )
+                    : Container(),
+              ],
+            ),
+          ],
+        );
+      }),
+    );
+  }
+
+  Widget _getGraphWidget() {
+    return Container(
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.only(top: 10),
+      width: double.infinity,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          color: Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
+      child: (_realInsight != null &&
+              _realInsight.dataPoints != null &&
+              _realInsight.dataPoints.isNotEmpty)
+          ? Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 2),
+              height: 324,
+              width: double.infinity,
+              child: StackedAreaLineChart.withSampleData(
+                  _realInsight.dataPoints, _realInsight.userPrice),
+            )
+          : Container(),
+    );
   }
 }
 

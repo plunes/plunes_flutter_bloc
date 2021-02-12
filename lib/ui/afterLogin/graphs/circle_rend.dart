@@ -3,6 +3,7 @@ import 'package:charts_flutter/flutter.dart';
 import 'package:charts_flutter/src/text_style.dart' as style;
 import 'package:flutter/cupertino.dart';
 import 'package:charts_flutter/src/text_element.dart' as tseee;
+import 'package:flutter/material.dart';
 
 class CustomCircleSymbolRenderer extends CircleSymbolRenderer {
   @override
@@ -16,8 +17,8 @@ class CustomCircleSymbolRenderer extends CircleSymbolRenderer {
         dashPattern: dashPattern,
         fillColor: fillColor,
         fillPattern: fillPattern,
-        strokeColor: strokeColor,
-        strokeWidthPx: strokeWidthPx);
+        strokeColor: Color.fromHex(code: "#25B281"),
+        strokeWidthPx: 7.5);
     var textStyle = style.TextStyle();
     textStyle.color = Color.white;
     textStyle.fontSize = 13;
@@ -25,13 +26,13 @@ class CustomCircleSymbolRenderer extends CircleSymbolRenderer {
       "You are here",
       style: textStyle,
     );
-//    canvas.drawRect(
-//        Rectangle(
-//            bounds.left - 34,
-//            bounds.top - 30,
-//            bounds.width + t.measurement.horizontalSliceWidth,
-//            bounds.height + 10),
-//        fill: Color.white);
+    // canvas.drawRect(
+    //     Rectangle(
+    //         bounds.left - 34,
+    //         bounds.top - 30,
+    //         bounds.width + t.measurement.horizontalSliceWidth,
+    //         bounds.height + 10),
+    //     fill: Color.white);
     canvas.drawText(
         tseee.TextElement(
           "You are here",
@@ -39,5 +40,14 @@ class CustomCircleSymbolRenderer extends CircleSymbolRenderer {
         ),
         (bounds.left - 30).round(),
         (bounds.top - 28).round());
+    final points = [
+      Point(bounds.left + 4, 0),
+      Point(bounds.left + 4, bounds.bottom),
+    ];
+    canvas.drawLine(
+        points: points,
+        roundEndCaps: true,
+        strokeWidthPx: 3,
+        stroke: Color.fromHex(code: "#25B281"));
   }
 }

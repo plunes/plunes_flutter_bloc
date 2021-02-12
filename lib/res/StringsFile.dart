@@ -81,7 +81,7 @@ class PlunesStrings {
   static const String NA = "NA";
   static const String negotiateForBestPrice =
       "Discover The Prices Of Your Medical Treatment In One Click ";
-  static const String previousActivities = "Previous Activities";
+  static const String previousActivities = "Activity";
   static const String noSolutionsAvailable = "No solutions available";
   static const String searchSolutions = "";
   static const String consultationNotAvailable = "Consultation not available";
@@ -407,8 +407,7 @@ class PlunesStrings {
   static const String selectValidDocWarningText =
       "Please select a valid document.Allowed format is .pdf";
   static const String close = "Close";
-
-  static var selectedFacilityIcon;
+  static const String bookNowText = "Book Now";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

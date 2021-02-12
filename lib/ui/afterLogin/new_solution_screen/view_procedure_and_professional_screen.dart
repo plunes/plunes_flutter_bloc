@@ -13,6 +13,7 @@ import 'package:plunes/models/new_solution_model/professional_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
+import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
@@ -92,6 +93,7 @@ class _ViewProcedureAndProfessionalState
           Expanded(
             child: SingleChildScrollView(child: _getWholeBodyWidget()),
           ),
+          _getBookNowButton()
         ],
       ),
     );
@@ -705,5 +707,36 @@ class _ViewProcedureAndProfessionalState
                         Constants.doctor.toString().toLowerCase()),
                   )));
     }
+  }
+
+  Widget _getBookNowButton() {
+    return Card(
+      margin: EdgeInsets.all(0),
+      child: Container(
+          margin: EdgeInsets.only(
+              left: AppConfig.horizontalBlockSize * 32,
+              right: AppConfig.horizontalBlockSize * 32,
+              bottom: AppConfig.verticalBlockSize * 2,
+              top: AppConfig.verticalBlockSize * 1),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SolutionBiddingScreen(
+                          searchQuery:
+                              widget?.procedureData?.familyName ?? "")));
+            },
+            onDoubleTap: () {},
+            child: CustomWidgets().getRoundedButton(
+                PlunesStrings.bookNowText,
+                AppConfig.horizontalBlockSize * 8,
+                PlunesColors.PARROTGREEN,
+                AppConfig.horizontalBlockSize * 3,
+                AppConfig.verticalBlockSize * 1.3,
+                PlunesColors.WHITECOLOR,
+                hasBorder: false),
+          )),
+    );
   }
 }
