@@ -263,6 +263,20 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                                       BorderRadius.all(Radius.circular(10))),
                             ),
                             _getBenefitsWidget(),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 1.2,
+                                  bottom: AppConfig.verticalBlockSize * 1.8,
+                                  right: AppConfig.horizontalBlockSize * 1.2),
+                              child: Text(
+                                _searchedDocResults?.title ??
+                                    "We have discovered these top facilities near you",
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontSize: 18),
+                              ),
+                            ),
                             _getSolutionListWidget(),
                           ],
                         ),
@@ -336,28 +350,32 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                 margin: EdgeInsets.symmetric(
                     horizontal: AppConfig.horizontalBlockSize * 20,
                     vertical: AppConfig.verticalBlockSize * 1),
-                child: InkWell(
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MoreFacilityScreen(
-                                catalogueData:
-                                    _searchedDocResults.catalogueData,
-                                docHosSolution: _searchedDocResults.solution,
-                                searchSolutionBloc: _searchSolutionBloc,
-                              ))).then((value) {
-                    _getFacilities();
-                  }),
-                  child: CustomWidgets().getRoundedButton(
-                      PlunesStrings.discoverMoreFacilityButtonText,
-                      AppConfig.horizontalBlockSize * 8,
-                      PlunesColors.WHITECOLOR,
-                      AppConfig.horizontalBlockSize * 3,
-                      AppConfig.verticalBlockSize * 1,
-                      Color(CommonMethods.getColorHexFromStr("#25B281")),
-                      borderColor:
-                          Color(CommonMethods.getColorHexFromStr("#25B281")),
-                      hasBorder: true),
+                child: Container(
+                  margin:
+                      EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
+                  child: InkWell(
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => MoreFacilityScreen(
+                                  catalogueData:
+                                      _searchedDocResults.catalogueData,
+                                  docHosSolution: _searchedDocResults.solution,
+                                  searchSolutionBloc: _searchSolutionBloc,
+                                ))).then((value) {
+                      _getFacilities();
+                    }),
+                    child: CustomWidgets().getRoundedButton(
+                        PlunesStrings.discoverMoreFacilityButtonText,
+                        AppConfig.horizontalBlockSize * 8,
+                        PlunesColors.WHITECOLOR,
+                        AppConfig.horizontalBlockSize * 3,
+                        AppConfig.verticalBlockSize * 1,
+                        Color(CommonMethods.getColorHexFromStr("#25B281")),
+                        borderColor:
+                            Color(CommonMethods.getColorHexFromStr("#25B281")),
+                        hasBorder: true),
+                  ),
                 ),
               );
             }

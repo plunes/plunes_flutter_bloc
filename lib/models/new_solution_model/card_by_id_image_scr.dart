@@ -92,86 +92,81 @@ class _WhyUsCardsByIdScreenState extends BaseState<WhyUsCardsByIdScreen> {
   }
 
   Widget _getPage(Description desc) {
-    print(desc.image);
-    return Column(
-      children: [
-        Container(
-          height: AppConfig.verticalBlockSize * 40,
-          width: double.infinity,
-          child: _imageFittedBox(desc.image ?? ""),
-        ),
+    // print(desc.image);
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            height: AppConfig.verticalBlockSize * 40,
+            width: double.infinity,
+            child: _imageFittedBox(desc?.image ?? ""),
+          ),
 
-        // text label
-        Container(
-          margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 4,
-              left: AppConfig.horizontalBlockSize * 4),
-          // width: AppConfig.horizontalBlockSize * 80,
-          child: Text(
-            _whyUsByIdModel.data.title ?? "",
-            maxLines: 3,
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              fontSize: AppConfig.extraLargeFont,
-              fontWeight: FontWeight.bold,
+          // text label
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 4,
+                left: AppConfig.horizontalBlockSize * 4,
+                right: AppConfig.horizontalBlockSize * 4),
+            // width: AppConfig.horizontalBlockSize * 80,
+            child: Text(
+              _whyUsByIdModel.data.title ?? "",
+              // maxLines: 3,
+              textAlign: TextAlign.left,
+              style: TextStyle(
+                fontSize: AppConfig.extraLargeFont,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
 
-        // paragraph text
-        Container(
-          margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 3,
-              left: AppConfig.horizontalBlockSize * 4),
-          child: Text(
-            desc.content ?? "",
-            textAlign: TextAlign.left,
-            maxLines: 4,
-            style: TextStyle(
-              fontSize: AppConfig.largeFont,
+          // paragraph text
+          Container(
+            alignment: Alignment.centerLeft,
+            margin: EdgeInsets.only(
+                top: AppConfig.verticalBlockSize * 3,
+                left: AppConfig.horizontalBlockSize * 4,
+                right: AppConfig.horizontalBlockSize * 4),
+            child: Text(
+              desc?.content ?? "",
+              textAlign: TextAlign.left,
+              // maxLines: 4,
+              style: TextStyle(
+                fontSize: AppConfig.largeFont,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _getBody() {
-    return Stack(
+    return Column(
       children: [
-        Positioned.fill(child: _getPager()),
-        Positioned(
-          bottom: 0.0,
-          left: 0.0,
-          right: 0.0,
-          child: Container(
-            margin: EdgeInsets.only(
-              bottom: AppConfig.verticalBlockSize * 3,
-            ),
-            child: _roundedButton(
-                'Book Your Procedure', Color(0xff25B281), context),
+        Expanded(child: _getPager()),
+        Container(
+          margin: EdgeInsets.only(
+            bottom: AppConfig.verticalBlockSize * 1,
           ),
+          child: StreamBuilder<Object>(
+              stream: _dotStreamUpdater.stream,
+              builder: (context, snapshot) {
+                return DotsIndicator(
+                    position: _currentPage?.toDouble(),
+                    decorator: DotsDecorator(
+                        activeColor: PlunesColors.BLACKCOLOR,
+                        color: PlunesColors.GREYCOLOR),
+                    dotsCount: _whyUsByIdModel?.data?.description?.length ?? 0);
+              }),
         ),
-        Positioned(
-          bottom: 0.0,
-          left: 0.0,
-          right: 0.0,
-          child: Container(
-            margin: EdgeInsets.only(
-              bottom: AppConfig.verticalBlockSize * 12,
-            ),
-            child: StreamBuilder<Object>(
-                stream: _dotStreamUpdater.stream,
-                builder: (context, snapshot) {
-                  return DotsIndicator(
-                      position: _currentPage?.toDouble(),
-                      decorator: DotsDecorator(
-                          activeColor: PlunesColors.BLACKCOLOR,
-                          color: PlunesColors.GREYCOLOR),
-                      dotsCount:
-                          _whyUsByIdModel?.data?.description?.length ?? 0);
-                }),
+        Container(
+          margin: EdgeInsets.only(
+            bottom: AppConfig.verticalBlockSize * 3,
           ),
+          child:
+              _roundedButton('Book Your Procedure', Color(0xff25B281), context),
         ),
       ],
     );

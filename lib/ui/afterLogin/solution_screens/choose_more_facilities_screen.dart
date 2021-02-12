@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
@@ -92,6 +93,9 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   String _userTypeFilter = Constants.hospital.toString();
 
   String _locationFilter = _nearMeKey;
+  IconGenerator _iconGen;
+  BitmapDescriptor _hosImage2XGreenBgDesc;
+  Set<Marker> _markers = {};
 
   _getMoreFacilities() {
     _failureCause = null;
@@ -103,8 +107,44 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
         userTypeFilter: _userTypeFilter);
   }
 
+  _addMarkers() {
+    // print("markers called");
+    _markers = {};
+    List<MoreFacility> _allFacilities = [];
+    if (_catalogues != null && _catalogues.isNotEmpty) {
+      _allFacilities = _catalogues;
+    }
+    if (_selectedItemList != null && _selectedItemList.isNotEmpty) {
+      _allFacilities = _selectedItemList;
+    }
+    _allFacilities = _allFacilities.toSet()?.toList(growable: true);
+    // print("marker length earlier ${_markers?.length}");
+    if (_allFacilities != null && _allFacilities.isNotEmpty) {
+      _markers = _allFacilities.where((e) {
+        return e.professionalId != null &&
+            e.professionalId.trim().isNotEmpty &&
+            e.latitude != null &&
+            e.latitude.isNotEmpty &&
+            e.longitude != null &&
+            e.longitude.isNotEmpty;
+      }).map((e) {
+        return Marker(
+            markerId: MarkerId(e.professionalId),
+            icon: _hosImage2XGreenBgDesc,
+            onTap: () => _viewProfile(e),
+            position: LatLng(double.tryParse(e.latitude) ?? 0.0,
+                double.tryParse(e.longitude) ?? 0.0),
+            infoWindow: InfoWindow(
+                title: e.name ?? '',
+                snippet: "${e.distance?.toStringAsFixed(1)} km"));
+      }).toSet();
+    }
+    // print("marker length after ${_markers?.length}");
+  }
+
   @override
   void initState() {
+    _markers = {};
     _user = UserManager().getUserDetails();
     _scrollParent = false;
     _searchSolutionBloc = widget.searchSolutionBloc;
@@ -115,6 +155,12 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
     _catalogues = [];
     _selectedItemList = [];
     _endReached = false;
+    _iconGen = IconGenerator();
+    _iconGen
+        .getBytesFromAsset(PlunesImages.hosImage2XGreenBg, 180)
+        .then((value) {
+      _hosImage2XGreenBgDesc = BitmapDescriptor.fromBytes(value);
+    });
     _getMoreFacilities();
     super.initState();
   }
@@ -190,6 +236,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   }
 
   Widget _getBody() {
+    // print("_markers $_markers");
     return StreamBuilder<RequestState>(
         stream: _searchSolutionBloc.getMoreFacilitiesStream(),
         initialData: (_catalogues == null || _catalogues.isEmpty)
@@ -225,6 +272,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
             }
             pageIndex++;
             _searchSolutionBloc.addIntoMoreFacilitiesStream(null);
+            _addMarkers();
           } else if (snapShot.data is RequestFailed) {
             RequestFailed _requestFailed = snapShot.data;
             pageIndex = SearchSolutionBloc.initialIndex;
@@ -256,6 +304,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                             _mapController = mapController;
                             _googleMapController.complete(_mapController);
                           },
+                          markers: _markers ?? {},
                           initialCameraPosition: CameraPosition(
                               target: LatLng(double.parse(_user.latitude),
                                   double.parse(_user.longitude)),
@@ -452,8 +501,8 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                           viewportFraction: 1.0,
                           scrollDirection: Axis.horizontal,
                           onPageChanged: (index, _) {
-                            print(
-                                "$index current index now upcoming${_currentDotPosition.toInt()}");
+                            // print(
+                            //     "$index current index now upcoming${_currentDotPosition.toInt()}");
                             if (_currentDotPosition.toInt() != index) {
                               _currentDotPosition = index.toDouble();
                               _carouselStreamController?.add(null);
@@ -587,6 +636,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
     if (_catalogues == null || _catalogues.isEmpty) {
       _failureCause = PlunesStrings.emptyStr;
     }
+    _addMarkers();
     _selectUnselectController.add(null);
     _searchSolutionBloc.addIntoMoreFacilitiesStream(null);
   }

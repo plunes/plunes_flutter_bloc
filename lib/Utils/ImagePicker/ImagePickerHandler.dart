@@ -88,6 +88,7 @@ class ImagePickerHandler {
 
   openGallery() async {
     imagePicker.dismissDialog();
+    // print("exceeded 2");
     if (!await _hasStoragePermission()) {
       // print("does not have storage permission");
       await Future.delayed(Duration(milliseconds: 500));
@@ -97,6 +98,7 @@ class ImagePickerHandler {
         return;
       }
     }
+    // print("exceeded");
     try {
       var image = await ImagePicker().getImage(
           source: ImageSource.gallery, maxWidth: 1000, maxHeight: 1000);
@@ -150,6 +152,8 @@ class ImagePickerHandler {
       quality: VideoQuality.DefaultQuality,
       deleteOrigin: false, // It's false by default
     );
+    print("file size is ${mediaInfo?.filesize}");
+    print("file duration is ${mediaInfo?.duration}");
     _listener.fetchImageCallBack(mediaInfo.file);
     return mediaInfo.file;
   }
@@ -184,7 +188,7 @@ class ImagePickerHandler {
     bool hasStoragePermission = false;
     if (Platform.isIOS) {
       PermissionStatus status =
-          await Permission.getSinglePermissionStatus(PermissionName.Storage);
+          await Permission.getSinglePermissionStatus(PermissionName.Camera);
       // print("ios storage permission status $status");
       hasStoragePermission = (status == PermissionStatus.allow ||
           status == PermissionStatus.always ||
@@ -207,7 +211,8 @@ class ImagePickerHandler {
   }
 
   Future<bool> _requestStoragePermission() {
-    return PermissionUtil.requestSpecificPermission(PermissionName.Storage,
+    return PermissionUtil.requestSpecificPermission(
+        Platform.isAndroid ? PermissionName.Storage : PermissionName.Camera,
         context: _context);
   }
 

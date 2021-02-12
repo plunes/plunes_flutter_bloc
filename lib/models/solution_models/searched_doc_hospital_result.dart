@@ -5,9 +5,10 @@ class SearchedDocResults {
   DocHosSolution solution;
   CatalogueData catalogueData;
   String msg;
+  String title;
 
   SearchedDocResults(
-      {this.success, this.solution, this.catalogueData, this.msg});
+      {this.success, this.solution, this.catalogueData, this.msg, this.title});
 
   SearchedDocResults.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -18,6 +19,7 @@ class SearchedDocResults {
         ? CatalogueData.fromJson(json['data']['service'])
         : null;
     msg = json['msg'];
+    title = json['title'];
   }
 
   Map<String, dynamic> toJson() {

@@ -30,6 +30,8 @@ class MoreFacilityResponse {
 class MoreFacility {
   String sId, professionalId;
 
+  String longitude, latitude;
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -56,7 +58,9 @@ class MoreFacility {
       this.distance,
       this.rating,
       this.experience,
-      this.professionalId});
+      this.professionalId,
+      this.longitude,
+      this.latitude});
 
   MoreFacility.fromJson(Map<String, dynamic> json) {
     num expr = 0;
@@ -73,6 +77,14 @@ class MoreFacility {
     rating = json['rating'];
     professionalId = json['_id'];
     experience = expr;
+    if (json["location"] != null &&
+        json["location"]["coordinates"] != null &&
+        json["location"]["coordinates"].isNotEmpty) {
+      longitude = json["location"]["coordinates"]?.first?.toString();
+      if (json["location"]["coordinates"].length > 1) {
+        latitude = json["location"]["coordinates"][1]?.toString();
+      }
+    }
   }
 
   Map<String, dynamic> toJson() {
