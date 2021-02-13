@@ -1283,7 +1283,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                   horizontal: AppConfig.horizontalBlockSize * 2),
               height: 324,
               width: double.infinity,
-              child: StackedAreaLineChart.withSampleData(
+              child: StaticallyProvidedTicks.withSampleData(
                   _realInsight.dataPoints, _realInsight.userPrice),
             )
           : Container(),
