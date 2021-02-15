@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -19,6 +20,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/hos_popup_scr/real_insight_popup_scr.dart';
 import '../../../Utils/custom_widgets.dart';
 import 'package:showcaseview/showcaseview.dart';
@@ -848,6 +850,7 @@ class _HospitalOverviewScreenState
   }
 
   _openRealTimeInsightPriceUpdateWidget(final RealInsight realInsight) {
+    realInsight.compRate = 25;
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -1275,97 +1278,110 @@ class _HospitalOverviewScreenState
                 ),
                 Container(
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(right: 4),
-                          child: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Additional Details of the service ",
-                                  maxLines: 2,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      color: PlunesColors.BLACKCOLOR,
-                                      fontSize: 18),
+                      (data.userReport != null &&
+                              data.userReport.additionalDetails != null &&
+                              data.userReport.additionalDetails
+                                  .trim()
+                                  .isNotEmpty)
+                          ? Expanded(
+                              child: Container(
+                              margin: EdgeInsets.only(right: 4),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      "Additional Details of the service",
+                                      maxLines: 3,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: PlunesColors.BLACKCOLOR,
+                                          fontSize: 18),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 12),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                        gradient: LinearGradient(
+                                            colors: [
+                                          Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#FEFEFE")),
+                                          Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#F6F6F6")),
+                                        ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter)),
+                                    alignment: Alignment.topLeft,
+                                    child: Text(
+                                      data.userReport?.additionalDetails ?? "",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#4E4E4E"))),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ))
+                          : Container(),
+                      (data.userReport != null &&
+                              data.userReport.description != null &&
+                              data.userReport.description.trim().isNotEmpty)
+                          ? Expanded(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 4),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        "Previous Treatment Detail's",
+                                        maxLines: 3,
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            color: PlunesColors.BLACKCOLOR,
+                                            fontSize: 18),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 12),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 4),
+                                      decoration: BoxDecoration(
+                                          gradient: LinearGradient(
+                                              colors: [
+                                            Color(CommonMethods
+                                                .getColorHexFromStr("#FEFEFE")),
+                                            Color(CommonMethods
+                                                .getColorHexFromStr("#F6F6F6")),
+                                          ],
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter)),
+                                      alignment: Alignment.topLeft,
+                                      child: Text(
+                                        data.userReport?.description ?? "",
+                                        textAlign: TextAlign.left,
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr(
+                                                    "#4E4E4E"))),
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
-                              Container(
-                                margin: EdgeInsets.only(top: 12),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        colors: [
-                                      Color(CommonMethods.getColorHexFromStr(
-                                          "#FEFEFE")),
-                                      Color(CommonMethods.getColorHexFromStr(
-                                          "#F6F6F6")),
-                                    ],
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter)),
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut nibh aliquam erat voluptat ut wisi enim ad minim veniam, quis exe",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#4E4E4E"))),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 4),
-                          child: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Additional Details of the service ",
-                                  maxLines: 2,
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      color: PlunesColors.BLACKCOLOR,
-                                      fontSize: 18),
-                                ),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(top: 12),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        colors: [
-                                      Color(CommonMethods.getColorHexFromStr(
-                                          "#FEFEFE")),
-                                      Color(CommonMethods.getColorHexFromStr(
-                                          "#F6F6F6")),
-                                    ],
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter)),
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut nibh aliquam erat voluptat ut wisi enim ad minim veniam, quis exe",
-                                  textAlign: TextAlign.left,
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#4E4E4E"))),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      )
+                            )
+                          : Container(),
                     ],
                   ),
                 ),
@@ -1390,7 +1406,7 @@ class _HospitalOverviewScreenState
                               color: Color(
                                   CommonMethods.getColorHexFromStr("#01D35A"))),
                         ),
-                        Icon(Icons.keyboard_arrow_down,
+                        Icon(Icons.keyboard_arrow_up,
                             color: Color(
                                 CommonMethods.getColorHexFromStr("#01D35A")),
                             size: 15)
@@ -1453,12 +1469,49 @@ class _HospitalOverviewScreenState
   Widget _getMediaWidget(RealInsight data) {
     return Container(
       margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+      child: Row(
+        children: [
+          (data.userReport != null &&
+                  data.userReport.videoUrl != null &&
+                  data.userReport.videoUrl.isNotEmpty)
+              ? Expanded(child: _getVideoWidget(data))
+              : Container(),
+          (data.userReport != null &&
+                  data.userReport.imageUrl != null &&
+                  data.userReport.imageUrl.isNotEmpty)
+              ? Expanded(child: _getPhotosWidget(data))
+              : Container(),
+          (data.userReport != null &&
+                  data.userReport.reportUrl != null &&
+                  data.userReport.reportUrl.isNotEmpty)
+              ? Expanded(child: _getDocumentWidget(data))
+              : Container()
+        ],
+      ),
+    );
+  }
+
+  _launch(String url) {
+    LauncherUtil.launchUrl(url);
+  }
+
+  Widget _getVideoWidget(RealInsight data) {
+    // print("data?.userReport?.videoUrl?.first?.thumbnail ${data?.userReport?.videoUrl?.first?.thumbnail}");
+    return InkWell(
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onTap: () {
+        if (data.userReport.videoUrl.first.url != null) {
+          _launch(data.userReport.videoUrl.first.url);
+        }
+      },
+      onDoubleTap: () {},
       child: Column(
         children: [
           Container(
             alignment: Alignment.topLeft,
             child: Text(
-              "Photos/Video",
+              "Video",
               textAlign: TextAlign.left,
               style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
             ),
@@ -1467,63 +1520,160 @@ class _HospitalOverviewScreenState
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.2),
             height: AppConfig.verticalBlockSize * 12,
             alignment: Alignment.centerLeft,
-            width: double.infinity,
-            child: ListView.builder(
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              scrollDirection: Axis.horizontal,
-              itemCount: (data.images.length > 1) ? 2 : data.images,
-              itemBuilder: (context, index) {
-                if (index == 1) {
-                  return Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Colors.red),
-                        width: AppConfig.horizontalBlockSize * 30,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          child: SizedBox.expand(
-                            child: CustomWidgets()
-                                .getImageFromUrl("", boxFit: BoxFit.cover),
-                          ),
-                        ),
-                      ),
-                      data.images.length > 2
-                          ? Positioned.fill(
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "+${data.images.length}",
-                                  style: TextStyle(
-                                      color: PlunesColors.GREYCOLOR,
-                                      fontSize: 60),
-                                ),
-                              ),
-                            )
-                          : Container()
-                    ],
-                  );
-                }
-                return Container(
-                  margin: EdgeInsets.only(right: 5),
+            child: Stack(
+              children: [
+                Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      color: Colors.red),
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
                   width: AppConfig.horizontalBlockSize * 30,
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(12)),
                     child: SizedBox.expand(
-                      child: CustomWidgets()
-                          .getImageFromUrl("", boxFit: BoxFit.cover),
+                      child: CustomWidgets().getImageFromUrl(
+                          data?.userReport?.videoUrl?.first?.thumbnail ?? "",
+                          boxFit: BoxFit.cover),
                     ),
                   ),
-                );
-              },
+                ),
+              ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _getPhotosWidget(RealInsight data) {
+    return Container(
+      margin: EdgeInsets.only(left: 4),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () {
+          List<Photo> photos = [];
+          data.userReport.imageUrl.forEach((element) {
+            if (element == null ||
+                element.isEmpty ||
+                !(element.contains("http"))) {
+            } else {
+              photos.add(Photo(assetName: element));
+            }
+          });
+          if (photos != null && photos.isNotEmpty) {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => PageSlider(photos, 0)));
+          }
+        },
+        onDoubleTap: () {},
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.topLeft,
+              child: Text(
+                "Photos",
+                textAlign: TextAlign.left,
+                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.2),
+              height: AppConfig.verticalBlockSize * 12,
+              alignment: Alignment.centerLeft,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    width: AppConfig.horizontalBlockSize * 30,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      child: SizedBox.expand(
+                        child: CustomWidgets().getImageFromUrl(
+                            data.userReport?.imageUrl?.first ?? '',
+                            boxFit: BoxFit.cover),
+                      ),
+                    ),
+                  ),
+                  data.userReport.imageUrl.length > 1
+                      ? Positioned.fill(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "+${data.userReport.imageUrl.length}",
+                              style: TextStyle(
+                                  color: PlunesColors.GREYCOLOR, fontSize: 60),
+                            ),
+                          ),
+                        )
+                      : Container()
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getDocumentWidget(RealInsight data) {
+    return Container(
+      margin: EdgeInsets.only(left: 4),
+      child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        onTap: () {
+          if (data.userReport.reportUrl.first != null) {
+            _launch(data.userReport.reportUrl.first);
+          }
+        },
+        onDoubleTap: () {},
+        child: Column(
+          children: [
+            Container(
+              alignment: Alignment.topLeft,
+              child: Text(
+                "Report",
+                textAlign: TextAlign.left,
+                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.2),
+              height: AppConfig.verticalBlockSize * 12,
+              alignment: Alignment.centerLeft,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(12))),
+                    width: AppConfig.horizontalBlockSize * 30,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      child: SizedBox.expand(
+                        child: Image.asset(
+                          plunesImages.pdfIcon1,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  // data.userReport.reportUrl.length > 1
+                  //     ? Positioned.fill(
+                  //         child: Container(
+                  //           alignment: Alignment.center,
+                  //           child: Text(
+                  //             "+${data.userReport.reportUrl.length}",
+                  //             style: TextStyle(
+                  //                 color: PlunesColors.GREYCOLOR, fontSize: 60),
+                  //           ),
+                  //         ),
+                  //       )
+                  //     : Container()
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1734,40 +1884,25 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                         ),
                       )
                     : Container(),
-                // ((_realInsight != null &&
-                //             _realInsight.expired != null &&
-                //             _realInsight.expired) ||
-                //         (_realInsight != null &&
-                //             _realInsight.booked != null &&
-                //             _realInsight.booked) ||
-                //         showShowWidget())
-                //     ? Container()
-                //     :
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    FlatButtonLinks(
+                Container(
+                  margin: EdgeInsets.only(
+                      right: AppConfig.horizontalBlockSize * 8, top: 5),
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () => widget.openInsightPopup(),
+                    onDoubleTap: () {},
+                    child: CustomWidgets().getRoundedButton(
                         PlunesStrings.kindlyUpdateYourPrice,
-                        AppConfig.smallFont + 2,
-                        null,
-                        0,
-                        true,
-                        () => widget.openInsightPopup()),
-                    InkWell(
-                      onTap: () => widget.openInsightPopup(),
-                      highlightColor: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.only(
-                            left: .1, right: 6.0, top: 6.0, bottom: 6.0),
-                        child: Icon(
-                          Icons.arrow_forward,
-                          color: PlunesColors.GREENCOLOR,
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                  ],
+                        AppConfig.horizontalBlockSize * 8,
+                        PlunesColors.WHITECOLOR,
+                        AppConfig.horizontalBlockSize * 1,
+                        AppConfig.verticalBlockSize * 1,
+                        Color(CommonMethods.getColorHexFromStr("#01D35A")),
+                        borderColor:
+                            Color(CommonMethods.getColorHexFromStr("#01D35A")),
+                        hasBorder: true),
+                  ),
                 ),
                 ((_realInsight != null &&
                             _realInsight.expired != null &&

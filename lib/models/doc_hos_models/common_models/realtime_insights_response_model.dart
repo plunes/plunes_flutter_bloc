@@ -1,4 +1,4 @@
-import 'dart:convert';
+import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
 
 class RealTimeInsightsResponse {
   bool success;
@@ -44,7 +44,7 @@ class RealInsight {
   num userPrice, compRate, distance, recommendation, min, max;
   int createdAt;
   List<DataPoint> dataPoints;
-  final List<String> images=["","","",""];
+  final List<String> images = ["", "", "", ""];
 
   @override
   String toString() {
@@ -52,6 +52,7 @@ class RealInsight {
   }
 
   bool suggested;
+  UserReport userReport;
 
   RealInsight(
       {this.solutionId,
@@ -79,7 +80,8 @@ class RealInsight {
       this.recommendation,
       this.min,
       this.max,
-      this.isCardOpened});
+      this.isCardOpened,
+      this.userReport});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
 //    print("json insight $json");
@@ -114,6 +116,10 @@ class RealInsight {
     min = json['min'];
     max = json['max'];
     isCardOpened = false;
+    print("json['userReport'] ${json['userReport']}");
+    if (json['userReport'] != null) {
+      userReport = UserReport.fromJson(json['userReport']);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -147,5 +153,69 @@ class DataPoint {
 //    id = json['solutionId'];
     x = json['x'];
     y = json['y'];
+  }
+}
+
+class UserReport {
+  String reportType;
+  bool treatedPreviously, haveInsurance;
+  String id;
+  List<String> reportUrl, imageUrl;
+  List<UploadedReportUrl> videoUrl;
+  int createdAt;
+  String serviceId;
+  String userId;
+  String description, additionalDetails;
+
+  UserReport(
+      {this.imageUrl,
+      this.serviceId,
+      this.description,
+      this.videoUrl,
+      this.id,
+      this.additionalDetails,
+      this.createdAt,
+      this.haveInsurance,
+      this.reportType,
+      this.reportUrl,
+      this.treatedPreviously,
+      this.userId});
+
+  UserReport.fromJson(Map<String, dynamic> json) {
+    reportType = json['reportType'];
+    treatedPreviously = json['treatedPreviously'];
+    haveInsurance = json['insurance'];
+    id = json['_id'];
+    if (json['imageUrl'] != null && json['imageUrl'].isNotEmpty) {
+      imageUrl = [];
+      json['imageUrl'].forEach((element) {
+        if (element != null &&
+            element["imageUrl"] != null &&
+            element["imageUrl"].toString().isNotEmpty) {
+          imageUrl.add(element["imageUrl"].toString());
+        }
+      });
+    }
+    if (json['reportUrl'] != null && json['reportUrl'].isNotEmpty) {
+      reportUrl = [];
+      json['reportUrl'].forEach((element) {
+        if (element != null &&
+            element["reportUrl"] != null &&
+            element["reportUrl"].toString().isNotEmpty) {
+          reportUrl.add(element["reportUrl"].toString());
+        }
+      });
+    }
+    if (json["videoUrl"] != null && json["videoUrl"].isNotEmpty) {
+      videoUrl = [];
+      json['videoUrl'].forEach((element) {
+        videoUrl.add(UploadedReportUrl.fromJson(element));
+      });
+    }
+    createdAt = json['createdAt'];
+    serviceId = json['serviceId'];
+    userId = json['userId'];
+    description = json['description'];
+    additionalDetails = json['additionalDetails'];
   }
 }

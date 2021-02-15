@@ -29,7 +29,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
     with TickerProviderStateMixin, ImagePickerListener {
   AnimationController _animationController;
   ImagePickerHandler _imagePicker;
-  List<Map<String, dynamic>> _videoUrls;
+  List<UploadedReportUrl> _videoUrls;
 
   @override
   void initState() {
@@ -196,7 +196,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
     if (_medicalFileResponseModel.data != null &&
         _medicalFileResponseModel.data.reports != null &&
         _medicalFileResponseModel.data.reports.isNotEmpty) {
-      _videoUrls.add(_medicalFileResponseModel.data.reports.first.toJson());
+      _videoUrls.add(_medicalFileResponseModel.data.reports.first);
     }
   }
 }

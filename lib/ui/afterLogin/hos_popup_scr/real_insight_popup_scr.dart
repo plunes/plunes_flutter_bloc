@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -11,6 +12,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/graphs/real_insight_graph.dart';
 import 'dart:math' as math;
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -55,7 +57,6 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
         sliderVal = _realInsight.min;
         half = _realInsight.min;
       }
-//      print("half $half  ye wala sliderVal $sliderVal  _realInsight.recommendation ${_realInsight.recommendation} _realInsight.userPrice ${_realInsight.userPrice}");
     } else if (_realInsight.suggested != null && _realInsight.suggested) {
       sliderVal = _realInsight.userPrice.toInt().toDouble();
       half = _realInsight.userPrice.toInt().toDouble();
@@ -92,6 +93,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       bottom: false,
       child: Scaffold(
         // appBar: widget.getAppBar(context, PlunesStrings.realTimePrediction, true),
+        key: scaffoldKey,
         body: Builder(
           builder: (context) {
             return Container(
@@ -120,8 +122,18 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
         chancesPercent = 70;
       }
     } catch (e) {
-      print("Breaking here val");
+      // print("Breaking here val");
     }
+  }
+
+  _showSnackBar(String message) {
+    if (mounted)
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets()
+                .getInformativePopup(globalKey: scaffoldKey, message: message);
+          });
   }
 
   Widget _getBody() {
@@ -138,62 +150,66 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
           }
           if (snapShot.data is RequestFailed) {
             RequestFailed requestFailed = snapShot.data;
-            String failureCause = requestFailed.failureCause;
-            return Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    margin:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
-                    height: AppConfig.verticalBlockSize * 10,
-                    child: Image.asset(PlunesImages.plunesCommonGreenBgImage),
-                  ),
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 2.5),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 3),
-                    child: Text(
-                      failureCause ?? plunesStrings.somethingWentWrong,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: PlunesColors.WHITECOLOR,
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal),
-                    ),
-                  ),
-                  Container(
-                    height: AppConfig.verticalBlockSize * 6,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(16),
-                          bottomRight: Radius.circular(16)),
-                      child: FlatButton(
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          splashColor:
-                              PlunesColors.SPARKLINGGREEN.withOpacity(.1),
-                          focusColor: Colors.transparent,
-                          onPressed: () => Navigator.pop(context),
-                          child: Container(
-                              height: AppConfig.verticalBlockSize * 6,
-                              width: double.infinity,
-                              child: Center(
-                                child: Text(
-                                  'OK',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: AppConfig.mediumFont,
-                                      color: PlunesColors.SPARKLINGGREEN),
-                                ),
-                              ))),
-                    ),
-                  ),
-                ],
-              ),
-            );
+            final String message = requestFailed.failureCause;
+            _docHosMainInsightBloc?.updateRealTimeInsightPriceStream(null);
+            Future.delayed(Duration(milliseconds: 10)).then((value) {
+              _showSnackBar(message);
+            });
+            // return Container(
+            //   child: Column(
+            //     mainAxisAlignment: MainAxisAlignment.center,
+            //     crossAxisAlignment: CrossAxisAlignment.center,
+            //     children: <Widget>[
+            //       Container(
+            //         margin:
+            //             EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+            //         height: AppConfig.verticalBlockSize * 10,
+            //         child: Image.asset(PlunesImages.plunesCommonGreenBgImage),
+            //       ),
+            //       Container(
+            //         margin: EdgeInsets.symmetric(
+            //             vertical: AppConfig.verticalBlockSize * 2.5),
+            //         padding: EdgeInsets.symmetric(
+            //             horizontal: AppConfig.horizontalBlockSize * 3),
+            //         child: Text(
+            //           failureCause ?? plunesStrings.somethingWentWrong,
+            //           textAlign: TextAlign.center,
+            //           style: TextStyle(
+            //               color: PlunesColors.WHITECOLOR,
+            //               fontSize: 16,
+            //               fontWeight: FontWeight.normal),
+            //         ),
+            //       ),
+            //       Container(
+            //         height: AppConfig.verticalBlockSize * 6,
+            //         child: ClipRRect(
+            //           borderRadius: BorderRadius.only(
+            //               bottomLeft: Radius.circular(16),
+            //               bottomRight: Radius.circular(16)),
+            //           child: FlatButton(
+            //               highlightColor: Colors.transparent,
+            //               hoverColor: Colors.transparent,
+            //               splashColor:
+            //                   PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+            //               focusColor: Colors.transparent,
+            //               onPressed: () => Navigator.pop(context),
+            //               child: Container(
+            //                   height: AppConfig.verticalBlockSize * 6,
+            //                   width: double.infinity,
+            //                   child: Center(
+            //                     child: Text(
+            //                       'OK',
+            //                       textAlign: TextAlign.center,
+            //                       style: TextStyle(
+            //                           fontSize: AppConfig.mediumFont,
+            //                           color: PlunesColors.SPARKLINGGREEN),
+            //                     ),
+            //                   ))),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // );
           }
           return Container(
             margin: EdgeInsets.symmetric(
@@ -202,7 +218,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
               children: [
                 Container(
                   alignment: Alignment.centerLeft,
-                  child: Text("User Name",
+                  child: Text(
+                      CommonMethods.getStringInCamelCase(
+                          _realInsight?.userName),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -211,13 +229,13 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                      "is looking for MRI is looking for MRI is looking for MRI is looking for MRI",
-                      maxLines: 2,
+                      "is looking for MRI is looking for ${_realInsight?.serviceName ?? ''}",
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                           fontSize: 21, color: PlunesColors.WHITECOLOR)),
                 ),
-                1 == 1
+                _realInsight?.userReport?.haveInsurance ?? false
                     ? Container(
                         alignment: Alignment.centerLeft,
                         child: Text("(Have insurance)",
@@ -249,62 +267,77 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     ],
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.all(8),
-                  margin: EdgeInsets.only(top: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      color:
-                          Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Additional Details of the service",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 16, color: PlunesColors.WHITECOLOR)),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 8),
-                        child: Text(
-                            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut nibh aliquam erat voluptat ut wisi enim ad minim veniam, quis exe",
-                            style: TextStyle(
-                                fontSize: 14, color: PlunesColors.WHITECOLOR)),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: EdgeInsets.all(8),
-                  margin: EdgeInsets.only(top: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                      color:
-                          Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
-                  child: Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Previous Treatment Detail's",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 16, color: PlunesColors.WHITECOLOR)),
-                      ),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 8),
-                        child: Text(
-                            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut nibh aliquam erat voluptat ut wisi enim ad minim veniam, quis exe",
-                            style: TextStyle(
-                                fontSize: 14, color: PlunesColors.WHITECOLOR)),
-                      ),
-                    ],
-                  ),
-                ),
+                (_realInsight.userReport != null &&
+                        _realInsight.userReport.additionalDetails != null &&
+                        _realInsight.userReport.additionalDetails
+                            .trim()
+                            .isNotEmpty)
+                    ? Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#2D2C3E"))),
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Additional Details of the service",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: PlunesColors.WHITECOLOR)),
+                            ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.only(top: 8),
+                              child: Text(
+                                  _realInsight?.userReport?.additionalDetails ??
+                                      "",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: PlunesColors.WHITECOLOR)),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(),
+                (_realInsight.userReport != null &&
+                        _realInsight.userReport.description != null &&
+                        _realInsight.userReport.description.trim().isNotEmpty)
+                    ? Container(
+                        padding: EdgeInsets.all(8),
+                        margin: EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#2D2C3E"))),
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Previous Treatment Detail's",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: PlunesColors.WHITECOLOR)),
+                            ),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.only(top: 8),
+                              child: Text(
+                                  _realInsight?.userReport?.description ?? "",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: PlunesColors.WHITECOLOR)),
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(),
                 _getUserUploadedMediaWidget(),
                 Container(
                   margin: EdgeInsets.only(top: 10),
@@ -345,165 +378,205 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Flexible(
-              child: Container(
-            padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
-            margin: EdgeInsets.only(right: 8),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                color: Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
-            child: Column(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Photos",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: PlunesColors.WHITECOLOR.withOpacity(0.8)),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(top: 5),
-                  child: Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Colors.red),
-                        // width: AppConfig.horizontalBlockSize * 30,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          child: CustomWidgets()
-                              .getImageFromUrl("", boxFit: BoxFit.cover),
+          (_realInsight.userReport != null &&
+                  _realInsight.userReport.videoUrl != null &&
+                  _realInsight.userReport.videoUrl.isNotEmpty)
+              ? Flexible(
+                  child: Container(
+                  padding:
+                      EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
+                  margin: EdgeInsets.only(right: 8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      color:
+                          Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
+                  child: InkWell(
+                    onTap: () {
+                      // print(
+                      //     "_realInsight.userReport.videoUrl.first.url ${_realInsight.userReport.videoUrl.first.url}");
+                      if (_realInsight.userReport.videoUrl.first.url != null) {
+                        _launch(_realInsight.userReport.videoUrl.first.url);
+                      }
+                    },
+                    onDoubleTap: () {},
+                    child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Video",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color:
+                                    PlunesColors.WHITECOLOR.withOpacity(0.8)),
+                          ),
                         ),
-                      ),
-                      1 == 1
-                          ? Positioned.fill(
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "+${2}",
-                                  style: TextStyle(
-                                      color: PlunesColors.GREYCOLOR,
-                                      fontSize: 60),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(top: 5),
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)),
+                                  child: CustomWidgets().getImageFromUrl(
+                                      _realInsight.userReport.videoUrl?.first
+                                              ?.thumbnail ??
+                                          "",
+                                      boxFit: BoxFit.cover),
                                 ),
                               ),
-                            )
-                          : Container()
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )),
-          Flexible(
-              child: Container(
-            padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
-            margin: EdgeInsets.only(right: 8),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                color: Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
-            child: Column(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Videos",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: PlunesColors.WHITECOLOR.withOpacity(0.8)),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(top: 5),
-                  child: Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Colors.red),
-                        // width: AppConfig.horizontalBlockSize * 30,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          child: CustomWidgets()
-                              .getImageFromUrl("", boxFit: BoxFit.cover),
+                            ],
+                          ),
                         ),
-                      ),
-                      1 == 1
-                          ? Positioned.fill(
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "+${2}",
-                                  style: TextStyle(
-                                      color: PlunesColors.GREYCOLOR,
-                                      fontSize: 60),
+                      ],
+                    ),
+                  ),
+                ))
+              : Container(),
+          (_realInsight.userReport != null &&
+                  _realInsight.userReport.imageUrl != null &&
+                  _realInsight.userReport.imageUrl.isNotEmpty)
+              ? Flexible(
+                  child: Container(
+                  padding:
+                      EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
+                  margin: EdgeInsets.only(right: 8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      color:
+                          Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
+                  child: InkWell(
+                    onTap: () {
+                      List<Photo> photos = [];
+                      _realInsight.userReport.imageUrl.forEach((element) {
+                        if (element == null ||
+                            element.isEmpty ||
+                            !(element.contains("http"))) {
+                        } else {
+                          photos.add(Photo(assetName: element));
+                        }
+                      });
+                      if (photos != null && photos.isNotEmpty) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PageSlider(photos, 0)));
+                      }
+                    },
+                    onDoubleTap: () {},
+                    child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Photos",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color:
+                                    PlunesColors.WHITECOLOR.withOpacity(0.8)),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(top: 5),
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)),
+                                  child: CustomWidgets().getImageFromUrl(
+                                      _realInsight.userReport.imageUrl?.first ??
+                                          "",
+                                      boxFit: BoxFit.cover),
                                 ),
                               ),
-                            )
-                          : Container()
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )),
-          Flexible(
-              child: Container(
-            padding: EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
-            margin: EdgeInsets.only(right: 5),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                color: Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
-            child: Column(
-              children: [
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Reports",
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: PlunesColors.WHITECOLOR.withOpacity(0.8)),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  margin: EdgeInsets.only(top: 5),
-                  child: Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Colors.red),
-                        // width: AppConfig.horizontalBlockSize * 30,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.all(Radius.circular(12)),
-                          child: CustomWidgets()
-                              .getImageFromUrl("", boxFit: BoxFit.cover),
+                              _realInsight.userReport.imageUrl.length > 1
+                                  ? Positioned.fill(
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          "+${_realInsight.userReport.imageUrl.length}",
+                                          style: TextStyle(
+                                              color: PlunesColors.GREYCOLOR,
+                                              fontSize: 60),
+                                        ),
+                                      ),
+                                    )
+                                  : Container()
+                            ],
+                          ),
                         ),
-                      ),
-                      1 == 1
-                          ? Positioned.fill(
-                              child: Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "+${2}",
-                                  style: TextStyle(
-                                      color: PlunesColors.GREYCOLOR,
-                                      fontSize: 60),
+                      ],
+                    ),
+                  ),
+                ))
+              : Container(),
+          (_realInsight.userReport != null &&
+                  _realInsight.userReport.reportUrl != null &&
+                  _realInsight.userReport.reportUrl.isNotEmpty)
+              ? Flexible(
+                  child: Container(
+                  padding:
+                      EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
+                  margin: EdgeInsets.only(right: 5),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      color:
+                          Color(CommonMethods.getColorHexFromStr("#2D2C3E"))),
+                  child: InkWell(
+                    onTap: () {
+                      if (_realInsight.userReport.reportUrl.first != null) {
+                        _launch(_realInsight.userReport.reportUrl.first);
+                      }
+                    },
+                    onDoubleTap: () {},
+                    child: Column(
+                      children: [
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Reports",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color:
+                                    PlunesColors.WHITECOLOR.withOpacity(0.8)),
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          margin: EdgeInsets.only(top: 5),
+                          child: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(12))),
+                                child: ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)),
+                                  child: Image.asset(
+                                    plunesImages.pdfIcon1,
+                                    fit: BoxFit.fill,
+                                  ),
                                 ),
                               ),
-                            )
-                          : Container()
-                    ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          )),
+                ))
+              : Container(),
         ],
       ),
     );
@@ -779,15 +852,64 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       margin: EdgeInsets.symmetric(
           vertical: AppConfig.verticalBlockSize * 1.8,
           horizontal: AppConfig.horizontalBlockSize * 30),
-      child: CustomWidgets().getRoundedButton(
-          plunesStrings.submit,
-          AppConfig.horizontalBlockSize * 8,
-          Color(CommonMethods.getColorHexFromStr("#25B281")),
-          AppConfig.horizontalBlockSize * 3,
-          AppConfig.verticalBlockSize * 1,
-          PlunesColors.WHITECOLOR,
-          borderColor: PlunesColors.SPARKLINGGREEN,
-          hasBorder: true),
+      child: InkWell(
+        onTap: () {
+          //       // if (_realInsight.suggested != null &&
+          //       //     _realInsight.suggested &&
+          //       //     shouldShowField) {
+          //       //   if (_priceController.text.trim().isEmpty ||
+          //       //       _priceController.text.trim().substring(0) == "0" ||
+          //       //       (double.tryParse(_priceController.text.trim()) <
+          //       //           1)) {
+          //       //     failureCause =
+          //       //         'Price must not be lesser than 1 or empty';
+          //       //     newState(() {});
+          //       //     return;
+          //       //   }
+          //       //   _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
+          //       //       RequestInProgress());
+          //       //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
+          //       //       num.tryParse(_priceController.text.trim()),
+          //       //       _realInsight.solutionId,
+          //       //       _realInsight.serviceId,
+          //       //       isSuggestive: true,
+          //       //       suggestedPrice:
+          //       //           num.tryParse(_priceController.text.trim()),
+          //       //       realInsight: _realInsight);
+          //       // } else {
+          //       //   if (sliderVal == null || sliderVal == 0) {
+          //       //     failureCause = 'Price must not be 0.';
+          //       //     newState(() {});
+          //       //     return;
+          //       //   } else if (sliderVal == _realInsight.userPrice) {
+          //       //     failureCause =
+          //       //         'Sorry, Make sure Updated Price is not equal to Original Price !';
+          //       //     newState(() {});
+          //       //     return;
+          //       //   }
+          //       //   _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
+          //       //       RequestInProgress());
+          //       //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
+          //       //       chancesPercent,
+          //       //       _realInsight.solutionId,
+          //       //       _realInsight.serviceId,
+          //       //       isSuggestive: (_realInsight.suggested != null &&
+          //       //           _realInsight.suggested),
+          //       //       suggestedPrice: sliderVal,
+          //       //       realInsight: _realInsight);
+          //       // }
+        },
+        onDoubleTap: () {},
+        child: CustomWidgets().getRoundedButton(
+            plunesStrings.submit,
+            AppConfig.horizontalBlockSize * 8,
+            Color(CommonMethods.getColorHexFromStr("#25B281")),
+            AppConfig.horizontalBlockSize * 3,
+            AppConfig.verticalBlockSize * 1,
+            PlunesColors.WHITECOLOR,
+            borderColor: PlunesColors.SPARKLINGGREEN,
+            hasBorder: true),
+      ),
     );
   }
 
@@ -861,6 +983,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           ((_realInsight.min ?? 0) + 1),
                       divisions: 100,
                       onChanged: (newValue) {
+                        return;
                         if (shouldShowField) {
                           return;
                         }
@@ -949,176 +1072,176 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                 ),
-                Container(
-                    margin: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 1.2,
-                        horizontal: AppConfig.horizontalBlockSize * 3),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 15),
-                    child: (_realInsight.suggested != null &&
-                            _realInsight.suggested &&
-                            shouldShowField)
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Flexible(
-                                child: TextField(
-                                  controller: _priceController,
-                                  inputFormatters: [
-                                    WhitelistingTextInputFormatter.digitsOnly
-                                  ],
-                                  maxLines: 1,
-                                  autofocus: true,
-                                  keyboardType: TextInputType.number,
-                                  textAlignVertical: TextAlignVertical.bottom,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                  ),
-                                ),
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  shouldShowField = false;
-                                  newState(() {});
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                      left: AppConfig.horizontalBlockSize * 3),
-                                  padding: EdgeInsets.all(5.0),
-                                  alignment: Alignment.bottomRight,
-                                  child: Icon(
-                                    Icons.mode_edit,
-                                    color: PlunesColors.GREENCOLOR,
-                                  ),
-                                ),
-                              )
-                            ],
-                          )
-                        : Row(
-                            mainAxisAlignment:
-                                (_realInsight.suggested != null &&
-                                        _realInsight.suggested &&
-                                        shouldShowField)
-                                    ? MainAxisAlignment.end
-                                    : MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: <Widget>[
-                              Flexible(
-                                flex: 2,
-                                child: Text(
-                                  ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
-                                  style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: AppConfig.largeFont,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                              (_realInsight.suggested != null &&
-                                      _realInsight.suggested)
-                                  ? Flexible(
-                                      child: InkWell(
-                                      onTap: () {
-                                        shouldShowField = true;
-                                        newState(() {});
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(5.0),
-                                        alignment: Alignment.topCenter,
-                                        child: Icon(
-                                          Icons.mode_edit,
-                                          color: PlunesColors.WHITECOLOR,
-                                        ),
-                                      ),
-                                    ))
-                                  : Container()
-                            ],
-                          )),
-                FlatButton(
-                    focusColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    onPressed: () {
-                      if (_realInsight.suggested != null &&
-                          _realInsight.suggested &&
-                          shouldShowField) {
-                        if (_priceController.text.trim().isEmpty ||
-                            _priceController.text.trim().substring(0) == "0" ||
-                            (double.tryParse(_priceController.text.trim()) <
-                                1)) {
-                          failureCause =
-                              'Price must not be lesser than 1 or empty';
-                          newState(() {});
-                          return;
-                        }
-                        _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
-                            RequestInProgress());
-                        _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
-                            num.tryParse(_priceController.text.trim()),
-                            _realInsight.solutionId,
-                            _realInsight.serviceId,
-                            isSuggestive: true,
-                            suggestedPrice:
-                                num.tryParse(_priceController.text.trim()),
-                            realInsight: _realInsight);
-                      } else {
-                        if (sliderVal == null || sliderVal == 0) {
-                          failureCause = 'Price must not be 0.';
-                          newState(() {});
-                          return;
-                        } else if (sliderVal == _realInsight.userPrice) {
-                          failureCause =
-                              'Sorry, Make sure Updated Price is not equal to Original Price !';
-                          newState(() {});
-                          return;
-                        }
-                        _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
-                            RequestInProgress());
-                        _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
-                            chancesPercent,
-                            _realInsight.solutionId,
-                            _realInsight.serviceId,
-                            isSuggestive: (_realInsight.suggested != null &&
-                                _realInsight.suggested),
-                            suggestedPrice: sliderVal,
-                            realInsight: _realInsight);
-                      }
-                    },
-                    child: Container(
-                        height: AppConfig.verticalBlockSize * 4,
-                        width: double.infinity,
-                        child: Center(
-                          child: Text(
-                            'Apply here',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: AppConfig.largeFont + 2,
-                                color: PlunesColors.GREENCOLOR),
-                          ),
-                        ))),
-                failureCause != null
-                    ? Container(
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 1.2,
-                            left: AppConfig.horizontalBlockSize * 10,
-                            right: AppConfig.horizontalBlockSize * 10),
-                        child: Text(
-                          failureCause,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: AppConfig.smallFont,
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#FF9194")),
-                              fontWeight: FontWeight.w600),
-                        ),
-                        alignment: Alignment.center)
-                    : Container(),
+                // Container(
+                //     margin: EdgeInsets.symmetric(
+                //         vertical: AppConfig.verticalBlockSize * 1.2,
+                //         horizontal: AppConfig.horizontalBlockSize * 3),
+                //     padding: EdgeInsets.symmetric(
+                //         horizontal: AppConfig.horizontalBlockSize * 15),
+                //     child: (_realInsight.suggested != null &&
+                //             _realInsight.suggested &&
+                //             shouldShowField)
+                //         ? Row(
+                //             mainAxisAlignment: MainAxisAlignment.end,
+                //             crossAxisAlignment: CrossAxisAlignment.end,
+                //             children: <Widget>[
+                //               Flexible(
+                //                 child: TextField(
+                //                   controller: _priceController,
+                //                   inputFormatters: [
+                //                     WhitelistingTextInputFormatter.digitsOnly
+                //                   ],
+                //                   maxLines: 1,
+                //                   autofocus: true,
+                //                   keyboardType: TextInputType.number,
+                //                   textAlignVertical: TextAlignVertical.bottom,
+                //                   textAlign: TextAlign.center,
+                //                   style: TextStyle(
+                //                     color: Colors.white70,
+                //                   ),
+                //                 ),
+                //               ),
+                //               InkWell(
+                //                 onTap: () {
+                //                   shouldShowField = false;
+                //                   newState(() {});
+                //                 },
+                //                 child: Container(
+                //                   margin: EdgeInsets.only(
+                //                       left: AppConfig.horizontalBlockSize * 3),
+                //                   padding: EdgeInsets.all(5.0),
+                //                   alignment: Alignment.bottomRight,
+                //                   child: Icon(
+                //                     Icons.mode_edit,
+                //                     color: PlunesColors.GREENCOLOR,
+                //                   ),
+                //                 ),
+                //               )
+                //             ],
+                //           )
+                //         : Row(
+                //             mainAxisAlignment:
+                //                 (_realInsight.suggested != null &&
+                //                         _realInsight.suggested &&
+                //                         shouldShowField)
+                //                     ? MainAxisAlignment.end
+                //                     : MainAxisAlignment.center,
+                //             crossAxisAlignment: CrossAxisAlignment.end,
+                //             children: <Widget>[
+                //               Flexible(
+                //                 flex: 2,
+                //                 child: Text(
+                //                   ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
+                //                   style: TextStyle(
+                //                       color: Colors.white70,
+                //                       fontSize: AppConfig.largeFont,
+                //                       fontWeight: FontWeight.w600),
+                //                 ),
+                //               ),
+                //               (_realInsight.suggested != null &&
+                //                       _realInsight.suggested)
+                //                   ? Flexible(
+                //                       child: InkWell(
+                //                       onTap: () {
+                //                         shouldShowField = true;
+                //                         newState(() {});
+                //                       },
+                //                       child: Container(
+                //                         padding: EdgeInsets.all(5.0),
+                //                         alignment: Alignment.topCenter,
+                //                         child: Icon(
+                //                           Icons.mode_edit,
+                //                           color: PlunesColors.WHITECOLOR,
+                //                         ),
+                //                       ),
+                //                     ))
+                //                   : Container()
+                //             ],
+                //           )),
+                // FlatButton(
+                //     focusColor: Colors.transparent,
+                //     splashColor: Colors.transparent,
+                //     highlightColor: Colors.transparent,
+                //     onPressed: () {
+                //       // if (_realInsight.suggested != null &&
+                //       //     _realInsight.suggested &&
+                //       //     shouldShowField) {
+                //       //   if (_priceController.text.trim().isEmpty ||
+                //       //       _priceController.text.trim().substring(0) == "0" ||
+                //       //       (double.tryParse(_priceController.text.trim()) <
+                //       //           1)) {
+                //       //     failureCause =
+                //       //         'Price must not be lesser than 1 or empty';
+                //       //     newState(() {});
+                //       //     return;
+                //       //   }
+                //       //   _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
+                //       //       RequestInProgress());
+                //       //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
+                //       //       num.tryParse(_priceController.text.trim()),
+                //       //       _realInsight.solutionId,
+                //       //       _realInsight.serviceId,
+                //       //       isSuggestive: true,
+                //       //       suggestedPrice:
+                //       //           num.tryParse(_priceController.text.trim()),
+                //       //       realInsight: _realInsight);
+                //       // } else {
+                //       //   if (sliderVal == null || sliderVal == 0) {
+                //       //     failureCause = 'Price must not be 0.';
+                //       //     newState(() {});
+                //       //     return;
+                //       //   } else if (sliderVal == _realInsight.userPrice) {
+                //       //     failureCause =
+                //       //         'Sorry, Make sure Updated Price is not equal to Original Price !';
+                //       //     newState(() {});
+                //       //     return;
+                //       //   }
+                //       //   _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
+                //       //       RequestInProgress());
+                //       //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
+                //       //       chancesPercent,
+                //       //       _realInsight.solutionId,
+                //       //       _realInsight.serviceId,
+                //       //       isSuggestive: (_realInsight.suggested != null &&
+                //       //           _realInsight.suggested),
+                //       //       suggestedPrice: sliderVal,
+                //       //       realInsight: _realInsight);
+                //       // }
+                //     },
+                //     child: Container(
+                //         height: AppConfig.verticalBlockSize * 4,
+                //         width: double.infinity,
+                //         child: Center(
+                //           child: Text(
+                //             'Apply here',
+                //             textAlign: TextAlign.center,
+                //             style: TextStyle(
+                //                 fontSize: AppConfig.largeFont + 2,
+                //                 color: PlunesColors.GREENCOLOR),
+                //           ),
+                //         ))),
+                // failureCause != null
+                //     ? Container(
+                //         margin: EdgeInsets.only(
+                //             top: AppConfig.verticalBlockSize * 1.2,
+                //             left: AppConfig.horizontalBlockSize * 10,
+                //             right: AppConfig.horizontalBlockSize * 10),
+                //         child: Text(
+                //           failureCause,
+                //           textAlign: TextAlign.center,
+                //           style: TextStyle(
+                //               fontSize: AppConfig.smallFont,
+                //               color: Color(
+                //                   CommonMethods.getColorHexFromStr("#FF9194")),
+                //               fontWeight: FontWeight.w600),
+                //         ),
+                //         alignment: Alignment.center)
+                //     : Container(),
                 chancesPercent != null
                     ? Container(
                         margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 1.2,
-                            bottom: AppConfig.verticalBlockSize * 2,
+                            top: AppConfig.verticalBlockSize * 3,
+                            bottom: AppConfig.verticalBlockSize * 3,
                             left: AppConfig.horizontalBlockSize * 3,
                             right: AppConfig.horizontalBlockSize * 3),
                         child: Text(
@@ -1183,7 +1306,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                         padding: EdgeInsets.symmetric(
                             horizontal: AppConfig.horizontalBlockSize * 10),
                         margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 2),
+                            top: AppConfig.verticalBlockSize * 3),
                         child: LinearPercentIndicator(
                           animation: true,
                           lineHeight: 12.0,
@@ -1209,11 +1332,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: <Widget>[
-                            Icon(
-                              Icons.arrow_drop_up,
-                              color: PlunesColors.GREENCOLOR,
-                              size: 20,
-                            ),
+                            Icon(Icons.arrow_drop_up,
+                                color: PlunesColors.GREENCOLOR, size: 20),
                             Text(
                               'Competition Rate',
                               style: TextStyle(
@@ -1224,41 +1344,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           ],
                         ),
                         margin: EdgeInsets.only(
-                            bottom: AppConfig.verticalBlockSize * 2.5),
-                      ),
-                (_realInsight != null &&
-                        _realInsight.dataPoints != null &&
-                        _realInsight.dataPoints.isNotEmpty)
-                    ? Container(
-                        width: double.infinity,
-                        height: 0.8,
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 8,
-                            right: AppConfig.horizontalBlockSize * 8,
-                            bottom: AppConfig.verticalBlockSize * 1.5),
-                        color: Colors.white.withOpacity(0.5),
-                      )
-                    : Container(),
-                (_realInsight != null &&
-                        _realInsight.dataPoints != null &&
-                        _realInsight.dataPoints.isNotEmpty)
-                    ? Container(
-                        alignment: Alignment.topLeft,
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 8,
-                            right: AppConfig.horizontalBlockSize * 8,
-                            bottom: AppConfig.verticalBlockSize * 3.5),
-                        child: Text(
-                          "Competition Insight",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: PlunesColors.WHITECOLOR,
-                            fontWeight: FontWeight.normal,
-                            fontSize: 16,
-                          ),
-                        ),
-                      )
-                    : Container(),
+                            bottom: AppConfig.verticalBlockSize * 3))
               ],
             ),
           ],
@@ -1288,6 +1374,10 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
             )
           : Container(),
     );
+  }
+
+  _launch(String url) {
+    LauncherUtil.launchUrl(url);
   }
 }
 

@@ -166,7 +166,6 @@ class StaticallyProvidedTicks extends StatelessWidget {
     _dataPoints = points;
     return new StaticallyProvidedTicks(
       _createSampleData(points),
-      // Disable animations for image tests.
       animate: false,
     );
   }
@@ -195,7 +194,7 @@ class StaticallyProvidedTicks extends StatelessWidget {
         primaryMeasureAxis: new charts.NumericAxisSpec(
           tickProviderSpec: new charts.BasicNumericTickProviderSpec(
             desiredTickCount: 4,
-            zeroBound: false,
+            zeroBound: true,
           ),
           showAxisLine: true,
           renderSpec: charts.GridlineRendererSpec(

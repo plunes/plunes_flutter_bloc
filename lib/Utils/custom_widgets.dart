@@ -561,7 +561,8 @@ class CustomWidgets {
       Color textColor,
       {bool hasBorder = false,
       Color borderColor = PlunesColors.GREYCOLOR,
-      double borderWidth = 0.8}) {
+      double borderWidth = 0.8,
+      double fontSize}) {
     return Container(
       padding: EdgeInsets.symmetric(
           horizontal: horizontalPadding, vertical: verticalPadding),
@@ -575,7 +576,7 @@ class CustomWidgets {
         child: Text(
           buttonName,
           style: TextStyle(
-            fontSize: 15,
+            fontSize: fontSize ?? 15,
             color: textColor ?? PlunesColors.BLACKCOLOR,
           ),
         ),

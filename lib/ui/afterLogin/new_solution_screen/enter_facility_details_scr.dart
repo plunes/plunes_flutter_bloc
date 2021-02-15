@@ -47,7 +47,8 @@ class _EnterAdditionalUserDetailScrState
   bool _isInsuranceCovered = false;
   AnimationController _animationController;
   ImagePickerHandler _imagePicker;
-  List<Map<String, dynamic>> _docUrls, _imageUrls, _videoUrls;
+  List<Map<String, dynamic>> _docUrls, _imageUrls;
+  List<UploadedReportUrl> _videoUrls;
   UserBloc _userBloc;
   PremiumBenefitsModel _premiumBenefitsModel;
 
@@ -480,7 +481,6 @@ class _EnterAdditionalUserDetailScrState
                 value.path != null &&
                 value.path.trim().isNotEmpty &&
                 value.path.contains(".")) {
-              print("path ${value.path}");
               String _fileExtension = value.path.split(".")?.last;
               if (_fileExtension != null &&
                   (_fileExtension.toLowerCase() ==
@@ -929,7 +929,6 @@ class _EnterAdditionalUserDetailScrState
   @override
   fetchImageCallBack(File image) {
     if (image != null && image.path != null) {
-      print(image.path);
       _uploadFile(image, fileType: Constants.typeImage);
     }
   }
@@ -974,7 +973,8 @@ class _EnterAdditionalUserDetailScrState
       "serviceId": widget.catalogueData?.serviceId,
       "reportUrls": _docUrls ?? [],
       "imageUrls": _imageUrls ?? [],
-      "videoUrls": _videoUrls ?? [],
+      "videoUrls":
+          _videoUrls?.map((e) => e.toJson())?.toList(growable: true) ?? [],
       "treatedPreviously": _hasTreatedPreviously,
       "description": _hasTreatedPreviously
           ? _previousMedicalConditionController.text.trim()

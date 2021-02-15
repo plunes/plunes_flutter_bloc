@@ -46,19 +46,25 @@ class FileResponseData {
 
 class UploadedReportUrl {
   String key;
-  String url;
+  String url, thumbnail;
 
-  UploadedReportUrl({this.key, this.url});
+  UploadedReportUrl({this.key, this.url, this.thumbnail});
 
   UploadedReportUrl.fromJson(Map<String, dynamic> json) {
+    // print("json ${json}");
     key = json['key'];
     url = json['url'];
+    if (json["videoUrl"] != null) {
+      url = json["videoUrl"];
+    }
+    thumbnail = json['thumbnail'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['key'] = this.key;
     data['url'] = this.url;
+    data['thumbnail'] = this.thumbnail;
     return data;
   }
 }
