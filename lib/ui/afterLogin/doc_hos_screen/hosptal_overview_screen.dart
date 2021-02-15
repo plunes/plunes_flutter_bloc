@@ -850,7 +850,6 @@ class _HospitalOverviewScreenState
   }
 
   _openRealTimeInsightPriceUpdateWidget(final RealInsight realInsight) {
-    realInsight.compRate = 25;
     Navigator.push(
         context,
         MaterialPageRoute(

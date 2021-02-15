@@ -89,7 +89,8 @@ class Urls {
       "analytics/actionableInsight";
   static const String GET_TOTAL_BUSINESS_EARNED_AND_LOSS_URL =
       "analytics/totalBusiness";
-  static const String UPDATE_REALTIME_INSIGHT_PRICE_URL = 'solution';
+  static const String UPDATE_REALTIME_INSIGHT_PRICE_URL =
+      'solution/updateSolution';
   static const String UPDATE_ACTIONABLE_INSIGHT_PRICE_URL = 'admin/updatePrice';
   static const String GET_CANCEL_AND_RESCHEDULE_URL = 'booking/';
   static const String GET_CONFIRM_APPOINTMENT_URL = 'booking/confirmBooking';

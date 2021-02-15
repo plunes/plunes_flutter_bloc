@@ -131,6 +131,8 @@ class PlunesImages {
       "assets/images/emptyCartItemsImage.png";
   static const String itemInCartImage =
       "assets/images/bottom_tabs/itemInCartImage.png";
+  static const String add_special_offer_insight =
+      "assets/images/add_special_offer_insight.png";
 
   ///new solution images
   static const String videoUploadIcon =

@@ -34,7 +34,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   num chancesPercent = 25;
   num half;
   TextEditingController _priceController = TextEditingController();
-  ScrollController _scrollController = ScrollController();
+
+  // ScrollController _scrollController = ScrollController();
   String failureCause;
   bool shouldShowField = false;
   RealInsight _realInsight;
@@ -42,6 +43,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   Timer _timer;
   double _topMargin = 0;
   StreamController _streamForIcon;
+  TextEditingController _techniqueController = TextEditingController();
+  TextEditingController _addOnController = TextEditingController();
+  TextEditingController _specialOfferController = TextEditingController();
 
   @override
   void initState() {
@@ -53,13 +57,16 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       var recommendation = 100 - _realInsight.recommendation;
       sliderVal = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
       half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+      _priceController.text = half?.toStringAsFixed(1) ?? '';
       if (sliderVal < _realInsight.min) {
         sliderVal = _realInsight.min;
         half = _realInsight.min;
+        _priceController.text = _realInsight.min?.toStringAsFixed(1) ?? '';
       }
     } else if (_realInsight.suggested != null && _realInsight.suggested) {
       sliderVal = _realInsight.userPrice.toInt().toDouble();
       half = _realInsight.userPrice.toInt().toDouble();
+      _priceController.text = half?.toStringAsFixed(1) ?? '';
     } else {
       Navigator.pop(context);
     }
@@ -83,6 +90,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
     _timer?.cancel();
     _streamForIcon?.close();
     _priceController?.dispose();
+    _techniqueController?.dispose();
+    _addOnController?.dispose();
+    _specialOfferController?.dispose();
     super.dispose();
   }
 
@@ -92,7 +102,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       top: false,
       bottom: false,
       child: Scaffold(
-        // appBar: widget.getAppBar(context, PlunesStrings.realTimePrediction, true),
+        appBar:
+            widget.getAppBar(context, PlunesStrings.realTimePrediction, true),
         key: scaffoldKey,
         body: Builder(
           builder: (context) {
@@ -375,6 +386,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   Widget _getUserUploadedMediaWidget() {
     return Container(
       margin: EdgeInsets.only(top: 10),
+      height: AppConfig.verticalBlockSize * 25,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -411,26 +423,28 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                     PlunesColors.WHITECOLOR.withOpacity(0.8)),
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.only(top: 5),
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
+                        Flexible(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            margin: EdgeInsets.only(top: 5),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
+                                  child: ClipRRect(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(12))),
-                                child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
-                                  child: CustomWidgets().getImageFromUrl(
-                                      _realInsight.userReport.videoUrl?.first
-                                              ?.thumbnail ??
-                                          "",
-                                      boxFit: BoxFit.cover),
+                                        BorderRadius.all(Radius.circular(12)),
+                                    child: CustomWidgets().getImageFromUrl(
+                                        _realInsight.userReport.videoUrl?.first
+                                                ?.thumbnail ??
+                                            "",
+                                        boxFit: BoxFit.cover),
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -481,7 +495,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                     PlunesColors.WHITECOLOR.withOpacity(0.8)),
                           ),
                         ),
-                        Container(
+                        Flexible(
+                            child: Container(
                           alignment: Alignment.centerLeft,
                           margin: EdgeInsets.only(top: 5),
                           child: Stack(
@@ -514,7 +529,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   : Container()
                             ],
                           ),
-                        ),
+                        )),
                       ],
                     ),
                   ),
@@ -551,25 +566,27 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                     PlunesColors.WHITECOLOR.withOpacity(0.8)),
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.centerLeft,
-                          margin: EdgeInsets.only(top: 5),
-                          child: Stack(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
+                        Flexible(
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            margin: EdgeInsets.only(top: 5),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(12))),
+                                  child: ClipRRect(
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(12))),
-                                child: ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(12)),
-                                  child: Image.asset(
-                                    plunesImages.pdfIcon1,
-                                    fit: BoxFit.fill,
+                                        BorderRadius.all(Radius.circular(12)),
+                                    child: Image.asset(
+                                      plunesImages.pdfIcon1,
+                                      fit: BoxFit.fill,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -641,10 +658,10 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             color: PlunesColors.WHITECOLOR, width: 0.8)),
                     child: TextField(
                       textAlign: TextAlign.left,
+                      controller: _priceController,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       style: TextStyle(
-                          fontSize: 12,
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#9B9B9B"))),
+                          fontSize: 12, color: PlunesColors.WHITECOLOR),
                       decoration: InputDecoration.collapsed(
                           hintText: "Enter price",
                           border: InputBorder.none,
@@ -675,12 +692,11 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             color: PlunesColors.WHITECOLOR, width: 0.8)),
                     child: TextField(
                       textAlign: TextAlign.left,
+                      controller: _techniqueController,
                       style: TextStyle(
-                          fontSize: 12,
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#9B9B9B"))),
+                          fontSize: 12, color: PlunesColors.WHITECOLOR),
                       decoration: InputDecoration.collapsed(
-                          hintText: "Enter price",
+                          hintText: "Enter Technology Ex. Dual Accento laser",
                           border: InputBorder.none,
                           hintStyle: TextStyle(
                               fontSize: 12,
@@ -718,12 +734,11 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             color: PlunesColors.WHITECOLOR, width: 0.8)),
                     child: TextField(
                       textAlign: TextAlign.left,
+                      controller: _addOnController,
                       style: TextStyle(
-                          fontSize: 12,
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#9B9B9B"))),
+                          fontSize: 12, color: PlunesColors.WHITECOLOR),
                       decoration: InputDecoration.collapsed(
-                          hintText: "Enter price",
+                          hintText: "Enter Add on's Ex. 2PRP",
                           border: InputBorder.none,
                           hintStyle: TextStyle(
                               fontSize: 12,
@@ -752,12 +767,12 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             color: PlunesColors.WHITECOLOR, width: 0.8)),
                     child: TextField(
                       textAlign: TextAlign.left,
+                      controller: _specialOfferController,
                       style: TextStyle(
-                          fontSize: 12,
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#9B9B9B"))),
+                          fontSize: 12, color: PlunesColors.WHITECOLOR),
                       decoration: InputDecoration.collapsed(
-                          hintText: "Enter price",
+                          hintText:
+                              "Enter special offers Ex. Dual Accento laser",
                           border: InputBorder.none,
                           hintStyle: TextStyle(
                               fontSize: 12,
@@ -800,44 +815,48 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                         style: TextStyle(
                             fontSize: 16, color: PlunesColors.WHITECOLOR)),
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 1.5),
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#535264")),
-                            border: Border.all(
-                                color: PlunesColors.WHITECOLOR, width: 0.8)),
-                        child: Row(
-                          children: [
-                            Container(
-                              child: CustomWidgets().getImageFromUrl(""),
-                              height: 35,
-                              width: 35,
-                              margin: EdgeInsets.only(right: 15),
-                            ),
-                            Expanded(
-                              child: Text(
-                                "Some offer here",
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: PlunesColors.WHITECOLOR),
+                  1 == 1
+                      ? _getAddSpecialOfferEmptyWidget()
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1.5),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 8),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)),
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#535264")),
+                                  border: Border.all(
+                                      color: PlunesColors.WHITECOLOR,
+                                      width: 0.8)),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    child: CustomWidgets().getImageFromUrl(""),
+                                    height: 35,
+                                    width: 35,
+                                    margin: EdgeInsets.only(right: 15),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      "Some offer here",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: PlunesColors.WHITECOLOR),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                            );
+                          },
+                          itemCount: 5,
                         ),
-                      );
-                    },
-                    itemCount: 5,
-                  ),
                 ],
               ),
             ),
@@ -853,51 +872,64 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
           vertical: AppConfig.verticalBlockSize * 1.8,
           horizontal: AppConfig.horizontalBlockSize * 30),
       child: InkWell(
+        focusColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onTap: () {
-          //       // if (_realInsight.suggested != null &&
-          //       //     _realInsight.suggested &&
-          //       //     shouldShowField) {
-          //       //   if (_priceController.text.trim().isEmpty ||
-          //       //       _priceController.text.trim().substring(0) == "0" ||
-          //       //       (double.tryParse(_priceController.text.trim()) <
-          //       //           1)) {
-          //       //     failureCause =
-          //       //         'Price must not be lesser than 1 or empty';
-          //       //     newState(() {});
-          //       //     return;
-          //       //   }
-          //       //   _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
-          //       //       RequestInProgress());
-          //       //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
-          //       //       num.tryParse(_priceController.text.trim()),
-          //       //       _realInsight.solutionId,
-          //       //       _realInsight.serviceId,
-          //       //       isSuggestive: true,
-          //       //       suggestedPrice:
-          //       //           num.tryParse(_priceController.text.trim()),
-          //       //       realInsight: _realInsight);
-          //       // } else {
-          //       //   if (sliderVal == null || sliderVal == 0) {
-          //       //     failureCause = 'Price must not be 0.';
-          //       //     newState(() {});
-          //       //     return;
-          //       //   } else if (sliderVal == _realInsight.userPrice) {
-          //       //     failureCause =
-          //       //         'Sorry, Make sure Updated Price is not equal to Original Price !';
-          //       //     newState(() {});
-          //       //     return;
-          //       //   }
-          //       //   _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
-          //       //       RequestInProgress());
-          //       //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
-          //       //       chancesPercent,
-          //       //       _realInsight.solutionId,
-          //       //       _realInsight.serviceId,
-          //       //       isSuggestive: (_realInsight.suggested != null &&
-          //       //           _realInsight.suggested),
-          //       //       suggestedPrice: sliderVal,
-          //       //       realInsight: _realInsight);
-          //       // }
+          if (_priceController.text.trim().isEmpty ||
+              _priceController.text.trim().substring(0) == "0" ||
+              (double.tryParse(_priceController.text.trim()) < 1)) {
+            _showSnackBar('Price must not be lesser than 1 or empty');
+            return;
+          }
+          _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
+              chancesPercent, _realInsight.solutionId, _realInsight.serviceId,
+              isSuggestive:
+                  (_realInsight.suggested != null && _realInsight.suggested),
+              suggestedPrice: num.tryParse(_priceController.text.trim()),
+              realInsight: _realInsight,
+              addOnText: _addOnController.text.trim(),
+              specialOfferText: _specialOfferController.text.trim(),
+              techniqueText: _techniqueController.text.trim());
+
+          // if (_realInsight.suggested != null &&
+          //     _realInsight.suggested &&
+          //     shouldShowField) {
+          //   if (_priceController.text.trim().isEmpty ||
+          //       _priceController.text.trim().substring(0) == "0" ||
+          //       (double.tryParse(_priceController.text.trim()) < 1)) {
+          //     failureCause = 'Price must not be lesser than 1 or empty';
+          //     newState(() {});
+          //     return;
+          //   }
+          //   _docHosMainInsightBloc
+          //       .updateRealTimeInsightPriceStream(RequestInProgress());
+          //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
+          //       num.tryParse(_priceController.text.trim()),
+          //       _realInsight.solutionId,
+          //       _realInsight.serviceId,
+          //       isSuggestive: true,
+          //       suggestedPrice: num.tryParse(_priceController.text.trim()),
+          //       realInsight: _realInsight);
+          // } else {
+          //   if (sliderVal == null || sliderVal == 0) {
+          //     failureCause = 'Price must not be 0.';
+          //     newState(() {});
+          //     return;
+          //   } else if (sliderVal == _realInsight.userPrice) {
+          //     failureCause =
+          //         'Sorry, Make sure Updated Price is not equal to Original Price !';
+          //     newState(() {});
+          //     return;
+          //   }
+          //   _docHosMainInsightBloc
+          //       .updateRealTimeInsightPriceStream(RequestInProgress());
+          //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
+          //       chancesPercent, _realInsight.solutionId, _realInsight.serviceId,
+          //       isSuggestive:
+          //           (_realInsight.suggested != null && _realInsight.suggested),
+          //       suggestedPrice: sliderVal,
+          //       realInsight: _realInsight);
+          // }
         },
         onDoubleTap: () {},
         child: CustomWidgets().getRoundedButton(
@@ -1378,6 +1410,37 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
 
   _launch(String url) {
     LauncherUtil.launchUrl(url);
+  }
+
+  Widget _getAddSpecialOfferEmptyWidget() {
+    return Container(
+      width: double.infinity,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+            alignment: Alignment.center,
+            height: 88,
+            width: 117,
+            child: Image.asset(
+              PlunesImages.add_special_offer_insight,
+              fit: BoxFit.fill,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 3),
+            alignment: Alignment.center,
+            child: Text(
+              "Be first to provide offers and Add on's to increase your chances of getting a patient",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: PlunesColors.WHITECOLOR, fontSize: 14),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }
 

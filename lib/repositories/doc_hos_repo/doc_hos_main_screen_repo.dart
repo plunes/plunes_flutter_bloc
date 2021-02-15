@@ -78,7 +78,10 @@ class DocHosMainRepo {
       num price, String solutionId, String serviceId,
       {bool isSuggestive = false,
       num suggestedPrice,
-      RealInsight realInsight}) async {
+      RealInsight realInsight,
+      String addOnText,
+      String specialOfferText,
+      String techniqueText}) async {
     Map<String, dynamic> postData;
     if (isSuggestive) {
       postData = {
@@ -92,7 +95,10 @@ class DocHosMainRepo {
         "serviceId": serviceId,
         "price": suggestedPrice,
         "min": realInsight?.min,
-        "max": realInsight?.max
+        "max": realInsight?.max,
+        "technique": techniqueText,
+        "addOn": addOnText,
+        "specialOffer": specialOfferText
       };
     }
     var result = await DioRequester().requestMethod(
@@ -102,7 +108,7 @@ class DocHosMainRepo {
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {
-      return RequestSuccess(response: "");
+      return RequestSuccess(response: result.isRequestSucceed);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
