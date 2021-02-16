@@ -167,4 +167,6 @@ class Urls {
       mcmBaseUrl + "plunes/getPremiumBenefits";
   static const String SPECIALITY_RELATED_SERVICES_URL =
       "catalogue/getServiceBySpecialityId";
+  static const String GET_PROFESSIONAL_FOR_COMMON_SPECIALITY =
+      "user/getProfessionalsFromCommonSpeciality";
 }

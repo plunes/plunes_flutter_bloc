@@ -23,8 +23,10 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 // ignore: must_be_immutable
 class ViewProcedureAndProfessional extends BaseActivity {
   ProcedureData procedureData;
+  bool shouldUseSpecializationApi;
 
-  ViewProcedureAndProfessional({this.procedureData});
+  ViewProcedureAndProfessional(
+      {this.procedureData, this.shouldUseSpecializationApi});
 
   @override
   _ViewProcedureAndProfessionalState createState() =>
@@ -61,7 +63,9 @@ class _ViewProcedureAndProfessionalState
   }
 
   _getProfessionals() {
-    _homeScreenMainBloc.getProfessionalsForService(widget.procedureData.sId);
+    _homeScreenMainBloc.getProfessionalsForService(widget.procedureData.sId,
+        shouldHitSpecialityApi: (widget.shouldUseSpecializationApi != null &&
+            widget.shouldUseSpecializationApi));
   }
 
   _getVideos() {
@@ -90,9 +94,7 @@ class _ViewProcedureAndProfessionalState
       child: Column(
         children: [
           _getAppAndSearchBarWidget(),
-          Expanded(
-            child: SingleChildScrollView(child: _getWholeBodyWidget()),
-          ),
+          Expanded(child: SingleChildScrollView(child: _getWholeBodyWidget())),
           _getBookNowButton()
         ],
       ),
@@ -228,161 +230,183 @@ class _ViewProcedureAndProfessionalState
                 EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
             child: Row(
               children: [
-                Expanded(
-                  child: Card(
-                    color: Color(CommonMethods.getColorHexFromStr("#ECF4F7")),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.procedureData?.duration ?? "",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.normal),
+                (widget.procedureData.duration == null ||
+                        widget.procedureData.duration.isEmpty)
+                    ? Container()
+                    : Expanded(
+                        child: Card(
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#ECF4F7")),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.procedureData?.duration ?? "",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                                Text(
+                                  "Duration",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#515151")),
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ],
+                            ),
                           ),
-                          Text(
-                            "Duration",
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Color(CommonMethods.getColorHexFromStr(
-                                    "#515151")),
-                                fontWeight: FontWeight.normal),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Card(
-                    color: Color(CommonMethods.getColorHexFromStr("#ECF4F7")),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.procedureData?.sittings ?? "Depends on case",
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.normal),
+                (widget.procedureData.sittings == null ||
+                        widget.procedureData.sittings.isEmpty)
+                    ? Container()
+                    : Expanded(
+                        child: Card(
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#ECF4F7")),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.procedureData?.sittings ??
+                                      "Depends on case",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                                Text(
+                                  "Session",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#515151")),
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ],
+                            ),
                           ),
-                          Text(
-                            "Session",
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Color(CommonMethods.getColorHexFromStr(
-                                    "#515151")),
-                                fontWeight: FontWeight.normal),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
-          Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-            child: Text(
-              "Definition",
-              style: TextStyle(
-                  fontSize: 18,
-                  color: PlunesColors.BLACKCOLOR,
-                  fontWeight: FontWeight.normal),
-            ),
-          ),
-          Row(
-            children: [
-              Flexible(
-                child: Container(
+          (widget.procedureData.details == null ||
+                  widget.procedureData.details.isEmpty)
+              ? Container()
+              : Container(
                   alignment: Alignment.topLeft,
                   margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
-                  child: ReadMoreText(
-                    widget.procedureData?.details ?? "",
-                    colorClickableText: PlunesColors.SPARKLINGGREEN,
-                    trimLines: 3,
-                    trimMode: TrimMode.Line,
-                    trimCollapsedText: '  ...read more',
-                    trimExpandedText: '  read less',
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                  child: Text(
+                    "Definition",
                     style: TextStyle(
-                        fontSize: 16,
-                        color:
-                            Color(CommonMethods.getColorHexFromStr("#515151")),
+                        fontSize: 18,
+                        color: PlunesColors.BLACKCOLOR,
                         fontWeight: FontWeight.normal),
                   ),
                 ),
-              ),
-            ],
-          ),
-          Card(
-            color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
-            margin:
-                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
-            child: Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  margin:
-                      EdgeInsets.only(top: AppConfig.horizontalBlockSize * 1.8),
-                  child: Text(
-                    "Dos and Don'ts",
-                    style:
-                        TextStyle(fontSize: 18, color: PlunesColors.BLACKCOLOR),
-                  ),
-                ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) {
-                    return Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 1.5,
-                          vertical: AppConfig.verticalBlockSize * 1.2),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            height: 6,
-                            width: 6,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: PlunesColors.BLACKCOLOR,
-                            ),
-                          ),
-                          Flexible(
-                              child: Container(
-                            margin: EdgeInsets.only(
-                                left: AppConfig.horizontalBlockSize * 2.5),
-                            child: Text(
-                              widget.procedureData.dnd[index] ?? "",
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#4E4E4E"))),
-                            ),
-                          ))
-                        ],
+          (widget.procedureData.details == null ||
+                  widget.procedureData.details.isEmpty)
+              ? Container()
+              : Row(
+                  children: [
+                    Flexible(
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        margin: EdgeInsets.only(
+                            top: AppConfig.verticalBlockSize * 2.5),
+                        child: ReadMoreText(
+                          widget.procedureData?.details ?? "",
+                          colorClickableText: PlunesColors.SPARKLINGGREEN,
+                          trimLines: 3,
+                          trimMode: TrimMode.Line,
+                          trimCollapsedText: '  ...read more',
+                          trimExpandedText: '  read less',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#515151")),
+                              fontWeight: FontWeight.normal),
+                        ),
                       ),
-                    );
-                  },
-                  itemCount: widget.procedureData?.dnd?.length ?? 0,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          )
+          (widget.procedureData.dnd == null || widget.procedureData.dnd.isEmpty)
+              ? Container()
+              : Card(
+                  color: Color(CommonMethods.getColorHexFromStr("#F5F5F5")),
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.only(
+                            top: AppConfig.horizontalBlockSize * 1.8),
+                        child: Text(
+                          "Dos and Don'ts",
+                          style: TextStyle(
+                              fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                        ),
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 1.5,
+                                vertical: AppConfig.verticalBlockSize * 1.2),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 6,
+                                  width: 6,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: PlunesColors.BLACKCOLOR,
+                                  ),
+                                ),
+                                Flexible(
+                                    child: Container(
+                                  margin: EdgeInsets.only(
+                                      left:
+                                          AppConfig.horizontalBlockSize * 2.5),
+                                  child: Text(
+                                    widget.procedureData.dnd[index] ?? "",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#4E4E4E"))),
+                                  ),
+                                ))
+                              ],
+                            ),
+                          );
+                        },
+                        itemCount: widget.procedureData?.dnd?.length ?? 0,
+                      ),
+                    ],
+                  ),
+                )
         ],
       ),
     );
@@ -476,7 +500,6 @@ class _ViewProcedureAndProfessionalState
             ),
           ),
           Container(
-            height: AppConfig.verticalBlockSize * 33,
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
             child: StreamBuilder<RequestState>(
                 stream: _homeScreenMainBloc.mediaStream,
@@ -616,79 +639,82 @@ class _ViewProcedureAndProfessionalState
       'https://goqii.com/blog/wp-content/uploads/Doctor-Consultation.jpg';
 
   Widget _getVideoList() {
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return Card(
-          margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 3.5),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(10),
-                  bottomLeft: Radius.circular(10))),
-          child: InkWell(
-            onTap: () {
-              String mediaUrl = _mediaContentPlunes?.data[index]?.mediaUrl;
-              if (mediaUrl == null || mediaUrl.trim().isEmpty) {
-                return;
-              }
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => YoutubePlayerProvider(
-                            mediaUrl,
-                            title: _mediaContentPlunes?.data[index]?.name,
-                          )));
-            },
-            onDoubleTap: () {},
-            child: Column(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      child: ClipRRect(
-                        child: CustomWidgets().getImageFromUrl(
-                            "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
-                            boxFit: BoxFit.fill),
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10)),
-                      ),
-                      height: AppConfig.verticalBlockSize * 26,
-                    ),
-                    Positioned.fill(
-                      child: Center(
-                        child: Image.asset(
-                          PlunesImages.pauseVideoIcon,
-                          height: 50,
-                          width: 50,
+    return Container(
+      height: AppConfig.verticalBlockSize * 33,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 3.5),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomRight: Radius.circular(10),
+                    bottomLeft: Radius.circular(10))),
+            child: InkWell(
+              onTap: () {
+                String mediaUrl = _mediaContentPlunes?.data[index]?.mediaUrl;
+                if (mediaUrl == null || mediaUrl.trim().isEmpty) {
+                  return;
+                }
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => YoutubePlayerProvider(
+                              mediaUrl,
+                              title: _mediaContentPlunes?.data[index]?.name,
+                            )));
+              },
+              onDoubleTap: () {},
+              child: Column(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        child: ClipRRect(
+                          child: CustomWidgets().getImageFromUrl(
+                              "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
+                              boxFit: BoxFit.fill),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10)),
                         ),
+                        height: AppConfig.verticalBlockSize * 26,
                       ),
-                    )
-                  ],
-                ),
-                Flexible(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(
-                        vertical: AppConfig.verticalBlockSize * 1.2),
-                    padding: EdgeInsets.only(
-                        left: AppConfig.horizontalBlockSize * 3),
-                    width: AppConfig.horizontalBlockSize * 80,
-                    child: Text(
-                      _mediaContentPlunes.data[index]?.name ?? "Video",
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR, fontSize: 18),
-                    ),
+                      Positioned.fill(
+                        child: Center(
+                          child: Image.asset(
+                            PlunesImages.pauseVideoIcon,
+                            height: 50,
+                            width: 50,
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
+                  Flexible(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                          vertical: AppConfig.verticalBlockSize * 1.2),
+                      padding: EdgeInsets.only(
+                          left: AppConfig.horizontalBlockSize * 3),
+                      width: AppConfig.horizontalBlockSize * 80,
+                      child: Text(
+                        _mediaContentPlunes.data[index]?.name ?? "Video",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-        );
-      },
-      itemCount: _mediaContentPlunes?.data?.length ?? 0,
+          );
+        },
+        itemCount: _mediaContentPlunes?.data?.length ?? 0,
+      ),
     );
   }
 

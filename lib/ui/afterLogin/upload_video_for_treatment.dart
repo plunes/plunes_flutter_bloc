@@ -80,7 +80,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
               } else if (snapshot.data is RequestSuccess) {
                 Future.delayed(Duration(milliseconds: 10)).then((value) {
                   _showMessagePopup(PlunesStrings.uplaodSuccessMessage,
-                      shouldPop: false);
+                      shouldPop: true);
                 });
                 RequestSuccess data = snapshot.data;
                 if (data.additionalData != null &&

@@ -335,13 +335,149 @@ class _EnterAdditionalUserDetailScrState
                   EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
               child: Row(
                 children: [
-                  Expanded(child: _getVideoCard()),
-                  Expanded(child: _getCameraCard()),
-                  Expanded(child: _getUploadReportCard()),
+                  Expanded(
+                      child: (_videoUrls != null && _videoUrls.isNotEmpty)
+                          ? _getVideoWithBackground()
+                          : _getVideoCard()),
+                  Expanded(
+                      child: (_imageUrls != null && _imageUrls.isNotEmpty)
+                          ? _getCameraCardWithBackground()
+                          : _getCameraCard()),
+                  Expanded(
+                      child: (_docUrls != null && _docUrls.isNotEmpty)
+                          ? _getReportWithBackground()
+                          : _getUploadReportCard()),
                 ],
               ),
             ),
             _getPremiumBenefitsForUserWidget()
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getReportWithBackground() {
+    return Card(
+      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18))),
+      elevation: 2.5,
+      child: InkWell(
+        onTap: () {
+          // _showReportDialog();
+        },
+        onDoubleTap: () {},
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(18)),
+                child: Image.asset(
+                  plunesImages.pdfIcon1,
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(18))),
+              child: Container(
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 4,
+                    right: AppConfig.horizontalBlockSize * 4,
+                    top: AppConfig.verticalBlockSize * 3,
+                    bottom: AppConfig.verticalBlockSize * 1.5),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Image.asset(
+                      PlunesImages.docUploadIcon,
+                      height: 49,
+                      width: 49,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      margin:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 7),
+                      child: Text(
+                        "",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.WHITECOLOR, fontSize: 14),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getVideoWithBackground() {
+    return Card(
+      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18))),
+      elevation: 2.5,
+      child: InkWell(
+        onTap: () {
+          // _showReportDialog();
+        },
+        onDoubleTap: () {},
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(18)),
+                child: (_videoUrls.first.thumbnail == null ||
+                        _videoUrls.first.thumbnail.isEmpty)
+                    ? Image.asset(
+                        PlunesImages.docUploadIcon,
+                        fit: BoxFit.fill,
+                      )
+                    : CustomWidgets().getImageFromUrl(
+                        _videoUrls.first.thumbnail ?? "",
+                        boxFit: BoxFit.fill),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(18))),
+              child: Container(
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 4,
+                    right: AppConfig.horizontalBlockSize * 4,
+                    top: AppConfig.verticalBlockSize * 3,
+                    bottom: AppConfig.verticalBlockSize * 1.5),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Image.asset(
+                      PlunesImages.docUploadIcon,
+                      height: 49,
+                      width: 49,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      margin:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 7),
+                      child: Text(
+                        "Video",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.WHITECOLOR, fontSize: 14),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -464,6 +600,353 @@ class _EnterAdditionalUserDetailScrState
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _getCameraCardWithBackground() {
+    return Card(
+      margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18))),
+      elevation: 2.5,
+      child: InkWell(
+        onTap: () {
+          _showImagesDialog();
+        },
+        onDoubleTap: () {},
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(18)),
+                child: CustomWidgets().getImageFromUrl(
+                    _imageUrls?.first["url"] ?? "",
+                    boxFit: BoxFit.fill),
+              ),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(18))),
+              child: Container(
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 4,
+                    right: AppConfig.horizontalBlockSize * 4,
+                    top: AppConfig.verticalBlockSize * 3,
+                    bottom: AppConfig.verticalBlockSize * 1.5),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Image.asset(
+                      PlunesImages.imageUploadIcon,
+                      height: 49,
+                      width: 49,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      margin:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 7),
+                      child: Text(
+                        "Image",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: PlunesColors.WHITECOLOR, fontSize: 14),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showImagesDialog() {
+    showDialog(
+      context: context,
+      builder: (_) => Material(
+        type: MaterialType.transparency,
+        child: Container(
+          color: Colors.black54,
+          child: Column(
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 3.38),
+                height: AppConfig.verticalBlockSize * 6.5,
+                child: Row(
+                  children: [
+                    Expanded(child: Container()),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Image",
+                          style: TextStyle(
+                              color: PlunesColors.WHITECOLOR, fontSize: 18),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.centerRight,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.cancel,
+                            color: PlunesColors.WHITECOLOR,
+                          ),
+                          onPressed: () => Navigator.pop(context, false),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                child: Column(
+                  children: [
+                    Container(
+                      height: AppConfig.verticalBlockSize * 82,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: _showSelectedImages(),
+                        ),
+                      ),
+                    ),
+                    FlatButton(
+                      child: Container(
+                        height: AppConfig.verticalBlockSize * 3,
+                        width: AppConfig.horizontalBlockSize * 30,
+                        alignment: Alignment.center,
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.add_circle,
+                              color: PlunesColors.GREENCOLOR,
+                              size: 15,
+                            ),
+                            Text(
+                              "Add More",
+                              style: TextStyle(
+                                  color: PlunesColors.GREENCOLOR, fontSize: 14),
+                            ),
+                          ],
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                        _imagePicker.showDialog(context);
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // void _showReportDialog() {
+  //   showDialog(
+  //     context: context,
+  //     builder: (_) => Material(
+  //       type: MaterialType.transparency,
+  //       child: Container(
+  //         color: Colors.black54,
+  //         child: Column(
+  //           children: [
+  //             Container(
+  //               margin: EdgeInsets.symmetric(
+  //                   horizontal: AppConfig.horizontalBlockSize * 3.38),
+  //               height: AppConfig.verticalBlockSize * 6.5,
+  //               child: Row(
+  //                 children: [
+  //                   Expanded(child: Container()),
+  //                   Expanded(
+  //                     child: Container(
+  //                       alignment: Alignment.center,
+  //                       child: Text(
+  //                         "Report",
+  //                         style: TextStyle(
+  //                             color: PlunesColors.WHITECOLOR, fontSize: 18),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                   Expanded(
+  //                     child: Container(
+  //                       alignment: Alignment.centerRight,
+  //                       child: IconButton(
+  //                         icon: Icon(
+  //                           Icons.cancel,
+  //                           color: PlunesColors.WHITECOLOR,
+  //                         ),
+  //                         onPressed: () => Navigator.pop(context, false),
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //             Container(
+  //               child: Column(
+  //                 children: [
+  //                   Container(
+  //                     height: AppConfig.verticalBlockSize * 82,
+  //                     child: FutureBuilder<RequestState>(
+  //                       builder: (context, snapShot) {
+  //                         if (snapShot.data is RequestInProgress) {
+  //                           return CustomWidgets().getProgressIndicator();
+  //                         } else if (snapShot.data is RequestFailed) {
+  //                           RequestFailed _reqFailedObj = snapShot.data;
+  //                           return Center(
+  //                               child: Text(_reqFailedObj?.failureCause ??
+  //                                   "Unable to downlaod pdf"));
+  //                         } else if (snapShot.data is RequestSuccess) {
+  //                           RequestSuccess reqSuccess = snapShot.data;
+  //                           PDFDocument doc = reqSuccess.response;
+  //                           return Column(
+  //                             children: [
+  //                               Expanded(
+  //                                   child: PDFViewer(
+  //                                       document: doc, lazyLoad: true)),
+  //                               Container(
+  //                                 margin: EdgeInsets.only(
+  //                                     left:
+  //                                         AppConfig.horizontalBlockSize * 3.38,
+  //                                     top: AppConfig.verticalBlockSize * 1),
+  //                                 alignment: Alignment.centerLeft,
+  //                                 child: FlatButton(
+  //                                   shape: RoundedRectangleBorder(
+  //                                     borderRadius: BorderRadius.circular(18.0),
+  //                                     side: BorderSide(
+  //                                         color: PlunesColors.WHITECOLOR),
+  //                                   ),
+  //                                   onPressed: () {
+  //                                     if (mounted)
+  //                                       setState(() {
+  //                                         _docUrls.removeAt(0);
+  //                                         Navigator.pop(context, false);
+  //                                       });
+  //                                   },
+  //                                   child: Container(
+  //                                     width: AppConfig.horizontalBlockSize * 21,
+  //                                     child: Row(
+  //                                       children: [
+  //                                         Icon(
+  //                                           Icons.delete,
+  //                                           color: PlunesColors.WHITECOLOR,
+  //                                         ),
+  //                                         Text(
+  //                                           "Delete",
+  //                                           style: TextStyle(
+  //                                               color: PlunesColors.WHITECOLOR,
+  //                                               fontSize: 12),
+  //                                         ),
+  //                                       ],
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                               ),
+  //                             ],
+  //                           );
+  //                         } else {
+  //                           return Container();
+  //                         }
+  //                       },
+  //                       initialData: RequestInProgress(),
+  //                       future: _getDownloadedPdf(_docUrls?.first["url"] ?? ''),
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
+
+  List<Widget> _showSelectedImages() {
+    List<Widget> images = List<Widget>();
+    for (int i = 0; i < _imageUrls.length; i++) {
+      images.add(_getUploadedImage(i));
+    }
+    return images;
+  }
+
+  Widget _getUploadedImage(int index) {
+    return Container(
+      height: AppConfig.verticalBlockSize * 40,
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 3.38),
+            height: AppConfig.verticalBlockSize * 27,
+            width: double.infinity,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10.0),
+              child: CustomWidgets().getImageFromUrl(
+                  _imageUrls[index]["url"] ?? '',
+                  boxFit: BoxFit.fill),
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 3.38,
+                top: AppConfig.verticalBlockSize * 1),
+            alignment: Alignment.centerLeft,
+            child: FlatButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+                side: BorderSide(color: PlunesColors.WHITECOLOR),
+              ),
+              onPressed: () {
+                if (mounted)
+                  setState(() {
+                    _imageUrls.removeAt(index);
+                    Navigator.pop(context, false);
+                    if (_imageUrls.isNotEmpty) {
+                      _showImagesDialog();
+                    }
+                  });
+              },
+              child: Container(
+                width: AppConfig.horizontalBlockSize * 21,
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.delete,
+                      color: PlunesColors.WHITECOLOR,
+                    ),
+                    Text(
+                      "Delete",
+                      style: TextStyle(
+                          color: PlunesColors.WHITECOLOR, fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 3.38),
+            child: Divider(
+              color: PlunesColors.WHITECOLOR,
+              thickness: 1.0,
+            ),
+          ),
+        ],
       ),
     );
   }

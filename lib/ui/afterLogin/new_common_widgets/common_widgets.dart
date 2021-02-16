@@ -1489,32 +1489,35 @@ class CommonWidgets {
                               )
                             : Container(),
                       ),
-                      Flexible(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 2),
-                          width: double.infinity,
-                          alignment: Alignment.centerRight,
-                          child: InkWell(
-                            onTap: () {
-                              if (checkInsurance != null) {
-                                checkInsurance();
-                              }
-                            },
-                            onDoubleTap: () {},
-                            child: Padding(
-                              child: Text(
-                                "Check Insurance",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#25B281"))),
+                      (service.insuranceAvailable == null ||
+                              !(service.insuranceAvailable))
+                          ? Container()
+                          : Flexible(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 2),
+                                width: double.infinity,
+                                alignment: Alignment.centerRight,
+                                child: InkWell(
+                                  onTap: () {
+                                    if (checkInsurance != null) {
+                                      checkInsurance();
+                                    }
+                                  },
+                                  onDoubleTap: () {},
+                                  child: Padding(
+                                    child: Text(
+                                      "Check Insurance",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#25B281"))),
+                                    ),
+                                    padding: EdgeInsets.all(5),
+                                  ),
+                                ),
                               ),
-                              padding: EdgeInsets.all(5),
-                            ),
-                          ),
-                        ),
-                      )
+                            )
                     ],
                   ),
                 ),
@@ -1892,32 +1895,35 @@ class CommonWidgets {
                               )
                             : Container(),
                       ),
-                      Flexible(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 2),
-                          width: double.infinity,
-                          alignment: Alignment.centerRight,
-                          child: InkWell(
-                            onTap: () {
-                              if (checkInsurance != null) {
-                                checkInsurance();
-                              }
-                            },
-                            onDoubleTap: () {},
-                            child: Padding(
-                              child: Text(
-                                "Check Insurance",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#25B281"))),
+                      (service.insuranceAvailable == null ||
+                              !(service.insuranceAvailable))
+                          ? Container()
+                          : Flexible(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 2),
+                                width: double.infinity,
+                                alignment: Alignment.centerRight,
+                                child: InkWell(
+                                  onTap: () {
+                                    if (checkInsurance != null) {
+                                      checkInsurance();
+                                    }
+                                  },
+                                  onDoubleTap: () {},
+                                  child: Padding(
+                                    child: Text(
+                                      "Check Insurance",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#25B281"))),
+                                    ),
+                                    padding: EdgeInsets.all(5),
+                                  ),
+                                ),
                               ),
-                              padding: EdgeInsets.all(5),
-                            ),
-                          ),
-                        ),
-                      )
+                            )
                     ],
                   ),
                 ),
@@ -2308,32 +2314,35 @@ class CommonWidgets {
                                   )
                                 : Container(),
                       ),
-                      Flexible(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 2),
-                          width: double.infinity,
-                          alignment: Alignment.centerRight,
-                          child: InkWell(
-                            onTap: () {
-                              if (checkInsurance != null) {
-                                checkInsurance();
-                              }
-                            },
-                            onDoubleTap: () {},
-                            child: Padding(
-                              child: Text(
-                                "Check Insurance",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#25B281"))),
+                      (service.insuranceAvailable == null ||
+                              !(service.insuranceAvailable))
+                          ? Container()
+                          : Flexible(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 2),
+                                width: double.infinity,
+                                alignment: Alignment.centerRight,
+                                child: InkWell(
+                                  onTap: () {
+                                    if (checkInsurance != null) {
+                                      checkInsurance();
+                                    }
+                                  },
+                                  onDoubleTap: () {},
+                                  child: Padding(
+                                    child: Text(
+                                      "Check Insurance",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#25B281"))),
+                                    ),
+                                    padding: EdgeInsets.all(5),
+                                  ),
+                                ),
                               ),
-                              padding: EdgeInsets.all(5),
-                            ),
-                          ),
-                        ),
-                      )
+                            )
                     ],
                   ),
                 ),
@@ -2717,32 +2726,35 @@ class CommonWidgets {
                                   )
                                 : Container(),
                       ),
-                      Flexible(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 2),
-                          width: double.infinity,
-                          alignment: Alignment.centerRight,
-                          child: InkWell(
-                            onTap: () {
-                              if (checkInsurance != null) {
-                                checkInsurance();
-                              }
-                            },
-                            onDoubleTap: () {},
-                            child: Padding(
-                              child: Text(
-                                "Check Insurance",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#25B281"))),
+                      (service.insuranceAvailable == null ||
+                              !(service.insuranceAvailable))
+                          ? Container()
+                          : Flexible(
+                              child: Container(
+                                margin: EdgeInsets.only(left: 2),
+                                width: double.infinity,
+                                alignment: Alignment.centerRight,
+                                child: InkWell(
+                                  onTap: () {
+                                    if (checkInsurance != null) {
+                                      checkInsurance();
+                                    }
+                                  },
+                                  onDoubleTap: () {},
+                                  child: Padding(
+                                    child: Text(
+                                      "Check Insurance",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#25B281"))),
+                                    ),
+                                    padding: EdgeInsets.all(5),
+                                  ),
+                                ),
                               ),
-                              padding: EdgeInsets.all(5),
-                            ),
-                          ),
-                        ),
-                      )
+                            )
                     ],
                   ),
                 ),

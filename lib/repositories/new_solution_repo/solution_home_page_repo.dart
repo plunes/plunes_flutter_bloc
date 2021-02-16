@@ -69,11 +69,20 @@ class HomeScreenMainRepo {
     }
   }
 
-  Future<RequestState> getProfessionalsForService(String familyId) async {
+  Future<RequestState> getProfessionalsForService(String familyId,
+      {bool shouldHitSpecialityApi = false}) async {
+    Map<String, dynamic> map;
+    if (shouldHitSpecialityApi) {
+      map = {"specialityId": familyId};
+    } else {
+      map = {"familyId": familyId};
+    }
     var result = await DioRequester().requestMethod(
-        url: Urls.GET_PROFESSIONAL_FOR_SERVICE_URL,
+        url: shouldHitSpecialityApi
+            ? Urls.GET_PROFESSIONAL_FOR_COMMON_SPECIALITY
+            : Urls.GET_PROFESSIONAL_FOR_SERVICE_URL,
         headerIncluded: true,
-        queryParameter: {"familyId": familyId},
+        queryParameter: map,
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       ProfessionDataModel solutionHomeScreenModel =

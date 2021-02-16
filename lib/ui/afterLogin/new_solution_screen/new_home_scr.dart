@@ -766,8 +766,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             context,
             MaterialPageRoute(
                 builder: (context) => ViewProcedureAndProfessional(
-                      procedureData: procedureData,
-                    ))).then((value) {
+                    procedureData: procedureData))).then((value) {
           _getCartCount();
         });
       },
@@ -1130,7 +1129,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                           .data[index].specializationImage ??
                                       "",
                                   _topSearchOuterModel.data[index].service ??
-                                      "");
+                                      "",
+                                  _topSearchOuterModel.data[index]);
                             },
                             itemCount: _topSearchOuterModel.data.length,
                             shrinkWrap: true,
@@ -1170,14 +1170,22 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         ),
         child: InkWell(
           onTap: () {
+            ProcedureData procedureData = ProcedureData(
+                sId: specialityData?.specialityId,
+                defination: specialityData?.definition,
+                speciality: specialityData?.speciality,
+                familyImage: specialityData?.specailizationImage,
+                specialityId: specialityData?.specialityId,
+                details: specialityData?.definition,
+                familyName: specialityData?.speciality);
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => FacilityDetailScreen(
-                          profId: null,
-                          speciality: specialityData?.speciality,
-                          specialityId: specialityData?.specialityId,
-                        )));
+                    builder: (context) => ViewProcedureAndProfessional(
+                        shouldUseSpecializationApi: true,
+                        procedureData: procedureData))).then((value) {
+              _getCartCount();
+            });
           },
           onDoubleTap: () {},
           child: Column(
@@ -1226,6 +1234,71 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               color: Color(0xff444444),
                             )),
                       )))
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _topSearchCard(
+      String imageUrl, String text, TopSearchData specialityData) {
+    return Container(
+      width: AppConfig.horizontalBlockSize * 45,
+      margin: EdgeInsets.only(right: 4),
+      child: Card(
+        elevation: 2.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        child: InkWell(
+          onTap: () {
+            ProcedureData procedureData = ProcedureData(
+                sId: specialityData?.specialityId,
+                duration: specialityData?.duration,
+                category: specialityData?.category,
+                sittings: specialityData?.sittings,
+                defination: specialityData?.definition,
+                speciality: specialityData?.speciality,
+                familyImage: specialityData?.specializationImage,
+                specialityId: specialityData?.specialityId,
+                details: specialityData?.definition,
+                dnd: specialityData.dnd,
+                familyName: specialityData?.speciality);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ViewProcedureAndProfessional(
+                        shouldUseSpecializationApi: true,
+                        procedureData: procedureData))).then((value) {
+              _getCartCount();
+            });
+          },
+          onDoubleTap: () {},
+          child: Column(
+            children: [
+              Container(
+                height: AppConfig.verticalBlockSize * 15,
+                child: ClipRRect(
+                  child: _imageFittedBox(imageUrl),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
+                ),
+              ),
+              Flexible(
+                child: ListTile(
+                  title: Text(
+                    text ?? "",
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 18,
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#444444"))),
+                  ),
+                ),
+              )
             ],
           ),
         ),
@@ -1320,43 +1393,6 @@ Widget _hospitalCard(
                 style: TextStyle(
                   fontSize: 12,
                 ),
-              ),
-            ),
-          )
-        ],
-      ),
-    ),
-  );
-}
-
-Widget _topSearchCard(String imageUrl, String text) {
-  return Container(
-    width: AppConfig.horizontalBlockSize * 45,
-    margin: EdgeInsets.only(right: 4),
-    child: Card(
-      elevation: 2.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Column(
-        children: [
-          Container(
-            height: AppConfig.verticalBlockSize * 15,
-            child: ClipRRect(
-              child: _imageFittedBox(imageUrl),
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10), topRight: Radius.circular(10)),
-            ),
-          ),
-          Flexible(
-            child: ListTile(
-              title: Text(
-                text ?? "",
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Color(CommonMethods.getColorHexFromStr("#444444"))),
               ),
             ),
           )

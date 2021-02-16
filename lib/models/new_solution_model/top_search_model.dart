@@ -35,7 +35,7 @@ class TopSearchData {
   String service;
   String duration;
   String sittings;
-  String dnd;
+  List<String> dnd;
   String tags;
   String definition;
   String searchTags;
@@ -71,7 +71,14 @@ class TopSearchData {
     service = json['service'];
     duration = json['duration'];
     sittings = json['sittings'];
-    dnd = json['dnd'];
+    if (json['dnd'] != null && json['dnd'].isNotEmpty) {
+      dnd = [];
+      json['dnd'].forEach((e) {
+        if (e != null) {
+          dnd.add(e?.toString());
+        }
+      });
+    }
     tags = json['tags'];
     definition = json['definition'];
     searchTags = json['search_tags'];

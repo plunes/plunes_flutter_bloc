@@ -227,7 +227,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
           Container(
             alignment: Alignment.topLeft,
             child: Text(
-              "See What Doctor's saying about us",
+              "See What Doctors saying about us",
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontWeight: FontWeight.w600,

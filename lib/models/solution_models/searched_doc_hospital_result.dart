@@ -128,7 +128,7 @@ class Services {
   num latitude;
   num longitude;
   num distance;
-  bool homeCollection, isExpanded = false;
+  bool homeCollection, isExpanded = false, insuranceAvailable;
   num recommendation;
   num bookIn;
   num rating;
@@ -159,7 +159,8 @@ class Services {
       this.doctors,
       this.isExpanded = false,
       this.zestMoney,
-      this.professionalPhotos});
+      this.professionalPhotos,
+      this.insuranceAvailable});
 
   Services.fromJson(Map<String, dynamic> json) {
     price = json['price'].cast<num>();
@@ -202,6 +203,7 @@ class Services {
       print("professionalPhotos ${json['professionalPhotos']}");
       professionalPhotos = json['professionalPhotos'].cast<String>();
     }
+    insuranceAvailable = json['insuranceAvailable'];
   }
 
   Map<String, dynamic> toJson() {
