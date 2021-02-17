@@ -238,3 +238,173 @@ class UserReport {
     additionalDetails = json['additionalDetails'];
   }
 }
+class UserReportOuterModel {
+  bool success;
+  UserReportModel data;
+  String message;
+
+  UserReportOuterModel({this.success, this.data, this.message});
+
+  UserReportOuterModel.fromJson(Map<String, dynamic> json) {
+    success = json['success'];
+    data = json['data'] != null ? new UserReportModel.fromJson(json['data']) : null;
+    message = json['message'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    if (this.data != null) {
+      data['data'] = this.data.toJson();
+    }
+    data['message'] = this.message;
+    return data;
+  }
+}
+
+class UserReportModel {
+  String reportType;
+  bool treatedPreviously;
+  bool insurance;
+  String sId;
+  List<VideoUrl> videoUrl;
+  List<ImageUrl> imageUrl;
+  List<ReportUrl> reportUrl;
+  int createdAt;
+  String serviceId;
+  String userId;
+  String description;
+  String additionalDetails;
+  int iV;
+
+  UserReportModel(
+      {this.reportType,
+        this.treatedPreviously,
+        this.insurance,
+        this.sId,
+        this.videoUrl,
+        this.imageUrl,
+        this.reportUrl,
+        this.createdAt,
+        this.serviceId,
+        this.userId,
+        this.description,
+        this.additionalDetails,
+        this.iV});
+
+  UserReportModel.fromJson(Map<String, dynamic> json) {
+    reportType = json['reportType'];
+    treatedPreviously = json['treatedPreviously'];
+    insurance = json['insurance'];
+    sId = json['_id'];
+    if (json['videoUrl'] != null) {
+      videoUrl = new List<VideoUrl>();
+      json['videoUrl'].forEach((v) {
+        videoUrl.add(new VideoUrl.fromJson(v));
+      });
+    }
+    if (json['imageUrl'] != null) {
+      imageUrl = new List<ImageUrl>();
+      json['imageUrl'].forEach((v) {
+        imageUrl.add(new ImageUrl.fromJson(v));
+      });
+    }
+    if (json['reportUrl'] != null) {
+      reportUrl = new List<ReportUrl>();
+      json['reportUrl'].forEach((v) {
+        reportUrl.add(new ReportUrl.fromJson(v));
+      });
+    }
+    createdAt = json['createdAt'];
+    serviceId = json['serviceId'];
+    userId = json['userId'];
+    description = json['description'];
+    additionalDetails = json['additionalDetails'];
+    iV = json['__v'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['reportType'] = this.reportType;
+    data['treatedPreviously'] = this.treatedPreviously;
+    data['insurance'] = this.insurance;
+    data['_id'] = this.sId;
+    if (this.videoUrl != null) {
+      data['videoUrl'] = this.videoUrl.map((v) => v.toJson()).toList();
+    }
+    if (this.imageUrl != null) {
+      data['imageUrl'] = this.imageUrl.map((v) => v.toJson()).toList();
+    }
+    if (this.reportUrl != null) {
+      data['reportUrl'] = this.reportUrl.map((v) => v.toJson()).toList();
+    }
+    data['createdAt'] = this.createdAt;
+    data['serviceId'] = this.serviceId;
+    data['userId'] = this.userId;
+    data['description'] = this.description;
+    data['additionalDetails'] = this.additionalDetails;
+    data['__v'] = this.iV;
+    return data;
+  }
+}
+
+class VideoUrl {
+  String sId;
+  String videoUrl;
+  String thumbnail;
+
+  VideoUrl({this.sId, this.videoUrl, this.thumbnail});
+
+  VideoUrl.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    videoUrl = json['videoUrl'];
+    thumbnail = json['thumbnail'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['videoUrl'] = this.videoUrl;
+    data['thumbnail'] = this.thumbnail;
+    return data;
+  }
+}
+
+class ImageUrl {
+  String sId;
+  String imageUrl;
+
+  ImageUrl({this.sId, this.imageUrl});
+
+  ImageUrl.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    imageUrl = json['imageUrl'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['imageUrl'] = this.imageUrl;
+    return data;
+  }
+}
+
+class ReportUrl {
+  String sId;
+  String reportUrl;
+
+  ReportUrl({this.sId, this.reportUrl});
+
+  ReportUrl.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    reportUrl = json['reportUrl'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['reportUrl'] = this.reportUrl;
+    return data;
+  }
+}
+

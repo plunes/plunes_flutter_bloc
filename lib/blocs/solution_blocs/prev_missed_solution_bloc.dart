@@ -8,4 +8,9 @@ class PrevMissSolutionBloc extends BlocBase {
     super.addIntoStream(result);
     return result;
   }
+
+  Future<RequestState> getUserReport(String userReportId) async {
+    var result = await PrevMissSolutionRepo().getUserReport(userReportId);
+    return result;
+  }
 }

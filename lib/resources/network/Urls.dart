@@ -169,4 +169,5 @@ class Urls {
       "catalogue/getServiceBySpecialityId";
   static const String GET_PROFESSIONAL_FOR_COMMON_SPECIALITY =
       "user/getProfessionalsFromCommonSpeciality";
+  static const String GET_REPORT_BY_REPORT_ID = "user/getReportByReportId";
 }

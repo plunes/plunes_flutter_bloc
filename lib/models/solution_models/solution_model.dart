@@ -7,7 +7,7 @@ class CatalogueData {
   String speciality;
   String specialityId;
   String serviceId;
-  String sitting, expirationMessage;
+  String sitting, expirationMessage, userReportId;
 
   @override
   String toString() {
@@ -42,7 +42,8 @@ class CatalogueData {
       this.topSearch,
       this.solutionExpiredAt,
       this.toShowSearched,
-      this.expirationMessage});
+      this.expirationMessage,
+      this.userReportId});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
@@ -65,6 +66,7 @@ class CatalogueData {
     priceDiscovered = json['discoverPrice'];
     solutionExpiredAt = json["expiredAt"];
     expirationMessage = json['expirationMessage'];
+    userReportId = json['userReportId'];
   }
 
   Map<String, dynamic> toJson() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
+import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -353,35 +354,17 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                             style: TextStyle(fontSize: 17),
                           ),
                         ),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: (catalogueData.createdAt == null ||
-                                  catalogueData.createdAt == 0)
-                              ? Container()
-                              : Text(
-                                  DateUtil.getDuration(catalogueData.createdAt),
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: PlunesColors.GREYCOLOR)),
-                        ),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: (!(catalogueData.isActive) &&
-                                  catalogueData.maxDiscount != null &&
-                                  catalogueData.maxDiscount != 0 &&
-                                  (catalogueData.booked == null ||
-                                      !(catalogueData.booked)))
-                              ? Padding(
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 2),
-                                  child: Text(
-                                    "You have missed ${catalogueData.maxDiscount.toStringAsFixed(0)}% on your ${catalogueData.service ?? PlunesStrings.NA} Previously",
-                                    maxLines: 4,
-                                    style: TextStyle(
-                                        fontSize: 14, color: Colors.black),
-                                  ))
-                              : Container(),
-                        ),
+                        // Container(
+                        //   alignment: Alignment.topLeft,
+                        //   child: (catalogueData.createdAt == null ||
+                        //           catalogueData.createdAt == 0)
+                        //       ? Container()
+                        //       : Text(
+                        //           DateUtil.getDuration(catalogueData.createdAt),
+                        //           style: TextStyle(
+                        //               fontSize: 14,
+                        //               color: PlunesColors.GREYCOLOR)),
+                        // ),
                         StreamBuilder<Object>(
                             stream: _streamController?.stream,
                             builder: (context, snapshot) {
@@ -410,7 +393,57 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                                           "#1D3861"))),
                                 ),
                               );
-                            })
+                            }),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: (!(catalogueData.isActive) &&
+                                      catalogueData.maxDiscount != null &&
+                                      catalogueData.maxDiscount != 0 &&
+                                      (catalogueData.booked == null ||
+                                          !(catalogueData.booked))) &&
+                                  ((_getRemainingTimeOfSolutionExpiration(
+                                              catalogueData) ==
+                                          catalogueData?.expirationMessage ??
+                                      _expirationMessage))
+                              ? Container(
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 2),
+                                  child: Text(
+                                    "You have missed ${catalogueData.maxDiscount.toStringAsFixed(0)}% on your ${catalogueData.service ?? PlunesStrings.NA} Previously",
+                                    maxLines: 4,
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.black),
+                                  ))
+                              : Container(),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (catalogueData != null &&
+                                catalogueData.userReportId != null &&
+                                catalogueData.userReportId.trim().isNotEmpty)
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PreviousActivityReport(
+                                              catalogueData.userReportId)));
+                          },
+                          onDoubleTap: () {},
+                          child: Container(
+                            alignment: Alignment.topLeft,
+                            padding: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1,
+                                bottom: AppConfig.verticalBlockSize * 1,
+                                right: AppConfig.verticalBlockSize * 1),
+                            child: Text(
+                              "View Details",
+                              style: TextStyle(
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#01D35A")),
+                                  fontSize: 16),
+                            ),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -429,20 +462,101 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       return solution.expirationMessage ?? _expirationMessage;
     }
     var now = DateTime.now();
+    String priceExpireText = "Your prices will expire in ";
     var expireTime =
         DateTime.fromMillisecondsSinceEpoch(solution?.solutionExpiredAt ?? 0);
     var duration = expireTime.difference(now);
     if (duration.inDays > 1) {
-      timeRemaining = "${duration.inDays} days remaining";
+      timeRemaining = "$priceExpireText${duration.inDays} days";
     } else if (duration.inHours > 1) {
-      timeRemaining = "${duration.inHours} hours remaining";
+      timeRemaining = "$priceExpireText${duration.inHours} hours";
     } else if (duration.inMinutes > 1) {
-      timeRemaining = "${duration.inMinutes} minutes remaining";
+      timeRemaining = "$priceExpireText${duration.inMinutes} minutes";
     } else if (duration.inSeconds > 1) {
-      timeRemaining = "${duration.inSeconds} seconds remaining";
+      timeRemaining = "$priceExpireText${duration.inSeconds} seconds";
     } else {
       timeRemaining = solution.expirationMessage ?? _expirationMessage;
     }
     return timeRemaining;
+  }
+}
+
+// ignore: must_be_immutable
+class PreviousActivityReport extends BaseActivity {
+  String userReportId;
+
+  PreviousActivityReport(this.userReportId);
+
+  @override
+  _PreviousActivityReportState createState() => _PreviousActivityReportState();
+}
+
+class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
+  PrevMissSolutionBloc _prevMissSolutionBloc;
+  bool _isProcessing;
+  UserReportOuterModel _userReport;
+
+  String _failureCause;
+
+  @override
+  void initState() {
+    _isProcessing = true;
+    _prevMissSolutionBloc = PrevMissSolutionBloc();
+    _getReport();
+    super.initState();
+  }
+
+  _setState() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    _prevMissSolutionBloc?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: widget.getAppBar(context, PlunesStrings.previousActivities, true),
+      body: _isProcessing
+          ? CustomWidgets().getProgressIndicator()
+          : (_userReport == null ||
+                  _userReport.success == null ||
+                  !(_userReport.success) ||
+                  _userReport.data == null ||
+                  _userReport.data.additionalDetails == null ||
+                  _userReport.data.additionalDetails.isEmpty)
+              ? CustomWidgets().errorWidget(
+                  _userReport?.message ?? _failureCause,
+                  buttonText: PlunesStrings.refresh,
+                  onTap: () => _getReport())
+              : _getWidgetBody(),
+    );
+  }
+
+  void _getReport() {
+    _failureCause = null;
+    if (!_isProcessing) {
+      _isProcessing = true;
+      _setState();
+    }
+    _prevMissSolutionBloc
+        .getUserReport(widget.userReportId)
+        .then((requestState) {
+      if (requestState is RequestSuccess) {
+        _userReport = requestState.response;
+      } else if (requestState is RequestFailed) {
+        _failureCause =
+            requestState.failureCause ?? plunesStrings.somethingWentWrong;
+      }
+      _isProcessing = false;
+      _setState();
+    });
+  }
+
+  Widget _getWidgetBody() {
+    return Container();
   }
 }
