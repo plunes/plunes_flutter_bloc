@@ -1258,401 +1258,436 @@ class CommonWidgets {
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16))),
-      child: Column(
-        children: [
-          InkWell(
-            onTap: () {
-              if (openProfile != null) {
-                openProfile();
-              }
-            },
-            onDoubleTap: () {},
-            focusColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            child: Container(
-              height: AppConfig.verticalBlockSize * 25,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16)),
-                child: (service != null &&
-                        service.professionalPhotos != null &&
-                        service.professionalPhotos.isNotEmpty)
-                    ? _getImageArrayOfProfessional(service)
-                    : SizedBox.expand(
-                        child: CustomWidgets().getImageFromUrl(
-                            service.imageUrl ?? "",
-                            boxFit: BoxFit.cover),
-                      ),
-              ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 3.2,
-                right: AppConfig.horizontalBlockSize * 3.2,
-                top: AppConfig.verticalBlockSize * 1.2),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        CommonMethods.getStringInCamelCase(service?.name),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: PlunesColors.BLACKCOLOR,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.yellow,
+      child: StatefulBuilder(
+        builder: (context, newState) {
+          return Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  if (openProfile != null) {
+                    openProfile();
+                  }
+                },
+                onDoubleTap: () {},
+                focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                child: Container(
+                  height: AppConfig.verticalBlockSize * 25,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16)),
+                    child: (service != null &&
+                            service.professionalPhotos != null &&
+                            service.professionalPhotos.isNotEmpty)
+                        ? _getImageArrayOfProfessional(service)
+                        : SizedBox.expand(
+                            child: CustomWidgets().getImageFromUrl(
+                                service.imageUrl ?? "",
+                                boxFit: BoxFit.cover),
                           ),
-                          Text(
-                            " ${service?.rating?.toStringAsFixed(1) ?? 4.5}",
+                  ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 3.2,
+                    right: AppConfig.horizontalBlockSize * 3.2,
+                    top: AppConfig.verticalBlockSize * 1.2),
+                child: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            CommonMethods.getStringInCamelCase(service?.name),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 18,
                               color: PlunesColors.BLACKCOLOR,
                             ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: PlunesColors.BLACKCOLOR,
+                          ),
                         ),
-                      ),
-                    ),
-                    (service.experience != null && service.experience > 0)
-                        ? Flexible(
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              margin: EdgeInsets.only(left: 3),
-                              child: Text(
-                                "${service.experience} Years Experience",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                        Container(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
+                              Text(
+                                " ${service?.rating?.toStringAsFixed(1) ?? 4.5}",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 18,
                                   color: PlunesColors.BLACKCOLOR,
                                 ),
-                              ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: PlunesColors.BLACKCOLOR,
                             ),
-                          )
-                        : Container(),
-                  ],
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
-                ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                  lineThickness: 1,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      bottom: AppConfig.verticalBlockSize * 0.5),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            (service.price != null &&
-                                    service.price.isNotEmpty &&
-                                    service.newPrice != null &&
-                                    service.newPrice.isNotEmpty &&
-                                    service.price.first !=
-                                        service.newPrice.first)
-                                ? RichText(
-                                    textAlign: TextAlign.left,
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                        text: "MRP \u20B9",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    "#A2A2A2"))),
-                                      ),
-                                      TextSpan(
-                                          text:
-                                              "${service.price.first?.toStringAsFixed(1) ?? ""}",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      "#A2A2A2")))),
-                                    ]))
-                                : Container(),
-                            (service.newPrice != null &&
-                                    service.newPrice.isNotEmpty)
-                                ? Container(
-                                    margin: EdgeInsets.only(top: 2.5),
-                                    child: RichText(
-                                        textAlign: TextAlign.left,
-                                        text: TextSpan(children: [
-                                          TextSpan(
-                                              text: "\u20B9",
-                                              style: TextStyle(
-                                                  fontSize: 22,
-                                                  color:
-                                                      PlunesColors.BLACKCOLOR)),
-                                          TextSpan(
-                                              text:
-                                                  "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
-                                              style: TextStyle(
-                                                  fontSize: 22,
-                                                  color:
-                                                      PlunesColors.BLACKCOLOR)),
-                                        ])),
-                                  )
-                                : Container(),
-                          ],
+                          ),
                         ),
-                      ),
-                      Flexible(
-                          child: Container(
-                        margin: EdgeInsets.only(left: 3),
-                        alignment: Alignment.centerRight,
-                        child: InkWell(
-                          focusColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          onTap: () {
-                            if (bookAppointment != null) {
-                              bookAppointment();
-                            }
-                          },
-                          onDoubleTap: () {},
-                          child: CustomWidgets().getRoundedButton(
-                              PlunesStrings.book,
-                              AppConfig.horizontalBlockSize * 8,
-                              PlunesColors.PARROTGREEN,
-                              AppConfig.horizontalBlockSize * 4,
-                              AppConfig.verticalBlockSize * 1,
-                              PlunesColors.WHITECOLOR,
-                              hasBorder: false),
-                        ),
-                      )),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: (service.homeCollection != null &&
-                                service.homeCollection)
-                            ? Container(
-                                child: Text(
-                                  PlunesStrings.homeCollectionAvailable,
-                                  style: TextStyle(
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#A2A2A2")),
-                                      fontSize: 12),
+                        (service.experience != null && service.experience > 0)
+                            ? Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  margin: EdgeInsets.only(left: 3),
+                                  child: Text(
+                                    "${service.experience} Years Experience",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: PlunesColors.BLACKCOLOR,
+                                    ),
+                                  ),
                                 ),
                               )
                             : Container(),
-                      ),
-                      (service.insuranceAvailable == null ||
-                              !(service.insuranceAvailable))
-                          ? Container()
-                          : Flexible(
-                              child: Container(
-                                margin: EdgeInsets.only(left: 2),
-                                width: double.infinity,
-                                alignment: Alignment.centerRight,
-                                child: InkWell(
-                                  onTap: () {
-                                    if (checkInsurance != null) {
-                                      checkInsurance();
-                                    }
-                                  },
-                                  onDoubleTap: () {},
-                                  child: Padding(
-                                    child: Text(
-                                      "Check Insurance",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#25B281"))),
-                                    ),
-                                    padding: EdgeInsets.all(5),
-                                  ),
-                                ),
-                              ),
-                            )
-                    ],
-                  ),
-                ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                  lineThickness: 1,
-                ),
-                Container(
-                    margin: EdgeInsets.only(
-                        bottom: AppConfig.verticalBlockSize * 1.8)),
-                1 == 1
-                    ? StatefulBuilder(builder: (context, newState) {
-                        return Column(
-                          children: [
-                            Container(
-                              height: AppConfig.verticalBlockSize * 10,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                shrinkWrap: true,
-                                itemBuilder: (context, index) {
-                                  return Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            AppConfig.horizontalBlockSize * 4,
-                                        vertical:
-                                            AppConfig.verticalBlockSize * 1.5),
-                                    margin: EdgeInsets.only(
-                                        right: AppConfig.horizontalBlockSize *
-                                            2.3),
-                                    child: Row(
-                                      children: [
-                                        index == 0
-                                            ? Container()
-                                            : Container(
-                                                margin: EdgeInsets.only(
-                                                    top: 8,
-                                                    bottom: 8,
-                                                    right: 20),
-                                                width: 1,
+                      ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.8),
+                    ),
+                    DottedLine(
+                      dashColor:
+                          Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                      lineThickness: 1,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.8),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 0.5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                (service.price != null &&
+                                        service.price.isNotEmpty &&
+                                        service.newPrice != null &&
+                                        service.newPrice.isNotEmpty &&
+                                        service.price.first !=
+                                            service.newPrice.first)
+                                    ? RichText(
+                                        textAlign: TextAlign.left,
+                                        text: TextSpan(children: [
+                                          TextSpan(
+                                            text: "MRP \u20B9",
+                                            style: TextStyle(
+                                                fontSize: 16,
                                                 color: Color(CommonMethods
                                                     .getColorHexFromStr(
-                                                        "#333333")),
-                                              ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text("FUI",
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                    color:
-                                                        PlunesColors.BLACKCOLOR,
-                                                    fontSize: 18)),
-                                            Container(
-                                              alignment: Alignment.centerLeft,
-                                              margin: EdgeInsets.only(top: 3),
-                                              child: Text("Technique",
+                                                        "#A2A2A2"))),
+                                          ),
+                                          TextSpan(
+                                              text:
+                                                  "${service.price.first?.toStringAsFixed(1) ?? ""}",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#A2A2A2")))),
+                                        ]))
+                                    : Container(),
+                                (service.newPrice != null &&
+                                        service.newPrice.isNotEmpty)
+                                    ? Container(
+                                        margin: EdgeInsets.only(top: 2.5),
+                                        child: RichText(
+                                            textAlign: TextAlign.left,
+                                            text: TextSpan(children: [
+                                              TextSpan(
+                                                  text: "\u20B9",
+                                                  style: TextStyle(
+                                                      fontSize: 22,
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR)),
+                                              TextSpan(
+                                                  text:
+                                                      "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
+                                                  style: TextStyle(
+                                                      fontSize: 22,
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR)),
+                                            ])),
+                                      )
+                                    : Container(),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                              child: Container(
+                            margin: EdgeInsets.only(left: 3),
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              focusColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: () {
+                                if (bookAppointment != null) {
+                                  bookAppointment();
+                                }
+                              },
+                              onDoubleTap: () {},
+                              child: CustomWidgets().getRoundedButton(
+                                  PlunesStrings.book,
+                                  AppConfig.horizontalBlockSize * 8,
+                                  PlunesColors.PARROTGREEN,
+                                  AppConfig.horizontalBlockSize * 4,
+                                  AppConfig.verticalBlockSize * 1,
+                                  PlunesColors.WHITECOLOR,
+                                  hasBorder: false),
+                            ),
+                          )),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 1),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: (service.homeCollection != null &&
+                                    service.homeCollection)
+                                ? Container(
+                                    child: Text(
+                                      PlunesStrings.homeCollectionAvailable,
+                                      style: TextStyle(
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#A2A2A2")),
+                                          fontSize: 12),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                          (service.insuranceAvailable == null ||
+                                  !(service.insuranceAvailable))
+                              ? Container()
+                              : Flexible(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 2),
+                                    width: double.infinity,
+                                    alignment: Alignment.centerRight,
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (checkInsurance != null) {
+                                          checkInsurance();
+                                        }
+                                      },
+                                      onDoubleTap: () {},
+                                      child: Padding(
+                                        child: Text(
+                                          "Check Insurance",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#25B281"))),
+                                        ),
+                                        padding: EdgeInsets.all(5),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                        ],
+                      ),
+                    ),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty)
+                        ? DottedLine(
+                            dashColor: Color(
+                                CommonMethods.getColorHexFromStr("#7070703B")),
+                            lineThickness: 1,
+                          )
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty &&
+                            service.isExpanded)
+                        ? Container(
+                            margin: EdgeInsets.only(
+                                bottom: AppConfig.verticalBlockSize * 1.8))
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty &&
+                            service.isExpanded)
+                        ? Column(
+                            children: [
+                              Container(
+                                height: AppConfig.verticalBlockSize * 10,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  shrinkWrap: true,
+                                  itemCount: service.specialOffers?.length ?? 0,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              AppConfig.horizontalBlockSize * 4,
+                                          vertical:
+                                              AppConfig.verticalBlockSize *
+                                                  1.5),
+                                      margin: EdgeInsets.only(
+                                          right: AppConfig.horizontalBlockSize *
+                                              2.3),
+                                      child: Row(
+                                        children: [
+                                          index == 0
+                                              ? Container()
+                                              : Container(
+                                                  margin: EdgeInsets.only(
+                                                      top: 8,
+                                                      bottom: 8,
+                                                      right: 20),
+                                                  width: 1,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#333333")),
+                                                ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                  service.specialOffers[index]
+                                                          ?.values?.first ??
+                                                      "",
                                                   textAlign: TextAlign.left,
                                                   style: TextStyle(
-                                                      color: Color(CommonMethods
-                                                          .getColorHexFromStr(
-                                                              "#515151")),
-                                                      fontSize: 16)),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
-                                itemCount: 4,
-                              ),
-                            ),
-                          ],
-                        );
-                      })
-                    : Container(),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 2),
-                  child: 1 != 1
-                      ? InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "View More ",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#01D35A"))),
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR,
+                                                      fontSize: 18)),
+                                              Container(
+                                                alignment: Alignment.centerLeft,
+                                                margin: EdgeInsets.only(top: 3),
+                                                child: Text(
+                                                    service.specialOffers[index]
+                                                            ?.keys?.first ??
+                                                        "",
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                        color: Color(CommonMethods
+                                                            .getColorHexFromStr(
+                                                                "#515151")),
+                                                        fontSize: 16)),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
-                                Icon(Icons.keyboard_arrow_down,
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#01D35A")),
-                                    size: 15)
-                              ],
-                            ),
-                          ),
-                        )
-                      : InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text("View Less ",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(
-                                            CommonMethods.getColorHexFromStr(
-                                                "#01D35A")))),
-                                Icon(
-                                  Icons.keyboard_arrow_up,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#01D35A")),
-                                  size: 15,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                )
-              ],
-            ),
-          )
-        ],
+                              ),
+                            ],
+                          )
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty)
+                        ? Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 2),
+                            child: !service.isExpanded
+                                ? InkWell(
+                                    onTap: () {
+                                      service.isExpanded = !service.isExpanded;
+                                      newState(() {});
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "View More ",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#01D35A"))),
+                                          ),
+                                          Icon(Icons.keyboard_arrow_down,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#01D35A")),
+                                              size: 15)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      service.isExpanded = !service.isExpanded;
+                                      newState(() {});
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text("View Less ",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#01D35A")))),
+                                          Icon(
+                                            Icons.keyboard_arrow_up,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#01D35A")),
+                                            size: 15,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                          )
+                        : Container()
+                  ],
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }
@@ -1664,397 +1699,430 @@ class CommonWidgets {
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16))),
-      child: Column(
-        children: [
-          InkWell(
-            onTap: () {
-              if (openProfile != null) {
-                openProfile();
-              }
-            },
-            onDoubleTap: () {},
-            focusColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            child: Container(
-              height: AppConfig.verticalBlockSize * 25,
-              child: (service != null &&
-                      service.professionalPhotos != null &&
-                      service.professionalPhotos.isNotEmpty)
-                  ? _getImageArrayOfProfessional(service)
-                  : ClipRRect(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(16),
-                          topRight: Radius.circular(16)),
-                      child: SizedBox.expand(
-                        child: CustomWidgets().getImageFromUrl(
-                            service.imageUrl ?? "",
-                            boxFit: BoxFit.cover),
-                      ),
-                    ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 3.2,
-                right: AppConfig.horizontalBlockSize * 3.2,
-                top: AppConfig.verticalBlockSize * 1.2),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        CommonMethods.getStringInCamelCase(service?.name),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: PlunesColors.BLACKCOLOR,
-                        ),
-                      ),
-                    ),
-                    Container(
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.star,
-                            color: Colors.yellow,
+      child: StatefulBuilder(
+        builder: (context, newState) {
+          return Column(
+            children: [
+              InkWell(
+                onTap: () {
+                  if (openProfile != null) {
+                    openProfile();
+                  }
+                },
+                onDoubleTap: () {},
+                focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                child: Container(
+                  height: AppConfig.verticalBlockSize * 25,
+                  child: (service != null &&
+                          service.professionalPhotos != null &&
+                          service.professionalPhotos.isNotEmpty)
+                      ? _getImageArrayOfProfessional(service)
+                      : ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(16),
+                              topRight: Radius.circular(16)),
+                          child: SizedBox.expand(
+                            child: CustomWidgets().getImageFromUrl(
+                                service.imageUrl ?? "",
+                                boxFit: BoxFit.cover),
                           ),
-                          Text(
-                            " ${service?.rating?.toStringAsFixed(1) ?? 4.5}",
+                        ),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 3.2,
+                    right: AppConfig.horizontalBlockSize * 3.2,
+                    top: AppConfig.verticalBlockSize * 1.2),
+                child: Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            CommonMethods.getStringInCamelCase(service?.name),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                               fontSize: 18,
                               color: PlunesColors.BLACKCOLOR,
                             ),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: PlunesColors.BLACKCOLOR,
+                          ),
                         ),
-                      ),
-                    ),
-                    (service.experience != null && service.experience > 0)
-                        ? Flexible(
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              margin: EdgeInsets.only(left: 3),
-                              child: Text(
-                                "${service.experience} Years Experience",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
+                        Container(
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
+                              Text(
+                                " ${service?.rating?.toStringAsFixed(1) ?? 4.5}",
                                 style: TextStyle(
-                                  fontSize: 14,
+                                  fontSize: 18,
                                   color: PlunesColors.BLACKCOLOR,
                                 ),
-                              ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: PlunesColors.BLACKCOLOR,
                             ),
-                          )
-                        : Container(),
-                  ],
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
-                ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                  lineThickness: 1,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      bottom: AppConfig.verticalBlockSize * 0.5),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            (service.price != null &&
-                                    service.price.isNotEmpty &&
-                                    service.newPrice != null &&
-                                    service.newPrice.isNotEmpty &&
-                                    service.price.first !=
-                                        service.newPrice.first)
-                                ? RichText(
-                                    textAlign: TextAlign.left,
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                        text: "MRP \u20B9",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    "#A2A2A2"))),
-                                      ),
-                                      TextSpan(
-                                          text:
-                                              "${service.price.first?.toStringAsFixed(1) ?? ""}",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      "#A2A2A2")))),
-                                    ]))
-                                : Container(),
-                            (service.newPrice != null &&
-                                    service.newPrice.isNotEmpty)
-                                ? Container(
-                                    margin: EdgeInsets.only(top: 2.5),
-                                    child: RichText(
-                                        textAlign: TextAlign.left,
-                                        text: TextSpan(children: [
-                                          TextSpan(
-                                              text: "\u20B9",
-                                              style: TextStyle(
-                                                  fontSize: 22,
-                                                  color:
-                                                      PlunesColors.BLACKCOLOR)),
-                                          TextSpan(
-                                              text:
-                                                  "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
-                                              style: TextStyle(
-                                                  fontSize: 22,
-                                                  color:
-                                                      PlunesColors.BLACKCOLOR)),
-                                        ])),
-                                  )
-                                : Container(),
-                          ],
+                          ),
                         ),
-                      ),
-                      Flexible(
-                          child: Container(
-                        margin: EdgeInsets.only(left: 3),
-                        alignment: Alignment.centerRight,
-                        child: InkWell(
-                          focusColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          onTap: () {
-                            if (bookAppointment != null) {
-                              bookAppointment();
-                            }
-                          },
-                          onDoubleTap: () {},
-                          child: CustomWidgets().getRoundedButton(
-                              PlunesStrings.book,
-                              AppConfig.horizontalBlockSize * 8,
-                              PlunesColors.PARROTGREEN,
-                              AppConfig.horizontalBlockSize * 4,
-                              AppConfig.verticalBlockSize * 1,
-                              PlunesColors.WHITECOLOR,
-                              hasBorder: false),
-                        ),
-                      )),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: (service.homeCollection != null &&
-                                service.homeCollection)
-                            ? Container(
-                                child: Text(
-                                  PlunesStrings.homeCollectionAvailable,
-                                  style: TextStyle(
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#A2A2A2")),
-                                      fontSize: 12),
+                        (service.experience != null && service.experience > 0)
+                            ? Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  margin: EdgeInsets.only(left: 3),
+                                  child: Text(
+                                    "${service.experience} Years Experience",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: PlunesColors.BLACKCOLOR,
+                                    ),
+                                  ),
                                 ),
                               )
                             : Container(),
-                      ),
-                      (service.insuranceAvailable == null ||
-                              !(service.insuranceAvailable))
-                          ? Container()
-                          : Flexible(
-                              child: Container(
-                                margin: EdgeInsets.only(left: 2),
-                                width: double.infinity,
-                                alignment: Alignment.centerRight,
-                                child: InkWell(
-                                  onTap: () {
-                                    if (checkInsurance != null) {
-                                      checkInsurance();
-                                    }
-                                  },
-                                  onDoubleTap: () {},
-                                  child: Padding(
-                                    child: Text(
-                                      "Check Insurance",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#25B281"))),
-                                    ),
-                                    padding: EdgeInsets.all(5),
-                                  ),
-                                ),
-                              ),
-                            )
-                    ],
-                  ),
-                ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                  lineThickness: 1,
-                ),
-                Container(
-                    margin: EdgeInsets.only(
-                        bottom: AppConfig.verticalBlockSize * 1.8)),
-                1 == 1
-                    ? Container(
-                        height: AppConfig.verticalBlockSize * 10,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              // decoration: BoxDecoration(
-                              //     borderRadius:
-                              //         BorderRadius.all(Radius.circular(12)),
-                              //     border: Border.all(
-                              //         color: Color(
-                              //             CommonMethods.getColorHexFromStr(
-                              //                 "#25B281")),
-                              //         width: 0.8)),
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: AppConfig.horizontalBlockSize * 4,
-                                  vertical: AppConfig.verticalBlockSize * 1.5),
-                              margin: EdgeInsets.only(
-                                  right: AppConfig.horizontalBlockSize * 2.3),
-                              child: Row(
-                                children: [
-                                  index == 0
-                                      ? Container()
-                                      : Container(
-                                          margin: EdgeInsets.only(
-                                              top: 8, bottom: 8, right: 20),
-                                          width: 1,
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#333333"))),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("FUI",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                              color: PlunesColors.BLACKCOLOR,
-                                              fontSize: 18)),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        margin: EdgeInsets.only(top: 3),
-                                        child: Text("Technique",
-                                            textAlign: TextAlign.left,
+                      ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.8),
+                    ),
+                    DottedLine(
+                      dashColor:
+                          Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                      lineThickness: 1,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.8),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 0.5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                (service.price != null &&
+                                        service.price.isNotEmpty &&
+                                        service.newPrice != null &&
+                                        service.newPrice.isNotEmpty &&
+                                        service.price.first !=
+                                            service.newPrice.first)
+                                    ? RichText(
+                                        textAlign: TextAlign.left,
+                                        text: TextSpan(children: [
+                                          TextSpan(
+                                            text: "MRP \u20B9",
                                             style: TextStyle(
+                                                fontSize: 16,
                                                 color: Color(CommonMethods
                                                     .getColorHexFromStr(
-                                                        "#515151")),
-                                                fontSize: 16)),
+                                                        "#A2A2A2"))),
+                                          ),
+                                          TextSpan(
+                                              text:
+                                                  "${service.price.first?.toStringAsFixed(1) ?? ""}",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#A2A2A2")))),
+                                        ]))
+                                    : Container(),
+                                (service.newPrice != null &&
+                                        service.newPrice.isNotEmpty)
+                                    ? Container(
+                                        margin: EdgeInsets.only(top: 2.5),
+                                        child: RichText(
+                                            textAlign: TextAlign.left,
+                                            text: TextSpan(children: [
+                                              TextSpan(
+                                                  text: "\u20B9",
+                                                  style: TextStyle(
+                                                      fontSize: 22,
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR)),
+                                              TextSpan(
+                                                  text:
+                                                      "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
+                                                  style: TextStyle(
+                                                      fontSize: 22,
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR)),
+                                            ])),
                                       )
+                                    : Container(),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                              child: Container(
+                            margin: EdgeInsets.only(left: 3),
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              focusColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: () {
+                                if (bookAppointment != null) {
+                                  bookAppointment();
+                                }
+                              },
+                              onDoubleTap: () {},
+                              child: CustomWidgets().getRoundedButton(
+                                  PlunesStrings.book,
+                                  AppConfig.horizontalBlockSize * 8,
+                                  PlunesColors.PARROTGREEN,
+                                  AppConfig.horizontalBlockSize * 4,
+                                  AppConfig.verticalBlockSize * 1,
+                                  PlunesColors.WHITECOLOR,
+                                  hasBorder: false),
+                            ),
+                          )),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 1),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: (service.homeCollection != null &&
+                                    service.homeCollection)
+                                ? Container(
+                                    child: Text(
+                                      PlunesStrings.homeCollectionAvailable,
+                                      style: TextStyle(
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#A2A2A2")),
+                                          fontSize: 12),
+                                    ),
+                                  )
+                                : Container(),
+                          ),
+                          (service.insuranceAvailable == null ||
+                                  !(service.insuranceAvailable))
+                              ? Container()
+                              : Flexible(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 2),
+                                    width: double.infinity,
+                                    alignment: Alignment.centerRight,
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (checkInsurance != null) {
+                                          checkInsurance();
+                                        }
+                                      },
+                                      onDoubleTap: () {},
+                                      child: Padding(
+                                        child: Text(
+                                          "Check Insurance",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#25B281"))),
+                                        ),
+                                        padding: EdgeInsets.all(5),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                        ],
+                      ),
+                    ),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty)
+                        ? DottedLine(
+                            dashColor: Color(
+                                CommonMethods.getColorHexFromStr("#7070703B")),
+                            lineThickness: 1,
+                          )
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty &&
+                            service.isExpanded)
+                        ? Container(
+                            margin: EdgeInsets.only(
+                                bottom: AppConfig.verticalBlockSize * 1.8))
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty &&
+                            service.isExpanded)
+                        ? Container(
+                            height: AppConfig.verticalBlockSize * 10,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 4,
+                                      vertical:
+                                          AppConfig.verticalBlockSize * 1.5),
+                                  margin: EdgeInsets.only(
+                                      right:
+                                          AppConfig.horizontalBlockSize * 2.3),
+                                  child: Row(
+                                    children: [
+                                      index == 0
+                                          ? Container()
+                                          : Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 8, bottom: 8, right: 20),
+                                              width: 1,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#333333"))),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              service.specialOffers[index]
+                                                      ?.values?.first ??
+                                                  "",
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color:
+                                                      PlunesColors.BLACKCOLOR,
+                                                  fontSize: 18)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: EdgeInsets.only(top: 3),
+                                            child: Text(
+                                                service.specialOffers[index]
+                                                        ?.keys?.first ??
+                                                    "",
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    color: Color(CommonMethods
+                                                        .getColorHexFromStr(
+                                                            "#515151")),
+                                                    fontSize: 16)),
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
-                          itemCount: 4,
-                        ),
-                      )
-                    : Container(),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 2),
-                  child: 1 != 1
-                      ? InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "View More ",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#01D35A"))),
-                                ),
-                                Icon(Icons.keyboard_arrow_down,
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#01D35A")),
-                                    size: 15)
-                              ],
+                                );
+                              },
+                              itemCount: service.specialOffers?.length ?? 0,
                             ),
-                          ),
-                        )
-                      : InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text("View Less ",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(
-                                            CommonMethods.getColorHexFromStr(
-                                                "#01D35A")))),
-                                Icon(
-                                  Icons.keyboard_arrow_up,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#01D35A")),
-                                  size: 15,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                )
-              ],
-            ),
-          ),
-          CustomWidgets().getSingleCommonButton(context, PlunesStrings.close)
-        ],
+                          )
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty)
+                        ? Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 2),
+                            child: !service.isExpanded
+                                ? InkWell(
+                                    onTap: () {
+                                      service.isExpanded = !service.isExpanded;
+                                      newState(() {});
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "View More ",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#01D35A"))),
+                                          ),
+                                          Icon(Icons.keyboard_arrow_down,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#01D35A")),
+                                              size: 15)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      service.isExpanded = !service.isExpanded;
+                                      newState(() {});
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text("View Less ",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#01D35A")))),
+                                          Icon(
+                                            Icons.keyboard_arrow_up,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#01D35A")),
+                                            size: 15,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                          )
+                        : Container()
+                  ],
+                ),
+              ),
+              CustomWidgets()
+                  .getSingleCommonButton(context, PlunesStrings.close)
+            ],
+          );
+        },
       ),
     );
   }
@@ -2070,236 +2138,238 @@ class CommonWidgets {
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16))),
-      child: Column(
-        children: [
-          Container(
-            height: AppConfig.verticalBlockSize * 25,
-            child: InkWell(
-              focusColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              onDoubleTap: () {},
-              onTap: () {
-                if (openProfile != null) {
-                  openProfile();
-                }
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16)),
-                child: (service != null &&
-                        service.professionalPhotos != null &&
-                        service.professionalPhotos.isNotEmpty)
-                    ? _getImageArrayOfProfessional(service)
-                    : SizedBox.expand(
-                        child: CustomWidgets().getImageFromUrl(
-                            service.doctors[docIndex]?.imageUrl ?? "",
-                            placeHolderPath: PlunesImages.doc_placeholder,
-                            boxFit: BoxFit.cover),
-                      ),
+      child: StatefulBuilder(
+        builder: (context, newState) {
+          return Column(
+            children: [
+              Container(
+                height: AppConfig.verticalBlockSize * 25,
+                child: InkWell(
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  onDoubleTap: () {},
+                  onTap: () {
+                    if (openProfile != null) {
+                      openProfile();
+                    }
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16)),
+                    child: (service != null &&
+                            service.professionalPhotos != null &&
+                            service.professionalPhotos.isNotEmpty)
+                        ? _getImageArrayOfProfessional(service)
+                        : SizedBox.expand(
+                            child: CustomWidgets().getImageFromUrl(
+                                service.doctors[docIndex]?.imageUrl ?? "",
+                                placeHolderPath: PlunesImages.doc_placeholder,
+                                boxFit: BoxFit.cover),
+                          ),
+                  ),
+                ),
               ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 3.2,
-                right: AppConfig.horizontalBlockSize * 3.2,
-                top: AppConfig.verticalBlockSize * 1.2),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              Container(
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 3.2,
+                    right: AppConfig.horizontalBlockSize * 3.2,
+                    top: AppConfig.verticalBlockSize * 1.2),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Text(
-                        CommonMethods.getStringInCamelCase(
-                            service.doctors[docIndex].name),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: PlunesColors.BLACKCOLOR,
-                        ),
-                      ),
-                    ),
-                    (service.doctors[docIndex].rating != null &&
-                            service.doctors[docIndex].rating > 0)
-                        ? Container(
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                                Text(
-                                  "${service.doctors[docIndex].rating?.toStringAsFixed(1) ?? 4.5}",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: PlunesColors.BLACKCOLOR,
-                                  ),
-                                )
-                              ],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            CommonMethods.getStringInCamelCase(
+                                service.doctors[docIndex].name),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: PlunesColors.BLACKCOLOR,
                             ),
-                          )
-                        : Container()
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        CommonMethods.getStringInCamelCase(service.name),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: PlunesColors.BLACKCOLOR,
+                          ),
                         ),
-                      ),
-                    ),
-                    (service.doctors[docIndex].experience != null &&
-                            service.doctors[docIndex].experience > 0)
-                        ? Flexible(
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              margin: EdgeInsets.only(left: 3),
-                              child: Text(
-                                "${service.doctors[docIndex].experience} Years Experience",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: PlunesColors.BLACKCOLOR,
-                                ),
-                              ),
-                            ),
-                          )
-                        : Container(),
-                  ],
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
-                ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                  lineThickness: 1,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      bottom: AppConfig.verticalBlockSize * 0.5),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            (service.doctors[docIndex].price != null &&
-                                    service
-                                        .doctors[docIndex].price.isNotEmpty &&
-                                    service.doctors[docIndex].newPrice !=
-                                        null &&
-                                    service.doctors[docIndex].newPrice
-                                        .isNotEmpty &&
-                                    service.doctors[docIndex].price.first !=
-                                        service
-                                            .doctors[docIndex].newPrice.first)
-                                ? RichText(
-                                    textAlign: TextAlign.left,
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                        text: "MRP \u20B9",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    "#A2A2A2"))),
+                        (service.doctors[docIndex].rating != null &&
+                                service.doctors[docIndex].rating > 0)
+                            ? Container(
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.yellow,
+                                    ),
+                                    Text(
+                                      "${service.doctors[docIndex].rating?.toStringAsFixed(1) ?? 4.5}",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: PlunesColors.BLACKCOLOR,
                                       ),
-                                      TextSpan(
-                                          text:
-                                              "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      "#A2A2A2")))),
-                                    ]))
-                                : Container(),
-                            (service.doctors[docIndex].newPrice != null &&
-                                    service
-                                        .doctors[docIndex].newPrice.isNotEmpty)
-                                ? Container(
-                                    margin: EdgeInsets.only(top: 2.5),
-                                    child: RichText(
+                                    )
+                                  ],
+                                ),
+                              )
+                            : Container()
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            CommonMethods.getStringInCamelCase(service.name),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          ),
+                        ),
+                        (service.doctors[docIndex].experience != null &&
+                                service.doctors[docIndex].experience > 0)
+                            ? Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  margin: EdgeInsets.only(left: 3),
+                                  child: Text(
+                                    "${service.doctors[docIndex].experience} Years Experience",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: PlunesColors.BLACKCOLOR,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.8),
+                    ),
+                    DottedLine(
+                      dashColor:
+                          Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                      lineThickness: 1,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.8),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 0.5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                (service.doctors[docIndex].price != null &&
+                                        service.doctors[docIndex].price
+                                            .isNotEmpty &&
+                                        service.doctors[docIndex].newPrice !=
+                                            null &&
+                                        service.doctors[docIndex].newPrice
+                                            .isNotEmpty &&
+                                        service.doctors[docIndex].price.first !=
+                                            service.doctors[docIndex].newPrice
+                                                .first)
+                                    ? RichText(
                                         textAlign: TextAlign.left,
                                         text: TextSpan(children: [
                                           TextSpan(
-                                              text: "\u20B9",
-                                              style: TextStyle(
-                                                  fontSize: 22,
-                                                  color:
-                                                      PlunesColors.BLACKCOLOR)),
+                                            text: "MRP \u20B9",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#A2A2A2"))),
+                                          ),
                                           TextSpan(
                                               text:
-                                                  "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
+                                                  "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
                                               style: TextStyle(
-                                                  fontSize: 22,
-                                                  color:
-                                                      PlunesColors.BLACKCOLOR)),
-                                        ])),
-                                  )
-                                : Container(),
-                          ],
-                        ),
+                                                  fontSize: 16,
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#A2A2A2")))),
+                                        ]))
+                                    : Container(),
+                                (service.doctors[docIndex].newPrice != null &&
+                                        service.doctors[docIndex].newPrice
+                                            .isNotEmpty)
+                                    ? Container(
+                                        margin: EdgeInsets.only(top: 2.5),
+                                        child: RichText(
+                                            textAlign: TextAlign.left,
+                                            text: TextSpan(children: [
+                                              TextSpan(
+                                                  text: "\u20B9",
+                                                  style: TextStyle(
+                                                      fontSize: 22,
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR)),
+                                              TextSpan(
+                                                  text:
+                                                      "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
+                                                  style: TextStyle(
+                                                      fontSize: 22,
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR)),
+                                            ])),
+                                      )
+                                    : Container(),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                              child: Container(
+                            margin: EdgeInsets.only(left: 3),
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              focusColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: () {
+                                if (bookAppointment != null) {
+                                  bookAppointment();
+                                }
+                              },
+                              onDoubleTap: () {},
+                              child: CustomWidgets().getRoundedButton(
+                                  PlunesStrings.book,
+                                  AppConfig.horizontalBlockSize * 8,
+                                  PlunesColors.PARROTGREEN,
+                                  AppConfig.horizontalBlockSize * 4,
+                                  AppConfig.verticalBlockSize * 1,
+                                  PlunesColors.WHITECOLOR,
+                                  hasBorder: false),
+                            ),
+                          )),
+                        ],
                       ),
-                      Flexible(
-                          child: Container(
-                        margin: EdgeInsets.only(left: 3),
-                        alignment: Alignment.centerRight,
-                        child: InkWell(
-                          focusColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          onTap: () {
-                            if (bookAppointment != null) {
-                              bookAppointment();
-                            }
-                          },
-                          onDoubleTap: () {},
-                          child: CustomWidgets().getRoundedButton(
-                              PlunesStrings.book,
-                              AppConfig.horizontalBlockSize * 8,
-                              PlunesColors.PARROTGREEN,
-                              AppConfig.horizontalBlockSize * 4,
-                              AppConfig.verticalBlockSize * 1,
-                              PlunesColors.WHITECOLOR,
-                              hasBorder: false),
-                        ),
-                      )),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child:
-                            (service.doctors[docIndex].homeCollection != null &&
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 1),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: (service.doctors[docIndex].homeCollection !=
+                                        null &&
                                     service.doctors[docIndex].homeCollection)
                                 ? Container(
                                     margin: EdgeInsets.only(top: 2.5),
@@ -2313,159 +2383,197 @@ class CommonWidgets {
                                     ),
                                   )
                                 : Container(),
-                      ),
-                      (service.insuranceAvailable == null ||
-                              !(service.insuranceAvailable))
-                          ? Container()
-                          : Flexible(
-                              child: Container(
-                                margin: EdgeInsets.only(left: 2),
-                                width: double.infinity,
-                                alignment: Alignment.centerRight,
-                                child: InkWell(
-                                  onTap: () {
-                                    if (checkInsurance != null) {
-                                      checkInsurance();
-                                    }
-                                  },
-                                  onDoubleTap: () {},
-                                  child: Padding(
-                                    child: Text(
-                                      "Check Insurance",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#25B281"))),
-                                    ),
-                                    padding: EdgeInsets.all(5),
-                                  ),
-                                ),
-                              ),
-                            )
-                    ],
-                  ),
-                ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                  lineThickness: 1,
-                ),
-                Container(
-                    margin: EdgeInsets.only(
-                        bottom: AppConfig.verticalBlockSize * 1.8)),
-                1 == 1
-                    ? Container(
-                        height: AppConfig.verticalBlockSize * 10,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: AppConfig.horizontalBlockSize * 4,
-                                  vertical: AppConfig.verticalBlockSize * 1.5),
-                              margin: EdgeInsets.only(
-                                  right: AppConfig.horizontalBlockSize * 2.3),
-                              child: Row(
-                                children: [
-                                  index == 0
-                                      ? Container()
-                                      : Container(
-                                          margin: EdgeInsets.only(
-                                              top: 8, bottom: 8, right: 20),
-                                          width: 1,
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#333333")),
-                                        ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("FUI",
-                                          textAlign: TextAlign.left,
+                          ),
+                          (service.insuranceAvailable == null ||
+                                  !(service.insuranceAvailable))
+                              ? Container()
+                              : Flexible(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 2),
+                                    width: double.infinity,
+                                    alignment: Alignment.centerRight,
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (checkInsurance != null) {
+                                          checkInsurance();
+                                        }
+                                      },
+                                      onDoubleTap: () {},
+                                      child: Padding(
+                                        child: Text(
+                                          "Check Insurance",
                                           style: TextStyle(
-                                              color: PlunesColors.BLACKCOLOR,
-                                              fontSize: 18)),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        margin: EdgeInsets.only(top: 3),
-                                        child: Text("Technique",
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                color: Color(CommonMethods
-                                                    .getColorHexFromStr(
-                                                        "#515151")),
-                                                fontSize: 16)),
-                                      )
+                                              fontSize: 14,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#25B281"))),
+                                        ),
+                                        padding: EdgeInsets.all(5),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                        ],
+                      ),
+                    ),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty)
+                        ? DottedLine(
+                            dashColor: Color(
+                                CommonMethods.getColorHexFromStr("#7070703B")),
+                            lineThickness: 1,
+                          )
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty &&
+                            service.isExpanded)
+                        ? Container(
+                            margin: EdgeInsets.only(
+                                bottom: AppConfig.verticalBlockSize * 1.8))
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty &&
+                            service.isExpanded)
+                        ? Container(
+                            height: AppConfig.verticalBlockSize * 10,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 4,
+                                      vertical:
+                                          AppConfig.verticalBlockSize * 1.5),
+                                  margin: EdgeInsets.only(
+                                      right:
+                                          AppConfig.horizontalBlockSize * 2.3),
+                                  child: Row(
+                                    children: [
+                                      index == 0
+                                          ? Container()
+                                          : Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 8, bottom: 8, right: 20),
+                                              width: 1,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#333333")),
+                                            ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              service.specialOffers[index]
+                                                      ?.values?.first ??
+                                                  "",
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color:
+                                                      PlunesColors.BLACKCOLOR,
+                                                  fontSize: 18)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: EdgeInsets.only(top: 3),
+                                            child: Text(
+                                                service.specialOffers[index]
+                                                        ?.keys?.first ??
+                                                    "",
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    color: Color(CommonMethods
+                                                        .getColorHexFromStr(
+                                                            "#515151")),
+                                                    fontSize: 16)),
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
-                          itemCount: 4,
-                        ),
-                      )
-                    : Container(),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 2),
-                  child: 1 != 1
-                      ? InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "View More ",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#01D35A"))),
-                                ),
-                                Icon(Icons.keyboard_arrow_down,
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#01D35A")),
-                                    size: 15)
-                              ],
+                                );
+                              },
+                              itemCount: service.specialOffers?.length ?? 0,
                             ),
-                          ),
-                        )
-                      : InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text("View Less ",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(
-                                            CommonMethods.getColorHexFromStr(
-                                                "#01D35A")))),
-                                Icon(
-                                  Icons.keyboard_arrow_up,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#01D35A")),
-                                  size: 15,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                )
-              ],
-            ),
-          )
-        ],
+                          )
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty)
+                        ? Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 2),
+                            child: !service.isExpanded
+                                ? InkWell(
+                                    onTap: () {
+                                      service.isExpanded = !service.isExpanded;
+                                      newState(() {});
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "View More ",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#01D35A"))),
+                                          ),
+                                          Icon(Icons.keyboard_arrow_down,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#01D35A")),
+                                              size: 15)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      service.isExpanded = !service.isExpanded;
+                                      newState(() {});
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text("View Less ",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#01D35A")))),
+                                          Icon(
+                                            Icons.keyboard_arrow_up,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#01D35A")),
+                                            size: 15,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                          )
+                        : Container()
+                  ],
+                ),
+              )
+            ],
+          );
+        },
       ),
     );
   }
@@ -2482,236 +2590,238 @@ class CommonWidgets {
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(16))),
-      child: Column(
-        children: [
-          Container(
-            height: AppConfig.verticalBlockSize * 25,
-            child: InkWell(
-              focusColor: Colors.transparent,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              onDoubleTap: () {},
-              onTap: () {
-                if (openProfile != null) {
-                  openProfile();
-                }
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16)),
-                child: (service != null &&
-                        service.professionalPhotos != null &&
-                        service.professionalPhotos.isNotEmpty)
-                    ? _getImageArrayOfProfessional(service)
-                    : SizedBox.expand(
-                        child: CustomWidgets().getImageFromUrl(
-                            service.doctors[docIndex]?.imageUrl ?? "",
-                            placeHolderPath: PlunesImages.doc_placeholder,
-                            boxFit: BoxFit.cover),
-                      ),
+      child: StatefulBuilder(
+        builder: (context, newState) {
+          return Column(
+            children: [
+              Container(
+                height: AppConfig.verticalBlockSize * 25,
+                child: InkWell(
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  onDoubleTap: () {},
+                  onTap: () {
+                    if (openProfile != null) {
+                      openProfile();
+                    }
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(16),
+                        topRight: Radius.circular(16)),
+                    child: (service != null &&
+                            service.professionalPhotos != null &&
+                            service.professionalPhotos.isNotEmpty)
+                        ? _getImageArrayOfProfessional(service)
+                        : SizedBox.expand(
+                            child: CustomWidgets().getImageFromUrl(
+                                service.doctors[docIndex]?.imageUrl ?? "",
+                                placeHolderPath: PlunesImages.doc_placeholder,
+                                boxFit: BoxFit.cover),
+                          ),
+                  ),
+                ),
               ),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 3.2,
-                right: AppConfig.horizontalBlockSize * 3.2,
-                top: AppConfig.verticalBlockSize * 1.2),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              Container(
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 3.2,
+                    right: AppConfig.horizontalBlockSize * 3.2,
+                    top: AppConfig.verticalBlockSize * 1.2),
+                child: Column(
                   children: [
-                    Expanded(
-                      child: Text(
-                        CommonMethods.getStringInCamelCase(
-                            service.doctors[docIndex].name),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: PlunesColors.BLACKCOLOR,
-                        ),
-                      ),
-                    ),
-                    (service.doctors[docIndex].rating != null &&
-                            service.doctors[docIndex].rating > 0)
-                        ? Container(
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                ),
-                                Text(
-                                  "${service.doctors[docIndex].rating?.toStringAsFixed(1) ?? 4.5}",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: PlunesColors.BLACKCOLOR,
-                                  ),
-                                )
-                              ],
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            CommonMethods.getStringInCamelCase(
+                                service.doctors[docIndex].name),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: PlunesColors.BLACKCOLOR,
                             ),
-                          )
-                        : Container()
-                  ],
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        CommonMethods.getStringInCamelCase(service.name),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: PlunesColors.BLACKCOLOR,
+                          ),
                         ),
-                      ),
-                    ),
-                    (service.doctors[docIndex].experience != null &&
-                            service.doctors[docIndex].experience > 0)
-                        ? Flexible(
-                            child: Container(
-                              alignment: Alignment.centerRight,
-                              margin: EdgeInsets.only(left: 3),
-                              child: Text(
-                                "${service.doctors[docIndex].experience} Years Experience",
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: PlunesColors.BLACKCOLOR,
-                                ),
-                              ),
-                            ),
-                          )
-                        : Container(),
-                  ],
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
-                ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                  lineThickness: 1,
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      bottom: AppConfig.verticalBlockSize * 0.5),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 3,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            (service.doctors[docIndex].price != null &&
-                                    service
-                                        .doctors[docIndex].price.isNotEmpty &&
-                                    service.doctors[docIndex].newPrice !=
-                                        null &&
-                                    service.doctors[docIndex].newPrice
-                                        .isNotEmpty &&
-                                    service.doctors[docIndex].price.first !=
-                                        service
-                                            .doctors[docIndex].newPrice.first)
-                                ? RichText(
-                                    textAlign: TextAlign.left,
-                                    text: TextSpan(children: [
-                                      TextSpan(
-                                        text: "MRP \u20B9",
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    "#A2A2A2"))),
+                        (service.doctors[docIndex].rating != null &&
+                                service.doctors[docIndex].rating > 0)
+                            ? Container(
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      color: Colors.yellow,
+                                    ),
+                                    Text(
+                                      "${service.doctors[docIndex].rating?.toStringAsFixed(1) ?? 4.5}",
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: PlunesColors.BLACKCOLOR,
                                       ),
-                                      TextSpan(
-                                          text:
-                                              "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              decoration:
-                                                  TextDecoration.lineThrough,
-                                              color: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      "#A2A2A2")))),
-                                    ]))
-                                : Container(),
-                            (service.doctors[docIndex].newPrice != null &&
-                                    service
-                                        .doctors[docIndex].newPrice.isNotEmpty)
-                                ? Container(
-                                    margin: EdgeInsets.only(top: 2.5),
-                                    child: RichText(
+                                    )
+                                  ],
+                                ),
+                              )
+                            : Container()
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            CommonMethods.getStringInCamelCase(service.name),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: PlunesColors.BLACKCOLOR,
+                            ),
+                          ),
+                        ),
+                        (service.doctors[docIndex].experience != null &&
+                                service.doctors[docIndex].experience > 0)
+                            ? Flexible(
+                                child: Container(
+                                  alignment: Alignment.centerRight,
+                                  margin: EdgeInsets.only(left: 3),
+                                  child: Text(
+                                    "${service.doctors[docIndex].experience} Years Experience",
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: PlunesColors.BLACKCOLOR,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(),
+                      ],
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.8),
+                    ),
+                    DottedLine(
+                      dashColor:
+                          Color(CommonMethods.getColorHexFromStr("#7070703B")),
+                      lineThickness: 1,
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.8),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 0.5),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 3,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                (service.doctors[docIndex].price != null &&
+                                        service.doctors[docIndex].price
+                                            .isNotEmpty &&
+                                        service.doctors[docIndex].newPrice !=
+                                            null &&
+                                        service.doctors[docIndex].newPrice
+                                            .isNotEmpty &&
+                                        service.doctors[docIndex].price.first !=
+                                            service.doctors[docIndex].newPrice
+                                                .first)
+                                    ? RichText(
                                         textAlign: TextAlign.left,
                                         text: TextSpan(children: [
                                           TextSpan(
-                                              text: "\u20B9",
-                                              style: TextStyle(
-                                                  fontSize: 22,
-                                                  color:
-                                                      PlunesColors.BLACKCOLOR)),
+                                            text: "MRP \u20B9",
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#A2A2A2"))),
+                                          ),
                                           TextSpan(
                                               text:
-                                                  "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
+                                                  "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
                                               style: TextStyle(
-                                                  fontSize: 22,
-                                                  color:
-                                                      PlunesColors.BLACKCOLOR)),
-                                        ])),
-                                  )
-                                : Container(),
-                          ],
-                        ),
+                                                  fontSize: 16,
+                                                  decoration: TextDecoration
+                                                      .lineThrough,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#A2A2A2")))),
+                                        ]))
+                                    : Container(),
+                                (service.doctors[docIndex].newPrice != null &&
+                                        service.doctors[docIndex].newPrice
+                                            .isNotEmpty)
+                                    ? Container(
+                                        margin: EdgeInsets.only(top: 2.5),
+                                        child: RichText(
+                                            textAlign: TextAlign.left,
+                                            text: TextSpan(children: [
+                                              TextSpan(
+                                                  text: "\u20B9",
+                                                  style: TextStyle(
+                                                      fontSize: 22,
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR)),
+                                              TextSpan(
+                                                  text:
+                                                      "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
+                                                  style: TextStyle(
+                                                      fontSize: 22,
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR)),
+                                            ])),
+                                      )
+                                    : Container(),
+                              ],
+                            ),
+                          ),
+                          Flexible(
+                              child: Container(
+                            margin: EdgeInsets.only(left: 3),
+                            alignment: Alignment.centerRight,
+                            child: InkWell(
+                              focusColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              onTap: () {
+                                if (bookAppointment != null) {
+                                  bookAppointment();
+                                }
+                              },
+                              onDoubleTap: () {},
+                              child: CustomWidgets().getRoundedButton(
+                                  PlunesStrings.book,
+                                  AppConfig.horizontalBlockSize * 8,
+                                  PlunesColors.PARROTGREEN,
+                                  AppConfig.horizontalBlockSize * 4,
+                                  AppConfig.verticalBlockSize * 1,
+                                  PlunesColors.WHITECOLOR,
+                                  hasBorder: false),
+                            ),
+                          )),
+                        ],
                       ),
-                      Flexible(
-                          child: Container(
-                        margin: EdgeInsets.only(left: 3),
-                        alignment: Alignment.centerRight,
-                        child: InkWell(
-                          focusColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          hoverColor: Colors.transparent,
-                          onTap: () {
-                            if (bookAppointment != null) {
-                              bookAppointment();
-                            }
-                          },
-                          onDoubleTap: () {},
-                          child: CustomWidgets().getRoundedButton(
-                              PlunesStrings.book,
-                              AppConfig.horizontalBlockSize * 8,
-                              PlunesColors.PARROTGREEN,
-                              AppConfig.horizontalBlockSize * 4,
-                              AppConfig.verticalBlockSize * 1,
-                              PlunesColors.WHITECOLOR,
-                              hasBorder: false),
-                        ),
-                      )),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin:
-                      EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child:
-                            (service.doctors[docIndex].homeCollection != null &&
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                          bottom: AppConfig.verticalBlockSize * 1),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: (service.doctors[docIndex].homeCollection !=
+                                        null &&
                                     service.doctors[docIndex].homeCollection)
                                 ? Container(
                                     margin: EdgeInsets.only(top: 2.5),
@@ -2725,160 +2835,199 @@ class CommonWidgets {
                                     ),
                                   )
                                 : Container(),
-                      ),
-                      (service.insuranceAvailable == null ||
-                              !(service.insuranceAvailable))
-                          ? Container()
-                          : Flexible(
-                              child: Container(
-                                margin: EdgeInsets.only(left: 2),
-                                width: double.infinity,
-                                alignment: Alignment.centerRight,
-                                child: InkWell(
-                                  onTap: () {
-                                    if (checkInsurance != null) {
-                                      checkInsurance();
-                                    }
-                                  },
-                                  onDoubleTap: () {},
-                                  child: Padding(
-                                    child: Text(
-                                      "Check Insurance",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#25B281"))),
-                                    ),
-                                    padding: EdgeInsets.all(5),
-                                  ),
-                                ),
-                              ),
-                            )
-                    ],
-                  ),
-                ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                  lineThickness: 1,
-                ),
-                Container(
-                    margin: EdgeInsets.only(
-                        bottom: AppConfig.verticalBlockSize * 1.8)),
-                1 == 1
-                    ? Container(
-                        height: AppConfig.verticalBlockSize * 10,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: AppConfig.horizontalBlockSize * 4,
-                                  vertical: AppConfig.verticalBlockSize * 1.5),
-                              margin: EdgeInsets.only(
-                                  right: AppConfig.horizontalBlockSize * 2.3),
-                              child: Row(
-                                children: [
-                                  index == 0
-                                      ? Container()
-                                      : Container(
-                                          margin: EdgeInsets.only(
-                                              top: 8, bottom: 8, right: 20),
-                                          width: 1,
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#333333")),
-                                        ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text("FUI",
-                                          textAlign: TextAlign.left,
+                          ),
+                          (service.insuranceAvailable == null ||
+                                  !(service.insuranceAvailable))
+                              ? Container()
+                              : Flexible(
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 2),
+                                    width: double.infinity,
+                                    alignment: Alignment.centerRight,
+                                    child: InkWell(
+                                      onTap: () {
+                                        if (checkInsurance != null) {
+                                          checkInsurance();
+                                        }
+                                      },
+                                      onDoubleTap: () {},
+                                      child: Padding(
+                                        child: Text(
+                                          "Check Insurance",
                                           style: TextStyle(
-                                              color: PlunesColors.BLACKCOLOR,
-                                              fontSize: 18)),
-                                      Container(
-                                        alignment: Alignment.centerLeft,
-                                        margin: EdgeInsets.only(top: 3),
-                                        child: Text("Technique",
-                                            textAlign: TextAlign.left,
-                                            style: TextStyle(
-                                                color: Color(CommonMethods
-                                                    .getColorHexFromStr(
-                                                        "#515151")),
-                                                fontSize: 16)),
-                                      )
+                                              fontSize: 14,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#25B281"))),
+                                        ),
+                                        padding: EdgeInsets.all(5),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                        ],
+                      ),
+                    ),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty)
+                        ? DottedLine(
+                            dashColor: Color(
+                                CommonMethods.getColorHexFromStr("#7070703B")),
+                            lineThickness: 1,
+                          )
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty &&
+                            service.isExpanded)
+                        ? Container(
+                            margin: EdgeInsets.only(
+                                bottom: AppConfig.verticalBlockSize * 1.8))
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty &&
+                            service.isExpanded)
+                        ? Container(
+                            height: AppConfig.verticalBlockSize * 10,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 4,
+                                      vertical:
+                                          AppConfig.verticalBlockSize * 1.5),
+                                  margin: EdgeInsets.only(
+                                      right:
+                                          AppConfig.horizontalBlockSize * 2.3),
+                                  child: Row(
+                                    children: [
+                                      index == 0
+                                          ? Container()
+                                          : Container(
+                                              margin: EdgeInsets.only(
+                                                  top: 8, bottom: 8, right: 20),
+                                              width: 1,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#333333")),
+                                            ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                              service.specialOffers[index]
+                                                      ?.values?.first ??
+                                                  "",
+                                              textAlign: TextAlign.left,
+                                              style: TextStyle(
+                                                  color:
+                                                      PlunesColors.BLACKCOLOR,
+                                                  fontSize: 18)),
+                                          Container(
+                                            alignment: Alignment.centerLeft,
+                                            margin: EdgeInsets.only(top: 3),
+                                            child: Text(
+                                                service.specialOffers[index]
+                                                        ?.keys?.first ??
+                                                    "",
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                    color: Color(CommonMethods
+                                                        .getColorHexFromStr(
+                                                            "#515151")),
+                                                    fontSize: 16)),
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
-                                ],
-                              ),
-                            );
-                          },
-                          itemCount: 4,
-                        ),
-                      )
-                    : Container(),
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 2),
-                  child: 1 != 1
-                      ? InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "View More ",
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#01D35A"))),
-                                ),
-                                Icon(Icons.keyboard_arrow_down,
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#01D35A")),
-                                    size: 15)
-                              ],
+                                );
+                              },
+                              itemCount: service.specialOffers?.length ?? 0,
                             ),
-                          ),
-                        )
-                      : InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(8),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text("View Less ",
-                                    style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(
-                                            CommonMethods.getColorHexFromStr(
-                                                "#01D35A")))),
-                                Icon(
-                                  Icons.keyboard_arrow_up,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#01D35A")),
-                                  size: 15,
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                )
-              ],
-            ),
-          ),
-          CustomWidgets().getSingleCommonButton(context, PlunesStrings.close)
-        ],
+                          )
+                        : Container(),
+                    (service.specialOffers != null &&
+                            service.specialOffers.isNotEmpty)
+                        ? Container(
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.symmetric(
+                                vertical: AppConfig.verticalBlockSize * 2),
+                            child: !service.isExpanded
+                                ? InkWell(
+                                    onTap: () {
+                                      service.isExpanded = !service.isExpanded;
+                                      newState(() {});
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "View More ",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#01D35A"))),
+                                          ),
+                                          Icon(Icons.keyboard_arrow_down,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#01D35A")),
+                                              size: 15)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      service.isExpanded = !service.isExpanded;
+                                      newState(() {});
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text("View Less ",
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#01D35A")))),
+                                          Icon(
+                                            Icons.keyboard_arrow_up,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#01D35A")),
+                                            size: 15,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                          )
+                        : Container()
+                  ],
+                ),
+              ),
+              CustomWidgets()
+                  .getSingleCommonButton(context, PlunesStrings.close)
+            ],
+          );
+        },
       ),
     );
   }

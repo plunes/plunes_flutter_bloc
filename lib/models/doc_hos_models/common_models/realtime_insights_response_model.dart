@@ -44,7 +44,7 @@ class RealInsight {
   num userPrice, compRate, distance, recommendation, min, max;
   int createdAt;
   List<DataPoint> dataPoints;
-  final List<String> images = ["", "", "", ""];
+  List<Map<String, dynamic>> specialOffers;
 
   @override
   String toString() {
@@ -81,10 +81,11 @@ class RealInsight {
       this.min,
       this.max,
       this.isCardOpened,
-      this.userReport});
+      this.userReport,
+      this.specialOffers});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
-//    print("json insight $json");
+   // print("json insight $json");
     solutionId = json['solutionId'];
     serviceId = json['serviceId'];
     userName = json['userName'];
@@ -116,9 +117,14 @@ class RealInsight {
     min = json['min'];
     max = json['max'];
     isCardOpened = false;
-    print("json['userReport'] ${json['userReport']}");
+    // print("json['userReport'] ${json['userReport']}");
     if (json['userReport'] != null) {
       userReport = UserReport.fromJson(json['userReport']);
+    }
+    if (json["specialOffers"] != null && json["specialOffers"].isNotEmpty) {
+      json["specialOffers"].forEach((element) {
+        specialOffers.add(element);
+      });
     }
   }
 

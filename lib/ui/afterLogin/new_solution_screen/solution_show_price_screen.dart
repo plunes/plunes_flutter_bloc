@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -473,6 +474,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
             ],
           ),
         ),
+        Positioned(bottom: 0.0, left: 0.0, right: 0.0, child: _getCallButton())
       ],
     );
   }
@@ -1239,6 +1241,76 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               itemBuilder: (context, index) => CommonWidgets()
                   .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
               itemCount: _premiumBenefitsModel.data.length,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getCallButton() {
+    return Card(
+      margin: EdgeInsets.all(0),
+      child: Container(
+        margin: EdgeInsets.only(
+            left: AppConfig.horizontalBlockSize * 23,
+            right: AppConfig.horizontalBlockSize * 23,
+            bottom: AppConfig.verticalBlockSize * 1.5,
+            top: AppConfig.verticalBlockSize * 1.5),
+        child: InkWell(
+          onTap: () {
+            LauncherUtil.launchUrl("tel://7011311900");
+            return;
+          },
+          onDoubleTap: () {},
+          child: getRoundedButton(
+              "+91 70113 11900",
+              AppConfig.horizontalBlockSize * 8,
+              PlunesColors.PARROTGREEN,
+              AppConfig.horizontalBlockSize * 3,
+              AppConfig.verticalBlockSize * 1,
+              PlunesColors.WHITECOLOR,
+              hasBorder: false),
+        ),
+      ),
+    );
+  }
+
+  Widget getRoundedButton(
+      String buttonName,
+      double cornerPadding,
+      Color buttonColor,
+      double horizontalPadding,
+      double verticalPadding,
+      Color textColor,
+      {bool hasBorder = false,
+      Color borderColor = PlunesColors.GREYCOLOR,
+      double borderWidth = 0.8,
+      double fontSize}) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: horizontalPadding, vertical: verticalPadding),
+      decoration: BoxDecoration(
+          color: buttonColor ?? PlunesColors.WHITECOLOR,
+          border: hasBorder
+              ? Border.all(color: borderColor, width: borderWidth)
+              : null,
+          borderRadius: BorderRadius.all(Radius.circular(cornerPadding))),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.call,
+            color: textColor,
+          ),
+          Flexible(
+            child: Text(
+              "  $buttonName",
+              style: TextStyle(
+                fontSize: fontSize ?? 15,
+                color: textColor ?? PlunesColors.BLACKCOLOR,
+              ),
             ),
           )
         ],

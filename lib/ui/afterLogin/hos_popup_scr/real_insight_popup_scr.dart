@@ -815,7 +815,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                         style: TextStyle(
                             fontSize: 16, color: PlunesColors.WHITECOLOR)),
                   ),
-                  1 == 1
+                  _realInsight.specialOffers==null || _realInsight.specialOffers.isEmpty
                       ? _getAddSpecialOfferEmptyWidget()
                       : ListView.builder(
                           shrinkWrap: true,

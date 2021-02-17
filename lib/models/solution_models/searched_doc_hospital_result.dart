@@ -103,6 +103,7 @@ class Services {
   List<Doctors> doctors;
   List<TimeSlots> timeSlots;
   List<String> professionalPhotos;
+  List<Map<String, dynamic>> specialOffers;
 
   @override
   String toString() {
@@ -160,9 +161,12 @@ class Services {
       this.isExpanded = false,
       this.zestMoney,
       this.professionalPhotos,
-      this.insuranceAvailable});
+      this.insuranceAvailable,
+      this.specialOffers});
 
   Services.fromJson(Map<String, dynamic> json) {
+    isExpanded = false;
+    specialOffers = [];
     price = json['price'].cast<num>();
     newPrice = json['newPrice']?.cast<num>();
     category = json['category']?.cast<String>();
@@ -204,6 +208,16 @@ class Services {
       professionalPhotos = json['professionalPhotos'].cast<String>();
     }
     insuranceAvailable = json['insuranceAvailable'];
+    if (json["addOn"] != null && json["addOn"].isNotEmpty) {
+      Map<String, dynamic> addOn = {"Add On": json["addOn"]};
+      specialOffers.add(addOn);
+    }
+    if (json["specialOffer"] != null && json["specialOffer"].isNotEmpty) {
+      specialOffers.add({"Special Offer": json["specialOffer"]});
+    }
+    if (json["technique"] != null && json["technique"].isNotEmpty) {
+      specialOffers.add({"Technique": json["technique"]});
+    }
   }
 
   Map<String, dynamic> toJson() {
