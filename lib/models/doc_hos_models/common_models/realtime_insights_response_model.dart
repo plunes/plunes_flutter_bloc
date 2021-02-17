@@ -85,7 +85,7 @@ class RealInsight {
       this.specialOffers});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
-   // print("json insight $json");
+    // print("json insight $json");
     solutionId = json['solutionId'];
     serviceId = json['serviceId'];
     userName = json['userName'];
@@ -121,10 +121,23 @@ class RealInsight {
     if (json['userReport'] != null) {
       userReport = UserReport.fromJson(json['userReport']);
     }
+    specialOffers = [];
     if (json["specialOffers"] != null && json["specialOffers"].isNotEmpty) {
-      json["specialOffers"].forEach((element) {
-        specialOffers.add(element);
-      });
+      Iterable iterable = json["specialOffers"];
+      if (iterable != null && iterable.isNotEmpty) {
+        iterable.forEach((element) {
+          if (element != null) {
+            Map<String, dynamic> mapItem = element as Map<String, dynamic>;
+            if (mapItem != null && mapItem.isNotEmpty) {
+              mapItem.forEach((key, value) {
+                if (value != null && value.toString().trim().isNotEmpty) {
+                  specialOffers.add({key: value});
+                }
+              });
+            }
+          }
+        });
+      }
     }
   }
 

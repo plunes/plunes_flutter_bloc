@@ -214,8 +214,14 @@ class _EnterAdditionalUserDetailScrState
                     ),
                   )),
               title: Text(
-                PlunesStrings.bookYourProcedure,
+                (widget.catalogueData != null &&
+                        widget.catalogueData.category != null &&
+                        widget.catalogueData.category.isNotEmpty)
+                    ? "Book Your ${widget.catalogueData.category}"
+                    : PlunesStrings.bookYourProcedure,
                 textAlign: TextAlign.left,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
                 style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
               ),
             ),
@@ -1452,6 +1458,9 @@ class _EnterAdditionalUserDetailScrState
   }
 
   void _submitUserDetail() {
+    if (!_isNecessaryDataFilled()) {
+      return;
+    }
     Map<String, dynamic> _postData = {
       "serviceId": widget.catalogueData?.serviceId,
       "reportUrls": _docUrls ?? [],
@@ -1512,5 +1521,33 @@ class _EnterAdditionalUserDetailScrState
         ),
       ],
     );
+  }
+
+  bool _isNecessaryDataFilled() {
+    bool hasAppropriateData = true;
+    String errorMessage;
+    if (widget.catalogueData != null &&
+        widget.catalogueData.category != null &&
+        widget.catalogueData.category.isNotEmpty &&
+        widget.catalogueData.category.trim().toLowerCase() ==
+            Constants.procedureKey.toLowerCase()) {
+      if (_additionalDetailController.text.trim().isEmpty) {
+        errorMessage = "Please fill additional detail for treatment";
+        hasAppropriateData = false;
+      } else if ((_imageUrls == null || _imageUrls.isEmpty) &&
+          (_docUrls == null || _docUrls.isEmpty)) {
+        errorMessage = "Please upload your photos/report for treatment";
+        hasAppropriateData = false;
+      }
+    } else {
+      if (_additionalDetailController.text.trim().isEmpty) {
+        errorMessage = "Please fill additional detail for treatment";
+        hasAppropriateData = false;
+      }
+    }
+    if (!hasAppropriateData) {
+      _showMessagePopup(errorMessage);
+    }
+    return hasAppropriateData;
   }
 }
