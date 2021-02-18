@@ -45,6 +45,7 @@ class RealInsight {
   int createdAt;
   List<DataPoint> dataPoints;
   List<Map<String, dynamic>> specialOffers;
+  String category;
 
   @override
   String toString() {
@@ -82,7 +83,8 @@ class RealInsight {
       this.max,
       this.isCardOpened,
       this.userReport,
-      this.specialOffers});
+      this.specialOffers,
+      this.category});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
     // print("json insight $json");
@@ -139,6 +141,7 @@ class RealInsight {
         });
       }
     }
+    category = json['category'];
   }
 
   Map<String, dynamic> toJson() {
@@ -238,6 +241,7 @@ class UserReport {
     additionalDetails = json['additionalDetails'];
   }
 }
+
 class UserReportOuterModel {
   bool success;
   UserReportModel data;
@@ -247,7 +251,9 @@ class UserReportOuterModel {
 
   UserReportOuterModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ? new UserReportModel.fromJson(json['data']) : null;
+    data = json['data'] != null
+        ? new UserReportModel.fromJson(json['data'])
+        : null;
     message = json['message'];
   }
 
@@ -279,18 +285,18 @@ class UserReportModel {
 
   UserReportModel(
       {this.reportType,
-        this.treatedPreviously,
-        this.insurance,
-        this.sId,
-        this.videoUrl,
-        this.imageUrl,
-        this.reportUrl,
-        this.createdAt,
-        this.serviceId,
-        this.userId,
-        this.description,
-        this.additionalDetails,
-        this.iV});
+      this.treatedPreviously,
+      this.insurance,
+      this.sId,
+      this.videoUrl,
+      this.imageUrl,
+      this.reportUrl,
+      this.createdAt,
+      this.serviceId,
+      this.userId,
+      this.description,
+      this.additionalDetails,
+      this.iV});
 
   UserReportModel.fromJson(Map<String, dynamic> json) {
     reportType = json['reportType'];
@@ -407,4 +413,3 @@ class ReportUrl {
     return data;
   }
 }
-

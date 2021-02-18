@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/video_util.dart';
@@ -379,7 +380,11 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                 _getSliderWidget(),
                 _getGraphWidget(),
                 _getAddonAndSpecialOfferProviderWidget(),
-                _getFacilityProvidingOffersWidget(),
+                (_realInsight.category != null &&
+                        _realInsight.category.toLowerCase() ==
+                            Constants.procedureKey.toLowerCase())
+                    ? _getFacilityProvidingOffersWidget()
+                    : Container(),
                 _getSubmitButton()
               ],
             ),
@@ -703,115 +708,158 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                   "#9B9B9B")))),
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: 5, top: AppConfig.verticalBlockSize * 1.5),
-                    child: Text("Technology/Technique",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 20, color: PlunesColors.WHITECOLOR)),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(2)),
-                        color:
-                            Color(CommonMethods.getColorHexFromStr("#535264")),
-                        border: Border.all(
-                            color: PlunesColors.WHITECOLOR, width: 0.8)),
-                    child: TextField(
-                      textAlign: TextAlign.left,
-                      controller: _techniqueController,
-                      style: TextStyle(
-                          fontSize: 12, color: PlunesColors.WHITECOLOR),
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Enter Technology Ex. Dual Accento laser",
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              fontSize: 12,
-                              color: Color(CommonMethods.getColorHexFromStr(
-                                  "#9B9B9B")))),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: 5, top: AppConfig.verticalBlockSize * 1.5),
-                    child: Text("Add on's",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 20, color: PlunesColors.WHITECOLOR)),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: 5, top: AppConfig.verticalBlockSize * 1.2),
-                    child: Text("Enter add on's for better conversion chances",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 14, color: PlunesColors.WHITECOLOR)),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(2)),
-                        color:
-                            Color(CommonMethods.getColorHexFromStr("#535264")),
-                        border: Border.all(
-                            color: PlunesColors.WHITECOLOR, width: 0.8)),
-                    child: TextField(
-                      textAlign: TextAlign.left,
-                      controller: _addOnController,
-                      style: TextStyle(
-                          fontSize: 12, color: PlunesColors.WHITECOLOR),
-                      decoration: InputDecoration.collapsed(
-                          hintText: "Enter Add on's Ex. 2PRP",
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              fontSize: 12,
-                              color: Color(CommonMethods.getColorHexFromStr(
-                                  "#9B9B9B")))),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: 5, top: AppConfig.verticalBlockSize * 1.5),
-                    child: Text("Special offers",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            fontSize: 20, color: PlunesColors.WHITECOLOR)),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(2)),
-                        color:
-                            Color(CommonMethods.getColorHexFromStr("#535264")),
-                        border: Border.all(
-                            color: PlunesColors.WHITECOLOR, width: 0.8)),
-                    child: TextField(
-                      textAlign: TextAlign.left,
-                      controller: _specialOfferController,
-                      style: TextStyle(
-                          fontSize: 12, color: PlunesColors.WHITECOLOR),
-                      decoration: InputDecoration.collapsed(
-                          hintText:
-                              "Enter special offers Ex. Dual Accento laser",
-                          border: InputBorder.none,
-                          hintStyle: TextStyle(
-                              fontSize: 12,
-                              color: Color(CommonMethods.getColorHexFromStr(
-                                  "#9B9B9B")))),
-                    ),
-                  ),
+                  (_realInsight.category != null &&
+                          _realInsight.category.toLowerCase() ==
+                              Constants.procedureKey.toLowerCase())
+                      ? Container(
+                          margin: EdgeInsets.only(
+                              left: 5, top: AppConfig.verticalBlockSize * 1.5),
+                          child: Text("Technology/Technique",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: PlunesColors.WHITECOLOR)),
+                        )
+                      : Container(),
+                  (_realInsight.category != null &&
+                          _realInsight.category.toLowerCase() ==
+                              Constants.procedureKey.toLowerCase())
+                      ? Container(
+                          margin: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 1.5),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2)),
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#535264")),
+                              border: Border.all(
+                                  color: PlunesColors.WHITECOLOR, width: 0.8)),
+                          child: TextField(
+                            textAlign: TextAlign.left,
+                            controller: _techniqueController,
+                            style: TextStyle(
+                                fontSize: 12, color: PlunesColors.WHITECOLOR),
+                            decoration: InputDecoration.collapsed(
+                                hintText:
+                                    "Enter Technology Ex. Dual Accento laser",
+                                border: InputBorder.none,
+                                hintStyle: TextStyle(
+                                    fontSize: 12,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#9B9B9B")))),
+                          ),
+                        )
+                      : Container(),
+                  (_realInsight.category != null &&
+                          _realInsight.category.toLowerCase() ==
+                              Constants.procedureKey.toLowerCase())
+                      ? Container(
+                          margin: EdgeInsets.only(
+                              left: 5, top: AppConfig.verticalBlockSize * 1.5),
+                          child: Text("Add on's",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: PlunesColors.WHITECOLOR)),
+                        )
+                      : Container(),
+                  (_realInsight.category != null &&
+                          _realInsight.category.toLowerCase() ==
+                              Constants.procedureKey.toLowerCase())
+                      ? Container(
+                          margin: EdgeInsets.only(
+                              left: 5, top: AppConfig.verticalBlockSize * 1.2),
+                          child: Text(
+                              "Enter add on's for better conversion chances",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  color: PlunesColors.WHITECOLOR)),
+                        )
+                      : Container(),
+                  (_realInsight.category != null &&
+                          _realInsight.category.toLowerCase() ==
+                              Constants.procedureKey.toLowerCase())
+                      ? Container(
+                          margin: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 1.5),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2)),
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#535264")),
+                              border: Border.all(
+                                  color: PlunesColors.WHITECOLOR, width: 0.8)),
+                          child: TextField(
+                            textAlign: TextAlign.left,
+                            controller: _addOnController,
+                            style: TextStyle(
+                                fontSize: 12, color: PlunesColors.WHITECOLOR),
+                            decoration: InputDecoration.collapsed(
+                                hintText: "Enter Add on's Ex. 2PRP",
+                                border: InputBorder.none,
+                                hintStyle: TextStyle(
+                                    fontSize: 12,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#9B9B9B")))),
+                          ),
+                        )
+                      : Container(),
+                  (_realInsight.category != null &&
+                          _realInsight.category.toLowerCase() ==
+                              Constants.procedureKey.toLowerCase())
+                      ? Container(
+                          margin: EdgeInsets.only(
+                              left: 5, top: AppConfig.verticalBlockSize * 1.5),
+                          child: Text("Special offers",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: PlunesColors.WHITECOLOR)),
+                        )
+                      : Container(),
+                  (_realInsight.category != null &&
+                          _realInsight.category.toLowerCase() ==
+                              Constants.procedureKey.toLowerCase())
+                      ? Container(
+                          margin: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 1.5),
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2)),
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#535264")),
+                              border: Border.all(
+                                  color: PlunesColors.WHITECOLOR, width: 0.8)),
+                          child: TextField(
+                            textAlign: TextAlign.left,
+                            controller: _specialOfferController,
+                            style: TextStyle(
+                                fontSize: 12, color: PlunesColors.WHITECOLOR),
+                            decoration: InputDecoration.collapsed(
+                                hintText:
+                                    "Enter special offers Ex. Dual Accento laser",
+                                border: InputBorder.none,
+                                hintStyle: TextStyle(
+                                    fontSize: 12,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#9B9B9B")))),
+                          ),
+                        )
+                      : Container(),
                 ],
               ),
             ),

@@ -21,6 +21,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/doc_hos_screen/facility_detail_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/know_your_procedure_cards.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_procedure_and_professional_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
@@ -718,8 +719,17 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       child: InkWell(
         onDoubleTap: () {},
         onTap: () {
-          _isProcedureListOpened = !_isProcedureListOpened;
-          _homeScreenMainBloc?.addIntoKnowYourProcedureDataStream(null);
+          Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => KnowYourProcedureCard(
+                          _knowYourProcedureModel,
+                          _solutionHomeScreenModel?.knowYourProcedure)))
+              .then((value) {
+            _getCartCount();
+          });
+          // _isProcedureListOpened = !_isProcedureListOpened;
+          // _homeScreenMainBloc?.addIntoKnowYourProcedureDataStream(null);
         },
         child: Container(
           margin: EdgeInsets.symmetric(
@@ -746,8 +756,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             data.details ?? "", data));
       }
     } else {
-      int length = (_knowYourProcedureModel.data.length > 4)
-          ? 4
+      int length = (_knowYourProcedureModel.data.length > 6)
+          ? 6
           : _knowYourProcedureModel.data.length;
       for (int index = 0; index < length; index++) {
         var data = _knowYourProcedureModel.data[index];
