@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/video_util.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -9,6 +11,7 @@ import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -416,34 +419,46 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                   ))
                               : Container(),
                         ),
-                        InkWell(
-                          onTap: () {
-                            if (catalogueData != null &&
+                        (catalogueData != null &&
                                 catalogueData.userReportId != null &&
                                 catalogueData.userReportId.trim().isNotEmpty)
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PreviousActivityReport(
-                                              catalogueData.userReportId)));
-                          },
-                          onDoubleTap: () {},
-                          child: Container(
-                            alignment: Alignment.topLeft,
-                            padding: EdgeInsets.only(
-                                top: AppConfig.verticalBlockSize * 1,
-                                bottom: AppConfig.verticalBlockSize * 1,
-                                right: AppConfig.verticalBlockSize * 1),
-                            child: Text(
-                              "View Details",
-                              style: TextStyle(
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#01D35A")),
-                                  fontSize: 16),
-                            ),
-                          ),
-                        )
+                            ? InkWell(
+                                focusColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onTap: () {
+                                  if (catalogueData != null &&
+                                      catalogueData.userReportId != null &&
+                                      catalogueData.userReportId
+                                          .trim()
+                                          .isNotEmpty)
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PreviousActivityReport(
+                                                    catalogueData
+                                                        .userReportId)));
+                                },
+                                onDoubleTap: () {},
+                                child: Container(
+                                  alignment: Alignment.topLeft,
+                                  padding: EdgeInsets.only(
+                                      top: AppConfig.verticalBlockSize * 1,
+                                      bottom: AppConfig.verticalBlockSize * 1,
+                                      right: AppConfig.verticalBlockSize * 1),
+                                  child: Text(
+                                    "View Details",
+                                    style: TextStyle(
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#01D35A")),
+                                        fontSize: 16),
+                                  ),
+                                ),
+                              )
+                            : Container()
                       ],
                     ),
                   ),
@@ -518,21 +533,27 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.getAppBar(context, PlunesStrings.previousActivities, true),
-      body: _isProcessing
-          ? CustomWidgets().getProgressIndicator()
-          : (_userReport == null ||
-                  _userReport.success == null ||
-                  !(_userReport.success) ||
-                  _userReport.data == null ||
-                  _userReport.data.additionalDetails == null ||
-                  _userReport.data.additionalDetails.isEmpty)
-              ? CustomWidgets().errorWidget(
-                  _userReport?.message ?? _failureCause,
-                  buttonText: PlunesStrings.refresh,
-                  onTap: () => _getReport())
-              : _getWidgetBody(),
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: Scaffold(
+        key: scaffoldKey,
+        appBar:
+            widget.getAppBar(context, PlunesStrings.previousActivities, true),
+        body: _isProcessing
+            ? CustomWidgets().getProgressIndicator()
+            : (_userReport == null ||
+                    _userReport.success == null ||
+                    !(_userReport.success) ||
+                    _userReport.data == null ||
+                    _userReport.data.additionalDetails == null ||
+                    _userReport.data.additionalDetails.isEmpty)
+                ? CustomWidgets().errorWidget(
+                    _userReport?.message ?? _failureCause,
+                    buttonText: PlunesStrings.refresh,
+                    onTap: () => _getReport())
+                : _getWidgetBody(),
+      ),
     );
   }
 
@@ -557,6 +578,291 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
   }
 
   Widget _getWidgetBody() {
-    return Container();
+    return Container(
+      color: Color(CommonMethods.getColorHexFromStr("#FAF9F9")),
+      margin: EdgeInsets.only(bottom: 10),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _getAdditionalDetailWidget(),
+            _getPreviousDetailWidget(),
+            _getPhotosWidget(),
+            _getVideoWidget(),
+            _getDocWidget()
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getAdditionalDetailWidget() {
+    return (_userReport.data.additionalDetails == null ||
+            _userReport.data.additionalDetails.trim().isEmpty)
+        ? Container()
+        : Container(
+            padding: EdgeInsets.all(12),
+            margin: EdgeInsets.only(top: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                color: PlunesColors.WHITECOLOR),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Additional Details for the required service",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 18, color: PlunesColors.BLACKCOLOR)),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.only(top: 8),
+                  child: Text(_userReport.data.additionalDetails ?? "",
+                      style: TextStyle(
+                          fontSize: 16, color: PlunesColors.BLACKCOLOR)),
+                ),
+              ],
+            ),
+          );
+  }
+
+  Widget _getPreviousDetailWidget() {
+    return (_userReport.data.description == null ||
+            _userReport.data.description.trim().isEmpty)
+        ? Container()
+        : Container(
+            padding: EdgeInsets.all(12),
+            margin: EdgeInsets.only(top: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                color: PlunesColors.WHITECOLOR),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Condition of previous treatment",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 18, color: PlunesColors.BLACKCOLOR)),
+                ),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  margin: EdgeInsets.only(top: 8),
+                  child: Text(_userReport.data.description ?? "",
+                      style: TextStyle(
+                          fontSize: 16, color: PlunesColors.BLACKCOLOR)),
+                ),
+              ],
+            ),
+          );
+  }
+
+  Widget _getPhotosWidget() {
+    return (_userReport.data.imageUrl == null ||
+            _userReport.data.imageUrl.isEmpty)
+        ? Container()
+        : Container(
+            padding: EdgeInsets.all(12),
+            margin: EdgeInsets.only(top: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                color: PlunesColors.WHITECOLOR),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Photos",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 18, color: PlunesColors.BLACKCOLOR)),
+                ),
+                Container(
+                  height: AppConfig.verticalBlockSize * 27,
+                  margin: EdgeInsets.only(top: 10),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          List<Photo> photos = [];
+                          _userReport.data.imageUrl.forEach((picData) {
+                            var element = picData?.imageUrl;
+                            if (element == null ||
+                                element.isEmpty ||
+                                !(element.contains("http"))) {
+                            } else {
+                              photos.add(Photo(assetName: element));
+                            }
+                          });
+                          if (photos != null && photos.isNotEmpty) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PageSlider(photos, index)));
+                          }
+                        },
+                        onDoubleTap: () {},
+                        child: Container(
+                          margin: EdgeInsets.only(
+                              right: AppConfig.horizontalBlockSize * 1.5),
+                          child: ClipRRect(
+                            child: CustomWidgets().getImageFromUrl(
+                                _userReport.data.imageUrl[index]?.imageUrl ??
+                                    '',
+                                boxFit: BoxFit.fill),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          height: AppConfig.verticalBlockSize * 26,
+                          width: AppConfig.horizontalBlockSize * 88,
+                        ),
+                      );
+                    },
+                    itemCount: _userReport.data.imageUrl?.length ?? 0,
+                  ),
+                ),
+              ],
+            ),
+          );
+  }
+
+  Widget _getVideoWidget() {
+    return (_userReport.data.videoUrl == null ||
+            _userReport.data.videoUrl.isEmpty)
+        ? Container()
+        : Container(
+            padding: EdgeInsets.all(12),
+            margin: EdgeInsets.only(top: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                color: PlunesColors.WHITECOLOR),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Video",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 18, color: PlunesColors.BLACKCOLOR)),
+                ),
+                Container(
+                  height: AppConfig.verticalBlockSize * 27,
+                  margin: EdgeInsets.only(top: 10),
+                  child: InkWell(
+                    onTap: () {
+                      if (_userReport.data.videoUrl.first.videoUrl != null &&
+                          _userReport.data.videoUrl.first.videoUrl
+                              .trim()
+                              .isNotEmpty) {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => VideoUtil(
+                                    _userReport.data.videoUrl.first.videoUrl)));
+                      } else {
+                        _showSnackBar(PlunesStrings.unableToPlayVideo);
+                      }
+                    },
+                    onDoubleTap: () {},
+                    child: Stack(
+                      children: [
+                        Container(
+                          child: ClipRRect(
+                            child: CustomWidgets().getImageFromUrl(
+                                _userReport.data.videoUrl?.first?.thumbnail ??
+                                    '',
+                                boxFit: BoxFit.fitWidth),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          height: AppConfig.verticalBlockSize * 26,
+                          width: double.infinity,
+                        ),
+                        Positioned.fill(
+                          child: Center(
+                            child: Image.asset(
+                              PlunesImages.pauseVideoIcon,
+                              height: 50,
+                              width: 50,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+  }
+
+  Widget _getDocWidget() {
+    return (_userReport.data.reportUrl == null ||
+            _userReport.data.reportUrl.isEmpty)
+        ? Container()
+        : Container(
+            padding: EdgeInsets.all(12),
+            margin: EdgeInsets.only(top: 10),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                color: PlunesColors.WHITECOLOR),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Report",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 18, color: PlunesColors.BLACKCOLOR)),
+                ),
+                InkWell(
+                  onTap: () {
+                    if (_userReport.data.reportUrl.first.reportUrl != null &&
+                        _userReport.data.reportUrl.first.reportUrl
+                            .trim()
+                            .isNotEmpty) {
+                      LauncherUtil.launchUrl(
+                          _userReport.data.reportUrl?.first?.reportUrl);
+                    }
+                    return;
+                  },
+                  onDoubleTap: () {},
+                  child: Container(
+                    margin: EdgeInsets.only(top: 10),
+                    height: AppConfig.verticalBlockSize * 27,
+                    child: Container(
+                      child: ClipRRect(
+                        child: Container(
+                          color: Colors.grey.withOpacity(0.7),
+                          child: Image.asset(
+                            plunesImages.pdfIcon1,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      height: AppConfig.verticalBlockSize * 26,
+                      width: double.infinity,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+  }
+
+  _showSnackBar(String message) {
+    if (mounted)
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets()
+                .getInformativePopup(globalKey: scaffoldKey, message: message);
+          });
   }
 }

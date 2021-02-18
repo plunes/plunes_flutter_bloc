@@ -25,7 +25,7 @@ class PrevMissSolutionRepo {
     var result = await DioRequester().requestMethod(
         url: Urls.GET_REPORT_BY_REPORT_ID,
         requestType: HttpRequestMethods.HTTP_GET,
-        queryParameter: {"userReportId": "602d1c5cd08fe0328bb8c7fb"},
+        queryParameter: {"userReportId": userReportId},
         headerIncluded: true);
     if (result.isRequestSucceed) {
       UserReportOuterModel _userReport;

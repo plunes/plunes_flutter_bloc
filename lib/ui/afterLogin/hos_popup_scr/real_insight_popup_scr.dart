@@ -5,6 +5,7 @@ import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/video_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
@@ -412,8 +413,12 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             //     "_realInsight.userReport.videoUrl.first.url ${_realInsight.userReport.videoUrl.first.url}");
                             if (_realInsight.userReport.videoUrl.first.url !=
                                 null) {
-                              _launch(
-                                  _realInsight.userReport.videoUrl.first.url);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => VideoUtil(
+                                          _realInsight
+                                              .userReport.videoUrl.first.url)));
                             }
                           },
                           onDoubleTap: () {},
@@ -453,6 +458,15 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                                   boxFit: BoxFit.cover),
                                         ),
                                       ),
+                                      Positioned.fill(
+                                        child: Center(
+                                          child: Image.asset(
+                                            PlunesImages.pauseVideoIcon,
+                                            height: 28,
+                                            width: 28,
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
@@ -856,9 +870,10 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                               child: Row(
                                 children: [
                                   Container(
-                                    child: CustomWidgets().getImageFromUrl(""),
-                                    height: 35,
-                                    width: 35,
+                                    child: Image.asset(
+                                        PlunesImages.specialInsightOfferImage),
+                                    height: 40,
+                                    width: 40,
                                     margin: EdgeInsets.only(right: 15),
                                   ),
                                   Expanded(

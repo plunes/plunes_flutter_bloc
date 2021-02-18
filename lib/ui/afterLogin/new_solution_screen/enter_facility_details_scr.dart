@@ -8,6 +8,7 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/ImagePicker/ImagePickerHandler.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/video_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/new_solution_blocs/user_medical_detail_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
@@ -370,6 +371,9 @@ class _EnterAdditionalUserDetailScrState
           borderRadius: BorderRadius.all(Radius.circular(18))),
       elevation: 2.5,
       child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
         onTap: () {
           // _showReportDialog();
         },
@@ -431,8 +435,20 @@ class _EnterAdditionalUserDetailScrState
           borderRadius: BorderRadius.all(Radius.circular(18))),
       elevation: 2.5,
       child: InkWell(
+        focusColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onTap: () {
-          // _showReportDialog();
+          if (_videoUrls.first.url != null &&
+              _videoUrls.first.url.trim().isNotEmpty) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => VideoUtil(_videoUrls.first.url)));
+          } else {
+            _showMessagePopup(PlunesStrings.unableToPlayVideo);
+          }
         },
         onDoubleTap: () {},
         child: Stack(
@@ -497,6 +513,10 @@ class _EnterAdditionalUserDetailScrState
           borderRadius: BorderRadius.all(Radius.circular(18))),
       elevation: 2.5,
       child: InkWell(
+        focusColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onTap: () {
           Navigator.push(
               context,
@@ -566,8 +586,18 @@ class _EnterAdditionalUserDetailScrState
           borderRadius: BorderRadius.all(Radius.circular(18))),
       elevation: 2.5,
       child: InkWell(
+        focusColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onTap: () {
-          _imagePicker?.showDialog(context);
+          if (_imageUrls == null ||
+              _imageUrls.isEmpty ||
+              _imageUrls.length < 4) {
+            _imagePicker?.showDialog(context);
+          } else {
+            _showMessagePopup("You can upload upto 3 pictures");
+          }
         },
         onDoubleTap: () {},
         child: Container(
@@ -617,6 +647,10 @@ class _EnterAdditionalUserDetailScrState
           borderRadius: BorderRadius.all(Radius.circular(18))),
       elevation: 2.5,
       child: InkWell(
+        focusColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onTap: () {
           _showImagesDialog();
         },
@@ -722,31 +756,37 @@ class _EnterAdditionalUserDetailScrState
                         ),
                       ),
                     ),
-                    FlatButton(
-                      child: Container(
-                        height: AppConfig.verticalBlockSize * 3,
-                        width: AppConfig.horizontalBlockSize * 30,
-                        alignment: Alignment.center,
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.add_circle,
-                              color: PlunesColors.GREENCOLOR,
-                              size: 15,
+                    (_imageUrls.isNotEmpty && _imageUrls.length == 3)
+                        ? Container()
+                        : FlatButton(
+                            splashColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            child: Container(
+                              height: AppConfig.verticalBlockSize * 3,
+                              width: AppConfig.horizontalBlockSize * 30,
+                              alignment: Alignment.center,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.add_circle,
+                                    color: PlunesColors.GREENCOLOR,
+                                    size: 15,
+                                  ),
+                                  Text(
+                                    "Add More",
+                                    style: TextStyle(
+                                        color: PlunesColors.GREENCOLOR,
+                                        fontSize: 14),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              "Add More",
-                              style: TextStyle(
-                                  color: PlunesColors.GREENCOLOR, fontSize: 14),
-                            ),
-                          ],
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context, false);
-                        _imagePicker.showDialog(context);
-                      },
-                    )
+                            onPressed: () {
+                              Navigator.pop(context, false);
+                              _imagePicker.showDialog(context);
+                            },
+                          )
                   ],
                 ),
               ),
@@ -964,6 +1004,10 @@ class _EnterAdditionalUserDetailScrState
           borderRadius: BorderRadius.all(Radius.circular(18))),
       elevation: 2.5,
       child: InkWell(
+        focusColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        splashColor: Colors.transparent,
         onTap: () {
           FilePicker.getFile(type: FileType.any).then((value) {
             if (value != null &&
@@ -1046,6 +1090,10 @@ class _EnterAdditionalUserDetailScrState
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
+                        focusColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        splashColor: Colors.transparent,
                         onTap: () {
                           if ((_pageController == null ||
                               _pageController.page == null ||
@@ -1082,6 +1130,10 @@ class _EnterAdditionalUserDetailScrState
                             color: PlunesColors.GREYCOLOR),
                       ),
                       InkWell(
+                        focusColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        splashColor: Colors.transparent,
                         onDoubleTap: () {},
                         onTap: () {
                           if (_pageController.page.toInt() == 1) {
@@ -1147,6 +1199,10 @@ class _EnterAdditionalUserDetailScrState
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   InkWell(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
                     onTap: () {},
                     child: _hasTreatedPreviously
                         ? InkWell(

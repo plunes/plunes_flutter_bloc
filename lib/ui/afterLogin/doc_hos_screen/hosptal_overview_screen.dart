@@ -8,6 +8,7 @@ import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/socket_io_util.dart';
+import 'package:plunes/Utils/video_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/doc_hos_bloc/doc_hos_main_screen_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
@@ -1500,8 +1501,13 @@ class _HospitalOverviewScreenState
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
       onTap: () {
-        if (data.userReport.videoUrl.first.url != null) {
-          _launch(data.userReport.videoUrl.first.url);
+        if (data.userReport.videoUrl.first.url != null &&
+            data.userReport.videoUrl.first.url.trim().isNotEmpty) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      VideoUtil(data.userReport.videoUrl.first.url)));
         }
       },
       onDoubleTap: () {},
@@ -1534,6 +1540,15 @@ class _HospitalOverviewScreenState
                     ),
                   ),
                 ),
+                Positioned.fill(
+                  child: Center(
+                    child: Image.asset(
+                      PlunesImages.pauseVideoIcon,
+                      height: 30,
+                      width: 30,
+                    ),
+                  ),
+                )
               ],
             ),
           ),

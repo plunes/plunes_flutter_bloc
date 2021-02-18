@@ -91,6 +91,7 @@ dependencies:
   bubble_tab_indicator: ^0.1.4
   dotted_line: ^2.0.2
   video_compress: ^2.1.0
+  video_player: ^1.0.1
   permission:
     git:
       url: https://github.com/plunes/permission.git
@@ -390,6 +391,7 @@ flutter:
     - assets/images/selectedfacilityIcon.png
     - assets/images/pauseVideoIcon.png
     - assets/images/add_special_offer_insight.png
+    - assets/images/specialInsightOfferImage.png
 
 
 
