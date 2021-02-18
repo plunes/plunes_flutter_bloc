@@ -244,6 +244,7 @@ class UserManager {
   }
 
   Future<RequestState> getSpecialities() async {
+    print("hittedonceagagin");
     var result = await DioRequester().requestMethod(
       headerIncluded: true,
       requestType: HttpRequestMethods.HTTP_GET,

@@ -16,6 +16,7 @@ import 'package:plunes/models/new_solution_model/solution_home_scr_model.dart';
 import 'package:plunes/models/new_solution_model/top_facility_model.dart';
 import 'package:plunes/models/new_solution_model/top_search_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -60,7 +61,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _failedMessageForCommonSpeciality;
   String _mediaFailedMessage;
   String _failedMessageTopSearch;
-  String _failedMessageTopFacility;
+  String _failedMessageTopFacility, _specialityApiFailureCause;
 
   @override
   void initState() {
@@ -201,80 +202,36 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             child: _sectionHeading(
                 _solutionHomeScreenModel?.topFacilities ?? 'Top facilities'),
           ),
-          StreamBuilder<RequestState>(
-              stream: _homeScreenMainBloc.topFacilityStream,
-              initialData:
-                  (_topFacilityModel == null) ? RequestInProgress() : null,
-              builder: (context, snapshot) {
-                if (snapshot.data is RequestSuccess) {
-                  RequestSuccess successObject = snapshot.data;
-                  _topFacilityModel = successObject.response;
-                  _homeScreenMainBloc?.addIntoTopFacilityStream(null);
-                } else if (snapshot.data is RequestFailed) {
-                  RequestFailed _failedObj = snapshot.data;
-                  _failedMessageTopFacility = _failedObj?.failureCause;
-                  _homeScreenMainBloc?.addIntoTopFacilityStream(null);
-                } else if (snapshot.data is RequestInProgress) {
-                  return Container(
-                    child: CustomWidgets().getProgressIndicator(),
-                    height: AppConfig.verticalBlockSize * 25,
-                  );
-                }
-                return (_topFacilityModel == null ||
-                        (_topFacilityModel.success != null &&
-                            !_topFacilityModel.success) ||
-                        _topFacilityModel.data == null ||
-                        _topFacilityModel.data.isEmpty)
-                    ? Container(
-                        height: AppConfig.verticalBlockSize * 38,
-                        child: CustomWidgets().errorWidget(
-                            _failedMessageTopFacility,
-                            onTap: () => _getTopFacilities(),
-                            isSizeLess: true),
-                      )
-                    : Container(
-                        child: ListView.builder(
-                          padding: EdgeInsets.zero,
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                if (_topFacilityModel.data[index] != null &&
-                                    _topFacilityModel.data[index].userType !=
-                                        null &&
-                                    _topFacilityModel
-                                            .data[index].professionalId !=
-                                        null) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => DoctorInfo(
-                                              _topFacilityModel
-                                                  .data[index].professionalId,
-                                              isDoc: (_topFacilityModel
-                                                      .data[index].userType
-                                                      .toLowerCase() ==
-                                                  Constants.doctor
-                                                      .toString()
-                                                      .toLowerCase()))));
-                                }
-                              },
-                              onDoubleTap: () {},
-                              child: _hospitalCard(
-                                  _topFacilityModel.data[index]?.imageUrl ?? '',
-                                  CommonMethods.getStringInCamelCase(
-                                      _topFacilityModel.data[index].name),
-                                  _topFacilityModel.data[index].biography ?? '',
-                                  _topFacilityModel.data[index]?.rating),
-                            );
-                          },
-                          itemCount: (_topFacilityModel.data.length > 6)
-                              ? 5
-                              : _topFacilityModel.data.length,
-                        ),
-                      );
-              }),
+          StatefulBuilder(builder: (context, newState) {
+            return FutureBuilder<RequestState>(
+                future: _getSpecialityList(),
+                builder: (context, snapShot) {
+                  if (snapShot.data is RequestInProgress) {
+                    return Container(
+                      child: CustomWidgets().getProgressIndicator(),
+                      height: AppConfig.verticalBlockSize * 25,
+                    );
+                  } else if (snapShot.data is RequestFailed) {
+                    RequestFailed _failedObj = snapShot.data;
+                    _specialityApiFailureCause = _failedObj?.response;
+                  }
+                  return CommonMethods.catalogueLists == null ||
+                          CommonMethods.catalogueLists.isEmpty
+                      ? Container(
+                          height: AppConfig.verticalBlockSize * 38,
+                          child: CustomWidgets().errorWidget(
+                              _specialityApiFailureCause ??
+                                  "Unable to load data", onTap: () {
+                            newState(() {});
+                          }, isSizeLess: true),
+                        )
+                      : _getTopFacilityStreamBuilderWidget();
+                },
+                initialData: (CommonMethods.catalogueLists == null ||
+                        CommonMethods.catalogueLists.isEmpty)
+                    ? RequestInProgress()
+                    : null);
+          }),
         ],
       ),
     );
@@ -1314,6 +1271,89 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         ),
       ),
     );
+  }
+
+  Widget _getTopFacilityStreamBuilderWidget() {
+    print("ander wali list");
+    return StreamBuilder<RequestState>(
+        stream: _homeScreenMainBloc.topFacilityStream,
+        initialData: (_topFacilityModel == null) ? RequestInProgress() : null,
+        builder: (context, snapshot) {
+          if (snapshot.data is RequestSuccess) {
+            RequestSuccess successObject = snapshot.data;
+            _topFacilityModel = successObject.response;
+            _homeScreenMainBloc?.addIntoTopFacilityStream(null);
+          } else if (snapshot.data is RequestFailed) {
+            RequestFailed _failedObj = snapshot.data;
+            _failedMessageTopFacility = _failedObj?.failureCause;
+            _homeScreenMainBloc?.addIntoTopFacilityStream(null);
+          } else if (snapshot.data is RequestInProgress) {
+            return Container(
+              child: CustomWidgets().getProgressIndicator(),
+              height: AppConfig.verticalBlockSize * 25,
+            );
+          }
+          return (_topFacilityModel == null ||
+                  (_topFacilityModel.success != null &&
+                      !_topFacilityModel.success) ||
+                  _topFacilityModel.data == null ||
+                  _topFacilityModel.data.isEmpty)
+              ? Container(
+                  height: AppConfig.verticalBlockSize * 38,
+                  child: CustomWidgets().errorWidget(_failedMessageTopFacility,
+                      onTap: () => _getTopFacilities(), isSizeLess: true),
+                )
+              : Container(
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          if (_topFacilityModel.data[index] != null &&
+                              _topFacilityModel.data[index].userType != null &&
+                              _topFacilityModel.data[index].professionalId !=
+                                  null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => DoctorInfo(
+                                        _topFacilityModel
+                                            .data[index].professionalId,
+                                        isDoc: (_topFacilityModel
+                                                .data[index].userType
+                                                .toLowerCase() ==
+                                            Constants.doctor
+                                                .toString()
+                                                .toLowerCase()))));
+                          }
+                        },
+                        onDoubleTap: () {},
+                        child: _hospitalCard(
+                            _topFacilityModel.data[index]?.imageUrl ?? '',
+                            CommonMethods.getStringInCamelCase(
+                                _topFacilityModel.data[index].name),
+                            _topFacilityModel.data[index].biography ?? '',
+                            _topFacilityModel.data[index]?.rating),
+                      );
+                    },
+                    itemCount: (_topFacilityModel.data.length > 6)
+                        ? 5
+                        : _topFacilityModel.data.length,
+                  ),
+                );
+        });
+  }
+
+  Future<RequestState> _getSpecialityList() async {
+    if (CommonMethods.catalogueLists == null ||
+        CommonMethods.catalogueLists.isEmpty) {
+      var result = await UserManager().getSpecialities();
+      return result;
+    } else {
+      return RequestSuccess();
+    }
   }
 }
 
