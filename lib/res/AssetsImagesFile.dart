@@ -152,6 +152,8 @@ class PlunesImages {
   static const String pauseVideoIcon = "assets/images/pauseVideoIcon.png";
   static const String specialInsightOfferImage =
       "assets/images/specialInsightOfferImage.png";
+  static const String encryptionPopupImage =
+      "assets/images/encryptionPopupImage.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

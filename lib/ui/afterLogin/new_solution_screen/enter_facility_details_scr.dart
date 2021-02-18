@@ -15,6 +15,7 @@ import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
 import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -313,7 +314,7 @@ class _EnterAdditionalUserDetailScrState
                           fontSize: 16,
                         ),
                         decoration: InputDecoration.collapsed(
-                            hintText: "Enter additional details",
+                            hintText: "Enter additional details*",
                             hintStyle: TextStyle(
                                 fontSize: 14,
                                 color: Color(CommonMethods.getColorHexFromStr(
@@ -518,24 +519,26 @@ class _EnterAdditionalUserDetailScrState
         hoverColor: Colors.transparent,
         splashColor: Colors.transparent,
         onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => UploadVideoForTreatment(
-                        submitUserMedicalDetailBloc:
-                            _submitUserMedicalDetailBloc,
-                      ))).then((value) {
-            _submitUserMedicalDetailBloc?.addIntoSubmitFileStream(null);
-            if (value != null) {
-              if (_videoUrls == null) {
-                _videoUrls = [];
+          _showEncryptionPopup(() {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => UploadVideoForTreatment(
+                          submitUserMedicalDetailBloc:
+                              _submitUserMedicalDetailBloc,
+                        ))).then((value) {
+              _submitUserMedicalDetailBloc?.addIntoSubmitFileStream(null);
+              if (value != null) {
+                if (_videoUrls == null) {
+                  _videoUrls = [];
+                }
+                if (_videoUrls.isNotEmpty) {
+                  _videoUrls.addAll(value);
+                } else {
+                  _videoUrls = value;
+                }
               }
-              if (_videoUrls.isNotEmpty) {
-                _videoUrls.addAll(value);
-              } else {
-                _videoUrls = value;
-              }
-            }
+            });
           });
         },
         onDoubleTap: () {},
@@ -591,13 +594,15 @@ class _EnterAdditionalUserDetailScrState
         hoverColor: Colors.transparent,
         splashColor: Colors.transparent,
         onTap: () {
-          if (_imageUrls == null ||
-              _imageUrls.isEmpty ||
-              _imageUrls.length < 4) {
-            _imagePicker?.showDialog(context);
-          } else {
-            _showMessagePopup("You can upload upto 3 pictures");
-          }
+          _showEncryptionPopup(() {
+            if (_imageUrls == null ||
+                _imageUrls.isEmpty ||
+                _imageUrls.length < 4) {
+              _imagePicker?.showDialog(context);
+            } else {
+              _showMessagePopup("You can upload up to 3 pictures");
+            }
+          });
         },
         onDoubleTap: () {},
         child: Container(
@@ -1009,22 +1014,24 @@ class _EnterAdditionalUserDetailScrState
         hoverColor: Colors.transparent,
         splashColor: Colors.transparent,
         onTap: () {
-          FilePicker.getFile(type: FileType.any).then((value) {
-            if (value != null &&
-                value.path != null &&
-                value.path.trim().isNotEmpty &&
-                value.path.contains(".")) {
-              String _fileExtension = value.path.split(".")?.last;
-              if (_fileExtension != null &&
-                  (_fileExtension.toLowerCase() ==
-                      Constants.pdfExtension.toLowerCase())) {
-                _uploadFile(value, fileType: Constants.typeReport);
+          _showEncryptionPopup(() {
+            FilePicker.getFile(type: FileType.any).then((value) {
+              if (value != null &&
+                  value.path != null &&
+                  value.path.trim().isNotEmpty &&
+                  value.path.contains(".")) {
+                String _fileExtension = value.path.split(".")?.last;
+                if (_fileExtension != null &&
+                    (_fileExtension.toLowerCase() ==
+                        Constants.pdfExtension.toLowerCase())) {
+                  _uploadFile(value, fileType: Constants.typeReport);
+                } else {
+                  _showMessagePopup(PlunesStrings.selectValidDocWarningText);
+                }
               } else {
                 _showMessagePopup(PlunesStrings.selectValidDocWarningText);
               }
-            } else {
-              _showMessagePopup(PlunesStrings.selectValidDocWarningText);
-            }
+            });
           });
         },
         onDoubleTap: () {},
@@ -1515,6 +1522,12 @@ class _EnterAdditionalUserDetailScrState
 
   void _submitUserDetail() {
     if (!_isNecessaryDataFilled()) {
+      _pageController
+          .animateToPage(0,
+              duration: Duration(milliseconds: 500), curve: Curves.easeInOut)
+          .then((value) {
+        _pageStream.add(null);
+      });
       return;
     }
     Map<String, dynamic> _postData = {
@@ -1578,6 +1591,21 @@ class _EnterAdditionalUserDetailScrState
         ),
       ],
     );
+  }
+
+  _showEncryptionPopup(Function func) {
+    if (UserManager().isEncryptionPopupShown()) {
+      func();
+      return;
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) =>
+              CommonWidgets().getEncryptionPopup(scaffoldKey)).then((value) {
+        UserManager().setEncryptionPopupStatus(true);
+        func();
+      });
+    }
   }
 
   bool _isNecessaryDataFilled() {

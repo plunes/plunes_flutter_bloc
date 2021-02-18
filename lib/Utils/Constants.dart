@@ -80,4 +80,5 @@ class Constants {
   static const String IS_CENTRE = "IS_CENTRE";
   static const String GOOGLE_LOCATION = "GOOGLE_LOCATION";
   static const String REGION = "REGION";
+  static const String ENCRYPTION_POPUP_KEY = "ENCRYPTION_POPUP_KEY";
 }

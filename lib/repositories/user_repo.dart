@@ -619,4 +619,13 @@ class UserManager {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  setEncryptionPopupStatus(bool isShown) {
+    return Preferences()
+        .setPreferencesBoolean(Constants.ENCRYPTION_POPUP_KEY, isShown);
+  }
+
+  bool isEncryptionPopupShown() {
+    return Preferences().getPreferenceBoolean(Constants.ENCRYPTION_POPUP_KEY);
+  }
 }

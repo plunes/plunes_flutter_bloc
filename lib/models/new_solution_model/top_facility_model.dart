@@ -63,7 +63,10 @@ class TopFacility {
     //   });
     // }
     experience = json['experience'];
-    rating = json['rating'];
+    if (json['rating'] != null &&
+        json['rating'].runtimeType != "".runtimeType) {
+      rating = json['rating'];
+    }
     specialities = json['specialities'].cast<String>();
   }
 
