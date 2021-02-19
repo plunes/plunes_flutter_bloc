@@ -323,10 +323,22 @@ class _HospitalOverviewScreenState
                                               realInsight:
                                                   _realTimeInsightsResponse
                                                       .data[itemIndex],
-                                              openInsightPopup: () =>
-                                                  _openRealTimeInsightPriceUpdateWidget(
+                                              openInsightPopup: (_realTimeInsightsResponse
+                                                                  .data[
+                                                              itemIndex] !=
+                                                          null &&
                                                       _realTimeInsightsResponse
-                                                          .data[itemIndex]),
+                                                              .data[itemIndex]
+                                                              .expired !=
+                                                          null &&
+                                                      _realTimeInsightsResponse
+                                                          .data[itemIndex]
+                                                          .expired)
+                                                  ? null
+                                                  : () =>
+                                                      _openRealTimeInsightPriceUpdateWidget(
+                                                          _realTimeInsightsResponse
+                                                              .data[itemIndex]),
                                             ),
                                             (_realTimeInsightsResponse
                                                             .data[itemIndex]
@@ -1898,26 +1910,29 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                         ),
                       )
                     : Container(),
-                Container(
-                  margin: EdgeInsets.only(
-                      right: AppConfig.horizontalBlockSize * 8, top: 5),
-                  child: InkWell(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    onTap: () => widget.openInsightPopup(),
-                    onDoubleTap: () {},
-                    child: CustomWidgets().getRoundedButton(
-                        PlunesStrings.kindlyUpdateYourPrice,
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.WHITECOLOR,
-                        AppConfig.horizontalBlockSize * 1,
-                        AppConfig.verticalBlockSize * 1,
-                        Color(CommonMethods.getColorHexFromStr("#01D35A")),
-                        borderColor:
-                            Color(CommonMethods.getColorHexFromStr("#01D35A")),
-                        hasBorder: true),
-                  ),
-                ),
+                (widget.openInsightPopup == null)
+                    ? Container()
+                    : Container(
+                        margin: EdgeInsets.only(
+                            right: AppConfig.horizontalBlockSize * 8, top: 5),
+                        child: InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () => widget.openInsightPopup(),
+                          onDoubleTap: () {},
+                          child: CustomWidgets().getRoundedButton(
+                              PlunesStrings.kindlyUpdateYourPrice,
+                              AppConfig.horizontalBlockSize * 8,
+                              PlunesColors.WHITECOLOR,
+                              AppConfig.horizontalBlockSize * 1,
+                              AppConfig.verticalBlockSize * 1,
+                              Color(
+                                  CommonMethods.getColorHexFromStr("#01D35A")),
+                              borderColor: Color(
+                                  CommonMethods.getColorHexFromStr("#01D35A")),
+                              hasBorder: true),
+                        ),
+                      ),
                 ((_realInsight != null &&
                             _realInsight.expired != null &&
                             _realInsight.expired) ||
