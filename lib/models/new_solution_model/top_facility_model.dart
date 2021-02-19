@@ -1,11 +1,13 @@
 class TopFacilityModel {
   bool success;
   List<TopFacility> data;
+  String msg;
 
-  TopFacilityModel({this.success, this.data});
+  TopFacilityModel({this.success, this.data, this.msg});
 
   TopFacilityModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
+    msg = json['msg'];
     if (json['data'] != null) {
       data = new List<TopFacility>();
       json['data'].forEach((v) {
@@ -65,7 +67,7 @@ class TopFacility {
     experience = json['experience'];
     if (json['rating'] != null &&
         json['rating'].runtimeType != "".runtimeType) {
-      rating = json['rating'];
+      rating = double.tryParse(json['rating'].toString());
     }
     specialities = json['specialities'].cast<String>();
   }

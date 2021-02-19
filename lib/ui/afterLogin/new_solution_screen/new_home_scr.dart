@@ -60,7 +60,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   CartMainBloc _cartBloc;
   String _failedMessageForWhyUsSection;
   String _failedMessageForKnowYourProcedureSection;
-  bool _isProcedureListOpened;
+  bool _isProcedureListOpened, _isTopFacilityExpanded;
   String _failedMessageForCommonSpeciality;
   String _mediaFailedMessage;
   String _failedMessageTopSearch;
@@ -90,7 +90,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   String _userTypeFilter = _allKey;
   String _locationFilter = _allKey;
-  String _selectedSpeciality;
+  String _selectedSpeciality, _firstSpecialityId;
 
   List<DropdownMenuItem<String>> _facilityLocationDropDownItems = [
     DropdownMenuItem(
@@ -109,6 +109,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   void initState() {
     _cartBloc = CartMainBloc();
     _isProcedureListOpened = false;
+    _isTopFacilityExpanded = false;
     _homeScreenMainBloc = HomeScreenMainBloc();
     _getCategoryData();
     _getUserDetails();
@@ -140,19 +141,19 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         user.longitude != "0") {
       _checkUserLocation(user?.latitude, user?.longitude);
     } else {
-      await Future.delayed(Duration(milliseconds: 500));
-      _getCurrentLocation();
+      // await Future.delayed(Duration(milliseconds: 500));
+      // _getCurrentLocation();
     }
   }
 
   _getCurrentLocation() async {
-    var latLong = await LocationUtil().getCurrentLatLong(context);
-    if (latLong != null &&
-        latLong.longitude != null &&
-        latLong.latitude != null) {
-      _checkUserLocation(
-          latLong?.latitude?.toString(), latLong?.longitude?.toString());
-    }
+    // var latLong = await LocationUtil().getCurrentLatLong(context);
+    // if (latLong != null &&
+    //     latLong.longitude != null &&
+    //     latLong.latitude != null) {
+    //   _checkUserLocation(
+    //       latLong?.latitude?.toString(), latLong?.longitude?.toString());
+    // }
   }
 
   _checkUserLocation(var latitude, var longitude,
@@ -1392,8 +1393,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               ? Container(
                   height: AppConfig.verticalBlockSize * 38,
                   child: CustomWidgets().errorWidget(_failedMessageTopFacility,
-                      onTap: () => _getTopFacilities(), isSizeLess: true),
-                )
+                      onTap: () {
+                    _selectedSpeciality = _firstSpecialityId;
+                    _userTypeFilter = _allKey;
+                    _locationFilter = _allKey;
+                    _getTopFacilities();
+                  }, isSizeLess: true))
               : Container(
                   child: Column(
                     children: [
@@ -1422,7 +1427,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                         width: 0.8,
                                         color: Color(
                                             CommonMethods.getColorHexFromStr(
-                                                "#E7E7E7")))),
+                                                "#26AF78")))),
                                 child: DropdownButton<String>(
                                   items: _getSpecialityDropdownItems(),
                                   underline: Container(),
@@ -1457,7 +1462,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                         width: 0.8,
                                         color: Color(
                                             CommonMethods.getColorHexFromStr(
-                                                "#E7E7E7")))),
+                                                "#26AF78")))),
                                 child: DropdownButton<String>(
                                   items: facilityTypeWidget,
                                   underline: Container(),
@@ -1493,7 +1498,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                           .getIsUserInServiceLocation())
                                   ? Container(
                                       margin: EdgeInsets.only(
-                                          left: AppConfig.horizontalBlockSize *
+                                          right: AppConfig.horizontalBlockSize *
                                               3),
                                       padding: EdgeInsets.only(
                                           left: AppConfig.horizontalBlockSize *
@@ -1510,7 +1515,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                               width: 0.8,
                                               color: Color(CommonMethods
                                                   .getColorHexFromStr(
-                                                      "#E7E7E7")))),
+                                                      "#26AF78")))),
                                       child: DropdownButton(
                                         items: _facilityLocationDropDownItems,
                                         isExpanded: false,
@@ -1569,10 +1574,41 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                 _topFacilityModel.data[index]?.rating),
                           );
                         },
-                        itemCount: (_topFacilityModel.data.length > 6)
+                        itemCount: ((_topFacilityModel.data.length > 6) &&
+                                (!_isTopFacilityExpanded))
                             ? 5
                             : _topFacilityModel.data.length,
                       ),
+                      (_topFacilityModel.data.length > 6)
+                          ? Container(
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              child: InkWell(
+                                onDoubleTap: () {},
+                                onTap: () {
+                                  _isTopFacilityExpanded =
+                                      !_isTopFacilityExpanded;
+                                  _homeScreenMainBloc
+                                      ?.addIntoTopFacilityStream(null);
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 2,
+                                      vertical:
+                                          AppConfig.verticalBlockSize * 2.2),
+                                  child: Text(
+                                    _isTopFacilityExpanded
+                                        ? "View less"
+                                        : "View more",
+                                    style: TextStyle(
+                                        color: PlunesColors.GREENCOLOR,
+                                        fontSize: 13),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container()
                     ],
                   ),
                 );
@@ -1589,7 +1625,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     }
   }
 
-  void _doFilterAndGetFacilities() {}
+  void _doFilterAndGetFacilities() {
+    _getTopFacilities();
+  }
 
   List<DropdownMenuItem<String>> _getSpecialityDropdownItems() {
     if (_specialityDropDownItems != null &&
@@ -1604,6 +1642,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
           element.id.trim().isNotEmpty) {
         if (_selectedSpeciality == null) {
           _selectedSpeciality = element.id;
+          _firstSpecialityId = element.id;
           _getTopFacilities();
         }
         _specialityDropDownItems.add(DropdownMenuItem(

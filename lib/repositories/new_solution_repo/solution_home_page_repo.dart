@@ -154,7 +154,7 @@ class HomeScreenMainRepo {
         queryParameter: {
           "lat": lat,
           "lng": long,
-          "specialityId": specialityId,
+          "speciality": specialityId,
           "facilityType": (facilityType != null && facilityType == all)
               ? null
               : facilityType,

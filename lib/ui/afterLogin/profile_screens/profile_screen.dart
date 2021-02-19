@@ -28,7 +28,6 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 // ignore: must_be_immutable
 class DoctorInfo extends BaseActivity {
   final String userID;
-
   bool isDoc;
 
   DoctorInfo(this.userID, {this.isDoc});
@@ -1015,6 +1014,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
+                  // itemCount: widget.mediaContent?.data?.,
                   itemBuilder: (context, index) {
                     return Card(
                         child: Container(
