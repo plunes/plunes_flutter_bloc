@@ -26,6 +26,7 @@ import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/new_solution_model/insurance_model.dart';
+import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -102,6 +103,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   Completer<GoogleMapController> _googleMapController = Completer();
   GoogleMapController _mapController;
   bool _webViewOpened = false;
+  String _imageUrl, _docUrl;
 
   // List<ApplicationMeta> _availableUpiApps;
   TextEditingController _patientNameController,
@@ -1229,7 +1231,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         insuranceDetail: (_insuranceProvider != null && _selectedIndex == 0)
             ? InsuranceDetail(
                 insuranceId: _insuranceProvider?.sId,
-                insuranceImage: _insuranceFileUrl,
+                insuranceImage: _imageUrl,
+                insuranceDoc: _docUrl,
                 insurancePartner: _insuranceProvider?.insurancePartner,
                 policyNumber: _policyNumberController.text.trim())
             : null,
@@ -2396,8 +2399,14 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
           ),
           Row(
             children: [
-              Expanded(child: _getUploadImageCard()),
-              Expanded(child: _getUploadReportCard()),
+              Expanded(
+                  child: (_imageUrl != null)
+                      ? _getUploadImageCardWithBackground()
+                      : _getUploadImageCard()),
+              Expanded(
+                  child: (_docUrl != null)
+                      ? _getUploadReportWithBackground()
+                      : _getUploadReportCard()),
             ],
           ),
         ],
@@ -2450,6 +2459,57 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     );
   }
 
+  Widget _getUploadImageCardWithBackground() {
+    return Container(
+      width: double.infinity,
+      padding:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2.5),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          gradient: LinearGradient(colors: [
+            Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+            Color(CommonMethods.getColorHexFromStr("#F6F6F6")),
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(16)),
+              child: CustomWidgets()
+                  .getImageFromUrl(_imageUrl ?? "", boxFit: BoxFit.fill),
+            ),
+          ),
+          Container(
+            height: AppConfig.verticalBlockSize * 18,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  PlunesImages.videoUploadIcon,
+                  height: 49,
+                  width: 49,
+                ),
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+                  child: Text(
+                    "",
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(color: PlunesColors.WHITECOLOR, fontSize: 14),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _getUploadReportCard() {
     return Container(
       width: double.infinity,
@@ -2468,7 +2528,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                 value.path != null &&
                 value.path.trim().isNotEmpty &&
                 value.path.contains(".")) {
-              print("path ${value.path}");
+              // print("path ${value.path}");
               String _fileExtension = value.path.split(".")?.last;
               if (_fileExtension != null &&
                   (_fileExtension.toLowerCase() ==
@@ -2509,6 +2569,59 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _getUploadReportWithBackground() {
+    return Container(
+      width: double.infinity,
+      padding:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 2.5),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16)),
+          gradient: LinearGradient(colors: [
+            Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+            Color(CommonMethods.getColorHexFromStr("#F6F6F6")),
+          ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+              child: Image.asset(
+                plunesImages.pdfIcon1,
+                fit: BoxFit.fill,
+              ),
+            ),
+          ),
+          Container(
+            height: AppConfig.verticalBlockSize * 18,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset(
+                  PlunesImages.docUploadIcon,
+                  height: 49,
+                  width: 49,
+                ),
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+                  child: Text(
+                    "",
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(color: PlunesColors.WHITECOLOR, fontSize: 14),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -2643,6 +2756,13 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         _insuranceFileUrl = value.response?.toString();
         Future.delayed(Duration(milliseconds: 10)).then((value) {
           _showErrorMessage("File uploaded successfully!");
+          if (_insuranceFileUrl != null &&
+              fileType == Constants.cardKey.toString())
+            _imageUrl = _insuranceFileUrl;
+          else if (_insuranceFileUrl != null &&
+              fileType == Constants.policyKey.toString())
+            _docUrl = _insuranceFileUrl;
+          _setState();
         });
       } else if (value is RequestFailed) {
         _showErrorMessage(value?.failureCause);
@@ -2707,28 +2827,35 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     );
   }
 
+  ScrollController _scrollControllerForScrollBar = ScrollController();
+
   Widget _getILISTWidget(List<InsuranceProvider> list) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return InkWell(
-          onDoubleTap: () {},
-          onTap: () {
-            _insuranceProvider = list[index];
-            _policySearchController.text =
-                _insuranceProvider?.insurancePartner ?? "";
-            _setState();
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Text(
-              "${list[index]?.insurancePartner ?? ""}",
-              style: TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
+    return Scrollbar(
+      isAlwaysShown: true,
+      controller: _scrollControllerForScrollBar,
+      child: ListView.builder(
+        shrinkWrap: true,
+        controller: _scrollControllerForScrollBar,
+        itemBuilder: (context, index) {
+          return InkWell(
+            onDoubleTap: () {},
+            onTap: () {
+              _insuranceProvider = list[index];
+              _policySearchController.text =
+                  _insuranceProvider?.insurancePartner ?? "";
+              _setState();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Text(
+                "${list[index]?.insurancePartner ?? ""}",
+                style: TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
+              ),
             ),
-          ),
-        );
-      },
-      itemCount: list?.length ?? 0,
+          );
+        },
+        itemCount: list?.length ?? 0,
+      ),
     );
   }
 

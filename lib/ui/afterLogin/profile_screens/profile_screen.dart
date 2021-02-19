@@ -697,11 +697,10 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   _mediaContent.success == null ||
                   !_mediaContent.success)
               ? Container(
-                  height: AppConfig.verticalBlockSize * 10,
-                  child: Center(
-                    child: Text(_failureCauseForMediaContent ??
-                        "No photos/videos available yet"),
-                  ),
+                  child: CustomWidgets().errorWidget(
+                      _failureCauseForMediaContent ?? "No media found"),
+                  margin: EdgeInsets.symmetric(
+                      vertical: AppConfig.verticalBlockSize * 2),
                 )
               : PhotosWidget(_mediaContent);
         });
@@ -741,12 +740,10 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     return (_profileResponse.user.doctorsData == null ||
             _profileResponse.user.doctorsData.isEmpty)
         ? Container(
-            height: AppConfig.verticalBlockSize * 10,
-            child: Center(
-              child: Text(_failureCauseForMediaContent ??
-                  "No experts available currently"),
-            ),
-          )
+            child: CustomWidgets().errorWidget(
+                _failureCauseForMediaContent ?? "No experts found"),
+            margin:
+                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2))
         : Container(
             height: 250,
             child: ListView.builder(
@@ -993,150 +990,209 @@ class PhotosWidget extends StatefulWidget {
 class _PhotosWidgetState extends State<PhotosWidget> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 8,
-              ),
-              Text(
-                'Photos',
-                style: TextStyle(fontSize: 18),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              Container(
-                height: 170,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  // itemCount: widget.mediaContent?.data?.,
-                  itemBuilder: (context, index) {
-                    return Card(
-                        child: Container(
-                          margin: EdgeInsets.only(right: 20),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(6),
-                                bottomRight: Radius.circular(6),
-                                topLeft: Radius.circular(13),
-                                topRight: Radius.circular(13)),
-                            child: CustomWidgets().getImageFromUrl(
-                                'https://images.pexels.com/photos/4173239/pexels-photo-4173239.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-                                boxFit: BoxFit.fill),
+    return ((widget.mediaContent == null ||
+                widget.mediaContent.data == null ||
+                widget.mediaContent.data.serviceVideo == null ||
+                widget.mediaContent.data.serviceVideo.isEmpty) &&
+            (widget.mediaContent == null ||
+                widget.mediaContent.data == null ||
+                widget.mediaContent.data.hosPictures == null ||
+                widget.mediaContent.data.hosPictures.isEmpty))
+        ? Container(
+            child: CustomWidgets().errorWidget("No media found"),
+            margin:
+                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+          )
+        : Container(
+            child: Column(
+              children: [
+                (widget.mediaContent == null ||
+                        widget.mediaContent.data == null ||
+                        widget.mediaContent.data.hosPictures == null ||
+                        widget.mediaContent.data.hosPictures.isEmpty)
+                    ? Container()
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 8,
                           ),
-                        ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(6),
-                                bottomRight: Radius.circular(6),
-                                topLeft: Radius.circular(13),
-                                topRight: Radius.circular(13))));
-                  },
-                ),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 8,
-              ),
-              Text(
-                'Videos',
-                style: TextStyle(fontSize: 18),
-              ),
-              SizedBox(
-                height: 8,
-              ),
-              (widget.mediaContent == null ||
-                      widget.mediaContent.data == null ||
-                      widget.mediaContent.data.serviceVideo == null ||
-                      widget.mediaContent.data.serviceVideo.isEmpty)
-                  ? Container(
-                      alignment: Alignment.topLeft,
-                      height: AppConfig.verticalBlockSize * 8,
-                      child: Text(
-                        "No videos available",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(color: PlunesColors.RED, fontSize: 16),
-                      ),
-                    )
-                  : Container(
-                      height: 170,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: widget.mediaContent.data.serviceVideo.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                              child: Container(
-                                margin: EdgeInsets.only(right: 20),
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.only(
-                                            bottomLeft: Radius.circular(6),
-                                            bottomRight: Radius.circular(6),
-                                            topLeft: Radius.circular(13),
-                                            topRight: Radius.circular(13)),
-                                        child: InkWell(
-                                          child: Stack(
-                                            children: [
-                                              CustomWidgets().getImageFromUrl(
-                                                  "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(widget.mediaContent.data.serviceVideo[index].videoUrl)}/0.jpg",
-                                                  boxFit: BoxFit.cover),
-                                              Positioned.fill(
-                                                child: Center(
-                                                  child: Image.asset(
-                                                    PlunesImages.pauseVideoIcon,
-                                                    height: 50,
-                                                    width: 50,
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                          onTap: () {
+                          Text(
+                            'Photos',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Container(
+                            height: 170,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: widget.mediaContent?.data?.hosPictures
+                                      ?.length ??
+                                  0,
+                              itemBuilder: (context, index) {
+                                if (widget.mediaContent.data.hosPictures[index]
+                                            .imageUrl ==
+                                        null ||
+                                    widget.mediaContent.data.hosPictures[index]
+                                        .imageUrl.isEmpty) {
+                                  return Container();
+                                }
+                                return Container(
+                                  width: AppConfig.horizontalBlockSize * 62,
+                                  child: Card(
+                                      margin: EdgeInsets.only(right: 20),
+                                      child: InkWell(
+                                        onTap: () {
+                                          List<Photo> photos = [];
+                                          widget.mediaContent.data.hosPictures
+                                              .forEach((element) {
+                                            if (element == null ||
+                                                element.imageUrl == null ||
+                                                element.imageUrl.isEmpty ||
+                                                !(element.imageUrl
+                                                    .contains("http"))) {
+                                            } else {
+                                              photos.add(Photo(
+                                                  assetName: element.imageUrl));
+                                            }
+                                          });
+                                          if (photos != null &&
+                                              photos.isNotEmpty) {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        YoutubePlayerProvider(
-                                                          widget
-                                                              .mediaContent
-                                                              .data
-                                                              .serviceVideo[
-                                                                  index]
-                                                              .videoUrl,
-                                                          title: "Video",
-                                                        )));
-                                          },
+                                                        PageSlider(
+                                                            photos, index)));
+                                          }
+                                        },
+                                        onDoubleTap: () {},
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(6),
+                                              bottomRight: Radius.circular(6),
+                                              topLeft: Radius.circular(13),
+                                              topRight: Radius.circular(13)),
+                                          child: CustomWidgets()
+                                              .getImageFromUrl(
+                                                  widget
+                                                          .mediaContent
+                                                          .data
+                                                          .hosPictures[index]
+                                                          .imageUrl ??
+                                                      "",
+                                                  boxFit: BoxFit.fill),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(6),
-                                      bottomRight: Radius.circular(6),
-                                      topLeft: Radius.circular(13),
-                                      topRight: Radius.circular(13))));
-                        },
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(6),
+                                              bottomRight: Radius.circular(6),
+                                              topLeft: Radius.circular(13),
+                                              topRight: Radius.circular(13)))),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-            ],
-          )
-        ],
-      ),
-    );
+                (widget.mediaContent == null ||
+                        widget.mediaContent.data == null ||
+                        widget.mediaContent.data.serviceVideo == null ||
+                        widget.mediaContent.data.serviceVideo.isEmpty)
+                    ? Container()
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            'Videos',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Container(
+                            height: 170,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount:
+                                  widget.mediaContent.data.serviceVideo.length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  width: AppConfig.horizontalBlockSize * 62,
+                                  child: Card(
+                                      margin: EdgeInsets.only(right: 20),
+                                      child: Column(
+                                        children: [
+                                          Expanded(
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.only(
+                                                  bottomLeft:
+                                                      Radius.circular(6),
+                                                  bottomRight:
+                                                      Radius.circular(6),
+                                                  topLeft: Radius.circular(13),
+                                                  topRight:
+                                                      Radius.circular(13)),
+                                              child: InkWell(
+                                                child: Stack(
+                                                  children: [
+                                                    CustomWidgets().getImageFromUrl(
+                                                        "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(widget.mediaContent.data.serviceVideo[index].videoUrl)}/0.jpg",
+                                                        boxFit: BoxFit.cover),
+                                                    Positioned.fill(
+                                                      child: Center(
+                                                        child: Image.asset(
+                                                          PlunesImages
+                                                              .pauseVideoIcon,
+                                                          height: 50,
+                                                          width: 50,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              YoutubePlayerProvider(
+                                                                widget
+                                                                    .mediaContent
+                                                                    .data
+                                                                    .serviceVideo[
+                                                                        index]
+                                                                    .videoUrl,
+                                                                title: "Video",
+                                                              )));
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(6),
+                                              bottomRight: Radius.circular(6),
+                                              topLeft: Radius.circular(13),
+                                              topRight: Radius.circular(13)))),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+              ],
+            ),
+          );
   }
 }
 
@@ -1154,29 +1210,29 @@ class _ReviewWidgetState extends State<ReviewWidget> {
   @override
   Widget build(BuildContext context) {
     double c_width = MediaQuery.of(context).size.width * 0.8;
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 8,
-          ),
-          Text(
-            'Patient review',
-            style: TextStyle(fontSize: 18),
-          ),
-          SizedBox(
-            height: 8,
-          ),
-          (widget.rateAndReviewList == null || widget.rateAndReviewList.isEmpty)
-              ? Container(
-                  height: AppConfig.verticalBlockSize * 10,
-                  child: Center(
-                    child: Text("No reviews yet"),
-                  ),
-                )
-              : Container(
+    return (widget.rateAndReviewList == null ||
+            widget.rateAndReviewList.isEmpty)
+        ? Container(
+            child: CustomWidgets().errorWidget("No reviews found"),
+            margin:
+                EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
+          )
+        : Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  'Patient review',
+                  style: TextStyle(fontSize: 18),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Container(
                   height: 170,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -1267,9 +1323,9 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                     },
                   ),
                 ),
-        ],
-      ),
-    );
+              ],
+            ),
+          );
   }
 }
 

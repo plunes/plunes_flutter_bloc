@@ -421,7 +421,8 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                         ),
                         (catalogueData != null &&
                                 catalogueData.userReportId != null &&
-                                catalogueData.userReportId.trim().isNotEmpty)
+                                catalogueData.userReportId.trim().isNotEmpty &&
+                                (!_isCardExpired(catalogueData)))
                             ? InkWell(
                                 focusColor: Colors.transparent,
                                 highlightColor: Colors.transparent,
@@ -493,6 +494,21 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       timeRemaining = solution.expirationMessage ?? _expirationMessage;
     }
     return timeRemaining;
+  }
+
+  _isCardExpired(CatalogueData solution) {
+    if (solution.solutionExpiredAt == null) {
+      return true;
+    }
+    bool isCardExpired = false;
+    var now = DateTime.now();
+    var expireTime =
+        DateTime.fromMillisecondsSinceEpoch(solution?.solutionExpiredAt ?? 0);
+    var duration = expireTime.difference(now);
+    if (duration.inSeconds < 1) {
+      isCardExpired = true;
+    }
+    return isCardExpired;
   }
 }
 

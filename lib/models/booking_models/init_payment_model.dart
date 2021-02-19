@@ -108,19 +108,22 @@ class InsuranceDetail {
   String insuranceId;
   String policyNumber;
   String insuranceImage;
+  String insuranceDoc;
   String insurancePartner;
 
   InsuranceDetail(
       {this.insurancePartner,
       this.insuranceId,
       this.insuranceImage,
+      this.insuranceDoc,
       this.policyNumber});
 
   Map<String, dynamic> toJson() {
     return {
       "insuranceId": this.insuranceId,
       "policyNumber": this.policyNumber,
-      "insuranceImage": this.insuranceImage,
+      "insuranceCard": this.insuranceImage,
+      "insurancePolicy": this.insuranceDoc,
       "insurancePartner": this.insurancePartner
     };
   }

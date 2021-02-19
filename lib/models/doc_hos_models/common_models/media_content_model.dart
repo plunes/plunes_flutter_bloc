@@ -28,6 +28,7 @@ class MediaData {
   List<VideoData> customerReviewVideo;
   List<VideoData> introductionVideo;
   List<VideoData> achievementsVideo;
+  List<HosPicture> hosPictures;
 
   // List<Null> photos;
   String mobileNumber;
@@ -49,10 +50,17 @@ class MediaData {
       this.professionalName,
       this.createdAt,
       this.updatedAt,
+      this.hosPictures,
       this.iV});
 
   MediaData.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
+    if (json["hospitalPhotos"] != null) {
+      hosPictures = new List<HosPicture>();
+      json['hospitalPhotos'].forEach((v) {
+        hosPictures.add(new HosPicture.fromJson(v));
+      });
+    }
     if (json['serviceVideo'] != null) {
       serviceVideo = new List<VideoData>();
       json['serviceVideo'].forEach((v) {
@@ -139,6 +147,25 @@ class VideoData {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['_id'] = this.sId;
     data['videoUrl'] = this.videoUrl;
+    return data;
+  }
+}
+
+class HosPicture {
+  String sId;
+  String imageUrl;
+
+  HosPicture({this.sId, this.imageUrl});
+
+  HosPicture.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    imageUrl = json['imageUrl'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['imageUrl'] = this.imageUrl;
     return data;
   }
 }

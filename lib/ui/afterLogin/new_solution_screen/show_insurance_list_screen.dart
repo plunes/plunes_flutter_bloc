@@ -205,32 +205,39 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
     );
   }
 
+  ScrollController _scrollController = ScrollController();
+
   Widget _getILISTWidget(List<InsuranceProvider> list) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return Padding(
-          padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
-          child: Row(
-            children: [
-              Icon(Icons.circle,
-                  size: 8.5,
-                  color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Text(
-                    "${list[index]?.insurancePartner ?? ""}",
-                    style:
-                        TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
+    return Scrollbar(
+      controller: _scrollController,
+      isAlwaysShown: true,
+      child: ListView.builder(
+        shrinkWrap: true,
+        controller: _scrollController,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
+            child: Row(
+              children: [
+                Icon(Icons.circle,
+                    size: 8.5,
+                    color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      "${list[index]?.insurancePartner ?? ""}",
+                      style: TextStyle(
+                          fontSize: 15, color: PlunesColors.BLACKCOLOR),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        );
-      },
-      itemCount: list?.length ?? 0,
+              ],
+            ),
+          );
+        },
+        itemCount: list?.length ?? 0,
+      ),
     );
   }
 }
