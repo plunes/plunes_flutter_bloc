@@ -147,9 +147,15 @@ class HomeScreenMainBloc extends BlocBase {
     addStateInGenericStream(_topSearchStreamProvider, state);
   }
 
-  Future<RequestState> getTopFacilities() async {
+  Future<RequestState> getTopFacilities(
+      {String specialityId,
+      bool shouldSortByNearest,
+      String facilityType}) async {
     addIntoTopFacilityStream(RequestInProgress());
-    var result = await HomeScreenMainRepo().getTopFacilities();
+    var result = await HomeScreenMainRepo().getTopFacilities(
+        facilityType: facilityType,
+        shouldSortByNearest: shouldSortByNearest,
+        specialityId: specialityId);
     addIntoTopFacilityStream(result);
     return result;
   }

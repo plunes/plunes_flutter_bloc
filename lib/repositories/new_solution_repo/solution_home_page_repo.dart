@@ -7,6 +7,7 @@ import 'package:plunes/models/new_solution_model/solution_home_scr_model.dart';
 import 'package:plunes/models/new_solution_model/top_facility_model.dart';
 import 'package:plunes/models/new_solution_model/top_search_model.dart';
 import 'package:plunes/models/new_solution_model/why_us_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
@@ -136,9 +137,29 @@ class HomeScreenMainRepo {
     }
   }
 
-  Future<RequestState> getTopFacilities() async {
+  Future<RequestState> getTopFacilities(
+      {String specialityId,
+      bool shouldSortByNearest,
+      String facilityType}) async {
+    double lat, long;
+    try {
+      if (UserManager().getUserDetails().latitude != null) {
+        lat = double.tryParse(UserManager().getUserDetails().latitude);
+        long = double.tryParse(UserManager().getUserDetails().latitude);
+      }
+    } catch (e) {}
+    final String all = "All";
     var result = await DioRequester().requestMethod(
         url: Urls.TOP_FACILITY_URL,
+        queryParameter: {
+          "lat": lat,
+          "lng": long,
+          "specialityId": specialityId,
+          "facilityType": (facilityType != null && facilityType == all)
+              ? null
+              : facilityType,
+          "sortByNearest": shouldSortByNearest ?? false
+        },
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {

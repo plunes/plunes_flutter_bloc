@@ -4,10 +4,13 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/event_bus.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/new_solution_model/card_by_id_image_scr.dart';
 import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
 import 'package:plunes/models/new_solution_model/media_content_model.dart';
@@ -62,6 +65,45 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _mediaFailedMessage;
   String _failedMessageTopSearch;
   String _failedMessageTopFacility, _specialityApiFailureCause;
+  List<DropdownMenuItem<String>> _specialityDropDownItems = [];
+  List<DropdownMenuItem<String>> facilityTypeWidget = [
+    DropdownMenuItem(
+      child: Text("Hospital"),
+      value: Constants.hospital.toString(),
+    ),
+    DropdownMenuItem(
+      child: Text("Doctor"),
+      value: Constants.doctor.toString(),
+    ),
+    DropdownMenuItem(
+      child: Text("Lab"),
+      value: Constants.labDiagnosticCenter.toString(),
+    ),
+    DropdownMenuItem(
+      child: Text("All"),
+      value: _allKey,
+    ),
+  ];
+
+  static final String _nearMeKey = "Near me";
+  static final String _allKey = "All";
+
+  String _userTypeFilter = _allKey;
+  String _locationFilter = _allKey;
+  String _selectedSpeciality;
+
+  List<DropdownMenuItem<String>> _facilityLocationDropDownItems = [
+    DropdownMenuItem(
+      child: Text(
+        "Near me",
+      ),
+      value: _nearMeKey,
+    ),
+    DropdownMenuItem(
+      child: Text("All"),
+      value: _allKey,
+    )
+  ];
 
   @override
   void initState() {
@@ -69,10 +111,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _isProcedureListOpened = false;
     _homeScreenMainBloc = HomeScreenMainBloc();
     _getCategoryData();
+    _getUserDetails();
     EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == EditProfileScreen.tag &&
           mounted) {
+        _getUserDetails();
         _setState();
       }
       // else if (event != null &&
@@ -82,6 +126,49 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       // }
     });
     super.initState();
+  }
+
+  _getUserDetails() async {
+    var user = UserManager().getUserDetails();
+    if (user?.latitude != null &&
+        user?.longitude != null &&
+        user.latitude.isNotEmpty &&
+        user.longitude.isNotEmpty &&
+        user.latitude != "0.0" &&
+        user.latitude != "0" &&
+        user.longitude != "0.0" &&
+        user.longitude != "0") {
+      _checkUserLocation(user?.latitude, user?.longitude);
+    } else {
+      await Future.delayed(Duration(milliseconds: 500));
+      _getCurrentLocation();
+    }
+  }
+
+  _getCurrentLocation() async {
+    var latLong = await LocationUtil().getCurrentLatLong(context);
+    if (latLong != null &&
+        latLong.longitude != null &&
+        latLong.latitude != null) {
+      _checkUserLocation(
+          latLong?.latitude?.toString(), latLong?.longitude?.toString());
+    }
+  }
+
+  _checkUserLocation(var latitude, var longitude,
+      {String address, String region}) async {
+    UserBloc()
+        .isUserInServiceLocation(latitude, longitude,
+            address: address, region: region)
+        .then((result) {
+      // if (result is RequestSuccess) {
+      //   CheckLocationResponse checkLocationResponse = result.response;
+      //   if (checkLocationResponse != null &&
+      //       checkLocationResponse.msg != null &&
+      //       checkLocationResponse.msg.isNotEmpty) {}
+      // }
+      _setState();
+    });
   }
 
   void _getCartCount() {
@@ -214,6 +301,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   } else if (snapShot.data is RequestFailed) {
                     RequestFailed _failedObj = snapShot.data;
                     _specialityApiFailureCause = _failedObj?.response;
+                  } else if (snapShot.data is RequestSuccess) {
+                    _getSpecialityDropdownItems();
                   }
                   return CommonMethods.catalogueLists == null ||
                           CommonMethods.catalogueLists.isEmpty
@@ -445,7 +534,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   void _getOtherData() {
     _getWhyUsData();
     _getKnowYourProcedureData();
-    _getTopFacilities();
+    // _getTopFacilities();
     _getTopSearch();
     _getSpecialities();
     _getVideos();
@@ -461,7 +550,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   void _getTopFacilities() {
-    _homeScreenMainBloc.getTopFacilities();
+    _homeScreenMainBloc.getTopFacilities(
+        specialityId: _selectedSpeciality,
+        shouldSortByNearest: (_locationFilter == _allKey) ? false : true,
+        facilityType: _userTypeFilter);
   }
 
   void _getTopSearch() {
@@ -1274,7 +1366,6 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   Widget _getTopFacilityStreamBuilderWidget() {
-    print("ander wali list");
     return StreamBuilder<RequestState>(
         stream: _homeScreenMainBloc.topFacilityStream,
         initialData: (_topFacilityModel == null) ? RequestInProgress() : null,
@@ -1304,43 +1395,185 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       onTap: () => _getTopFacilities(), isSizeLess: true),
                 )
               : Container(
-                  child: ListView.builder(
-                    padding: EdgeInsets.zero,
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          if (_topFacilityModel.data[index] != null &&
-                              _topFacilityModel.data[index].userType != null &&
-                              _topFacilityModel.data[index].professionalId !=
-                                  null) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => DoctorInfo(
-                                        _topFacilityModel
-                                            .data[index].professionalId,
-                                        isDoc: (_topFacilityModel
-                                                .data[index].userType
-                                                .toLowerCase() ==
-                                            Constants.doctor
-                                                .toString()
-                                                .toLowerCase()))));
-                          }
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 2.2),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(
+                                    left: AppConfig.horizontalBlockSize * 5),
+                                margin: EdgeInsets.only(
+                                    right: AppConfig.horizontalBlockSize * 3),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            AppConfig.horizontalBlockSize *
+                                                10)),
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#00000012")),
+                                    border: Border.all(
+                                        width: 0.8,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#E7E7E7")))),
+                                child: DropdownButton<String>(
+                                  items: _getSpecialityDropdownItems(),
+                                  underline: Container(),
+                                  value: _selectedSpeciality,
+                                  isExpanded: false,
+                                  hint: Text(
+                                    "Speciality",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  ),
+                                  onChanged: (spec) {
+                                    _selectedSpeciality = spec;
+                                    _doFilterAndGetFacilities();
+                                  },
+                                ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(
+                                    left: AppConfig.horizontalBlockSize * 5),
+                                margin: EdgeInsets.only(
+                                    right: AppConfig.horizontalBlockSize * 3),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            AppConfig.horizontalBlockSize *
+                                                10)),
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#00000012")),
+                                    border: Border.all(
+                                        width: 0.8,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#E7E7E7")))),
+                                child: DropdownButton<String>(
+                                  items: facilityTypeWidget,
+                                  underline: Container(),
+                                  value: _userTypeFilter,
+                                  isExpanded: false,
+                                  hint: Text(
+                                    "Hospital",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  ),
+                                  onChanged: (userType) {
+                                    _userTypeFilter = userType;
+                                    _doFilterAndGetFacilities();
+                                  },
+                                ),
+                              ),
+                              (UserManager().getUserDetails().latitude !=
+                                          null &&
+                                      UserManager()
+                                          .getUserDetails()
+                                          .latitude
+                                          .isNotEmpty &&
+                                      UserManager()
+                                              .getUserDetails()
+                                              .longitude !=
+                                          null &&
+                                      UserManager()
+                                          .getUserDetails()
+                                          .longitude
+                                          .isNotEmpty &&
+                                      UserManager()
+                                          .getIsUserInServiceLocation())
+                                  ? Container(
+                                      margin: EdgeInsets.only(
+                                          left: AppConfig.horizontalBlockSize *
+                                              3),
+                                      padding: EdgeInsets.only(
+                                          left: AppConfig.horizontalBlockSize *
+                                              5),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(AppConfig
+                                                      .horizontalBlockSize *
+                                                  10)),
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#00000012")),
+                                          border: Border.all(
+                                              width: 0.8,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#E7E7E7")))),
+                                      child: DropdownButton(
+                                        items: _facilityLocationDropDownItems,
+                                        isExpanded: false,
+                                        value: _locationFilter,
+                                        underline: Container(),
+                                        hint: Text(
+                                          "Near Me",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: PlunesColors.BLACKCOLOR),
+                                        ),
+                                        onChanged: (locationFilter) {
+                                          _locationFilter = locationFilter;
+                                          _doFilterAndGetFacilities();
+                                        },
+                                      ),
+                                    )
+                                  : Container()
+                            ],
+                          ),
+                        ),
+                      ),
+                      ListView.builder(
+                        padding: EdgeInsets.zero,
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              if (_topFacilityModel.data[index] != null &&
+                                  _topFacilityModel.data[index].userType !=
+                                      null &&
+                                  _topFacilityModel
+                                          .data[index].professionalId !=
+                                      null) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DoctorInfo(
+                                            _topFacilityModel
+                                                .data[index].professionalId,
+                                            isDoc: (_topFacilityModel
+                                                    .data[index].userType
+                                                    .toLowerCase() ==
+                                                Constants.doctor
+                                                    .toString()
+                                                    .toLowerCase()))));
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: _hospitalCard(
+                                _topFacilityModel.data[index]?.imageUrl ?? '',
+                                CommonMethods.getStringInCamelCase(
+                                    _topFacilityModel.data[index].name),
+                                _topFacilityModel.data[index].biography ?? '',
+                                _topFacilityModel.data[index]?.rating),
+                          );
                         },
-                        onDoubleTap: () {},
-                        child: _hospitalCard(
-                            _topFacilityModel.data[index]?.imageUrl ?? '',
-                            CommonMethods.getStringInCamelCase(
-                                _topFacilityModel.data[index].name),
-                            _topFacilityModel.data[index].biography ?? '',
-                            _topFacilityModel.data[index]?.rating),
-                      );
-                    },
-                    itemCount: (_topFacilityModel.data.length > 6)
-                        ? 5
-                        : _topFacilityModel.data.length,
+                        itemCount: (_topFacilityModel.data.length > 6)
+                            ? 5
+                            : _topFacilityModel.data.length,
+                      ),
+                    ],
                   ),
                 );
         });
@@ -1353,6 +1586,40 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       return result;
     } else {
       return RequestSuccess();
+    }
+  }
+
+  void _doFilterAndGetFacilities() {}
+
+  List<DropdownMenuItem<String>> _getSpecialityDropdownItems() {
+    if (_specialityDropDownItems != null &&
+        _specialityDropDownItems.isNotEmpty) {
+      return _specialityDropDownItems;
+    }
+    _specialityDropDownItems = [];
+    CommonMethods.catalogueLists.forEach((element) {
+      if (element.speciality != null &&
+          element.speciality.trim().isNotEmpty &&
+          element.id != null &&
+          element.id.trim().isNotEmpty) {
+        if (_selectedSpeciality == null) {
+          _selectedSpeciality = element.id;
+          _getTopFacilities();
+        }
+        _specialityDropDownItems.add(DropdownMenuItem(
+          child: Text(_getItem(element.speciality)),
+          value: element.id,
+        ));
+      }
+    });
+    return _specialityDropDownItems;
+  }
+
+  String _getItem(String speciality) {
+    if (speciality.length > 18) {
+      return speciality.substring(0, 18);
+    } else {
+      return speciality;
     }
   }
 }
