@@ -62,110 +62,8 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
           vertical: AppConfig.verticalBlockSize * .5),
       child: Column(
         children: <Widget>[
-          Container(
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Expanded(
-                    child: Container(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          RichText(
-                            text: TextSpan(
-                                text: CommonMethods.getStringInCamelCase(
-                                        appointmentModel.patientName ??
-                                            appointmentModel.userName) ??
-                                    PlunesStrings.NA,
-                                style: TextStyle(
-                                    fontSize: AppConfig.mediumFont,
-                                    color: PlunesColors.BLACKCOLOR),
-                                children: (appointmentModel.centerLocation !=
-                                            null &&
-                                        appointmentModel
-                                            .centerLocation.isNotEmpty)
-                                    ? [
-                                        TextSpan(
-                                          text:
-                                              "\n${appointmentModel.centerLocation?.trim()}",
-                                          style: TextStyle(
-                                              fontSize: AppConfig.mediumFont,
-                                              fontWeight: FontWeight.w500,
-                                              color: PlunesColors.GREENCOLOR),
-                                        )
-                                      ]
-                                    : null),
-                          ),
-                          (appointmentModel.userAddress == null ||
-                                  appointmentModel.userAddress.trim().isEmpty)
-                              ? Container()
-                              : SizedBox(height: 5),
-                          (appointmentModel.userAddress == null ||
-                                  appointmentModel.userAddress.trim().isEmpty)
-                              ? Container()
-                              : Text(
-                                  appointmentModel.userAddress?.trim() ??
-                                      PlunesStrings.NA,
-                                  overflow: TextOverflow.visible,
-                                  style: TextStyle(
-                                      fontSize: AppConfig.smallFont,
-                                      color: Colors.black54),
-                                ),
-                          SizedBox(height: 5),
-                          InkWell(
-                            onTap: () {
-                              if (appointmentModel.userMobileNumber != null &&
-                                  appointmentModel
-                                      .userMobileNumber.isNotEmpty) {
-                                LauncherUtil.launchUrl(
-                                    "tel://${appointmentModel.userMobileNumber}");
-                              }
-                            },
-                            onDoubleTap: () {},
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  right: 5.0, top: 5.0, bottom: 5.0),
-                              child: Text(
-                                appointmentModel.userMobileNumber ??
-                                    PlunesStrings.NA,
-                                style: TextStyle(
-                                  fontSize: AppConfig.mediumFont,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Text(_getMonthWithYear().toUpperCase(),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: AppConfig.mediumFont,
-                              )),
-                          Text(_getFullDate(),
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: AppConfig.smallFont,
-                              )),
-                          Text(_getAmPmTime(),
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: AppConfig.smallFont,
-                              )),
-                        ],
-                      ),
-                    ),
-                  ),
-                ]),
-          ),
+          _getUserInfoWidget(appointmentModel),
+          _getInsuranceWidget(),
           (appointmentModel.service != null &&
                   appointmentModel.service.doctors != null &&
                   appointmentModel.service.doctors.isNotEmpty)
@@ -663,7 +561,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
         AppLog.debugLog(PlunesStrings.appointmentScreenError + '$e');
       }
     }
-    return appointmentTime;
+    return " " + appointmentTime;
   }
 
   _setState() {
@@ -795,5 +693,326 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                   CustomWidgets().getCancelMessagePopup(context));
         },
         onDoubleTap: () {});
+  }
+
+  Widget _getUserInfoWidget(AppointmentModel appointmentModel) {
+    return Container(
+      child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            CircleAvatar(
+              child: Container(
+                height: 90,
+                width: 90,
+                child: ClipOval(
+                    child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.black, shape: BoxShape.circle),
+                  child: CustomWidgets().getImageFromUrl(
+                      appointmentModel?.userImage ?? "",
+                      boxFit: BoxFit.fill),
+                )),
+              ),
+              radius: 45,
+            ),
+            Expanded(
+                child: Container(
+              margin: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  RichText(
+                    text: TextSpan(
+                        text: CommonMethods.getStringInCamelCase(
+                                appointmentModel.patientName ??
+                                    appointmentModel.userName) ??
+                            PlunesStrings.NA,
+                        style: TextStyle(
+                            fontSize: 23, color: PlunesColors.BLACKCOLOR),
+                        children: (appointmentModel.centerLocation != null &&
+                                appointmentModel.centerLocation.isNotEmpty)
+                            ? [
+                                TextSpan(
+                                  text:
+                                      "\n${appointmentModel.centerLocation?.trim()}",
+                                  style: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.w500,
+                                      color: PlunesColors.GREENCOLOR),
+                                )
+                              ]
+                            : null),
+                  ),
+                  (appointmentModel.userAddress == null ||
+                          appointmentModel.userAddress.trim().isEmpty)
+                      ? Container()
+                      : Container(
+                          margin: EdgeInsets.only(top: 4),
+                          child: Text(
+                            appointmentModel.userAddress?.trim() ??
+                                PlunesStrings.NA,
+                            overflow: TextOverflow.visible,
+                            style: TextStyle(
+                                fontSize: 23, color: PlunesColors.BLACKCOLOR),
+                          ),
+                        ),
+                  Container(
+                    margin: EdgeInsets.only(top: 2),
+                    child: InkWell(
+                      onTap: () {
+                        if (appointmentModel.userMobileNumber != null &&
+                            appointmentModel.userMobileNumber.isNotEmpty) {
+                          LauncherUtil.launchUrl(
+                              "tel://${appointmentModel.userMobileNumber}");
+                        }
+                      },
+                      onDoubleTap: () {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: Text(
+                          appointmentModel.userMobileNumber ?? PlunesStrings.NA,
+                          style: TextStyle(
+                              fontSize: 23, color: PlunesColors.BLACKCOLOR),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Flexible(
+                          child: Text(_getFullDate(),
+                              style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontSize: 19,
+                              )),
+                        ),
+                        Expanded(
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Text(_getAmPmTime(),
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontSize: 19)),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )),
+            // Expanded(
+            //   child: Container(
+            //     child: Column(
+            //       crossAxisAlignment: CrossAxisAlignment.stretch,
+            //       children: <Widget>[
+            //         RichText(
+            //           text: TextSpan(
+            //               text: CommonMethods.getStringInCamelCase(
+            //                   appointmentModel.patientName ??
+            //                       appointmentModel.userName) ??
+            //                   PlunesStrings.NA,
+            //               style: TextStyle(
+            //                   fontSize: AppConfig.mediumFont,
+            //                   color: PlunesColors.BLACKCOLOR),
+            //               children: (appointmentModel.centerLocation !=
+            //                   null &&
+            //                   appointmentModel
+            //                       .centerLocation.isNotEmpty)
+            //                   ? [
+            //                 TextSpan(
+            //                   text:
+            //                   "\n${appointmentModel.centerLocation?.trim()}",
+            //                   style: TextStyle(
+            //                       fontSize: AppConfig.mediumFont,
+            //                       fontWeight: FontWeight.w500,
+            //                       color: PlunesColors.GREENCOLOR),
+            //                 )
+            //               ]
+            //                   : null),
+            //         ),
+            //         (appointmentModel.userAddress == null ||
+            //             appointmentModel.userAddress.trim().isEmpty)
+            //             ? Container()
+            //             : SizedBox(height: 5),
+            //         (appointmentModel.userAddress == null ||
+            //             appointmentModel.userAddress.trim().isEmpty)
+            //             ? Container()
+            //             : Text(
+            //           appointmentModel.userAddress?.trim() ??
+            //               PlunesStrings.NA,
+            //           overflow: TextOverflow.visible,
+            //           style: TextStyle(
+            //               fontSize: AppConfig.smallFont,
+            //               color: Colors.black54),
+            //         ),
+            //         SizedBox(height: 5),
+            //         InkWell(
+            //           onTap: () {
+            //             if (appointmentModel.userMobileNumber != null &&
+            //                 appointmentModel
+            //                     .userMobileNumber.isNotEmpty) {
+            //               LauncherUtil.launchUrl(
+            //                   "tel://${appointmentModel.userMobileNumber}");
+            //             }
+            //           },
+            //           onDoubleTap: () {},
+            //           child: Padding(
+            //             padding: EdgeInsets.only(
+            //                 right: 5.0, top: 5.0, bottom: 5.0),
+            //             child: Text(
+            //               appointmentModel.userMobileNumber ??
+            //                   PlunesStrings.NA,
+            //               style: TextStyle(
+            //                 fontSize: AppConfig.mediumFont,
+            //                 fontWeight: FontWeight.w500,
+            //               ),
+            //             ),
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+            // Expanded(
+            //   child: Container(
+            //     child: Column(
+            //       mainAxisAlignment: MainAxisAlignment.start,
+            //       crossAxisAlignment: CrossAxisAlignment.end,
+            //       children: <Widget>[
+            //         Text(_getMonthWithYear().toUpperCase(),
+            //             style: TextStyle(
+            //               fontWeight: FontWeight.w500,
+            //               fontSize: AppConfig.mediumFont,
+            //             )),
+            //         Text(_getFullDate(),
+            //             style: TextStyle(
+            //               color: Colors.black54,
+            //               fontSize: AppConfig.smallFont,
+            //             )),
+            //         Text(_getAmPmTime(),
+            //             style: TextStyle(
+            //               color: Colors.black54,
+            //               fontSize: AppConfig.smallFont,
+            //             )),
+            //       ],
+            //     ),
+            //   ),
+            // ),
+          ]),
+    );
+  }
+
+  Widget _getInsuranceWidget() {
+    return Container(
+      margin: EdgeInsets.only(top: 12),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Policy provider name",
+            style: TextStyle(fontSize: 12.5, color: PlunesColors.BLACKCOLOR),
+          ),
+          Container(
+              margin: EdgeInsets.only(top: 3),
+              child: Text(
+                "Health India Insurance TPA Services Pvt.ltd",
+                style: TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
+              )),
+          Container(
+            margin: EdgeInsets.only(top: 12, bottom: 12),
+            width: AppConfig.horizontalBlockSize * 15,
+            height: 0.8,
+            color: PlunesColors.GREYCOLOR,
+          ),
+          Text(
+            "Policy number",
+            style: TextStyle(fontSize: 12.5, color: PlunesColors.BLACKCOLOR),
+          ),
+          Container(
+              margin: EdgeInsets.only(top: 3),
+              child: Text(
+                "2984JF823489HSK48",
+                style: TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
+              )),
+          Container(
+            margin: EdgeInsets.only(top: 12, bottom: 12),
+            width: AppConfig.horizontalBlockSize * 15,
+            height: 0.8,
+            color: PlunesColors.GREYCOLOR,
+          ),
+          Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          child: Text(
+                        "Insurance card photo",
+                        style: TextStyle(
+                            fontSize: 12,
+                            color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+                      )),
+                      Container(
+                        margin: EdgeInsets.only(top: 5),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(20))),
+                        height: 102,
+                        width: 160,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            child: CustomWidgets().getImageFromUrl(
+                                "https://www.fujixerox.com.vn/-/media/0,-d-,-Global-Assets/Solutions-and-Services/Security/Document-Audit-Trail_web.jpg?h=614&w=932&la=en&hash=64E1FBE5E13B0BAA2A067030184B87CC0B2F1D3F")),
+                      )
+                    ],
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                            child: Text(
+                          "Insurance document",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+                        )),
+                        Container(
+                          margin: EdgeInsets.only(top: 5, right: 4),
+                          decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          height: 102,
+                          width: 160,
+                          child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              child: Image.asset(
+                                plunesImages.pdfIcon1,
+                                fit: BoxFit.fill,
+                              )),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

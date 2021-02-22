@@ -88,9 +88,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   static final String _nearMeKey = "Near me";
   static final String _allKey = "All";
 
-  String _userTypeFilter = _allKey;
-  String _locationFilter = _allKey;
-  String _selectedSpeciality, _firstSpecialityId;
+  String _userTypeFilter;
+  String _locationFilter = _nearMeKey;
+  String _selectedSpeciality;
 
   List<DropdownMenuItem<String>> _facilityLocationDropDownItems = [
     DropdownMenuItem(
@@ -303,7 +303,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     RequestFailed _failedObj = snapShot.data;
                     _specialityApiFailureCause = _failedObj?.response;
                   } else if (snapShot.data is RequestSuccess) {
-                    _getSpecialityDropdownItems();
+                    _getTopFacilities();
                   }
                   return CommonMethods.catalogueLists == null ||
                           CommonMethods.catalogueLists.isEmpty
@@ -1394,9 +1394,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   height: AppConfig.verticalBlockSize * 38,
                   child: CustomWidgets().errorWidget(_failedMessageTopFacility,
                       onTap: () {
-                    _selectedSpeciality = _firstSpecialityId;
-                    _userTypeFilter = _allKey;
-                    _locationFilter = _allKey;
+                    _selectedSpeciality = null;
+                    _userTypeFilter = null;
+                    _locationFilter = _nearMeKey;
                     _getTopFacilities();
                   }, isSizeLess: true))
               : Container(
@@ -1434,7 +1434,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                   value: _selectedSpeciality,
                                   isExpanded: false,
                                   hint: Text(
-                                    "Speciality",
+                                    "Service",
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: PlunesColors.BLACKCOLOR),
@@ -1469,7 +1469,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                   value: _userTypeFilter,
                                   isExpanded: false,
                                   hint: Text(
-                                    "Hospital",
+                                    "Facility",
                                     style: TextStyle(
                                         fontSize: 14,
                                         color: PlunesColors.BLACKCOLOR),
@@ -1640,11 +1640,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
           element.speciality.trim().isNotEmpty &&
           element.id != null &&
           element.id.trim().isNotEmpty) {
-        if (_selectedSpeciality == null) {
-          _selectedSpeciality = element.id;
-          _firstSpecialityId = element.id;
-          _getTopFacilities();
-        }
+        // if (_selectedSpeciality == null) {
+        //   _selectedSpeciality = element.id;
+        // }
         _specialityDropDownItems.add(DropdownMenuItem(
           child: Text(_getItem(element.speciality)),
           value: element.id,
@@ -1709,7 +1707,8 @@ Widget _hospitalCard(
                 Expanded(
                   child: Text(
                     label ?? "",
-                    maxLines: 2,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 19,
                     ),

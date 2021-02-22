@@ -25,6 +25,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
+import 'package:plunes/ui/afterLogin/cart_screens/cart_proceed_screen.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/patient_details_edit_popup_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
@@ -47,6 +48,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   String _failureCause;
   StreamController _timerStream;
   Timer _timer;
+
   // List<ApplicationMeta> _availableUpiApps;
   BookingBloc _bookingBloc;
   ManagePaymentBloc _managePaymentBloc;
@@ -929,6 +931,15 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
   }
 
   void _checkCreditAvailableAndPay(List<BookingIds> bookingIds, double price) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CartProceedScreen(
+                  price,
+                  bookingIds,
+                  credits: _cartOuterModel?.credits,
+                )));
+    return;
     showDialog(
         context: context,
         builder: (context) {

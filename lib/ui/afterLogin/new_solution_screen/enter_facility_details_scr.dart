@@ -314,7 +314,8 @@ class _EnterAdditionalUserDetailScrState
                           fontSize: 16,
                         ),
                         decoration: InputDecoration.collapsed(
-                            hintText: "Enter additional details*",
+                            hintText: "Enter additional details" +
+                                "${_isProcedure() ? "*" : ""}",
                             hintStyle: TextStyle(
                                 fontSize: 14,
                                 color: Color(CommonMethods.getColorHexFromStr(
@@ -1290,57 +1291,63 @@ class _EnterAdditionalUserDetailScrState
                 ],
               ),
             ),
-            Container(
-              width: double.infinity,
-              child: Text(
-                PlunesStrings.pleaseDescribePreviousCondition,
-                textAlign: TextAlign.left,
-                maxLines: 2,
-                style: TextStyle(
-                    fontSize: 18,
-                    color: _hasTreatedPreviously
-                        ? PlunesColors.BLACKCOLOR.withOpacity(0.8)
-                        : PlunesColors.BLACKCOLOR.withOpacity(0.4)),
-              ),
-            ),
-            Card(
-              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
-              child: Container(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                  Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
-                  Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
-                ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 3.5,
-                      vertical: AppConfig.verticalBlockSize * 1.5),
-                  constraints: BoxConstraints(
-                      minHeight: AppConfig.verticalBlockSize * 15,
-                      maxHeight: AppConfig.verticalBlockSize * 25),
-                  child: Row(
-                    children: [
-                      Flexible(
-                          child: TextField(
-                        maxLines: 10,
-                        readOnly: _hasTreatedPreviously ? false : true,
-                        controller: _previousMedicalConditionController,
-                        style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR,
-                          fontSize: 16,
+            _hasTreatedPreviously
+                ? Container(
+                    width: double.infinity,
+                    child: Text(
+                      PlunesStrings.pleaseDescribePreviousCondition,
+                      textAlign: TextAlign.left,
+                      maxLines: 2,
+                      style: TextStyle(
+                          fontSize: 18,
+                          color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+                    ),
+                  )
+                : Container(),
+            _hasTreatedPreviously
+                ? Card(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.8),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              colors: [
+                            Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                            Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
+                          ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter)),
+                      child: Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 3.5,
+                            vertical: AppConfig.verticalBlockSize * 1.5),
+                        constraints: BoxConstraints(
+                            minHeight: AppConfig.verticalBlockSize * 15,
+                            maxHeight: AppConfig.verticalBlockSize * 25),
+                        child: Row(
+                          children: [
+                            Flexible(
+                                child: TextField(
+                              maxLines: 10,
+                              controller: _previousMedicalConditionController,
+                              style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR,
+                                fontSize: 16,
+                              ),
+                              decoration: InputDecoration.collapsed(
+                                  hintText: "Enter your condition",
+                                  hintStyle: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#979797")))),
+                            ))
+                          ],
                         ),
-                        decoration: InputDecoration.collapsed(
-                            hintText: "Enter your condition",
-                            hintStyle: TextStyle(
-                                fontSize: 14,
-                                color: Color(CommonMethods.getColorHexFromStr(
-                                    "#979797")))),
-                      ))
-                    ],
-                  ),
-                ),
-              ),
-            ),
+                      ),
+                    ),
+                  )
+                : Container(),
             Container(
               margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.3),
               width: double.infinity,
@@ -1608,6 +1615,14 @@ class _EnterAdditionalUserDetailScrState
     }
   }
 
+  bool _isProcedure() {
+    return (widget.catalogueData != null &&
+        widget.catalogueData.category != null &&
+        widget.catalogueData.category.isNotEmpty &&
+        widget.catalogueData.category.trim().toLowerCase() ==
+            Constants.procedureKey.toLowerCase());
+  }
+
   bool _isNecessaryDataFilled() {
     bool hasAppropriateData = true;
     String errorMessage;
@@ -1619,17 +1634,19 @@ class _EnterAdditionalUserDetailScrState
       if (_additionalDetailController.text.trim().isEmpty) {
         errorMessage = "Please fill additional detail for treatment";
         hasAppropriateData = false;
-      } else if ((_imageUrls == null || _imageUrls.isEmpty) &&
-          (_docUrls == null || _docUrls.isEmpty)) {
-        errorMessage = "Please upload your photos/report for treatment";
-        hasAppropriateData = false;
       }
-    } else {
-      if (_additionalDetailController.text.trim().isEmpty) {
-        errorMessage = "Please fill additional detail for treatment";
-        hasAppropriateData = false;
-      }
+      // else if ((_imageUrls == null || _imageUrls.isEmpty) &&
+      //     (_docUrls == null || _docUrls.isEmpty)) {
+      //   errorMessage = "Please upload your photos/report for treatment";
+      //   hasAppropriateData = false;
+      // }
     }
+    // else {
+    //   if (_additionalDetailController.text.trim().isEmpty) {
+    //     errorMessage = "Please fill additional detail for treatment";
+    //     hasAppropriateData = false;
+    //   }
+    // }
     if (!hasAppropriateData) {
       _showMessagePopup(errorMessage);
     }

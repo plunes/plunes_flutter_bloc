@@ -60,6 +60,7 @@ class AppointmentModel {
   List<PaymentStatus> paymentStatus;
   String serviceProviderType, alternateNumber, centreNumber, adminHosNumber;
   num dueBookingAmount, paidBookingAmount, totalAmount;
+  String userImage;
 
   @override
   bool operator ==(Object other) =>
@@ -125,7 +126,8 @@ class AppointmentModel {
       this.paidBookingAmount,
       this.zestMoney,
       this.paymentOptions,
-      this.totalAmount});
+      this.totalAmount,
+      this.userImage});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
     print("json['paymentOptions'] ${json['paymentOptions']}");
@@ -192,6 +194,7 @@ class AppointmentModel {
     if (json['paymentOptions'] != null && json['paymentOptions'].isNotEmpty) {
       paymentOptions = json['paymentOptions'].cast<num>();
     }
+    userImage = json["userImage"];
   }
 
   Map<String, dynamic> toJson() {
