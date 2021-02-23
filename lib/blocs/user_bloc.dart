@@ -267,4 +267,8 @@ class UserBloc extends BlocBase {
     addStateInPremiumBenefitsProviderStream(result);
     return result;
   }
+
+  Future<RequestState> getBankOffers() {
+    return UserManager().getBankOffers();
+  }
 }

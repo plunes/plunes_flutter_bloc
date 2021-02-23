@@ -7,6 +7,7 @@ import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/blocs/bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/media_content_model.dart';
+import 'package:plunes/models/new_solution_model/bank_offer_model.dart';
 import 'package:plunes/models/new_solution_model/facility_have_model.dart';
 import 'package:plunes/models/new_solution_model/insurance_model.dart';
 import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
@@ -628,5 +629,19 @@ class UserManager {
 
   bool isEncryptionPopupShown() {
     return Preferences().getPreferenceBoolean(Constants.ENCRYPTION_POPUP_KEY);
+  }
+
+  Future<RequestState> getBankOffers() async {
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
+        url: Urls.BANK_OFFER_URL,
+        requestType: HttpRequestMethods.HTTP_GET,
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      BankOfferModel _mediaContentModel =
+          BankOfferModel.fromJson(result.response.data);
+      return RequestSuccess(response: _mediaContentModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
   }
 }

@@ -938,20 +938,26 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                   price,
                   bookingIds,
                   credits: _cartOuterModel?.credits,
-                )));
+                )))
+      ..then((value) {
+        if (value != null) {
+          bool _value = value;
+          _queryPayment(_value);
+        }
+      });
     return;
-    showDialog(
-        context: context,
-        builder: (context) {
-          return CustomWidgets().openCartPaymentBillPopup(
-              bookingIds, scaffoldKey, price,
-              credits: _cartOuterModel?.credits);
-        }).then((value) {
-      if (value != null) {
-        bool _value = value;
-        _queryPayment(_value);
-      }
-    });
+    // showDialog(
+    //     context: context,
+    //     builder: (context) {
+    //       return CustomWidgets().openCartPaymentBillPopup(
+    //           bookingIds, scaffoldKey, price,
+    //           credits: _cartOuterModel?.credits);
+    //     }).then((value) {
+    //   if (value != null) {
+    //     bool _value = value;
+    //     _queryPayment(_value);
+    //   }
+    // });
   }
 
   void _doExplore() {

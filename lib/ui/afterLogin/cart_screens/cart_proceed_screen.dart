@@ -4,11 +4,16 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/cart_models/cart_main_model.dart';
+import 'package:plunes/models/new_solution_model/bank_offer_model.dart';
+import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 
 // ignore: must_be_immutable
 class CartProceedScreen extends BaseActivity {
@@ -23,23 +28,63 @@ class CartProceedScreen extends BaseActivity {
 
 class _CartProceedScreenState extends BaseState<CartProceedScreen> {
   User _userData;
+  PremiumBenefitsModel _premiumBenefitsModel;
+  UserBloc _userBloc;
+  BankOfferModel _bankModel;
+  bool _useCredits = false;
 
   @override
   void initState() {
     _userData = UserManager().getUserDetails();
+    _userBloc = UserBloc();
+    _getPremiumBenefitsForUsers();
+    _getBankOffer();
     super.initState();
+  }
+
+  _getPremiumBenefitsForUsers() {
+    _userBloc.getPremiumBenefitsForUsers().then((value) {
+      if (value is RequestSuccess) {
+        _premiumBenefitsModel = value.response;
+      } else if (value is RequestFailed) {}
+      _setState();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: widget.getAppBar(context, "Checkout", true),
+        appBar: getAppBar(context, "Checkout", true),
         body: _getBody(),
       ),
       top: false,
       bottom: false,
     );
+  }
+
+  Widget getAppBar(BuildContext context, String title, bool isIosBackButton,
+      {Function func}) {
+    return AppBar(
+        automaticallyImplyLeading: isIosBackButton,
+        backgroundColor: Colors.white,
+        brightness: Brightness.light,
+        iconTheme: IconThemeData(color: Colors.black),
+        centerTitle: true,
+        leading: isIosBackButton
+            ? IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  if (func != null) {
+                    func();
+                  }
+                  Navigator.pop(context);
+                  return;
+                },
+              )
+            : Container(),
+        title: widget.createTextViews(
+            title, 18, colorsFile.black, TextAlign.center, FontWeight.w500));
   }
 
   Widget _getBody() {
@@ -157,31 +202,40 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
         children: [
           Container(
             child: Text(
-              "Confirm your order and pay",
+              _bankModel.confirmTitle ?? "Confirm your order and pay",
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
           ),
           Container(
             margin: EdgeInsets.only(top: 4),
             child: Text(
-              "Please make the payment after that you can enjoy the service and benefit of Plunes",
+              _bankModel?.benefitDescription ??
+                  "Please make the payment after that you can enjoy the service and benefit of Plunes",
               style: TextStyle(
                   fontSize: 14,
                   color: Color(CommonMethods.getColorHexFromStr("#464646"))),
             ),
           ),
-          Container(
-            height: 148,
-            width: double.infinity,
-            margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(6))),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(6)),
-              child: CustomWidgets().getImageFromUrl(
-                  "https://www.fujixerox.com.vn/-/media/0,-d-,-Global-Assets/Solutions-and-Services/Security/Document-Audit-Trail_web.jpg?h=614&w=932&la=en&hash=64E1FBE5E13B0BAA2A067030184B87CC0B2F1D3F",
-                  boxFit: BoxFit.fill),
-            ),
+          ListView.builder(
+            itemBuilder: (context, index) {
+              return Container(
+                height: 148,
+                width: double.infinity,
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(6))),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(6)),
+                  child: CustomWidgets().getImageFromUrl(
+                      _bankModel?.data[index]?.titleImage ?? '',
+                      boxFit: BoxFit.fill),
+                ),
+              );
+            },
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: _bankModel?.data?.length ?? 0,
           ),
         ],
       ),
@@ -194,7 +248,18 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
           horizontal: AppConfig.horizontalBlockSize * 2.5,
           vertical: AppConfig.verticalBlockSize * 1.5),
       child: Column(
-        children: [_offerWidget(), _getCartItemsWidget()],
+        children: [
+          (_bankModel == null ||
+                  _bankModel.success == null ||
+                  !(_bankModel.success) ||
+                  _bankModel.data == null ||
+                  _bankModel.data.isEmpty)
+              ? Container()
+              : _offerWidget(),
+          _getCartItemsWidget(),
+          _getContinueButton(),
+          _getBenefitsWidget()
+        ],
       ),
     );
   }
@@ -245,7 +310,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
             ),
             Container(
               margin: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 1.4),
+                  vertical: AppConfig.verticalBlockSize * 2),
               child: DottedLine(
                 dashColor: Color(CommonMethods.getColorHexFromStr("#7070706E")),
               ),
@@ -259,7 +324,9 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
                     color: Color(CommonMethods.getColorHexFromStr("#646464"))),
               ),
             ),
-            _getCartItemList()
+            _getCartItemList(),
+            _getUseCreditsWidget(),
+            _getOrderTotalView()
           ],
         ),
       ),
@@ -267,64 +334,84 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
   }
 
   Widget _getCartItemList() {
+    List<CartItemMiniModel> _itemList = _getItemFilteredList();
     return ListView.builder(
       shrinkWrap: true,
+      padding: EdgeInsets.zero,
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Container(
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(
-                          child: Text(
-                            CommonMethods.getStringInCamelCase(
-                                widget.bookingIds[index]?.service?.name),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 18),
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              top: AppConfig.verticalBlockSize * 2.0),
-                          child: Text(
-                            "${widget.bookingIds[index]?.serviceName ?? PlunesStrings.NA}",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: PlunesColors.BLACKCOLOR,
-                                fontWeight: FontWeight.normal,
-                                fontSize: 14),
-                          ),
-                        )
-                      ],
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "${_itemList[index]?.serviceName ?? PlunesStrings.NA}",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 18),
                     ),
                   ),
-                  Flexible(
+                ),
+                Expanded(
+                    flex: 1,
                     child: Container(
+                      margin: EdgeInsets.only(left: 3),
                       alignment: Alignment.centerRight,
-                      child: Text(
-                        "\u20B9${widget.bookingIds[index]?.service?.newPrice?.first ?? 0}",
-                        style: TextStyle(
-                            color: PlunesColors.BLACKCOLOR,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15),
+                      child: RichText(
+                        text: TextSpan(
+                            children: [
+                              TextSpan(
+                                  text:
+                                      "\u20B9${_itemList[index]?.amount ?? 0}",
+                                  style: TextStyle(
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18))
+                            ],
+                            text:
+                                "${String.fromCharCode(0x00D7)} ${_itemList[index]?.count ?? 1} ",
+                            style: TextStyle(
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#707070")),
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18)),
                       ),
-                    ),
-                  )
-                ],
+                    ))
+              ],
+            ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(
+                  top: 5,
+                  right: AppConfig.horizontalBlockSize * 14.0,
+                  bottom: AppConfig.verticalBlockSize * 2),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                CommonMethods.getStringInCamelCase(
+                    _itemList[index]?.serviceProviderName),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 14),
               ),
             ),
-            widget.bookingIds.length == index
-                ? Container()
+            _itemList.length == index + 1
+                ? Container(
+                    margin: EdgeInsets.only(
+                        bottom: AppConfig.verticalBlockSize * 2),
+                    child: DottedLine(
+                      dashColor:
+                          Color(CommonMethods.getColorHexFromStr("#7070706E")),
+                    ),
+                  )
                 : Container(
                     height: 0.5,
                     width: double.infinity,
@@ -333,7 +420,246 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
           ],
         );
       },
-      itemCount: widget.bookingIds?.length ?? 0,
+      itemCount: _itemList?.length ?? 0,
     );
   }
+
+  List<CartItemMiniModel> _getItemFilteredList() {
+    List<CartItemMiniModel> _itemList = [];
+    if (widget.bookingIds != null && widget.bookingIds.isNotEmpty) {
+      widget.bookingIds.forEach((element) {
+        CartItemMiniModel _model = CartItemMiniModel(
+            amount: element.service?.newPrice?.first ?? 0,
+            count: 1,
+            serviceName: element.serviceName,
+            serviceProviderId: element.professionalId,
+            serviceProviderName: element.service?.name);
+
+        print(_model.toString());
+        if (_itemList.contains(_model)) {
+          CartItemMiniModel alreadyFilledItem =
+              _itemList[_itemList.indexOf(_model)];
+          if (alreadyFilledItem != null &&
+              alreadyFilledItem.serviceName == _model.serviceName &&
+              alreadyFilledItem.serviceProviderName ==
+                  _model.serviceProviderName) {
+            alreadyFilledItem.count++;
+          } else {
+            _itemList.add(_model);
+          }
+        } else {
+          _itemList.add(_model);
+        }
+      });
+    }
+    return _itemList;
+  }
+
+  Widget _getOrderTotalView() {
+    return Container(
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Order total",
+                style: TextStyle(fontSize: 18, color: PlunesColors.BLACKCOLOR),
+              ),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              alignment: Alignment.centerRight,
+              child: Text(
+                "\u20B9 ${widget.price ?? 0}",
+                style: TextStyle(fontSize: 18, color: PlunesColors.BLACKCOLOR),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getContinueButton() {
+    return Container(
+      margin: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 1,
+          bottom: AppConfig.verticalBlockSize * 3,
+          right: AppConfig.horizontalBlockSize * 30,
+          left: AppConfig.horizontalBlockSize * 30),
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context, _useCredits);
+          return;
+        },
+        onDoubleTap: () {},
+        child: CustomWidgets().getRoundedButton(
+            PlunesStrings.continueText,
+            AppConfig.horizontalBlockSize * 8,
+            PlunesColors.GREENCOLOR,
+            AppConfig.horizontalBlockSize * 3,
+            AppConfig.verticalBlockSize * 1,
+            PlunesColors.WHITECOLOR,
+            borderColor: PlunesColors.SPARKLINGGREEN,
+            hasBorder: true),
+      ),
+    );
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
+
+  Widget _getBenefitsWidget() {
+    if (_premiumBenefitsModel == null ||
+        _premiumBenefitsModel.data == null ||
+        _premiumBenefitsModel.data.isEmpty) {
+      return Container();
+    }
+    return Container(
+      margin: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 0.4,
+          bottom: AppConfig.verticalBlockSize * 1.8,
+          left: AppConfig.horizontalBlockSize * 1.2,
+          right: AppConfig.horizontalBlockSize * 1.2),
+      child: Column(
+        children: [
+          Container(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Premium Benefits for Our Users",
+              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              top: AppConfig.verticalBlockSize * 1.8,
+            ),
+          ),
+          Container(
+            height: 300,
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) => CommonWidgets()
+                  .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
+              itemCount: _premiumBenefitsModel.data.length,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _getBankOffer() {
+    _userBloc.getBankOffers().then((value) {
+      if (value is RequestSuccess) {
+        _bankModel = value.response;
+      } else if (value is RequestFailed) {}
+      _setState();
+    });
+  }
+
+  Widget _getUseCreditsWidget() {
+    return (widget.credits != null && widget.credits > 0)
+        ? Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  child: StatefulBuilder(
+                    builder: (context, newState) {
+                      return InkWell(
+                        splashColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        onTap: () {
+                          _useCredits = !_useCredits;
+                          newState(() {});
+                        },
+                        onDoubleTap: () {},
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              child: Text(
+                                PlunesStrings.useCredits,
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18),
+                              ),
+                            ),
+                            Expanded(child: Container()),
+                            Container(
+                              child: Text(
+                                "${widget.credits?.toStringAsFixed(1)}",
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 3),
+                              child: IgnorePointer(
+                                ignoring: true,
+                                child: Checkbox(
+                                  value: _useCredits,
+                                  activeColor: PlunesColors.GREENCOLOR,
+                                  checkColor: Colors.yellow,
+                                  onChanged: (s) {},
+                                  materialTapTargetSize:
+                                      MaterialTapTargetSize.shrinkWrap,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      bottom: AppConfig.verticalBlockSize * 2,
+                      top: AppConfig.verticalBlockSize * 1.8),
+                  child: DottedLine(
+                    dashColor:
+                        Color(CommonMethods.getColorHexFromStr("#7070706E")),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Container();
+  }
+}
+
+class CartItemMiniModel {
+  String serviceName, serviceProviderName, serviceProviderId;
+
+  @override
+  String toString() {
+    return 'CartItemMiniModel{serviceName: $serviceName, serviceProviderName: $serviceProviderName, serviceProviderId: $serviceProviderId, count: $count, amount: $amount}';
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CartItemMiniModel &&
+          runtimeType == other.runtimeType &&
+          serviceProviderId == other.serviceProviderId;
+
+  @override
+  int get hashCode => serviceProviderId.hashCode;
+  num count, amount;
+
+  CartItemMiniModel(
+      {this.serviceName,
+      this.amount,
+      this.count,
+      this.serviceProviderName,
+      this.serviceProviderId});
 }
