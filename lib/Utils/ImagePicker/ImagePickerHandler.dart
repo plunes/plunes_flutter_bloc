@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:permission/permission.dart';
 import 'package:plunes/Utils/permissionUtil.dart';
@@ -28,6 +29,20 @@ class ImagePickerHandler {
         ? imagePicker = new ImagePickerDialog(this, _controller, true)
         : imagePicker = new ImagePickerDialog(this, _controller, false);
     imagePicker.initState();
+  }
+
+  Future<File> pickFile(BuildContext context, {FileType fileType}) async {
+    if (_context == null) _context = context;
+    if (!await _hasStoragePermission()) {
+      // print("does not have storage permission");
+      await Future.delayed(Duration(milliseconds: 500));
+      await _requestStoragePermission();
+      if (!await _hasStoragePermission()) {
+        // print("denied storage permission");
+        return null;
+      }
+    }
+    return await FilePicker.getFile(type: fileType ?? FileType.any);
   }
 
   showDialog(BuildContext context) {

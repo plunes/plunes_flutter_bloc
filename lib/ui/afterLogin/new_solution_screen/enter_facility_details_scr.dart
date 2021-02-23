@@ -1016,23 +1016,31 @@ class _EnterAdditionalUserDetailScrState
         splashColor: Colors.transparent,
         onTap: () {
           _showEncryptionPopup(() {
-            FilePicker.getFile(type: FileType.any).then((value) {
-              if (value != null &&
-                  value.path != null &&
-                  value.path.trim().isNotEmpty &&
-                  value.path.contains(".")) {
-                String _fileExtension = value.path.split(".")?.last;
-                if (_fileExtension != null &&
-                    (_fileExtension.toLowerCase() ==
-                        Constants.pdfExtension.toLowerCase())) {
-                  _uploadFile(value, fileType: Constants.typeReport);
+            try {
+              _imagePicker
+                  .pickFile(context, fileType: FileType.any)
+                  .then((value) {
+                if (value != null &&
+                    value.path != null &&
+                    value.path.trim().isNotEmpty &&
+                    value.path.contains(".")) {
+                  String _fileExtension = value.path.split(".")?.last;
+                  if (_fileExtension != null &&
+                      (_fileExtension.toLowerCase() ==
+                          Constants.pdfExtension.toLowerCase())) {
+                    _uploadFile(value, fileType: Constants.typeReport);
+                  } else {
+                    _showMessagePopup(PlunesStrings.selectValidDocWarningText);
+                  }
                 } else {
                   _showMessagePopup(PlunesStrings.selectValidDocWarningText);
                 }
-              } else {
-                _showMessagePopup(PlunesStrings.selectValidDocWarningText);
-              }
-            });
+              }).catchError((e) {
+                print(e);
+              });
+            } catch (e) {
+              print(e);
+            }
           });
         },
         onDoubleTap: () {},

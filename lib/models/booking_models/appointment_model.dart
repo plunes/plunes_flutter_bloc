@@ -194,7 +194,7 @@ class AppointmentModel {
     if (json['paymentOptions'] != null && json['paymentOptions'].isNotEmpty) {
       paymentOptions = json['paymentOptions'].cast<num>();
     }
-    userImage = json["userImage"];
+    userImage = json["userImageUrl"];
   }
 
   Map<String, dynamic> toJson() {

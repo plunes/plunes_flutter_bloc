@@ -317,6 +317,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
             ),
             Container(
               alignment: Alignment.centerLeft,
+              margin: EdgeInsets.only(bottom: 5),
               child: Text(
                 "Services",
                 style: TextStyle(
@@ -413,6 +414,8 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
                     ),
                   )
                 : Container(
+                    margin: EdgeInsets.only(
+                        bottom: AppConfig.verticalBlockSize * 2),
                     height: 0.5,
                     width: double.infinity,
                     color: PlunesColors.GREYCOLOR,

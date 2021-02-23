@@ -2523,25 +2523,33 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
           ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
       child: InkWell(
         onTap: () {
-          FilePicker.getFile(type: FileType.any).then((value) {
-            if (value != null &&
-                value.path != null &&
-                value.path.trim().isNotEmpty &&
-                value.path.contains(".")) {
-              // print("path ${value.path}");
-              String _fileExtension = value.path.split(".")?.last;
-              if (_fileExtension != null &&
-                  (_fileExtension.toLowerCase() ==
-                      Constants.pdfExtension.toLowerCase())) {
-                _uploadInsuranceFile(value,
-                    fileType: Constants.policyKey.toString());
+          try {
+            _imagePicker
+                .pickFile(context, fileType: FileType.any)
+                .then((value) {
+              if (value != null &&
+                  value.path != null &&
+                  value.path.trim().isNotEmpty &&
+                  value.path.contains(".")) {
+                // print("path ${value.path}");
+                String _fileExtension = value.path.split(".")?.last;
+                if (_fileExtension != null &&
+                    (_fileExtension.toLowerCase() ==
+                        Constants.pdfExtension.toLowerCase())) {
+                  _uploadInsuranceFile(value,
+                      fileType: Constants.policyKey.toString());
+                } else {
+                  _showMessagePopup(PlunesStrings.selectValidDocWarningText);
+                }
               } else {
                 _showMessagePopup(PlunesStrings.selectValidDocWarningText);
               }
-            } else {
-              _showMessagePopup(PlunesStrings.selectValidDocWarningText);
-            }
-          });
+            }).then((error) {
+              print(error);
+            });
+          } catch (e) {
+            print(e);
+          }
         },
         onDoubleTap: () {},
         child: Container(
