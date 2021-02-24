@@ -254,8 +254,14 @@ class _HospitalOverviewScreenState
                                     bottom: AppConfig.verticalBlockSize * 1),
                                 child: Stack(
                                   children: [
-                                    _realTimeInsightsResponse
-                                            .data[itemIndex].isCardOpened
+                                    (_realTimeInsightsResponse.data[itemIndex]
+                                                        .hasUserReport ==
+                                                    null ||
+                                                !_realTimeInsightsResponse
+                                                    .data[itemIndex]
+                                                    .hasUserReport) ||
+                                            _realTimeInsightsResponse
+                                                .data[itemIndex].isCardOpened
                                         ? Container()
                                         : Positioned(
                                             bottom: 0.0,
@@ -274,8 +280,16 @@ class _HospitalOverviewScreenState
                                           top: 5,
                                           left: 5,
                                           right: 5,
-                                          bottom: _realTimeInsightsResponse
-                                                  .data[itemIndex].isCardOpened
+                                          bottom: (_realTimeInsightsResponse
+                                                              .data[itemIndex]
+                                                              .hasUserReport ==
+                                                          null ||
+                                                      !_realTimeInsightsResponse
+                                                          .data[itemIndex]
+                                                          .hasUserReport) ||
+                                                  _realTimeInsightsResponse
+                                                      .data[itemIndex]
+                                                      .isCardOpened
                                               ? 0.0
                                               : AppConfig.verticalBlockSize *
                                                   4.2),
@@ -1273,7 +1287,7 @@ class _HospitalOverviewScreenState
   }
 
   Widget _getViewMoreWidgetForRealInsight(RealInsight data) {
-    return data.isCardOpened
+    return data.hasUserReport != null && data.hasUserReport && data.isCardOpened
         ? Container(
             margin: EdgeInsets.only(
                 left: AppConfig.horizontalBlockSize * 4,

@@ -679,11 +679,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
           return (_mediaContentPlunes == null ||
                   _mediaContentPlunes.data == null ||
                   _mediaContentPlunes.data.isEmpty)
-              ? Container(
-                  margin: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
-                  child: CustomWidgets().errorWidget(_mediaFailedMessage,
-                      onTap: () => _getVideos(), isSizeLess: true),
-                )
+              ? Container()
               : Container(
                   child: Column(
                     children: [

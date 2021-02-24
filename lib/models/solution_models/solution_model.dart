@@ -3,7 +3,12 @@ class CatalogueData {
   String details;
   String dnd;
   String category;
-  bool isSelected = false, isActive, topSearch, toShowSearched, priceDiscovered;
+  bool isSelected = false,
+      isActive,
+      topSearch,
+      toShowSearched,
+      priceDiscovered,
+      hasUserReport;
   String speciality;
   String specialityId;
   String serviceId;
@@ -43,7 +48,8 @@ class CatalogueData {
       this.solutionExpiredAt,
       this.toShowSearched,
       this.expirationMessage,
-      this.userReportId});
+      this.userReportId,
+      this.hasUserReport});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
@@ -67,6 +73,7 @@ class CatalogueData {
     solutionExpiredAt = json["expiredAt"];
     expirationMessage = json['expirationMessage'];
     userReportId = json['userReportId'];
+    hasUserReport = json['hasUserReport'];
   }
 
   Map<String, dynamic> toJson() {

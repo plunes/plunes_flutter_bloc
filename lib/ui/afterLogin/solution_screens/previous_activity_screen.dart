@@ -420,6 +420,8 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                               : Container(),
                         ),
                         (catalogueData != null &&
+                                catalogueData.hasUserReport != null &&
+                                catalogueData.hasUserReport &&
                                 catalogueData.userReportId != null &&
                                 catalogueData.userReportId.trim().isNotEmpty &&
                                 (!_isCardExpired(catalogueData)))
