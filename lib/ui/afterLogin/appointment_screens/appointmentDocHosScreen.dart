@@ -12,6 +12,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/HelpScreen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_main_screen.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
@@ -63,7 +64,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
       child: Column(
         children: <Widget>[
           _getUserInfoWidget(appointmentModel),
-          _getInsuranceWidget(),
+          _getInsuranceWidget(appointmentModel),
           (appointmentModel.service != null &&
                   appointmentModel.service.doctors != null &&
                   appointmentModel.service.doctors.isNotEmpty)
@@ -907,23 +908,38 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
     );
   }
 
-  Widget _getInsuranceWidget() {
+  Widget _getInsuranceWidget(AppointmentModel appointmentModel) {
+    if (appointmentModel == null || appointmentModel.insuranceDetails == null) {
+      return Container();
+    }
     return Container(
       margin: EdgeInsets.only(top: 12),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Policy provider name",
-            style: TextStyle(fontSize: 12.5, color: PlunesColors.BLACKCOLOR),
-          ),
-          Container(
-              margin: EdgeInsets.only(top: 3),
-              child: Text(
-                "Health India Insurance TPA Services Pvt.ltd",
-                style: TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
-              )),
+          (appointmentModel.insuranceDetails.insurancePartner == null ||
+                  appointmentModel.insuranceDetails.insurancePartner
+                      .trim()
+                      .isEmpty)
+              ? Container()
+              : Text(
+                  "Policy provider name",
+                  style:
+                      TextStyle(fontSize: 12.5, color: PlunesColors.BLACKCOLOR),
+                ),
+          (appointmentModel.insuranceDetails.insurancePartner == null ||
+                  appointmentModel.insuranceDetails.insurancePartner
+                      .trim()
+                      .isEmpty)
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.only(top: 3),
+                  child: Text(
+                    appointmentModel.insuranceDetails.insurancePartner ?? "",
+                    style:
+                        TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                  )),
           Container(
             margin: EdgeInsets.only(top: 12, bottom: 12),
             width: AppConfig.horizontalBlockSize * 15,
@@ -937,7 +953,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
           Container(
               margin: EdgeInsets.only(top: 3),
               child: Text(
-                "2984JF823489HSK48",
+                appointmentModel.insuranceDetails?.policyNumber ?? "",
                 style: TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
               )),
           Container(
@@ -950,69 +966,122 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Flexible(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                          child: Text(
-                        "Insurance card photo",
-                        style: TextStyle(
-                            fontSize: 12,
-                            color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
-                      )),
-                      Container(
-                        margin: EdgeInsets.only(top: 5),
-                        decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        height: 102,
-                        width: 160,
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            child: CustomWidgets().getImageFromUrl(
-                                "https://www.fujixerox.com.vn/-/media/0,-d-,-Global-Assets/Solutions-and-Services/Security/Document-Audit-Trail_web.jpg?h=614&w=932&la=en&hash=64E1FBE5E13B0BAA2A067030184B87CC0B2F1D3F")),
-                      )
-                    ],
-                  ),
-                ),
-                Flexible(
-                  child: Container(
-                    margin: EdgeInsets.only(left: 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                            child: Text(
-                          "Insurance document",
-                          style: TextStyle(
-                              fontSize: 12,
-                              color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
-                        )),
-                        Container(
-                          margin: EdgeInsets.only(top: 5, right: 4),
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20))),
-                          height: 102,
-                          width: 160,
-                          child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20)),
-                              child: Image.asset(
-                                plunesImages.pdfIcon1,
-                                fit: BoxFit.fill,
+                (appointmentModel.insuranceDetails.insuranceCard == null ||
+                        appointmentModel.insuranceDetails.insuranceCard
+                            .trim()
+                            .isEmpty)
+                    ? Container()
+                    : Flexible(
+                        child: InkWell(
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            List<Photo> photos = [];
+                            if (appointmentModel.insuranceDetails.insuranceCard
+                                .contains("http")) {
+                              photos.add(Photo(
+                                  assetName: appointmentModel
+                                      .insuranceDetails.insuranceCard));
+                            }
+                            if (photos != null && photos.isNotEmpty) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PageSlider(photos, 0)));
+                            }
+                          },
+                          onDoubleTap: () {},
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                  child: Text(
+                                "Insurance card photo",
+                                style: TextStyle(
+                                    fontSize: 12,
+                                    color: PlunesColors.BLACKCOLOR
+                                        .withOpacity(0.8)),
                               )),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                              Container(
+                                margin: EdgeInsets.only(top: 5),
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                height: 102,
+                                width: 160,
+                                child: ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20)),
+                                    child: CustomWidgets().getImageFromUrl(
+                                        appointmentModel.insuranceDetails
+                                                ?.insuranceCard ??
+                                            "",
+                                        boxFit: BoxFit.fill)),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                (appointmentModel.insuranceDetails.insurancePolicy == null ||
+                        appointmentModel.insuranceDetails.insurancePolicy
+                            .trim()
+                            .isEmpty)
+                    ? Container()
+                    : Flexible(
+                        child: Container(
+                          margin: EdgeInsets.only(left: 5),
+                          child: InkWell(
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            onDoubleTap: () {},
+                            onTap: () {
+                              _launch(appointmentModel
+                                  .insuranceDetails.insurancePolicy);
+                              return;
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                    child: Text(
+                                  "Insurance document",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: PlunesColors.BLACKCOLOR
+                                          .withOpacity(0.8)),
+                                )),
+                                Container(
+                                  margin: EdgeInsets.only(top: 5, right: 4),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(20))),
+                                  height: 102,
+                                  width: 160,
+                                  child: ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      child: Image.asset(
+                                        plunesImages.pdfIcon1,
+                                        fit: BoxFit.fill,
+                                      )),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
               ],
             ),
           )
         ],
       ),
     );
+  }
+
+  _launch(String url) {
+    LauncherUtil.launchUrl(url);
   }
 }

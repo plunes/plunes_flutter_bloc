@@ -873,11 +873,11 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         await Future.delayed(Duration(milliseconds: 150));
         _markers.add(Marker(
             markerId: MarkerId(_customServices[index].sId),
+            onTap: () => _functions[index](),
             icon: BitmapDescriptor.fromBytes(bytes),
             position: LatLng(_customServices[index].latitude?.toDouble() ?? 0.0,
                 _customServices[index].longitude?.toDouble() ?? 0.0),
             infoWindow: InfoWindow(
-                onTap: () => _functions[index](),
                 title: _customServices[index].name,
                 snippet:
                     "${_customServices[index].distance?.toStringAsFixed(1) ?? 1} km")));

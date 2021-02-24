@@ -635,10 +635,10 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
         _markers.add(Marker(
             markerId: MarkerId(_customServices[index].sId),
             icon: BitmapDescriptor.fromBytes(bytes),
+            onTap: () => _functions[index](),
             position: LatLng(_customServices[index].latitude?.toDouble() ?? 0.0,
                 _customServices[index].longitude?.toDouble() ?? 0.0),
             infoWindow: InfoWindow(
-                onTap: () => _functions[index](),
                 title: _customServices[index].name,
                 snippet:
                     "${_customServices[index].distance?.toStringAsFixed(1) ?? 1} km")));

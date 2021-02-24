@@ -61,6 +61,7 @@ class AppointmentModel {
   String serviceProviderType, alternateNumber, centreNumber, adminHosNumber;
   num dueBookingAmount, paidBookingAmount, totalAmount;
   String userImage;
+  InsuranceDetails insuranceDetails;
 
   @override
   bool operator ==(Object other) =>
@@ -127,7 +128,8 @@ class AppointmentModel {
       this.zestMoney,
       this.paymentOptions,
       this.totalAmount,
-      this.userImage});
+      this.userImage,
+      this.insuranceDetails});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
     print("json['paymentOptions'] ${json['paymentOptions']}");
@@ -195,6 +197,9 @@ class AppointmentModel {
       paymentOptions = json['paymentOptions'].cast<num>();
     }
     userImage = json["userImageUrl"];
+    if (json["insuranceDetails"] != null) {
+      insuranceDetails = InsuranceDetails.fromJson(json["insuranceDetails"]);
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -287,4 +292,27 @@ class LocationAppBarModel {
   String address;
 
   LocationAppBarModel({this.address, this.hasLocation});
+}
+
+class InsuranceDetails {
+  String insuranceId;
+  String policyNumber;
+  String insuranceCard;
+  String insurancePolicy;
+  String insurancePartner;
+
+  InsuranceDetails(
+      {this.insurancePartner,
+      this.policyNumber,
+      this.insuranceId,
+      this.insuranceCard,
+      this.insurancePolicy});
+
+  InsuranceDetails.fromJson(Map<String, dynamic> json) {
+    insuranceId = json['insuranceId'];
+    policyNumber = json['policyNumber'];
+    insuranceCard = json['insuranceCard'];
+    insurancePolicy = json['insurancePolicy'];
+    insurancePartner = json['insurancePartner'];
+  }
 }
