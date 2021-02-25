@@ -19,8 +19,10 @@ import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 class CartProceedScreen extends BaseActivity {
   List<BookingIds> bookingIds;
   num price, credits;
+  CartOuterModel cartOuterModel;
 
-  CartProceedScreen(this.price, this.bookingIds, {this.credits});
+  CartProceedScreen(this.price, this.bookingIds,
+      {this.credits, this.cartOuterModel});
 
   @override
   _CartProceedScreenState createState() => _CartProceedScreenState();
@@ -166,12 +168,16 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
                     ),
                     Container(
                       margin: EdgeInsets.only(top: 3),
-                      child: Text(
-                        "\u20B9 ${widget.price}",
-                        style: TextStyle(
-                            fontSize: 38,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#FFFFFF"))),
+                      child: FittedBox(
+                        fit: BoxFit.fill,
+                        child: Text(
+                          "\u20B9 ${widget.price}",
+                          maxLines: 1,
+                          style: TextStyle(
+                              fontSize: 38,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#FFFFFF"))),
+                        ),
                       ),
                     ),
                   ]),
@@ -273,41 +279,46 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
             horizontal: AppConfig.horizontalBlockSize * 4.5),
         child: Column(
           children: [
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Order Id",
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#646464"))),
-                    ),
-                    Container(
-                      child: Text(
-                        "PLU23JDJF34",
-                        style: TextStyle(
-                            fontSize: 18, color: PlunesColors.BLACKCOLOR),
+            (widget.cartOuterModel != null &&
+                    widget.cartOuterModel.data != null &&
+                    widget.cartOuterModel.data.cartId != null &&
+                    widget.cartOuterModel.data.cartId.trim().isNotEmpty)
+                ? Row(
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Order Id",
+                            style: TextStyle(
+                                fontSize: 16,
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#646464"))),
+                          ),
+                          Container(
+                            child: Text(
+                              "PLU23JDJF34",
+                              style: TextStyle(
+                                  fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                            ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
-                Expanded(child: Container()),
-                Container(
-                  child: CustomWidgets().getRoundedButton(
-                      "Unpaid",
-                      AppConfig.horizontalBlockSize * 8,
-                      Color(CommonMethods.getColorHexFromStr("#ECF4F7")),
-                      AppConfig.horizontalBlockSize * 5,
-                      AppConfig.verticalBlockSize * 1,
-                      Color(CommonMethods.getColorHexFromStr("#646464")),
-                      borderColor: PlunesColors.SPARKLINGGREEN,
-                      hasBorder: false),
-                )
-              ],
-            ),
+                      Expanded(child: Container()),
+                      Container(
+                        child: CustomWidgets().getRoundedButton(
+                            "Unpaid",
+                            AppConfig.horizontalBlockSize * 8,
+                            Color(CommonMethods.getColorHexFromStr("#ECF4F7")),
+                            AppConfig.horizontalBlockSize * 5,
+                            AppConfig.verticalBlockSize * 1,
+                            Color(CommonMethods.getColorHexFromStr("#646464")),
+                            borderColor: PlunesColors.SPARKLINGGREEN,
+                            hasBorder: false),
+                      )
+                    ],
+                  )
+                : Container(),
             Container(
               margin: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 2),

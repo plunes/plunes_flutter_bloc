@@ -309,6 +309,7 @@ class _EnterAdditionalUserDetailScrState
                           child: TextField(
                         maxLines: 10,
                         controller: _additionalDetailController,
+                        maxLength: 350,
                         style: TextStyle(
                           color: PlunesColors.BLACKCOLOR,
                           fontSize: 16,
@@ -1338,6 +1339,7 @@ class _EnterAdditionalUserDetailScrState
                                 child: TextField(
                               maxLines: 10,
                               controller: _previousMedicalConditionController,
+                              maxLength: 350,
                               style: TextStyle(
                                 color: PlunesColors.BLACKCOLOR,
                                 fontSize: 16,

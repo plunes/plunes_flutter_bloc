@@ -981,18 +981,39 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                     stream: FirebaseNotification().notificationStream,
                     builder: (context, snapshot) {
                       return IconButton(
-                        icon: Image.asset(
-                          (FirebaseNotification().getCartCount() != null &&
-                                  FirebaseNotification().getCartCount() != 0)
-                              ? PlunesImages.itemInCartImage
-                              : PlunesImages.cartImage,
-                          color: (FirebaseNotification().getCartCount() !=
-                                      null &&
-                                  FirebaseNotification().getCartCount() != 0)
-                              ? null
-                              : PlunesColors.BLACKCOLOR,
-                          height: AppConfig.verticalBlockSize * 3,
-                          width: AppConfig.horizontalBlockSize * 5,
+                        icon: Stack(
+                          children: [
+                            (FirebaseNotification().getCartCount() != null &&
+                                    FirebaseNotification().getCartCount() != 0)
+                                ? Container(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "${FirebaseNotification().getCartCount() < 10 ? FirebaseNotification().getCartCount() : 9}",
+                                      style: TextStyle(fontSize: 10),
+                                    ),
+                                    margin: EdgeInsets.only(
+                                        right: AppConfig.horizontalBlockSize *
+                                            1.5),
+                                    height: AppConfig.verticalBlockSize * 3,
+                                    width: double.infinity,
+                                  )
+                                : Container(),
+                            Image.asset(
+                              (FirebaseNotification().getCartCount() != null &&
+                                      FirebaseNotification().getCartCount() !=
+                                          0)
+                                  ? PlunesImages.itemInCartImage
+                                  : PlunesImages.cartImage,
+                              color: (FirebaseNotification().getCartCount() !=
+                                          null &&
+                                      FirebaseNotification().getCartCount() !=
+                                          0)
+                                  ? null
+                                  : PlunesColors.BLACKCOLOR,
+                              height: AppConfig.verticalBlockSize * 4,
+                              width: AppConfig.horizontalBlockSize * 8,
+                            ),
+                          ],
                         ),
                         onPressed: () {
                           Navigator.push(

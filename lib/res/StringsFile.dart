@@ -410,6 +410,7 @@ class PlunesStrings {
   static const String bookNowText = "Book Now";
   static const String unableToPlayVideo = "Unable to play video";
   static const String phoneNoText = "Phone no";
+  static const String whatsAppMessage = "";
 
   get healthSolInfoArray => [
         'Root Canal Treatment (RCT)\n Teeth Whitening\n Scaling & Polishing\n Dental Filling\n Wisdom Tooth Removal\n Braces & Aligners\n Dentures\n Bridges & Crowns\n Smile Makeover\n Gum Treatment\n',

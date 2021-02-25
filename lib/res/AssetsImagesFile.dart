@@ -154,6 +154,10 @@ class PlunesImages {
       "assets/images/specialInsightOfferImage.png";
   static const String encryptionPopupImage =
       "assets/images/encryptionPopupImage.png";
+  static const String negotiationAnimation =
+      "assets/gif/animation_500_klkj44md.gif";
+  static const String whatsAppIcon = "assets/images/whatsappIcon.png";
+  static const String callingIconWhite = "assets/images/callingIconWhite.png";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

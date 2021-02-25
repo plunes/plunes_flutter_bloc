@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -450,7 +451,15 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                             ),
-                            _getNegotiatedPriceTotalView(),
+                            1 == 1
+                                ? Container(
+                                    height: 120,
+                                    width: double.infinity,
+                                    child: Image.asset(
+                                      PlunesImages.negotiationAnimation,
+                                      fit: BoxFit.cover,
+                                    ))
+                                : _getNegotiatedPriceTotalView(),
                             StreamBuilder<Object>(
                                 stream: _totalDiscountController?.stream,
                                 builder: (context, snapshot) {
@@ -1253,24 +1262,55 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       margin: EdgeInsets.all(0),
       child: Container(
         margin: EdgeInsets.only(
-            left: AppConfig.horizontalBlockSize * 23,
-            right: AppConfig.horizontalBlockSize * 23,
-            bottom: AppConfig.verticalBlockSize * 1.5,
-            top: AppConfig.verticalBlockSize * 1.5),
-        child: InkWell(
-          onTap: () {
-            LauncherUtil.launchUrl("tel://7011311900");
-            return;
-          },
-          onDoubleTap: () {},
-          child: getRoundedButton(
-              "+91 70113 11900",
-              AppConfig.horizontalBlockSize * 8,
-              PlunesColors.PARROTGREEN,
-              AppConfig.horizontalBlockSize * 3,
-              AppConfig.verticalBlockSize * 1,
-              PlunesColors.WHITECOLOR,
-              hasBorder: false),
+            bottom: AppConfig.verticalBlockSize * 2,
+            left: AppConfig.horizontalBlockSize * 4,
+            right: AppConfig.horizontalBlockSize * 4,
+            top: AppConfig.verticalBlockSize * 1.4),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: InkWell(
+                onTap: () {
+                  LauncherUtil.launchUrl("tel://7011311900");
+                  return;
+                },
+                onDoubleTap: () {},
+                child: getRoundedButton(
+                    "+91 70113 11900",
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.PARROTGREEN,
+                    AppConfig.horizontalBlockSize * 3,
+                    AppConfig.verticalBlockSize * 1,
+                    PlunesColors.WHITECOLOR,
+                    hasBorder: false,
+                    imagePath: PlunesImages.callingIconWhite),
+              ),
+            ),
+            Flexible(
+              child: Container(
+                margin: EdgeInsets.only(left: 5),
+                child: InkWell(
+                  onTap: () {
+                    LauncherUtil.launchUrl(getWhatsAppUrl(
+                        "+917011311900", PlunesStrings.whatsAppMessage));
+                    return;
+                  },
+                  onDoubleTap: () {},
+                  child: getRoundedButton(
+                      "Let's Talk",
+                      AppConfig.horizontalBlockSize * 8,
+                      PlunesColors.WHITECOLOR,
+                      AppConfig.horizontalBlockSize * 3,
+                      AppConfig.verticalBlockSize * 1,
+                      PlunesColors.BLACKCOLOR,
+                      borderColor: PlunesColors.PARROTGREEN,
+                      hasBorder: true,
+                      imagePath: PlunesImages.whatsAppIcon),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -1286,6 +1326,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       {bool hasBorder = false,
       Color borderColor = PlunesColors.GREYCOLOR,
       double borderWidth = 0.8,
+      String imagePath,
       double fontSize}) {
     return Container(
       padding: EdgeInsets.symmetric(
@@ -1300,21 +1341,35 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(
-            Icons.call,
-            color: textColor,
+          Image.asset(
+            imagePath,
+            height: 22,
+            width: 22,
           ),
           Flexible(
-            child: Text(
-              "  $buttonName",
-              style: TextStyle(
-                fontSize: fontSize ?? 15,
-                color: textColor ?? PlunesColors.BLACKCOLOR,
+            child: Container(
+              margin: EdgeInsets.only(left: 5),
+              child: Text(
+                "$buttonName",
+                style: TextStyle(
+                  fontSize: fontSize ?? 15,
+                  color: textColor ?? PlunesColors.BLACKCOLOR,
+                ),
               ),
             ),
           )
         ],
       ),
     );
+  }
+
+  String getWhatsAppUrl(String phone, String message) {
+    if (Platform.isAndroid) {
+      // add the [https]
+      return "https://wa.me/$phone/?text=${Uri.parse(message)}"; // new line
+    } else {
+      // add the [https]
+      return "https://api.whatsapp.com/send?phone=$phone=${Uri.parse(message)}"; // new line
+    }
   }
 }

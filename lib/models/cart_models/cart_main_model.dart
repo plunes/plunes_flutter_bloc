@@ -12,6 +12,7 @@ class CartOuterModel {
       {this.success, this.data, this.subTotal, this.msg, this.credits});
 
   CartOuterModel.fromJson(Map<String, dynamic> json) {
+    print("json $json");
     success = json['success'];
     data = json['data'] != null ? new CartItem.fromJson(json['data']) : null;
     subTotal = json['subTotal'];
@@ -38,7 +39,7 @@ class CartItem {
   String sId;
   String userId;
   int iV;
-  String createdAt;
+  String createdAt, cartId;
   String updatedAt;
   bool zestMoney;
 
@@ -51,7 +52,8 @@ class CartItem {
       this.iV,
       this.createdAt,
       this.updatedAt,
-      this.zestMoney});
+      this.zestMoney,
+      this.cartId});
 
   CartItem.fromJson(Map<String, dynamic> json) {
     if (json['bookingIds'] != null) {
@@ -78,6 +80,7 @@ class CartItem {
     createdAt = json['createdAt'];
     updatedAt = json['updatedAt'];
     zestMoney = json['zestMoney'];
+    cartId = json['cartId'];
   }
 
   Map<String, dynamic> toJson() {

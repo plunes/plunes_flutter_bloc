@@ -1302,115 +1302,102 @@ class _HospitalOverviewScreenState
                         Color(CommonMethods.getColorHexFromStr("#70707038")),
                   ),
                 ),
-                Container(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      (data.userReport != null &&
-                              data.userReport.additionalDetails != null &&
-                              data.userReport.additionalDetails
-                                  .trim()
-                                  .isNotEmpty)
-                          ? Expanded(
-                              child: Container(
-                              margin: EdgeInsets.only(right: 4),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
-                                      "Additional Details of the service",
-                                      maxLines: 3,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          color: PlunesColors.BLACKCOLOR,
-                                          fontSize: 18),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(top: 12),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                        gradient: LinearGradient(
-                                            colors: [
-                                          Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#FEFEFE")),
-                                          Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#F6F6F6")),
-                                        ],
-                                            begin: Alignment.topCenter,
-                                            end: Alignment.bottomCenter)),
-                                    alignment: Alignment.topLeft,
-                                    child: Text(
-                                      data.userReport?.additionalDetails ?? "",
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#4E4E4E"))),
-                                    ),
-                                  )
-                                ],
+                (data.userReport != null &&
+                        data.userReport.additionalDetails != null &&
+                        data.userReport.additionalDetails.trim().isNotEmpty)
+                    ? Container(
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 2.8),
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "Additional Details of the service",
+                                maxLines: 3,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontSize: 18),
                               ),
-                            ))
-                          : Container(),
-                      (data.userReport != null &&
-                              data.userReport.description != null &&
-                              data.userReport.description.trim().isNotEmpty)
-                          ? Expanded(
-                              child: Container(
-                                margin: EdgeInsets.only(left: 4),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.topLeft,
-                                      child: Text(
-                                        "Previous Treatment Detail's",
-                                        maxLines: 3,
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            color: PlunesColors.BLACKCOLOR,
-                                            fontSize: 18),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 12),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 4),
-                                      decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                              colors: [
-                                            Color(CommonMethods
-                                                .getColorHexFromStr("#FEFEFE")),
-                                            Color(CommonMethods
-                                                .getColorHexFromStr("#F6F6F6")),
-                                          ],
-                                              begin: Alignment.topCenter,
-                                              end: Alignment.bottomCenter)),
-                                      alignment: Alignment.topLeft,
-                                      child: Text(
-                                        data.userReport?.description ?? "",
-                                        textAlign: TextAlign.left,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    "#4E4E4E"))),
-                                      ),
-                                    )
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 12),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [
+                                    Color(CommonMethods.getColorHexFromStr(
+                                        "#FEFEFE")),
+                                    Color(CommonMethods.getColorHexFromStr(
+                                        "#F6F6F6")),
                                   ],
-                                ),
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter)),
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                data.userReport?.additionalDetails ?? "",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#4E4E4E"))),
                               ),
                             )
-                          : Container(),
-                    ],
-                  ),
-                ),
+                          ],
+                        ),
+                      )
+                    : Container(),
+                (data.userReport != null &&
+                        data.userReport.description != null &&
+                        data.userReport.description.trim().isNotEmpty)
+                    ? Container(
+                        margin: EdgeInsets.only(left: 4),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                "Previous Treatment Detail's",
+                                maxLines: 3,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    color: PlunesColors.BLACKCOLOR,
+                                    fontSize: 18),
+                              ),
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(top: 12),
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                      colors: [
+                                    Color(CommonMethods.getColorHexFromStr(
+                                        "#FEFEFE")),
+                                    Color(CommonMethods.getColorHexFromStr(
+                                        "#F6F6F6")),
+                                  ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter)),
+                              alignment: Alignment.topLeft,
+                              child: Text(
+                                data.userReport?.description ?? "",
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#4E4E4E"))),
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                    : Container(),
                 _getMediaWidget(data),
                 InkWell(
                   focusColor: Colors.transparent,

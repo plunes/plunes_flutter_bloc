@@ -938,6 +938,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
                   price,
                   bookingIds,
                   credits: _cartOuterModel?.credits,
+                  cartOuterModel: _cartOuterModel,
                 )))
       ..then((value) {
         if (value != null) {

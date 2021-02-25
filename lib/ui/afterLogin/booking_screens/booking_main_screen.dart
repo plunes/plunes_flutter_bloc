@@ -2815,9 +2815,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                 ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
             child: TextField(
               maxLines: 1,
+              maxLength: 14,
               controller: _policyNumberController,
               decoration: InputDecoration(
                 hintText: "Enter Policy Number",
+                counterText: "",
                 isDense: false,
                 hintStyle: TextStyle(
                     fontSize: 12,
