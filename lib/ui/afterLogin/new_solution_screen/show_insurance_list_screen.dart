@@ -44,46 +44,59 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        key: scaffoldKey,
-        appBar: widget.shouldShowAppBar ?? true
-            ? widget.getAppBar(context, "Check Insurance", true)
+    return Material(
+      child: Container(
+        height: (widget.shouldShowAppBar != null && !(widget.shouldShowAppBar))
+            ? AppConfig.verticalBlockSize * 45
             : null,
-        body: StreamBuilder<RequestState>(
-            stream: _userBloc.insuranceStream,
-            initialData: (_insuranceModel == null) ? RequestInProgress() : null,
-            builder: (context, snapshot) {
-              if (snapshot.data is RequestSuccess) {
-                RequestSuccess successObject = snapshot.data;
-                _insuranceModel = successObject.response;
-                _userBloc?.addStateInInsuranceListStream(null);
-              } else if (snapshot.data is RequestFailed) {
-                RequestFailed _failedObj = snapshot.data;
-                _failureCause = _failedObj?.failureCause;
-                _userBloc?.addStateInInsuranceListStream(null);
-              } else if (snapshot.data is RequestInProgress) {
-                return Container(child: CustomWidgets().getProgressIndicator());
-              }
-              return (_insuranceModel == null ||
-                      (_insuranceModel.success != null &&
-                          !_insuranceModel.success) ||
-                      _insuranceModel.data == null ||
-                      _insuranceModel.data == null ||
-                      _insuranceModel.data.isEmpty)
-                  ? Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 3),
-                      child: CustomWidgets().errorWidget(
-                          _failureCause ??
-                              "Currently insurance facility not available",
-                          onTap: () => _getInsuranceList(),
-                          isSizeLess: true))
-                  : _getBody();
-            }),
+        child: SafeArea(
+          child: Scaffold(
+            key: scaffoldKey,
+            appBar: widget.shouldShowAppBar ?? true
+                ? widget.getAppBar(context, "Check Insurance", true)
+                : null,
+            body: StreamBuilder<RequestState>(
+                stream: _userBloc.insuranceStream,
+                initialData:
+                    (_insuranceModel == null) ? RequestInProgress() : null,
+                builder: (context, snapshot) {
+                  if (snapshot.data is RequestSuccess) {
+                    RequestSuccess successObject = snapshot.data;
+                    _insuranceModel = successObject.response;
+                    _userBloc?.addStateInInsuranceListStream(null);
+                  } else if (snapshot.data is RequestFailed) {
+                    RequestFailed _failedObj = snapshot.data;
+                    _failureCause = _failedObj?.failureCause;
+                    _userBloc?.addStateInInsuranceListStream(null);
+                  } else if (snapshot.data is RequestInProgress) {
+                    return Container(
+                        child: CustomWidgets().getProgressIndicator());
+                  }
+                  return (_insuranceModel == null ||
+                          (_insuranceModel.success != null &&
+                              !_insuranceModel.success) ||
+                          _insuranceModel.data == null ||
+                          _insuranceModel.data == null ||
+                          _insuranceModel.data.isEmpty)
+                      ? (widget.shouldShowAppBar != null &&
+                              !(widget.shouldShowAppBar))
+                          ? Container()
+                          : Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 3),
+                              child: CustomWidgets().errorWidget(
+                                  _failureCause ??
+                                      "Currently insurance facility not available",
+                                  onTap: () => _getInsuranceList(),
+                                  isSizeLess: true))
+                      : _getBody();
+                }),
+          ),
+          top: false,
+          bottom: false,
+        ),
       ),
-      top: false,
-      bottom: false,
     );
   }
 

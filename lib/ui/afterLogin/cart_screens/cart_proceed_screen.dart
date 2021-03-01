@@ -297,7 +297,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
                           ),
                           Container(
                             child: Text(
-                              "PLU23JDJF34",
+                              widget.cartOuterModel.data.cartId ?? "",
                               style: TextStyle(
                                   fontSize: 18, color: PlunesColors.BLACKCOLOR),
                             ),

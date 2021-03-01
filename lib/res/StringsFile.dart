@@ -169,7 +169,7 @@ class PlunesStrings {
   static const String noRealTimeInsights =
       "You don't have any real time insights yet";
   static const String noBusinessDataFound = 'No business data found';
-  static const String kindlyUpdateYourPrice = 'Update your price';
+  static const String kindlyUpdateYourPrice = 'Update price';
   static const String noActionableInsightAvailable =
       "No Actionable insights yet";
   static const String noReportAvailabelMessage =

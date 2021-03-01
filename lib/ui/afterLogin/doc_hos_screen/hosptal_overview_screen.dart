@@ -249,230 +249,7 @@ class _HospitalOverviewScreenState
                                 return _returnCard();
                               }
                               itemIndex--;
-                              return Container(
-                                margin: EdgeInsets.only(
-                                    bottom: AppConfig.verticalBlockSize * 1),
-                                child: Stack(
-                                  children: [
-                                    (_realTimeInsightsResponse.data[itemIndex]
-                                                        .hasUserReport ==
-                                                    null ||
-                                                !_realTimeInsightsResponse
-                                                    .data[itemIndex]
-                                                    .hasUserReport) ||
-                                            _realTimeInsightsResponse
-                                                .data[itemIndex].isCardOpened
-                                        ? Container()
-                                        : Positioned(
-                                            bottom: 0.0,
-                                            left: 0.0,
-                                            right: 0.0,
-                                            child: _getCardOpenButton(
-                                                _realTimeInsightsResponse
-                                                    .data[itemIndex]),
-                                          ),
-                                    Card(
-                                      elevation: 2.0,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(10))),
-                                      margin: EdgeInsets.only(
-                                          top: 5,
-                                          left: 5,
-                                          right: 5,
-                                          bottom: (_realTimeInsightsResponse
-                                                              .data[itemIndex]
-                                                              .hasUserReport ==
-                                                          null ||
-                                                      !_realTimeInsightsResponse
-                                                          .data[itemIndex]
-                                                          .hasUserReport) ||
-                                                  _realTimeInsightsResponse
-                                                      .data[itemIndex]
-                                                      .isCardOpened
-                                              ? 0.0
-                                              : AppConfig.verticalBlockSize *
-                                                  4.2),
-                                      child: Container(
-                                        margin: EdgeInsets.symmetric(
-                                            vertical:
-                                                AppConfig.verticalBlockSize * 2,
-                                            horizontal:
-                                                AppConfig.horizontalBlockSize *
-                                                    4),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            PatientServiceInfo(
-                                              patientName:
-                                                  _realTimeInsightsResponse
-                                                      .data[itemIndex].userName,
-                                              serviceName: "is looking for " +
-                                                  "${_realTimeInsightsResponse.data[itemIndex].serviceName ?? _getNaString()}",
-                                              remainingTime: (_realTimeInsightsResponse
-                                                                  .data[
-                                                              itemIndex] !=
-                                                          null &&
-                                                      _realTimeInsightsResponse
-                                                              .data[itemIndex]
-                                                              .booked !=
-                                                          null &&
-                                                      _realTimeInsightsResponse
-                                                          .data[itemIndex]
-                                                          .booked)
-                                                  ? 0
-                                                  : _realTimeInsightsResponse
-                                                      .data[itemIndex]
-                                                      .expirationTimer,
-                                              centreLocation:
-                                                  _realTimeInsightsResponse
-                                                      .data[itemIndex]
-                                                      .centerLocation,
-                                              imageUrl:
-                                                  _realTimeInsightsResponse
-                                                      .data[itemIndex].imageUrl,
-                                              getRealTimeInsights: () =>
-                                                  _getRealTimeInsights(),
-                                              realInsight:
-                                                  _realTimeInsightsResponse
-                                                      .data[itemIndex],
-                                              openInsightPopup: (_realTimeInsightsResponse
-                                                                  .data[
-                                                              itemIndex] !=
-                                                          null &&
-                                                      _realTimeInsightsResponse
-                                                              .data[itemIndex]
-                                                              .expired !=
-                                                          null &&
-                                                      _realTimeInsightsResponse
-                                                          .data[itemIndex]
-                                                          .expired)
-                                                  ? null
-                                                  : () =>
-                                                      _openRealTimeInsightPriceUpdateWidget(
-                                                          _realTimeInsightsResponse
-                                                              .data[itemIndex]),
-                                            ),
-                                            (_realTimeInsightsResponse
-                                                            .data[itemIndex]
-                                                            .suggested !=
-                                                        null &&
-                                                    _realTimeInsightsResponse
-                                                        .data[itemIndex]
-                                                        .suggested)
-                                                ? Row(
-                                                    children: <Widget>[
-                                                      Expanded(
-                                                          flex: 2,
-                                                          child: Container(
-                                                            margin: EdgeInsets.only(
-                                                                left: AppConfig
-                                                                            .horizontalBlockSize *
-                                                                        2 +
-                                                                    45,
-                                                                top: 3),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            3)),
-                                                                border: Border.all(
-                                                                    color: Color(
-                                                                        CommonMethods.getColorHexFromStr(
-                                                                            "#1473E6")))),
-                                                            child: InkWell(
-                                                              onTap: () {
-                                                                showDialog(
-                                                                    context:
-                                                                        context,
-                                                                    builder:
-                                                                        (context) {
-                                                                      return CustomWidgets().turnOffNotificationPopup(
-                                                                          scaffoldKey,
-                                                                          _realTimeInsightsResponse
-                                                                              .data[itemIndex],
-                                                                          _docHosMainInsightBloc);
-                                                                    }).then((value) {
-                                                                  _docHosMainInsightBloc
-                                                                      .addStateInDoNotDisturbStream(
-                                                                          null);
-                                                                  _getRealTimeInsights();
-                                                                });
-                                                                return;
-                                                              },
-                                                              splashColor: Colors
-                                                                  .transparent,
-                                                              highlightColor:
-                                                                  Colors
-                                                                      .transparent,
-                                                              child: Container(
-                                                                padding: EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        AppConfig.horizontalBlockSize *
-                                                                            1.2,
-                                                                    vertical:
-                                                                        AppConfig.verticalBlockSize *
-                                                                            0.6),
-                                                                color: Color(
-                                                                    CommonMethods
-                                                                        .getColorHexFromStr(
-                                                                            "#D7E7FB")),
-                                                                child: Row(
-                                                                  mainAxisAlignment:
-                                                                      MainAxisAlignment
-                                                                          .start,
-                                                                  crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .center,
-                                                                  children: <
-                                                                      Widget>[
-                                                                    Image.asset(
-                                                                      PlunesImages
-                                                                          .serviceNotAvail,
-                                                                      height:
-                                                                          AppConfig.verticalBlockSize *
-                                                                              2.6,
-                                                                      width:
-                                                                          AppConfig.horizontalBlockSize *
-                                                                              8,
-                                                                    ),
-                                                                    Flexible(
-                                                                        child:
-                                                                            Text(
-                                                                      PlunesStrings
-                                                                          .serviceNotAvailableText,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Color(
-                                                                            CommonMethods.getColorHexFromStr("#1473E6")),
-                                                                        fontSize:
-                                                                            AppConfig.smallFont -
-                                                                                2,
-                                                                        fontWeight:
-                                                                            FontWeight.normal,
-                                                                      ),
-                                                                    ))
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          )),
-                                                      Expanded(
-                                                          child: Container())
-                                                    ],
-                                                  )
-                                                : Container(),
-                                            _getViewMoreWidgetForRealInsight(
-                                                _realTimeInsightsResponse
-                                                    .data[itemIndex])
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
+                              return _getRealInsightWidget(itemIndex);
                             },
                             itemCount: (_realTimeInsightsResponse.data ==
                                         null ||
@@ -1704,6 +1481,172 @@ class _HospitalOverviewScreenState
       ),
     );
   }
+
+  Widget _getRealInsightWidget(int itemIndex) {
+    return Container(
+      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
+      child: Stack(
+        children: [
+          (_realTimeInsightsResponse.data[itemIndex].hasUserReport == null ||
+                      !_realTimeInsightsResponse
+                          .data[itemIndex].hasUserReport) ||
+                  _realTimeInsightsResponse.data[itemIndex].isCardOpened
+              ? Container()
+              : Positioned(
+                  bottom: 0.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: _getCardOpenButton(
+                      _realTimeInsightsResponse.data[itemIndex]),
+                ),
+          Card(
+            elevation: 2.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            margin: EdgeInsets.only(
+                top: 5,
+                left: 5,
+                right: 5,
+                bottom: (_realTimeInsightsResponse
+                                    .data[itemIndex].hasUserReport ==
+                                null ||
+                            !_realTimeInsightsResponse
+                                .data[itemIndex].hasUserReport) ||
+                        _realTimeInsightsResponse.data[itemIndex].isCardOpened
+                    ? 0.0
+                    : AppConfig.verticalBlockSize * 4.2),
+            child: Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 2,
+                  horizontal: AppConfig.horizontalBlockSize * 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  PatientServiceInfo(
+                    patientName:
+                        _realTimeInsightsResponse.data[itemIndex].userName,
+                    serviceName: "is looking for " +
+                        "${_realTimeInsightsResponse.data[itemIndex].serviceName ?? _getNaString()}",
+                    remainingTime: (_realTimeInsightsResponse.data[itemIndex] !=
+                                null &&
+                            _realTimeInsightsResponse.data[itemIndex].booked !=
+                                null &&
+                            _realTimeInsightsResponse.data[itemIndex].booked)
+                        ? 0
+                        : _realTimeInsightsResponse
+                            .data[itemIndex].expirationTimer,
+                    centreLocation: _realTimeInsightsResponse
+                        .data[itemIndex].centerLocation,
+                    imageUrl:
+                        _realTimeInsightsResponse.data[itemIndex].imageUrl,
+                    getRealTimeInsights: () => _getRealTimeInsights(),
+                    realInsight: _realTimeInsightsResponse.data[itemIndex],
+                    openInsightPopup: (_realTimeInsightsResponse
+                                    .data[itemIndex] !=
+                                null &&
+                            _realTimeInsightsResponse.data[itemIndex].expired !=
+                                null &&
+                            _realTimeInsightsResponse.data[itemIndex].expired)
+                        ? null
+                        : () => _openRealTimeInsightPriceUpdateWidget(
+                            _realTimeInsightsResponse.data[itemIndex]),
+                  ),
+                  (_realTimeInsightsResponse.data[itemIndex].suggested !=
+                              null &&
+                          _realTimeInsightsResponse.data[itemIndex].suggested)
+                      ? Row(
+                          children: <Widget>[
+                            Expanded(
+                                flex: 2,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      left: AppConfig.horizontalBlockSize * 2 +
+                                          45,
+                                      top: 3),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(3)),
+                                      border: Border.all(
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#1473E6")))),
+                                  child: InkWell(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return CustomWidgets()
+                                                .turnOffNotificationPopup(
+                                                    scaffoldKey,
+                                                    _realTimeInsightsResponse
+                                                        .data[itemIndex],
+                                                    _docHosMainInsightBloc);
+                                          }).then((value) {
+                                        _docHosMainInsightBloc
+                                            .addStateInDoNotDisturbStream(null);
+                                        _getRealTimeInsights();
+                                      });
+                                      return;
+                                    },
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              AppConfig.horizontalBlockSize *
+                                                  1.2,
+                                          vertical:
+                                              AppConfig.verticalBlockSize *
+                                                  0.6),
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#D7E7FB")),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Image.asset(
+                                            PlunesImages.serviceNotAvail,
+                                            height:
+                                                AppConfig.verticalBlockSize *
+                                                    2.6,
+                                            width:
+                                                AppConfig.horizontalBlockSize *
+                                                    8,
+                                          ),
+                                          Flexible(
+                                              child: Text(
+                                            PlunesStrings
+                                                .serviceNotAvailableText,
+                                            style: TextStyle(
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#1473E6")),
+                                              fontSize: AppConfig.smallFont - 2,
+                                              fontWeight: FontWeight.normal,
+                                            ),
+                                          ))
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                )),
+                            Expanded(child: Container())
+                          ],
+                        )
+                      : Container(),
+                  _getViewMoreWidgetForRealInsight(
+                      _realTimeInsightsResponse.data[itemIndex])
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class RealTimeInsightsWIdget extends StatelessWidget {
@@ -1822,7 +1765,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     if (widget.timer != null) {
       _countDownValue = widget.timer - 1;
     }
-    if (!showShowWidget()) {
+    if (!shouldShowWidget()) {
       _runSolutionExpireTimer();
       _timer = Timer.periodic(Duration(seconds: 1), (_timer) {
         _startTimer(_timer);
@@ -1832,7 +1775,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   }
 
   _startTimer(Timer timer) {
-    if (!showShowWidget()) {
+    if (!shouldShowWidget()) {
       _setState();
     } else {
       if (timer != null && timer.isActive) {
@@ -1841,7 +1784,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     }
   }
 
-  bool showShowWidget() {
+  bool shouldShowWidget() {
     return (widget.remainingTime == null ||
             widget.remainingTime == 0 ||
             DateTime.now()
@@ -1857,190 +1800,14 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        (widget.imageUrl != null &&
-                widget.imageUrl.isNotEmpty &&
-                widget.imageUrl.contains("http"))
-            ? CircleAvatar(
-                backgroundColor: Colors.transparent,
-                child: Container(
-                  height: 45,
-                  width: 45,
-                  child: ClipOval(
-                      child: CustomWidgets().getImageFromUrl(widget.imageUrl,
-                          boxFit: BoxFit.fill,
-                          placeHolderPath: PlunesImages.userProfileIcon)),
-                ),
-                radius: 23.5,
-              )
-            : CustomWidgets().getBackImageView(
-                widget.patientName ?? PlunesStrings.NA,
-                width: 45,
-                height: 45),
+        _getProfileImageWidget(),
         Expanded(
           flex: 5,
-          child: Container(
-            padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                RichText(
-                    text: TextSpan(
-                        text: widget.patientName,
-                        style: TextStyle(
-                          fontSize: AppConfig.smallFont + 2,
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
-                        ))),
-                Text(
-                  widget.serviceName,
-                  style: TextStyle(
-                    fontSize: AppConfig.verySmallFont + 1,
-                    color: PlunesColors.BLACKCOLOR,
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                (widget.centreLocation != null &&
-                        widget.centreLocation.isNotEmpty)
-                    ? Text(
-                        "${widget.centreLocation}",
-                        style: TextStyle(
-                          fontSize: AppConfig.smallFont + 2,
-                          color: PlunesColors.GREYCOLOR.withOpacity(0.9),
-                          fontWeight: FontWeight.normal,
-                        ),
-                      )
-                    : Container(),
-                (widget.openInsightPopup == null)
-                    ? Container()
-                    : Container(
-                        margin: EdgeInsets.only(
-                            right: AppConfig.horizontalBlockSize * 8, top: 5),
-                        child: InkWell(
-                          splashColor: Colors.transparent,
-                          highlightColor: Colors.transparent,
-                          onTap: () => widget.openInsightPopup(),
-                          onDoubleTap: () {},
-                          child: CustomWidgets().getRoundedButton(
-                              PlunesStrings.kindlyUpdateYourPrice,
-                              AppConfig.horizontalBlockSize * 8,
-                              PlunesColors.WHITECOLOR,
-                              AppConfig.horizontalBlockSize * 1,
-                              AppConfig.verticalBlockSize * 1,
-                              Color(
-                                  CommonMethods.getColorHexFromStr("#01D35A")),
-                              borderColor: Color(
-                                  CommonMethods.getColorHexFromStr("#01D35A")),
-                              hasBorder: true),
-                        ),
-                      ),
-                ((_realInsight != null &&
-                            _realInsight.expired != null &&
-                            _realInsight.expired) ||
-                        (_realInsight != null &&
-                            _realInsight.booked != null &&
-                            _realInsight.booked) ||
-                        showShowWidget())
-                    ? Container()
-                    : (_realInsight.compRate != null &&
-                            _realInsight.compRate > 0)
-                        ? Row(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: Text(
-                                  "${_realInsight.compRate?.toStringAsFixed(1)}%",
-                                  style: TextStyle(
-                                      color: PlunesColors.RED,
-                                      fontSize: AppConfig.smallFont),
-                                ),
-                              ),
-                              Image.asset(
-                                PlunesImages.priceHighIcon,
-                                height: AppConfig.smallFont,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: Text(
-                                  "high",
-                                  style: TextStyle(
-                                      color: PlunesColors.RED,
-                                      fontSize: AppConfig.smallFont),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Container(),
-                ((_realInsight != null &&
-                            _realInsight.expired != null &&
-                            _realInsight.expired) ||
-                        (_realInsight != null &&
-                            _realInsight.booked != null &&
-                            _realInsight.booked) ||
-                        !showShowWidget())
-                    ? Container(
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 2.5),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Flexible(
-                              child: Text(
-                                "${_realInsight.expirationMessage ?? PlunesStrings.NA}",
-                                style: TextStyle(
-                                    fontSize: AppConfig.smallFont,
-                                    fontWeight: FontWeight.normal,
-                                    color: (_realInsight.professionalBooked !=
-                                                null &&
-                                            _realInsight.professionalBooked)
-                                        ? PlunesColors.GREENCOLOR
-                                        : PlunesColors.ORANGE),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
-                    : Container()
-              ],
-            ),
-          ),
+          child: _getDetailWidget(),
         ),
         Expanded(
           flex: 2,
-          child: Column(
-            children: <Widget>[
-              Image.asset(
-                PlunesImages.darkMap,
-                fit: BoxFit.contain,
-                height: AppConfig.verticalBlockSize * 5,
-                alignment: Alignment.center,
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(
-                    vertical: AppConfig.verticalBlockSize * 1),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Icon(
-                      Icons.perm_identity,
-                      size: AppConfig.verySmallFont,
-                      color: PlunesColors.BLACKCOLOR,
-                    ),
-                    Text(
-                      "${_realInsight.distance?.toStringAsFixed(0) ?? 0} Km",
-                      style: TextStyle(
-                          fontSize: AppConfig.verySmallFont - 2,
-                          fontWeight: FontWeight.w600,
-                          color: PlunesColors.BLACKCOLOR),
-                    )
-                  ],
-                ),
-              ),
-              _getTimeWidget()
-            ],
-          ),
+          child: _getDistanceAndTimerWidget(),
         )
       ],
     );
@@ -2074,7 +1841,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     }
     return Container(
       padding: EdgeInsets.only(left: 2, top: AppConfig.verticalBlockSize * 1.6),
-      child: !showShowWidget()
+      child: !shouldShowWidget()
           ? Column(
               children: <Widget>[
                 Container(
@@ -2088,7 +1855,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       borderRadius: BorderRadius.circular(8.0)),
                   child: Center(
                     child: Text(
-                      showShowWidget() ? "00:00 Mins" : _timeValue + " Mins",
+                      shouldShowWidget() ? "00:00 Mins" : _timeValue + " Mins",
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,
                           fontSize: AppConfig.verySmallFont),
@@ -2148,5 +1915,208 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
 //      print("kuch nhi chala ${widget.serviceName}");
       return;
     });
+  }
+
+  Widget _getProfileImageWidget() {
+    return (widget.imageUrl != null &&
+            widget.imageUrl.isNotEmpty &&
+            widget.imageUrl.contains("http"))
+        ? CircleAvatar(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              height: 45,
+              width: 45,
+              child: ClipOval(
+                  child: CustomWidgets().getImageFromUrl(widget.imageUrl,
+                      boxFit: BoxFit.fill,
+                      placeHolderPath: PlunesImages.userProfileIcon)),
+            ),
+            radius: 23.5,
+          )
+        : CustomWidgets().getBackImageView(
+            widget.patientName ?? PlunesStrings.NA,
+            width: 45,
+            height: 45);
+  }
+
+  Widget _getDetailWidget() {
+    return Container(
+      padding: EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          RichText(
+              text: TextSpan(
+                  text: widget.patientName,
+                  style: TextStyle(
+                    fontSize: AppConfig.smallFont + 2,
+                    color: Colors.black,
+                    fontWeight: FontWeight.normal,
+                  ))),
+          Text(
+            widget.serviceName,
+            style: TextStyle(
+              fontSize: AppConfig.verySmallFont + 1,
+              color: PlunesColors.BLACKCOLOR,
+              fontWeight: FontWeight.normal,
+            ),
+          ),
+          (widget.centreLocation != null && widget.centreLocation.isNotEmpty)
+              ? Text(
+                  "${widget.centreLocation}",
+                  style: TextStyle(
+                    fontSize: AppConfig.smallFont + 2,
+                    color: PlunesColors.GREYCOLOR.withOpacity(0.9),
+                    fontWeight: FontWeight.normal,
+                  ),
+                )
+              : Container(),
+          (widget.openInsightPopup == null)
+              ? Container()
+              : Container(
+                  margin: EdgeInsets.only(
+                      right: AppConfig.horizontalBlockSize * 8, top: 5),
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      if (_realInsight.priceUpdated != null &&
+                          _realInsight.priceUpdated) {
+                        return;
+                      }
+                      widget.openInsightPopup();
+                    },
+                    onDoubleTap: () {},
+                    child: CustomWidgets().getRoundedButton(
+                        _getButtonName(),
+                        AppConfig.horizontalBlockSize * 8,
+                        PlunesColors.WHITECOLOR,
+                        AppConfig.horizontalBlockSize * 1,
+                        AppConfig.verticalBlockSize * 1,
+                        Color(CommonMethods.getColorHexFromStr("#01D35A")),
+                        borderColor:
+                            Color(CommonMethods.getColorHexFromStr("#01D35A")),
+                        hasBorder: true),
+                  ),
+                ),
+          ((_realInsight != null &&
+                      _realInsight.expired != null &&
+                      _realInsight.expired) ||
+                  (_realInsight != null &&
+                      _realInsight.booked != null &&
+                      _realInsight.booked) ||
+                  shouldShowWidget())
+              ? Container()
+              : (_realInsight.compRate != null && _realInsight.compRate > 0)
+                  ? Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: Text(
+                            "${_realInsight.compRate?.toStringAsFixed(1)}%",
+                            style: TextStyle(
+                                color: PlunesColors.RED,
+                                fontSize: AppConfig.smallFont),
+                          ),
+                        ),
+                        Image.asset(
+                          PlunesImages.priceHighIcon,
+                          height: AppConfig.smallFont,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5),
+                          child: Text(
+                            "high",
+                            style: TextStyle(
+                                color: PlunesColors.RED,
+                                fontSize: AppConfig.smallFont),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
+          ((_realInsight != null &&
+                      _realInsight.expired != null &&
+                      _realInsight.expired) ||
+                  (_realInsight != null &&
+                      _realInsight.booked != null &&
+                      _realInsight.booked) ||
+                  !shouldShowWidget())
+              ? Container(
+                  margin:
+                      EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Flexible(
+                        child: Text(
+                          "${_realInsight.expirationMessage ?? PlunesStrings.NA}",
+                          style: TextStyle(
+                              fontSize: AppConfig.smallFont,
+                              fontWeight: FontWeight.normal,
+                              color: (_realInsight.professionalBooked != null &&
+                                      _realInsight.professionalBooked)
+                                  ? PlunesColors.GREENCOLOR
+                                  : PlunesColors.ORANGE),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container()
+        ],
+      ),
+    );
+  }
+
+  Widget _getDistanceAndTimerWidget() {
+    return Column(
+      children: <Widget>[
+        Image.asset(
+          PlunesImages.darkMap,
+          fit: BoxFit.contain,
+          height: AppConfig.verticalBlockSize * 5,
+          alignment: Alignment.center,
+        ),
+        Container(
+          margin:
+              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                Icons.perm_identity,
+                size: AppConfig.verySmallFont,
+                color: PlunesColors.BLACKCOLOR,
+              ),
+              Text(
+                "${_realInsight.distance?.toStringAsFixed(0) ?? 0} Km",
+                style: TextStyle(
+                    fontSize: AppConfig.verySmallFont - 2,
+                    fontWeight: FontWeight.w600,
+                    color: PlunesColors.BLACKCOLOR),
+              )
+            ],
+          ),
+        ),
+        _getTimeWidget()
+      ],
+    );
+  }
+
+  String _getButtonName() {
+    if (_realInsight.category != null &&
+        _realInsight.category.toLowerCase() ==
+            Constants.procedureKey.toLowerCase()) {
+      return (_realInsight.priceUpdated != null && _realInsight.priceUpdated)
+          ? "Price submitted"
+          : "Submit price";
+    }
+    return (_realInsight.priceUpdated != null && _realInsight.priceUpdated)
+        ? "Price Updated"
+        : PlunesStrings.kindlyUpdateYourPrice;
   }
 }

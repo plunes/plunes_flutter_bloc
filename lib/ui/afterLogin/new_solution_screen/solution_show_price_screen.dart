@@ -452,13 +452,29 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                       BorderRadius.all(Radius.circular(10))),
                             ),
                             1 == 1
-                                ? Container(
-                                    height: 120,
-                                    width: double.infinity,
-                                    child: Image.asset(
-                                      PlunesImages.negotiationAnimation,
-                                      fit: BoxFit.cover,
-                                    ))
+                                ? Column(
+                                    children: [
+                                      Container(
+                                          height: 129,
+                                          width: double.infinity,
+                                          child: Image.asset(
+                                            PlunesImages.negotiationAnimation,
+                                            fit: BoxFit.cover,
+                                          )),
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                            top: AppConfig.verticalBlockSize *
+                                                2),
+                                        child: Text(
+                                          "We are connecting with Top Hospitals Near You to get the best Prices for your Medical Concern. We will Notify you at the earliest",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontSize: 16),
+                                        ),
+                                      )
+                                    ],
+                                  )
                                 : _getNegotiatedPriceTotalView(),
                             StreamBuilder<Object>(
                                 stream: _totalDiscountController?.stream,
@@ -472,7 +488,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                             _getTypeOfFacilityWidget(),
                             _getFacilityDefinitionWidget(),
                             _getProfessionalListWidget(),
-                            _getBenefitsWidget()
+                            _getBenefitsWidget(),
+                            _getContactUsButtons()
                           ],
                         ),
                       ),
@@ -483,7 +500,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
             ],
           ),
         ),
-        Positioned(bottom: 0.0, left: 0.0, right: 0.0, child: _getCallButton())
+        // Positioned(bottom: 0.0, left: 0.0, right: 0.0, child: _getContactUsButtons())
       ],
     );
   }
@@ -1257,12 +1274,13 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     );
   }
 
-  Widget _getCallButton() {
+  Widget _getContactUsButtons() {
     return Card(
       margin: EdgeInsets.all(0),
+      elevation: 0.4,
       child: Container(
         margin: EdgeInsets.only(
-            bottom: AppConfig.verticalBlockSize * 2,
+            bottom: AppConfig.verticalBlockSize * 1.4,
             left: AppConfig.horizontalBlockSize * 4,
             right: AppConfig.horizontalBlockSize * 4,
             top: AppConfig.verticalBlockSize * 1.4),

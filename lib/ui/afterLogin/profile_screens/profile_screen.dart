@@ -502,11 +502,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                       borderRadius: BorderRadius.circular(30)),
                   child: Container(
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: TabBar(
                       unselectedLabelColor: Colors.black,
                       isScrollable: true,
-                      labelPadding: EdgeInsets.all(12.0),
+                      labelPadding: EdgeInsets.all(15.0),
                       labelColor: Colors.white,
                       controller: TabController(
                         length: _isDoc
@@ -516,14 +516,15 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                         initialIndex: _selectedIndex,
                       ),
                       indicator: new BubbleTabIndicator(
-                        indicatorHeight: 40.0,
+                        indicatorHeight: 35.0,
                         indicatorColor: Color(0xff01D25A),
                         tabBarIndicatorSize: TabBarIndicatorSize.tab,
                       ),
                       onTap: (i) {
-                        setState(() {
-                          _selectedIndex = i;
-                        });
+                        if (mounted)
+                          setState(() {
+                            _selectedIndex = i;
+                          });
                       },
                       tabs: _isDoc ? _tabsForDoc : _tabsForHospital,
                     ),
@@ -596,8 +597,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
               padding:
                   EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
               child: ShowInsuranceListScreen(
-                  profId: widget.userID, shouldShowAppBar: false),
-              height: AppConfig.verticalBlockSize * 45)
+                  profId: widget.userID, shouldShowAppBar: false))
         ],
       )),
     );
