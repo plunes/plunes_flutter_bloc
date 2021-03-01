@@ -16,6 +16,7 @@ import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/HomeScreen.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
@@ -55,7 +56,12 @@ class FirebaseNotification {
   static const String exploreScreen = "explore"; //"plockr";
   static const String solutionScreen = "solution";
   static const String reviewScreen = "review";
+  static String currentScreenName;
   int _notificationCount = 0, _cartCount = 0;
+
+  static setScreenName(String screenName) {
+    currentScreenName = screenName;
+  }
 
   int getCartCount() {
     return _cartCount;
@@ -171,7 +177,11 @@ class FirebaseNotification {
         widget = HomeScreen(screenNo: Constants.homeScreenNumber);
       } else if (payLoad["data"]['screen'] == solutionScreen) {
         if (payLoad["data"]['id'] != null && payLoad["data"]['id'].isNotEmpty) {
-          widget = SolutionReceivedScreen(
+          if (currentScreenName != null &&
+              currentScreenName == solutionScreen) {
+            return;
+          }
+          widget = SolutionShowPriceScreen(
             catalogueData: CatalogueData(
                 solutionId: payLoad["data"]['id'], isFromNotification: true),
           );
@@ -287,13 +297,15 @@ class FirebaseNotification {
       );
     } else if (notificationModel.notificationType == solutionScreen) {
       if (notificationModel.id != null && notificationModel.id.isNotEmpty) {
-        widget = SolutionReceivedScreen(
+        if (currentScreenName != null && currentScreenName == solutionScreen) {
+          return;
+        }
+        widget = SolutionShowPriceScreen(
           catalogueData: CatalogueData(
               solutionId: notificationModel.id, isFromNotification: true),
         );
       }
     }
-
     if (widget != null) {
       await Future.delayed(Duration(seconds: 3));
       if (isHomeScreen) {
@@ -356,6 +368,8 @@ class FirebaseNotification {
           screenName = insightScreen;
         } else if (payLoad['screen'] == cartScreenName) {
           screenName = cartScreenName;
+        } else if (payLoad['screen'] == solutionScreen) {
+          screenName = solutionScreen;
         }
         if (screenName != null && screenName.isNotEmpty) {
           EventProvider()
@@ -377,6 +391,8 @@ class FirebaseNotification {
           screenName = insightScreen;
         } else if (payLoad["data"]['screen'] == cartScreenName) {
           screenName = cartScreenName;
+        } else if (payLoad["data"]['screen'] == solutionScreen) {
+          screenName = solutionScreen;
         }
         if (screenName != null && screenName.isNotEmpty) {
           EventProvider()

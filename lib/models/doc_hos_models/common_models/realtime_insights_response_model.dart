@@ -4,12 +4,15 @@ class RealTimeInsightsResponse {
   bool success;
   List<RealInsight> data;
   int timer;
+  String preferredTime, maximumTime;
 
   RealTimeInsightsResponse({this.success, this.data, this.timer});
 
   RealTimeInsightsResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     timer = json["timer"];
+    maximumTime = json['maximumTime'];
+    preferredTime = json["preferredTime"];
     if (json['data'] != null) {
       data = new List<RealInsight>();
       json['data'].forEach((v) {
@@ -43,7 +46,7 @@ class RealInsight {
       hasUserReport;
   int timeRemaining, expirationTimer;
   num userPrice, compRate, distance, recommendation, min, max;
-  int createdAt;
+  int createdAt, expiredAt;
   List<DataPoint> dataPoints;
   List<Map<String, dynamic>> specialOffers;
   String category;
@@ -86,7 +89,8 @@ class RealInsight {
       this.userReport,
       this.specialOffers,
       this.category,
-      this.hasUserReport});
+      this.hasUserReport,
+      this.expiredAt});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
     // print("json insight $json");
@@ -145,6 +149,7 @@ class RealInsight {
     }
     category = json['category'];
     hasUserReport = json['hasUserReport'];
+    expiredAt = json['expiredAt'];
   }
 
   Map<String, dynamic> toJson() {

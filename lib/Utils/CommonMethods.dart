@@ -13,6 +13,7 @@ import 'package:intro_slider/intro_slider.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -868,5 +869,17 @@ class CommonMethods {
       stringToReturn = someValue;
     }
     return stringToReturn?.replaceAll("( ", "(");
+  }
+
+  static bool shouldShowProgressOnPrice(
+      Services service, bool shouldNegotiate) {
+    bool _shouldShowProgressOnPrice = false;
+    if (shouldNegotiate != null &&
+        shouldNegotiate &&
+        service.priceUpdated != null &&
+        !(service.priceUpdated)) {
+      _shouldShowProgressOnPrice = true;
+    }
+    return _shouldShowProgressOnPrice;
   }
 }

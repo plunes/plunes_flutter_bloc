@@ -42,6 +42,7 @@ class DocHosSolution {
   int createdTime, expirationTimer, expiredAt;
   List<Services> services;
   int iV;
+  bool shouldNegotiate;
 
   DocHosSolution(
       {this.booked,
@@ -55,7 +56,8 @@ class DocHosSolution {
       this.iV,
       this.showAdditionalFacilities,
       this.expirationTimer,
-      this.expiredAt});
+      this.expiredAt,
+      this.shouldNegotiate});
 
   DocHosSolution.fromJson(Map<String, dynamic> json) {
     // print("serviceId ${json['serviceId']} solId ${json['_id']}");
@@ -76,6 +78,7 @@ class DocHosSolution {
     showAdditionalFacilities = json['showAdditionalFacilities'];
     expirationTimer = json['expirationTimer'];
     expiredAt = json['expiredAt'];
+    shouldNegotiate = json['shouldNegotiate'];
   }
 
   Map<String, dynamic> toJson() {
@@ -129,7 +132,10 @@ class Services {
   num latitude;
   num longitude;
   num distance;
-  bool homeCollection, isExpanded = false, insuranceAvailable;
+  bool homeCollection,
+      isExpanded = false,
+      insuranceAvailable,
+      priceUpdated;
   num recommendation;
   num bookIn;
   num rating;
@@ -162,7 +168,8 @@ class Services {
       this.zestMoney,
       this.professionalPhotos,
       this.insuranceAvailable,
-      this.specialOffers});
+      this.specialOffers,
+      this.priceUpdated});
 
   Services.fromJson(Map<String, dynamic> json) {
     isExpanded = false;
@@ -218,6 +225,7 @@ class Services {
     if (json["technique"] != null && json["technique"].isNotEmpty) {
       specialOffers.add({"Technique": json["technique"]});
     }
+    priceUpdated = json['priceUpdated'];
   }
 
   Map<String, dynamic> toJson() {

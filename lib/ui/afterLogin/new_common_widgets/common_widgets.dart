@@ -1251,8 +1251,12 @@ class CommonWidgets {
     });
   }
 
-  Widget getBookProfessionalWidget(Services service, Function openProfile,
-      Function bookAppointment, Function checkInsurance) {
+  Widget getBookProfessionalWidget(
+      Services service,
+      Function openProfile,
+      Function bookAppointment,
+      Function checkInsurance,
+      DocHosSolution solution) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -1382,66 +1386,79 @@ class CommonWidgets {
                           bottom: AppConfig.verticalBlockSize * 0.5),
                       child: Row(
                         children: [
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                (service.price != null &&
-                                        service.price.isNotEmpty &&
-                                        service.newPrice != null &&
-                                        service.newPrice.isNotEmpty &&
-                                        service.price.first !=
-                                            service.newPrice.first)
-                                    ? RichText(
-                                        textAlign: TextAlign.left,
-                                        text: TextSpan(children: [
-                                          TextSpan(
-                                            text: "MRP \u20B9",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Color(CommonMethods
-                                                    .getColorHexFromStr(
-                                                        "#A2A2A2"))),
-                                          ),
-                                          TextSpan(
-                                              text:
-                                                  "${service.price.first?.toStringAsFixed(1) ?? ""}",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
-                                                  color: Color(CommonMethods
-                                                      .getColorHexFromStr(
-                                                          "#A2A2A2")))),
-                                        ]))
-                                    : Container(),
-                                (service.newPrice != null &&
-                                        service.newPrice.isNotEmpty)
-                                    ? Container(
-                                        margin: EdgeInsets.only(top: 2.5),
-                                        child: RichText(
-                                            textAlign: TextAlign.left,
-                                            text: TextSpan(children: [
-                                              TextSpan(
-                                                  text: "\u20B9",
+                          CommonMethods.shouldShowProgressOnPrice(
+                                  service, solution.shouldNegotiate)
+                              ? Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      height: 100,
+                                      width: 100,
+                                      child: Image.asset(
+                                          PlunesImages.timeMachineImage)),
+                                )
+                              : Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      (service.price != null &&
+                                              service.price.isNotEmpty &&
+                                              service.newPrice != null &&
+                                              service.newPrice.isNotEmpty &&
+                                              service.price.first !=
+                                                  service.newPrice.first)
+                                          ? RichText(
+                                              textAlign: TextAlign.left,
+                                              text: TextSpan(children: [
+                                                TextSpan(
+                                                  text: "MRP \u20B9",
                                                   style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR)),
-                                              TextSpan(
-                                                  text:
-                                                      "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
-                                                  style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR)),
-                                            ])),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ),
+                                                      fontSize: 16,
+                                                      color: Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#A2A2A2"))),
+                                                ),
+                                                TextSpan(
+                                                    text:
+                                                        "${service.price.first?.toStringAsFixed(1) ?? ""}",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                        color: Color(CommonMethods
+                                                            .getColorHexFromStr(
+                                                                "#A2A2A2")))),
+                                              ]))
+                                          : Container(),
+                                      (service.newPrice != null &&
+                                              service.newPrice.isNotEmpty)
+                                          ? Container(
+                                              margin: EdgeInsets.only(top: 2.5),
+                                              child: RichText(
+                                                  textAlign: TextAlign.left,
+                                                  text: TextSpan(children: [
+                                                    TextSpan(
+                                                        text: "\u20B9",
+                                                        style: TextStyle(
+                                                            fontSize: 22,
+                                                            color: PlunesColors
+                                                                .BLACKCOLOR)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
+                                                        style: TextStyle(
+                                                            fontSize: 22,
+                                                            color: PlunesColors
+                                                                .BLACKCOLOR)),
+                                                  ])),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ),
                           Flexible(
                               child: Container(
                             margin: EdgeInsets.only(left: 3),
@@ -1452,6 +1469,10 @@ class CommonWidgets {
                               highlightColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               onTap: () {
+                                if (CommonMethods.shouldShowProgressOnPrice(
+                                    service, solution.shouldNegotiate)) {
+                                  return;
+                                }
                                 if (bookAppointment != null) {
                                   bookAppointment();
                                 }
@@ -1460,7 +1481,10 @@ class CommonWidgets {
                               child: CustomWidgets().getRoundedButton(
                                   PlunesStrings.book,
                                   AppConfig.horizontalBlockSize * 8,
-                                  PlunesColors.PARROTGREEN,
+                                  CommonMethods.shouldShowProgressOnPrice(
+                                          service, solution.shouldNegotiate)
+                                      ? PlunesColors.GREYCOLOR.withOpacity(0.4)
+                                      : PlunesColors.PARROTGREEN,
                                   AppConfig.horizontalBlockSize * 4,
                                   AppConfig.verticalBlockSize * 1,
                                   PlunesColors.WHITECOLOR,
@@ -1692,8 +1716,13 @@ class CommonWidgets {
     );
   }
 
-  Widget getBookProfessionalPopup(Services service, Function openProfile,
-      Function bookAppointment, BuildContext context, Function checkInsurance) {
+  Widget getBookProfessionalPopup(
+      Services service,
+      Function openProfile,
+      Function bookAppointment,
+      BuildContext context,
+      Function checkInsurance,
+      DocHosSolution solution) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -1823,66 +1852,79 @@ class CommonWidgets {
                           bottom: AppConfig.verticalBlockSize * 0.5),
                       child: Row(
                         children: [
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                (service.price != null &&
-                                        service.price.isNotEmpty &&
-                                        service.newPrice != null &&
-                                        service.newPrice.isNotEmpty &&
-                                        service.price.first !=
-                                            service.newPrice.first)
-                                    ? RichText(
-                                        textAlign: TextAlign.left,
-                                        text: TextSpan(children: [
-                                          TextSpan(
-                                            text: "MRP \u20B9",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Color(CommonMethods
-                                                    .getColorHexFromStr(
-                                                        "#A2A2A2"))),
-                                          ),
-                                          TextSpan(
-                                              text:
-                                                  "${service.price.first?.toStringAsFixed(1) ?? ""}",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
-                                                  color: Color(CommonMethods
-                                                      .getColorHexFromStr(
-                                                          "#A2A2A2")))),
-                                        ]))
-                                    : Container(),
-                                (service.newPrice != null &&
-                                        service.newPrice.isNotEmpty)
-                                    ? Container(
-                                        margin: EdgeInsets.only(top: 2.5),
-                                        child: RichText(
-                                            textAlign: TextAlign.left,
-                                            text: TextSpan(children: [
-                                              TextSpan(
-                                                  text: "\u20B9",
+                          CommonMethods.shouldShowProgressOnPrice(
+                                  service, solution.shouldNegotiate)
+                              ? Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      height: 100,
+                                      width: 100,
+                                      child: Image.asset(
+                                          PlunesImages.timeMachineImage)),
+                                )
+                              : Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      (service.price != null &&
+                                              service.price.isNotEmpty &&
+                                              service.newPrice != null &&
+                                              service.newPrice.isNotEmpty &&
+                                              service.price.first !=
+                                                  service.newPrice.first)
+                                          ? RichText(
+                                              textAlign: TextAlign.left,
+                                              text: TextSpan(children: [
+                                                TextSpan(
+                                                  text: "MRP \u20B9",
                                                   style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR)),
-                                              TextSpan(
-                                                  text:
-                                                      "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
-                                                  style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR)),
-                                            ])),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ),
+                                                      fontSize: 16,
+                                                      color: Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#A2A2A2"))),
+                                                ),
+                                                TextSpan(
+                                                    text:
+                                                        "${service.price.first?.toStringAsFixed(1) ?? ""}",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                        color: Color(CommonMethods
+                                                            .getColorHexFromStr(
+                                                                "#A2A2A2")))),
+                                              ]))
+                                          : Container(),
+                                      (service.newPrice != null &&
+                                              service.newPrice.isNotEmpty)
+                                          ? Container(
+                                              margin: EdgeInsets.only(top: 2.5),
+                                              child: RichText(
+                                                  textAlign: TextAlign.left,
+                                                  text: TextSpan(children: [
+                                                    TextSpan(
+                                                        text: "\u20B9",
+                                                        style: TextStyle(
+                                                            fontSize: 22,
+                                                            color: PlunesColors
+                                                                .BLACKCOLOR)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${service.newPrice.first?.toStringAsFixed(1) ?? ""}",
+                                                        style: TextStyle(
+                                                            fontSize: 22,
+                                                            color: PlunesColors
+                                                                .BLACKCOLOR)),
+                                                  ])),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ),
                           Flexible(
                               child: Container(
                             margin: EdgeInsets.only(left: 3),
@@ -1893,6 +1935,10 @@ class CommonWidgets {
                               highlightColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               onTap: () {
+                                if (CommonMethods.shouldShowProgressOnPrice(
+                                    service, solution.shouldNegotiate)) {
+                                  return;
+                                }
                                 if (bookAppointment != null) {
                                   bookAppointment();
                                 }
@@ -1901,7 +1947,10 @@ class CommonWidgets {
                               child: CustomWidgets().getRoundedButton(
                                   PlunesStrings.book,
                                   AppConfig.horizontalBlockSize * 8,
-                                  PlunesColors.PARROTGREEN,
+                                  CommonMethods.shouldShowProgressOnPrice(
+                                          service, solution.shouldNegotiate)
+                                      ? PlunesColors.GREYCOLOR.withOpacity(0.4)
+                                      : PlunesColors.PARROTGREEN,
                                   AppConfig.horizontalBlockSize * 4,
                                   AppConfig.verticalBlockSize * 1,
                                   PlunesColors.WHITECOLOR,
@@ -2132,7 +2181,8 @@ class CommonWidgets {
       Function openProfile,
       int docIndex,
       Function bookAppointment,
-      Function checkInsurance) {
+      Function checkInsurance,
+      DocHosSolution solution) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -2268,71 +2318,88 @@ class CommonWidgets {
                           bottom: AppConfig.verticalBlockSize * 0.5),
                       child: Row(
                         children: [
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                (service.doctors[docIndex].price != null &&
-                                        service.doctors[docIndex].price
-                                            .isNotEmpty &&
-                                        service.doctors[docIndex].newPrice !=
-                                            null &&
-                                        service.doctors[docIndex].newPrice
-                                            .isNotEmpty &&
-                                        service.doctors[docIndex].price.first !=
-                                            service.doctors[docIndex].newPrice
-                                                .first)
-                                    ? RichText(
-                                        textAlign: TextAlign.left,
-                                        text: TextSpan(children: [
-                                          TextSpan(
-                                            text: "MRP \u20B9",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Color(CommonMethods
-                                                    .getColorHexFromStr(
-                                                        "#A2A2A2"))),
-                                          ),
-                                          TextSpan(
-                                              text:
-                                                  "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
-                                                  color: Color(CommonMethods
-                                                      .getColorHexFromStr(
-                                                          "#A2A2A2")))),
-                                        ]))
-                                    : Container(),
-                                (service.doctors[docIndex].newPrice != null &&
-                                        service.doctors[docIndex].newPrice
-                                            .isNotEmpty)
-                                    ? Container(
-                                        margin: EdgeInsets.only(top: 2.5),
-                                        child: RichText(
-                                            textAlign: TextAlign.left,
-                                            text: TextSpan(children: [
-                                              TextSpan(
-                                                  text: "\u20B9",
+                          CommonMethods.shouldShowProgressOnPrice(
+                                  service, solution.shouldNegotiate)
+                              ? Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      height: 100,
+                                      width: 100,
+                                      child: Image.asset(
+                                          PlunesImages.timeMachineImage)),
+                                )
+                              : Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      (service.doctors[docIndex].price !=
+                                                  null &&
+                                              service.doctors[docIndex].price
+                                                  .isNotEmpty &&
+                                              service.doctors[docIndex]
+                                                      .newPrice !=
+                                                  null &&
+                                              service.doctors[docIndex].newPrice
+                                                  .isNotEmpty &&
+                                              service.doctors[docIndex].price
+                                                      .first !=
+                                                  service.doctors[docIndex]
+                                                      .newPrice.first)
+                                          ? RichText(
+                                              textAlign: TextAlign.left,
+                                              text: TextSpan(children: [
+                                                TextSpan(
+                                                  text: "MRP \u20B9",
                                                   style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR)),
-                                              TextSpan(
-                                                  text:
-                                                      "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
-                                                  style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR)),
-                                            ])),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ),
+                                                      fontSize: 16,
+                                                      color: Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#A2A2A2"))),
+                                                ),
+                                                TextSpan(
+                                                    text:
+                                                        "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                        color: Color(CommonMethods
+                                                            .getColorHexFromStr(
+                                                                "#A2A2A2")))),
+                                              ]))
+                                          : Container(),
+                                      (service.doctors[docIndex].newPrice !=
+                                                  null &&
+                                              service.doctors[docIndex].newPrice
+                                                  .isNotEmpty)
+                                          ? Container(
+                                              margin: EdgeInsets.only(top: 2.5),
+                                              child: RichText(
+                                                  textAlign: TextAlign.left,
+                                                  text: TextSpan(children: [
+                                                    TextSpan(
+                                                        text: "\u20B9",
+                                                        style: TextStyle(
+                                                            fontSize: 22,
+                                                            color: PlunesColors
+                                                                .BLACKCOLOR)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
+                                                        style: TextStyle(
+                                                            fontSize: 22,
+                                                            color: PlunesColors
+                                                                .BLACKCOLOR)),
+                                                  ])),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ),
                           Flexible(
                               child: Container(
                             margin: EdgeInsets.only(left: 3),
@@ -2343,6 +2410,10 @@ class CommonWidgets {
                               highlightColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               onTap: () {
+                                if (CommonMethods.shouldShowProgressOnPrice(
+                                    service, solution.shouldNegotiate)) {
+                                  return;
+                                }
                                 if (bookAppointment != null) {
                                   bookAppointment();
                                 }
@@ -2351,7 +2422,10 @@ class CommonWidgets {
                               child: CustomWidgets().getRoundedButton(
                                   PlunesStrings.book,
                                   AppConfig.horizontalBlockSize * 8,
-                                  PlunesColors.PARROTGREEN,
+                                  CommonMethods.shouldShowProgressOnPrice(
+                                          service, solution.shouldNegotiate)
+                                      ? PlunesColors.GREYCOLOR.withOpacity(0.4)
+                                      : PlunesColors.PARROTGREEN,
                                   AppConfig.horizontalBlockSize * 4,
                                   AppConfig.verticalBlockSize * 1,
                                   PlunesColors.WHITECOLOR,
@@ -2584,7 +2658,8 @@ class CommonWidgets {
       int docIndex,
       Function bookAppointment,
       BuildContext context,
-      Function checkInsurance) {
+      Function checkInsurance,
+      DocHosSolution solution) {
     return Card(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.8),
       color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -2720,71 +2795,88 @@ class CommonWidgets {
                           bottom: AppConfig.verticalBlockSize * 0.5),
                       child: Row(
                         children: [
-                          Expanded(
-                            flex: 3,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                (service.doctors[docIndex].price != null &&
-                                        service.doctors[docIndex].price
-                                            .isNotEmpty &&
-                                        service.doctors[docIndex].newPrice !=
-                                            null &&
-                                        service.doctors[docIndex].newPrice
-                                            .isNotEmpty &&
-                                        service.doctors[docIndex].price.first !=
-                                            service.doctors[docIndex].newPrice
-                                                .first)
-                                    ? RichText(
-                                        textAlign: TextAlign.left,
-                                        text: TextSpan(children: [
-                                          TextSpan(
-                                            text: "MRP \u20B9",
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                color: Color(CommonMethods
-                                                    .getColorHexFromStr(
-                                                        "#A2A2A2"))),
-                                          ),
-                                          TextSpan(
-                                              text:
-                                                  "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
-                                                  color: Color(CommonMethods
-                                                      .getColorHexFromStr(
-                                                          "#A2A2A2")))),
-                                        ]))
-                                    : Container(),
-                                (service.doctors[docIndex].newPrice != null &&
-                                        service.doctors[docIndex].newPrice
-                                            .isNotEmpty)
-                                    ? Container(
-                                        margin: EdgeInsets.only(top: 2.5),
-                                        child: RichText(
-                                            textAlign: TextAlign.left,
-                                            text: TextSpan(children: [
-                                              TextSpan(
-                                                  text: "\u20B9",
+                          CommonMethods.shouldShowProgressOnPrice(
+                                  service, solution.shouldNegotiate)
+                              ? Expanded(
+                                  flex: 3,
+                                  child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      height: 100,
+                                      width: 100,
+                                      child: Image.asset(
+                                          PlunesImages.timeMachineImage)),
+                                )
+                              : Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      (service.doctors[docIndex].price !=
+                                                  null &&
+                                              service.doctors[docIndex].price
+                                                  .isNotEmpty &&
+                                              service.doctors[docIndex]
+                                                      .newPrice !=
+                                                  null &&
+                                              service.doctors[docIndex].newPrice
+                                                  .isNotEmpty &&
+                                              service.doctors[docIndex].price
+                                                      .first !=
+                                                  service.doctors[docIndex]
+                                                      .newPrice.first)
+                                          ? RichText(
+                                              textAlign: TextAlign.left,
+                                              text: TextSpan(children: [
+                                                TextSpan(
+                                                  text: "MRP \u20B9",
                                                   style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR)),
-                                              TextSpan(
-                                                  text:
-                                                      "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
-                                                  style: TextStyle(
-                                                      fontSize: 22,
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR)),
-                                            ])),
-                                      )
-                                    : Container(),
-                              ],
-                            ),
-                          ),
+                                                      fontSize: 16,
+                                                      color: Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#A2A2A2"))),
+                                                ),
+                                                TextSpan(
+                                                    text:
+                                                        "${service.doctors[docIndex].price.first?.toStringAsFixed(1)}",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .lineThrough,
+                                                        color: Color(CommonMethods
+                                                            .getColorHexFromStr(
+                                                                "#A2A2A2")))),
+                                              ]))
+                                          : Container(),
+                                      (service.doctors[docIndex].newPrice !=
+                                                  null &&
+                                              service.doctors[docIndex].newPrice
+                                                  .isNotEmpty)
+                                          ? Container(
+                                              margin: EdgeInsets.only(top: 2.5),
+                                              child: RichText(
+                                                  textAlign: TextAlign.left,
+                                                  text: TextSpan(children: [
+                                                    TextSpan(
+                                                        text: "\u20B9",
+                                                        style: TextStyle(
+                                                            fontSize: 22,
+                                                            color: PlunesColors
+                                                                .BLACKCOLOR)),
+                                                    TextSpan(
+                                                        text:
+                                                            "${service.doctors[docIndex].newPrice.first?.toStringAsFixed(1)}",
+                                                        style: TextStyle(
+                                                            fontSize: 22,
+                                                            color: PlunesColors
+                                                                .BLACKCOLOR)),
+                                                  ])),
+                                            )
+                                          : Container(),
+                                    ],
+                                  ),
+                                ),
                           Flexible(
                               child: Container(
                             margin: EdgeInsets.only(left: 3),
@@ -2795,6 +2887,10 @@ class CommonWidgets {
                               highlightColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               onTap: () {
+                                if (CommonMethods.shouldShowProgressOnPrice(
+                                    service, solution.shouldNegotiate)) {
+                                  return;
+                                }
                                 if (bookAppointment != null) {
                                   bookAppointment();
                                 }
@@ -2803,7 +2899,10 @@ class CommonWidgets {
                               child: CustomWidgets().getRoundedButton(
                                   PlunesStrings.book,
                                   AppConfig.horizontalBlockSize * 8,
-                                  PlunesColors.PARROTGREEN,
+                                  CommonMethods.shouldShowProgressOnPrice(
+                                          service, solution.shouldNegotiate)
+                                      ? PlunesColors.GREYCOLOR.withOpacity(0.4)
+                                      : PlunesColors.PARROTGREEN,
                                   AppConfig.horizontalBlockSize * 4,
                                   AppConfig.verticalBlockSize * 1,
                                   PlunesColors.WHITECOLOR,

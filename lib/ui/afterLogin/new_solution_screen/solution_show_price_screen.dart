@@ -9,9 +9,11 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -66,6 +68,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
 
   @override
   void initState() {
+    FirebaseNotification.setScreenName(FirebaseNotification.solutionScreen);
     _userBloc = UserBloc();
     _totalDiscountController = StreamController.broadcast();
     _user = UserManager().getUserDetails();
@@ -88,6 +91,13 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       //     markerId: MarkerId("ds"),
       //     onTap: () => _doSomething()));
       // if (mounted) setState(() {});
+    });
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == FirebaseNotification.solutionScreen &&
+          mounted) {
+        _getFacilities();
+      }
     });
     super.initState();
   }
@@ -139,6 +149,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
 
   @override
   void dispose() {
+    FirebaseNotification.setScreenName(null);
     _globalKeys = [];
     _functions = [];
     _customServices = [];
@@ -451,11 +462,21 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                             ),
-                            1 == 1
+                            (_searchedDocResults != null &&
+                                    _searchedDocResults.solution != null &&
+                                    _searchedDocResults
+                                            .solution.shouldNegotiate !=
+                                        null &&
+                                    _searchedDocResults
+                                        .solution.shouldNegotiate)
                                 ? Column(
                                     children: [
                                       Container(
                                           height: 129,
+                                          margin: EdgeInsets.symmetric(
+                                              horizontal: AppConfig
+                                                      .horizontalBlockSize *
+                                                  5),
                                           width: double.infinity,
                                           child: Image.asset(
                                             PlunesImages.negotiationAnimation,
@@ -522,7 +543,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               () => _bookFacilityAppointment(
                   _searchedDocResults.solution.services[index]),
               () => _openInsuranceScreen(
-                  _searchedDocResults.solution.services[index]));
+                  _searchedDocResults.solution.services[index]),
+              _searchedDocResults.solution);
         },
         itemCount: _searchedDocResults?.solution?.services?.length ?? 0,
       ),
@@ -731,7 +753,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                 () =>
                     _openProfile(_searchedDocResults.solution.services[index]),
                 _searchedDocResults.solution.services[index].doctors
-                    .indexOf(doctor)));
+                    .indexOf(doctor),
+                _searchedDocResults.solution));
             Services service = Services(
                 name: doctor?.name ?? "",
                 sId: _searchedDocResults.solution.services[index].sId,
@@ -741,8 +764,9 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                 professionalPhotos: _searchedDocResults
                         .solution.services[index].professionalPhotos ??
                     [],
-                distance:
-                    _searchedDocResults.solution.services[index].distance);
+                distance: _searchedDocResults.solution.services[index].distance,
+                priceUpdated:
+                    _searchedDocResults.solution.services[index].priceUpdated);
             _customServices.add(service);
             _mapWidgets.add(RepaintBoundary(
               child: Container(
@@ -807,8 +831,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
           _functions.add(() => _showProfessionalPopup(
               _searchedDocResults.solution.services[index],
               widget.catalogueData,
-              () =>
-                  _openProfile(_searchedDocResults.solution.services[index])));
+              () => _openProfile(_searchedDocResults.solution.services[index]),
+              _searchedDocResults.solution));
           _customServices.add(_searchedDocResults.solution.services[index]);
           _mapWidgets.add(RepaintBoundary(
             child: Container(
@@ -900,7 +924,11 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         _markers.add(Marker(
             markerId: MarkerId(_customServices[index].sId),
             onTap: () => _functions[index](),
-            icon: BitmapDescriptor.fromBytes(bytes),
+            icon: CommonMethods.shouldShowProgressOnPrice(
+                    _customServices[index],
+                    _searchedDocResults?.solution?.shouldNegotiate)
+                ? hosImage2XGreenBgDesc
+                : BitmapDescriptor.fromBytes(bytes),
             position: LatLng(_customServices[index].latitude?.toDouble() ?? 0.0,
                 _customServices[index].longitude?.toDouble() ?? 0.0),
             infoWindow: InfoWindow(
@@ -956,7 +984,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   }
 
   _showHospitalDoctorPopup(Services service, CatalogueData catalogueData,
-      Function openProfile, int index) {
+      Function openProfile, int index, DocHosSolution solution) {
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -972,14 +1000,15 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                   index,
                   () => _bookAppointmentWithHosDoctor(service, index),
                   context,
-                  () => _openInsuranceScreen(service)),
+                  () => _openInsuranceScreen(service),
+                  solution),
             ),
           );
         });
   }
 
-  _showProfessionalPopup(
-      Services service, CatalogueData catalogueData, Function openProfile) {
+  _showProfessionalPopup(Services service, CatalogueData catalogueData,
+      Function openProfile, DocHosSolution solution) {
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -994,7 +1023,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                   openProfile,
                   () => _bookFacilityAppointment(service),
                   context,
-                  () => _openInsuranceScreen(service)),
+                  () => _openInsuranceScreen(service),
+                  solution),
             ),
           );
         });
@@ -1011,7 +1041,8 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
               () => _openProfile(service),
               index,
               () => _bookAppointmentWithHosDoctor(service, index),
-              () => _openInsuranceScreen(service)),
+              () => _openInsuranceScreen(service),
+              _searchedDocResults.solution),
         );
       },
       itemCount: service?.doctors?.length ?? 0,

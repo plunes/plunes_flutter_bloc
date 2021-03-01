@@ -158,6 +158,8 @@ class PlunesImages {
       "assets/gif/animation_500_klkj44md.gif";
   static const String whatsAppIcon = "assets/images/whatsappIcon.png";
   static const String callingIconWhite = "assets/images/callingIconWhite.png";
+  static const String timeMachineImage =
+      "assets/gif/animation_500_kllw8ofi.gif";
 
   static var imageArray = [
     'assets/images/sliders/bidding.png',

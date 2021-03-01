@@ -1037,7 +1037,7 @@ class _HospitalOverviewScreenState
                                 _realTimeInsightsResponse.data.isEmpty)
                             ? Container()
                             : Text(
-                                'Preferred Time : ${_realTimeInsightsResponse?.timer} Mins',
+                                'Preferred Time : ${_realTimeInsightsResponse?.preferredTime}',
                                 style: TextStyle(
                                     fontSize: 13,
                                     color: PlunesColors.GREYCOLOR
@@ -1049,7 +1049,7 @@ class _HospitalOverviewScreenState
                 Expanded(
                     flex: 2,
                     child: Text(
-                      'Maximum Time : 1 hour',
+                      'Maximum Time : ${_realTimeInsightsResponse?.maximumTime}',
                       textAlign: TextAlign.right,
                       style: TextStyle(
                           fontSize: 13,
@@ -1527,14 +1527,24 @@ class _HospitalOverviewScreenState
                         _realTimeInsightsResponse.data[itemIndex].userName,
                     serviceName: "is looking for " +
                         "${_realTimeInsightsResponse.data[itemIndex].serviceName ?? _getNaString()}",
-                    remainingTime: (_realTimeInsightsResponse.data[itemIndex] !=
-                                null &&
-                            _realTimeInsightsResponse.data[itemIndex].booked !=
-                                null &&
-                            _realTimeInsightsResponse.data[itemIndex].booked)
-                        ? 0
-                        : _realTimeInsightsResponse
-                            .data[itemIndex].expirationTimer,
+                    remainingTime:
+                        (_realTimeInsightsResponse.data[itemIndex] != null &&
+                                    _realTimeInsightsResponse
+                                            .data[itemIndex].booked !=
+                                        null &&
+                                    _realTimeInsightsResponse
+                                        .data[itemIndex].booked ||
+                                (_realTimeInsightsResponse.data[itemIndex] !=
+                                        null &&
+                                    _realTimeInsightsResponse
+                                            .data[itemIndex].priceUpdated !=
+                                        null &&
+                                    _realTimeInsightsResponse
+                                        .data[itemIndex].priceUpdated))
+                            ? 0
+                            : _realTimeInsightsResponse
+                                    .data[itemIndex]?.expiredAt ??
+                                0,
                     centreLocation: _realTimeInsightsResponse
                         .data[itemIndex].centerLocation,
                     imageUrl:
@@ -1790,8 +1800,8 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
             DateTime.now()
                     .difference(DateTime.fromMillisecondsSinceEpoch(
                         widget.remainingTime))
-                    .inMinutes >
-                _countDownValue) ??
+                    .inSeconds >=
+                0) ??
         true;
   }
 
@@ -1817,8 +1827,18 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     if (widget.remainingTime != null && widget.remainingTime != 0) {
       var duration = DateTime.now().difference(
           DateTime.fromMillisecondsSinceEpoch(widget.remainingTime));
-      if (duration != null && duration.inMinutes != null) {
-        int val = _countDownValue - duration.inMinutes;
+      // print("duration.inHours.abs() ${duration.inHours.abs()}");
+      if (duration.inDays.abs() > 1 || duration.inHours.abs() >= 24) {
+        _timeValue =
+            "${duration.inDays.abs()} ${duration.inDays.abs() == 1 ? "day" : "days"}";
+      } else if (duration.inHours.abs() < 24 &&
+          duration.inMinutes.abs() >= 60) {
+        _timeValue =
+            "${duration.inHours.abs()} ${duration.inHours.abs() == 1 ? "hour" : "hours"}";
+      } else if (duration != null && duration.inMinutes != null) {
+        // print("duration.inMinutes ${duration.inMinutes}");
+        // int val = _countDownValue - duration.inMinutes.abs();
+        int val = duration.inMinutes.abs();
         if (_prevMinValue == null) {
           _prevMinValue = val;
         }
@@ -1836,6 +1856,9 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
             _sec = "0$_sec";
           }
           _timeValue = _timeValue + ':' + _sec;
+        }
+        if (_timeValue != null) {
+          _timeValue = _timeValue + " Mins";
         }
       }
     }
@@ -1855,7 +1878,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       borderRadius: BorderRadius.circular(8.0)),
                   child: Center(
                     child: Text(
-                      shouldShowWidget() ? "00:00 Mins" : _timeValue + " Mins",
+                      shouldShowWidget() ? "00:00 Mins" : _timeValue,
                       style: TextStyle(
                           color: PlunesColors.GREENCOLOR,
                           fontSize: AppConfig.verySmallFont),
@@ -1906,8 +1929,8 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       } else if (DateTime.now()
               .difference(
                   DateTime.fromMillisecondsSinceEpoch(widget.remainingTime))
-              .inMinutes >=
-          60) {
+              .inSeconds >=
+          0) {
 //        print("refreshing insights now ${widget.serviceName}");
         widget.getRealTimeInsights();
         timer.cancel();
@@ -2041,8 +2064,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       _realInsight.expired) ||
                   (_realInsight != null &&
                       _realInsight.booked != null &&
-                      _realInsight.booked) ||
-                  !shouldShowWidget())
+                      _realInsight.booked))
               ? Container(
                   margin:
                       EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
