@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
-import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -213,6 +212,14 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
         body: _getBodyWidget());
   }
 
+  Widget _getLineWidget() {
+    return Container(
+      width: double.infinity,
+      color: PlunesColors.GREYCOLOR.withOpacity(0.3),
+      height: 0.8,
+    );
+  }
+
   Widget _getMainBody() {
     return SingleChildScrollView(
       child: Container(
@@ -401,11 +408,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   style: TextStyle(color: Color(0xff4F4F4F)),
                 ),
                 SizedBox(height: 15),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#70707059")),
-                  lineThickness: 1,
-                ),
+                _getLineWidget(),
                 SizedBox(height: 15),
                 Text(
                   plunesStrings.introduction,
@@ -426,11 +429,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 SizedBox(
                   height: 22,
                 ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#70707059")),
-                  lineThickness: 1,
-                ),
+                _getLineWidget(),
                 SizedBox(
                   height: 22,
                 ),
@@ -480,11 +479,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 SizedBox(
                   height: 22,
                 ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#70707059")),
-                  lineThickness: 1,
-                ),
+                _getLineWidget(),
                 SizedBox(
                   height: 22,
                 ),
@@ -502,7 +497,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                       borderRadius: BorderRadius.circular(30)),
                   child: Container(
                     alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    padding: const EdgeInsets.symmetric(vertical: .0),
                     child: TabBar(
                       unselectedLabelColor: Colors.black,
                       isScrollable: true,
@@ -545,11 +540,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 SizedBox(
                   height: 10,
                 ),
-                DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#70707059")),
-                  lineThickness: 1,
-                ),
+                _getLineWidget(),
                 SizedBox(
                   height: 10,
                 ),
@@ -566,10 +557,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
           ),
           Container(
               margin: EdgeInsets.symmetric(horizontal: 13),
-              child: DottedLine(
-                dashColor: Color(CommonMethods.getColorHexFromStr("#70707059")),
-                lineThickness: 1,
-              )),
+              child: _getLineWidget()),
           (_specialityList == null || _specialityList.isEmpty)
               ? Container()
               : SizedBox(

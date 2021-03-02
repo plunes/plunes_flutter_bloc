@@ -1082,6 +1082,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           Color(CommonMethods.getColorHexFromStr("#01D35A")),
                           0.7),
                       inactiveTrackColor: PlunesColors.WHITECOLOR,
+                      showValueIndicator: ShowValueIndicator.never,
                       trackShape: RoundedRectSliderTrackShape(),
                       trackHeight: 8.5,
                       thumbColor: PlunesColors.LIGHTGREENCOLOR,
@@ -1168,7 +1169,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                       );
                                     }),
                                 Text(
-                                  'Recommended',
+                                  'Recommendation',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: AppConfig.mediumFont - 1,

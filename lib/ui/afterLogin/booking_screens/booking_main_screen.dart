@@ -41,6 +41,7 @@ import 'package:plunes/ui/afterLogin/cart_screens/add_to_cart_main_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 // import 'package:upi_pay/upi_pay.dart';
 
 // ignore: must_be_immutable
@@ -1359,14 +1360,12 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   _goToProfilePage() {
     if (_docProfileInfo.user.userType != null &&
         _docProfileInfo.user.uid != null) {
-      Widget route;
-      if (_docProfileInfo.user.userType.toLowerCase() ==
-          Constants.doctor.toString().toLowerCase()) {
-        route = DocProfile(userId: _docProfileInfo.user.uid);
-      } else {
-        route = HospitalProfile(userID: _docProfileInfo.user.uid);
-      }
-      Navigator.push(context, MaterialPageRoute(builder: (context) => route));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DoctorInfo(_docProfileInfo.user.uid,
+                  isDoc: (_docProfileInfo.user.userType.toLowerCase() ==
+                      Constants.doctor.toString().toLowerCase()))));
     }
   }
 
@@ -2287,11 +2286,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           child: Container(
             alignment: Alignment.center,
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
+            padding: const EdgeInsets.symmetric(vertical: 0.5),
             child: TabBar(
               unselectedLabelColor: Colors.black,
               isScrollable: true,
-              labelPadding: EdgeInsets.all(12.0),
+              labelPadding: EdgeInsets.all(15.0),
               labelColor: Colors.white,
               controller: TabController(
                 length: 2,
@@ -2299,7 +2298,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                 initialIndex: _selectedIndex,
               ),
               indicator: new BubbleTabIndicator(
-                indicatorHeight: 40.0,
+                indicatorHeight: 35.0,
                 indicatorColor: PlunesColors.PARROTGREEN,
                 tabBarIndicatorSize: TabBarIndicatorSize.tab,
               ),

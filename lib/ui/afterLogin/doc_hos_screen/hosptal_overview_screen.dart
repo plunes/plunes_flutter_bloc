@@ -2014,13 +2014,15 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                     child: CustomWidgets().getRoundedButton(
                         _getButtonName(),
                         AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.WHITECOLOR,
+                        _getButtonColour(),
                         AppConfig.horizontalBlockSize * 1,
                         AppConfig.verticalBlockSize * 1,
-                        Color(CommonMethods.getColorHexFromStr("#01D35A")),
+                        _getButtonTextColour(),
                         borderColor:
                             Color(CommonMethods.getColorHexFromStr("#01D35A")),
-                        hasBorder: true),
+                        hasBorder: !(_realInsight.category != null &&
+                            _realInsight.category.toLowerCase() ==
+                                Constants.procedureKey.toLowerCase())),
                   ),
                 ),
           ((_realInsight != null &&
@@ -2140,5 +2142,23 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     return (_realInsight.priceUpdated != null && _realInsight.priceUpdated)
         ? "Price Updated"
         : PlunesStrings.kindlyUpdateYourPrice;
+  }
+
+  Color _getButtonColour() {
+    if (_realInsight.category != null &&
+        _realInsight.category.toLowerCase() ==
+            Constants.procedureKey.toLowerCase()) {
+      return Color(CommonMethods.getColorHexFromStr("#1D3861"));
+    }
+    return PlunesColors.WHITECOLOR;
+  }
+
+  Color _getButtonTextColour() {
+    if (_realInsight.category != null &&
+        _realInsight.category.toLowerCase() ==
+            Constants.procedureKey.toLowerCase()) {
+      return PlunesColors.WHITECOLOR;
+    }
+    return Color(CommonMethods.getColorHexFromStr("#01D35A"));
   }
 }

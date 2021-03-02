@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
       items: <BottomNavigationBarItem>[
-        bottomNavigationBarItem(plunesStrings.solution, plunesImages.bidIcon,
+        bottomNavigationBarItem(plunesStrings.home, plunesImages.bidIcon,
             plunesImages.bidActiveIcon),
         bottomNavigationBarItem(
             PlunesStrings.explore.toUpperCase(),
