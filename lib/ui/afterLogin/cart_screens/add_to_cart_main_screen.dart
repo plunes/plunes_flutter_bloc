@@ -57,6 +57,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
 
   @override
   void initState() {
+    FirebaseNotification.setScreenName(FirebaseNotification.cartScreenName);
     _isProcessing = false;
     _isScreenRefresherStared = false;
     _hasItemOnScreen = true;
@@ -118,6 +119,7 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
 
   @override
   void dispose() {
+    FirebaseNotification.setScreenName(null);
     _timer?.cancel();
     _timerStream?.close();
     _cartMainBloc?.getCartCount();

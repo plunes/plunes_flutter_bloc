@@ -8,8 +8,8 @@ class Constants {
   static const List<String> genderList = ["Male", "Female", "Other"];
   static const int exploreScreenNumber = 1;
   static const int homeScreenNumber = 0;
-  static const int cartScreenNumber = 2;
-  static const int notificationScreenNumber = 3;
+  static const int activityScreenNumber = 2;
+  static const int notificationScreenNumber = 4;
   static String DEVICE_TOKEN = "device_token";
   static const String profile = 'Profile';
   static const String POST = 'Post';

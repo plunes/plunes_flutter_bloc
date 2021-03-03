@@ -19,6 +19,8 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'HomeScreen.dart';
@@ -335,12 +337,24 @@ class _NotificationScreenState extends State<NotificationScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => SolutionReceivedScreen(
+              builder: (context) => SolutionShowPriceScreen(
                     catalogueData: CatalogueData(
                         solutionId: result.notificationId,
                         isFromNotification: true),
                   )));
-    } else if (result.notificationScreen ==
+    }
+    else if (result.notificationScreen == FirebaseNotification.solutionViewScreen &&
+        UserManager().getUserDetails().userType == Constants.user) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ViewSolutionsScreen(
+                catalogueData: CatalogueData(
+                    solutionId: result.notificationId,
+                    isFromNotification: true),
+              )));
+    }
+    else if (result.notificationScreen ==
         FirebaseNotification.bookingScreen) {
 //      print("notification id is ${result.notificationId}");
       Navigator.push(
@@ -377,12 +391,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   HomeScreen(screenNo: Constants.exploreScreenNumber)),
           (_) => false);
     } else if (result.notificationScreen ==
-        FirebaseNotification.cartScreenName) {
+        FirebaseNotification.activityScreen) {
       Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  HomeScreen(screenNo: Constants.cartScreenNumber)),
+                  HomeScreen(screenNo: Constants.activityScreenNumber)),
           (_) => false);
     }
   }

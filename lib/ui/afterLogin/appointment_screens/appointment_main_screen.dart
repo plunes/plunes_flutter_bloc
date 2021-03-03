@@ -53,6 +53,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
 
   @override
   void initState() {
+    FirebaseNotification.setScreenName(FirebaseNotification.bookingScreen);
     _shouldOpenPopUp = widget.shouldOpenReviewPopup ?? false;
     _upComingAppointments = [];
     _confirmedDocHosAppointments = [];
@@ -86,6 +87,7 @@ class _AppointmentMainScreenState extends BaseState<AppointmentMainScreen>
 
   @override
   void dispose() {
+    FirebaseNotification.setScreenName(null);
     _appointmentBloc?.dispose();
     super.dispose();
   }

@@ -75,7 +75,7 @@ class PlunesColors {
   static final Color SPARKLINGGREEN =
       Color(CommonMethods.getColorHexFromStr("#01D35A"));
   static final Color ORANGE =
-      Color(CommonMethods.getColorHexFromStr("#E4AA31"));
+      Color(CommonMethods.getColorHexFromStr("#E0825F"));
   static final Color RED = Color(CommonMethods.getColorHexFromStr("#E0825F"));
   static final Color LIGHTESTGREYCOLOR =
       Color(CommonMethods.getColorHexFromStr("#EFEFEF"));

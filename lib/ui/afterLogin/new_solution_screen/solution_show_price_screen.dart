@@ -65,10 +65,18 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   Timer _discountCalculationTimer;
   PremiumBenefitsModel _premiumBenefitsModel;
   UserBloc _userBloc;
+  bool _isPopUpOpened;
+
+  void _initScreenNameAfterDelay() async {
+    Future.delayed(Duration(seconds: 1)).then((value) {
+      _setScreenName(FirebaseNotification.solutionScreen);
+    });
+  }
 
   @override
   void initState() {
-    FirebaseNotification.setScreenName(FirebaseNotification.solutionScreen);
+    _isPopUpOpened = false;
+    _initScreenNameAfterDelay();
     _userBloc = UserBloc();
     _totalDiscountController = StreamController.broadcast();
     _user = UserManager().getUserDetails();
@@ -95,8 +103,14 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
       if (event != null &&
           event.screenName == FirebaseNotification.solutionScreen &&
+          FirebaseNotification.getCurrentScreenName() != null &&
+          FirebaseNotification.getCurrentScreenName() ==
+              FirebaseNotification.solutionScreen &&
           mounted) {
-        _getFacilities();
+        if (_isPopUpOpened != null && _isPopUpOpened) {
+          Navigator.pop(context);
+        }
+        Navigator.maybePop(context);
       }
     });
     super.initState();
@@ -147,9 +161,13 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     return totalDiscount;
   }
 
+  _setScreenName(String screenName) {
+    FirebaseNotification.setScreenName(screenName);
+  }
+
   @override
   void dispose() {
-    FirebaseNotification.setScreenName(null);
+    _setScreenName(null);
     _globalKeys = [];
     _functions = [];
     _customServices = [];
@@ -581,12 +599,14 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                 child: InkWell(
                   onDoubleTap: () {},
                   onTap: () {
+                    _setScreenName(null);
                     Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => SolutionMap(
                                     _searchedDocResults, widget.catalogueData)))
                         .then((value) {
+                      _setScreenName(FirebaseNotification.solutionScreen);
                       if (value != null && value) {
                         Navigator.pop(context, true);
                       }
@@ -974,17 +994,22 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     if (service != null &&
         service.userType != null &&
         service.professionalId != null) {
+      _setScreenName(null);
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => DoctorInfo(service.professionalId,
-                  isDoc: (service.userType.toLowerCase() ==
-                      Constants.doctor.toString().toLowerCase()))));
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DoctorInfo(service.professionalId,
+                      isDoc: (service.userType.toLowerCase() ==
+                          Constants.doctor.toString().toLowerCase()))))
+          .then((value) {
+        _setScreenName(FirebaseNotification.solutionScreen);
+      });
     }
   }
 
   _showHospitalDoctorPopup(Services service, CatalogueData catalogueData,
       Function openProfile, int index, DocHosSolution solution) {
+    _isPopUpOpened = true;
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -1004,11 +1029,14 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                   solution),
             ),
           );
-        });
+        }).then((value) {
+      _isPopUpOpened = false;
+    });
   }
 
   _showProfessionalPopup(Services service, CatalogueData catalogueData,
       Function openProfile, DocHosSolution solution) {
+    _isPopUpOpened = true;
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -1027,7 +1055,9 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                   solution),
             ),
           );
-        });
+        }).then((value) {
+      _isPopUpOpened = false;
+    });
   }
 
   Widget _getHospitalDoctorListWidget(Services service) {
@@ -1055,6 +1085,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       return;
     }
     _solution = _searchedDocResults.solution;
+    _setScreenName(null);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -1071,6 +1102,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                   serviceIndex: 0,
                   service: service,
                 ))).then((value) {
+      _setScreenName(FirebaseNotification.solutionScreen);
       if (value != null &&
           value.runtimeType == "pop".runtimeType &&
           value.toString() == "pop") {
@@ -1085,6 +1117,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       return;
     }
     _solution = _searchedDocResults.solution;
+    _setScreenName(null);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -1106,6 +1139,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                       newPrice: service.doctors[docIndex].newPrice,
                       paymentOptions: service.paymentOptions),
                 ))).then((value) {
+      _setScreenName(FirebaseNotification.solutionScreen);
       if (value != null &&
           value.runtimeType == "pop".runtimeType &&
           value.toString() == "pop") {
@@ -1128,12 +1162,14 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   }
 
   void _showSnackBar(String message, {bool shouldPop = false}) {
+    _isPopUpOpened = true;
     showDialog(
         context: context,
         builder: (context) {
           return CustomWidgets()
               .getInformativePopup(globalKey: scaffoldKey, message: message);
         }).then((value) {
+      _isPopUpOpened = false;
       if (shouldPop) {
         Navigator.pop(context);
       }
@@ -1238,11 +1274,15 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     if (service != null &&
         service.professionalId != null &&
         service.professionalId.trim().isNotEmpty) {
+      _setScreenName(FirebaseNotification.solutionScreen);
       Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  ShowInsuranceListScreen(profId: service.professionalId)));
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ShowInsuranceListScreen(profId: service.professionalId)))
+          .then((value) {
+        _setScreenName(FirebaseNotification.solutionScreen);
+      });
     }
   }
 

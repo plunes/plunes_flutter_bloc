@@ -8,11 +8,13 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/youtube_player.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/explore_bloc/explore_main_bloc.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/explore/explore_main_model.dart';
 import 'package:plunes/models/new_solution_model/media_content_model.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -45,12 +47,20 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
 
   @override
   void initState() {
+    FirebaseNotification.setScreenName(FirebaseNotification.exploreScreen);
     _cartBloc = CartMainBloc();
     _exploreMainBloc = ExploreMainBloc();
     _homeScreenMainBloc = HomeScreenMainBloc();
     _streamController = StreamController.broadcast();
     _currentDotPosition = 0.0;
     _getData();
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == FirebaseNotification.exploreScreen &&
+          mounted) {
+        _getData();
+      }
+    });
     super.initState();
   }
 
@@ -69,6 +79,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
 
   @override
   void dispose() {
+    FirebaseNotification.setScreenName(null);
     _getCartCount();
     _exploreMainBloc?.dispose();
     _streamController?.close();

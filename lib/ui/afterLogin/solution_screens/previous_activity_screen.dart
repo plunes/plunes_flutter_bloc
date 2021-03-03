@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/video_util.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
@@ -39,6 +41,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
   @override
   void initState() {
+    FirebaseNotification.setScreenName(FirebaseNotification.activityScreen);
     _cartBloc = CartMainBloc();
     _streamController = StreamController.broadcast();
     _timerForTimeUpdation = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -50,6 +53,13 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     _missedSolutions = [];
     _prevMissSolutionBloc = PrevMissSolutionBloc();
     _getPreviousSolutions();
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == FirebaseNotification.activityScreen &&
+          mounted) {
+        _getPreviousSolutions();
+      }
+    });
     super.initState();
   }
 
@@ -59,6 +69,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
   @override
   void dispose() {
+    FirebaseNotification.setScreenName(null);
     _getCartCount();
     _streamController?.close();
     _prevMissSolutionBloc?.dispose();

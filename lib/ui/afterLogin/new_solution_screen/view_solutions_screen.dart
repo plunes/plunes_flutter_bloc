@@ -8,9 +8,11 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
@@ -54,9 +56,12 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
   User _user;
   PremiumBenefitsModel _premiumBenefitsModel;
   UserBloc _userBloc;
+  bool _isPopUpOpened;
 
   @override
   void initState() {
+    _isPopUpOpened = false;
+    _initScreenNameAfterDelay();
     _userBloc = UserBloc();
     _user = UserManager().getUserDetails();
     _mapWidgets = [];
@@ -75,7 +80,24 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
       //     onTap: () => _doSomething()));
       // if (mounted) setState(() {});
     });
+    EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
+      if (event != null &&
+          event.screenName == FirebaseNotification.solutionViewScreen &&
+          FirebaseNotification.getCurrentScreenName() != null &&
+          FirebaseNotification.getCurrentScreenName() ==
+              FirebaseNotification.solutionViewScreen &&
+          mounted) {
+        if (_isPopUpOpened != null && _isPopUpOpened) {
+          Navigator.pop(context);
+        }
+        Navigator.maybePop(context);
+      }
+    });
     super.initState();
+  }
+
+  _setScreenName(String screenName) {
+    FirebaseNotification.setScreenName(screenName);
   }
 
   _getPremiumBenefitsForUsers() {
@@ -89,6 +111,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
 
   @override
   void dispose() {
+    _setScreenName(null);
     _globalKeys = [];
     _functions = [];
     _customServices = [];
@@ -354,17 +377,22 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                   margin:
                       EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
                   child: InkWell(
-                    onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => MoreFacilityScreen(
-                                  catalogueData:
-                                      _searchedDocResults.catalogueData,
-                                  docHosSolution: _searchedDocResults.solution,
-                                  searchSolutionBloc: _searchSolutionBloc,
-                                ))).then((value) {
-                      _getFacilities();
-                    }),
+                    onTap: () {
+                      _setScreenName(null);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MoreFacilityScreen(
+                                    catalogueData:
+                                        _searchedDocResults.catalogueData,
+                                    docHosSolution:
+                                        _searchedDocResults.solution,
+                                    searchSolutionBloc: _searchSolutionBloc,
+                                  ))).then((value) {
+                        _setScreenName(FirebaseNotification.solutionViewScreen);
+                        _getFacilities();
+                      });
+                    },
                     child: CustomWidgets().getRoundedButton(
                         PlunesStrings.discoverMoreFacilityButtonText,
                         AppConfig.horizontalBlockSize * 8,
@@ -455,6 +483,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
 
   _showProfessionalPopup(
       Services service, CatalogueData catalogueData, Function openProfile) {
+    _isPopUpOpened = true;
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -468,11 +497,14 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                   service, catalogueData, openProfile, context),
             ),
           );
-        });
+        }).then((value) {
+      _isPopUpOpened = false;
+    });
   }
 
   _showHospitalDoctorPopup(Services service, CatalogueData catalogueData,
       Function openProfile, int index) {
+    _isPopUpOpened = true;
     showDialog(
         context: context,
         barrierDismissible: true,
@@ -486,7 +518,9 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                   service, catalogueData, openProfile, index, context),
             ),
           );
-        });
+        }).then((value) {
+      _isPopUpOpened = false;
+    });
   }
 
   void _getFacilities() {
@@ -651,6 +685,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
     if (service != null &&
         service.userType != null &&
         service.professionalId != null) {
+      _setScreenName(null);
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -658,7 +693,9 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                     service.professionalId,
                     isDoc: (service.userType.toLowerCase() ==
                         Constants.doctor.toString().toLowerCase()),
-                  )));
+                  ))).then((value) {
+        _setScreenName(FirebaseNotification.solutionViewScreen);
+      });
     }
   }
 
@@ -708,12 +745,21 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
 
   void _showMessagePopup(String message) {
     if (mounted) {
+      _isPopUpOpened = true;
       showDialog(
           context: context,
           builder: (context) {
             return CustomWidgets()
                 .getInformativePopup(globalKey: scaffoldKey, message: message);
-          });
+          }).then((value) {
+        _isPopUpOpened = false;
+      });
     }
+  }
+
+  void _initScreenNameAfterDelay() async {
+    Future.delayed(Duration(seconds: 1)).then((value) {
+      _setScreenName(FirebaseNotification.solutionViewScreen);
+    });
   }
 }
