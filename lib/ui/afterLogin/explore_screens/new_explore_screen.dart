@@ -169,42 +169,42 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                 style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 0.8,
-                  bottom: AppConfig.verticalBlockSize * 2.8),
-              child: Card(
-                elevation: 2.0,
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(24))),
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 8),
-                child: InkWell(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SolutionBiddingScreen()));
-                  },
-                  onDoubleTap: () {},
-                  child: Container(
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 6,
-                        vertical: AppConfig.verticalBlockSize * 1.6),
-                    child: Text(
-                      "Search Service",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR, fontSize: 18),
-                    ),
-                  ),
-                ),
-              ),
-            )
+            // Container(
+            //   margin: EdgeInsets.only(
+            //       top: AppConfig.verticalBlockSize * 0.8,
+            //       bottom: AppConfig.verticalBlockSize * 2.8),
+            //   child: Card(
+            //     elevation: 2.0,
+            //     color: Colors.white,
+            //     shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.all(Radius.circular(24))),
+            //     margin: EdgeInsets.symmetric(
+            //         horizontal: AppConfig.horizontalBlockSize * 8),
+            //     child: InkWell(
+            //       splashColor: Colors.transparent,
+            //       highlightColor: Colors.transparent,
+            //       onTap: () {
+            //         Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //                 builder: (context) => SolutionBiddingScreen()));
+            //       },
+            //       onDoubleTap: () {},
+            //       child: Container(
+            //         width: double.infinity,
+            //         padding: EdgeInsets.symmetric(
+            //             horizontal: AppConfig.horizontalBlockSize * 6,
+            //             vertical: AppConfig.verticalBlockSize * 1.6),
+            //         child: Text(
+            //           "Search Service",
+            //           textAlign: TextAlign.left,
+            //           style: TextStyle(
+            //               color: PlunesColors.BLACKCOLOR, fontSize: 18),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // )
           ],
         ),
       ),

@@ -886,12 +886,18 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
 // ignore: must_be_immutable
 class HomePageAppBar extends StatefulWidget {
   final Function onDrawerTap, onSetLocationTap, onSetLocationManually;
-
+  bool hasSearchBar;
   final GlobalKey<State<StatefulWidget>> two, one;
+  Function refreshCartItems;
+  String searchBarText;
 
   HomePageAppBar(
       this.onDrawerTap, this.onSetLocationTap, this.onSetLocationManually,
-      {this.two, this.one});
+      {this.two,
+      this.one,
+      this.hasSearchBar,
+      this.searchBarText,
+      this.refreshCartItems});
 
   @override
   _HomePageAppBarState createState() => _HomePageAppBarState();
@@ -975,7 +981,11 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Flexible(child: _getLocationWidget()),
+              (widget.hasSearchBar != null && widget.hasSearchBar)
+                  ? Expanded(
+                      child: _getSearchBar(),
+                    )
+                  : Flexible(child: _getLocationWidget()),
               Container(
                 child: StreamBuilder<Object>(
                     stream: FirebaseNotification().notificationStream,
@@ -1188,6 +1198,73 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _getSearchBar() {
+    return Card(
+      elevation: 1.8,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+      child: Container(
+        margin: EdgeInsets.only(
+            left: AppConfig.horizontalBlockSize * 2,
+            right: AppConfig.horizontalBlockSize * 2),
+        height: AppConfig.verticalBlockSize * 5.5,
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(25.0),
+        ),
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SolutionBiddingScreen()))
+                .then((value) {
+              if (widget.refreshCartItems != null) {
+                widget.refreshCartItems();
+              }
+            });
+          },
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 4),
+                child: Icon(
+                  Icons.search,
+                  color: Color(CommonMethods.getColorHexFromStr("#B1B1B1")),
+                ),
+              ),
+              Flexible(
+                child: Container(
+                  padding: EdgeInsets.only(bottom: 2),
+                  child: IgnorePointer(
+                    ignoring: true,
+                    child: TextField(
+                      textAlign: TextAlign.left,
+                      onTap: () {},
+                      decoration: InputDecoration(
+                        hintMaxLines: 1,
+                        hintText: widget.searchBarText ??
+                            'Search the desired service',
+                        hintStyle: TextStyle(
+                          color: Color(0xffB1B1B1).withOpacity(1.0),
+                          fontSize: AppConfig.mediumFont,
+                        ),
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

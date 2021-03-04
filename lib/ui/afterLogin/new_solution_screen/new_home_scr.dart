@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -210,49 +211,59 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            child: HomePageAppBar(
-              widget.func,
-              () {},
-              () {},
-              one: _one,
-              two: _two,
-            ),
-            margin: EdgeInsets.only(top: AppConfig.getMediaQuery().padding.top),
+    return SafeArea(
+      child: Scaffold(
+        body: Container(
+          child: Column(
+            children: [
+              Container(
+                child: StreamBuilder<Object>(
+                    stream: _homeScreenMainBloc.getHomeScreenDetailStream,
+                    builder: (context, snapshot) {
+                      return HomePageAppBar(
+                        widget.func,
+                        () {},
+                        () {},
+                        one: _one,
+                        two: _two,
+                        hasSearchBar: true,
+                        searchBarText: _solutionHomeScreenModel?.searchBarText,
+                        refreshCartItems: () => _getCartCount(),
+                      );
+                    }),
+              ),
+              Expanded(
+                child: StreamBuilder<RequestState>(
+                    stream: _homeScreenMainBloc.getHomeScreenDetailStream,
+                    initialData: (_solutionHomeScreenModel == null)
+                        ? RequestInProgress()
+                        : null,
+                    builder: (context, snapshot) {
+                      if (snapshot.data is RequestSuccess) {
+                        RequestSuccess successObject = snapshot.data;
+                        _solutionHomeScreenModel = successObject.response;
+                        _getOtherData();
+                        _homeScreenMainBloc
+                            ?.addIntoSolutionHomePageCategoryData(null);
+                      } else if (snapshot.data is RequestFailed) {
+                        RequestFailed _failedObj = snapshot.data;
+                        _failedMessage = _failedObj?.failureCause;
+                        _homeScreenMainBloc
+                            ?.addIntoSolutionHomePageCategoryData(null);
+                      } else if (snapshot.data is RequestInProgress) {
+                        return CustomWidgets().getProgressIndicator();
+                      }
+                      return (_solutionHomeScreenModel == null ||
+                              (_solutionHomeScreenModel.success != null &&
+                                  !_solutionHomeScreenModel.success))
+                          ? CustomWidgets().errorWidget(_failedMessage,
+                              onTap: () => _getCategoryData(), isSizeLess: true)
+                          : _getBody();
+                    }),
+              ),
+            ],
           ),
-          Expanded(
-            child: StreamBuilder<RequestState>(
-                stream: _homeScreenMainBloc.getHomeScreenDetailStream,
-                initialData: (_solutionHomeScreenModel == null)
-                    ? RequestInProgress()
-                    : null,
-                builder: (context, snapshot) {
-                  if (snapshot.data is RequestSuccess) {
-                    RequestSuccess successObject = snapshot.data;
-                    _solutionHomeScreenModel = successObject.response;
-                    _getOtherData();
-                    _homeScreenMainBloc
-                        ?.addIntoSolutionHomePageCategoryData(null);
-                  } else if (snapshot.data is RequestFailed) {
-                    RequestFailed _failedObj = snapshot.data;
-                    _failedMessage = _failedObj?.failureCause;
-                    _homeScreenMainBloc
-                        ?.addIntoSolutionHomePageCategoryData(null);
-                  } else if (snapshot.data is RequestInProgress) {
-                    return CustomWidgets().getProgressIndicator();
-                  }
-                  return (_solutionHomeScreenModel == null ||
-                          (_solutionHomeScreenModel.success != null &&
-                              !_solutionHomeScreenModel.success))
-                      ? CustomWidgets().errorWidget(_failedMessage,
-                          onTap: () => _getCategoryData(), isSizeLess: true)
-                      : _getBody();
-                }),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -333,101 +344,101 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         color: Color(CommonMethods.getColorHexFromStr("#FAF9F9")),
         child: Column(
           children: [
-            Stack(
-              children: [
-                // background image container
-                Container(
-                  height: AppConfig.verticalBlockSize * 36,
-                  width: AppConfig.horizontalBlockSize * 100,
-                  child: _imageFittedBox(
-                      _solutionHomeScreenModel?.backgroundImage ?? "",
-                      boxFit: BoxFit.cover),
-                ),
-                // heading text
-                Container(
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 8,
-                      left: AppConfig.verticalBlockSize * 4,
-                      right: AppConfig.verticalBlockSize * 4),
-                  child: RichText(
-                      textAlign: TextAlign.center,
-                      maxLines: 2,
-                      text: TextSpan(children: [
-                        TextSpan(
-                            text: _getHeading()?.split(" ")?.first ?? "Book",
-                            style: TextStyle(
-                                color: PlunesColors.GREENCOLOR, fontSize: 35)),
-                        TextSpan(
-                            text: _getTextAfterFirstWord(_getHeading()),
-                            style: TextStyle(
-                                color: PlunesColors.BLACKCOLOR, fontSize: 35))
-                      ])),
-                ),
-                // search box container
-                Container(
-                  margin: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 23,
-                      left: AppConfig.verticalBlockSize * 4,
-                      right: AppConfig.verticalBlockSize * 4),
-                  height: AppConfig.verticalBlockSize * 6,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  SolutionBiddingScreen())).then((value) {
-                        _getCartCount();
-                      });
-                    },
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: AppConfig.horizontalBlockSize * 4),
-                          child: Icon(
-                            Icons.search,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#B1B1B1")),
-                          ),
-                        ),
-                        Flexible(
-                          child: Container(
-                            padding: EdgeInsets.only(bottom: 2),
-                            child: IgnorePointer(
-                              ignoring: true,
-                              child: TextField(
-                                textAlign: TextAlign.left,
-                                onTap: () {},
-                                decoration: InputDecoration(
-                                  hintMaxLines: 1,
-                                  hintText:
-                                      _solutionHomeScreenModel?.searchBarText ??
-                                          'Search the desired service',
-                                  hintStyle: TextStyle(
-                                    color: Color(0xffB1B1B1).withOpacity(1.0),
-                                    fontSize: AppConfig.mediumFont,
-                                  ),
-                                  enabledBorder: InputBorder.none,
-                                  focusedBorder: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+            // Stack(
+            //   children: [
+            //     // background image container
+            //     Container(
+            //       height: AppConfig.verticalBlockSize * 36,
+            //       width: AppConfig.horizontalBlockSize * 100,
+            //       child: _imageFittedBox(
+            //           _solutionHomeScreenModel?.backgroundImage ?? "",
+            //           boxFit: BoxFit.cover),
+            //     ),
+            //     // heading text
+            //     Container(
+            //       alignment: Alignment.center,
+            //       margin: EdgeInsets.only(
+            //           top: AppConfig.verticalBlockSize * 8,
+            //           left: AppConfig.verticalBlockSize * 4,
+            //           right: AppConfig.verticalBlockSize * 4),
+            //       child: RichText(
+            //           textAlign: TextAlign.center,
+            //           maxLines: 2,
+            //           text: TextSpan(children: [
+            //             TextSpan(
+            //                 text: _getHeading()?.split(" ")?.first ?? "Book",
+            //                 style: TextStyle(
+            //                     color: PlunesColors.GREENCOLOR, fontSize: 35)),
+            //             TextSpan(
+            //                 text: _getTextAfterFirstWord(_getHeading()),
+            //                 style: TextStyle(
+            //                     color: PlunesColors.BLACKCOLOR, fontSize: 35))
+            //           ])),
+            //     ),
+            //     // search box container
+            //     Container(
+            //       margin: EdgeInsets.only(
+            //           top: AppConfig.verticalBlockSize * 23,
+            //           left: AppConfig.verticalBlockSize * 4,
+            //           right: AppConfig.verticalBlockSize * 4),
+            //       height: AppConfig.verticalBlockSize * 6,
+            //       width: double.infinity,
+            //       decoration: BoxDecoration(
+            //         color: Colors.white,
+            //         borderRadius: BorderRadius.circular(25.0),
+            //       ),
+            //       child: InkWell(
+            //         onTap: () {
+            //           Navigator.push(
+            //               context,
+            //               MaterialPageRoute(
+            //                   builder: (context) =>
+            //                       SolutionBiddingScreen())).then((value) {
+            //             _getCartCount();
+            //           });
+            //         },
+            //         child: Row(
+            //           crossAxisAlignment: CrossAxisAlignment.center,
+            //           children: [
+            //             Padding(
+            //               padding: EdgeInsets.symmetric(
+            //                   horizontal: AppConfig.horizontalBlockSize * 4),
+            //               child: Icon(
+            //                 Icons.search,
+            //                 color: Color(
+            //                     CommonMethods.getColorHexFromStr("#B1B1B1")),
+            //               ),
+            //             ),
+            //             Flexible(
+            //               child: Container(
+            //                 padding: EdgeInsets.only(bottom: 2),
+            //                 child: IgnorePointer(
+            //                   ignoring: true,
+            //                   child: TextField(
+            //                     textAlign: TextAlign.left,
+            //                     onTap: () {},
+            //                     decoration: InputDecoration(
+            //                       hintMaxLines: 1,
+            //                       hintText:
+            //                           _solutionHomeScreenModel?.searchBarText ??
+            //                               'Search the desired service',
+            //                       hintStyle: TextStyle(
+            //                         color: Color(0xffB1B1B1).withOpacity(1.0),
+            //                         fontSize: AppConfig.mediumFont,
+            //                       ),
+            //                       enabledBorder: InputBorder.none,
+            //                       focusedBorder: InputBorder.none,
+            //                     ),
+            //                   ),
+            //                 ),
+            //               ),
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ],
+            // ),
             // services box row
             _servicesRow(),
             _getProcedureWidget(),
@@ -494,39 +505,36 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 e.categoryName, e.category == Constants.procedureKey);
           }
         },
-        child: Card(
-          elevation: 2.0,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          child: Container(
-            height: AppConfig.verticalBlockSize * 15,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
+        child: Column(
+          children: [
+            Card(
+              elevation: 2.0,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0)),
+              child: Container(
+                height: AppConfig.verticalBlockSize * 15,
+                child: SizedBox.expand(
                   child: ClipRRect(
-                    child: _imageFittedBox(url),
+                    child: _imageFittedBox(url, boxFit: BoxFit.fill),
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(10),
                         topLeft: Radius.circular(10)),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                      bottom: AppConfig.verticalBlockSize * 0.3,
-                      left: 2,
-                      right: 2),
-                  alignment: Alignment.center,
-                  child: Text(
-                    label ?? "",
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    style: TextStyle(fontSize: 15),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Container(
+              margin: EdgeInsets.only(
+                  bottom: AppConfig.verticalBlockSize * 0.3, left: 2, right: 2),
+              alignment: Alignment.center,
+              child: Text(
+                label ?? "",
+                textAlign: TextAlign.center,
+                maxLines: 1,
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              ),
+            )
+          ],
         ),
       ),
     );

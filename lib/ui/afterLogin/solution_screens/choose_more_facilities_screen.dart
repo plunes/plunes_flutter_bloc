@@ -156,7 +156,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
     _selectedItemList = [];
     _endReached = false;
     _iconGen = IconGenerator();
-    _iconGen.getBytesFromAsset(PlunesImages.labMapImage, 180).then((value) {
+    _iconGen.getBytesFromAsset(PlunesImages.labMapImage, 100).then((value) {
       _hosImage2XGreenBgDesc = BitmapDescriptor.fromBytes(value);
     });
     _getMoreFacilities();
