@@ -89,9 +89,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       _discountCalculationTimer = timer;
       _getTotalDiscount();
     });
-    _iconGen
-        .getBytesFromAsset(PlunesImages.hosImage2XGreenBg, 180)
-        .then((value) {
+    _iconGen.getBytesFromAsset(PlunesImages.labMapImage, 180).then((value) {
       hosImage2XGreenBgDesc = BitmapDescriptor.fromBytes(value);
       // _markers.add(Marker(
       //     icon: hosImage2XGreenBgDesc,

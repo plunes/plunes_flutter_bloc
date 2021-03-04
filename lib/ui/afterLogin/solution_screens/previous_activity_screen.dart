@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/video_util.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
@@ -22,9 +24,14 @@ import 'package:plunes/blocs/solution_blocs/prev_missed_solution_bloc.dart';
 import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 
 // ignore: must_be_immutable
 class PreviousActivity extends BaseActivity {
+  final Function func;
+
+  PreviousActivity(this.func);
+
   @override
   _PreviousActivityState createState() => _PreviousActivityState();
 }
@@ -38,9 +45,11 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   StreamController _streamController;
   Timer _timerForTimeUpdation;
   CartMainBloc _cartBloc;
+  User _user;
 
   @override
   void initState() {
+    _user = UserManager().getUserDetails();
     FirebaseNotification.setScreenName(FirebaseNotification.activityScreen);
     _cartBloc = CartMainBloc();
     _streamController = StreamController.broadcast();
@@ -81,13 +90,36 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _isProcessing
-          ? CustomWidgets().getProgressIndicator()
-          : (_failureCause != null && _failureCause == PlunesStrings.noInternet)
-              ? CustomWidgets().errorWidget(_failureCause,
-                  buttonText: PlunesStrings.refresh,
-                  onTap: () => _getPreviousSolutions())
-              : _getWidgetBody(),
+      body: Column(
+        children: [
+          (_user != null &&
+                  _user.userType != null &&
+                  _user.userType.toLowerCase() ==
+                      Constants.user.toString().toLowerCase())
+              ? Container(
+                  child: HomePageAppBar(
+                    widget.func,
+                    () {},
+                    () {},
+                    one: null,
+                    two: null,
+                  ),
+                  margin: EdgeInsets.only(
+                      top: AppConfig.getMediaQuery().padding.top),
+                )
+              : Container(),
+          Expanded(
+            child: _isProcessing
+                ? CustomWidgets().getProgressIndicator()
+                : (_failureCause != null &&
+                        _failureCause == PlunesStrings.noInternet)
+                    ? CustomWidgets().errorWidget(_failureCause,
+                        buttonText: PlunesStrings.refresh,
+                        onTap: () => _getPreviousSolutions())
+                    : _getWidgetBody(),
+          ),
+        ],
+      ),
     );
   }
 

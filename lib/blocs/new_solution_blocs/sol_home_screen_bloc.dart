@@ -101,10 +101,12 @@ class HomeScreenMainBloc extends BlocBase {
   }
 
   Future<RequestState> getProfessionalsForService(String familyId,
-      {bool shouldHitSpecialityApi = false}) async {
+      {bool shouldHitSpecialityApi = false,
+      bool shouldShowNearFacilities}) async {
     addIntoGetProfessionalForServiceDataStream(RequestInProgress());
     var result = await HomeScreenMainRepo().getProfessionalsForService(familyId,
-        shouldHitSpecialityApi: shouldHitSpecialityApi);
+        shouldHitSpecialityApi: shouldHitSpecialityApi,
+        shouldShowNearFacilities: shouldShowNearFacilities);
     addIntoGetProfessionalForServiceDataStream(result);
     return result;
   }

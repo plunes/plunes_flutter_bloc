@@ -1,3 +1,4 @@
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
@@ -10,6 +11,7 @@ import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
 import 'package:plunes/models/new_solution_model/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/professional_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -34,7 +36,8 @@ class ViewProcedureAndProfessional extends BaseActivity {
 }
 
 class _ViewProcedureAndProfessionalState
-    extends BaseState<ViewProcedureAndProfessional> {
+    extends BaseState<ViewProcedureAndProfessional>
+    with TickerProviderStateMixin {
   HomeScreenMainBloc _homeScreenMainBloc;
   ProfessionDataModel _professionDataModel;
   MediaContentPlunes _mediaContentPlunes;
@@ -42,6 +45,8 @@ class _ViewProcedureAndProfessionalState
   String _mediaFailedMessage;
 
   String _professionalFailedMessage;
+
+  int _selectedIndex;
 
   @override
   void dispose() {
@@ -51,6 +56,7 @@ class _ViewProcedureAndProfessionalState
 
   @override
   void initState() {
+    _selectedIndex = 0;
     _homeScreenMainBloc = HomeScreenMainBloc();
     _getData();
     super.initState();
@@ -65,7 +71,9 @@ class _ViewProcedureAndProfessionalState
   _getProfessionals() {
     _homeScreenMainBloc.getProfessionalsForService(widget.procedureData.sId,
         shouldHitSpecialityApi: (widget.shouldUseSpecializationApi != null &&
-            widget.shouldUseSpecializationApi));
+            widget.shouldUseSpecializationApi),
+        shouldShowNearFacilities:
+            (_selectedIndex != null && _selectedIndex == 1));
   }
 
   _getVideos() {
@@ -357,9 +365,10 @@ class _ViewProcedureAndProfessionalState
                       Container(
                         width: double.infinity,
                         margin: EdgeInsets.only(
-                            top: AppConfig.horizontalBlockSize * 1.8),
+                            top: AppConfig.verticalBlockSize * 1.2,
+                            left: AppConfig.horizontalBlockSize * 5.2),
                         child: Text(
-                          "Dos and Don'ts",
+                          "Do's and Don'ts",
                           style: TextStyle(
                               fontSize: 18, color: PlunesColors.BLACKCOLOR),
                         ),
@@ -412,14 +421,36 @@ class _ViewProcedureAndProfessionalState
     );
   }
 
+  List<Widget> _tabs = [
+    ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+          child: Text(
+        'All',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+    ClipRRect(
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+          child: Text(
+        "Near You",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+  ];
+
   Widget _getProfessionalListWidget() {
     return Column(
       children: [
         Container(
           alignment: Alignment.topLeft,
           margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 1.5,
-              bottom: AppConfig.verticalBlockSize * 0.01),
+            top: AppConfig.verticalBlockSize * 2,
+            bottom: AppConfig.verticalBlockSize * 2,
+          ),
           child: Text(
             "Facility",
             style: TextStyle(
@@ -428,6 +459,45 @@ class _ViewProcedureAndProfessionalState
                 fontWeight: FontWeight.normal),
           ),
         ),
+        (UserManager().getUserDetails().latitude != null &&
+                UserManager().getUserDetails().latitude.isNotEmpty &&
+                UserManager().getUserDetails().longitude != null &&
+                UserManager().getUserDetails().longitude.isNotEmpty &&
+                UserManager().getIsUserInServiceLocation())
+            ? Card(
+                margin:
+                    EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30)),
+                child: Container(
+                  alignment: Alignment.center,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 0.5, horizontal: 4),
+                  child: TabBar(
+                    unselectedLabelColor: Colors.black,
+                    isScrollable: false,
+                    labelPadding: EdgeInsets.all(15.0),
+                    labelColor: Colors.white,
+                    controller: TabController(
+                      length: 2,
+                      vsync: this,
+                      initialIndex: _selectedIndex,
+                    ),
+                    indicator: new BubbleTabIndicator(
+                      indicatorHeight: 35.0,
+                      indicatorColor: PlunesColors.PARROTGREEN,
+                      tabBarIndicatorSize: TabBarIndicatorSize.tab,
+                    ),
+                    onTap: (i) {
+                      _selectedIndex = i;
+                      _setState();
+                      _getProfessionals();
+                    },
+                    tabs: _tabs,
+                  ),
+                ),
+              )
+            : Container(),
         StreamBuilder<RequestState>(
             stream: _homeScreenMainBloc.professionalForServiceStream,
             initialData:
@@ -461,6 +531,7 @@ class _ViewProcedureAndProfessionalState
                     )
                   : Container(
                       child: ListView.builder(
+                        padding: EdgeInsets.zero,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
                           return CommonWidgets()
@@ -764,5 +835,9 @@ class _ViewProcedureAndProfessionalState
                 hasBorder: false),
           )),
     );
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
   }
 }

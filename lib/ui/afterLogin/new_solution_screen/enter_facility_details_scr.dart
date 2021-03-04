@@ -1134,7 +1134,7 @@ class _EnterAdditionalUserDetailScrState
                             (_pageController == null ||
                                     _pageController.page == null ||
                                     _pageController.page.toInt() == 0)
-                                ? PlunesColors.GREYCOLOR.withOpacity(0.09)
+                                ? Color(CommonMethods.getColorHexFromStr("#767676"))
                                 : PlunesColors.BLACKCOLOR,
                             borderColor: PlunesColors.SPARKLINGGREEN,
                             hasBorder: false),

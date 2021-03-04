@@ -282,11 +282,11 @@ class _BiddingMainScreenState extends BaseState<BiddingMainScreen> {
                                     _prevSearchedSolution.topSearches) {
                                   return;
                                 }
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PreviousActivity()));
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //         builder: (context) =>
+                                //             PreviousActivity()));
                               },
                               highlightColor:
                                   (_prevSearchedSolution.topSearches != null &&

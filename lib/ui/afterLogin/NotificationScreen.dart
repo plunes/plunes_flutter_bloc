@@ -21,6 +21,7 @@ import 'package:plunes/resources/interface/DialogCallBack.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/solution_received_screen.dart';
 import 'HomeScreen.dart';
@@ -35,6 +36,9 @@ import 'HomeScreen.dart';
 // ignore: must_be_immutable
 class NotificationScreen extends BaseActivity {
   static const tag = 'notificationscreen';
+  final Function func;
+
+  NotificationScreen(this.func);
 
   @override
   _NotificationScreenState createState() => _NotificationScreenState();
@@ -50,9 +54,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
   String _failedMessage;
   StreamController _streamController;
   Timer _timer;
+  User _user;
 
   @override
   void initState() {
+    _user = UserManager().getUserDetails();
     _notificationBloc = NotificationBloc();
     _getNotifications();
     _streamController = StreamController.broadcast();
@@ -90,121 +96,146 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Scaffold(
         key: _scaffoldKey,
         backgroundColor: PlunesColors.WHITECOLOR,
-        body: Container(
-            child: StreamBuilder<RequestState>(
-          stream: _notificationBloc.baseStream,
-          builder: ((context, snapshot) {
-            if (snapshot.data is RequestSuccess) {
-              RequestSuccess successObject = snapshot.data;
-              _items = successObject.response;
-            } else if (snapshot.data is RequestFailed) {
-              RequestFailed _failedObj = snapshot.data;
-              _failedMessage = _failedObj?.failureCause;
-            }
-            if (_failedMessage != null && _failedMessage.isNotEmpty) {
-              return Container(
-                width: double.infinity,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Image.asset(
-                      PlunesImages.notification_empty_screen_icon,
-                      height: AppConfig.verticalBlockSize * 22,
-                      width: AppConfig.horizontalBlockSize * 42,
-                      alignment: Alignment.center,
+        body: Column(
+          children: [
+            (_user != null &&
+                    _user.userType != null &&
+                    _user.userType.toLowerCase() ==
+                        Constants.user.toString().toLowerCase())
+                ? Container(
+                    child: HomePageAppBar(
+                      widget.func,
+                      () {},
+                      () {},
+                      one: null,
+                      two: null,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          top: AppConfig.verticalBlockSize * 1.5,
-                          bottom: AppConfig.verticalBlockSize * 3.5),
-                      child: Text(
-                          _failedMessage ?? plunesStrings.noRecordsFound,
-                          style: TextStyle(
-                              fontSize: AppConfig.mediumFont,
-                              fontWeight: FontWeight.w600)),
-                    ),
-                    FittedBox(
-                      child: InkWell(
-                        onTap: () {
-                          _failedMessage = null;
-                          _getNotifications();
-                          return;
-                        },
-                        child: CustomWidgets().getRoundedButton(
-                            PlunesStrings.refresh,
-                            AppConfig.horizontalBlockSize * 6,
-                            PlunesColors.GREENCOLOR,
-                            AppConfig.horizontalBlockSize * 3,
-                            AppConfig.verticalBlockSize * 1,
-                            PlunesColors.WHITECOLOR),
+                    margin: EdgeInsets.only(
+                        top: AppConfig.getMediaQuery().padding.top),
+                  )
+                : Container(),
+            Expanded(
+              child: Container(
+                  child: StreamBuilder<RequestState>(
+                stream: _notificationBloc.baseStream,
+                builder: ((context, snapshot) {
+                  if (snapshot.data is RequestSuccess) {
+                    RequestSuccess successObject = snapshot.data;
+                    _items = successObject.response;
+                  } else if (snapshot.data is RequestFailed) {
+                    RequestFailed _failedObj = snapshot.data;
+                    _failedMessage = _failedObj?.failureCause;
+                  }
+                  if (_failedMessage != null && _failedMessage.isNotEmpty) {
+                    return Container(
+                      width: double.infinity,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Image.asset(
+                            PlunesImages.notification_empty_screen_icon,
+                            height: AppConfig.verticalBlockSize * 22,
+                            width: AppConfig.horizontalBlockSize * 42,
+                            alignment: Alignment.center,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1.5,
+                                bottom: AppConfig.verticalBlockSize * 3.5),
+                            child: Text(
+                                _failedMessage ?? plunesStrings.noRecordsFound,
+                                style: TextStyle(
+                                    fontSize: AppConfig.mediumFont,
+                                    fontWeight: FontWeight.w600)),
+                          ),
+                          FittedBox(
+                            child: InkWell(
+                              onTap: () {
+                                _failedMessage = null;
+                                _getNotifications();
+                                return;
+                              },
+                              child: CustomWidgets().getRoundedButton(
+                                  PlunesStrings.refresh,
+                                  AppConfig.horizontalBlockSize * 6,
+                                  PlunesColors.GREENCOLOR,
+                                  AppConfig.horizontalBlockSize * 3,
+                                  AppConfig.verticalBlockSize * 1,
+                                  PlunesColors.WHITECOLOR),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }
-            if (_items != null) {
-              if (_items == null ||
-                  _items.posts == null ||
-                  _items.posts.length == 0) {
-                return Container(
-                  width: double.infinity,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset(
-                        PlunesImages.notification_empty_screen_icon,
-                        height: AppConfig.verticalBlockSize * 22,
-                        width: AppConfig.horizontalBlockSize * 42,
-                        alignment: Alignment.center,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 1.5,
-                            bottom: AppConfig.verticalBlockSize * 3.5),
-                        child: Text(
-                            _failedMessage ?? plunesStrings.noRecordsFound,
-                            style: TextStyle(
-                                fontSize: AppConfig.mediumFont,
-                                fontWeight: FontWeight.w600)),
-                      ),
-                      UserManager().getUserDetails().userType == Constants.user
-                          ? FittedBox(
-                              child: InkWell(
-                                onTap: () {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => HomeScreen(
-                                              screenNo:
-                                                  Constants.homeScreenNumber)),
-                                      (_) => false);
-                                  return;
-                                },
-                                child: CustomWidgets().getRoundedButton(
-                                    PlunesStrings.startNegotiating,
-                                    AppConfig.horizontalBlockSize * 6,
-                                    PlunesColors.GREENCOLOR,
-                                    AppConfig.horizontalBlockSize * 3.2,
-                                    AppConfig.verticalBlockSize * 1,
-                                    PlunesColors.WHITECOLOR),
-                              ),
-                            )
-                          : Container()
-                    ],
-                  ),
-                );
-              } else {
-                return buildList(_items);
-              }
-            }
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
-        )));
+                    );
+                  }
+                  if (_items != null) {
+                    if (_items == null ||
+                        _items.posts == null ||
+                        _items.posts.length == 0) {
+                      return Container(
+                        width: double.infinity,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Image.asset(
+                              PlunesImages.notification_empty_screen_icon,
+                              height: AppConfig.verticalBlockSize * 22,
+                              width: AppConfig.horizontalBlockSize * 42,
+                              alignment: Alignment.center,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 1.5,
+                                  bottom: AppConfig.verticalBlockSize * 3.5),
+                              child: Text(
+                                  _failedMessage ??
+                                      plunesStrings.noRecordsFound,
+                                  style: TextStyle(
+                                      fontSize: AppConfig.mediumFont,
+                                      fontWeight: FontWeight.w600)),
+                            ),
+                            UserManager().getUserDetails().userType ==
+                                    Constants.user
+                                ? FittedBox(
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    HomeScreen(
+                                                        screenNo: Constants
+                                                            .homeScreenNumber)),
+                                            (_) => false);
+                                        return;
+                                      },
+                                      child: CustomWidgets().getRoundedButton(
+                                          PlunesStrings.startNegotiating,
+                                          AppConfig.horizontalBlockSize * 6,
+                                          PlunesColors.GREENCOLOR,
+                                          AppConfig.horizontalBlockSize * 3.2,
+                                          AppConfig.verticalBlockSize * 1,
+                                          PlunesColors.WHITECOLOR),
+                                    ),
+                                  )
+                                : Container()
+                          ],
+                        ),
+                      );
+                    } else {
+                      return buildList(_items);
+                    }
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }),
+              )),
+            ),
+          ],
+        ));
   }
 
   Widget buildList(final AllNotificationsPost items) {
@@ -342,19 +373,18 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         solutionId: result.notificationId,
                         isFromNotification: true),
                   )));
-    }
-    else if (result.notificationScreen == FirebaseNotification.solutionViewScreen &&
+    } else if (result.notificationScreen ==
+            FirebaseNotification.solutionViewScreen &&
         UserManager().getUserDetails().userType == Constants.user) {
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => ViewSolutionsScreen(
-                catalogueData: CatalogueData(
-                    solutionId: result.notificationId,
-                    isFromNotification: true),
-              )));
-    }
-    else if (result.notificationScreen ==
+                    catalogueData: CatalogueData(
+                        solutionId: result.notificationId,
+                        isFromNotification: true),
+                  )));
+    } else if (result.notificationScreen ==
         FirebaseNotification.bookingScreen) {
 //      print("notification id is ${result.notificationId}");
       Navigator.push(

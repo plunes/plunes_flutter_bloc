@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
+import 'package:plunes/Utils/custom_painter_icon_gen.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/models/Models.dart';
@@ -41,18 +42,28 @@ class _SolutionMapState extends BaseState<SolutionMap> {
   List<GlobalKey> _globalKeys = [];
   List<Function> _functions = [];
   List<Services> _customServices = [];
-
-//  BitmapDescriptor hosImage2XGreenBgDesc;
+  IconGenerator _iconGen;
+  BitmapDescriptor hosImage2XGreenBgDesc;
 
   @override
   void initState() {
     _searchedDocResults = widget.solution;
     _user = UserManager().getUserDetails();
-//    BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
-//            PlunesImages.hosImage2XGreenBg)
-//        .then((onValue) {
-//      hosImage2XGreenBgDesc = onValue;
-//    });
+    _iconGen = IconGenerator();
+    _iconGen.getBytesFromAsset(PlunesImages.labMapImage, 180).then((value) {
+      hosImage2XGreenBgDesc = BitmapDescriptor.fromBytes(value);
+      // _markers.add(Marker(
+      //     icon: hosImage2XGreenBgDesc,
+      //     position: LatLng(28.443, 78.3222),
+      //     markerId: MarkerId("ds"),
+      //     onTap: () => _doSomething()));
+      // if (mounted) setState(() {});
+    });
+    // BitmapDescriptor.fromAssetImage(
+    //         ImageConfiguration(size: Size(48, 48)), PlunesImages.labMapImage)
+    //     .then((onValue) {
+    //   hosImage2XGreenBgDesc = onValue;
+    // });
 //     _setMapSpecificData();
     _calculateMapData();
     _searchController = TextEditingController();
@@ -84,7 +95,7 @@ class _SolutionMapState extends BaseState<SolutionMap> {
               ? CustomWidgets().errorWidget(_failureCause)
               : Stack(
                   children: [
-                    Container(child: ListView(children: _mapWidgets ?? [])),
+                    // Container(child: ListView(children: _mapWidgets ?? [])),
                     Container(
                       width: double.infinity,
                       height: double.infinity,
@@ -209,37 +220,37 @@ class _SolutionMapState extends BaseState<SolutionMap> {
                 distance:
                     _searchedDocResults.solution.services[index].distance);
             _customServices.add(service);
-            _mapWidgets.add(RepaintBoundary(
-              child: Container(
-                child: Column(
-                  children: [
-                    ClipOval(
-                      child: Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                            color: Colors.transparent, shape: BoxShape.circle),
-                        child: CustomWidgets().getImageFromUrl(
-                            doctor.imageUrl ?? "",
-                            placeHolderPath: PlunesImages.labMapImage,
-                            boxFit: BoxFit.fill),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 4,
-                    ),
-                    Container(
-                      height: 12,
-                      width: 12,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.indigo.withOpacity(0.4)),
-                    )
-                  ],
-                ),
-              ),
-              key: key,
-            ));
+            // _mapWidgets.add(RepaintBoundary(
+            //   child: Container(
+            //     child: Column(
+            //       children: [
+            //         ClipOval(
+            //           child: Container(
+            //             width: 70,
+            //             height: 70,
+            //             decoration: BoxDecoration(
+            //                 color: Colors.transparent, shape: BoxShape.circle),
+            //             child: CustomWidgets().getImageFromUrl(
+            //                 doctor.imageUrl ?? "",
+            //                 placeHolderPath: PlunesImages.labMapImage,
+            //                 boxFit: BoxFit.fill),
+            //           ),
+            //         ),
+            //         SizedBox(
+            //           height: 4,
+            //         ),
+            //         Container(
+            //           height: 12,
+            //           width: 12,
+            //           decoration: BoxDecoration(
+            //               shape: BoxShape.circle,
+            //               color: Colors.indigo.withOpacity(0.4)),
+            //         )
+            //       ],
+            //     ),
+            //   ),
+            //   key: key,
+            // ));
           });
         } else {
           var key = GlobalKey();
@@ -247,37 +258,37 @@ class _SolutionMapState extends BaseState<SolutionMap> {
           _functions.add(
               () => _openProfile(_searchedDocResults.solution.services[index]));
           _customServices.add(_searchedDocResults.solution.services[index]);
-          _mapWidgets.add(RepaintBoundary(
-            child: Container(
-              child: Column(
-                children: [
-                  ClipOval(
-                    child: Container(
-                      width: 70,
-                      height: 70,
-                      decoration: BoxDecoration(
-                          color: Colors.transparent, shape: BoxShape.circle),
-                      child: CustomWidgets().getImageFromUrl(
-                          _searchedDocResults.solution.services[index].imageUrl,
-                          placeHolderPath: PlunesImages.labMapImage,
-                          boxFit: BoxFit.fill),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 4,
-                  ),
-                  Container(
-                    height: 12,
-                    width: 12,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.indigo.withOpacity(0.4)),
-                  )
-                ],
-              ),
-            ),
-            key: key,
-          ));
+          // _mapWidgets.add(RepaintBoundary(
+          //   child: Container(
+          //     child: Column(
+          //       children: [
+          //         ClipOval(
+          //           child: Container(
+          //             width: 70,
+          //             height: 70,
+          //             decoration: BoxDecoration(
+          //                 color: Colors.transparent, shape: BoxShape.circle),
+          //             child: CustomWidgets().getImageFromUrl(
+          //                 _searchedDocResults.solution.services[index].imageUrl,
+          //                 placeHolderPath: PlunesImages.labMapImage,
+          //                 boxFit: BoxFit.fill),
+          //           ),
+          //         ),
+          //         SizedBox(
+          //           height: 4,
+          //         ),
+          //         Container(
+          //           height: 12,
+          //           width: 12,
+          //           decoration: BoxDecoration(
+          //               shape: BoxShape.circle,
+          //               color: Colors.indigo.withOpacity(0.4)),
+          //         )
+          //       ],
+          //     ),
+          //   ),
+          //   key: key,
+          // ));
         }
       }
       _setState();
@@ -300,18 +311,18 @@ class _SolutionMapState extends BaseState<SolutionMap> {
       }
       await Future.delayed(Duration(seconds: 1));
       for (int index = 0; index < _globalKeys.length; index++) {
-        RenderRepaintBoundary boundary =
-            _globalKeys[index].currentContext.findRenderObject();
-        var image = await boundary?.toImage(pixelRatio: 2.0);
-        ByteData byteData =
-            await image?.toByteData(format: ui.ImageByteFormat.png);
-        var bytes = byteData.buffer.asUint8List();
+        // RenderRepaintBoundary boundary =
+        //     _globalKeys[index].currentContext.findRenderObject();
+        // var image = await boundary?.toImage(pixelRatio: 2.0);
+        // ByteData byteData =
+        //     await image?.toByteData(format: ui.ImageByteFormat.png);
+        // var bytes = byteData.buffer.asUint8List();
         // print("bytes are $bytes");
         await Future.delayed(Duration(milliseconds: 150));
         _markers.add(Marker(
             markerId: MarkerId(_customServices[index].sId),
             onTap: () => _functions[index](),
-            icon: BitmapDescriptor.fromBytes(bytes),
+            icon: hosImage2XGreenBgDesc,
             position: LatLng(_customServices[index].latitude?.toDouble() ?? 0.0,
                 _customServices[index].longitude?.toDouble() ?? 0.0),
             infoWindow: InfoWindow(

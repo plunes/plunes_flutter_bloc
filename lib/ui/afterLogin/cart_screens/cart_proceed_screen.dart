@@ -386,7 +386,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
                                       "\u20B9${_itemList[index]?.amount ?? 0}",
                                   style: TextStyle(
                                       color: PlunesColors.BLACKCOLOR,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.normal,
                                       fontSize: 18))
                             ],
                             text:
@@ -487,7 +487,10 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
               alignment: Alignment.centerRight,
               child: Text(
                 "\u20B9 ${widget.price ?? 0}",
-                style: TextStyle(fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                style: TextStyle(
+                    fontSize: 18,
+                    color: PlunesColors.BLACKCOLOR,
+                    fontWeight: FontWeight.w600),
               ),
             ),
           )

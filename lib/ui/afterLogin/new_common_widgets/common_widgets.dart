@@ -3148,7 +3148,8 @@ class CommonWidgets {
                   initialPage: 0,
                   enableInfiniteScroll: false,
                   pageSnapping: true,
-                  autoPlay: true,
+                  autoPlay:
+                      (service.professionalPhotos.length == 1) ? false : true,
                   reverse: false,
                   enlargeCenterPage: true,
                   viewportFraction: 1.0,

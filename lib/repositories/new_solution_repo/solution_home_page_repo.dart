@@ -71,12 +71,28 @@ class HomeScreenMainRepo {
   }
 
   Future<RequestState> getProfessionalsForService(String familyId,
-      {bool shouldHitSpecialityApi = false}) async {
+      {bool shouldHitSpecialityApi = false,
+      bool shouldShowNearFacilities = false}) async {
+    double lat, long;
+    try {
+      if (UserManager().getUserDetails().latitude != null) {
+        lat = double.tryParse(UserManager().getUserDetails().latitude);
+        long = double.tryParse(UserManager().getUserDetails().latitude);
+      }
+    } catch (e) {}
     Map<String, dynamic> map;
     if (shouldHitSpecialityApi) {
-      map = {"specialityId": familyId};
+      map = {
+        "specialityId": familyId,
+        "longitude": shouldShowNearFacilities ? long : null,
+        "latitude": shouldShowNearFacilities ? lat : null
+      };
     } else {
-      map = {"familyId": familyId};
+      map = {
+        "familyId": familyId,
+        "longitude": shouldShowNearFacilities ? long : null,
+        "latitude": shouldShowNearFacilities ? lat : null
+      };
     }
     var result = await DioRequester().requestMethod(
         url: shouldHitSpecialityApi

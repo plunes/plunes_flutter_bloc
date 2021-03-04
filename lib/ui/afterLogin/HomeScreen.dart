@@ -76,20 +76,20 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
   bool _showBadge = false, progress = false, isSelected = false;
   final List<Widget> _widgetOptionsForUser = [
     NewSolutionHomePage(() => _scaffoldKey.currentState.openDrawer()),
-    NewExploreScreen(),
-    PreviousActivity(),
+    NewExploreScreen(() => _scaffoldKey.currentState.openDrawer()),
+    PreviousActivity(() => _scaffoldKey.currentState.openDrawer()),
 //    PlockrMainScreen(),
-    NotificationScreen(),
+    NotificationScreen(() => _scaffoldKey.currentState.openDrawer()),
   ];
   final List<Widget> _widgetOptionsForDoctor = [
     HospitalDoctorOverviewScreen(),
 //    PlockrMainScreen(),
-    NotificationScreen(),
+    NotificationScreen(() => _scaffoldKey.currentState.openDrawer()),
 //    ProfileScreen()
   ];
   final List<Widget> _widgetOptionsHospital = [
     HospitalDoctorOverviewScreen(),
-    NotificationScreen(),
+    NotificationScreen(() => _scaffoldKey.currentState.openDrawer()),
 //    ProfileScreen()
   ];
   Preferences preferences;
@@ -132,10 +132,10 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
           key: _scaffoldKey,
           backgroundColor: Colors.white,
           extendBodyBehindAppBar:
-              (_selectedIndex == 0 && _userType == Constants.user)
+              (_selectedIndex < 4 && _userType == Constants.user)
                   ? true
                   : false,
-          appBar: (_selectedIndex == 0 && _userType == Constants.user)
+          appBar: (_selectedIndex < 4 && _userType == Constants.user)
               ? null
               : widget.getHomeAppBar(
                   context,

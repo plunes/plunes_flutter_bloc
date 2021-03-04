@@ -21,11 +21,16 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ignore: must_be_immutable
 class NewExploreScreen extends BaseActivity {
+  final Function func;
+
+  NewExploreScreen(this.func);
+
   @override
   _NewExploreScreenState createState() => _NewExploreScreenState();
 }
@@ -101,7 +106,22 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
           value: SystemUiOverlayStyle.dark,
           child: Scaffold(
             key: scaffoldKey,
-            body: _getBody(),
+            body: Column(
+              children: [
+                Container(
+                  child: HomePageAppBar(
+                    widget.func,
+                    () {},
+                    () {},
+                    one: null,
+                    two: null,
+                  ),
+                  margin: EdgeInsets.only(
+                      top: AppConfig.getMediaQuery().padding.top),
+                ),
+                Expanded(child: _getBody()),
+              ],
+            ),
           ),
         ));
   }
