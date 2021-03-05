@@ -34,6 +34,7 @@ import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/testNproceduresMainScreen.dart';
 import 'package:readmore/readmore.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ignore: must_be_immutable
@@ -106,8 +107,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     )
   ];
 
+  bool _hasSearchBar;
+
   @override
   void initState() {
+    _hasSearchBar = false;
     _cartBloc = CartMainBloc();
     _isProcedureListOpened = false;
     _isTopFacilityExpanded = false;
@@ -226,7 +230,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         () {},
                         one: _one,
                         two: _two,
-                        hasSearchBar: true,
+                        hasSearchBar: _hasSearchBar,
                         searchBarText: _solutionHomeScreenModel?.searchBarText,
                         refreshCartItems: () => _getCartCount(),
                       );
@@ -344,101 +348,116 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         color: Color(CommonMethods.getColorHexFromStr("#FAF9F9")),
         child: Column(
           children: [
-            // Stack(
-            //   children: [
-            //     // background image container
-            //     Container(
-            //       height: AppConfig.verticalBlockSize * 36,
-            //       width: AppConfig.horizontalBlockSize * 100,
-            //       child: _imageFittedBox(
-            //           _solutionHomeScreenModel?.backgroundImage ?? "",
-            //           boxFit: BoxFit.cover),
-            //     ),
-            //     // heading text
-            //     Container(
-            //       alignment: Alignment.center,
-            //       margin: EdgeInsets.only(
-            //           top: AppConfig.verticalBlockSize * 8,
-            //           left: AppConfig.verticalBlockSize * 4,
-            //           right: AppConfig.verticalBlockSize * 4),
-            //       child: RichText(
-            //           textAlign: TextAlign.center,
-            //           maxLines: 2,
-            //           text: TextSpan(children: [
-            //             TextSpan(
-            //                 text: _getHeading()?.split(" ")?.first ?? "Book",
-            //                 style: TextStyle(
-            //                     color: PlunesColors.GREENCOLOR, fontSize: 35)),
-            //             TextSpan(
-            //                 text: _getTextAfterFirstWord(_getHeading()),
-            //                 style: TextStyle(
-            //                     color: PlunesColors.BLACKCOLOR, fontSize: 35))
-            //           ])),
-            //     ),
-            //     // search box container
-            //     Container(
-            //       margin: EdgeInsets.only(
-            //           top: AppConfig.verticalBlockSize * 23,
-            //           left: AppConfig.verticalBlockSize * 4,
-            //           right: AppConfig.verticalBlockSize * 4),
-            //       height: AppConfig.verticalBlockSize * 6,
-            //       width: double.infinity,
-            //       decoration: BoxDecoration(
-            //         color: Colors.white,
-            //         borderRadius: BorderRadius.circular(25.0),
-            //       ),
-            //       child: InkWell(
-            //         onTap: () {
-            //           Navigator.push(
-            //               context,
-            //               MaterialPageRoute(
-            //                   builder: (context) =>
-            //                       SolutionBiddingScreen())).then((value) {
-            //             _getCartCount();
-            //           });
-            //         },
-            //         child: Row(
-            //           crossAxisAlignment: CrossAxisAlignment.center,
-            //           children: [
-            //             Padding(
-            //               padding: EdgeInsets.symmetric(
-            //                   horizontal: AppConfig.horizontalBlockSize * 4),
-            //               child: Icon(
-            //                 Icons.search,
-            //                 color: Color(
-            //                     CommonMethods.getColorHexFromStr("#B1B1B1")),
-            //               ),
-            //             ),
-            //             Flexible(
-            //               child: Container(
-            //                 padding: EdgeInsets.only(bottom: 2),
-            //                 child: IgnorePointer(
-            //                   ignoring: true,
-            //                   child: TextField(
-            //                     textAlign: TextAlign.left,
-            //                     onTap: () {},
-            //                     decoration: InputDecoration(
-            //                       hintMaxLines: 1,
-            //                       hintText:
-            //                           _solutionHomeScreenModel?.searchBarText ??
-            //                               'Search the desired service',
-            //                       hintStyle: TextStyle(
-            //                         color: Color(0xffB1B1B1).withOpacity(1.0),
-            //                         fontSize: AppConfig.mediumFont,
-            //                       ),
-            //                       enabledBorder: InputBorder.none,
-            //                       focusedBorder: InputBorder.none,
-            //                     ),
-            //                   ),
-            //                 ),
-            //               ),
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
+            VisibilityDetector(
+              key: Key("VisibilityDetector"),
+              onVisibilityChanged: (visibilityInfo) {
+                if (visibilityInfo != null) {
+                  var visiblePercentage = visibilityInfo.visibleFraction * 100;
+                  if (visiblePercentage < 1) {
+                    _hasSearchBar = true;
+                  } else {
+                    _hasSearchBar = false;
+                  }
+                  _setState();
+                }
+              },
+              child: Stack(
+                children: [
+                  // background image container
+                  Container(
+                    height: AppConfig.verticalBlockSize * 36,
+                    width: AppConfig.horizontalBlockSize * 100,
+                    child: _imageFittedBox(
+                        _solutionHomeScreenModel?.backgroundImage ?? "",
+                        boxFit: BoxFit.cover),
+                  ),
+                  // heading text
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 8,
+                        left: AppConfig.verticalBlockSize * 4,
+                        right: AppConfig.verticalBlockSize * 4),
+                    child: RichText(
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        text: TextSpan(children: [
+                          TextSpan(
+                              text: _getHeading()?.split(" ")?.first ?? "Book",
+                              style: TextStyle(
+                                  color: PlunesColors.GREENCOLOR,
+                                  fontSize: 35)),
+                          TextSpan(
+                              text: _getTextAfterFirstWord(_getHeading()),
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR, fontSize: 35))
+                        ])),
+                  ),
+                  // search box container
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 23,
+                        left: AppConfig.verticalBlockSize * 4,
+                        right: AppConfig.verticalBlockSize * 4),
+                    height: AppConfig.verticalBlockSize * 6,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    SolutionBiddingScreen())).then((value) {
+                          _getCartCount();
+                        });
+                      },
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 4),
+                            child: Icon(
+                              Icons.search,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#B1B1B1")),
+                            ),
+                          ),
+                          Flexible(
+                            child: Container(
+                              padding: EdgeInsets.only(bottom: 2),
+                              child: IgnorePointer(
+                                ignoring: true,
+                                child: TextField(
+                                  textAlign: TextAlign.left,
+                                  onTap: () {},
+                                  decoration: InputDecoration(
+                                    hintMaxLines: 1,
+                                    hintText: _solutionHomeScreenModel
+                                            ?.searchBarText ??
+                                        'Search the desired service',
+                                    hintStyle: TextStyle(
+                                      color: Color(0xffB1B1B1).withOpacity(1.0),
+                                      fontSize: AppConfig.mediumFont,
+                                    ),
+                                    enabledBorder: InputBorder.none,
+                                    focusedBorder: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // services box row
             _servicesRow(),
             _getProcedureWidget(),

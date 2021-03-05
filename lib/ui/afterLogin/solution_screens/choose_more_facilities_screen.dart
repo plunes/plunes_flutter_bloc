@@ -55,6 +55,7 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
   User _user;
   GoogleMapController _mapController;
   Completer<GoogleMapController> _googleMapController = Completer();
+  String _initialSearchedString;
   List<DropdownMenuItem<String>> facilityTypeWidget = [
     DropdownMenuItem(
       child: Text("Hospital"),
@@ -174,6 +175,9 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
       if (_searchController != null &&
           _searchController.text != null &&
           _searchController.text.trim().isNotEmpty) {
+        if (_initialSearchedString == null) {
+          _initialSearchedString = _searchController.text.trim();
+        }
         _failureCause = null;
         _searchSolutionBloc.addIntoMoreFacilitiesStream(RequestInProgress());
         _searchSolutionBloc.getMoreFacilities(widget.docHosSolution,
@@ -183,6 +187,10 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
             facilityLocationFilter: _locationFilter,
             userTypeFilter: _userTypeFilter);
       } else {
+        if (_initialSearchedString == null ||
+            _initialSearchedString.trim().isEmpty) {
+          return;
+        }
         _onTextClear();
       }
     });
@@ -592,6 +600,8 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
                     _searchController.text = "";
                     _locationFilter = _nearMeKey;
                     _userTypeFilter = Constants.hospital.toString();
+                    _initialSearchedString = null;
+                    pageIndex = SearchSolutionBloc.initialIndex;
                     _getMoreFacilities();
                   },
                       shouldNotShowImage: !(_failureCause != null &&

@@ -54,7 +54,8 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
   GoogleMapController _mapController;
   Completer<GoogleMapController> _googleMapController = Completer();
   User _user;
-  PremiumBenefitsModel _premiumBenefitsModel;
+
+  // PremiumBenefitsModel _premiumBenefitsModel;
   UserBloc _userBloc;
   bool _isPopUpOpened;
 
@@ -98,14 +99,14 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
     FirebaseNotification.setScreenName(screenName);
   }
 
-  _getPremiumBenefitsForUsers() {
-    _userBloc.getPremiumBenefitsForUsers().then((value) {
-      if (value is RequestSuccess) {
-        _premiumBenefitsModel = value.response;
-      } else if (value is RequestFailed) {}
-      _setState();
-    });
-  }
+  // _getPremiumBenefitsForUsers() {
+  //   _userBloc.getPremiumBenefitsForUsers().then((value) {
+  //     if (value is RequestSuccess) {
+  //       _premiumBenefitsModel = value.response;
+  //     } else if (value is RequestFailed) {}
+  //     _setState();
+  //   });
+  // }
 
   @override
   void dispose() {
@@ -131,11 +132,11 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             } else if (snapshot.data is RequestSuccess) {
               RequestSuccess data = snapshot.data;
               _searchedDocResults = data.response;
-              if (_premiumBenefitsModel == null ||
-                  _premiumBenefitsModel.data == null ||
-                  _premiumBenefitsModel.data.isEmpty) {
-                _getPremiumBenefitsForUsers();
-              }
+              // if (_premiumBenefitsModel == null ||
+              //     _premiumBenefitsModel.data == null ||
+              //     _premiumBenefitsModel.data.isEmpty) {
+              //   _getPremiumBenefitsForUsers();
+              // }
               _calculateMapData();
               _searchSolutionBloc.addIntoDocHosStream(null);
             } else if (snapshot.data is RequestFailed) {
@@ -184,20 +185,33 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(
-                                        "Book Your Procedure",
+                                        (widget.catalogueData != null &&
+                                                widget.catalogueData.category !=
+                                                    null &&
+                                                widget.catalogueData.category
+                                                    .isNotEmpty)
+                                            ? "Book Your ${widget.catalogueData.category.trim()}"
+                                            : "Book Facility",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             color: PlunesColors.BLACKCOLOR,
                                             fontSize: 16),
                                       ),
-                                      Text(
-                                        widget.catalogueData?.speciality ?? "",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr("#727272")),
-                                            fontSize: 14),
-                                      ),
+                                      (widget.catalogueData != null &&
+                                              widget.catalogueData.speciality !=
+                                                  null)
+                                          ? Text(
+                                              widget.catalogueData
+                                                      ?.speciality ??
+                                                  "",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  color: Color(CommonMethods
+                                                      .getColorHexFromStr(
+                                                          "#727272")),
+                                                  fontSize: 14),
+                                            )
+                                          : Container(),
                                     ],
                                   ),
                                   Container(),
@@ -283,7 +297,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(10))),
                             ),
-                            _getBenefitsWidget(),
+                            // _getBenefitsWidget(),
                             Container(
                               alignment: Alignment.centerLeft,
                               margin: EdgeInsets.only(
@@ -318,44 +332,44 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
     );
   }
 
-  Widget _getBenefitsWidget() {
-    if (_premiumBenefitsModel == null ||
-        _premiumBenefitsModel.data == null ||
-        _premiumBenefitsModel.data.isEmpty) {
-      return Container();
-    }
-    return Container(
-      margin: EdgeInsets.symmetric(
-          vertical: AppConfig.verticalBlockSize * 1.8,
-          horizontal: AppConfig.horizontalBlockSize * 1.2),
-      child: Column(
-        children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Premium Benefits for Our Users",
-              style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-              top: AppConfig.verticalBlockSize * 1.8,
-            ),
-          ),
-          Container(
-            height: 300,
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) => CommonWidgets()
-                  .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
-              itemCount: _premiumBenefitsModel.data.length,
-            ),
-          )
-        ],
-      ),
-    );
-  }
+  // Widget _getBenefitsWidget() {
+  //   if (_premiumBenefitsModel == null ||
+  //       _premiumBenefitsModel.data == null ||
+  //       _premiumBenefitsModel.data.isEmpty) {
+  //     return Container();
+  //   }
+  //   return Container(
+  //     margin: EdgeInsets.symmetric(
+  //         vertical: AppConfig.verticalBlockSize * 1.8,
+  //         horizontal: AppConfig.horizontalBlockSize * 1.2),
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           alignment: Alignment.centerLeft,
+  //           child: Text(
+  //             "Premium Benefits for Our Users",
+  //             style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+  //           ),
+  //         ),
+  //         Container(
+  //           margin: EdgeInsets.only(
+  //             top: AppConfig.verticalBlockSize * 1.8,
+  //           ),
+  //         ),
+  //         Container(
+  //           height: 300,
+  //           child: ListView.builder(
+  //             shrinkWrap: true,
+  //             scrollDirection: Axis.horizontal,
+  //             itemBuilder: (context, index) => CommonWidgets()
+  //                 .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
+  //             itemCount: _premiumBenefitsModel.data.length,
+  //           ),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _getSolutionListWidget() {
     return Container(
