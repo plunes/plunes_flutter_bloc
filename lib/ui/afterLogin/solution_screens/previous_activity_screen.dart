@@ -528,7 +528,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
         DateTime.fromMillisecondsSinceEpoch(solution?.solutionExpiredAt ?? 0);
     var duration = expireTime.difference(now);
     if (duration.inDays > 1) {
-      timeRemaining = "$priceExpireText${duration.inDays} days";
+      timeRemaining = "$priceExpireText${duration.inDays + 1} days";
     } else if (duration.inHours > 1) {
       timeRemaining = "$priceExpireText${duration.inHours} hours";
     } else if (duration.inMinutes > 1) {

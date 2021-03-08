@@ -1291,7 +1291,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         _searchedDocResults?.solution?.expiredAt ?? 0);
     var duration = expireTime.difference(now);
     if (duration.inDays > 1) {
-      timeRemaining = " ${duration.inDays} days";
+      timeRemaining = " ${duration.inDays + 1} days";
     } else if (duration.inHours > 1) {
       timeRemaining = " ${duration.inHours} hours";
     } else if (duration.inMinutes > 1) {

@@ -1830,7 +1830,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       // print("duration.inHours.abs() ${duration.inHours.abs()}");
       if (duration.inDays.abs() > 1 || duration.inHours.abs() >= 24) {
         _timeValue =
-            "${duration.inDays.abs()} ${duration.inDays.abs() == 1 ? "day" : "days"}";
+            "${duration.inDays.abs() + 1} ${duration.inDays.abs() == 1 ? "day" : "days"}";
       } else if (duration.inHours.abs() < 24 &&
           duration.inMinutes.abs() >= 60) {
         _timeValue =
