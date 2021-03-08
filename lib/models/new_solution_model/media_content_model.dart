@@ -2,12 +2,20 @@ class MediaContentPlunes {
   bool success;
   int count;
   List<MediaData> data;
+  String exploreDocTitle, exploreCustomerTitle;
 
-  MediaContentPlunes({this.success, this.count, this.data});
+  MediaContentPlunes(
+      {this.success,
+      this.count,
+      this.data,
+      this.exploreCustomerTitle,
+      this.exploreDocTitle});
 
   MediaContentPlunes.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     count = json['count'];
+    exploreCustomerTitle = json['exploreCustomerTitle'];
+    exploreDocTitle = json['exploreDocTitle'];
     if (json['data'] != null) {
       data = new List<MediaData>();
       json['data'].forEach((v) {
@@ -41,15 +49,15 @@ class MediaData {
 
   MediaData(
       {this.mediaType,
-        this.sId,
-        this.mediaUrl,
-        this.name,
-        this.createdAt,
-        this.updatedAt,
-        this.iV,
-        this.service,
-        this.testimonial,
-        this.indexing});
+      this.sId,
+      this.mediaUrl,
+      this.name,
+      this.createdAt,
+      this.updatedAt,
+      this.iV,
+      this.service,
+      this.testimonial,
+      this.indexing});
 
   MediaData.fromJson(Map<String, dynamic> json) {
     mediaType = json['mediaType'];

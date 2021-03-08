@@ -59,7 +59,7 @@ class CartMainRepo {
                     cartOuterModel.msg != null &&
                     cartOuterModel.msg.isNotEmpty)
                 ? cartOuterModel.msg
-                : "Your cart is still empty.Discover Price Of your Treatment Now!");
+                : "Your cart is empty. Discover prices for your treatment NOW!");
       }
       return RequestSuccess(response: cartOuterModel);
     } else {

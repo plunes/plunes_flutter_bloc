@@ -306,7 +306,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                                   right: AppConfig.horizontalBlockSize * 1.2),
                               child: Text(
                                 _searchedDocResults?.title ??
-                                    "We have discovered these top facilities near you",
+                                    "Congrats! We have discovered Top Facilities Near You.",
                                 style: TextStyle(
                                     color: PlunesColors.BLACKCOLOR,
                                     fontSize: 18),
@@ -444,8 +444,8 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
       margin: EdgeInsets.all(0),
       child: Container(
         margin: EdgeInsets.only(
-            left: AppConfig.horizontalBlockSize * 28,
-            right: AppConfig.horizontalBlockSize * 28,
+            left: AppConfig.horizontalBlockSize * 25,
+            right: AppConfig.horizontalBlockSize * 25,
             bottom: AppConfig.verticalBlockSize * 2,
             top: AppConfig.verticalBlockSize * 1),
         child: StreamBuilder<RequestState>(

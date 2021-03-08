@@ -216,11 +216,7 @@ class _EnterAdditionalUserDetailScrState
                     ),
                   )),
               title: Text(
-                (widget.catalogueData != null &&
-                        widget.catalogueData.category != null &&
-                        widget.catalogueData.category.isNotEmpty)
-                    ? "Book Your ${widget.catalogueData.category}"
-                    : PlunesStrings.bookYourProcedure,
+                PlunesStrings.bookYourProcedure,
                 textAlign: TextAlign.left,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -332,7 +328,7 @@ class _EnterAdditionalUserDetailScrState
               margin: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 2.5),
               child: Text(
-                "Upload Pictures of Your Medical Concern (Reports/Videos) to get Best Prices from Medical Professionals",
+                "Upload Your Medical Profile Below",
                 textAlign: TextAlign.left,
                 style: TextStyle(
                     color: PlunesColors.BLACKCOLOR.withOpacity(0.8),
@@ -1134,7 +1130,8 @@ class _EnterAdditionalUserDetailScrState
                             (_pageController == null ||
                                     _pageController.page == null ||
                                     _pageController.page.toInt() == 0)
-                                ? Color(CommonMethods.getColorHexFromStr("#767676"))
+                                ? Color(
+                                    CommonMethods.getColorHexFromStr("#767676"))
                                 : PlunesColors.BLACKCOLOR,
                             borderColor: PlunesColors.SPARKLINGGREEN,
                             hasBorder: false),

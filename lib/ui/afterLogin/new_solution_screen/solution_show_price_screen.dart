@@ -503,7 +503,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                             top: AppConfig.verticalBlockSize *
                                                 2),
                                         child: Text(
-                                          "We are connecting with Top Hospitals Near You to get the best Prices for your Medical Concern. We will Notify you at the earliest",
+                                          "We’re connecting with the Selected Facilities Near you regarding Your Medical Concern. You will be notified with the Prices shortly.",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                               color: PlunesColors.BLACKCOLOR,

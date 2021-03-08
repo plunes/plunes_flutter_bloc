@@ -387,13 +387,13 @@ class PlunesStrings {
   static const String invalidPaymentDetails =
       "Invalid payment details, please try again later";
   static const String discoverMoreFacilityButtonText = "Discover more facility";
-  static const String discoverPrice = "Discover price";
+  static const String discoverPrice = "Discover Price Now";
   static const String discoverFacilityNearYou = "Discover facilities near you";
   static const String experienceText = "Experience";
   static const String selectedFacilities = "Selected facilities";
-  static const String bookYourProcedure = "Book Your Procedure";
+  static const String bookYourProcedure = "Book Your Medical Treatment";
   static const String enterAdditionalDetails =
-      "Enter Additional Details for the required service";
+      "Enter additional details for your required Treatment";
   static const String next = "Next";
   static const String previousText = "Previous";
   static const String haveYouEverBeenTreatedPreviously =

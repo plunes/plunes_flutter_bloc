@@ -144,7 +144,9 @@ class _ViewProcedureAndProfessionalState
                     ),
                   )),
               title: Text(
-                "Search Desired Service",
+                "Know About Your Medical Procedure",
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
                 style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
               ),
@@ -176,8 +178,10 @@ class _ViewProcedureAndProfessionalState
                         horizontal: AppConfig.horizontalBlockSize * 6,
                         vertical: AppConfig.verticalBlockSize * 1.6),
                     child: Text(
-                      "Search service",
+                      "Search Disease , Tests or Medical Procedure",
                       textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                       style: TextStyle(
                           color: PlunesColors.BLACKCOLOR, fontSize: 18),
                     ),

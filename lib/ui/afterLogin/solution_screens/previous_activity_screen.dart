@@ -364,6 +364,10 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: InkWell(
+          focusColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          splashColor: Colors.transparent,
           onDoubleTap: () {},
           onTap: () => _onSolutionItemTap(catalogueData),
           child: Container(
@@ -414,6 +418,11 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                         StreamBuilder<Object>(
                             stream: _streamController?.stream,
                             builder: (context, snapshot) {
+                              if (_getRemainingTimeOfSolutionExpiration(
+                                      catalogueData) ==
+                                  null) {
+                                return Container();
+                              }
                               return Container(
                                 alignment: Alignment.topLeft,
                                 margin: EdgeInsets.only(
@@ -462,46 +471,63 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                   ))
                               : Container(),
                         ),
+                        _getDiscoverButton(catalogueData),
                         (catalogueData != null &&
                                 catalogueData.hasUserReport != null &&
                                 catalogueData.hasUserReport &&
                                 catalogueData.userReportId != null &&
                                 catalogueData.userReportId.trim().isNotEmpty &&
                                 (!_isCardExpired(catalogueData)))
-                            ? InkWell(
-                                focusColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                onTap: () {
-                                  if (catalogueData != null &&
-                                      catalogueData.userReportId != null &&
-                                      catalogueData.userReportId
-                                          .trim()
-                                          .isNotEmpty)
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                PreviousActivityReport(
-                                                    catalogueData
-                                                        .userReportId)));
-                                },
-                                onDoubleTap: () {},
-                                child: Container(
-                                  alignment: Alignment.topLeft,
-                                  padding: EdgeInsets.only(
-                                      top: AppConfig.verticalBlockSize * 1,
-                                      bottom: AppConfig.verticalBlockSize * 1,
-                                      right: AppConfig.verticalBlockSize * 1),
-                                  child: Text(
-                                    "View Details",
-                                    style: TextStyle(
-                                        color: Color(
-                                            CommonMethods.getColorHexFromStr(
-                                                "#01D35A")),
-                                        fontSize: 16),
-                                  ),
+                            ? Container(
+                                width: double.infinity,
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                      child: InkWell(
+                                        focusColor: Colors.transparent,
+                                        highlightColor: Colors.transparent,
+                                        hoverColor: Colors.transparent,
+                                        splashColor: Colors.transparent,
+                                        onTap: () {
+                                          if (catalogueData != null &&
+                                              catalogueData.userReportId !=
+                                                  null &&
+                                              catalogueData.userReportId
+                                                  .trim()
+                                                  .isNotEmpty)
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PreviousActivityReport(
+                                                            catalogueData
+                                                                .userReportId)));
+                                        },
+                                        onDoubleTap: () {},
+                                        child: Container(
+                                          alignment: Alignment.topLeft,
+                                          padding: EdgeInsets.only(
+                                              top: AppConfig.verticalBlockSize *
+                                                  1,
+                                              bottom:
+                                                  AppConfig.verticalBlockSize *
+                                                      1,
+                                              right:
+                                                  AppConfig.verticalBlockSize *
+                                                      1),
+                                          child: Text(
+                                            "View Details",
+                                            style: TextStyle(
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#01D35A")),
+                                                fontSize: 16),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(child: Container())
+                                  ],
                                 ),
                               )
                             : Container()
@@ -521,6 +547,8 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     String timeRemaining = "";
     if (solution.solutionExpiredAt == null) {
       return solution.expirationMessage ?? _expirationMessage;
+    } else if (solution.priceDiscovered != null && !solution.priceDiscovered) {
+      return null;
     }
     var now = DateTime.now();
     String priceExpireText = "Your prices will expire in ";
@@ -554,6 +582,49 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       isCardExpired = true;
     }
     return isCardExpired;
+  }
+
+  Widget _getDiscoverButton(CatalogueData catalogueData) {
+    String buttonName = _getDiscoverButtonText(catalogueData);
+    return buttonName == null
+        ? Container()
+        : Container(
+            width: double.infinity,
+            child: Container(
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.only(
+                  right: AppConfig.horizontalBlockSize * 32,
+                  top: AppConfig.verticalBlockSize * 1.1),
+              child: CustomWidgets().getRoundedButton(
+                  buttonName,
+                  AppConfig.horizontalBlockSize * 8,
+                  PlunesColors.GREENCOLOR,
+                  AppConfig.horizontalBlockSize * 0,
+                  AppConfig.verticalBlockSize * 1.5,
+                  PlunesColors.WHITECOLOR),
+            ),
+          );
+  }
+
+  String _getDiscoverButtonText(CatalogueData catalogueData) {
+    String buttonName;
+    var nowTime = DateTime.now();
+    if (catalogueData.solutionExpiredAt != null &&
+        catalogueData.solutionExpiredAt != 0) {
+      var solExpireTime =
+          DateTime.fromMillisecondsSinceEpoch(catalogueData.solutionExpiredAt);
+      var diff = nowTime.difference(solExpireTime);
+      if (diff.inSeconds < 5) {
+        if (catalogueData.priceDiscovered != null &&
+            catalogueData.priceDiscovered) {
+        } else {
+          buttonName = "Discover Price";
+        }
+      } else {
+        buttonName = "Discover";
+      }
+    }
+    return buttonName;
   }
 }
 

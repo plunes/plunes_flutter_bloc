@@ -231,7 +231,8 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
           Container(
             alignment: Alignment.topLeft,
             child: Text(
-              _exploreModel?.data?.first?.section2?.heading ?? "Offers",
+              _exploreModel?.data?.first?.section2?.heading ??
+                  " Get Exclusive Offers Now!",
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontWeight: FontWeight.w600,
@@ -258,7 +259,8 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
           Container(
             alignment: Alignment.topLeft,
             child: Text(
-              "See What Doctors saying about us",
+              _mediaContentPlunes?.exploreDocTitle ??
+                  "Watch Doctors Talk About Us",
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontWeight: FontWeight.w600,
@@ -284,7 +286,8 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
           Container(
             alignment: Alignment.topLeft,
             child: Text(
-              "Happy customers",
+              _mediaContentPlunes?.exploreCustomerTitle ??
+                  "Watch our Happy Customers",
               style: TextStyle(
                   color: PlunesColors.BLACKCOLOR,
                   fontWeight: FontWeight.w600,

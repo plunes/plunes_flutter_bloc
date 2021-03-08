@@ -753,7 +753,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                           _knowYourProcedureModel.data == null ||
                           _knowYourProcedureModel.data.isEmpty)
                       ? Container(
-                          height: AppConfig.verticalBlockSize * 35,
+                          height: AppConfig.verticalBlockSize * 40,
                           color: PlunesColors.WHITECOLOR,
                           child: CustomWidgets().errorWidget(
                               _knowYourProcedureModel?.message ??
@@ -899,7 +899,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     child: ReadMoreText(text ?? "",
                         textAlign: TextAlign.left,
                         trimLines: 2,
-                        trimExpandedText: "Read more",
+                        trimCollapsedText: " ..Learn more",
                         trimMode: TrimMode.Line,
                         style: TextStyle(
                           fontSize: 12,
@@ -1314,7 +1314,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         child: ReadMoreText(text,
                             textAlign: TextAlign.left,
                             trimLines: 2,
-                            trimExpandedText: "Read more",
+                            trimCollapsedText: " ..Learn more",
                             trimMode: TrimMode.Line,
                             style: TextStyle(
                               fontSize: 12,

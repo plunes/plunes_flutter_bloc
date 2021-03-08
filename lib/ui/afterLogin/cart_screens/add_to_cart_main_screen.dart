@@ -101,7 +101,8 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
       _hasItemOnScreen = hasItemOnScreen;
       if (!hasItemOnScreen) {
         // _isScreenRefresherStared = false;
-        _failureCause = "No items added to cart";
+        _failureCause =
+            "Your cart is empty. Discover prices for your treatment NOW!";
         _setState();
       }
     }
