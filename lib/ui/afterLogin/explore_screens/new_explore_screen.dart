@@ -130,7 +130,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     return Container(
       child: Column(
         children: [
-          // _getAppAndSearchBarWidget(),
+          _getAppAndSearchBarWidget(),
           Expanded(
               child: Container(
             child: _getScrollableBody(),
@@ -142,74 +142,74 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     );
   }
 
-  // Widget _getAppAndSearchBarWidget() {
-  //   return Card(
-  //     margin: EdgeInsets.zero,
-  //     child: Container(
-  //       padding: EdgeInsets.only(
-  //           left: AppConfig.horizontalBlockSize * 2.5,
-  //           right: AppConfig.horizontalBlockSize * 2.5,
-  //           top: AppConfig.verticalBlockSize * 0.6,
-  //           bottom: AppConfig.horizontalBlockSize * 1.8),
-  //       decoration: BoxDecoration(
-  //           gradient: LinearGradient(
-  //         begin: Alignment.topCenter,
-  //         end: Alignment.bottomCenter,
-  //         colors: [
-  //           Color.fromRGBO(19, 184, 126, 0.19),
-  //           Color.fromRGBO(255, 255, 255, 0),
-  //         ],
-  //       )),
-  //       child: Column(
-  //         children: [
-  //           ListTile(
-  //             title: Text(
-  //               PlunesStrings.knowYourProcedure,
-  //               textAlign: TextAlign.center,
-  //               style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
-  //             ),
-  //           ),
-  //           // Container(
-  //           //   margin: EdgeInsets.only(
-  //           //       top: AppConfig.verticalBlockSize * 0.8,
-  //           //       bottom: AppConfig.verticalBlockSize * 2.8),
-  //           //   child: Card(
-  //           //     elevation: 2.0,
-  //           //     color: Colors.white,
-  //           //     shape: RoundedRectangleBorder(
-  //           //         borderRadius: BorderRadius.all(Radius.circular(24))),
-  //           //     margin: EdgeInsets.symmetric(
-  //           //         horizontal: AppConfig.horizontalBlockSize * 8),
-  //           //     child: InkWell(
-  //           //       splashColor: Colors.transparent,
-  //           //       highlightColor: Colors.transparent,
-  //           //       onTap: () {
-  //           //         Navigator.push(
-  //           //             context,
-  //           //             MaterialPageRoute(
-  //           //                 builder: (context) => SolutionBiddingScreen()));
-  //           //       },
-  //           //       onDoubleTap: () {},
-  //           //       child: Container(
-  //           //         width: double.infinity,
-  //           //         padding: EdgeInsets.symmetric(
-  //           //             horizontal: AppConfig.horizontalBlockSize * 6,
-  //           //             vertical: AppConfig.verticalBlockSize * 1.6),
-  //           //         child: Text(
-  //           //           "Search Service",
-  //           //           textAlign: TextAlign.left,
-  //           //           style: TextStyle(
-  //           //               color: PlunesColors.BLACKCOLOR, fontSize: 18),
-  //           //         ),
-  //           //       ),
-  //           //     ),
-  //           //   ),
-  //           // )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget _getAppAndSearchBarWidget() {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Container(
+        padding: EdgeInsets.only(
+            left: AppConfig.horizontalBlockSize * 2.5,
+            right: AppConfig.horizontalBlockSize * 2.5,
+            top: AppConfig.verticalBlockSize * 0.6,
+            bottom: AppConfig.horizontalBlockSize * 1.8),
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color.fromRGBO(19, 184, 126, 0.19),
+            Color.fromRGBO(255, 255, 255, 0),
+          ],
+        )),
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(
+                PlunesStrings.knowYourProcedure,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
+              ),
+            ),
+            // Container(
+            //   margin: EdgeInsets.only(
+            //       top: AppConfig.verticalBlockSize * 0.8,
+            //       bottom: AppConfig.verticalBlockSize * 2.8),
+            //   child: Card(
+            //     elevation: 2.0,
+            //     color: Colors.white,
+            //     shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.all(Radius.circular(24))),
+            //     margin: EdgeInsets.symmetric(
+            //         horizontal: AppConfig.horizontalBlockSize * 8),
+            //     child: InkWell(
+            //       splashColor: Colors.transparent,
+            //       highlightColor: Colors.transparent,
+            //       onTap: () {
+            //         Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //                 builder: (context) => SolutionBiddingScreen()));
+            //       },
+            //       onDoubleTap: () {},
+            //       child: Container(
+            //         width: double.infinity,
+            //         padding: EdgeInsets.symmetric(
+            //             horizontal: AppConfig.horizontalBlockSize * 6,
+            //             vertical: AppConfig.verticalBlockSize * 1.6),
+            //         child: Text(
+            //           "Search Service",
+            //           textAlign: TextAlign.left,
+            //           style: TextStyle(
+            //               color: PlunesColors.BLACKCOLOR, fontSize: 18),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // )
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _getScrollableBody() {
     return SingleChildScrollView(

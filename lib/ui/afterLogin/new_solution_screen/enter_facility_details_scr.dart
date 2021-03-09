@@ -202,26 +202,34 @@ class _EnterAdditionalUserDetailScrState
         )),
         child: Column(
           children: [
-            ListTile(
-              leading: Container(
-                  padding: EdgeInsets.all(5),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                      return;
-                    },
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: PlunesColors.BLACKCOLOR,
+            Row(
+              children: [
+                Container(
+                    // padding: EdgeInsets.all(5),
+                    child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                    return;
+                  },
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: PlunesColors.BLACKCOLOR,
+                  ),
+                )),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 28),
+                    child: Text(
+                      PlunesStrings.bookYourProcedure,
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                          color: PlunesColors.BLACKCOLOR, fontSize: 20),
                     ),
-                  )),
-              title: Text(
-                PlunesStrings.bookYourProcedure,
-                textAlign: TextAlign.left,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
-              ),
+                  ),
+                )
+              ],
             ),
             Container(
               margin: EdgeInsets.only(
@@ -245,7 +253,7 @@ class _EnterAdditionalUserDetailScrState
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
                   ),
                 ),
               ),

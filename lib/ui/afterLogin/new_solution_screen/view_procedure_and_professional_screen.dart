@@ -130,26 +130,32 @@ class _ViewProcedureAndProfessionalState
         )),
         child: Column(
           children: [
-            ListTile(
-              leading: Container(
-                  padding: EdgeInsets.all(5),
-                  child: IconButton(
-                    onPressed: () {
-                      Navigator.pop(context, false);
-                      return;
-                    },
-                    icon: Icon(
-                      Icons.arrow_back_ios,
-                      color: PlunesColors.BLACKCOLOR,
-                    ),
-                  )),
-              title: Text(
-                "Know About Your Medical Procedure",
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left,
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
-              ),
+            Row(
+              children: [
+                Container(
+                    child: IconButton(
+                  padding: EdgeInsets.zero,
+                  splashRadius: 2,
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                    return;
+                  },
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: PlunesColors.BLACKCOLOR,
+                  ),
+                )),
+                Expanded(
+                  child: Text(
+                    "Know Your Medical Procedure",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.left,
+                    style:
+                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
+                  ),
+                ),
+              ],
             ),
             Container(
               margin: EdgeInsets.only(
@@ -178,12 +184,12 @@ class _ViewProcedureAndProfessionalState
                         horizontal: AppConfig.horizontalBlockSize * 6,
                         vertical: AppConfig.verticalBlockSize * 1.6),
                     child: Text(
-                      "Search Disease , Tests or Medical Procedure",
+                      "Search Desired Medical service",
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                          color: PlunesColors.BLACKCOLOR, fontSize: 16),
                     ),
                   ),
                 ),

@@ -1222,8 +1222,8 @@ class _HospitalOverviewScreenState
                 bottomLeft: Radius.circular(10),
                 bottomRight: Radius.circular(10))),
         margin: EdgeInsets.only(
-            left: AppConfig.horizontalBlockSize * 10,
-            right: AppConfig.horizontalBlockSize * 10),
+            left: AppConfig.horizontalBlockSize * 5,
+            right: AppConfig.horizontalBlockSize * 5),
         child: InkWell(
           focusColor: Colors.transparent,
           splashColor: Colors.transparent,
@@ -1574,8 +1574,10 @@ class _HospitalOverviewScreenState
                                           45,
                                       top: 3),
                                   decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(3)),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(
+                                              AppConfig.horizontalBlockSize *
+                                                  8)),
                                       border: Border.all(
                                           color: Color(
                                               CommonMethods.getColorHexFromStr(
@@ -1601,6 +1603,15 @@ class _HospitalOverviewScreenState
                                     splashColor: Colors.transparent,
                                     highlightColor: Colors.transparent,
                                     child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#D7E7FB")),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(
+                                                AppConfig.horizontalBlockSize *
+                                                    8)),
+                                      ),
                                       padding: EdgeInsets.symmetric(
                                           horizontal:
                                               AppConfig.horizontalBlockSize *
@@ -1608,9 +1619,6 @@ class _HospitalOverviewScreenState
                                           vertical:
                                               AppConfig.verticalBlockSize *
                                                   0.6),
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#D7E7FB")),
                                       child: Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.start,
@@ -1999,7 +2007,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
               ? Container()
               : Container(
                   margin: EdgeInsets.only(
-                      right: AppConfig.horizontalBlockSize * 8, top: 5),
+                      right: AppConfig.horizontalBlockSize * 10, top: 5),
                   child: InkWell(
                     splashColor: Colors.transparent,
                     highlightColor: Colors.transparent,
@@ -2018,6 +2026,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                         AppConfig.horizontalBlockSize * 1,
                         AppConfig.verticalBlockSize * 1,
                         _getButtonTextColour(),
+                        fontSize: AppConfig.smallFont,
                         borderColor:
                             Color(CommonMethods.getColorHexFromStr("#01D35A")),
                         hasBorder: !(_realInsight.category != null &&

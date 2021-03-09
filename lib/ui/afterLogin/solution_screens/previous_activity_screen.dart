@@ -25,6 +25,7 @@ import 'package:plunes/models/solution_models/previous_searched_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
 
 // ignore: must_be_immutable
 class PreviousActivity extends BaseActivity {
@@ -301,7 +302,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     });
   }
 
-  _onSolutionItemTap(CatalogueData catalogueData) async {
+  void _onSolutionItemTap(CatalogueData catalogueData) async {
     catalogueData.isFromNotification = true;
     var nowTime = DateTime.now();
     if (catalogueData.solutionExpiredAt != null &&
@@ -328,6 +329,15 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
         }
 
         _getPreviousSolutions();
+      } else {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SolutionBiddingScreen(
+                      searchQuery: catalogueData?.service,
+                    ))).then((value) {
+          _getPreviousSolutions();
+        });
       }
     } else {
       catalogueData.isFromNotification = false;
@@ -357,7 +367,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 
   Widget _getPreviousActivityCard(CatalogueData catalogueData) {
     return Card(
-        elevation: 5.0,
+        elevation: 2.0,
         margin: EdgeInsets.symmetric(
             horizontal: AppConfig.horizontalBlockSize * 4,
             vertical: AppConfig.verticalBlockSize * 1),
@@ -449,6 +459,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                 ),
                               );
                             }),
+                        _getDiscoverButton(catalogueData),
                         Container(
                           alignment: Alignment.topLeft,
                           child: (!(catalogueData.isActive) &&
@@ -471,7 +482,6 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                   ))
                               : Container(),
                         ),
-                        _getDiscoverButton(catalogueData),
                         (catalogueData != null &&
                                 catalogueData.hasUserReport != null &&
                                 catalogueData.hasUserReport &&
@@ -541,13 +551,16 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
         ));
   }
 
-  final String _expirationMessage = "Your card is expired";
+  final String _expirationMessage = "Prices are Expired now, Discover to Book";
 
   String _getRemainingTimeOfSolutionExpiration(CatalogueData solution) {
     String timeRemaining = "";
     if (solution.solutionExpiredAt == null) {
       return solution.expirationMessage ?? _expirationMessage;
-    } else if (solution.priceDiscovered != null && !solution.priceDiscovered) {
+    } else if (solution.priceDiscovered != null &&
+        !solution.priceDiscovered &&
+        solution.isActive != null &&
+        solution.isActive) {
       return null;
     }
     var now = DateTime.now();
@@ -595,13 +608,21 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
               margin: EdgeInsets.only(
                   right: AppConfig.horizontalBlockSize * 32,
                   top: AppConfig.verticalBlockSize * 1.1),
-              child: CustomWidgets().getRoundedButton(
-                  buttonName,
-                  AppConfig.horizontalBlockSize * 8,
-                  PlunesColors.GREENCOLOR,
-                  AppConfig.horizontalBlockSize * 0,
-                  AppConfig.verticalBlockSize * 1.5,
-                  PlunesColors.WHITECOLOR),
+              child: InkWell(
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () => _onSolutionItemTap(catalogueData),
+                onDoubleTap: () {},
+                child: CustomWidgets().getRoundedButton(
+                    buttonName,
+                    AppConfig.horizontalBlockSize * 8,
+                    PlunesColors.GREENCOLOR,
+                    AppConfig.horizontalBlockSize * 0,
+                    AppConfig.verticalBlockSize * 1.5,
+                    PlunesColors.WHITECOLOR),
+              ),
             ),
           );
   }

@@ -391,7 +391,7 @@ class PlunesStrings {
   static const String discoverFacilityNearYou = "Discover facilities near you";
   static const String experienceText = "Experience";
   static const String selectedFacilities = "Selected facilities";
-  static const String bookYourProcedure = "Book Your Medical Treatment";
+  static const String bookYourProcedure = "Book your Treatment";
   static const String enterAdditionalDetails =
       "Enter additional details for your required Treatment";
   static const String next = "Next";
@@ -403,7 +403,7 @@ class PlunesStrings {
   static const String isInsuranceCovered =
       "Do you have your insurance covered ?";
   static const String whyUs = "Why us";
-  static const String knowYourProcedure = "Know your procedure";
+  static const String knowYourProcedure = "Look for your procedure";
   static const String selectValidDocWarningText =
       "Please select a valid document.Allowed format is .pdf";
   static const String close = "Close";

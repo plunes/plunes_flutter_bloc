@@ -531,7 +531,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: Container(
-                height: AppConfig.verticalBlockSize * 15,
+                height: 78,
                 child: SizedBox.expand(
                   child: ClipRRect(
                     child: _imageFittedBox(url, boxFit: BoxFit.fill),

@@ -1073,57 +1073,72 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
             Column(
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 3),
-                  child: SliderTheme(
-                    data: SliderTheme.of(context).copyWith(
-                      activeTrackColor: Color.lerp(
-                          Color(CommonMethods.getColorHexFromStr("#CEFFE2")),
-                          Color(CommonMethods.getColorHexFromStr("#01D35A")),
-                          0.7),
-                      inactiveTrackColor: PlunesColors.WHITECOLOR,
-                      showValueIndicator: ShowValueIndicator.never,
-                      trackShape: RoundedRectSliderTrackShape(),
-                      trackHeight: 8.5,
-                      thumbColor: PlunesColors.LIGHTGREENCOLOR,
-                      thumbShape: SliderThumbShape(
-                        enabledThumbRadius: 12,
-                      ),
-                      overlayColor: PlunesColors.GREENCOLOR.withAlpha(32),
-                      overlayShape:
-                          RoundSliderOverlayShape(overlayRadius: 28.0),
-                    ),
-                    child: Slider(
-                      value: sliderVal?.toDouble(),
-                      min: _realInsight.min?.toDouble() ?? 0,
-                      max: _realInsight.max?.toDouble() ??
-                          ((_realInsight.min ?? 0) + 1),
-                      divisions: 100,
-                      onChanged: (newValue) {
-                        return;
-                        if (shouldShowField) {
-                          return;
-                        }
-                        newState(() {
-                          try {
-                            var firstVal =
-                                (_realInsight.max - _realInsight.min) / 70;
-                            var secVal =
-                                (newValue - _realInsight.min) / firstVal;
-                            var thirdVal = 70 - secVal;
-                            chancesPercent = thirdVal?.floor()?.toDouble() ?? 0;
-                          } catch (e) {
-                            chancesPercent = 0;
-                          }
-                          sliderVal = newValue;
-                          if (chancesPercent >= 70) {
-                            chancesPercent = 70;
-                          }
-                        });
-                      },
-                      label: "${sliderVal.toStringAsFixed(1)}",
-                    ),
+                  margin: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 3,
+                      right: AppConfig.horizontalBlockSize * 3,
+                      bottom: AppConfig.verticalBlockSize * 1.5),
+                  child: LinearPercentIndicator(
+                    animation: true,
+                    lineHeight: 12.0,
+                    animationDuration: 2000,
+                    percent: 0.5,
+                    linearStrokeCap: LinearStrokeCap.roundAll,
+                    // center: Text(
+                    //   "${_realInsight.compRate?.toStringAsFixed(0) ?? 0} %",
+                    //   style: TextStyle(
+                    //       color: PlunesColors.BLACKCOLOR, fontSize: 10),
+                    // ),
+                    progressColor: PlunesColors.GREENCOLOR,
                   ),
+                  // child: SliderTheme(
+                  //   data: SliderTheme.of(context).copyWith(
+                  //     activeTrackColor: Color.lerp(
+                  //         Color(CommonMethods.getColorHexFromStr("#CEFFE2")),
+                  //         Color(CommonMethods.getColorHexFromStr("#01D35A")),
+                  //         0.7),
+                  //     inactiveTrackColor: PlunesColors.WHITECOLOR,
+                  //     showValueIndicator: ShowValueIndicator.never,
+                  //     trackShape: RoundedRectSliderTrackShape(),
+                  //     trackHeight: 8.5,
+                  //     thumbColor: PlunesColors.LIGHTGREENCOLOR,
+                  //     thumbShape: SliderThumbShape(
+                  //       enabledThumbRadius: 12,
+                  //     ),
+                  //     overlayColor: PlunesColors.GREENCOLOR.withAlpha(32),
+                  //     overlayShape:
+                  //         RoundSliderOverlayShape(overlayRadius: 28.0),
+                  //   ),
+                  //   child: Slider(
+                  //     value: sliderVal?.toDouble(),
+                  //     min: _realInsight.min?.toDouble() ?? 0,
+                  //     max: _realInsight.max?.toDouble() ??
+                  //         ((_realInsight.min ?? 0) + 1),
+                  //     divisions: 100,
+                  //     onChanged: (newValue) {
+                  //       return;
+                  //       if (shouldShowField) {
+                  //         return;
+                  //       }
+                  //       newState(() {
+                  //         try {
+                  //           var firstVal =
+                  //               (_realInsight.max - _realInsight.min) / 70;
+                  //           var secVal =
+                  //               (newValue - _realInsight.min) / firstVal;
+                  //           var thirdVal = 70 - secVal;
+                  //           chancesPercent = thirdVal?.floor()?.toDouble() ?? 0;
+                  //         } catch (e) {
+                  //           chancesPercent = 0;
+                  //         }
+                  //         sliderVal = newValue;
+                  //         if (chancesPercent >= 70) {
+                  //           chancesPercent = 70;
+                  //         }
+                  //       });
+                  //     },
+                  //     label: "${sliderVal.toStringAsFixed(1)}",
+                  //   ),
+                  // ),
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(
