@@ -9,9 +9,11 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
+
 // import 'package:flutter_svg/flutter_svg.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 
 class DialogWidgets {
   static DialogWidgets _instance;
@@ -90,19 +92,29 @@ class DialogWidgets {
                           onTap: () {
                             if (solutions.userType != null &&
                                 solutions.professionalId != null) {
-                              Widget route;
-                              if (solutions.userType.toLowerCase() ==
-                                  Constants.doctor.toString().toLowerCase()) {
-                                route = DocProfile(
-                                    userId: solutions.professionalId);
-                              } else {
-                                route = HospitalProfile(
-                                    userID: solutions.professionalId);
-                              }
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => route));
+                                      builder: (context) => DoctorInfo(
+                                          solutions.professionalId,
+                                          isDoc: (solutions.userType
+                                                  .toLowerCase() ==
+                                              Constants.doctor
+                                                  .toString()
+                                                  .toLowerCase()))));
+                              // Widget route;
+                              // if (solutions.userType.toLowerCase() ==
+                              //     Constants.doctor.toString().toLowerCase()) {
+                              //   route = DocProfile(
+                              //       userId: solutions.professionalId);
+                              // } else {
+                              //   route = HospitalProfile(
+                              //       userID: solutions.professionalId);
+                              // }
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => route));
                             }
                           },
                           onDoubleTap: () {},
@@ -325,7 +337,7 @@ class DialogWidgets {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  catalogueData?.service??PlunesStrings.NA,
+                                  catalogueData?.service ?? PlunesStrings.NA,
                                   style: TextStyle(
                                     color: Colors.black38,
                                   ),
@@ -342,7 +354,8 @@ class DialogWidgets {
                                     ),
                                     SizedBox(width: 5),
                                     Text(
-                                      catalogueData?.duration??PlunesStrings.NA,
+                                      catalogueData?.duration ??
+                                          PlunesStrings.NA,
                                       style: TextStyle(
                                         color: Colors.black45,
                                       ),
@@ -360,7 +373,7 @@ class DialogWidgets {
                                   ),
                                   SizedBox(width: 5),
                                   Text(
-                                    catalogueData?.sitting??PlunesStrings.NA,
+                                    catalogueData?.sitting ?? PlunesStrings.NA,
                                     style: TextStyle(
                                       color: Colors.black38,
                                     ),
@@ -374,7 +387,7 @@ class DialogWidgets {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 Text(
-                                  catalogueData?.dnd??PlunesStrings.NA,
+                                  catalogueData?.dnd ?? PlunesStrings.NA,
                                   style: TextStyle(
                                     color: Colors.black38,
                                   ),

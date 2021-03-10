@@ -29,6 +29,7 @@ import 'package:plunes/ui/afterLogin/cart_screens/cart_proceed_screen.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/patient_details_edit_popup_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 // import 'package:upi_pay/upi_pay.dart';
 
 // ignore: must_be_immutable
@@ -922,14 +923,20 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
     if (booking.service != null &&
         booking.service.userType != null &&
         booking.professionalId != null) {
-      Widget route;
-      if (booking.service.userType.toLowerCase() ==
-          Constants.doctor.toString().toLowerCase()) {
-        route = DocProfile(userId: booking.professionalId);
-      } else {
-        route = HospitalProfile(userID: booking.professionalId);
-      }
-      Navigator.push(context, MaterialPageRoute(builder: (context) => route));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DoctorInfo(booking.professionalId,
+                  isDoc: (booking.service.userType.toLowerCase() ==
+                      Constants.doctor.toString().toLowerCase()))));
+      // Widget route;
+      // if (booking.service.userType.toLowerCase() ==
+      //     Constants.doctor.toString().toLowerCase()) {
+      //   route = DocProfile(userId: booking.professionalId);
+      // } else {
+      //   route = HospitalProfile(userID: booking.professionalId);
+      // }
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
   }
 

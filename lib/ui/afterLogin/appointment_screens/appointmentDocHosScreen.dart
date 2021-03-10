@@ -738,7 +738,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                   text:
                                       "\n${appointmentModel.centerLocation?.trim()}",
                                   style: TextStyle(
-                                      fontSize: 23,
+                                      fontSize: 20,
                                       fontWeight: FontWeight.w500,
                                       color: PlunesColors.GREENCOLOR),
                                 )
@@ -755,7 +755,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                                 PlunesStrings.NA,
                             overflow: TextOverflow.visible,
                             style: TextStyle(
-                                fontSize: 23, color: PlunesColors.BLACKCOLOR),
+                                fontSize: 20, color: PlunesColors.BLACKCOLOR),
                           ),
                         ),
                   Container(
@@ -774,7 +774,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                         child: Text(
                           appointmentModel.userMobileNumber ?? PlunesStrings.NA,
                           style: TextStyle(
-                              fontSize: 23, color: PlunesColors.BLACKCOLOR),
+                              fontSize: 20, color: PlunesColors.BLACKCOLOR),
                         ),
                       ),
                     ),
@@ -788,7 +788,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                           child: Text(_getFullDate(),
                               style: TextStyle(
                                 color: PlunesColors.BLACKCOLOR,
-                                fontSize: 19,
+                                fontSize: 16,
                               )),
                         ),
                         Expanded(
@@ -797,7 +797,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             child: Text(_getAmPmTime(),
                                 style: TextStyle(
                                     color: PlunesColors.BLACKCOLOR,
-                                    fontSize: 19)),
+                                    fontSize: 16)),
                           ),
                         )
                       ],

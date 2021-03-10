@@ -25,6 +25,7 @@ import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 
 // ignore: must_be_immutable
 class AppointmentScreen extends BaseActivity {
@@ -1207,18 +1208,28 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
   _openProfile() {
     if (widget.appointmentModel != null &&
         widget.appointmentModel.serviceProviderType != null &&
-        widget.appointmentModel.serviceProviderType.isNotEmpty) {
-      Widget _widget;
-      if (widget.appointmentModel.serviceProviderType == Constants.doctor) {
-        _widget = DocProfile(userId: widget.appointmentModel.professionalId);
-      } else {
-        _widget =
-            HospitalProfile(userID: widget.appointmentModel.professionalId);
-      }
-      if (_widget != null) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => _widget));
-      }
+        widget.appointmentModel.serviceProviderType.isNotEmpty &&
+        widget.appointmentModel.professionalId != null &&
+        widget.appointmentModel.professionalId.isNotEmpty) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DoctorInfo(
+                  widget.appointmentModel.professionalId,
+                  isDoc: (widget.appointmentModel.serviceProviderType
+                          .toLowerCase() ==
+                      Constants.doctor.toString().toLowerCase()))));
+      // Widget _widget;
+      // if (widget.appointmentModel.serviceProviderType == Constants.doctor) {
+      //   _widget = DocProfile(userId: widget.appointmentModel.professionalId);
+      // } else {
+      //   _widget =
+      //       HospitalProfile(userID: widget.appointmentModel.professionalId);
+      // }
+      // if (_widget != null) {
+      //   Navigator.push(
+      //       context, MaterialPageRoute(builder: (context) => _widget));
+      // }
     }
   }
 

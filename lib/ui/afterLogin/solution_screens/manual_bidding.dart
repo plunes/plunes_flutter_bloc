@@ -18,8 +18,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/enter_procedure_detail_screen.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:searchable_dropdown/searchable_dropdown.dart';
@@ -449,14 +448,20 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 
   _viewProfile(MoreFacility service) {
     if (service.userType != null && service.professionalId != null) {
-      Widget route;
-      if (service.userType.toLowerCase() ==
-          Constants.doctor.toString().toLowerCase()) {
-        route = DocProfile(userId: service.professionalId);
-      } else {
-        route = HospitalProfile(userID: service.professionalId);
-      }
-      Navigator.push(context, MaterialPageRoute(builder: (context) => route));
+      // Widget route;
+      // if (service.userType.toLowerCase() ==
+      //     Constants.doctor.toString().toLowerCase()) {
+      //   route = DocProfile(userId: service.professionalId);
+      // } else {
+      //   route = HospitalProfile(userID: service.professionalId);
+      // }
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => route));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DoctorInfo(service.professionalId,
+                  isDoc: (service.userType.toLowerCase() ==
+                      Constants.doctor.toString().toLowerCase()))));
     }
   }
 
