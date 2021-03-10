@@ -166,7 +166,10 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
               title: Text(
                 PlunesStrings.knowYourProcedure,
                 textAlign: TextAlign.center,
-                style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 20),
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700),
               ),
             ),
             // Container(

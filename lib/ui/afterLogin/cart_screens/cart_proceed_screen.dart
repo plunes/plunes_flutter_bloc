@@ -208,20 +208,20 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
         children: [
           Container(
             child: Text(
-              _bankModel.confirmTitle ?? "Confirm your order and pay",
+              _bankModel.confirmTitle ?? "Confirm Your booking & Pay Now",
               style: TextStyle(fontSize: 20, color: Colors.black),
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 4),
-            child: Text(
-              _bankModel?.benefitDescription ??
-                  "Please make the payment after that you can enjoy the service and benefit of Plunes",
-              style: TextStyle(
-                  fontSize: 14,
-                  color: Color(CommonMethods.getColorHexFromStr("#464646"))),
-            ),
-          ),
+          // Container(
+          //   margin: EdgeInsets.only(top: 4),
+          //   child: Text(
+          //     _bankModel?.benefitDescription ??
+          //         "Please make the payment after that you can enjoy the service and benefit of Plunes",
+          //     style: TextStyle(
+          //         fontSize: 14,
+          //         color: Color(CommonMethods.getColorHexFromStr("#464646"))),
+          //   ),
+          // ),
           ListView.builder(
             itemBuilder: (context, index) {
               return Container(

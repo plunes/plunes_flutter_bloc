@@ -386,8 +386,8 @@ class PlunesStrings {
   static const String completePaymentText = "Complete Payment";
   static const String invalidPaymentDetails =
       "Invalid payment details, please try again later";
-  static const String discoverMoreFacilityButtonText = "Discover more facility";
-  static const String discoverPrice = "Discover Price Now";
+  static const String discoverMoreFacilityButtonText = "Discover More Facilities";
+  static const String discoverPrice = "Discover Prices Now";
   static const String discoverFacilityNearYou = "Discover facilities near you";
   static const String experienceText = "Experience";
   static const String selectedFacilities = "Selected facilities";
