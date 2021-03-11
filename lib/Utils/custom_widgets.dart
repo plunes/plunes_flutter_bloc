@@ -1237,10 +1237,10 @@ class CustomWidgets {
       itemCount: 5,
       itemSize: AppConfig.horizontalBlockSize * 4.5,
       itemPadding: EdgeInsets.symmetric(horizontal: .3),
-      itemBuilder: (context, _) => Icon(
-        Icons.star,
-        color: Colors.green,
-      ),
+      // itemBuilder: (context, _) => Icon(
+      //   Icons.star,
+      //   color: Colors.green,
+      // ),
       unratedColor: PlunesColors.GREYCOLOR,
       onRatingUpdate: (rating) {
 //        print(rating);
@@ -4604,10 +4604,10 @@ class CustomWidgets {
                                 itemSize: AppConfig.horizontalBlockSize * 7,
                                 itemPadding:
                                     EdgeInsets.symmetric(horizontal: .7),
-                                itemBuilder: (context, _) => Icon(
-                                  Icons.star,
-                                  color: Colors.green,
-                                ),
+                                // itemBuilder: (context, _) => Icon(
+                                //   Icons.star,
+                                //   color: Colors.green,
+                                // ),
                                 unratedColor: PlunesColors.GREYCOLOR,
                               ),
                             ),

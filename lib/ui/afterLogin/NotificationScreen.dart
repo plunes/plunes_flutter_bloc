@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_swipe_action_cell/core/swipe_action_cell.dart';
+import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -250,19 +250,19 @@ class _NotificationScreenState extends State<NotificationScreen> {
             key: ObjectKey(items.posts[index]),
             performsFirstActionWithFullSwipe: true,
             closeWhenScrolling: true,
-            actions: [
-              SwipeAction(
-                  closeOnTap: true,
-                  backgroundRadius: 16,
-                  icon: Icon(
-                    Icons.delete,
-                    color: PlunesColors.WHITECOLOR,
-                  ),
-                  onTap: (CompletionHandler handler) async {
-                    _removeNotification(items.posts, index);
-                  },
-                  color: PlunesColors.SPARKLINGGREEN.withOpacity(.5)),
-            ],
+            // actions: [
+            //   SwipeAction(
+            //       closeOnTap: true,
+            //       backgroundRadius: 16,
+            //       icon: Icon(
+            //         Icons.delete,
+            //         color: PlunesColors.WHITECOLOR,
+            //       ),
+            //       onTap: (CompletionHandler handler) async {
+            //         _removeNotification(items.posts, index);
+            //       },
+            //       color: PlunesColors.SPARKLINGGREEN.withOpacity(.5)),
+            // ],
             child: rowLayout(items.posts[index]));
       },
     );
