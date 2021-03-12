@@ -161,6 +161,12 @@ class PlunesImages {
   static const String timeMachineImage =
       "assets/gif/animation_500_kllw8ofi.gif";
 
+  ///video urls
+  static const String firstTutorialVideo = "assets/videos/app_tour/1.mp4";
+  static const String secondTutorialVideo = "assets/videos/app_tour/2.mp4";
+  static const String thirdTutorialVideo = "assets/videos/app_tour/3.mp4";
+  static const String forthTutorialVideo = "assets/videos/app_tour/4.mp4";
+
   static var imageArray = [
     'assets/images/sliders/bidding.png',
     'assets/images/sliders/search.png',

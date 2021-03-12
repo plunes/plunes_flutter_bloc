@@ -87,7 +87,7 @@ dependencies:
   carousel_slider: ^2.3.1
   dots_indicator: ^1.2.0
   flutter_windowmanager: ^0.0.2
-#  upi_pay: ^0.2.4
+  #  upi_pay: ^0.2.4
   bubble_tab_indicator: ^0.1.4
   dotted_line: ^2.0.2
   video_compress: ^2.1.0
@@ -397,6 +397,11 @@ flutter:
     - assets/images/whatsappIcon.png
     - assets/images/callingIconWhite.png
     - assets/gif/animation_500_kllw8ofi.gif
+
+    - assets/videos/app_tour/2.mp4
+    - assets/videos/app_tour/1.mp4
+    - assets/videos/app_tour/3.mp4
+    - assets/videos/app_tour/4.mp4
 
 
 
