@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
-import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/video_util.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
@@ -249,21 +248,30 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                           ],
                         ))
                       : Expanded(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            padding: EdgeInsets.all(0.0),
-                            itemBuilder: (context, index) {
-                              if ((_prevSolutions[index].topSearch != null &&
-                                      _prevSolutions[index].topSearch) ||
-                                  (_prevSolutions[index].toShowSearched !=
-                                          null &&
-                                      _prevSolutions[index].toShowSearched)) {
-                                return Container();
-                              }
-                              return _getPreviousActivityCard(
-                                  _prevSolutions[index]);
-                            },
-                            itemCount: _prevSolutions?.length ?? 0,
+                          child: Column(
+                            children: [
+                              _getTitleWidget(),
+                              Expanded(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  padding: EdgeInsets.all(0.0),
+                                  itemBuilder: (context, index) {
+                                    if ((_prevSolutions[index].topSearch !=
+                                                null &&
+                                            _prevSolutions[index].topSearch) ||
+                                        (_prevSolutions[index].toShowSearched !=
+                                                null &&
+                                            _prevSolutions[index]
+                                                .toShowSearched)) {
+                                      return Container();
+                                    }
+                                    return _getPreviousActivityCard(
+                                        _prevSolutions[index]);
+                                  },
+                                  itemCount: _prevSolutions?.length ?? 0,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                 ],
@@ -603,28 +611,58 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
         ? Container()
         : Container(
             width: double.infinity,
-            child: Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(
-                  right: AppConfig.horizontalBlockSize * 32,
-                  top: AppConfig.verticalBlockSize * 1.1),
-              child: InkWell(
-                focusColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                onTap: () => _onSolutionItemTap(catalogueData),
-                onDoubleTap: () {},
-                child: CustomWidgets().getRoundedButton(
-                    buttonName,
-                    AppConfig.horizontalBlockSize * 8,
-                    PlunesColors.GREENCOLOR,
-                    AppConfig.horizontalBlockSize * 0,
-                    AppConfig.verticalBlockSize * 1.5,
-                    PlunesColors.WHITECOLOR),
-              ),
+            child: Row(
+              children: [
+                Flexible(
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () => _onSolutionItemTap(catalogueData),
+                    onDoubleTap: () {},
+                    child: Container(
+                      alignment: Alignment.topLeft,
+                      margin: EdgeInsets.only(
+                          top: AppConfig.verticalBlockSize * 1.1),
+                      child: Text(
+                        buttonName,
+                        style: TextStyle(
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#01D35A")),
+                            fontSize: 16),
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(child: Container())
+              ],
             ),
           );
+    // Container(
+    //         width: double.infinity,
+    //         child: Container(
+    //           alignment: Alignment.topLeft,
+    //           margin: EdgeInsets.only(
+    //               right: AppConfig.horizontalBlockSize * 32,
+    //               top: AppConfig.verticalBlockSize * 1.1),
+    //           child: InkWell(
+    //             focusColor: Colors.transparent,
+    //             highlightColor: Colors.transparent,
+    //             hoverColor: Colors.transparent,
+    //             splashColor: Colors.transparent,
+    //             onTap: () => _onSolutionItemTap(catalogueData),
+    //             onDoubleTap: () {},
+    //             child: CustomWidgets().getRoundedButton(
+    //                 buttonName,
+    //                 AppConfig.horizontalBlockSize * 8,
+    //                 PlunesColors.GREENCOLOR,
+    //                 AppConfig.horizontalBlockSize * 0,
+    //                 AppConfig.verticalBlockSize * 1.5,
+    //                 PlunesColors.WHITECOLOR),
+    //           ),
+    //         ),
+    //       );
   }
 
   String _getDiscoverButtonText(CatalogueData catalogueData) {
@@ -646,6 +684,21 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       }
     }
     return buttonName;
+  }
+
+  Widget _getTitleWidget() {
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 4,
+          vertical: AppConfig.verticalBlockSize * 1),
+      child: Text(
+        _prevSearchedSolution?.subTitle ??
+            "Prices for your Treatments are Real Time & Valid for 7 Days",
+        style: TextStyle(
+            fontSize: 18,
+            color: Color(CommonMethods.getColorHexFromStr("#111111"))),
+      ),
+    );
   }
 }
 

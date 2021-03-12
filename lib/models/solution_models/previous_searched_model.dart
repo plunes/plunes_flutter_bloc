@@ -4,12 +4,15 @@ class PrevSearchedSolution {
   bool success;
   bool topSearches;
   List<CatalogueData> data;
+  String subTitle;
 
-  PrevSearchedSolution({this.success, this.data});
+  PrevSearchedSolution(
+      {this.success, this.data, this.subTitle, this.topSearches});
 
   PrevSearchedSolution.fromJson(Map<String, dynamic> json) {
 //    print(" ${json['topSearches']} json $json");
     success = json['success'];
+    subTitle = json['subTitle'];
     topSearches = json['topSearches'];
     if (json['data'] != null) {
       print(json['data'].toString());

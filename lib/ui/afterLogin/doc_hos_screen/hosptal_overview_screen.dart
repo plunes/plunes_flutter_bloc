@@ -1560,101 +1560,87 @@ class _HospitalOverviewScreenState
                         ? null
                         : () => _openRealTimeInsightPriceUpdateWidget(
                             _realTimeInsightsResponse.data[itemIndex]),
+                    serviceNotAvailable: () =>
+                        _serviceNotAvailableMethod(itemIndex),
                   ),
-                  (_realTimeInsightsResponse.data[itemIndex].suggested !=
-                              null &&
-                          _realTimeInsightsResponse.data[itemIndex].suggested)
-                      ? Row(
-                          children: <Widget>[
-                            Expanded(
-                                flex: 2,
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                      left: AppConfig.horizontalBlockSize * 2 +
-                                          45,
-                                      top: 3),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(
-                                              AppConfig.horizontalBlockSize *
-                                                  8)),
-                                      border: Border.all(
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#1473E6")))),
-                                  child: InkWell(
-                                    onTap: () {
-                                      showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return CustomWidgets()
-                                                .turnOffNotificationPopup(
-                                                    scaffoldKey,
-                                                    _realTimeInsightsResponse
-                                                        .data[itemIndex],
-                                                    _docHosMainInsightBloc);
-                                          }).then((value) {
-                                        _docHosMainInsightBloc
-                                            .addStateInDoNotDisturbStream(null);
-                                        _getRealTimeInsights();
-                                      });
-                                      return;
-                                    },
-                                    splashColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Color(
-                                            CommonMethods.getColorHexFromStr(
-                                                "#D7E7FB")),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(
-                                                AppConfig.horizontalBlockSize *
-                                                    8)),
-                                      ),
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal:
-                                              AppConfig.horizontalBlockSize *
-                                                  1.2,
-                                          vertical:
-                                              AppConfig.verticalBlockSize *
-                                                  0.6),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Image.asset(
-                                            PlunesImages.serviceNotAvail,
-                                            height:
-                                                AppConfig.verticalBlockSize *
-                                                    2.6,
-                                            width:
-                                                AppConfig.horizontalBlockSize *
-                                                    8,
-                                          ),
-                                          Flexible(
-                                              child: Text(
-                                            PlunesStrings
-                                                .serviceNotAvailableText,
-                                            style: TextStyle(
-                                              color: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      "#1473E6")),
-                                              fontSize: AppConfig.smallFont - 2,
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ))
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                            Expanded(child: Container())
-                          ],
-                        )
-                      : Container(),
+                  // (_realTimeInsightsResponse.data[itemIndex].suggested !=
+                  //             null &&
+                  //         _realTimeInsightsResponse.data[itemIndex].suggested)
+                  //     ? Row(
+                  //         children: <Widget>[
+                  //           Expanded(
+                  //               flex: 2,
+                  //               child: Container(
+                  //                 margin: EdgeInsets.only(
+                  //                     left: AppConfig.horizontalBlockSize * 2 +
+                  //                         45,
+                  //                     top: 3),
+                  //                 decoration: BoxDecoration(
+                  //                     borderRadius: BorderRadius.all(
+                  //                         Radius.circular(
+                  //                             AppConfig.horizontalBlockSize *
+                  //                                 8)),
+                  //                     border: Border.all(
+                  //                         color: Color(
+                  //                             CommonMethods.getColorHexFromStr(
+                  //                                 "#1473E6")))),
+                  //                 child: InkWell(
+                  //                   onTap: () {},
+                  //                   splashColor: Colors.transparent,
+                  //                   highlightColor: Colors.transparent,
+                  //                   child: Container(
+                  //                     decoration: BoxDecoration(
+                  //                       color: Color(
+                  //                           CommonMethods.getColorHexFromStr(
+                  //                               "#D7E7FB")),
+                  //                       borderRadius: BorderRadius.all(
+                  //                           Radius.circular(
+                  //                               AppConfig.horizontalBlockSize *
+                  //                                   8)),
+                  //                     ),
+                  //                     padding: EdgeInsets.symmetric(
+                  //                         horizontal:
+                  //                             AppConfig.horizontalBlockSize *
+                  //                                 1.2,
+                  //                         vertical:
+                  //                             AppConfig.verticalBlockSize *
+                  //                                 0.6),
+                  //                     child: Row(
+                  //                       mainAxisAlignment:
+                  //                           MainAxisAlignment.start,
+                  //                       crossAxisAlignment:
+                  //                           CrossAxisAlignment.center,
+                  //                       children: <Widget>[
+                  //                         Image.asset(
+                  //                           PlunesImages.serviceNotAvail,
+                  //                           height:
+                  //                               AppConfig.verticalBlockSize *
+                  //                                   2.6,
+                  //                           width:
+                  //                               AppConfig.horizontalBlockSize *
+                  //                                   8,
+                  //                         ),
+                  //                         Flexible(
+                  //                             child: Text(
+                  //                           PlunesStrings
+                  //                               .serviceNotAvailableText,
+                  //                           style: TextStyle(
+                  //                             color: Color(CommonMethods
+                  //                                 .getColorHexFromStr(
+                  //                                     "#1473E6")),
+                  //                             fontSize: AppConfig.smallFont - 2,
+                  //                             fontWeight: FontWeight.normal,
+                  //                           ),
+                  //                         ))
+                  //                       ],
+                  //                     ),
+                  //                   ),
+                  //                 ),
+                  //               )),
+                  //           Expanded(child: Container())
+                  //         ],
+                  //       )
+                  //     : Container(),
                   _getViewMoreWidgetForRealInsight(
                       _realTimeInsightsResponse.data[itemIndex])
                 ],
@@ -1664,6 +1650,23 @@ class _HospitalOverviewScreenState
         ],
       ),
     );
+  }
+
+  _serviceNotAvailableMethod(int itemIndex) {
+    {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets().turnOffNotificationPopup(
+                scaffoldKey,
+                _realTimeInsightsResponse.data[itemIndex],
+                _docHosMainInsightBloc);
+          }).then((value) {
+        _docHosMainInsightBloc.addStateInDoNotDisturbStream(null);
+        _getRealTimeInsights();
+      });
+      return;
+    }
   }
 }
 
@@ -1738,7 +1741,7 @@ class PatientServiceInfo extends StatefulWidget {
   final String serviceName;
   final String imageUrl;
   final int remainingTime;
-  final Function getRealTimeInsights, openInsightPopup;
+  final Function getRealTimeInsights, openInsightPopup, serviceNotAvailable;
   final int timer;
   final RealInsight realInsight;
 
@@ -1751,7 +1754,8 @@ class PatientServiceInfo extends StatefulWidget {
       this.getRealTimeInsights,
       this.timer,
       this.realInsight,
-      this.openInsightPopup});
+      this.openInsightPopup,
+      this.serviceNotAvailable});
 
   @override
   _PatientServiceInfoState createState() => _PatientServiceInfoState();
@@ -1819,15 +1823,78 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         _getProfileImageWidget(),
-        Expanded(
-          flex: 5,
-          child: _getDetailWidget(),
-        ),
-        Expanded(
-          flex: 2,
-          child: _getDistanceAndTimerWidget(),
-        )
+        Expanded(child: _getDetailWidget()),
       ],
+    );
+  }
+
+  Widget _getServiceNotAvailableButton() {
+    return Flexible(
+      child: Container(
+        margin: EdgeInsets.only(left: 3),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(
+                Radius.circular(AppConfig.horizontalBlockSize * 8)),
+            border: Border.all(
+                color: Color(CommonMethods.getColorHexFromStr("#1473E6")))),
+        child: InkWell(
+          onTap: () {
+            if (widget.serviceNotAvailable != null) {
+              widget.serviceNotAvailable();
+            }
+          },
+          onDoubleTap: () {},
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Color(CommonMethods.getColorHexFromStr("#D7E7FB")),
+              borderRadius: BorderRadius.all(
+                  Radius.circular(AppConfig.horizontalBlockSize * 8)),
+            ),
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 1.5,
+                vertical: AppConfig.verticalBlockSize * 1),
+            child: Text(
+              PlunesStrings.serviceNotAvailableText,
+              style: TextStyle(
+                color: Color(CommonMethods.getColorHexFromStr("#1473E6")),
+                fontSize: AppConfig.smallFont - 2,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            // child: Row(
+            //   mainAxisAlignment:
+            //   MainAxisAlignment.start,
+            //   crossAxisAlignment:
+            //   CrossAxisAlignment.center,
+            //   children: <Widget>[
+            //     Image.asset(
+            //       PlunesImages.serviceNotAvail,
+            //       height:
+            //       AppConfig.verticalBlockSize *
+            //           2.6,
+            //       width:
+            //       AppConfig.horizontalBlockSize *
+            //           8,
+            //     ),
+            //     Flexible(
+            //         child: Text(
+            //           PlunesStrings
+            //               .serviceNotAvailableText,
+            //           style: TextStyle(
+            //             color: Color(CommonMethods
+            //                 .getColorHexFromStr(
+            //                 "#1473E6")),
+            //             fontSize: AppConfig.smallFont - 2,
+            //             fontWeight: FontWeight.normal,
+            //           ),
+            //         ))
+            //   ],
+            // ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -1871,7 +1938,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       }
     }
     return Container(
-      padding: EdgeInsets.only(left: 2, top: AppConfig.verticalBlockSize * 1.6),
+      padding: EdgeInsets.only(left: 2),
       child: !shouldShowWidget()
           ? Column(
               children: <Widget>[
@@ -1977,63 +2044,48 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          RichText(
-              text: TextSpan(
-                  text: widget.patientName,
-                  style: TextStyle(
-                    fontSize: AppConfig.smallFont + 2,
-                    color: Colors.black,
-                    fontWeight: FontWeight.normal,
-                  ))),
-          Text(
-            widget.serviceName,
-            style: TextStyle(
-              fontSize: AppConfig.verySmallFont + 1,
-              color: PlunesColors.BLACKCOLOR,
-              fontWeight: FontWeight.normal,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: RichText(
+                    text: TextSpan(
+                        text: widget.patientName +
+                            " (${_realInsight.distance?.toStringAsFixed(0) ?? 1}km)",
+                        style: TextStyle(
+                          fontSize: AppConfig.smallFont + 2,
+                          color: Colors.black,
+                          fontWeight: FontWeight.normal,
+                        ))),
+              ),
+              _getTimeWidget()
+            ],
+          ),
+          Container(
+            margin: EdgeInsets.only(top: 2),
+            child: Text(
+              widget.serviceName,
+              style: TextStyle(
+                fontSize: AppConfig.verySmallFont + 1,
+                color: PlunesColors.BLACKCOLOR,
+                fontWeight: FontWeight.normal,
+              ),
             ),
           ),
           (widget.centreLocation != null && widget.centreLocation.isNotEmpty)
-              ? Text(
-                  "${widget.centreLocation}",
-                  style: TextStyle(
-                    fontSize: AppConfig.smallFont + 2,
-                    color: PlunesColors.GREYCOLOR.withOpacity(0.9),
-                    fontWeight: FontWeight.normal,
+              ? Container(
+                  margin: EdgeInsets.only(top: 2),
+                  child: Text(
+                    "${widget.centreLocation}",
+                    style: TextStyle(
+                      fontSize: AppConfig.smallFont + 2,
+                      color: PlunesColors.GREYCOLOR.withOpacity(0.9),
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                 )
               : Container(),
-          (widget.openInsightPopup == null)
-              ? Container()
-              : Container(
-                  margin: EdgeInsets.only(
-                      right: AppConfig.horizontalBlockSize * 10, top: 5),
-                  child: InkWell(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    onTap: () {
-                      if (_realInsight.priceUpdated != null &&
-                          _realInsight.priceUpdated) {
-                        return;
-                      }
-                      widget.openInsightPopup();
-                    },
-                    onDoubleTap: () {},
-                    child: CustomWidgets().getRoundedButton(
-                        _getButtonName(),
-                        AppConfig.horizontalBlockSize * 8,
-                        _getButtonColour(),
-                        AppConfig.horizontalBlockSize * 1,
-                        AppConfig.verticalBlockSize * 1,
-                        _getButtonTextColour(),
-                        fontSize: AppConfig.smallFont,
-                        borderColor:
-                            Color(CommonMethods.getColorHexFromStr("#01D35A")),
-                        hasBorder: !(_realInsight.category != null &&
-                            _realInsight.category.toLowerCase() ==
-                                Constants.procedureKey.toLowerCase())),
-                  ),
-                ),
+          _getButtonsRow(),
           ((_realInsight != null &&
                       _realInsight.expired != null &&
                       _realInsight.expired) ||
@@ -2108,33 +2160,33 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
   Widget _getDistanceAndTimerWidget() {
     return Column(
       children: <Widget>[
-        Image.asset(
-          PlunesImages.darkMap,
-          fit: BoxFit.contain,
-          height: AppConfig.verticalBlockSize * 5,
-          alignment: Alignment.center,
-        ),
-        Container(
-          margin:
-              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(
-                Icons.perm_identity,
-                size: AppConfig.verySmallFont,
-                color: PlunesColors.BLACKCOLOR,
-              ),
-              Text(
-                "${_realInsight.distance?.toStringAsFixed(0) ?? 0} Km",
-                style: TextStyle(
-                    fontSize: AppConfig.verySmallFont - 2,
-                    fontWeight: FontWeight.w600,
-                    color: PlunesColors.BLACKCOLOR),
-              )
-            ],
-          ),
-        ),
+        // Image.asset(
+        //   PlunesImages.darkMap,
+        //   fit: BoxFit.contain,
+        //   height: AppConfig.verticalBlockSize * 5,
+        //   alignment: Alignment.center,
+        // ),
+        // Container(
+        //   margin:
+        //       EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
+        //   child: Row(
+        //     mainAxisAlignment: MainAxisAlignment.center,
+        //     children: <Widget>[
+        //       Icon(
+        //         Icons.perm_identity,
+        //         size: AppConfig.verySmallFont,
+        //         color: PlunesColors.BLACKCOLOR,
+        //       ),
+        //       Text(
+        //         "${_realInsight.distance?.toStringAsFixed(0) ?? 0} Km",
+        //         style: TextStyle(
+        //             fontSize: AppConfig.verySmallFont - 2,
+        //             fontWeight: FontWeight.w600,
+        //             color: PlunesColors.BLACKCOLOR),
+        //       )
+        //     ],
+        //   ),
+        // ),
         _getTimeWidget()
       ],
     );
@@ -2169,5 +2221,49 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
       return PlunesColors.WHITECOLOR;
     }
     return Color(CommonMethods.getColorHexFromStr("#01D35A"));
+  }
+
+  Widget _getButtonsRow() {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(top: 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          (widget.openInsightPopup == null)
+              ? Container()
+              : Flexible(
+                  child: InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      if (_realInsight.priceUpdated != null &&
+                          _realInsight.priceUpdated) {
+                        return;
+                      }
+                      widget.openInsightPopup();
+                    },
+                    onDoubleTap: () {},
+                    child: CustomWidgets().getRoundedButton(
+                        _getButtonName(),
+                        AppConfig.horizontalBlockSize * 8,
+                        _getButtonColour(),
+                        AppConfig.horizontalBlockSize * 1,
+                        AppConfig.verticalBlockSize * 1,
+                        _getButtonTextColour(),
+                        fontSize: AppConfig.smallFont - 2,
+                        borderColor:
+                            Color(CommonMethods.getColorHexFromStr("#01D35A")),
+                        hasBorder: !(_realInsight.category != null &&
+                            _realInsight.category.toLowerCase() ==
+                                Constants.procedureKey.toLowerCase())),
+                  ),
+                ),
+          (_realInsight.suggested != null && _realInsight.suggested)
+              ? _getServiceNotAvailableButton()
+              : Flexible(child: Container())
+        ],
+      ),
+    );
   }
 }
