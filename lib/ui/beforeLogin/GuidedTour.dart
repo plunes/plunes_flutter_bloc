@@ -26,7 +26,7 @@ class GuidedTour extends StatefulWidget {
 }
 
 class GuidedTourState extends State<GuidedTour> {
-  onDonePress() {
+  _onDonePress() {
     Navigator.pushNamed(context, EnterPhoneScreen.tag);
   }
 
@@ -51,7 +51,7 @@ class GuidedTourState extends State<GuidedTour> {
         _controller.play();
         _setState();
       });
-    _controller?.setLooping(true);
+    _controller?.setLooping(false);
     super.initState();
   }
 
@@ -74,7 +74,7 @@ class GuidedTourState extends State<GuidedTour> {
               colorDoneBtn: Color(hexColorCode.defaultGreen),
               colorActiveDot: Color(hexColorCode.defaultGreen),
               colorDot: Color(hexColorCode.white1),
-              onDonePress: this.onDonePress),
+              onDonePress: this._onDonePress),
         ));
   }
 
@@ -89,7 +89,7 @@ class GuidedTourState extends State<GuidedTour> {
               children: [
                 _getPageWidget(),
                 Positioned(
-                  bottom: AppConfig.verticalBlockSize * 12,
+                  bottom: AppConfig.verticalBlockSize * 3,
                   left: 0,
                   right: 0,
                   child: _getButtons(),
@@ -108,76 +108,95 @@ class GuidedTourState extends State<GuidedTour> {
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                InkWell(
-                  focusColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: () async {
-                    if ((_pageController == null ||
-                        _pageController.page == null ||
-                        _pageController.page.toInt() == 0)) {
-                      return;
-                    }
-                    _isProcessing = true;
-                    await _pauseVideo();
-                    _setState();
-                    _pageController
-                        .previousPage(
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.easeInOut)
-                        .then((value) {
-                      _initVideo();
-                      _pageStream.add(null);
-                    });
-                    // _pageController
-                    //     .animateToPage(0,
-                    //         duration: Duration(milliseconds: 500),
-                    //         curve: Curves.easeInOut)
-                    //     .then((value) {
-                    //   _pageStream.add(null);
-                    // });
-                  },
-                  onDoubleTap: () {},
-                  child: Container(
-                    child: CircleAvatar(
-                      child: Icon(Icons.arrow_back_ios),
-                    ),
-                  ),
-                ),
-                InkWell(
-                  focusColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  splashColor: Colors.transparent,
-                  onTap: () async {
-                    if (_pageController.page.toInt() == 3) {
-                      // _submitUserDetail();
-                      //submit
-                    } else {
+                Container(
+                  margin:
+                      EdgeInsets.only(right: AppConfig.horizontalBlockSize * 8),
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () async {
+                      if ((_pageController == null ||
+                          _pageController.page == null ||
+                          _pageController.page.toInt() == 0)) {
+                        return;
+                      }
                       _isProcessing = true;
                       await _pauseVideo();
                       _setState();
                       _pageController
-                          .nextPage(
+                          .previousPage(
                               duration: Duration(milliseconds: 500),
                               curve: Curves.easeInOut)
                           .then((value) {
+                        _initVideo();
                         _pageStream.add(null);
                       });
-                      // _pageController
-                      //     .animateToPage(1,
-                      //         duration: Duration(milliseconds: 500),
-                      //         curve: Curves.easeInOut)
-                      //     .then((value) {
-                      //   _pageStream.add(null);
-                      // });
-                    }
-                  },
-                  onDoubleTap: () {},
-                  child: Container(
-                    child: CircleAvatar(
-                      child: Icon(Icons.arrow_back_ios),
+                    },
+                    onDoubleTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              width: 1,
+                              color: Color(CommonMethods.getColorHexFromStr(
+                                  "#48B957")))),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Center(
+                          child: Icon(
+                            Icons.keyboard_arrow_left,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#48B957")),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  margin:
+                      EdgeInsets.only(left: AppConfig.horizontalBlockSize * 8),
+                  child: InkWell(
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    onTap: () async {
+                      if (_pageController.page.toInt() == 3) {
+                        _onDonePress();
+                      } else {
+                        _isProcessing = true;
+                        await _pauseVideo();
+                        _setState();
+                        _pageController
+                            .nextPage(
+                                duration: Duration(milliseconds: 500),
+                                curve: Curves.easeInOut)
+                            .then((value) {
+                          _initVideo();
+                          _pageStream.add(null);
+                        });
+                      }
+                    },
+                    onDoubleTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              width: 1,
+                              color: Color(CommonMethods.getColorHexFromStr(
+                                  "#48B957")))),
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        child: Center(
+                            child: Icon(
+                          Icons.keyboard_arrow_right,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#48B957")),
+                        )),
+                      ),
                     ),
                   ),
                 ),
@@ -399,16 +418,54 @@ class GuidedTourState extends State<GuidedTour> {
   }
 
   Widget _getDotIndicator() {
-    return Container(
-      margin: EdgeInsets.only(top: 40),
-      child: DotsIndicator(
-        dotsCount: 4,
-        position: 0.0,
-      ),
-    );
+    return StreamBuilder<Object>(
+        stream: _pageStream?.stream,
+        builder: (context, snapshot) {
+          return Container(
+            margin: EdgeInsets.only(top: 40),
+            child: DotsIndicator(
+              decorator: DotsDecorator(
+                  size: const Size(19.0, 6.0),
+                  activeSize: const Size(19.0, 6.0),
+                  activeShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3.0)),
+                  color: Color(CommonMethods.getColorHexFromStr("#BDBDBD")),
+                  activeColor:
+                      Color(CommonMethods.getColorHexFromStr("#47BB5B")),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3.0))),
+              dotsCount: 4,
+              position: _pageController?.page ?? 0.0,
+            ),
+          );
+        });
   }
 
-  void _initVideo() {}
+  void _initVideo() {
+    if (mounted) {
+      if (_controller != null) {
+        _controller = null;
+        String videoName =
+            _pageController == null || _pageController.page == null
+                ? PlunesImages.firstTutorialVideo
+                : (_pageController.page.toInt() == 0)
+                    ? PlunesImages.firstTutorialVideo
+                    : (_pageController.page.toInt() == 1)
+                        ? PlunesImages.secondTutorialVideo
+                        : (_pageController.page.toInt() == 2)
+                            ? PlunesImages.thirdTutorialVideo
+                            : PlunesImages.forthTutorialVideo;
+        _controller = VideoPlayerController.asset(videoName)
+          ..initialize().then((_) {
+            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            _isProcessing = false;
+            _controller.play();
+            _setState();
+          });
+        _controller?.setLooping(false);
+      }
+    }
+  }
 
   Future<void> _pauseVideo() async {
     return await _controller?.pause();

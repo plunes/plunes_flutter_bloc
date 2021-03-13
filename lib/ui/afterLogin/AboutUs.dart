@@ -5,6 +5,9 @@ import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/base/BaseActivity.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
+import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
@@ -28,14 +31,33 @@ class _AboutUsState extends BaseState<AboutUs> {
   List<dynamic> aboutUsHosp = new List();
   String _userVideoUrl = "https://youtu.be/QwCxu5BgJQg";
   String _hospVideoUrl = "https://youtu.be/eEQGGzplZ7w";
+  PremiumBenefitsModel _premiumBenefitsModel;
+  UserBloc _userBloc;
 
 //  YoutubePlayerController _controller;
 
   @override
   void initState() {
-    super.initState();
+    _userBloc = UserBloc();
     getUserData();
     getHospData();
+    _getPremiumBenefitsForUsers();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _userBloc?.dispose();
+    super.dispose();
+  }
+
+  _getPremiumBenefitsForUsers() {
+    _userBloc.getPremiumBenefitsForUsers().then((value) {
+      if (value is RequestSuccess) {
+        _premiumBenefitsModel = value.response;
+      } else if (value is RequestFailed) {}
+      _setState();
+    });
   }
 
   @override
@@ -65,6 +87,9 @@ class _AboutUsState extends BaseState<AboutUs> {
   }
 
   Widget _getBody() {
+    if (widget.userType == Constants.user) {
+      return _getUserWidget();
+    }
     return SingleChildScrollView(
       child: Container(
         color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
@@ -174,28 +199,7 @@ class _AboutUsState extends BaseState<AboutUs> {
                     fontWeight: FontWeight.w500,
                   )),
             ),
-            InkWell(
-              onTap: () {
-                widget.userType == Constants.user
-                    ? LauncherUtil.launchUrl(_userVideoUrl)
-                    : LauncherUtil.launchUrl(_hospVideoUrl);
-              },
-              child: Container(
-                margin:
-                    EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 5),
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      'Watch the Video',
-                      style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          fontSize: AppConfig.largeFont,
-                          color: PlunesColors.SPARKLINGGREEN),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            _getWatchVideoSection(),
           ],
         ),
       ),
@@ -345,5 +349,153 @@ class _AboutUsState extends BaseState<AboutUs> {
       map['Info'] = plunesStrings.aboutUsHosp[i];
       aboutUsHosp.add(map);
     }
+  }
+
+  Widget _getUserWidget() {
+    return Container(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+              child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                      text: "India's ",
+                      style: TextStyle(
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#000000")),
+                          fontSize: 30,
+                          fontWeight: FontWeight.w600),
+                      children: [
+                        TextSpan(
+                          text: "Largest ",
+                          style: TextStyle(
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#01D35A")),
+                              fontSize: 30,
+                              fontWeight: FontWeight.w600),
+                        ),
+                        TextSpan(
+                          text: "Network Of Hospitals",
+                          style: TextStyle(
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#000000")),
+                              fontSize: 30,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ])),
+            ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 3),
+              child: Text(
+                "Plunes is India’s largest network of world class hospitals and doctors. Our AI helps you connect with f top-rated professionals in your vicinity and get you the best prices for your treatment in just one click. Find instant solutions for all your medical tests and procedures in Delhi-NCR.",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Color(CommonMethods.getColorHexFromStr("#565656")),
+                    fontSize: 18,
+                    fontWeight: FontWeight.normal),
+              ),
+            ),
+            _getPremiumBenefitsWidget(),
+            Container(
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 5),
+              child: _getWatchVideoSection(),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getPremiumBenefitsWidget() {
+    if (_premiumBenefitsModel == null ||
+        _premiumBenefitsModel.data == null ||
+        _premiumBenefitsModel.data.isEmpty) {
+      return Container();
+    }
+    print("ye chala");
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          margin:
+              EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 3),
+          alignment: Alignment.center,
+          child: Text(
+            "Premium Benefits for Our Users",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Color(CommonMethods.getColorHexFromStr("#000000")),
+                fontSize: 20,
+                fontWeight: FontWeight.w500),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+          child: GridView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            scrollDirection: Axis.vertical,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 6),
+            itemBuilder: (context, index) {
+              return Card(
+                color: Colors.transparent,
+                child: Container(
+                  color: Colors.transparent,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(16)),
+                    child: CustomWidgets().getImageFromUrl(
+                        _premiumBenefitsModel.data[index]?.titleImage ?? '',
+                        boxFit: BoxFit.fill),
+                  ),
+                ),
+              );
+            },
+            itemCount: _premiumBenefitsModel.data.length,
+          ),
+        )
+      ],
+    );
+  }
+
+  void _setState() {
+    if (mounted) setState(() {});
+  }
+
+  Widget _getWatchVideoSection() {
+    return InkWell(
+      focusColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      onTap: () {
+        widget.userType == Constants.user
+            ? LauncherUtil.launchUrl(_userVideoUrl)
+            : LauncherUtil.launchUrl(_hospVideoUrl);
+      },
+      onDoubleTap: () {},
+      child: Container(
+        margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 5),
+        child: Column(
+          children: <Widget>[
+            Text(
+              'Watch our video',
+              style: TextStyle(
+                  fontSize: AppConfig.largeFont,
+                  color: PlunesColors.SPARKLINGGREEN),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
