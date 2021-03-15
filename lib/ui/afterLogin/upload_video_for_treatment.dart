@@ -26,7 +26,7 @@ class UploadVideoForTreatment extends BaseActivity {
 }
 
 class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
-    with TickerProviderStateMixin, ImagePickerListener {
+    with TickerProviderStateMixin, ImagePickerListener, MethodCallBack {
   AnimationController _animationController;
   ImagePickerHandler _imagePicker;
   List<UploadedReportUrl> _videoUrls;
@@ -41,7 +41,8 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
   _initializeForImageFetching() {
     _animationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
-    _imagePicker = ImagePickerHandler(this, _animationController, true);
+    _imagePicker = ImagePickerHandler(this, _animationController, true,
+        methodCallBack: this);
     _imagePicker.init();
   }
 
@@ -77,7 +78,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
             builder: (context, snapshot) {
               if (snapshot.data is RequestInProgress) {
                 RequestInProgress requestInProgress = snapshot.data;
-                print("hello ${requestInProgress?.data?.toString()}");
+                // print("hello ${requestInProgress?.data?.toString()}");
                 double progressValue = 0.0;
                 if (requestInProgress != null &&
                     requestInProgress.data != null) {
@@ -235,6 +236,14 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
         _medicalFileResponseModel.data.reports != null &&
         _medicalFileResponseModel.data.reports.isNotEmpty) {
       _videoUrls.add(_medicalFileResponseModel.data.reports.first);
+    }
+  }
+
+  @override
+  progressCallBack() {
+    if (mounted && widget.submitUserMedicalDetailBloc != null) {
+      widget.submitUserMedicalDetailBloc
+          .addIntoSubmitFileStream(RequestInProgress(data: 0.0));
     }
   }
 }

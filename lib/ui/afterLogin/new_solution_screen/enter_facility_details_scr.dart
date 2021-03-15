@@ -109,7 +109,11 @@ class _EnterAdditionalUserDetailScrState
                 stream: _submitUserMedicalDetailBloc.uploadFileStream,
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestInProgress) {
-                    return CustomWidgets().getProgressIndicator();
+                    RequestInProgress requestInProgress = snapshot.data;
+                    if (requestInProgress != null &&
+                        requestInProgress.data == null) {
+                      return CustomWidgets().getProgressIndicator();
+                    }
                   } else if (snapshot.data is RequestSuccess) {
                     RequestSuccess data = snapshot.data;
                     Future.delayed(Duration(milliseconds: 10)).then((value) {

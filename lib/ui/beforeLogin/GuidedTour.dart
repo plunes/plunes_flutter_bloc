@@ -39,6 +39,8 @@ class GuidedTourState extends State<GuidedTour> {
     if (mounted) setState(() {});
   }
 
+  double _currentPage = 0.0;
+
   @override
   void initState() {
     _pageStream = StreamController.broadcast();
@@ -52,6 +54,10 @@ class GuidedTourState extends State<GuidedTour> {
         _setState();
       });
     _controller?.setLooping(false);
+    _pageController.addListener(() {
+      _currentPage = _pageController.page;
+      _pageStream?.add(null);
+    });
     super.initState();
   }
 
@@ -103,7 +109,7 @@ class GuidedTourState extends State<GuidedTour> {
   Widget _getButtons() {
     return Container(
       child: StreamBuilder<Object>(
-          stream: _pageStream.stream,
+          stream: _pageStream?.stream,
           builder: (context, snapshot) {
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -435,7 +441,7 @@ class GuidedTourState extends State<GuidedTour> {
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3.0))),
               dotsCount: 4,
-              position: _pageController?.page ?? 0.0,
+              position: _currentPage,
             ),
           );
         });
@@ -453,8 +459,8 @@ class GuidedTourState extends State<GuidedTour> {
                     : (_pageController.page.toInt() == 1)
                         ? PlunesImages.secondTutorialVideo
                         : (_pageController.page.toInt() == 2)
-                            ? PlunesImages.thirdTutorialVideo
-                            : PlunesImages.forthTutorialVideo;
+                            ? PlunesImages.forthTutorialVideo
+                            : PlunesImages.thirdTutorialVideo;
         _controller = VideoPlayerController.asset(videoName)
           ..initialize().then((_) {
             // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.

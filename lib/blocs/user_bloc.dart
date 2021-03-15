@@ -261,9 +261,11 @@ class UserBloc extends BlocBase {
     return result;
   }
 
-  Future<RequestState> getPremiumBenefitsForUsers() async {
+  Future<RequestState> getPremiumBenefitsForUsers(
+      {bool isFromAboutUsScreen = false}) async {
     addStateInPremiumBenefitsProviderStream(RequestInProgress());
-    var result = await UserManager().getPremiumBenefitsForUsers();
+    var result = await UserManager()
+        .getPremiumBenefitsForUsers(isFromAboutUsScreen: isFromAboutUsScreen);
     addStateInPremiumBenefitsProviderStream(result);
     return result;
   }

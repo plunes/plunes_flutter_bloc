@@ -677,7 +677,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
         if (catalogueData.priceDiscovered != null &&
             catalogueData.priceDiscovered) {
         } else {
-          buttonName = "Discover Price";
+          buttonName = "Discover Prices";
         }
       } else {
         buttonName = "Discover";

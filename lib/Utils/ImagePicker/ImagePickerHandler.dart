@@ -21,8 +21,10 @@ class ImagePickerHandler {
   ImagePickerListener _listener;
   bool _forVideo;
   BuildContext _context;
+  MethodCallBack methodCallBack;
 
-  ImagePickerHandler(this._listener, this._controller, this._forVideo);
+  ImagePickerHandler(this._listener, this._controller, this._forVideo,
+      {this.methodCallBack});
 
   void init() {
     _forVideo
@@ -162,6 +164,9 @@ class ImagePickerHandler {
   }
 
   Future<File> cropVideo(String videoFile) async {
+    if (this.methodCallBack != null) {
+      this.methodCallBack.progressCallBack();
+    }
     MediaInfo mediaInfo = await VideoCompress.compressVideo(
       videoFile, duration: 10, includeAudio: true,
       quality: VideoQuality.DefaultQuality,
@@ -240,4 +245,9 @@ class ImagePickerHandler {
 /// ImagePickerListener is the interface for callBack of fetched image.
 abstract class ImagePickerListener {
   fetchImageCallBack(File _image);
+}
+
+/// MethodCallBack is the interface for callBack of fetched image.
+abstract class MethodCallBack {
+  progressCallBack();
 }

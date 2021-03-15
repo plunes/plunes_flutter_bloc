@@ -52,7 +52,9 @@ class _AboutUsState extends BaseState<AboutUs> {
   }
 
   _getPremiumBenefitsForUsers() {
-    _userBloc.getPremiumBenefitsForUsers().then((value) {
+    _userBloc
+        .getPremiumBenefitsForUsers(isFromAboutUsScreen: true)
+        .then((value) {
       if (value is RequestSuccess) {
         _premiumBenefitsModel = value.response;
       } else if (value is RequestFailed) {}
@@ -365,53 +367,66 @@ class _AboutUsState extends BaseState<AboutUs> {
               ),
             ),
             Container(
-              width: double.infinity,
-              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
-              child: RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                      text: "India's ",
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 4),
+              child: Column(
+                children: [
+                  Container(
+                    width: double.infinity,
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
+                    child: RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            text: "India's ",
+                            style: TextStyle(
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#000000")),
+                                fontSize: 30,
+                                fontWeight: FontWeight.w600),
+                            children: [
+                              TextSpan(
+                                text: "Largest ",
+                                style: TextStyle(
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#01D35A")),
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              TextSpan(
+                                text: "Network Of Hospitals",
+                                style: TextStyle(
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#000000")),
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ])),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 3),
+                    child: Text(
+                      "Plunes is India’s largest network of world class hospitals and doctors. Our AI helps you connect with f top-rated professionals in your vicinity and get you the best prices for your treatment in just one click. Find instant solutions for all your medical tests and procedures in Delhi-NCR.",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Color(
-                              CommonMethods.getColorHexFromStr("#000000")),
-                          fontSize: 30,
-                          fontWeight: FontWeight.w600),
-                      children: [
-                        TextSpan(
-                          text: "Largest ",
-                          style: TextStyle(
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#01D35A")),
-                              fontSize: 30,
-                              fontWeight: FontWeight.w600),
-                        ),
-                        TextSpan(
-                          text: "Network Of Hospitals",
-                          style: TextStyle(
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#000000")),
-                              fontSize: 30,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ])),
-            ),
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.symmetric(
-                  vertical: AppConfig.verticalBlockSize * 3),
-              child: Text(
-                "Plunes is India’s largest network of world class hospitals and doctors. Our AI helps you connect with f top-rated professionals in your vicinity and get you the best prices for your treatment in just one click. Find instant solutions for all your medical tests and procedures in Delhi-NCR.",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Color(CommonMethods.getColorHexFromStr("#565656")),
-                    fontSize: 18,
-                    fontWeight: FontWeight.normal),
+                              CommonMethods.getColorHexFromStr("#565656")),
+                          fontSize: 18,
+                          fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                  _getPremiumBenefitsWidget(),
+                  Container(
+                    margin:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 5),
+                    child: _getWatchVideoSection(),
+                  )
+                ],
               ),
-            ),
-            _getPremiumBenefitsWidget(),
-            Container(
-              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 5),
-              child: _getWatchVideoSection(),
             )
           ],
         ),
@@ -425,7 +440,6 @@ class _AboutUsState extends BaseState<AboutUs> {
         _premiumBenefitsModel.data.isEmpty) {
       return Container();
     }
-    print("ye chala");
     return Column(
       children: [
         Container(
@@ -439,7 +453,7 @@ class _AboutUsState extends BaseState<AboutUs> {
             style: TextStyle(
                 color: Color(CommonMethods.getColorHexFromStr("#000000")),
                 fontSize: 20,
-                fontWeight: FontWeight.w500),
+                fontWeight: FontWeight.w600),
           ),
         ),
         Container(
@@ -457,13 +471,14 @@ class _AboutUsState extends BaseState<AboutUs> {
             itemBuilder: (context, index) {
               return Card(
                 color: Colors.transparent,
+                elevation: 0.0,
                 child: Container(
                   color: Colors.transparent,
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(16)),
                     child: CustomWidgets().getImageFromUrl(
                         _premiumBenefitsModel.data[index]?.titleImage ?? '',
-                        boxFit: BoxFit.fill),
+                        boxFit: BoxFit.cover),
                   ),
                 ),
               );

@@ -608,10 +608,12 @@ class UserManager {
     }
   }
 
-  Future<RequestState> getPremiumBenefitsForUsers() async {
+  Future<RequestState> getPremiumBenefitsForUsers(
+      {bool isFromAboutUsScreen = false}) async {
     var result = await DioRequester().requestMethodWithNoBaseUrl(
         url: Urls.PREMIUM_BENEFITS_FOR_USER_URL,
         requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {"isAboutUsPage": isFromAboutUsScreen},
         headerIncluded: true);
     if (result.isRequestSucceed) {
       PremiumBenefitsModel _mediaContentModel =
