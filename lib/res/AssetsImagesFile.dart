@@ -160,6 +160,7 @@ class PlunesImages {
   static const String callingIconWhite = "assets/images/callingIconWhite.png";
   static const String timeMachineImage =
       "assets/gif/animation_500_kllw8ofi.gif";
+  static const String home_screen_image = "assets/images/home_screen_image.png";
 
   ///video urls
   static const String firstTutorialVideo = "assets/videos/app_tour/1.mp4";

@@ -6,7 +6,7 @@ class AppLog {
   }
 
   static debugLog(var msg) {
-//    debugPrint("Debug Log : $msg");
+   debugPrint("Debug Log : $msg");
   }
 
   static printError(var msg) {

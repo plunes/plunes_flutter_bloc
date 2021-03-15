@@ -36,10 +36,16 @@ class SubmitUserMedicalDetailBloc extends BlocBase {
   }
 
   Future<RequestState> uploadFile(File file,
-      {String fileType, Map<String, dynamic> fileData}) async {
+      {String fileType,
+      Map<String, dynamic> fileData,
+      bool shouldShowUploadProgress = false}) async {
     addIntoSubmitFileStream(RequestInProgress());
-    var result =
-        await SubmitMedicalDetailRepo().uploadFile(file, fileType: fileType);
+    var result = await SubmitMedicalDetailRepo().uploadFile(file,
+        fileType: fileType, fileUploadProgress: (num progress) {
+      if (progress != null && shouldShowUploadProgress) {
+        addIntoSubmitFileStream(RequestInProgress(data: progress));
+      }
+    });
     addIntoSubmitFileStream(result);
     return result;
   }

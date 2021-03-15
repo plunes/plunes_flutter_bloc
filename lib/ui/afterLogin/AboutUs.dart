@@ -357,6 +357,14 @@ class _AboutUsState extends BaseState<AboutUs> {
         child: Column(
           children: [
             Container(
+              height: 200,
+              width: double.infinity,
+              child: Image.asset(
+                PlunesImages.home_screen_image,
+                fit: BoxFit.fill,
+              ),
+            ),
+            Container(
               width: double.infinity,
               margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
               child: RichText(

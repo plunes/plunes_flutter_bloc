@@ -43,6 +43,7 @@ class DioRequester {
       dynamic queryParameter,
       final String requestType,
       bool headerIncluded,
+      Function fileUploadProgress,
       bool isMultipartEnabled = false}) async {
     RequestOutput response;
     try {
@@ -68,6 +69,9 @@ class DioRequester {
           queryParameters: queryParameter,
           options: options, onSendProgress: (int sent, int total) {
         AppLog.debugLog("${sent / total * 100} total sent");
+        if (fileUploadProgress != null) {
+          fileUploadProgress(sent / total * 100);
+        }
       });
       AppLog.printLog("Response occurred ${response.data.toString()}");
       return ResponseStatusCodeHandler()

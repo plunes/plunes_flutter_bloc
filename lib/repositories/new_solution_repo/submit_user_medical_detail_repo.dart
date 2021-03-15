@@ -45,7 +45,8 @@ class SubmitMedicalDetailRepo {
     }
   }
 
-  Future<RequestState> uploadFile(File file, {String fileType}) async {
+  Future<RequestState> uploadFile(File file,
+      {String fileType, Function fileUploadProgress}) async {
     MultipartFile value = await MultipartFile.fromFile(file.path);
     Map<String, dynamic> fileData = {"file": value};
     var result = await DioRequester().requestMethod(
@@ -53,6 +54,7 @@ class SubmitMedicalDetailRepo {
       url: Urls.UPLOAD_MEDICAL_FILE_URL,
       headerIncluded: true,
       isMultipartEnabled: true,
+      fileUploadProgress: fileUploadProgress,
       queryParameter: {"reportType": fileType},
       postData: FormData.fromMap(fileData),
     );

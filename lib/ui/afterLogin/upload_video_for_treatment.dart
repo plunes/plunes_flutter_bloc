@@ -76,7 +76,45 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
             stream: widget?.submitUserMedicalDetailBloc?.uploadFileStream,
             builder: (context, snapshot) {
               if (snapshot.data is RequestInProgress) {
-                return CustomWidgets().getProgressIndicator();
+                RequestInProgress requestInProgress = snapshot.data;
+                print("hello ${requestInProgress?.data?.toString()}");
+                double progressValue = 0.0;
+                if (requestInProgress != null &&
+                    requestInProgress.data != null) {
+                  progressValue = double.tryParse(
+                    requestInProgress?.data?.toString() ?? "0",
+                  );
+                }
+                return Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        child: LinearProgressIndicator(
+                          backgroundColor: Colors.grey,
+                          minHeight: 22,
+                          value: progressValue / 100,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                              PlunesColors.GREENCOLOR),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 12),
+                        child: Text(
+                          "${progressValue?.toStringAsFixed(1)} % Uploaded",
+                          style: TextStyle(
+                              color: PlunesColors.GREENCOLOR,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18),
+                        ),
+                      )
+                    ],
+                  ),
+                );
               } else if (snapshot.data is RequestSuccess) {
                 Future.delayed(Duration(milliseconds: 10)).then((value) {
                   _showMessagePopup(PlunesStrings.uplaodSuccessMessage,
@@ -144,8 +182,8 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
   }
 
   _uploadVideo(File _image) {
-    widget.submitUserMedicalDetailBloc
-        .uploadFile(_image, fileType: Constants.typeVideo);
+    widget.submitUserMedicalDetailBloc.uploadFile(_image,
+        fileType: Constants.typeVideo, shouldShowUploadProgress: true);
   }
 
   @override
