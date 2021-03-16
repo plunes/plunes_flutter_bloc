@@ -98,7 +98,9 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
                         child: LinearProgressIndicator(
                           backgroundColor: Colors.grey,
                           minHeight: 22,
-                          value: progressValue / 100,
+                          value: progressValue == 150
+                              ? (0.0)
+                              : (progressValue / 100),
                           valueColor: AlwaysStoppedAnimation<Color>(
                               PlunesColors.GREENCOLOR),
                         ),
@@ -106,7 +108,9 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
                       Container(
                         margin: EdgeInsets.only(top: 12),
                         child: Text(
-                          "${progressValue?.toStringAsFixed(1)} % Uploaded",
+                          progressValue == 150
+                              ? "Processing ..."
+                              : "${progressValue?.toStringAsFixed(1)} % Uploaded",
                           style: TextStyle(
                               color: PlunesColors.GREENCOLOR,
                               fontWeight: FontWeight.w500,
@@ -243,7 +247,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
   progressCallBack() {
     if (mounted && widget.submitUserMedicalDetailBloc != null) {
       widget.submitUserMedicalDetailBloc
-          .addIntoSubmitFileStream(RequestInProgress(data: 0.0));
+          .addIntoSubmitFileStream(RequestInProgress(data: 150));
     }
   }
 }

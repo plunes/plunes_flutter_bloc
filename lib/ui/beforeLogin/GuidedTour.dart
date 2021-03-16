@@ -27,13 +27,20 @@ class GuidedTour extends StatefulWidget {
 
 class GuidedTourState extends State<GuidedTour> {
   _onDonePress() {
-    Navigator.pushNamed(context, EnterPhoneScreen.tag);
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => EnterPhoneScreen()));
   }
 
   PageController _pageController;
   StreamController _pageStream;
-  VideoPlayerController _controller;
-  bool _isProcessing;
+  VideoPlayerController _firstVideoController,
+      _secondVideoController,
+      _thirdVideoController,
+      _forthVideoController;
+  bool _isProcessing,
+      _isProcessingSecondVideo,
+      _isProcessingThirdVideo,
+      _isProcessingForthVideo;
 
   _setState() {
     if (mounted) setState(() {});
@@ -45,15 +52,10 @@ class GuidedTourState extends State<GuidedTour> {
   void initState() {
     _pageStream = StreamController.broadcast();
     _pageController = PageController(initialPage: 0);
-    _isProcessing = true;
-    _controller = VideoPlayerController.asset(PlunesImages.firstTutorialVideo)
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        _isProcessing = false;
-        _controller.play();
-        _setState();
-      });
-    _controller?.setLooping(false);
+    _initFirstVideoController();
+    _initSecondVideoController();
+    _initThirdVideoController();
+    _initForthVideoController();
     _pageController.addListener(() {
       _currentPage = _pageController.page;
       _pageStream?.add(null);
@@ -63,6 +65,10 @@ class GuidedTourState extends State<GuidedTour> {
 
   @override
   void dispose() {
+    _firstVideoController?.dispose();
+    _secondVideoController?.dispose();
+    _thirdVideoController?.dispose();
+    _forthVideoController?.dispose();
     _pageStream?.close();
     super.dispose();
   }
@@ -128,15 +134,12 @@ class GuidedTourState extends State<GuidedTour> {
                           _pageController.page.toInt() == 0)) {
                         return;
                       }
-                      _isProcessing = true;
-                      await _pauseVideo();
-                      _setState();
+                      // _setState();
                       _pageController
                           .previousPage(
                               duration: Duration(milliseconds: 500),
                               curve: Curves.easeInOut)
                           .then((value) {
-                        _initVideo();
                         _pageStream.add(null);
                       });
                     },
@@ -173,15 +176,13 @@ class GuidedTourState extends State<GuidedTour> {
                       if (_pageController.page.toInt() == 3) {
                         _onDonePress();
                       } else {
-                        _isProcessing = true;
-                        await _pauseVideo();
-                        _setState();
+                        // _setState();
                         _pageController
                             .nextPage(
                                 duration: Duration(milliseconds: 500),
                                 curve: Curves.easeInOut)
                             .then((value) {
-                          _initVideo();
+                          // _initVideo();
                           _pageStream.add(null);
                         });
                       }
@@ -218,7 +219,34 @@ class GuidedTourState extends State<GuidedTour> {
           EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
       child: PageView(
         controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
+        onPageChanged: (pageIndex) async {
+          await _pauseVideo();
+          if (pageIndex == 0) {
+            if (_firstVideoController != null &&
+                _firstVideoController.value.initialized) {
+              _firstVideoController?.seekTo(Duration(seconds: 0));
+              _firstVideoController?.play();
+            }
+          } else if (pageIndex == 1) {
+            if (_secondVideoController != null &&
+                _secondVideoController.value.initialized) {
+              _secondVideoController?.seekTo(Duration(seconds: 0));
+              _secondVideoController?.play();
+            }
+          } else if (pageIndex == 2) {
+            if (_thirdVideoController != null &&
+                _thirdVideoController.value.initialized) {
+              _thirdVideoController?.seekTo(Duration(seconds: 0));
+              _thirdVideoController?.play();
+            }
+          } else if (pageIndex == 3) {
+            if (_forthVideoController != null &&
+                _forthVideoController.value.initialized) {
+              _forthVideoController?.seekTo(Duration(seconds: 0));
+              _forthVideoController?.play();
+            }
+          }
+        },
         scrollDirection: Axis.horizontal,
         children: [
           _getFirstPage(),
@@ -242,7 +270,7 @@ class GuidedTourState extends State<GuidedTour> {
               vertical: AppConfig.verticalBlockSize * 2.2),
           child: Column(
             children: [
-              _getVideoPlayer(),
+              _getFirstVideoPlayer(),
               RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
@@ -300,7 +328,7 @@ class GuidedTourState extends State<GuidedTour> {
               vertical: AppConfig.verticalBlockSize * 2.2),
           child: Column(
             children: [
-              _getVideoPlayer(),
+              _getSecondVideoPlayer(),
               RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
@@ -340,7 +368,7 @@ class GuidedTourState extends State<GuidedTour> {
               vertical: AppConfig.verticalBlockSize * 2.2),
           child: Column(
             children: [
-              _getVideoPlayer(),
+              _getThirdVideoPlayer(),
               RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
@@ -380,7 +408,7 @@ class GuidedTourState extends State<GuidedTour> {
               vertical: AppConfig.verticalBlockSize * 2.2),
           child: Column(
             children: [
-              _getVideoPlayer(),
+              _getForthVideoPlayer(),
               RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
@@ -408,15 +436,63 @@ class GuidedTourState extends State<GuidedTour> {
     );
   }
 
-  Widget _getVideoPlayer() {
+  Widget _getFirstVideoPlayer() {
     return Container(
       height: 300,
       width: double.infinity,
       child: Center(
-        child: (!(_isProcessing) && _controller.value.initialized)
+        child: (!(_isProcessing) && _firstVideoController.value.initialized)
             ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
+                aspectRatio: _firstVideoController.value.aspectRatio,
+                child: VideoPlayer(_firstVideoController),
+              )
+            : CustomWidgets().getProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _getSecondVideoPlayer() {
+    return Container(
+      height: 300,
+      width: double.infinity,
+      child: Center(
+        child: (!(_isProcessingSecondVideo) &&
+                _secondVideoController.value.initialized)
+            ? AspectRatio(
+                aspectRatio: _secondVideoController.value.aspectRatio,
+                child: VideoPlayer(_secondVideoController),
+              )
+            : CustomWidgets().getProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _getThirdVideoPlayer() {
+    return Container(
+      height: 300,
+      width: double.infinity,
+      child: Center(
+        child: (!(_isProcessingThirdVideo) &&
+                _thirdVideoController.value.initialized)
+            ? AspectRatio(
+                aspectRatio: _thirdVideoController.value.aspectRatio,
+                child: VideoPlayer(_thirdVideoController),
+              )
+            : CustomWidgets().getProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _getForthVideoPlayer() {
+    return Container(
+      height: 300,
+      width: double.infinity,
+      child: Center(
+        child: (!(_isProcessingForthVideo) &&
+                _forthVideoController.value.initialized)
+            ? AspectRatio(
+                aspectRatio: _forthVideoController.value.aspectRatio,
+                child: VideoPlayer(_forthVideoController),
               )
             : CustomWidgets().getProgressIndicator(),
       ),
@@ -447,33 +523,88 @@ class GuidedTourState extends State<GuidedTour> {
         });
   }
 
-  void _initVideo() {
-    if (mounted) {
-      if (_controller != null) {
-        _controller = null;
-        String videoName =
-            _pageController == null || _pageController.page == null
-                ? PlunesImages.firstTutorialVideo
-                : (_pageController.page.toInt() == 0)
-                    ? PlunesImages.firstTutorialVideo
-                    : (_pageController.page.toInt() == 1)
-                        ? PlunesImages.secondTutorialVideo
-                        : (_pageController.page.toInt() == 2)
-                            ? PlunesImages.forthTutorialVideo
-                            : PlunesImages.thirdTutorialVideo;
-        _controller = VideoPlayerController.asset(videoName)
+  // void _initVideo() {
+  //   if (mounted) {
+  //     if (_firstVideoController != null) {
+  //       _firstVideoController = null;
+  //       String videoName =
+  //           _pageController == null || _pageController.page == null
+  //               ? PlunesImages.firstTutorialVideo
+  //               : (_pageController.page.toInt() == 0)
+  //                   ? PlunesImages.firstTutorialVideo
+  //                   : (_pageController.page.toInt() == 1)
+  //                       ? PlunesImages.secondTutorialVideo
+  //                       : (_pageController.page.toInt() == 2)
+  //                           ? PlunesImages.forthTutorialVideo
+  //                           : PlunesImages.thirdTutorialVideo;
+  //       _firstVideoController = VideoPlayerController.asset(videoName)
+  //         ..initialize().then((_) {
+  //           // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+  //           _isProcessing = false;
+  //           _firstVideoController.play();
+  //           _setState();
+  //         });
+  //       _firstVideoController?.setLooping(false);
+  //     }
+  //   }
+  // }
+
+  Future<void> _pauseVideo() async {
+    await _firstVideoController?.pause();
+    await _secondVideoController?.pause();
+    await _thirdVideoController?.pause();
+    return await _forthVideoController?.pause();
+  }
+
+  void _initFirstVideoController() {
+    _isProcessing = true;
+    _firstVideoController =
+        VideoPlayerController.asset(PlunesImages.firstTutorialVideo)
           ..initialize().then((_) {
             // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
             _isProcessing = false;
-            _controller.play();
+            _firstVideoController.play();
             _setState();
           });
-        _controller?.setLooping(false);
-      }
-    }
+    _firstVideoController?.setLooping(false);
   }
 
-  Future<void> _pauseVideo() async {
-    return await _controller?.pause();
+  void _initSecondVideoController() {
+    _isProcessingSecondVideo = true;
+    _secondVideoController =
+        VideoPlayerController.asset(PlunesImages.secondTutorialVideo)
+          ..initialize().then((_) {
+            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            _isProcessingSecondVideo = false;
+            // _firstVideoController.play();
+            _setState();
+          });
+    _secondVideoController?.setLooping(false);
+  }
+
+  void _initThirdVideoController() {
+    _isProcessingThirdVideo = true;
+    _thirdVideoController =
+        VideoPlayerController.asset(PlunesImages.forthTutorialVideo)
+          ..initialize().then((_) {
+            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            _isProcessingThirdVideo = false;
+            // _firstVideoController.play();
+            _setState();
+          });
+    _thirdVideoController?.setLooping(false);
+  }
+
+  void _initForthVideoController() {
+    _isProcessingForthVideo = true;
+    _forthVideoController =
+        VideoPlayerController.asset(PlunesImages.thirdTutorialVideo)
+          ..initialize().then((_) {
+            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            _isProcessingForthVideo = false;
+            // _firstVideoController.play();
+            _setState();
+          });
+    _forthVideoController?.setLooping(false);
   }
 }
