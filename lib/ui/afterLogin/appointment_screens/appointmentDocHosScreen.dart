@@ -106,7 +106,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: AppConfig.smallFont,
-                                color: PlunesColors.GREENCOLOR)),
+                                color: PlunesColors.GREYCOLOR)),
                         onTap: () {
                           if (appointmentModel != null &&
                               appointmentModel.bookingStatus !=

@@ -245,7 +245,6 @@ class UserManager {
   }
 
   Future<RequestState> getSpecialities() async {
-    print("hittedonceagagin");
     var result = await DioRequester().requestMethod(
       headerIncluded: true,
       requestType: HttpRequestMethods.HTTP_GET,
@@ -559,7 +558,7 @@ class UserManager {
         postData: FormData.fromMap(postData));
     if (result.isRequestSucceed) {
       String imageUrl;
-      print("upload file response ${result?.response?.data}");
+      // print("upload file response ${result?.response?.data}");
       if (result.response.data != null &&
           result.response.data["data"] != null &&
           result.response.data["data"]["reports"] != null &&

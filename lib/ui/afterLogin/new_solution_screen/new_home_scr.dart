@@ -314,7 +314,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     RequestFailed _failedObj = snapShot.data;
                     _specialityApiFailureCause = _failedObj?.response;
                   } else if (snapShot.data is RequestSuccess) {
-                    _getTopFacilities();
+                    _getTopFacilities(isInitialRequest: true);
                   }
                   return CommonMethods.catalogueLists == null ||
                           CommonMethods.catalogueLists.isEmpty
@@ -573,11 +573,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _homeScreenMainBloc.getKnowYourProcedureData();
   }
 
-  void _getTopFacilities() {
+  void _getTopFacilities({bool isInitialRequest = false}) {
     _homeScreenMainBloc.getTopFacilities(
         specialityId: _selectedSpeciality,
         shouldSortByNearest: (_locationFilter == _allKey) ? false : true,
-        facilityType: _userTypeFilter);
+        facilityType: _userTypeFilter,
+        isInitialRequest: isInitialRequest);
   }
 
   void _getTopSearch() {
@@ -1420,7 +1421,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     _selectedSpeciality = null;
                     _userTypeFilter = null;
                     _locationFilter = _nearMeKey;
-                    _getTopFacilities();
+                    _getTopFacilities(isInitialRequest: true);
                   }, isSizeLess: true))
               : Container(
                   child: Column(

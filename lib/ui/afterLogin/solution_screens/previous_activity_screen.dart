@@ -578,10 +578,16 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
     var duration = expireTime.difference(now);
     if (duration.inDays > 1) {
       timeRemaining = "$priceExpireText${duration.inDays + 1} days";
+    } else if (duration.inHours >= 24) {
+      timeRemaining = "$priceExpireText 2 days";
     } else if (duration.inHours > 1) {
       timeRemaining = "$priceExpireText${duration.inHours} hours";
+    } else if (duration.inMinutes >= 60) {
+      timeRemaining = "$priceExpireText 2 hours";
     } else if (duration.inMinutes > 1) {
       timeRemaining = "$priceExpireText${duration.inMinutes} minutes";
+    } else if (duration.inSeconds >= 60) {
+      timeRemaining = "$priceExpireText 2 minutes";
     } else if (duration.inSeconds > 1) {
       timeRemaining = "$priceExpireText${duration.inSeconds} seconds";
     } else {
@@ -677,7 +683,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
         if (catalogueData.priceDiscovered != null &&
             catalogueData.priceDiscovered) {
         } else {
-          buttonName = "Discover Prices";
+          // buttonName = "Discover Prices";
         }
       } else {
         buttonName = "Discover";

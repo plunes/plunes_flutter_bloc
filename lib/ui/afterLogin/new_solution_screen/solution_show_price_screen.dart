@@ -1292,10 +1292,16 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     var duration = expireTime.difference(now);
     if (duration.inDays > 1) {
       timeRemaining = " ${duration.inDays + 1} days";
+    } else if (duration.inHours >= 24) {
+      timeRemaining = " 2 days";
     } else if (duration.inHours > 1) {
       timeRemaining = " ${duration.inHours} hours";
+    } else if (duration.inMinutes >= 60) {
+      timeRemaining = " 2 hours";
     } else if (duration.inMinutes > 1) {
       timeRemaining = " ${duration.inMinutes} minutes";
+    } else if (duration.inSeconds >= 60) {
+      timeRemaining = " 2 minutes";
     } else if (duration.inSeconds > 1) {
       timeRemaining = " ${duration.inSeconds} seconds";
     }

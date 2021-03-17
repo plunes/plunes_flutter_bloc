@@ -16,6 +16,7 @@ import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/notification_repo/notification_bloc.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
+import 'package:plunes/repositories/new_solution_repo/solution_home_page_repo.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
@@ -392,6 +393,7 @@ class _HomeScreenState extends State<HomeScreen> implements DialogCallBack {
 
   void navigationPage() async {
     UserManager().clear();
+    HomeScreenMainRepo().clearCache();
     bool BIDDING_MAIN_SCREEN =
         UserManager().getWidgetShownStatus(Constants.BIDDING_MAIN_SCREEN);
     bool SOLUTION_SCREEN =

@@ -308,7 +308,7 @@ class GuidedTourState extends State<GuidedTour> {
                             Color(CommonMethods.getColorHexFromStr("#565656")),
                         fontSize: 18)),
               ),
-              _getDotIndicator()
+              _getDotIndicator(isFirstCard: true)
             ],
           ),
         ),
@@ -499,12 +499,12 @@ class GuidedTourState extends State<GuidedTour> {
     );
   }
 
-  Widget _getDotIndicator() {
+  Widget _getDotIndicator({bool isFirstCard = false}) {
     return StreamBuilder<Object>(
         stream: _pageStream?.stream,
         builder: (context, snapshot) {
           return Container(
-            margin: EdgeInsets.only(top: 40),
+            margin: EdgeInsets.only(top: isFirstCard ? 25 : 70, bottom: 10),
             child: DotsIndicator(
               decorator: DotsDecorator(
                   size: const Size(19.0, 6.0),
@@ -556,7 +556,7 @@ class GuidedTourState extends State<GuidedTour> {
     return await _forthVideoController?.pause();
   }
 
-  void _initFirstVideoController() {
+  void _initFirstVideoController() async {
     _isProcessing = true;
     _firstVideoController =
         VideoPlayerController.asset(PlunesImages.firstTutorialVideo)
@@ -579,7 +579,7 @@ class GuidedTourState extends State<GuidedTour> {
             // _firstVideoController.play();
             _setState();
           });
-    _secondVideoController?.setLooping(false);
+    // _secondVideoController?.setLooping(false);
   }
 
   void _initThirdVideoController() {

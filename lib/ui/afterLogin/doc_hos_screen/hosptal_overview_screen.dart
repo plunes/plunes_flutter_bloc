@@ -1853,7 +1853,7 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                   Radius.circular(AppConfig.horizontalBlockSize * 8)),
             ),
             padding: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 1.5,
+                horizontal: AppConfig.horizontalBlockSize * 3,
                 vertical: AppConfig.verticalBlockSize * 1),
             child: Text(
               PlunesStrings.serviceNotAvailableText,
@@ -2244,19 +2244,30 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                       widget.openInsightPopup();
                     },
                     onDoubleTap: () {},
-                    child: CustomWidgets().getRoundedButton(
-                        _getButtonName(),
-                        AppConfig.horizontalBlockSize * 8,
-                        _getButtonColour(),
-                        AppConfig.horizontalBlockSize * 1,
-                        AppConfig.verticalBlockSize * 1,
-                        _getButtonTextColour(),
-                        fontSize: AppConfig.smallFont - 2,
-                        borderColor:
-                            Color(CommonMethods.getColorHexFromStr("#01D35A")),
-                        hasBorder: !(_realInsight.category != null &&
-                            _realInsight.category.toLowerCase() ==
-                                Constants.procedureKey.toLowerCase())),
+                    child: Container(
+                        decoration: BoxDecoration(
+                          color: _getButtonColour(),
+                          border: !(_realInsight.category != null &&
+                                  _realInsight.category.toLowerCase() ==
+                                      Constants.procedureKey.toLowerCase())
+                              ? Border.all(
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#01D35A")))
+                              : null,
+                          borderRadius: BorderRadius.all(Radius.circular(
+                              AppConfig.horizontalBlockSize * 8)),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 3,
+                            vertical: AppConfig.verticalBlockSize * 1),
+                        child: Text(
+                          _getButtonName(),
+                          style: TextStyle(
+                            color: _getButtonTextColour(),
+                            fontSize: AppConfig.smallFont - 2,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        )),
                   ),
                 ),
           (_realInsight.suggested != null && _realInsight.suggested)

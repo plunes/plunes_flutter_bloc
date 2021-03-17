@@ -14,6 +14,23 @@ import 'package:plunes/res/Http_constants.dart';
 import 'package:plunes/resources/network/Urls.dart';
 
 class HomeScreenMainRepo {
+  TopFacilityModel _topFacilityModel;
+  static HomeScreenMainRepo _instance;
+
+  HomeScreenMainRepo._init();
+
+  factory HomeScreenMainRepo() {
+    if (_instance == null) {
+      _instance = HomeScreenMainRepo._init();
+    }
+    return _instance;
+  }
+
+  TopFacilityModel getTopFacilityModelCachedData() {
+    print("ye wali list ${_topFacilityModel==null}");
+    return _topFacilityModel;
+  }
+
   Future<RequestState> getSolutionHomePageCategoryData() async {
     var result = await DioRequester().requestMethod(
         url: Urls.GET_HOME_SCREEN_CATEGORY_DATA_URL,
@@ -156,7 +173,8 @@ class HomeScreenMainRepo {
   Future<RequestState> getTopFacilities(
       {String specialityId,
       bool shouldSortByNearest,
-      String facilityType}) async {
+      String facilityType,
+      bool isInitialRequest = false}) async {
     double lat, long;
     try {
       if (UserManager().getUserDetails().latitude != null) {
@@ -181,9 +199,19 @@ class HomeScreenMainRepo {
     if (result.isRequestSucceed) {
       TopFacilityModel solutionHomeScreenModel =
           TopFacilityModel.fromJson(result.response.data);
+      if (isInitialRequest &&
+          solutionHomeScreenModel != null &&
+          solutionHomeScreenModel.data != null &&
+          solutionHomeScreenModel.data.isNotEmpty) {
+        _topFacilityModel = solutionHomeScreenModel;
+      }
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
+  }
+
+  void clearCache() {
+    _topFacilityModel = null;
   }
 }
