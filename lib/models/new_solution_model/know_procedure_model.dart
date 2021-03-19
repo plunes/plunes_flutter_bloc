@@ -74,7 +74,7 @@ class ProcedureData {
 
   ProcedureData.fromJson(Map<String, dynamic> json) {
     signs = json['signs'].cast<String>();
-    symptoms = json['symptoms'].cast<String>();
+    // symptoms = json['symptoms'].cast<String>();
     testimonials = json['testimonials'].cast<String>();
     dnd = json['dnd'].cast<String>();
     sId = json['_id'];

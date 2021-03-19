@@ -103,6 +103,8 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                     () {},
                     one: null,
                     two: null,
+                    hasSearchBar: true,
+                    searchBarText: "Your Activity",
                   ),
                   margin: EdgeInsets.only(
                       top: AppConfig.getMediaQuery().padding.top),

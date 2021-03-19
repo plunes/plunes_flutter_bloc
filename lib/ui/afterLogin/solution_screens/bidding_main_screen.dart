@@ -983,7 +983,16 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
             children: [
               (widget.hasSearchBar != null && widget.hasSearchBar)
                   ? Expanded(
-                      child: _getSearchBar(),
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          widget.searchBarText,
+                          style: TextStyle(
+                              color: PlunesColors.BLACKCOLOR,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
                     )
                   : Flexible(child: _getLocationWidget()),
               Container(
