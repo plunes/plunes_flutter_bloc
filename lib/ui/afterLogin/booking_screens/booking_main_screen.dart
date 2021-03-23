@@ -2278,6 +2278,9 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   }
 
   Widget _getInsuranceTabBar() {
+    if (widget.appointmentModel != null) {
+      return _getPatientDetailWidget();
+    }
     return Column(
       children: [
         Card(

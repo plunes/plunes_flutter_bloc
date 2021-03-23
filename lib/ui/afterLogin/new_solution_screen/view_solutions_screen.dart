@@ -302,6 +302,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                               alignment: Alignment.centerLeft,
                               margin: EdgeInsets.only(
                                   left: AppConfig.horizontalBlockSize * 1.2,
+                                  top: AppConfig.verticalBlockSize * 1.8,
                                   bottom: AppConfig.verticalBlockSize * 1.8,
                                   right: AppConfig.horizontalBlockSize * 1.2),
                               child: Text(

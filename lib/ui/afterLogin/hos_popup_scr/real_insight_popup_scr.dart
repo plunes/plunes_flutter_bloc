@@ -57,9 +57,19 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
     if (_realInsight.recommendation != null &&
         _realInsight.recommendation > 0) {
       var recommendation = 100 - _realInsight.recommendation;
-      sliderVal = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-      half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-      _priceController.text = half?.toStringAsFixed(1) ?? '';
+      if (_realInsight.userPrice <= 5) {
+        sliderVal =
+            ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+        half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+        _priceController.text = half?.toStringAsFixed(1) ?? '';
+      } else {
+        sliderVal =
+            ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+        half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+        sliderVal = sliderVal - (sliderVal % 5);
+        half = half - (half % 5);
+        _priceController.text = half?.toStringAsFixed(1) ?? '';
+      }
       if (sliderVal < _realInsight.min) {
         sliderVal = _realInsight.min;
         half = _realInsight.min;
