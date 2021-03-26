@@ -246,10 +246,10 @@ class FirebaseNotification {
       Constants.DEVICE_TOKEN = token;
       _updateToken(token);
     });
-    _firebaseMessaging.subscribeToTopic("Testing12346");
+    // _firebaseMessaging.subscribeToTopic("Testing12346");
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-//        print('==firebase==onMessage== $message');
+       print('==firebase==onMessage== $message');
         setNotificationCount(1);
         _notifyListeners(message);
         _showNotificationWithDefaultSound(message);
@@ -383,6 +383,7 @@ class FirebaseNotification {
 
   showLocalNotification(Map<String, dynamic> message) {
     if (Platform.isIOS) {
+      print("call back");
       title = message['notification']['title'] != null
           ? message["notification"]['title']
           : '';

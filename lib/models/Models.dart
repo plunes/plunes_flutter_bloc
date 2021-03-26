@@ -582,7 +582,10 @@ class PostsData {
 
   factory PostsData.fromJsonForPush(Map<String, dynamic> parsedJson) {
     if (Platform.isIOS) {
-      return PostsData();
+      return PostsData(
+          notificationType:
+              parsedJson['screen'] != null ? parsedJson['screen'] : null,
+          id: parsedJson['id'] != null ? parsedJson['id'] : null);
     } else {
       var data = new PostsData(
         notificationType: parsedJson['data']['screen'] != null

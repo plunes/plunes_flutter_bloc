@@ -1310,9 +1310,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               style: TextStyle(
                   fontSize: AppConfig.mediumFont,
                   fontWeight: FontWeight.w500,
+                  color: PlunesColors.GREENCOLOR,
                   decorationStyle: TextDecorationStyle.solid,
-                  decorationThickness: 2.0,
-                  decorationColor: PlunesColors.BLACKCOLOR),
+                  decorationThickness: 2.0),
             ),
             (appointmentModel.centreNumber != null &&
                     appointmentModel.centreNumber.isNotEmpty &&
@@ -1354,10 +1354,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> {
               appointmentModel.centreNumber,
               style: TextStyle(
                   fontSize: AppConfig.mediumFont,
+                  color: PlunesColors.GREENCOLOR,
                   fontWeight: FontWeight.w500,
                   decorationStyle: TextDecorationStyle.solid,
-                  decorationThickness: 2.0,
-                  decorationColor: PlunesColors.BLACKCOLOR),
+                  decorationThickness: 2.0),
             ),
             Text(
               " (Booked Centre)",

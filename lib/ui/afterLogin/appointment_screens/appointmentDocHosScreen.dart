@@ -774,7 +774,7 @@ class _AppointmentScreenState extends BaseState<AppointmentDocHosScreen> {
                         child: Text(
                           appointmentModel.userMobileNumber ?? PlunesStrings.NA,
                           style: TextStyle(
-                              fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                              fontSize: 18, color: PlunesColors.GREENCOLOR),
                         ),
                       ),
                     ),
