@@ -1,8 +1,4 @@
 PODS:
-  - adhara_socket_io (0.0.1):
-    - Flutter
-    - Socket.IO-Client-Swift
-    - Starscream
   - connectivity (0.0.1):
     - Flutter
     - Reachability
@@ -165,10 +161,10 @@ PODS:
     - nanopb (~> 1.30905.0)
   - GoogleDataTransport (7.2.0):
     - nanopb (~> 1.30905.0)
-  - GoogleMaps (4.0.0):
-    - GoogleMaps/Maps (= 4.0.0)
-  - GoogleMaps/Base (4.0.0)
-  - GoogleMaps/Maps (4.0.0):
+  - GoogleMaps (4.2.0):
+    - GoogleMaps/Maps (= 4.2.0)
+  - GoogleMaps/Base (4.2.0)
+  - GoogleMaps/Maps (4.2.0):
     - GoogleMaps/Base
   - GoogleUtilities/AppDelegateSwizzler (6.7.2):
     - GoogleUtilities/Environment
@@ -213,12 +209,12 @@ PODS:
     - Flutter
   - permission (0.0.1):
     - Flutter
-  - PromisesObjC (1.2.11)
-  - Protobuf (3.13.0)
+  - PromisesObjC (1.2.12)
+  - Protobuf (3.14.0)
   - Reachability (3.2)
-  - SDWebImage (5.10.0):
-    - SDWebImage/Core (= 5.10.0)
-  - SDWebImage/Core (5.10.0)
+  - SDWebImage (5.10.4):
+    - SDWebImage/Core (= 5.10.4)
+  - SDWebImage/Core (5.10.4)
   - searchable_dropdown (1.1.1):
     - Flutter
   - share (0.0.1):
@@ -227,13 +223,10 @@ PODS:
     - Flutter
   - sms_otp_auto_verify (0.0.1):
     - Flutter
-  - Socket.IO-Client-Swift (15.2.0):
-    - Starscream (~> 3.1)
   - sqflite (0.0.1):
     - Flutter
     - FMDB (~> 2.7.2)
-  - Starscream (3.1.1)
-  - SwiftyGif (5.3.0)
+  - SwiftyGif (5.4.0)
   - TOCropViewController (2.5.5)
   - url_launcher (0.0.1):
     - Flutter
@@ -245,7 +238,6 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - adhara_socket_io (from `.symlinks/plugins/adhara_socket_io/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - facebook_app_events (from `.symlinks/plugins/facebook_app_events/ios`)
@@ -310,14 +302,10 @@ SPEC REPOS:
     - Protobuf
     - Reachability
     - SDWebImage
-    - Socket.IO-Client-Swift
-    - Starscream
     - SwiftyGif
     - TOCropViewController
 
 EXTERNAL SOURCES:
-  adhara_socket_io:
-    :path: ".symlinks/plugins/adhara_socket_io/ios"
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
   device_info:
@@ -390,7 +378,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
-  adhara_socket_io: a2f8b3079a0de70a1a3f5080a8429a4fb7ae9bea
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   Crashlytics: 9220f5bc89e7a618df411b4f639389dbfb0e03d2
   device_info: 3ebad48f726348f69abd802f3334a8d1ed795fbd
@@ -427,7 +414,7 @@ SPEC CHECKSUMS:
   google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
   GoogleAppMeasurement: 67458367830514fb20fd9e233496f1eef9d90185
   GoogleDataTransport: 672fb0ce96fe7f7f31d43672fca62ad2c9c86f7b
-  GoogleMaps: b7f7fc569a9b354a3af0d9729dbec40957b7d41e
+  GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   image_cropper: 3c16d7651730ffe85897f5a1c4e2547e6b54989a
   image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
@@ -439,18 +426,16 @@ SPEC CHECKSUMS:
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   permission: 51e2d3a8ef3490da0537667d7f1a6a1c5ba8ec47
-  PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
-  Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
+  PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
+  Protobuf: 0cde852566359049847168e51bd1c690e0f70056
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  SDWebImage: 9169792e9eec3e45bba2a0c02f74bf8bd922d1ee
+  SDWebImage: c666b97e1fa9c64b4909816a903322018f0a9c84
   searchable_dropdown: 5058be32fdc5e0481d300ff2087129072e71bd62
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   sms_otp_auto_verify: 201803ac25e13feedaae96eda8b70b10c55b3338
-  Socket.IO-Client-Swift: 1e3e3a1f09f3312a167f0d781eb2f383d477357c
   sqflite: 4001a31ff81d210346b500c55b17f4d6c7589dd0
-  Starscream: 4bb2f9942274833f7b4d296a55504dcfc7edb7b0
-  SwiftyGif: e466e86c660d343357ab944a819a101c4127cb40
+  SwiftyGif: 5d4af95df24caf1c570dbbcb32a3b8a0763bc6d7
   TOCropViewController: da59f531f8ac8a94ef6d6c0fc34009350f9e8bfe
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   video_compress: fce97e4fb1dfd88175aa07d2ffc8a2f297f87fbe
@@ -459,4 +444,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: aafe91acc616949ddb318b77800a7f51bffa2a4c
 
-COCOAPODS: 1.10.0
+COCOAPODS: 1.10.1

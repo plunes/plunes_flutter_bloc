@@ -12,7 +12,11 @@
     [GMSServices provideAPIKey:@"AIzaSyBsy04mUPFZvE2jp2qW6ytyexI5ZLeO1Uc"];
     [GeneratedPluginRegistrant registerWithRegistry:self];
     
-    [self registerForRemoteNotifications];//--------- for unusernoticenter notification
+    if (@available(iOS 10.0, *)) {
+      [UNUserNotificationCenter currentNotificationCenter].delegate = (id<UNUserNotificationCenterDelegate>) self;
+    }
+    
+//    [self registerForRemoteNotifications];//--------- for unusernoticenter notification
 
     
   // Override point for customization after application launch.
@@ -20,34 +24,34 @@
 }
 
 
-- (void)registerForRemoteNotifications {
-    if(SYSTEM_VERSION_GRATERTHAN_OR_EQUALTO(@"10.0")){
-        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-        center.delegate = self;
-        [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error){
-             if(!error){
-                 [[UIApplication sharedApplication] registerForRemoteNotifications];
-             }
-         }];
-    }else {
-        // Code for old versions
-    }
-}
+//- (void)registerForRemoteNotifications {
+//    if(SYSTEM_VERSION_GRATERTHAN_OR_EQUALTO(@"10.0")){
+//        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+//        center.delegate = self;
+//        [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error){
+//             if(!error){
+//                 [[UIApplication sharedApplication] registerForRemoteNotifications];
+//             }
+//         }];
+//    }else {
+//        // Code for old versions
+//    }
+//}
 
 ////...........Handling delegate methods for UserNotifications........
 //Called when a notification is delivered to a foreground app.
 
--(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler{
-    NSLog(@"User Info : %@",notification.request.content.userInfo);
-    completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge);
-}
+//-(void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler{
+//    NSLog(@"User Info : %@",notification.request.content.userInfo);
+//    completionHandler(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge);
+//}
 
 //Called to let your app know which action was selected by the user for a given notification.
 
-- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler{
-    NSLog(@"User Info : %@",response.notification.request.content.userInfo);
-    completionHandler();
-}
+//- (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler{
+//    NSLog(@"User Info : %@",response.notification.request.content.userInfo);
+//    completionHandler();
+//}
 
 @end
     

@@ -513,11 +513,39 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                     ],
                                   )
                                 : _getNegotiatedPriceTotalView(),
+                            (_searchedDocResults != null &&
+                                    _searchedDocResults.solution != null &&
+                                    _searchedDocResults
+                                            .solution.shouldNegotiate !=
+                                        null &&
+                                    _searchedDocResults
+                                        .solution.shouldNegotiate)
+                                ? Container()
+                                : Container(
+                                    margin: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 2),
+                                    child: Text(
+                                      "Congratulations!\nYou have received Best Prices from the following Facilities. Make sure to book at the earliest as prices are Valid for 7 days.",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          color: PlunesColors.BLACKCOLOR,
+                                          fontSize: 16),
+                                    ),
+                                  ),
                             StreamBuilder<Object>(
                                 stream: _totalDiscountController?.stream,
                                 builder: (context, snapshot) {
                                   if (_gainedDiscountPercentage == null ||
                                       _gainedDiscountPercentage <= 0) {
+                                    return Container();
+                                  }
+                                  if (_searchedDocResults != null &&
+                                      _searchedDocResults.solution != null &&
+                                      _searchedDocResults
+                                              .solution.shouldNegotiate !=
+                                          null &&
+                                      _searchedDocResults
+                                          .solution.shouldNegotiate) {
                                     return Container();
                                   }
                                   return _getDialerWidget();
