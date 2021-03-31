@@ -9,6 +9,8 @@ import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 
 // ignore: must_be_immutable
@@ -106,6 +108,33 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
   }
 
   _onSolutionItemTap(int index) async {
+    var nowTime = DateTime.now();
+    if (_catalogueList[index].solutionExpiredAt != null &&
+        _catalogueList[index].solutionExpiredAt != 0) {
+      var solExpireTime = DateTime.fromMillisecondsSinceEpoch(
+          _catalogueList[index].solutionExpiredAt);
+      var diff = nowTime.difference(solExpireTime);
+      if (diff.inSeconds < 5) {
+        ///when price discovered and solution is active
+        if (_catalogueList[index].priceDiscovered != null &&
+            _catalogueList[index].priceDiscovered) {
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SolutionShowPriceScreen(
+                      catalogueData: _catalogueList[index], searchQuery: "")));
+          return;
+        } else {
+          ///when price not discovered but solution is active
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ViewSolutionsScreen(
+                      catalogueData: _catalogueList[index], searchQuery: "")));
+          return;
+        }
+      }
+    }
     if (!UserManager().getIsUserInServiceLocation()) {
       await showDialog(
           context: context,

@@ -53,74 +53,37 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   List<SpecialityModel> _specialityList;
   FacilityHaveModel _facilityHaveModel;
 
-  List<Widget> _tabsForDoc = [
-    ClipRRect(
-      borderRadius: BorderRadius.circular(30),
-      child: Container(
-          child: Text(
-        'Photos/Videos',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14),
-      )),
-    ),
-    ClipRRect(
-      borderRadius: BorderRadius.circular(30),
-      child: Container(
-          child: Text(
-        'Review',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14),
-      )),
-    ),
-    // ClipRRect(
-    //   borderRadius: BorderRadius.circular(30),
-    //   child: Container(
-    //       child: Text(
-    //     'Achievements',
-    //     textAlign: TextAlign.center,
-    //     style: TextStyle(fontSize: 14),
-    //   )),
-    // ),
-  ];
+  // List<Widget> _tabsForDoc = [
+  //   ClipRRect(
+  //     borderRadius: BorderRadius.circular(30),
+  //     child: Container(
+  //         child: Text(
+  //       'Photos/Videos',
+  //       textAlign: TextAlign.center,
+  //       style: TextStyle(fontSize: 14),
+  //     )),
+  //   ),
+  //   ClipRRect(
+  //     borderRadius: BorderRadius.circular(30),
+  //     child: Container(
+  //         child: Text(
+  //       'Review',
+  //       textAlign: TextAlign.center,
+  //       style: TextStyle(fontSize: 14),
+  //     )),
+  //   ),
+  //   // ClipRRect(
+  //   //   borderRadius: BorderRadius.circular(30),
+  //   //   child: Container(
+  //   //       child: Text(
+  //   //     'Achievements',
+  //   //     textAlign: TextAlign.center,
+  //   //     style: TextStyle(fontSize: 14),
+  //   //   )),
+  //   // ),
+  // ];
 
-  List<Widget> _tabsForHospital = [
-    ClipRRect(
-      borderRadius: BorderRadius.circular(30),
-      child: Container(
-          child: Text(
-        'Photos/Videos',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14),
-      )),
-    ),
-    ClipRRect(
-      borderRadius: BorderRadius.circular(30),
-      child: Container(
-          child: Text(
-        'Review',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14),
-      )),
-    ),
-    // ClipRRect(
-    //   borderRadius: BorderRadius.circular(30),
-    //   child: Container(
-    //       child: Text(
-    //     'Achievements',
-    //     textAlign: TextAlign.center,
-    //     style: TextStyle(fontSize: 14),
-    //   )),
-    // ),
-    ClipRRect(
-      borderRadius: BorderRadius.circular(30),
-      child: Container(
-          child: Text(
-        'Team of Experts',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 14),
-      )),
-    ),
-  ];
+  List<Widget> _tabsForHospital = [];
 
   String _failureMessageForFacilityHave;
 
@@ -491,52 +454,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   height: 20,
                 ),
                 _getFacilityHaveWidget(),
-                SizedBox(height: 20),
-                Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.symmetric(vertical: .0),
-                    child: TabBar(
-                      unselectedLabelColor: Colors.black,
-                      isScrollable: true,
-                      labelPadding: EdgeInsets.all(15.0),
-                      labelColor: Colors.white,
-                      controller: TabController(
-                        length: _isDoc
-                            ? _tabsForDoc.length
-                            : _tabsForHospital.length,
-                        vsync: this,
-                        initialIndex: _selectedIndex,
-                      ),
-                      indicator: new BubbleTabIndicator(
-                        indicatorHeight: 35.0,
-                        indicatorColor: Color(0xff01D25A),
-                        tabBarIndicatorSize: TabBarIndicatorSize.tab,
-                      ),
-                      onTap: (i) {
-                        if (mounted)
-                          setState(() {
-                            _selectedIndex = i;
-                          });
-                      },
-                      tabs: _isDoc ? _tabsForDoc : _tabsForHospital,
-                    ),
-                  ),
-                ),
-                _isDoc
-                    ? [
-                        _getPhotoWidget(),
-                        _getRateAndReviewWidget(),
-                        // AchievementWidget(_profileResponse?.user?.achievements),
-                      ][_selectedIndex]
-                    : [
-                        _getPhotoWidget(),
-                        _getRateAndReviewWidget(),
-                        // AchievementWidget(_profileResponse?.user?.achievements),
-                        _getTeamOfExpertsWidget()
-                      ][_selectedIndex],
+                _getTabBar(),
                 SizedBox(
                   height: 10,
                 ),
@@ -963,6 +881,101 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 );
         });
   }
+
+  Widget _getTabBar() {
+    if (_getTabItems() == null || _getTabItems().isEmpty) {
+      return Container();
+    }
+    return Column(children: [
+      SizedBox(height: 20),
+      Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        child: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.symmetric(vertical: .0),
+          child: TabBar(
+            unselectedLabelColor: Colors.black,
+            isScrollable: true,
+            labelPadding: EdgeInsets.all(15.0),
+            labelColor: Colors.white,
+            controller: TabController(
+              length: _tabsForHospital.length,
+              vsync: this,
+              initialIndex: _selectedIndex,
+            ),
+            indicator: new BubbleTabIndicator(
+              indicatorHeight: 35.0,
+              indicatorColor: Color(0xff01D25A),
+              tabBarIndicatorSize: TabBarIndicatorSize.tab,
+            ),
+            onTap: (i) {
+              if (mounted)
+                setState(() {
+                  _selectedIndex = i;
+                });
+            },
+            tabs: _tabsForHospital,
+          ),
+        ),
+      ),
+      _tabBodyItems[_selectedIndex],
+    ]);
+  }
+
+  List<Widget> _tabBodyItems = [];
+
+  List<Widget> _getTabItems() {
+    if (_tabsForHospital == null || _tabBodyItems == null) {
+      _tabsForHospital = [];
+      _tabBodyItems = [];
+    } else if (_tabsForHospital.isNotEmpty) {
+      return _tabsForHospital;
+    }
+    if (_profileResponse != null && _profileResponse.user != null) {
+      if ((_profileResponse.user.doctorsData != null &&
+          _profileResponse.user.doctorsData.isNotEmpty)) {
+        _tabsForHospital.add(ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: Container(
+              child: Text(
+            'Team of Experts',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14),
+          )),
+        ));
+        _tabBodyItems.add(_getTeamOfExpertsWidget());
+      }
+
+      if ((_profileResponse.user.hasMedia != null &&
+          _profileResponse.user.hasMedia)) {
+        _tabsForHospital.add(ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: Container(
+              child: Text(
+            'Photos/Videos',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14),
+          )),
+        ));
+        _tabBodyItems.add(_getPhotoWidget());
+      }
+
+      if ((_profileResponse.user.hasReviews != null &&
+          _profileResponse.user.hasReviews)) {
+        _tabsForHospital.add(ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: Container(
+              child: Text(
+            'Review',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 14),
+          )),
+        ));
+        _tabBodyItems.add(_getRateAndReviewWidget());
+      }
+    }
+    return _tabsForHospital;
+  }
 }
 
 // ignore: must_be_immutable
@@ -980,8 +993,8 @@ class _PhotosWidgetState extends State<PhotosWidget> {
   Widget build(BuildContext context) {
     return ((widget.mediaContent == null ||
                 widget.mediaContent.data == null ||
-                widget.mediaContent.data.serviceVideo == null ||
-                widget.mediaContent.data.serviceVideo.isEmpty) &&
+                widget.mediaContent.data.videos == null ||
+                widget.mediaContent.data.videos.isEmpty) &&
             (widget.mediaContent == null ||
                 widget.mediaContent.data == null ||
                 widget.mediaContent.data.hosPictures == null ||
@@ -1089,28 +1102,23 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                       ),
                 (widget.mediaContent == null ||
                         widget.mediaContent.data == null ||
-                        widget.mediaContent.data.serviceVideo == null ||
-                        widget.mediaContent.data.serviceVideo.isEmpty)
+                        widget.mediaContent.data.videos == null ||
+                        widget.mediaContent.data.videos.isEmpty)
                     ? Container()
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            height: 8,
-                          ),
+                          SizedBox(height: 8),
                           Text(
                             'Videos',
                             style: TextStyle(fontSize: 18),
                           ),
-                          SizedBox(
-                            height: 8,
-                          ),
+                          SizedBox(height: 8),
                           Container(
                             height: 170,
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
-                              itemCount:
-                                  widget.mediaContent.data.serviceVideo.length,
+                              itemCount: widget.mediaContent.data.videos.length,
                               itemBuilder: (context, index) {
                                 return Container(
                                   width: AppConfig.horizontalBlockSize * 62,
@@ -1132,7 +1140,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                                 child: Stack(
                                                   children: [
                                                     CustomWidgets().getImageFromUrl(
-                                                        "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(widget.mediaContent.data.serviceVideo[index].videoUrl)}/0.jpg",
+                                                        "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(widget.mediaContent.data.videos[index].videoUrl)}/0.jpg",
                                                         boxFit: BoxFit.cover),
                                                     Positioned.fill(
                                                       child: Center(
@@ -1155,7 +1163,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                                                 widget
                                                                     .mediaContent
                                                                     .data
-                                                                    .serviceVideo[
+                                                                    .videos[
                                                                         index]
                                                                     .videoUrl,
                                                                 title: "Video",

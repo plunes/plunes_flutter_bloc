@@ -28,7 +28,11 @@ class SearchedSolutionRepo {
       String searchedString, int index) async {
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
-        postData: {"expression": searchedString, "page": index},
+        postData: {
+          "expression": searchedString,
+          "page": index,
+          "userId": UserManager().getUserDetails().uid
+        },
         url: Urls.SEARCH_SOLUTION_API);
     if (serverResponse.isRequestSucceed) {
       List<CatalogueData> _solutions = [];
@@ -56,7 +60,8 @@ class SearchedSolutionRepo {
           "expression": searchedString ?? "",
           "type": isProcedure ? "procedures" : "tests",
           "specialityId": specId,
-          "page": pageIndex
+          "page": pageIndex,
+          "userId": UserManager().getUserDetails().uid
         },
         url: Urls.GET_TEST_AND_PROCEDURES_CATALOGUE_API);
     if (serverResponse.isRequestSucceed) {

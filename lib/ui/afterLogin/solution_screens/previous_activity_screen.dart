@@ -337,7 +337,6 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                   builder: (context) => ViewSolutionsScreen(
                       catalogueData: catalogueData, searchQuery: "")));
         }
-
         _getPreviousSolutions();
       } else {
         Navigator.push(

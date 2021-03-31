@@ -1138,7 +1138,7 @@ class _HospitalOverviewScreenState
                             Container(
                               alignment: Alignment.topLeft,
                               child: Text(
-                                "Previous Treatment Detail's",
+                                "Previous Treatment Details",
                                 maxLines: 3,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(

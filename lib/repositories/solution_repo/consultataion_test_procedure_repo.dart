@@ -1,5 +1,6 @@
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/models/solution_models/test_and_procedure_model.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
@@ -20,6 +21,7 @@ class ConsultationTestProcedureRepo {
   Future<RequestState> getConsultations() async {
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {"userId": UserManager().getUserDetails().uid},
         url: Urls.GET_CONSULTATION_API);
     if (serverResponse.isRequestSucceed) {
       List<CatalogueData> _solutions = [];

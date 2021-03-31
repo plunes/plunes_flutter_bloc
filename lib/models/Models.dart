@@ -188,9 +188,12 @@ class User {
   BankDetails bankDetails;
   num rating;
   int cartCount;
+  bool hasMedia, hasReviews;
 
   User(
-      {this.uid,
+      {this.hasMedia,
+      this.hasReviews,
+      this.uid,
       this.name,
       this.gender,
       this.birthDate,
@@ -264,6 +267,8 @@ class User {
 //        "${json["rating"].runtimeType.toString()}long in ${_rating.runtimeType.toString()}models ${json["rating"]}");
     return User(
         uid: json['_id'] != null ? json['_id'] : '',
+        hasMedia: json['hasMedia'] ?? false,
+        hasReviews: json['hasReviews'] ?? false,
         name: json['name'] != null ? json['name'] : '',
         gender: json['gender'] != null ? json['gender'] : '',
         birthDate: json['birthDate'] != null ? json['birthDate'] : '',

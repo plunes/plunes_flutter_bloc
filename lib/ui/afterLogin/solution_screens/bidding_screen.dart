@@ -13,6 +13,8 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/manual_bidding.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
@@ -259,6 +261,35 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   }
 
   _onSolutionItemTap(int index) async {
+    print("${_catalogues[index].solutionExpiredAt}");
+    FocusScope.of(context).requestFocus(FocusNode());
+    var nowTime = DateTime.now();
+    if (_catalogues[index].solutionExpiredAt != null &&
+        _catalogues[index].solutionExpiredAt != 0) {
+      var solExpireTime = DateTime.fromMillisecondsSinceEpoch(
+          _catalogues[index].solutionExpiredAt);
+      var diff = nowTime.difference(solExpireTime);
+      if (diff.inSeconds < 5) {
+        ///when price discovered and solution is active
+        if (_catalogues[index].priceDiscovered != null &&
+            _catalogues[index].priceDiscovered) {
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SolutionShowPriceScreen(
+                      catalogueData: _catalogues[index], searchQuery: "")));
+          return;
+        } else {
+          ///when price not discovered but solution is active
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ViewSolutionsScreen(
+                      catalogueData: _catalogues[index], searchQuery: "")));
+          return;
+        }
+      }
+    }
     if (!UserManager().getIsUserInServiceLocation()) {
       await showDialog(
           context: context,
@@ -270,7 +301,6 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         return;
       }
     }
-    FocusScope.of(context).requestFocus(FocusNode());
     Navigator.push(
         context,
         MaterialPageRoute(

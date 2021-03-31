@@ -344,7 +344,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                           children: [
                             Container(
                               alignment: Alignment.centerLeft,
-                              child: Text("Previous Treatment Detail's",
+                              child: Text("Previous Treatment Details",
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(

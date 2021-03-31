@@ -24,7 +24,7 @@ class MediaContentModel {
 
 class MediaData {
   String sId;
-  List<VideoData> serviceVideo;
+  List<VideoData> serviceVideo, videos;
   List<VideoData> customerReviewVideo;
   List<VideoData> introductionVideo;
   List<VideoData> achievementsVideo;
@@ -51,6 +51,7 @@ class MediaData {
       this.createdAt,
       this.updatedAt,
       this.hosPictures,
+      this.videos,
       this.iV});
 
   MediaData.fromJson(Map<String, dynamic> json) {
@@ -59,6 +60,12 @@ class MediaData {
       hosPictures = new List<HosPicture>();
       json['hospitalPhotos'].forEach((v) {
         hosPictures.add(new HosPicture.fromJson(v));
+      });
+    }
+    if (json['videos'] != null) {
+      videos = new List<VideoData>();
+      json['videos'].forEach((v) {
+        videos.add(new VideoData.fromJson(v));
       });
     }
     if (json['serviceVideo'] != null) {

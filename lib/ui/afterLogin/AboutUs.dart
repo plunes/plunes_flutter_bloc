@@ -410,7 +410,7 @@ class _AboutUsState extends BaseState<AboutUs> {
                     margin: EdgeInsets.symmetric(
                         vertical: AppConfig.verticalBlockSize * 3),
                     child: Text(
-                      "Plunes is India’s largest network of world class hospitals and doctors. Our AI helps you connect with f top-rated professionals in your vicinity and get you the best prices for your treatment in just one click. Find instant solutions for all your medical tests and procedures in Delhi-NCR.",
+                      "Plunes is India’s largest network of world class hospitals and doctors. Our AI helps you to connect with top-rated professionals in your vicinity and get you the best prices for your treatment in just one click. Find instant solutions to all your medical problems from leading doctors and surgeons in Delhi-NCR.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           color: Color(
