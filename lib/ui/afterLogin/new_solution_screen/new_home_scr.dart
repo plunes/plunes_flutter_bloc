@@ -9,6 +9,7 @@ import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/cart_bloc/cart_main_bloc.dart';
 import 'package:plunes/blocs/new_solution_blocs/sol_home_screen_bloc.dart';
 import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/new_solution_model/card_by_id_image_scr.dart';
 import 'package:plunes/models/new_solution_model/know_procedure_model.dart';
 import 'package:plunes/models/new_solution_model/media_content_model.dart';
@@ -64,6 +65,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _failedMessageTopSearch;
   String _failedMessageTopFacility, _specialityApiFailureCause;
   List<DropdownMenuItem<String>> _specialityDropDownItems = [];
+  List<SpecialityModel> _specialityItems = [];
   List<DropdownMenuItem<String>> facilityTypeWidget = [
     DropdownMenuItem(
       child: Text("Hospital"),
@@ -81,6 +83,13 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       child: Text("All"),
       value: _allKey,
     ),
+  ];
+  List<SpecialityModel> _facilityTypeList = [
+    SpecialityModel(speciality: "Hospital", id: Constants.hospital.toString()),
+    SpecialityModel(speciality: "Doctor", id: Constants.doctor.toString()),
+    SpecialityModel(
+        speciality: "Lab", id: Constants.labDiagnosticCenter.toString()),
+    SpecialityModel(speciality: "All", id: _allKey),
   ];
 
   static final String _nearMeKey = "Near me";
@@ -102,8 +111,15 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       value: _allKey,
     )
   ];
+  List<SpecialityModel> _selectedLocationList = [
+    SpecialityModel(speciality: "Near me", id: _nearMeKey),
+    SpecialityModel(speciality: "All", id: _allKey)
+  ];
 
   bool _hasSearchBar;
+  String _selectedSpecialityName;
+  String _userTypeFilterName;
+  String _locationFilterName;
 
   @override
   void initState() {
@@ -213,6 +229,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      bottom: true,
       child: Scaffold(
         body: Container(
           child: Column(
@@ -1549,7 +1566,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       children: [
                         Container(
                           padding: EdgeInsets.only(
-                              left: AppConfig.horizontalBlockSize * 5),
+                              top: AppConfig.verticalBlockSize * 1.2,
+                              bottom: AppConfig.verticalBlockSize * 1.2,
+                              left: AppConfig.horizontalBlockSize * 5,
+                              right: AppConfig.horizontalBlockSize * 1),
                           margin: EdgeInsets.only(
                               right: AppConfig.horizontalBlockSize * 3),
                           decoration: BoxDecoration(
@@ -1565,26 +1585,53 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                   color: Color(
                                       CommonMethods.getColorHexFromStr(
                                           "#26AF78")))),
-                          child: DropdownButton<String>(
-                            items: _getSpecialityDropdownItems(),
-                            underline: Container(),
-                            value: _selectedSpeciality,
-                            isExpanded: false,
-                            hint: Text(
-                              "Service",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: PlunesColors.BLACKCOLOR),
-                            ),
-                            onChanged: (spec) {
-                              _selectedSpeciality = spec;
-                              _doFilterAndGetFacilities();
+                          child: InkWell(
+                            onTap: () {
+                              _getModelBottomSheetForServiceList(context);
                             },
+                            onDoubleTap: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  _selectedSpecialityName ?? "Service",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: PlunesColors.BLACKCOLOR),
+                                ),
+                                Padding(
+                                  padding:
+                                  const EdgeInsets.only(left: 4.0),
+                                  child: Icon(Icons.arrow_drop_down),
+                                )
+                              ],
+                            ),
                           ),
+                          // DropdownButton<String>(
+                          //   items: _getSpecialityDropdownItems(),
+                          //   underline: Container(),
+                          //   value: _selectedSpeciality,
+                          //   isExpanded: false,
+                          //   hint: Text(
+                          //     "Service",
+                          //     style: TextStyle(
+                          //         fontSize: 14,
+                          //         color: PlunesColors.BLACKCOLOR),
+                          //   ),
+                          //   onChanged: (spec) {
+                          //     _selectedSpeciality = spec;
+                          //     _doFilterAndGetFacilities();
+                          //   },
+                          // ),
                         ),
                         Container(
                           padding: EdgeInsets.only(
-                              left: AppConfig.horizontalBlockSize * 5),
+                              top: AppConfig.verticalBlockSize * 1.2,
+                              bottom: AppConfig.verticalBlockSize * 1.2,
+                              left: AppConfig.horizontalBlockSize * 5,
+                              right: AppConfig.horizontalBlockSize * 1),
                           margin: EdgeInsets.only(
                               right: AppConfig.horizontalBlockSize * 3),
                           decoration: BoxDecoration(
@@ -1600,27 +1647,50 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                   color: Color(
                                       CommonMethods.getColorHexFromStr(
                                           "#26AF78")))),
-                          child: DropdownButton<String>(
-                            items: facilityTypeWidget,
-                            underline: Container(),
-                            value: _userTypeFilter,
-                            isExpanded: false,
-                            hint: Text(
-                              "Facility",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: PlunesColors.BLACKCOLOR),
-                            ),
-                            onChanged: (userType) {
-                              _userTypeFilter = userType;
-                              _doFilterAndGetFacilities();
-                            },
-                          ),
+                          child: InkWell(
+                              onTap: () {
+                                _getModelBottomSheetForFacilityType(
+                                    context);
+                              },
+                              onDoubleTap: () {},
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    _userTypeFilterName ?? "Facility",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  ),
+                                  Padding(
+                                    padding:
+                                    const EdgeInsets.only(left: 4.0),
+                                    child: Icon(Icons.arrow_drop_down),
+                                  )
+                                ],
+                              )),
+                          // DropdownButton<String>(
+                          //   items: facilityTypeWidget,
+                          //   underline: Container(),
+                          //   value: _userTypeFilter,
+                          //   isExpanded: false,
+                          //   hint: Text(
+                          //     "Facility",
+                          //     style: TextStyle(
+                          //         fontSize: 14,
+                          //         color: PlunesColors.BLACKCOLOR),
+                          //   ),
+                          //   onChanged: (userType) {
+                          //     _userTypeFilter = userType;
+                          //     _doFilterAndGetFacilities();
+                          //   },
+                          // ),
                         ),
                         (UserManager()
                             .getUserDetails()
-                            .latitude !=
-                            null &&
+                            .latitude != null &&
                             UserManager()
                                 .getUserDetails()
                                 .latitude
@@ -1636,41 +1706,74 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             UserManager()
                                 .getIsUserInServiceLocation())
                             ? Container(
-                          margin: EdgeInsets.only(
-                              right: AppConfig.horizontalBlockSize *
-                                  3),
-                          padding: EdgeInsets.only(
-                              left: AppConfig.horizontalBlockSize *
-                                  5),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(AppConfig
-                                      .horizontalBlockSize *
-                                      10)),
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr(
-                                      "#00000012")),
-                              border: Border.all(
-                                  width: 0.8,
-                                  color: Color(CommonMethods
-                                      .getColorHexFromStr(
-                                      "#26AF78")))),
-                          child: DropdownButton(
-                            items: _facilityLocationDropDownItems,
-                            isExpanded: false,
-                            value: _locationFilter,
-                            underline: Container(),
-                            hint: Text(
-                              "Near Me",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: PlunesColors.BLACKCOLOR),
-                            ),
-                            onChanged: (locationFilter) {
-                              _locationFilter = locationFilter;
-                              _doFilterAndGetFacilities();
-                            },
-                          ),
+                            margin: EdgeInsets.only(
+                                right: AppConfig.horizontalBlockSize *
+                                    3),
+                            padding: EdgeInsets.only(
+                                top:
+                                AppConfig.verticalBlockSize * 1.2,
+                                bottom:
+                                AppConfig.verticalBlockSize * 1.2,
+                                left:
+                                AppConfig.horizontalBlockSize * 5,
+                                right: AppConfig.horizontalBlockSize *
+                                    1),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(AppConfig
+                                        .horizontalBlockSize *
+                                        10)),
+                                color:
+                                Color(CommonMethods.getColorHexFromStr(
+                                    "#00000012")),
+                                border: Border.all(width: 0.8,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#26AF78")))),
+                            child: InkWell(
+                                onTap: () {
+                                  _getModelBottomSheetForLocationType(
+                                      context);
+                                },
+                                onDoubleTap: () {},
+                                child: Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.end,
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      _locationFilterName ??
+                                          "Near Me",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: PlunesColors
+                                              .BLACKCOLOR),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 4.0),
+                                      child:
+                                      Icon(Icons.arrow_drop_down),
+                                    )
+                                  ],
+                                ))
+                          // DropdownButton(
+                          //   items: _facilityLocationDropDownItems,
+                          //   isExpanded: false,
+                          //   value: _locationFilter,
+                          //   underline: Container(),
+                          //   hint: Text(
+                          //     "Near Me",
+                          //     style: TextStyle(
+                          //         fontSize: 14,
+                          //         color: PlunesColors.BLACKCOLOR),
+                          //   ),
+                          //   onChanged: (locationFilter) {
+                          //     _locationFilter = locationFilter;
+                          //     _doFilterAndGetFacilities();
+                          //   },
+                          // ),
                         )
                             : Container()
                       ],
@@ -1796,12 +1899,314 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     return _specialityDropDownItems;
   }
 
+  List<SpecialityModel> _getSpecialityItems() {
+    if (_specialityItems != null && _specialityItems.isNotEmpty) {
+      return _specialityItems;
+    }
+    _specialityItems = [];
+    CommonMethods.catalogueLists.forEach((element) {
+      if (element.speciality != null &&
+          element.speciality
+              .trim()
+              .isNotEmpty &&
+          element.id != null &&
+          element.id
+              .trim()
+              .isNotEmpty) {
+        _specialityItems.add(element);
+      }
+    });
+    return _specialityItems;
+  }
+
   String _getItem(String speciality) {
     if (speciality.length > 18) {
       return speciality.substring(0, 18);
     } else {
       return speciality;
     }
+  }
+
+  _getModelBottomSheetForServiceList(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isDismissible: true,
+        enableDrag: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(17), topRight: Radius.circular(17))),
+        builder: (anotherContext) {
+          return Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(17),
+                    topRight: Radius.circular(17)),
+                border: Border.all(
+                    color: Color(CommonMethods.getColorHexFromStr("#26AF78")),
+                    width: 1)),
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 3,
+                            top: AppConfig.verticalBlockSize * 1.5),
+                        height: 3,
+                        width: 30,
+                        decoration: BoxDecoration(
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#707070")),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  "Service",
+                  style: TextStyle(fontSize: 24, color: Colors.black),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: 2, bottom: AppConfig.verticalBlockSize * 2.5),
+                  height: 0.5,
+                  color: Color(CommonMethods.getColorHexFromStr("#707070")),
+                  width: double.infinity,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          _selectedSpeciality = _getSpecialityItems()[index].id;
+                          _selectedSpecialityName =
+                              _getSpecialityItems()[index].speciality;
+                          _doFilterAndGetFacilities();
+                          Navigator.maybePop(context);
+                        },
+                        onDoubleTap: () {},
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 0.7),
+                          child: Text(
+                            _getSpecialityItems()[index].speciality ?? "NA",
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: _getSpecialityItems().length,
+                  ),
+                )
+              ],
+            ),
+            constraints: BoxConstraints(
+                minWidth: 10,
+                maxWidth: double.infinity,
+                minHeight: AppConfig.verticalBlockSize * 2,
+                maxHeight: AppConfig.verticalBlockSize * 50),
+          );
+        });
+  }
+
+  _getModelBottomSheetForFacilityType(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isDismissible: true,
+        enableDrag: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(17), topRight: Radius.circular(17))),
+        builder: (anotherContext) {
+          return Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(17),
+                    topRight: Radius.circular(17)),
+                border: Border.all(
+                    color: Color(CommonMethods.getColorHexFromStr("#26AF78")),
+                    width: 1)),
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 3,
+                            top: AppConfig.verticalBlockSize * 1.5),
+                        height: 3,
+                        width: 30,
+                        decoration: BoxDecoration(
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#707070")),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  "Facility",
+                  style: TextStyle(fontSize: 24, color: Colors.black),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: 2, bottom: AppConfig.verticalBlockSize * 2.5),
+                  height: 0.5,
+                  color: Color(CommonMethods.getColorHexFromStr("#707070")),
+                  width: double.infinity,
+                ),
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          _userTypeFilter = _facilityTypeList[index].id;
+                          _userTypeFilterName =
+                              _facilityTypeList[index].speciality;
+                          _doFilterAndGetFacilities();
+                          Navigator.maybePop(context);
+                        },
+                        onDoubleTap: () {},
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 0.7),
+                          child: Text(
+                            _facilityTypeList[index].speciality ?? "NA",
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: _facilityTypeList.length,
+                  ),
+                )
+              ],
+            ),
+            constraints: BoxConstraints(
+                minWidth: 10,
+                maxWidth: double.infinity,
+                minHeight: AppConfig.verticalBlockSize * 2,
+                maxHeight: AppConfig.verticalBlockSize * 38),
+          );
+        });
+  }
+
+  _getModelBottomSheetForLocationType(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isDismissible: true,
+        enableDrag: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(17), topRight: Radius.circular(17))),
+        builder: (anotherContext) {
+          return Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(17),
+                    topRight: Radius.circular(17)),
+                border: Border.all(
+                    color: Color(CommonMethods.getColorHexFromStr("#26AF78")),
+                    width: 1)),
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 3,
+                            top: AppConfig.verticalBlockSize * 1.5),
+                        height: 3,
+                        width: 30,
+                        decoration: BoxDecoration(
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#707070")),
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(10))),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  "Facility Location",
+                  style: TextStyle(fontSize: 24, color: Colors.black),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: 2, bottom: AppConfig.verticalBlockSize * 2.5),
+                  height: 0.5,
+                  color: Color(CommonMethods.getColorHexFromStr("#707070")),
+                  width: double.infinity,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          _locationFilter = _selectedLocationList[index].id;
+                          _locationFilterName =
+                              _selectedLocationList[index].speciality;
+                          _doFilterAndGetFacilities();
+                          Navigator.maybePop(context);
+                        },
+                        onDoubleTap: () {},
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 0.7),
+                          child: Text(
+                            _selectedLocationList[index].speciality ?? "NA",
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: _selectedLocationList.length,
+                  ),
+                )
+              ],
+            ),
+            constraints: BoxConstraints(
+                minWidth: 10,
+                maxWidth: double.infinity,
+                minHeight: AppConfig.verticalBlockSize * 2,
+                maxHeight: AppConfig.verticalBlockSize * 28),
+          );
+        });
   }
 }
 
