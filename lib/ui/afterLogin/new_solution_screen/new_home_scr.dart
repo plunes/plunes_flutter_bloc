@@ -177,7 +177,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       {String address, String region}) async {
     UserBloc()
         .isUserInServiceLocation(latitude, longitude,
-        address: address, region: region)
+            address: address, region: region)
         .then((result) {
       // if (result is RequestSuccess) {
       //   CheckLocationResponse checkLocationResponse = result.response;
@@ -207,7 +207,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   _onConsultationButtonClick() {
     return Navigator.push(context,
-        MaterialPageRoute(builder: (context) => ConsultationScreen()))
+            MaterialPageRoute(builder: (context) => ConsultationScreen()))
         .then((value) {
       _getCartCount();
     });
@@ -217,8 +217,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     return Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                TestAndProcedureScreen(
+            builder: (context) => TestAndProcedureScreen(
                   screenTitle: title,
                   isProcedure: isProcedure,
                 ))).then((value) {
@@ -240,8 +239,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     builder: (context, snapshot) {
                       return HomePageAppBar(
                         widget.func,
-                            () {},
-                            () {},
+                        () {},
+                        () {},
                         one: _one,
                         two: _two,
                         hasSearchBar: false,
@@ -272,10 +271,10 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         return CustomWidgets().getProgressIndicator();
                       }
                       return (_solutionHomeScreenModel == null ||
-                          (_solutionHomeScreenModel.success != null &&
-                              !_solutionHomeScreenModel.success))
+                              (_solutionHomeScreenModel.success != null &&
+                                  !_solutionHomeScreenModel.success))
                           ? CustomWidgets().errorWidget(_failedMessage,
-                          onTap: () => _getCategoryData(), isSizeLess: true)
+                              onTap: () => _getCategoryData(), isSizeLess: true)
                           : _getBody();
                     }),
               ),
@@ -287,9 +286,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   }
 
   String _getTextAfterFirstWord(String text) {
-    if (text == null || text.isEmpty || text
-        .split(" ")
-        .length == 0) {
+    if (text == null || text.isEmpty || text.split(" ").length == 0) {
       return "Your Medical Treatment";
     } else {
       List<String> texts = text.split(" ");
@@ -337,19 +334,19 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     _getTopFacilities(isInitialRequest: true);
                   }
                   return CommonMethods.catalogueLists == null ||
-                      CommonMethods.catalogueLists.isEmpty
+                          CommonMethods.catalogueLists.isEmpty
                       ? Container(
-                    height: AppConfig.verticalBlockSize * 38,
-                    child: CustomWidgets().errorWidget(
-                        _specialityApiFailureCause ??
-                            "Unable to load data", onTap: () {
-                      newState(() {});
-                    }, isSizeLess: true),
-                  )
+                          height: AppConfig.verticalBlockSize * 38,
+                          child: CustomWidgets().errorWidget(
+                              _specialityApiFailureCause ??
+                                  "Unable to load data", onTap: () {
+                            newState(() {});
+                          }, isSizeLess: true),
+                        )
                       : _getTopFacilityStreamBuilderWidget();
                 },
                 initialData: (CommonMethods.catalogueLists == null ||
-                    CommonMethods.catalogueLists.isEmpty)
+                        CommonMethods.catalogueLists.isEmpty)
                     ? RequestInProgress()
                     : null);
           }),
@@ -380,9 +377,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
           child: InkWell(
             onTap: () {
               Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SolutionBiddingScreen()))
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => SolutionBiddingScreen()))
                   .then((value) {
                 _getCartCount();
               });
@@ -460,9 +457,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                           text: TextSpan(children: [
                             TextSpan(
                                 text:
-                                _getHeading()
-                                    ?.split(" ")
-                                    ?.first ?? "Book",
+                                    _getHeading()?.split(" ")?.first ?? "Book",
                                 style: TextStyle(
                                     color: PlunesColors.GREENCOLOR,
                                     fontSize: 35)),
@@ -515,7 +510,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                     horizontal:
-                                    AppConfig.horizontalBlockSize * 4),
+                                        AppConfig.horizontalBlockSize * 4),
                                 child: Icon(
                                   Icons.search,
                                   color: Color(CommonMethods.getColorHexFromStr(
@@ -533,7 +528,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                       decoration: InputDecoration(
                                         hintMaxLines: 1,
                                         hintText: _solutionHomeScreenModel
-                                            ?.searchBarText ??
+                                                ?.searchBarText ??
                                             'Search the desired service',
                                         hintStyle: TextStyle(
                                           color: Color(0xffB1B1B1)
@@ -608,9 +603,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         ),
         child: Row(
           children: _solutionHomeScreenModel?.data
-              ?.map((e) =>
-              _servicesButtonCard(e.categoryImage, e.categoryName, e))
-              ?.toList() ??
+                  ?.map((e) =>
+                      _servicesButtonCard(e.categoryImage, e.categoryName, e))
+                  ?.toList() ??
               [],
         ),
       ),
@@ -722,7 +717,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               margin: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 2.2),
               child:
-              _sectionHeading(_solutionHomeScreenModel?.whyUs ?? 'Why Us'),
+                  _sectionHeading(_solutionHomeScreenModel?.whyUs ?? 'Why Us'),
             ),
             // horizontal list view of cards
             Container(
@@ -742,26 +737,26 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       return CustomWidgets().getProgressIndicator();
                     }
                     return (_whyUsModel == null ||
-                        (_whyUsModel.success != null &&
-                            !_whyUsModel.success) ||
-                        _whyUsModel.data == null ||
-                        _whyUsModel.data.isEmpty)
+                            (_whyUsModel.success != null &&
+                                !_whyUsModel.success) ||
+                            _whyUsModel.data == null ||
+                            _whyUsModel.data.isEmpty)
                         ? CustomWidgets().errorWidget(
-                        _failedMessageForWhyUsSection,
-                        onTap: () => _getWhyUsData(),
-                        isSizeLess: true)
+                            _failedMessageForWhyUsSection,
+                            onTap: () => _getWhyUsData(),
+                            isSizeLess: true)
                         : ListView.builder(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        return _getWhyUsCard(
-                            _whyUsModel.data[index].titleImage,
-                            _whyUsModel.data[index].title ?? "",
-                            _whyUsModel.data[index].sId);
-                      },
-                      itemCount: _whyUsModel?.data?.length ?? 0,
-                    );
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return _getWhyUsCard(
+                                  _whyUsModel.data[index].titleImage,
+                                  _whyUsModel.data[index].title ?? "",
+                                  _whyUsModel.data[index].sId);
+                            },
+                            itemCount: _whyUsModel?.data?.length ?? 0,
+                          );
                   }),
             ),
           ],
@@ -778,9 +773,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         onTap: () {
           if (id != null && id.isNotEmpty) {
             Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => WhyUsCardsByIdScreen(id)))
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => WhyUsCardsByIdScreen(id)))
                 .then((value) {
               _getCartCount();
             });
@@ -865,24 +860,24 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     );
                   }
                   return (_knowYourProcedureModel == null ||
-                      _knowYourProcedureModel.data == null ||
-                      _knowYourProcedureModel.data.isEmpty)
+                          _knowYourProcedureModel.data == null ||
+                          _knowYourProcedureModel.data.isEmpty)
                       ? Container(
-                    height: AppConfig.verticalBlockSize * 40,
-                    color: PlunesColors.WHITECOLOR,
-                    child: CustomWidgets().errorWidget(
-                        _knowYourProcedureModel?.message ??
-                            _failedMessageForKnowYourProcedureSection,
-                        onTap: () => _getKnowYourProcedureData(),
-                        isSizeLess: true),
-                  )
+                          height: AppConfig.verticalBlockSize * 40,
+                          color: PlunesColors.WHITECOLOR,
+                          child: CustomWidgets().errorWidget(
+                              _knowYourProcedureModel?.message ??
+                                  _failedMessageForKnowYourProcedureSection,
+                              onTap: () => _getKnowYourProcedureData(),
+                              isSizeLess: true),
+                        )
                       : Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _proceduresGrid(),
-                      _getViewMoreButtonForProcedure()
-                    ],
-                  );
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            _proceduresGrid(),
+                            _getViewMoreButtonForProcedure()
+                          ],
+                        );
                 }),
           ],
         ),
@@ -912,10 +907,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         onDoubleTap: () {},
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      KnowYourProcedureCard(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => KnowYourProcedureCard(
                           _knowYourProcedureModel,
                           _solutionHomeScreenModel?.knowYourProcedure)))
               .then((value) {
@@ -961,16 +955,15 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     return list;
   }
 
-  Widget _proceduresCard(String url, String label, String text,
-      ProcedureData procedureData) {
+  Widget _proceduresCard(
+      String url, String label, String text, ProcedureData procedureData) {
     return InkWell(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    ViewProcedureAndProfessional(
-                        procedureData: procedureData))).then((value) {
+                builder: (context) => ViewProcedureAndProfessional(
+                    procedureData: procedureData))).then((value) {
           _getCartCount();
         });
       },
@@ -978,7 +971,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       child: Card(
         elevation: 2.0,
         shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -1056,7 +1049,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             StreamBuilder<RequestState>(
                 stream: _homeScreenMainBloc.commonSpecialityStream,
                 initialData:
-                _newSpecialityModel == null ? RequestInProgress() : null,
+                    _newSpecialityModel == null ? RequestInProgress() : null,
                 builder: (context, snapshot) {
                   if (snapshot.data is RequestSuccess) {
                     RequestSuccess successObject = snapshot.data;
@@ -1076,35 +1069,35 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     );
                   }
                   return (_newSpecialityModel == null ||
-                      _newSpecialityModel.data == null ||
-                      _newSpecialityModel.data.isEmpty)
+                          _newSpecialityModel.data == null ||
+                          _newSpecialityModel.data.isEmpty)
                       ? Container(
-                    child: CustomWidgets().errorWidget(
-                        _newSpecialityModel?.message ??
-                            _failedMessageForCommonSpeciality,
-                        onTap: () => _getSpecialities(),
-                        isSizeLess: true),
-                  )
+                          child: CustomWidgets().errorWidget(
+                              _newSpecialityModel?.message ??
+                                  _failedMessageForCommonSpeciality,
+                              onTap: () => _getSpecialities(),
+                              isSizeLess: true),
+                        )
                       : Container(
-                    height: AppConfig.verticalBlockSize * 30,
-                    child: ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index) {
-                        // print("${_newSpecialityModel.data[index]?.specailizationImage}");
-                        return _specialCard(
-                            _newSpecialityModel
-                                .data[index]?.specailizationImage ??
-                                "",
-                            _newSpecialityModel.data[index]?.speciality,
-                            _newSpecialityModel.data[index]?.definition ??
-                                "",
-                            _newSpecialityModel.data[index]);
-                      },
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: _newSpecialityModel.data.length ?? 0,
-                    ),
-                  );
+                          height: AppConfig.verticalBlockSize * 30,
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context, index) {
+                              // print("${_newSpecialityModel.data[index]?.specailizationImage}");
+                              return _specialCard(
+                                  _newSpecialityModel
+                                          .data[index]?.specailizationImage ??
+                                      "",
+                                  _newSpecialityModel.data[index]?.speciality,
+                                  _newSpecialityModel.data[index]?.definition ??
+                                      "",
+                                  _newSpecialityModel.data[index]);
+                            },
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            itemCount: _newSpecialityModel.data.length ?? 0,
+                          ),
+                        );
                 }),
           ],
         ),
@@ -1150,35 +1143,32 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     );
                   }
                   return (_mediaContentPlunes == null ||
-                      _mediaContentPlunes.data == null ||
-                      _mediaContentPlunes.data.isEmpty)
+                          _mediaContentPlunes.data == null ||
+                          _mediaContentPlunes.data.isEmpty)
                       ? Container(
-                    child: CustomWidgets().errorWidget(
-                        _mediaFailedMessage,
-                        onTap: () => _getVideos(),
-                        isSizeLess: true),
-                  )
+                          child: CustomWidgets().errorWidget(
+                              _mediaFailedMessage,
+                              onTap: () => _getVideos(),
+                              isSizeLess: true),
+                        )
                       : Container(
-                    height: AppConfig.verticalBlockSize * 38,
-                    child: ListView.builder(
-                      itemBuilder: (context, index) {
-                        return _getVideoCard(
-                            "https://img.youtube.com/vi/${YoutubePlayer
-                                .convertUrlToId(
-                                _mediaContentPlunes.data[index]?.mediaUrl ??
-                                    "")}/0.jpg",
-                            _mediaContentPlunes.data[index]?.service ??
-                                _mediaContentPlunes.data[index]?.name ??
-                                "",
-                            _mediaContentPlunes.data[index].testimonial,
-                            _mediaContentPlunes.data[index]?.mediaUrl);
-                      },
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _mediaContentPlunes?.data?.length ?? 0,
-                    ),
-                  );
+                          height: AppConfig.verticalBlockSize * 38,
+                          child: ListView.builder(
+                            itemBuilder: (context, index) {
+                              return _getVideoCard(
+                                  "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(_mediaContentPlunes.data[index]?.mediaUrl ?? "")}/0.jpg",
+                                  _mediaContentPlunes.data[index]?.service ??
+                                      _mediaContentPlunes.data[index]?.name ??
+                                      "",
+                                  _mediaContentPlunes.data[index].testimonial,
+                                  _mediaContentPlunes.data[index]?.mediaUrl);
+                            },
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: _mediaContentPlunes?.data?.length ?? 0,
+                          ),
+                        );
                 })
           ],
         ),
@@ -1186,23 +1176,20 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
-  Widget _getVideoCard(String imageUrl, String label, String text,
-      String mediaUrl) {
+  Widget _getVideoCard(
+      String imageUrl, String label, String text, String mediaUrl) {
     return Container(
       margin: EdgeInsets.only(right: 4),
       width: AppConfig.horizontalBlockSize * 82,
       child: InkWell(
         onTap: () {
-          if (mediaUrl == null || mediaUrl
-              .trim()
-              .isEmpty) {
+          if (mediaUrl == null || mediaUrl.trim().isEmpty) {
             return;
           }
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      YoutubePlayerProvider(
+                  builder: (context) => YoutubePlayerProvider(
                         mediaUrl,
                         title: label,
                       )));
@@ -1211,7 +1198,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         child: Card(
           elevation: 2.0,
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           child: Column(
             children: [
               Stack(
@@ -1318,35 +1305,35 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     );
                   }
                   return (_topSearchOuterModel == null ||
-                      (_topSearchOuterModel.success != null &&
-                          !_topSearchOuterModel.success) ||
-                      _topSearchOuterModel.data == null ||
-                      _topSearchOuterModel.data.isEmpty)
+                          (_topSearchOuterModel.success != null &&
+                              !_topSearchOuterModel.success) ||
+                          _topSearchOuterModel.data == null ||
+                          _topSearchOuterModel.data.isEmpty)
                       ? Container(
-                    height: AppConfig.verticalBlockSize * 38,
-                    child: CustomWidgets().errorWidget(
-                        _failedMessageTopSearch,
-                        onTap: () => _getTopSearch(),
-                        isSizeLess: true),
-                  )
+                          height: AppConfig.verticalBlockSize * 38,
+                          child: CustomWidgets().errorWidget(
+                              _failedMessageTopSearch,
+                              onTap: () => _getTopSearch(),
+                              isSizeLess: true),
+                        )
                       : Container(
-                    height: AppConfig.verticalBlockSize * 24,
-                    child: ListView.builder(
-                      padding: EdgeInsets.zero,
-                      itemBuilder: (context, index) {
-                        return _topSearchCard(
-                            _topSearchOuterModel
-                                .data[index].specializationImage ??
-                                "",
-                            _topSearchOuterModel.data[index].service ??
-                                "",
-                            _topSearchOuterModel.data[index]);
-                      },
-                      itemCount: _topSearchOuterModel.data.length,
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                    ),
-                  );
+                          height: AppConfig.verticalBlockSize * 24,
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemBuilder: (context, index) {
+                              return _topSearchCard(
+                                  _topSearchOuterModel
+                                          .data[index].specializationImage ??
+                                      "",
+                                  _topSearchOuterModel.data[index].service ??
+                                      "",
+                                  _topSearchOuterModel.data[index]);
+                            },
+                            itemCount: _topSearchOuterModel.data.length,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                          ),
+                        );
                 }),
           ],
         ),
@@ -1357,9 +1344,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _getHeading() {
     if (_solutionHomeScreenModel == null ||
         _solutionHomeScreenModel.heading == null ||
-        _solutionHomeScreenModel.heading
-            .trim()
-            .isEmpty) {
+        _solutionHomeScreenModel.heading.trim().isEmpty) {
       return 'Book Your Medical Treatment';
     } else {
       return _solutionHomeScreenModel.heading;
@@ -1370,8 +1355,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     if (mounted) setState(() {});
   }
 
-  Widget _specialCard(String imageUrl, String label, String text,
-      SpecData specialityData) {
+  Widget _specialCard(
+      String imageUrl, String label, String text, SpecData specialityData) {
     return Container(
       width: AppConfig.horizontalBlockSize * 45,
       margin: EdgeInsets.only(right: 4),
@@ -1393,10 +1378,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        ViewProcedureAndProfessional(
-                            shouldUseSpecializationApi: true,
-                            procedureData: procedureData))).then((value) {
+                    builder: (context) => ViewProcedureAndProfessional(
+                        shouldUseSpecializationApi: true,
+                        procedureData: procedureData))).then((value) {
               _getCartCount();
             });
           },
@@ -1454,8 +1438,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
-  Widget _topSearchCard(String imageUrl, String text,
-      TopSearchData specialityData) {
+  Widget _topSearchCard(
+      String imageUrl, String text, TopSearchData specialityData) {
     return Container(
       width: AppConfig.horizontalBlockSize * 45,
       margin: EdgeInsets.only(right: 4),
@@ -1481,10 +1465,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) =>
-                        ViewProcedureAndProfessional(
-                            shouldUseSpecializationApi: true,
-                            procedureData: procedureData))).then((value) {
+                    builder: (context) => ViewProcedureAndProfessional(
+                        shouldUseSpecializationApi: true,
+                        procedureData: procedureData))).then((value) {
               _getCartCount();
             });
           },
@@ -1509,7 +1492,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     style: TextStyle(
                         fontSize: 18,
                         color:
-                        Color(CommonMethods.getColorHexFromStr("#444444"))),
+                            Color(CommonMethods.getColorHexFromStr("#444444"))),
                   ),
                 ),
               )
@@ -1540,321 +1523,315 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             );
           }
           return (_topFacilityModel == null ||
-              (_topFacilityModel.success != null &&
-                  !_topFacilityModel.success) ||
-              _topFacilityModel.data == null ||
-              _topFacilityModel.data.isEmpty)
+                  (_topFacilityModel.success != null &&
+                      !_topFacilityModel.success) ||
+                  _topFacilityModel.data == null ||
+                  _topFacilityModel.data.isEmpty)
               ? Container(
-              height: AppConfig.verticalBlockSize * 38,
-              child: CustomWidgets().errorWidget(_failedMessageTopFacility,
-                  onTap: () {
+                  height: AppConfig.verticalBlockSize * 38,
+                  child: CustomWidgets().errorWidget(_failedMessageTopFacility,
+                      onTap: () {
                     _selectedSpeciality = null;
                     _userTypeFilter = null;
                     _locationFilter = _nearMeKey;
                     _getTopFacilities(isInitialRequest: true);
                   }, isSizeLess: true))
               : Container(
-            child: Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(
-                      bottom: AppConfig.verticalBlockSize * 2.2),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.only(
-                              top: AppConfig.verticalBlockSize * 1.2,
-                              bottom: AppConfig.verticalBlockSize * 1.2,
-                              left: AppConfig.horizontalBlockSize * 5,
-                              right: AppConfig.horizontalBlockSize * 1),
-                          margin: EdgeInsets.only(
-                              right: AppConfig.horizontalBlockSize * 3),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(
-                                      AppConfig.horizontalBlockSize *
-                                          10)),
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr(
-                                      "#00000012")),
-                              border: Border.all(
-                                  width: 0.8,
-                                  color: Color(
-                                      CommonMethods.getColorHexFromStr(
-                                          "#26AF78")))),
-                          child: InkWell(
-                            onTap: () {
-                              _getModelBottomSheetForServiceList(context);
-                            },
-                            onDoubleTap: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  _selectedSpecialityName ?? "Service",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: PlunesColors.BLACKCOLOR),
-                                ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.only(left: 4.0),
-                                  child: Icon(Icons.arrow_drop_down),
-                                )
-                              ],
-                            ),
-                          ),
-                          // DropdownButton<String>(
-                          //   items: _getSpecialityDropdownItems(),
-                          //   underline: Container(),
-                          //   value: _selectedSpeciality,
-                          //   isExpanded: false,
-                          //   hint: Text(
-                          //     "Service",
-                          //     style: TextStyle(
-                          //         fontSize: 14,
-                          //         color: PlunesColors.BLACKCOLOR),
-                          //   ),
-                          //   onChanged: (spec) {
-                          //     _selectedSpeciality = spec;
-                          //     _doFilterAndGetFacilities();
-                          //   },
-                          // ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(
-                              top: AppConfig.verticalBlockSize * 1.2,
-                              bottom: AppConfig.verticalBlockSize * 1.2,
-                              left: AppConfig.horizontalBlockSize * 5,
-                              right: AppConfig.horizontalBlockSize * 1),
-                          margin: EdgeInsets.only(
-                              right: AppConfig.horizontalBlockSize * 3),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                  Radius.circular(
-                                      AppConfig.horizontalBlockSize *
-                                          10)),
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr(
-                                      "#00000012")),
-                              border: Border.all(
-                                  width: 0.8,
-                                  color: Color(
-                                      CommonMethods.getColorHexFromStr(
-                                          "#26AF78")))),
-                          child: InkWell(
-                              onTap: () {
-                                _getModelBottomSheetForFacilityType(
-                                    context);
-                              },
-                              onDoubleTap: () {},
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    _userTypeFilterName ?? "Facility",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        color: PlunesColors.BLACKCOLOR),
-                                  ),
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.only(left: 4.0),
-                                    child: Icon(Icons.arrow_drop_down),
-                                  )
-                                ],
-                              )),
-                          // DropdownButton<String>(
-                          //   items: facilityTypeWidget,
-                          //   underline: Container(),
-                          //   value: _userTypeFilter,
-                          //   isExpanded: false,
-                          //   hint: Text(
-                          //     "Facility",
-                          //     style: TextStyle(
-                          //         fontSize: 14,
-                          //         color: PlunesColors.BLACKCOLOR),
-                          //   ),
-                          //   onChanged: (userType) {
-                          //     _userTypeFilter = userType;
-                          //     _doFilterAndGetFacilities();
-                          //   },
-                          // ),
-                        ),
-                        (UserManager()
-                            .getUserDetails()
-                            .latitude != null &&
-                            UserManager()
-                                .getUserDetails()
-                                .latitude
-                                .isNotEmpty &&
-                            UserManager()
-                                .getUserDetails()
-                                .longitude !=
-                                null &&
-                            UserManager()
-                                .getUserDetails()
-                                .longitude
-                                .isNotEmpty &&
-                            UserManager()
-                                .getIsUserInServiceLocation())
-                            ? Container(
-                            margin: EdgeInsets.only(
-                                right: AppConfig.horizontalBlockSize *
-                                    3),
-                            padding: EdgeInsets.only(
-                                top:
-                                AppConfig.verticalBlockSize * 1.2,
-                                bottom:
-                                AppConfig.verticalBlockSize * 1.2,
-                                left:
-                                AppConfig.horizontalBlockSize * 5,
-                                right: AppConfig.horizontalBlockSize *
-                                    1),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(AppConfig
-                                        .horizontalBlockSize *
-                                        10)),
-                                color:
-                                Color(CommonMethods.getColorHexFromStr(
-                                    "#00000012")),
-                                border: Border.all(width: 0.8,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 2.2),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 1.2,
+                                    bottom: AppConfig.verticalBlockSize * 1.2,
+                                    left: AppConfig.horizontalBlockSize * 5,
+                                    right: AppConfig.horizontalBlockSize * 1),
+                                margin: EdgeInsets.only(
+                                    right: AppConfig.horizontalBlockSize * 3,
+                                    left: AppConfig.horizontalBlockSize * 2.2),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            AppConfig.horizontalBlockSize *
+                                                10)),
                                     color: Color(
                                         CommonMethods.getColorHexFromStr(
-                                            "#26AF78")))),
-                            child: InkWell(
-                                onTap: () {
-                                  _getModelBottomSheetForLocationType(
-                                      context);
-                                },
-                                onDoubleTap: () {},
-                                child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.end,
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      _locationFilterName ??
-                                          "Near Me",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          color: PlunesColors
-                                              .BLACKCOLOR),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 4.0),
-                                      child:
-                                      Icon(Icons.arrow_drop_down),
-                                    )
-                                  ],
-                                ))
-                          // DropdownButton(
-                          //   items: _facilityLocationDropDownItems,
-                          //   isExpanded: false,
-                          //   value: _locationFilter,
-                          //   underline: Container(),
-                          //   hint: Text(
-                          //     "Near Me",
-                          //     style: TextStyle(
-                          //         fontSize: 14,
-                          //         color: PlunesColors.BLACKCOLOR),
-                          //   ),
-                          //   onChanged: (locationFilter) {
-                          //     _locationFilter = locationFilter;
-                          //     _doFilterAndGetFacilities();
-                          //   },
-                          // ),
-                        )
-                            : Container()
-                      ],
-                    ),
-                  ),
-                ),
-                ListView.builder(
-                  padding: EdgeInsets.zero,
-                  physics: NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        if (_topFacilityModel.data[index] != null &&
-                            _topFacilityModel.data[index].userType !=
-                                null &&
-                            _topFacilityModel
-                                .data[index].professionalId !=
-                                null) {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      DoctorInfo(
-                                          _topFacilityModel
-                                              .data[index].professionalId,
-                                          isDoc: (_topFacilityModel
-                                              .data[index].userType
-                                              .toLowerCase() ==
-                                              Constants.doctor
-                                                  .toString()
-                                                  .toLowerCase()))));
-                        }
-                      },
-                      onDoubleTap: () {},
-                      child: _hospitalCard(
-                          _topFacilityModel.data[index]?.imageUrl ?? '',
-                          CommonMethods.getStringInCamelCase(
-                              _topFacilityModel.data[index].name),
-                          _topFacilityModel.data[index].biography ?? '',
-                          _topFacilityModel.data[index]?.rating),
-                    );
-                  },
-                  itemCount: ((_topFacilityModel.data.length > 6) &&
-                      (!_isTopFacilityExpanded))
-                      ? 5
-                      : _topFacilityModel.data.length,
-                ),
-                (_topFacilityModel.data.length > 6)
-                    ? Container(
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    onDoubleTap: () {},
-                    onTap: () {
-                      _isTopFacilityExpanded =
-                      !_isTopFacilityExpanded;
-                      _homeScreenMainBloc
-                          ?.addIntoTopFacilityStream(null);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal:
-                          AppConfig.horizontalBlockSize * 2,
-                          vertical:
-                          AppConfig.verticalBlockSize * 2.2),
-                      child: Text(
-                        _isTopFacilityExpanded
-                            ? "View less"
-                            : "View more",
-                        style: TextStyle(
-                            color: PlunesColors.GREENCOLOR,
-                            fontSize: 13),
+                                            "#00000012")),
+                                    border: Border.all(
+                                        width: 0.8,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#26AF78")))),
+                                child: InkWell(
+                                  onTap: () {
+                                    _getModelBottomSheetForServiceList(context);
+                                  },
+                                  onDoubleTap: () {},
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        _selectedSpecialityName ?? "Service",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: PlunesColors.BLACKCOLOR),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 4.0),
+                                        child: Icon(Icons.arrow_drop_down),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                // DropdownButton<String>(
+                                //   items: _getSpecialityDropdownItems(),
+                                //   underline: Container(),
+                                //   value: _selectedSpeciality,
+                                //   isExpanded: false,
+                                //   hint: Text(
+                                //     "Service",
+                                //     style: TextStyle(
+                                //         fontSize: 14,
+                                //         color: PlunesColors.BLACKCOLOR),
+                                //   ),
+                                //   onChanged: (spec) {
+                                //     _selectedSpeciality = spec;
+                                //     _doFilterAndGetFacilities();
+                                //   },
+                                // ),
+                              ),
+                              Container(
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 1.2,
+                                    bottom: AppConfig.verticalBlockSize * 1.2,
+                                    left: AppConfig.horizontalBlockSize * 5,
+                                    right: AppConfig.horizontalBlockSize * 1),
+                                margin: EdgeInsets.only(
+                                    right: AppConfig.horizontalBlockSize * 3),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(
+                                        Radius.circular(
+                                            AppConfig.horizontalBlockSize *
+                                                10)),
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#00000012")),
+                                    border: Border.all(
+                                        width: 0.8,
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#26AF78")))),
+                                child: InkWell(
+                                    onTap: () {
+                                      _getModelBottomSheetForFacilityType(
+                                          context);
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          _userTypeFilterName ?? "Facility",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: PlunesColors.BLACKCOLOR),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 4.0),
+                                          child: Icon(Icons.arrow_drop_down),
+                                        )
+                                      ],
+                                    )),
+                                // DropdownButton<String>(
+                                //   items: facilityTypeWidget,
+                                //   underline: Container(),
+                                //   value: _userTypeFilter,
+                                //   isExpanded: false,
+                                //   hint: Text(
+                                //     "Facility",
+                                //     style: TextStyle(
+                                //         fontSize: 14,
+                                //         color: PlunesColors.BLACKCOLOR),
+                                //   ),
+                                //   onChanged: (userType) {
+                                //     _userTypeFilter = userType;
+                                //     _doFilterAndGetFacilities();
+                                //   },
+                                // ),
+                              ),
+                              (UserManager().getUserDetails().latitude != null &&
+                                      UserManager()
+                                          .getUserDetails()
+                                          .latitude
+                                          .isNotEmpty &&
+                                      UserManager().getUserDetails().longitude !=
+                                          null &&
+                                      UserManager()
+                                          .getUserDetails()
+                                          .longitude
+                                          .isNotEmpty &&
+                                      UserManager()
+                                          .getIsUserInServiceLocation())
+                                  ? Container(
+                                      margin: EdgeInsets.only(
+                                          right: AppConfig.horizontalBlockSize *
+                                              3),
+                                      padding: EdgeInsets.only(
+                                          top:
+                                              AppConfig.verticalBlockSize * 1.2,
+                                          bottom:
+                                              AppConfig.verticalBlockSize * 1.2,
+                                          left:
+                                              AppConfig.horizontalBlockSize * 5,
+                                          right: AppConfig.horizontalBlockSize *
+                                              1),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(AppConfig
+                                                      .horizontalBlockSize *
+                                                  10)),
+                                          color:
+                                              Color(CommonMethods.getColorHexFromStr("#00000012")),
+                                          border: Border.all(width: 0.8, color: Color(CommonMethods.getColorHexFromStr("#26AF78")))),
+                                      child: InkWell(
+                                          onTap: () {
+                                            _getModelBottomSheetForLocationType(
+                                                context);
+                                          },
+                                          onDoubleTap: () {},
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                _locationFilterName ??
+                                                    "Near Me",
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: PlunesColors
+                                                        .BLACKCOLOR),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 4.0),
+                                                child:
+                                                    Icon(Icons.arrow_drop_down),
+                                              )
+                                            ],
+                                          ))
+                                      // DropdownButton(
+                                      //   items: _facilityLocationDropDownItems,
+                                      //   isExpanded: false,
+                                      //   value: _locationFilter,
+                                      //   underline: Container(),
+                                      //   hint: Text(
+                                      //     "Near Me",
+                                      //     style: TextStyle(
+                                      //         fontSize: 14,
+                                      //         color: PlunesColors.BLACKCOLOR),
+                                      //   ),
+                                      //   onChanged: (locationFilter) {
+                                      //     _locationFilter = locationFilter;
+                                      //     _doFilterAndGetFacilities();
+                                      //   },
+                                      // ),
+                                      )
+                                  : Container()
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                      ListView.builder(
+                        padding: EdgeInsets.zero,
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              if (_topFacilityModel.data[index] != null &&
+                                  _topFacilityModel.data[index].userType !=
+                                      null &&
+                                  _topFacilityModel
+                                          .data[index].professionalId !=
+                                      null) {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => DoctorInfo(
+                                            _topFacilityModel
+                                                .data[index].professionalId,
+                                            isDoc: (_topFacilityModel
+                                                    .data[index].userType
+                                                    .toLowerCase() ==
+                                                Constants.doctor
+                                                    .toString()
+                                                    .toLowerCase()))));
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: _hospitalCard(
+                                _topFacilityModel.data[index]?.imageUrl ?? '',
+                                CommonMethods.getStringInCamelCase(
+                                    _topFacilityModel.data[index].name),
+                                _topFacilityModel.data[index].biography ?? '',
+                                _topFacilityModel.data[index]?.rating),
+                          );
+                        },
+                        itemCount: ((_topFacilityModel.data.length > 6) &&
+                                (!_isTopFacilityExpanded))
+                            ? 5
+                            : _topFacilityModel.data.length,
+                      ),
+                      (_topFacilityModel.data.length > 6)
+                          ? Container(
+                              width: double.infinity,
+                              alignment: Alignment.center,
+                              child: InkWell(
+                                onDoubleTap: () {},
+                                onTap: () {
+                                  _isTopFacilityExpanded =
+                                      !_isTopFacilityExpanded;
+                                  _homeScreenMainBloc
+                                      ?.addIntoTopFacilityStream(null);
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 2,
+                                      vertical:
+                                          AppConfig.verticalBlockSize * 2.2),
+                                  child: Text(
+                                    _isTopFacilityExpanded
+                                        ? "View less"
+                                        : "View more",
+                                    style: TextStyle(
+                                        color: PlunesColors.GREENCOLOR,
+                                        fontSize: 13),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Container()
+                    ],
                   ),
-                )
-                    : Container()
-              ],
-            ),
-          );
+                );
         });
   }
 
@@ -1880,13 +1857,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _specialityDropDownItems = [];
     CommonMethods.catalogueLists.forEach((element) {
       if (element.speciality != null &&
-          element.speciality
-              .trim()
-              .isNotEmpty &&
+          element.speciality.trim().isNotEmpty &&
           element.id != null &&
-          element.id
-              .trim()
-              .isNotEmpty) {
+          element.id.trim().isNotEmpty) {
         // if (_selectedSpeciality == null) {
         //   _selectedSpeciality = element.id;
         // }
@@ -1906,13 +1879,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _specialityItems = [];
     CommonMethods.catalogueLists.forEach((element) {
       if (element.speciality != null &&
-          element.speciality
-              .trim()
-              .isNotEmpty &&
+          element.speciality.trim().isNotEmpty &&
           element.id != null &&
-          element.id
-              .trim()
-              .isNotEmpty) {
+          element.id.trim().isNotEmpty) {
         _specialityItems.add(element);
       }
     });
@@ -1966,7 +1935,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             color: Color(
                                 CommonMethods.getColorHexFromStr("#707070")),
                             borderRadius:
-                            BorderRadius.all(Radius.circular(10))),
+                                BorderRadius.all(Radius.circular(10))),
                       ),
                     ],
                   ),
@@ -2060,7 +2029,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             color: Color(
                                 CommonMethods.getColorHexFromStr("#707070")),
                             borderRadius:
-                            BorderRadius.all(Radius.circular(10))),
+                                BorderRadius.all(Radius.circular(10))),
                       ),
                     ],
                   ),
@@ -2154,7 +2123,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             color: Color(
                                 CommonMethods.getColorHexFromStr("#707070")),
                             borderRadius:
-                            BorderRadius.all(Radius.circular(10))),
+                                BorderRadius.all(Radius.circular(10))),
                       ),
                     ],
                   ),
@@ -2227,8 +2196,8 @@ Widget _sectionHeading(String text) {
   );
 }
 
-Widget _hospitalCard(String imageUrl, String label, String text,
-    double rating) {
+Widget _hospitalCard(
+    String imageUrl, String label, String text, double rating) {
   return Container(
     margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
     height: AppConfig.verticalBlockSize * 38,

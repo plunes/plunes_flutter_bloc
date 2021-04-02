@@ -17,6 +17,7 @@ import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
+import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
@@ -183,7 +184,9 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           userTypeDropDown(),
           isLab
               ? getLabView()
-              : _isHospital ? getHospitalView() : getUserOrDoctorView(),
+              : _isHospital
+                  ? getHospitalView()
+                  : getUserOrDoctorView(),
         ],
       ),
     );
@@ -937,6 +940,73 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
 //    }
 //  }
 
+  _showProfessionalRegistrationSuccessPopup(LoginPost data) async {
+    showDialog(
+        context: _context,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(9))),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 1.5,
+                        left: AppConfig.horizontalBlockSize * 2.5,
+                        right: AppConfig.horizontalBlockSize * 2.5),
+                    child: Image.asset(
+                      PlunesImages.profVerificationImage,
+                      height: 74,
+                      width: 122,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 1.5,
+                        left: AppConfig.horizontalBlockSize * 2.5,
+                        right: AppConfig.horizontalBlockSize * 2.5),
+                    child: Text(
+                      "Thank You for Submitting your details.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 1.5,
+                        horizontal: AppConfig.horizontalBlockSize * 2.5),
+                    child: Text(
+                      "Our Team will get in touch with you soon regarding the Verification of your Profile",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  ),
+                  Container(
+                    child: CustomWidgets().getSingleButtonForPopup(
+                        onTap: () {
+                          Navigator.maybePop(context);
+                        },
+                        roundedValue: 9,
+                        buttonBackground: Colors.white,
+                        buttonText: "OK",
+                        textColor: PlunesColors.GREENCOLOR),
+                  )
+                ],
+              ),
+            ),
+          );
+        }).then((value) async {
+      await bloc.saveDataInPreferences(
+          data, context, plunesStrings.registration);
+    });
+  }
+
   submitRegistrationRequest() async {
     if (validation()) {
       List specialistId = new List();
@@ -998,8 +1068,12 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
         if (data.success) {
           _setShowCaseStatus();
           AnalyticsProvider().registerEvent(AnalyticsKeys.signUpKey);
-          await bloc.saveDataInPreferences(
-              data, context, plunesStrings.registration);
+          if (_userType != Constants.generalUser) {
+            _showProfessionalRegistrationSuccessPopup(data);
+          } else {
+            await bloc.saveDataInPreferences(
+                data, context, plunesStrings.registration);
+          }
         } else {
           widget.showInSnackBar(
               data.message, PlunesColors.BLACKCOLOR, _scaffoldKey);
@@ -1219,20 +1293,22 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
           padding: EdgeInsets.zero,
           width: MediaQuery.of(context).size.width,
           child: TextField(
-              maxLines:
-                  (controller == locationController || controller == aboutController)
-                      ? 2
-                      : 1,
+              maxLines: (controller == locationController ||
+                      controller == aboutController)
+                  ? 2
+                  : 1,
               maxLength: (controller == aboutController)
                   ? 250
-                  : (controller != null && controller == alternatePhoneController)
+                  : (controller != null &&
+                          controller == alternatePhoneController)
                       ? 10
                       : null,
               textCapitalization: textCapitalization,
               obscureText:
                   (controller == passwordController ? _passwordVisible : false),
               keyboardType: inputType,
-              inputFormatters: (controller != null && controller == alternatePhoneController)
+              inputFormatters: (controller != null &&
+                      controller == alternatePhoneController)
                   ? <TextInputFormatter>[
                       WhitelistingTextInputFormatter.digitsOnly
                     ]

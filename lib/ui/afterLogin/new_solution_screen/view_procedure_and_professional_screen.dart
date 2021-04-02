@@ -563,6 +563,7 @@ class _ViewProcedureAndProfessionalState
 
   Widget _getVideoWidget() {
     return Container(
+      margin: EdgeInsets.only(bottom: 2),
       child: Column(
         children: [
           Container(
@@ -727,7 +728,8 @@ class _ViewProcedureAndProfessionalState
         shrinkWrap: true,
         itemBuilder: (context, index) {
           return Card(
-            margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 3.5),
+            margin: EdgeInsets.only(
+                right: AppConfig.horizontalBlockSize * 3.5, bottom: 1.5),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.only(
                     bottomRight: Radius.circular(10),

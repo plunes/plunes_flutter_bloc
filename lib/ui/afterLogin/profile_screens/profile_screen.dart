@@ -838,8 +838,6 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                   Expanded(
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(6),
-                                          bottomRight: Radius.circular(6),
                                           topLeft: Radius.circular(13),
                                           topRight: Radius.circular(13)),
                                       child: Container(

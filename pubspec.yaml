@@ -398,6 +398,7 @@ flutter:
     - assets/images/callingIconWhite.png
     - assets/gif/animation_500_kllw8ofi.gif
     - assets/images/home_screen_image.png
+    - assets/images/profVerificationImage.png
 
     - assets/videos/app_tour/2.mp4
     - assets/videos/app_tour/1.mp4
