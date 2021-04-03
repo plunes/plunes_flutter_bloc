@@ -364,8 +364,8 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
       await Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ViewSolutionsScreen(
-                  catalogueData: catalogueData, searchQuery: "")));
+              builder: (context) =>
+                  SolutionBiddingScreen(searchQuery: catalogueData?.service)));
       _getPreviousSolutions();
     }
   }

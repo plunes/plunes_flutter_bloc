@@ -1,7 +1,7 @@
 name: plunes
 description: A new Flutter application.
 
-version: 1.2.32+73
+version: 1.2.33+74
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
@@ -79,7 +79,7 @@ dependencies:
   sms_otp_auto_verify: ^1.2.2
   visibility_detector: ^0.1.5
   searchable_dropdown: ^1.1.3
-#  adhara_socket_io: ^0.4.2+1
+  #  adhara_socket_io: ^0.4.2+1
   socket_io_client: ^0.9.11
   syncfusion_flutter_gauges: ^18.3.38
   charts_flutter: ^0.9.0
@@ -399,6 +399,7 @@ flutter:
     - assets/gif/animation_500_kllw8ofi.gif
     - assets/images/home_screen_image.png
     - assets/images/profVerificationImage.png
+    - assets/images/book_via_insurance_image.png
 
     - assets/videos/app_tour/2.mp4
     - assets/videos/app_tour/1.mp4

@@ -864,8 +864,17 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                                                 .service.paymentOptions?.last
                                                 ?.toString() ??
                                             "100");
-                                    _initPayment(paymentSelector,
-                                        isAddToCart: true);
+                                    if (_insuranceProvider != null &&
+                                        _selectedIndex == 0) {
+                                      _showProfessionalRegistrationSuccessPopup(
+                                          () {
+                                        _initPayment(paymentSelector,
+                                            isAddToCart: true);
+                                      });
+                                    } else {
+                                      _initPayment(paymentSelector,
+                                          isAddToCart: true);
+                                    }
                                   }
                                 } else {
                                   _showInSnackBar(
@@ -962,6 +971,120 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         ],
       ),
     );
+  }
+
+  _showProfessionalRegistrationSuccessPopup(Function submit) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(9))),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 1.8,
+                        left: AppConfig.horizontalBlockSize * 2.5,
+                        right: AppConfig.horizontalBlockSize * 2.5),
+                    child: Image.asset(
+                      PlunesImages.book_via_insurance_image,
+                      height: 84,
+                      width: 91,
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 1.8,
+                        horizontal: AppConfig.horizontalBlockSize * 2.5),
+                    child: Text(
+                      "By clicking on Add To Cart you agree to book your procedure via Insurance",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                  ),
+                  Container(
+                    height: 0.5,
+                    width: double.infinity,
+                    color: PlunesColors.GREYCOLOR,
+                  ),
+                  Container(
+                    height: AppConfig.verticalBlockSize * 5,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(16),
+                          bottomRight: Radius.circular(16)),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Expanded(
+                            child: FlatButton(
+                                highlightColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                splashColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                focusColor: Colors.transparent,
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  return;
+                                },
+                                child: Container(
+                                    height: AppConfig.verticalBlockSize * 5,
+                                    width: double.infinity,
+                                    child: Center(
+                                      child: Text(
+                                        'Not Sure',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: AppConfig.mediumFont,
+                                            color: PlunesColors.SPARKLINGGREEN),
+                                      ),
+                                    ))),
+                          ),
+                          Container(
+                            height: AppConfig.verticalBlockSize * 5,
+                            color: PlunesColors.GREYCOLOR,
+                            width: 0.5,
+                          ),
+                          Expanded(
+                            child: FlatButton(
+                                highlightColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                splashColor:
+                                    PlunesColors.SPARKLINGGREEN.withOpacity(.1),
+                                focusColor: Colors.transparent,
+                                onPressed: () {
+                                  if (submit != null) {
+                                    Navigator.pop(context);
+                                    submit();
+                                  }
+                                },
+                                child: Container(
+                                    height: AppConfig.verticalBlockSize * 5,
+                                    width: double.infinity,
+                                    child: Center(
+                                      child: Text(
+                                        'Yes',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontSize: AppConfig.mediumFont,
+                                            color: PlunesColors.SPARKLINGGREEN),
+                                      ),
+                                    ))),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        });
   }
 
   void _setState() {

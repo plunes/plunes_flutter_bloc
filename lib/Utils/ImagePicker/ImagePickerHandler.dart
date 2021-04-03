@@ -169,11 +169,11 @@ class ImagePickerHandler {
     }
     MediaInfo mediaInfo = await VideoCompress.compressVideo(
       videoFile, duration: 10, includeAudio: true,
-      quality: VideoQuality.DefaultQuality,
+      quality: VideoQuality.MediumQuality,
       deleteOrigin: false, // It's false by default
     );
-    print("file size is ${mediaInfo?.filesize}");
-    print("file duration is ${mediaInfo?.duration}");
+    // print("file size is ${mediaInfo?.filesize}");
+    // print("file duration is ${mediaInfo?.duration}");
     _listener.fetchImageCallBack(mediaInfo.file);
     return mediaInfo.file;
   }
