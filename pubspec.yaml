@@ -400,6 +400,8 @@ flutter:
     - assets/images/home_screen_image.png
     - assets/images/profVerificationImage.png
     - assets/images/book_via_insurance_image.png
+    - assets/images/bottom_tabs/activityUn.png
+    - assets/images/bottom_tabs/activitySel.png
 
     - assets/videos/app_tour/2.mp4
     - assets/videos/app_tour/1.mp4

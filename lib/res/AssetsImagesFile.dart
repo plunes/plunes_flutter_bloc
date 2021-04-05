@@ -165,6 +165,8 @@ class PlunesImages {
       "assets/images/profVerificationImage.png";
   static const String book_via_insurance_image =
       "assets/images/book_via_insurance_image.png";
+  static const String activityUn = "assets/images/bottom_tabs/activityUn.png";
+  static const String activitySel = "assets/images/bottom_tabs/activitySel.png";
 
   ///video urls
   static const String firstTutorialVideo = "assets/videos/app_tour/1.mp4";
