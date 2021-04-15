@@ -41,6 +41,7 @@ import 'package:share/share.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
+import 'package:upi_pay/upi_pay.dart';
 
 // import 'package:upi_pay/upi_pay.dart';
 import 'CommonMethods.dart';
@@ -6170,133 +6171,133 @@ class CustomWidgets {
     );
   }
 
-  // Widget getUpiBasedPaymentOptionView(InitPaymentResponse initPaymentResponse,
-  //     List<ApplicationMeta> availableUpiApps, GlobalKey globalKey) {
-  //   return Dialog(
-  //     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-  //     backgroundColor: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
-  //     insetPadding:
-  //         EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 5),
-  //     child: SingleChildScrollView(
-  //       child: Column(
-  //         children: <Widget>[
-  //           Container(
-  //             margin: EdgeInsets.symmetric(
-  //                 vertical: AppConfig.verticalBlockSize * 1.2,
-  //                 horizontal: AppConfig.horizontalBlockSize * 6),
-  //             child: Row(
-  //               crossAxisAlignment: CrossAxisAlignment.center,
-  //               children: <Widget>[
-  //                 Container(
-  //                   child: Text(
-  //                     "Pay through",
-  //                     style: TextStyle(
-  //                         fontWeight: FontWeight.normal,
-  //                         fontSize: 16,
-  //                         color: PlunesColors.BLACKCOLOR),
-  //                   ),
-  //                   padding: EdgeInsets.all(5),
-  //                   alignment: Alignment.center,
-  //                 ),
-  //                 Expanded(
-  //                     child: Container(
-  //                   height: 0.5,
-  //                   width: double.infinity,
-  //                   color: PlunesColors.BLACKCOLOR,
-  //                   margin: EdgeInsets.only(left: 5.0),
-  //                 ))
-  //               ],
-  //             ),
-  //           ),
-  //           Container(
-  //             color: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
-  //             margin: EdgeInsets.symmetric(
-  //                 vertical: AppConfig.verticalBlockSize * 1.2,
-  //                 horizontal: AppConfig.horizontalBlockSize * 2),
-  //             child: ListView(
-  //               shrinkWrap: true,
-  //               children: availableUpiApps
-  //                       .map((it) => Container(
-  //                             margin: EdgeInsets.symmetric(
-  //                                 horizontal:
-  //                                     AppConfig.horizontalBlockSize * 2.5,
-  //                                 vertical: AppConfig.verticalBlockSize * 1),
-  //                             padding: EdgeInsets.all(6.0),
-  //                             decoration: BoxDecoration(
-  //                                 color: Color(CommonMethods.getColorHexFromStr(
-  //                                     "#F9F9F9")),
-  //                                 borderRadius: BorderRadius.circular(16.0)),
-  //                             child: InkWell(
-  //                               child: Row(
-  //                                 mainAxisAlignment: MainAxisAlignment.start,
-  //                                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                                 children: <Widget>[
-  //                                   Image.memory(
-  //                                     it.icon,
-  //                                     width: AppConfig.horizontalBlockSize * 15,
-  //                                     height: AppConfig.verticalBlockSize * 6,
-  //                                   ),
-  //                                   Flexible(
-  //                                     child: Container(
-  //                                       margin: EdgeInsets.only(
-  //                                           left:
-  //                                               AppConfig.horizontalBlockSize *
-  //                                                   4),
-  //                                       child: Text(
-  //                                         it.upiApplication?.getAppName() ??
-  //                                             "Pay",
-  //                                         style: TextStyle(
-  //                                             color: PlunesColors.BLACKCOLOR,
-  //                                             fontSize: 15,
-  //                                             fontWeight: FontWeight.normal),
-  //                                       ),
-  //                                     ),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                               onTap: () {
-  //                                 Map<String, dynamic> result = Map();
-  //                                 result[PlunesStrings.payUpi] = it;
-  //                                 Navigator.of(globalKey.currentState.context)
-  //                                     .pop(result);
-  //                               },
-  //                             ),
-  //                           ))
-  //                       ?.toList() ??
-  //                   <Widget>[],
-  //             ),
-  //           ),
-  //           Container(
-  //             margin: EdgeInsets.symmetric(
-  //                 vertical: AppConfig.verticalBlockSize * 2),
-  //             child: InkWell(
-  //               onTap: () {
-  //                 Map<String, String> result = Map();
-  //                 result[PlunesStrings.payOnWeb] = PlunesStrings.payOnWeb;
-  //                 Navigator.of(globalKey.currentState.context).pop(result);
-  //               },
-  //               splashColor: Colors.transparent,
-  //               highlightColor: Colors.transparent,
-  //               hoverColor: Colors.transparent,
-  //               focusColor: Colors.transparent,
-  //               child: Container(
-  //                 child: Text(
-  //                   "More payment options",
-  //                   style: TextStyle(
-  //                       fontWeight: FontWeight.normal,
-  //                       fontSize: 16,
-  //                       color: PlunesColors.GREENCOLOR),
-  //                 ),
-  //                 padding: EdgeInsets.all(5),
-  //                 alignment: Alignment.center,
-  //               ),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
+  Widget getUpiBasedPaymentOptionView(InitPaymentResponse initPaymentResponse,
+      List<ApplicationMeta> availableUpiApps, GlobalKey globalKey) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      backgroundColor: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
+      insetPadding:
+          EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 5),
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.2,
+                  horizontal: AppConfig.horizontalBlockSize * 6),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                      "Pay through",
+                      style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 16,
+                          color: PlunesColors.BLACKCOLOR),
+                    ),
+                    padding: EdgeInsets.all(5),
+                    alignment: Alignment.center,
+                  ),
+                  Expanded(
+                      child: Container(
+                    height: 0.5,
+                    width: double.infinity,
+                    color: PlunesColors.BLACKCOLOR,
+                    margin: EdgeInsets.only(left: 5.0),
+                  ))
+                ],
+              ),
+            ),
+            Container(
+              color: Color(CommonMethods.getColorHexFromStr("#FFFFFF")),
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 1.2,
+                  horizontal: AppConfig.horizontalBlockSize * 2),
+              child: ListView(
+                shrinkWrap: true,
+                children: availableUpiApps
+                        .map((it) => Container(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal:
+                                      AppConfig.horizontalBlockSize * 2.5,
+                                  vertical: AppConfig.verticalBlockSize * 1),
+                              padding: EdgeInsets.all(6.0),
+                              decoration: BoxDecoration(
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#F9F9F9")),
+                                  borderRadius: BorderRadius.circular(16.0)),
+                              child: InkWell(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image.memory(
+                                      it.icon,
+                                      width: AppConfig.horizontalBlockSize * 15,
+                                      height: AppConfig.verticalBlockSize * 6,
+                                    ),
+                                    Flexible(
+                                      child: Container(
+                                        margin: EdgeInsets.only(
+                                            left:
+                                                AppConfig.horizontalBlockSize *
+                                                    4),
+                                        child: Text(
+                                          it.upiApplication?.getAppName() ??
+                                              "Pay",
+                                          style: TextStyle(
+                                              color: PlunesColors.BLACKCOLOR,
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                onTap: () {
+                                  Map<String, dynamic> result = Map();
+                                  result[PlunesStrings.payUpi] = it;
+                                  Navigator.of(globalKey.currentState.context)
+                                      .pop(result);
+                                },
+                              ),
+                            ))
+                        ?.toList() ??
+                    <Widget>[],
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 2),
+              child: InkWell(
+                onTap: () {
+                  Map<String, String> result = Map();
+                  result[PlunesStrings.payOnWeb] = PlunesStrings.payOnWeb;
+                  Navigator.of(globalKey.currentState.context).pop(result);
+                },
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                child: Container(
+                  child: Text(
+                    "More payment options",
+                    style: TextStyle(
+                        fontWeight: FontWeight.normal,
+                        fontSize: 16,
+                        color: PlunesColors.GREENCOLOR),
+                  ),
+                  padding: EdgeInsets.all(5),
+                  alignment: Alignment.center,
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget showAddToCartSuccessPopup(GlobalKey globalKey, String message) {
     return Dialog(
