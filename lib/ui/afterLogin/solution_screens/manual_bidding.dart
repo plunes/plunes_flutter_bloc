@@ -47,6 +47,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
   String _specialitySelectedId;
   bool _scrollParent = false;
   ScrollController _scrollController;
+  List<SpecialityModel> _specialityItems = [];
+
+  String _selectedSpeciality;
+
+  String _selectedSpecialityName;
 
   @override
   void initState() {
@@ -117,8 +122,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
     return SafeArea(
       child: Scaffold(
         key: scaffoldKey,
-        appBar:
-            widget.getAppBar(context, PlunesStrings.negotiateManually, true),
+        // appBar:
+        //     widget.getAppBar(context, PlunesStrings.negotiateManually, true),
         body: Builder(builder: (context) {
           if (_isProcessing) {
             return CustomWidgets().getProgressIndicator();
@@ -127,7 +132,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             return CustomWidgets().errorWidget(_specialityFailureCause,
                 onTap: () => _getSpecialities());
           }
-          return _getBody();
+          return _latestWidgetBody();
+          // return _getBody();
         }),
       ),
       top: false,
@@ -366,28 +372,9 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             minWidth: double.infinity,
             maxWidth: double.infinity,
             maxHeight: AppConfig.verticalBlockSize * 75),
-        margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+        margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.5),
         child: Column(
           children: <Widget>[
-//            StreamBuilder<Object>(
-//                stream: _selectUnselectController.stream,
-//                builder: (context, snapshot) {
-//                  return Container(
-//                    padding: const EdgeInsets.all(5.0),
-//                    margin: EdgeInsets.only(
-//                        top: (_selectedItemList == null ||
-//                                _selectedItemList.isEmpty)
-//                            ? AppConfig.verticalBlockSize * 1.5
-//                            : 0),
-//                    child: Text(
-//                      PlunesStrings.chooseFacilities,
-//                      style: TextStyle(
-//                          color: PlunesColors.BLACKCOLOR,
-//                          fontWeight: FontWeight.bold,
-//                          fontSize: 16),
-//                    ),
-//                  );
-//                }),
             Expanded(
               child: NotificationListener<ScrollNotification>(
                 onNotification: (scrollState) {
@@ -408,7 +395,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                 child: IgnorePointer(
                   ignoring: _scrollParent,
                   child: ListView.builder(
-                    padding: null,
+                    padding: EdgeInsets.zero,
                     itemBuilder: (context, index) {
                       return Container(
                         margin: EdgeInsets.only(
@@ -417,8 +404,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                                     (index == _catalogues.length - 1))
                                 ? AppConfig.verticalBlockSize * 16
                                 : 0),
-                        child: CustomWidgets().getMoreFacilityWidget(
-                            _catalogues, index,
+                        child: getMoreFacilityWidget(_catalogues, index,
                             onTap: () => _addRemoveFacilities(
                                 _catalogues[index],
                                 shouldAdd: true),
@@ -511,9 +497,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         children: <Widget>[
           (snapShot.data is RequestInProgress &&
                   (_catalogues == null || _catalogues.isEmpty))
-              ? Expanded(
-                  child: CustomWidgets().getProgressIndicator(),
-                )
+              ? Expanded(child: CustomWidgets().getProgressIndicator())
               : Expanded(
                   child: CustomWidgets().errorWidget(
                       (_failureCause == null || _failureCause.isEmpty)
@@ -542,16 +526,17 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
           return Column(
             children: <Widget>[
               Container(
+                margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 0.5),
                 constraints: BoxConstraints(
                     minHeight: AppConfig.verticalBlockSize * 5,
                     minWidth: double.infinity,
                     maxWidth: double.infinity,
                     maxHeight: AppConfig.verticalBlockSize * 100),
                 child: ListView.builder(
+                  padding: EdgeInsets.zero,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return CustomWidgets().getMoreFacilityWidget(
-                        _selectedItemList, index,
+                    return getMoreFacilityWidget(_selectedItemList, index,
                         isSelected: true,
                         onTap: () =>
                             _addRemoveFacilities(_selectedItemList[index]),
@@ -824,9 +809,6 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                     item.speciality != null &&
                     item.speciality.isNotEmpty &&
                     value.toString() == item.speciality) {
-//                  print(
-//                      "${CommonMethods.getStringInCamelCase(item.speciality)} equal hai $value");
-//                  print("id is ${item.id}");
                   _specialitySelectedId = item.id;
                   _catalogues = [];
                   pageIndex = SearchSolutionBloc.initialIndex;
@@ -958,47 +940,39 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 //  }
 
   Widget _getLocationField() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Flexible(
-          child: Container(
-            padding: const EdgeInsets.only(top: 2.0, bottom: 2.0),
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.verticalBlockSize * 2,
-                vertical: AppConfig.horizontalBlockSize * 1.5),
-            child: InkWell(
-              onTap: () => _getLocation(),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.all(2),
-                    child: Image.asset(plunesImages.locationIcon),
-                    height: AppConfig.verticalBlockSize * 3.5,
-                    width: AppConfig.horizontalBlockSize * 6,
-                  ),
-                  Flexible(
-                      child: FittedBox(
-                    child: Text(
-                      _location ?? PlunesStrings.enterYourLocation,
-                      softWrap: false,
-                      style: TextStyle(
-                        fontSize: 14,
-                        decoration: TextDecoration.underline,
-                        decorationStyle: TextDecorationStyle.dashed,
-                        decorationThickness: 2.0,
-                      ),
-                    ),
-                  ))
-                ],
+    return Flexible(
+      child: Container(
+        // margin: EdgeInsets.symmetric(
+        //     horizontal: AppConfig.verticalBlockSize * 2,
+        //     vertical: AppConfig.horizontalBlockSize * 1.5),
+        child: InkWell(
+          onTap: () => _getLocation(),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(2),
+                child: Image.asset(plunesImages.locationIcon),
+                height: AppConfig.verticalBlockSize * 3.5,
+                width: AppConfig.horizontalBlockSize * 6,
               ),
-            ),
+              Flexible(
+                  child: FittedBox(
+                child: Text(
+                  _location ?? PlunesStrings.enterYourLocation,
+                  softWrap: false,
+                  style: TextStyle(
+                      fontSize: 14,
+                      color:
+                          Color(CommonMethods.getColorHexFromStr("#4F4F4F"))),
+                ),
+              ))
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
@@ -1087,5 +1061,718 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
         ],
       );
     });
+  }
+
+  Widget _latestWidgetBody() {
+    return Container(
+      color: PlunesColors.WHITECOLOR,
+      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
+      child: Stack(
+        children: [
+          Container(
+            child: Column(
+              children: [
+                _getHeaderWidgets(),
+                Expanded(
+                    child: Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 4),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        _getSelectedItems(),
+                        _getUnselectedFacilities(),
+                      ],
+                    ),
+                  ),
+                ))
+              ],
+            ),
+          ),
+          Positioned(
+            child: _getSubmitButton(),
+            bottom: 0.0,
+            left: 0.0,
+            right: 0.0,
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _getHeaderWidgets() {
+    return Card(
+      margin: EdgeInsets.zero,
+      elevation: 2.5,
+      child: Container(
+        child: Column(
+          children: [
+            Card(
+              margin: EdgeInsets.zero,
+              elevation: 0.6,
+              child: Container(
+                width: double.infinity,
+                margin: EdgeInsets.symmetric(
+                    vertical: AppConfig.verticalBlockSize * 1.2,
+                    horizontal: AppConfig.horizontalBlockSize * 4),
+                child: Row(
+                  children: [
+                    Container(
+                        child: IconButton(
+                      onPressed: () {
+                        Navigator.pop(context, false);
+                        return;
+                      },
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: PlunesColors.BLACKCOLOR,
+                      ),
+                    )),
+                    Expanded(
+                        flex: 2,
+                        child: Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              PlunesStrings.negotiateManually,
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500),
+                            ))),
+                    _getLocationField()
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 4),
+              child: Column(
+                children: [
+                  Container(
+                    alignment: Alignment.center,
+                    margin: EdgeInsets.only(top: 10),
+                    child: Text(
+                      "Select the facilities that you want to discover",
+                      textAlign: TextAlign.center,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 10, bottom: 12),
+                    child: Row(
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            _getModelBottomSheetForServiceList(context);
+                          },
+                          onDoubleTap: () {},
+                          focusColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          child: Container(
+                            padding: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1.2,
+                                bottom: AppConfig.verticalBlockSize * 1.2,
+                                left: AppConfig.horizontalBlockSize * 5,
+                                right: AppConfig.horizontalBlockSize * 1),
+                            margin: EdgeInsets.only(
+                                right: AppConfig.horizontalBlockSize * 1.5),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(
+                                    AppConfig.horizontalBlockSize * 10)),
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#FFFFFF")),
+                                border: Border.all(
+                                    width: 0.8,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#E7E7E7")))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                StreamBuilder<Object>(
+                                    stream: _searchSolutionBloc
+                                        .getManualBiddingStream(),
+                                    builder: (context, snapshot) {
+                                      return Text(
+                                        _getSpecialityName(),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr(
+                                                    "#717171"))),
+                                      );
+                                    }),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 4.0),
+                                  child: Icon(Icons.arrow_drop_down),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Card(
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(25.0)),
+                            child: StreamBuilder<Object>(
+                                stream: _streamController.stream,
+                                builder: (context, snapshot) {
+                                  return Container(
+                                    decoration: BoxDecoration(
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#FFFFFF")),
+                                      borderRadius: BorderRadius.circular(25.0),
+                                    ),
+                                    padding: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 0.5,
+                                        bottom:
+                                            AppConfig.verticalBlockSize * 0.5),
+                                    child: Container(child: StatefulBuilder(
+                                        builder: (context, newState) {
+                                      return Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: AppConfig
+                                                        .horizontalBlockSize *
+                                                    4),
+                                            child: Icon(
+                                              Icons.search,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#B1B1B1")),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: <Widget>[
+                                                Expanded(
+                                                  child: TextField(
+                                                    controller:
+                                                        _searchController,
+                                                    maxLines: 1,
+                                                    textAlign: TextAlign.left,
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        color: PlunesColors
+                                                            .BLACKCOLOR),
+                                                    inputFormatters: [
+                                                      LengthLimitingTextInputFormatter(
+                                                          40)
+                                                    ],
+                                                    decoration: InputDecoration(
+                                                        isDense: true,
+                                                        border:
+                                                            InputBorder.none,
+                                                        hintText:
+                                                            "Search facility",
+                                                        hintStyle: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight
+                                                                .normal,
+                                                            color: Color(CommonMethods
+                                                                .getColorHexFromStr(
+                                                                    "#717171")))),
+                                                  ),
+                                                ),
+                                                _searchController.text
+                                                        .trim()
+                                                        .isEmpty
+                                                    ? Container()
+                                                    : InkWell(
+                                                        onTap: () {
+                                                          _searchController
+                                                              .text = "";
+                                                          newState(() {});
+                                                          _onTextClear();
+                                                        },
+                                                        child: Padding(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    2.0),
+                                                            child: Icon(
+                                                              Icons.clear,
+                                                              color:
+                                                                  Colors.green,
+                                                            )),
+                                                      )
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    })),
+                                  );
+                                }),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getUnselectedFacilities() {
+    return StreamBuilder<RequestState>(
+        stream: _searchSolutionBloc.getManualBiddingStream(),
+        initialData: (_catalogues == null || _catalogues.isEmpty)
+            ? RequestInProgress()
+            : null,
+        builder: (context, snapShot) {
+          if (snapShot.data is RequestSuccess) {
+            RequestSuccess _requestSuccessObject = snapShot.data;
+            if (_requestSuccessObject.requestCode ==
+                SearchSolutionBloc.initialIndex) {
+              if (_searchController.text.trim().isEmpty) {
+                pageIndex = SearchSolutionBloc.initialIndex;
+                _catalogues = [];
+              } else {
+                if (_searchController.text.trim().isNotEmpty &&
+                    _requestSuccessObject.additionalData != null &&
+                    _requestSuccessObject.additionalData
+                        .toString()
+                        .trim()
+                        .isNotEmpty) {
+                  pageIndex = SearchSolutionBloc.initialIndex;
+                  _catalogues = [];
+                }
+              }
+            }
+            if (_requestSuccessObject.requestCode !=
+                    SearchSolutionBloc.initialIndex &&
+                _requestSuccessObject.response.isEmpty) {
+              _endReached = true;
+            } else {
+              _endReached = false;
+              if (_searchController.text.trim().isEmpty) {
+                Set _allItems = _catalogues.toSet();
+                _allItems.addAll(_requestSuccessObject.response);
+                _catalogues = _allItems.toList(growable: true);
+              } else {
+                if (_searchController.text.trim().isNotEmpty &&
+                    _requestSuccessObject.additionalData != null &&
+                    _requestSuccessObject.additionalData
+                        .toString()
+                        .trim()
+                        .isNotEmpty) {
+                  Set _allItems = _catalogues.toSet();
+                  _allItems.addAll(_requestSuccessObject.response);
+                  _catalogues = _allItems.toList(growable: true);
+                }
+              }
+            }
+            _selectedItemList.forEach((selectedItem) {
+              if (_catalogues.contains(selectedItem)) {
+                _catalogues.remove(selectedItem);
+              }
+            });
+            pageIndex++;
+            _searchSolutionBloc.addStateInManualBiddingStream(null);
+          } else if (snapShot.data is RequestFailed) {
+            RequestFailed _requestFailed = snapShot.data;
+            pageIndex = SearchSolutionBloc.initialIndex;
+            _failureCause = _requestFailed.failureCause;
+            _searchSolutionBloc.addStateInManualBiddingStream(null);
+          }
+          return (_catalogues == null || _catalogues.isEmpty)
+              ? _getDefaultWidget(snapShot)
+              : _showResultsFromBackend(snapShot);
+        });
+  }
+
+  Widget getMoreFacilityWidget(List<MoreFacility> catalogues, int index,
+      {bool isSelected = false, Function onTap, Function onProfileTap}) {
+    Widget _widget = _getCardWidget(catalogues, index,
+        isSelected: isSelected, onTap: onTap, onProfileTap: onProfileTap);
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1.5),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12),
+              topRight: Radius.circular(2),
+              bottomLeft: Radius.circular(12),
+              bottomRight: Radius.circular(2))),
+      elevation: 2.0,
+      child: InkWell(
+        onTap: () {
+          if (onTap != null) {
+            onTap();
+          }
+        },
+        child: Container(
+          width: double.infinity,
+          child: Stack(
+            children: [
+              _widget,
+              Positioned.fill(child: Container(color: Colors.white)),
+              Positioned.fill(
+                child: Row(
+                  children: [
+                    Container(
+                      width: AppConfig.horizontalBlockSize * 25,
+                      child: SizedBox.expand(
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              bottomLeft: Radius.circular(12)),
+                          child: InkWell(
+                            onTap: () {
+                              if (onProfileTap != null) {
+                                onProfileTap();
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: CustomWidgets().getImageFromUrl(
+                                catalogues[index]?.imageUrl ?? "",
+                                boxFit: BoxFit.cover,
+                                placeHolderPath: PlunesImages.doc_placeholder),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              _widget
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _getCardWidget(List<MoreFacility> catalogues, int index,
+      {bool isSelected = false, Function onTap, Function onProfileTap}) {
+    return Container(
+      margin: EdgeInsets.all(10),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(width: AppConfig.horizontalBlockSize * 25),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 1),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        InkWell(
+                          onTap: () {
+                            if (onProfileTap != null) {
+                              onProfileTap();
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  "${catalogues[index].name ?? "NA"} ",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color: PlunesColors.BLACKCOLOR,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  if (onTap != null) {
+                                    onTap();
+                                  }
+                                },
+                                child: isSelected
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                            color: PlunesColors.GREENCOLOR,
+                                            shape: BoxShape.circle),
+                                        padding: EdgeInsets.all(4),
+                                        width:
+                                            AppConfig.horizontalBlockSize * 8,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.check,
+                                            size: 18,
+                                            color: PlunesColors.WHITECOLOR,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                width: 1.2,
+                                                color: PlunesColors.GREYCOLOR)),
+                                        width:
+                                            AppConfig.horizontalBlockSize * 8,
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.check,
+                                            size: 18,
+                                            color: Colors.transparent,
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.all(4),
+                                      ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * .3),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  catalogues[index].locality ?? "",
+                                  style: TextStyle(
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#707070")),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.normal),
+                                ),
+                              ),
+                              Container(
+                                  height: AppConfig.verticalBlockSize * 4,
+                                  width: AppConfig.horizontalBlockSize * 6,
+                                  child:
+                                      Image.asset(plunesImages.locationIcon)),
+                              Text(
+                                "${catalogues[index].distance?.toStringAsFixed(1) ?? PlunesStrings.NA}kms",
+                                style: TextStyle(
+                                    color: PlunesColors.GREYCOLOR,
+                                    fontSize: 16),
+                              )
+                            ],
+                          ),
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            (catalogues[index].experience != null &&
+                                    catalogues[index].experience > 0)
+                                ? Padding(
+                                    padding: EdgeInsets.only(
+                                        top: AppConfig.verticalBlockSize * 2.5),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          "Experience",
+                                          style: TextStyle(
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#5D5D5D")),
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.normal),
+                                        ),
+                                        Container(
+                                          padding: EdgeInsets.only(
+                                              top: AppConfig.verticalBlockSize *
+                                                  .3),
+                                          child: Text(
+                                            "${catalogues[index].experience.toStringAsFixed(0)} ${catalogues[index].experience == 1 ? "Year" : "Years"}",
+                                            style: TextStyle(
+                                                color: PlunesColors.BLACKCOLOR,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.normal),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                : Container(),
+                            Expanded(
+                              child: Container(
+                                alignment: Alignment.centerRight,
+                                padding: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 2.5),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.star,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#FDCC0D")),
+                                    ),
+                                    Text(
+                                      catalogues[index]
+                                              .rating
+                                              ?.toStringAsFixed(1) ??
+                                          PlunesStrings.NA,
+                                      style: TextStyle(
+                                          color: PlunesColors.BLACKCOLOR,
+                                          fontSize: 18),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  _getModelBottomSheetForServiceList(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        isDismissible: true,
+        enableDrag: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(17), topRight: Radius.circular(17))),
+        builder: (anotherContext) {
+          return Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(17),
+                    topRight: Radius.circular(17)),
+                border: Border.all(
+                    color: Color(CommonMethods.getColorHexFromStr("#26AF78")),
+                    width: 1)),
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 4),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.only(
+                            bottom: AppConfig.verticalBlockSize * 3,
+                            top: AppConfig.verticalBlockSize * 1.5),
+                        height: 3,
+                        width: 30,
+                        decoration: BoxDecoration(
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#707070")),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  "Service",
+                  style: TextStyle(fontSize: 24, color: Colors.black),
+                ),
+                Container(
+                  margin: EdgeInsets.only(
+                      top: 2, bottom: AppConfig.verticalBlockSize * 2.5),
+                  height: 0.5,
+                  color: Color(CommonMethods.getColorHexFromStr("#707070")),
+                  width: double.infinity,
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          _selectedSpecialityName =
+                              _getSpecialityItems()[index].speciality;
+                          _specialitySelectedId =
+                              _getSpecialityItems()[index].id;
+                          _catalogues = [];
+                          pageIndex = SearchSolutionBloc.initialIndex;
+                          _getMoreFacilities();
+                          Navigator.maybePop(context);
+                        },
+                        onDoubleTap: () {},
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                              vertical: AppConfig.verticalBlockSize * 0.7),
+                          child: Text(
+                            _getSpecialityItems()[index].speciality ?? "NA",
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: _getSpecialityItems().length,
+                  ),
+                )
+              ],
+            ),
+            constraints: BoxConstraints(
+                minWidth: 10,
+                maxWidth: double.infinity,
+                minHeight: AppConfig.verticalBlockSize * 2,
+                maxHeight: AppConfig.verticalBlockSize * 50),
+          );
+        });
+  }
+
+  List<SpecialityModel> _getSpecialityItems() {
+    if (_specialityItems != null && _specialityItems.isNotEmpty) {
+      return _specialityItems;
+    }
+    _specialityItems = [];
+    CommonMethods.catalogueLists.forEach((element) {
+      if (element.speciality != null &&
+          element.speciality.trim().isNotEmpty &&
+          element.id != null &&
+          element.id.trim().isNotEmpty) {
+        _specialityItems.add(element);
+      }
+    });
+    return _specialityItems;
+  }
+
+  String _getSpecialityName() {
+    if (_selectedSpecialityName == null) {
+      return "Speciality";
+    } else {
+      return _selectedSpecialityName.length > 8
+          ? _selectedSpecialityName.substring(0, 8)
+          : _selectedSpecialityName;
+    }
   }
 }
