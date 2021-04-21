@@ -273,7 +273,166 @@ class _EnterAdditionalUserDetailScrState
       controller: _pageController,
       physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
-      children: [_getFirstPage(), _getSecondPage()],
+      children: [_getFirstPage(), _getConditionalPage(), _getSecondPage()],
+    );
+  }
+
+  Widget _getConditionalPage() {
+    return Container(
+      margin: EdgeInsets.symmetric(
+          horizontal: AppConfig.horizontalBlockSize * 4.2,
+          vertical: AppConfig.verticalBlockSize * 2.5),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              width: double.infinity,
+              child: Text(
+                "Select the body part",
+                textAlign: TextAlign.left,
+                maxLines: 2,
+                style: TextStyle(
+                    fontSize: 18,
+                    color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.5),
+              child: Card(
+                margin: EdgeInsets.zero,
+                elevation: 2,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                    Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                    Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
+                  ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "Specialist",
+                          maxLines: 1,
+                          style: TextStyle(
+                              fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4.0),
+                        child: Icon(Icons.arrow_drop_down),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.symmetric(
+                  vertical: AppConfig.verticalBlockSize * 2.5),
+              child: Text(
+                "Enter number of sittings needed",
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    color: PlunesColors.BLACKCOLOR.withOpacity(0.8),
+                    fontSize: 18),
+              ),
+            ),
+            Container(
+              margin:
+                  EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
+              width: double.infinity,
+              child: Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Card(
+                        elevation: 2,
+                        margin: EdgeInsets.zero,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                  colors: [
+                                Color(CommonMethods.getColorHexFromStr(
+                                    "#FEFEFE")),
+                                Color(
+                                    CommonMethods.getColorHexFromStr("#F6F6F6"))
+                              ],
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "-",
+                                    style: TextStyle(
+                                        fontSize: 26,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                alignment: Alignment.center,
+                                width: 1,
+                                height: 28,
+                                color: PlunesColors.GREYCOLOR.withOpacity(0.6),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Text(
+                                    "27",
+                                    style: TextStyle(
+                                        fontSize: 26,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.symmetric(vertical: 5),
+                                alignment: Alignment.center,
+                                width: 1,
+                                height: 28,
+                                color: PlunesColors.GREYCOLOR.withOpacity(0.6),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    "+",
+                                    style: TextStyle(
+                                        fontSize: 26,
+                                        color: PlunesColors.BLACKCOLOR),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(child: Container())
+                  ],
+                ),
+              ),
+            ),
+            _getPremiumBenefitsForUserWidget()
+          ],
+        ),
+      ),
     );
   }
 

@@ -189,6 +189,7 @@ class User {
   num rating;
   int cartCount;
   bool hasMedia, hasReviews;
+  num distanceFromUser;
 
   User(
       {this.hasMedia,
@@ -231,13 +232,20 @@ class User {
       this.referralExpired,
       this.bankDetails,
       this.googleLocation,
-      this.region});
+      this.region,
+      this.distanceFromUser});
 
   factory User.fromJson(Map<String, dynamic> json) {
+    // print("distance"+json["distance"].runtimeType.toString());
     num _rating = 4.0;
+    num _distanceFromUser;
     if (json["rating"] != null &&
         json["rating"].runtimeType == _rating.runtimeType) {
       _rating = json["rating"];
+    }
+    if (json["distance"] != null &&
+        json["distance"].runtimeType == _rating.runtimeType) {
+      _distanceFromUser = json["distance"];
     }
     bool _isAdmin = json['isAdmin'] ?? false;
     bool _isCenter = json['isCenter'] ?? false;
@@ -326,7 +334,8 @@ class User {
         googleLocation: json['googleAddress'],
         referralExpired: _referralExpired,
         cartCount: json["cartCount"],
-        rating: _rating);
+        rating: _rating,
+        distanceFromUser: _distanceFromUser);
   }
 
   Map<String, dynamic> toJson() {

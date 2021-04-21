@@ -1582,7 +1582,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        _selectedSpecialityName ?? "Service",
+                                        _selectedSpecialityName ?? "Specialist",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: PlunesColors.BLACKCOLOR),
@@ -1941,7 +1941,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   ),
                 ),
                 Text(
-                  "Service",
+                  "Specialist",
                   style: TextStyle(fontSize: 24, color: Colors.black),
                 ),
                 Container(

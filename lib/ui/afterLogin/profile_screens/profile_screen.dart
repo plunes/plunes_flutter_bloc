@@ -396,56 +396,77 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                 SizedBox(
                   height: 22,
                 ),
-                Container(
-                  height: 126,
-                  child: InkWell(
-                    onTap: () => _getDirections(),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset(
-                            PlunesImages.setLocationMap,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                        Positioned(
-                          right: AppConfig.horizontalBlockSize * 3.8,
-                          bottom: AppConfig.verticalBlockSize * 0.9,
-                          child: Chip(
-                              backgroundColor: PlunesColors.WHITECOLOR,
-                              padding: EdgeInsets.all(3.0),
-                              label: Container(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                (_profileResponse != null &&
+                        _profileResponse.user != null &&
+                        _profileResponse.user.distanceFromUser != null &&
+                        _profileResponse.user.distanceFromUser >= 0)
+                    ? Container(
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 126,
+                              child: InkWell(
+                                onTap: () => _getDirections(),
+                                child: Stack(
                                   children: [
-                                    Container(
-                                        height: AppConfig.verticalBlockSize * 3,
-                                        width:
-                                            AppConfig.horizontalBlockSize * 5,
-                                        child: Image.asset(
-                                            plunesImages.locationIcon,
-                                            color: PlunesColors.BLACKCOLOR)),
-                                    Text(
-                                      " 2.3 Kms",
-                                      style: TextStyle(
-                                          color: PlunesColors.BLACKCOLOR),
+                                    Positioned.fill(
+                                      child: Image.asset(
+                                        PlunesImages.setLocationMap,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right:
+                                          AppConfig.horizontalBlockSize * 3.8,
+                                      bottom: AppConfig.verticalBlockSize * 0.9,
+                                      child: Chip(
+                                          backgroundColor:
+                                              PlunesColors.WHITECOLOR,
+                                          padding: EdgeInsets.all(3.0),
+                                          label: Container(
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                    height: AppConfig
+                                                            .verticalBlockSize *
+                                                        3,
+                                                    width: AppConfig
+                                                            .horizontalBlockSize *
+                                                        5,
+                                                    child: Image.asset(
+                                                        plunesImages
+                                                            .locationIcon,
+                                                        color: PlunesColors
+                                                            .BLACKCOLOR)),
+                                                Text(
+                                                  " ${_profileResponse.user.distanceFromUser?.toStringAsFixed(1)} Kms",
+                                                  style: TextStyle(
+                                                      color: PlunesColors
+                                                          .BLACKCOLOR),
+                                                )
+                                              ],
+                                            ),
+                                          )),
                                     )
                                   ],
                                 ),
-                              )),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 22,
-                ),
-                _getLineWidget(),
-                SizedBox(
-                  height: 22,
-                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 22,
+                            ),
+                            _getLineWidget(),
+                            SizedBox(
+                              height: 22,
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(),
                 Text(
                   'Facility have',
                   style: TextStyle(color: Colors.black, fontSize: 18.0),

@@ -779,14 +779,23 @@ class CommonWidgets {
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
-                          Text(
-                            "",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#707070")),
-                            ),
-                          ),
+                          (profData.address != null &&
+                                  profData.address.trim().isNotEmpty)
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 2),
+                                  child: Text(
+                                    profData.address,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#707070")),
+                                    ),
+                                  ),
+                                )
+                              : Container(),
                         ],
                       )),
                       Container(

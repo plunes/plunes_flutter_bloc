@@ -162,7 +162,11 @@ class UserManager {
         url: urls.userBaseUrl,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET,
-        queryParameter: {"userId": userId});
+        queryParameter: {
+          "userId": userId,
+          "lattitude": UserManager().getUserDetails().latitude,
+          "longitude": UserManager().getUserDetails().longitude
+        });
     if (result.isRequestSucceed) {
       LoginPost _loginPost = LoginPost.fromJson(result.response.data);
 //      print(_loginPost == null);

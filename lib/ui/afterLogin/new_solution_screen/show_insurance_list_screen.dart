@@ -26,6 +26,7 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
   List<InsuranceProvider> _searchedItemList;
   TextEditingController _policySearchController;
   String _failureCause;
+  double _wholeWidgetHeight;
 
   @override
   void initState() {
@@ -47,7 +48,7 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
     return Material(
       child: Container(
         height: (widget.shouldShowAppBar != null && !(widget.shouldShowAppBar))
-            ? AppConfig.verticalBlockSize * 45
+            ? _wholeWidgetHeight ?? AppConfig.verticalBlockSize * 45
             : null,
         child: SafeArea(
           child: Scaffold(
@@ -71,6 +72,20 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
                   } else if (snapshot.data is RequestInProgress) {
                     return Container(
                         child: CustomWidgets().getProgressIndicator());
+                  }
+                  if ((widget.shouldShowAppBar != null &&
+                          !(widget.shouldShowAppBar)) &&
+                      (_insuranceModel == null ||
+                          (_insuranceModel.success != null &&
+                              !_insuranceModel.success) ||
+                          _insuranceModel.data == null ||
+                          _insuranceModel.data == null ||
+                          _insuranceModel.data.isEmpty) &&
+                      _wholeWidgetHeight == null) {
+                    _wholeWidgetHeight = 0.0;
+                    Future.delayed(Duration(milliseconds: 20)).then((value) {
+                      _setState();
+                    });
                   }
                   return (_insuranceModel == null ||
                           (_insuranceModel.success != null &&

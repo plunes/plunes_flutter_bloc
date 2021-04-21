@@ -354,7 +354,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
           margin: EdgeInsets.only(
               left: AppConfig.horizontalBlockSize * 4,
               right: AppConfig.horizontalBlockSize * 4,
-              top: AppConfig.verticalBlockSize * 0.1),
+              top: AppConfig.verticalBlockSize * 2),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -368,7 +368,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                   width: AppConfig.horizontalBlockSize * 10,
                 ),
               ),
-              Padding(padding: EdgeInsets.only(top: 2.0)),
+              Padding(padding: EdgeInsets.only(top: 5.0)),
               RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(

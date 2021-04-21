@@ -33,7 +33,7 @@ class ProfData {
   String sId;
   String userType;
   String name;
-  String address;
+  String address, centerLocation;
   String mobileNumber;
   String biography;
   String registrationNumber;
@@ -66,9 +66,13 @@ class ProfData {
       this.isCenter,
       this.level,
       this.rating,
-      this.experience});
+      this.experience,
+      this.centerLocation});
 
   ProfData.fromJson(Map<String, dynamic> json) {
+    if (json['centerLocation'] != null) {
+      centerLocation = json['centerLocation'];
+    }
     sId = json['_id'];
     userType = json['userType'];
     name = json['name'];
