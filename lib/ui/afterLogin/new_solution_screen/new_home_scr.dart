@@ -120,6 +120,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _selectedSpecialityName;
   String _userTypeFilterName;
   String _locationFilterName;
+  bool _hasCalledTopFacilityApi;
 
   @override
   void initState() {
@@ -331,7 +332,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     RequestFailed _failedObj = snapShot.data;
                     _specialityApiFailureCause = _failedObj?.response;
                   } else if (snapShot.data is RequestSuccess) {
-                    _getTopFacilities(isInitialRequest: true);
+                    if (_hasCalledTopFacilityApi == null)
+                      _getTopFacilities(isInitialRequest: true);
+                    _hasCalledTopFacilityApi = true;
                   }
                   return CommonMethods.catalogueLists == null ||
                           CommonMethods.catalogueLists.isEmpty

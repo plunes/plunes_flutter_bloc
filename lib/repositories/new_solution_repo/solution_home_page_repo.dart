@@ -27,7 +27,6 @@ class HomeScreenMainRepo {
   }
 
   TopFacilityModel getTopFacilityModelCachedData() {
-    print("ye wali list ${_topFacilityModel==null}");
     return _topFacilityModel;
   }
 
