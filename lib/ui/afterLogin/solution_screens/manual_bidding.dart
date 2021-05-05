@@ -53,6 +53,8 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
 
   String _selectedSpecialityName;
 
+  String _initialSearchedString;
+
   @override
   void initState() {
     _scrollController = ScrollController();
@@ -507,7 +509,10 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                           : _failureCause,
                       onTap: (_failureCause != null &&
                               _failureCause == PlunesStrings.noInternet)
-                          ? () => _getMoreFacilities()
+                          ? () {
+                              _initialSearchedString = null;
+                              _getMoreFacilities();
+                            }
                           : null,
                       shouldNotShowImage: !(_failureCause != null &&
                           _failureCause == PlunesStrings.noInternet)))
@@ -559,6 +564,9 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
       if (_searchController != null &&
           _searchController.text != null &&
           _searchController.text.trim().isNotEmpty) {
+        if (_initialSearchedString == null) {
+          _initialSearchedString = _searchController.text.trim();
+        }
         _catalogues = [];
         _failureCause = null;
         _searchSolutionBloc.getFacilitiesForManualBidding(
@@ -567,12 +575,19 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             latLng: _selectedLoc,
             specialityId: _specialitySelectedId);
       } else {
+        if (_initialSearchedString == null ||
+            _initialSearchedString.trim().isEmpty) {
+          return;
+        }
         _onTextClear();
       }
     });
   }
 
   Widget _getSubmitButton() {
+    if (_selectedItemList == null || _selectedItemList.isEmpty) {
+      return Container();
+    }
     return InkWell(
       onTap: () {
         if (_selectedItemList == null || _selectedItemList.isEmpty) {
@@ -1090,7 +1105,11 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
             ),
           ),
           Positioned(
-            child: _getSubmitButton(),
+            child: StreamBuilder<Object>(
+                stream: _selectUnselectController?.stream,
+                builder: (context, snapshot) {
+                  return _getSubmitButton();
+                }),
             bottom: 0.0,
             left: 0.0,
             right: 0.0,
@@ -1698,7 +1717,7 @@ class _ManualBiddingState extends BaseState<ManualBidding> {
                   ),
                 ),
                 Text(
-                  "Service",
+                  "Specialist",
                   style: TextStyle(fontSize: 24, color: Colors.black),
                 ),
                 Container(

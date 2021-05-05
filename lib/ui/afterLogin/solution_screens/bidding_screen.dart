@@ -180,6 +180,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
             Expanded(
                 child: StreamBuilder<RequestState>(
               builder: (context, snapShot) {
+                _streamController?.add(null);
                 if (snapShot.data is RequestSuccess) {
                   RequestSuccess _requestSuccessObject = snapShot.data;
                   if (_requestSuccessObject.requestCode ==
