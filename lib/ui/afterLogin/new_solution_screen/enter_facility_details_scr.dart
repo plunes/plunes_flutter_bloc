@@ -53,9 +53,14 @@ class _EnterAdditionalUserDetailScrState
   List<UploadedReportUrl> _videoUrls;
   UserBloc _userBloc;
   PremiumBenefitsModel _premiumBenefitsModel;
+  List<MedicalFormData> _formItemList;
+
+  bool _isBodyPartListOpened;
 
   @override
   void initState() {
+    _isBodyPartListOpened = false;
+    _formItemList = [];
     _userBloc = UserBloc();
     _getPremiumBenefitsForUsers();
     _pageStream = StreamController.broadcast();
@@ -146,10 +151,15 @@ class _EnterAdditionalUserDetailScrState
                     });
                     _submitUserMedicalDetailBloc.addIntoSubmitFileStream(null);
                   }
-                  return _getBody();
+                  return _getBodyData();
                 }),
           ),
         ));
+  }
+
+  Widget _getBodyData() {
+    _initFormData();
+    return _getBody();
   }
 
   Widget _getBody() {
@@ -268,12 +278,20 @@ class _EnterAdditionalUserDetailScrState
     );
   }
 
+  bool _hasFormDataList() {
+    return !(_formItemList == null || _formItemList.isEmpty);
+  }
+
   Widget _getPageViewWidget() {
     return PageView(
       controller: _pageController,
       physics: NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
-      children: [_getFirstPage(), _getConditionalPage(), _getSecondPage()],
+      children: [
+        _getFirstPage(),
+        _hasFormDataList() ? _getConditionalPage() : Container(),
+        _getSecondPage()
+      ],
     );
   }
 
@@ -289,200 +307,276 @@ class _EnterAdditionalUserDetailScrState
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
-                    flex: 7,
-                    child: Column(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          child: Text(
-                            "Select the body part",
-                            textAlign: TextAlign.left,
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 18,
-                                color:
-                                    PlunesColors.BLACKCOLOR.withOpacity(0.8)),
-                          ),
-                        ),
-                        _getDropDownOfBodyParts()
-                      ],
-                    )),
-                Expanded(
-                    flex: 5,
-                    child: Container(
-                      margin: EdgeInsets.only(left: 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            child: Text(
-                              "Select session",
-                              textAlign: TextAlign.left,
-                              maxLines: 2,
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color:
-                                      PlunesColors.BLACKCOLOR.withOpacity(0.8)),
-                            ),
-                          ),
-                          _getSessionDropDown()
-                        ],
-                      ),
-                    )),
-                Container(
-                  margin: EdgeInsets.only(left: 10),
-                  child: CustomWidgets().getRoundedButton("Add", 6,
-                      PlunesColors.PARROTGREEN, 5, 6, PlunesColors.WHITECOLOR),
-                )
-              ],
-            ),
-            Column(
-              children: [
-                Container(
-                  margin: EdgeInsets.only(top: 10, bottom: 10),
-                  width: double.infinity,
-                  height: 0.8,
-                  color: PlunesColors.GREYCOLOR,
-                ),
-                Container(
-                  margin: EdgeInsets.only(
-                      top: AppConfig.verticalBlockSize * 1,
-                      bottom: AppConfig.verticalBlockSize * 1),
                   child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                           flex: 7,
-                          child: Container(
-                              child: Card(
-                            margin: EdgeInsets.zero,
-                            elevation: 2,
-                            child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 5),
-                                decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                        colors: [
-                                      Color(CommonMethods.getColorHexFromStr(
-                                          "#FEFEFE")),
-                                      Color(CommonMethods.getColorHexFromStr(
-                                          "#F6F6F6"))
-                                    ],
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter)),
-                                child: Container(
-                                  padding: const EdgeInsets.only(top: 4.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Chin",
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: PlunesColors.BLACKCOLOR),
-                                      ),
-                                      Text(
-                                        "body part",
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    "#797979"))),
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                          ))),
+                          child: Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                child: Text(
+                                  "Select the body part",
+                                  textAlign: TextAlign.left,
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: PlunesColors.BLACKCOLOR
+                                          .withOpacity(0.8)),
+                                ),
+                              ),
+                              _getDropDownOfBodyParts()
+                            ],
+                          )),
                       Expanded(
                           flex: 5,
                           child: Container(
                             margin: EdgeInsets.only(left: 10),
-                            child: Container(
-                                child: Card(
-                              margin: EdgeInsets.zero,
-                              elevation: 2,
-                              child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 5),
-                                  decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                          colors: [
-                                        Color(CommonMethods.getColorHexFromStr(
-                                            "#FEFEFE")),
-                                        Color(CommonMethods.getColorHexFromStr(
-                                            "#F6F6F6"))
-                                      ],
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter)),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ListView.builder(
-                                        padding:
-                                            EdgeInsets.symmetric(horizontal: 5),
-                                        itemBuilder: (context, index) {
-                                          if (index != 0) {
-                                            return Container();
-                                          }
-                                          return Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Expanded(
-                                                child: Container(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 4.0),
-                                                  child: Text(
-                                                    "1",
-                                                    maxLines: 1,
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        color: PlunesColors
-                                                            .BLACKCOLOR),
-                                                  ),
-                                                ),
-                                              ),
-                                              index == 0
-                                                  ? Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              left: 4.0),
-                                                      child: Icon(Icons
-                                                          .arrow_drop_down),
-                                                    )
-                                                  : Container()
-                                            ],
-                                          );
-                                        },
-                                        shrinkWrap: true,
-                                        itemCount: 5,
-                                      ),
-                                      Text(
-                                        "session",
-                                        maxLines: 1,
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: Color(CommonMethods
-                                                .getColorHexFromStr(
-                                                    "#797979"))),
-                                      ),
-                                    ],
-                                  )),
-                            )),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    "Select session",
+                                    textAlign: TextAlign.left,
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: PlunesColors.BLACKCOLOR
+                                            .withOpacity(0.8)),
+                                  ),
+                                ),
+                                _getSessionDropDown()
+                              ],
+                            ),
                           )),
-                      Container(
-                        margin: EdgeInsets.only(left: 10),
-                        child: Icon(Icons.close),
-                      )
                     ],
+                  ),
+                ),
+                _getAddButton()
+              ],
+            ),
+            Column(
+              children: [
+                _getSeparatorLine(),
+                Container(
+                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemBuilder: (context, index) {
+                      if (_formItemList[index].isItemSeparated) {
+                        return Container(
+                          margin: EdgeInsets.only(
+                              bottom: AppConfig.verticalBlockSize * 1),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                  flex: 7,
+                                  child: Container(
+                                      child: Card(
+                                    margin: EdgeInsets.zero,
+                                    elevation: 2,
+                                    child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
+                                        decoration: BoxDecoration(
+                                            gradient: LinearGradient(
+                                                colors: [
+                                              Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#FEFEFE")),
+                                              Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#F6F6F6"))
+                                            ],
+                                                begin: Alignment.topCenter,
+                                                end: Alignment.bottomCenter)),
+                                        child: Container(
+                                          padding:
+                                              const EdgeInsets.only(top: 4.0),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                _formItemList[index]
+                                                        .bodyPartName ??
+                                                    "",
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: PlunesColors
+                                                        .BLACKCOLOR),
+                                              ),
+                                              Text(
+                                                "body part",
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(CommonMethods
+                                                        .getColorHexFromStr(
+                                                            "#797979"))),
+                                              ),
+                                            ],
+                                          ),
+                                        )),
+                                  ))),
+                              Expanded(
+                                  flex: 5,
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 10),
+                                    child: Container(
+                                        child: Card(
+                                      margin: EdgeInsets.zero,
+                                      elevation: 2,
+                                      child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 5),
+                                          decoration: BoxDecoration(
+                                              gradient: LinearGradient(
+                                                  colors: [
+                                                Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#FEFEFE")),
+                                                Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#F6F6F6"))
+                                              ],
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter)),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              ListView.builder(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 5),
+                                                itemBuilder:
+                                                    (context, innerIndex) {
+                                                  if (innerIndex != 0 &&
+                                                      !_formItemList[index]
+                                                          .isSessionListOpened) {
+                                                    return Container();
+                                                  }
+                                                  return InkWell(
+                                                    onTap: () {
+                                                      _formItemList[index]
+                                                              .isSessionListOpened =
+                                                          !_formItemList[index]
+                                                              .isSessionListOpened;
+                                                      _setState();
+                                                      _formItemList[index]
+                                                              .sessionValue =
+                                                          _formItemList[index]
+                                                                      .sessionValues[
+                                                                  innerIndex] ??
+                                                              "";
+                                                      _setState();
+                                                    },
+                                                    onDoubleTap: () {},
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment.end,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Expanded(
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    top: 4.0),
+                                                            child: Text(
+                                                              _formItemList[index]
+                                                                      .isSessionListOpened
+                                                                  ? _formItemList[index]
+                                                                              .sessionValues[
+                                                                          innerIndex] ??
+                                                                      ""
+                                                                  : _formItemList[
+                                                                              index]
+                                                                          .sessionValue ??
+                                                                      _formItemList[
+                                                                              index]
+                                                                          .sessionValues
+                                                                          .first ??
+                                                                      "",
+                                                              maxLines: 1,
+                                                              style: TextStyle(
+                                                                  fontSize: 16,
+                                                                  color: PlunesColors
+                                                                      .BLACKCOLOR),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        innerIndex == 0 &&
+                                                                _formItemList[
+                                                                        index]
+                                                                    .sessionValues
+                                                                    .isNotEmpty &&
+                                                                _formItemList[
+                                                                            index]
+                                                                        .sessionValues
+                                                                        .length >
+                                                                    1
+                                                            ? Padding(
+                                                                padding:
+                                                                    const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            4.0),
+                                                                child: Icon(Icons
+                                                                    .arrow_drop_down),
+                                                              )
+                                                            : Container()
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                                shrinkWrap: true,
+                                                itemCount: _formItemList[index]
+                                                    .sessionValues
+                                                    .length,
+                                              ),
+                                              Text(
+                                                "session",
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Color(CommonMethods
+                                                        .getColorHexFromStr(
+                                                            "#797979"))),
+                                              ),
+                                            ],
+                                          )),
+                                    )),
+                                  )),
+                              Container(
+                                margin: EdgeInsets.only(left: 10),
+                                child: InkWell(
+                                  child: Icon(Icons.close),
+                                  onDoubleTap: () {},
+                                  onTap: () {
+                                    _formItemList[index].isItemSeparated =
+                                        !_formItemList[index].isItemSeparated;
+                                    _formItemList[index].isSessionListOpened =
+                                        false;
+                                    _setState();
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
+                        );
+                      }
+                      return Container();
+                    },
+                    itemCount: _formItemList.length,
+                    shrinkWrap: true,
                   ),
                 ),
               ],
@@ -2039,35 +2133,50 @@ class _EnterAdditionalUserDetailScrState
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 itemBuilder: (context, index) {
-                  if (index != 0) {
+                  if (index != 0 && !_isBodyPartListOpened) {
+                    return Container();
+                  } else if (_formItemList[index].isItemSeparated) {
                     return Container();
                   }
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: Text(
-                            "Head",
-                            maxLines: 1,
-                            style: TextStyle(
-                                fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                  return InkWell(
+                    onTap: () {
+                      _isBodyPartListOpened = !_isBodyPartListOpened;
+                      _setState();
+                      if (index != 0) {
+                        _formItemList[index].isItemSeparated = true;
+                        _setState();
+                      }
+                    },
+                    onDoubleTap: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 4.0, bottom: 4),
+                            child: Text(
+                              _formItemList[index].bodyPartName ?? "",
+                              maxLines: 1,
+                              style: TextStyle(
+                                  fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                            ),
                           ),
                         ),
-                      ),
-                      index == 0
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Icon(Icons.arrow_drop_down),
-                            )
-                          : Container()
-                    ],
+                        index == 0 &&
+                                _formItemList.isNotEmpty &&
+                                _formItemList.length > 1
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 4.0, bottom: 4),
+                                child: Icon(Icons.arrow_drop_down))
+                            : Container()
+                      ],
+                    ),
                   );
                 },
                 shrinkWrap: true,
-                itemCount: 5,
+                itemCount: _formItemList.length,
               )),
         ));
   }
@@ -2088,36 +2197,160 @@ class _EnterAdditionalUserDetailScrState
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 itemBuilder: (context, index) {
-                  if (index != 0) {
+                  if (!_formItemList.first.isSessionListOpened && index != 0) {
                     return Container();
                   }
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 4.0),
-                          child: Text(
-                            "1",
-                            maxLines: 1,
-                            style: TextStyle(
-                                fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                  return InkWell(
+                    onTap: () {
+                      _formItemList.first.isSessionListOpened =
+                          !_formItemList.first.isSessionListOpened;
+                      _setState();
+                      _formItemList.first.sessionValue =
+                          _formItemList.first.sessionValues[index] ?? "";
+                      _setState();
+                    },
+                    onDoubleTap: () {},
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 4.0, bottom: 4),
+                            child: Text(
+                              _formItemList.first.isSessionListOpened
+                                  ? _formItemList.first.sessionValues[index] ??
+                                      ""
+                                  : _formItemList.first.sessionValue ??
+                                      _formItemList.first.sessionValues.first ??
+                                      "",
+                              maxLines: 1,
+                              style: TextStyle(
+                                  fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                            ),
                           ),
                         ),
-                      ),
-                      index == 0
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 4.0),
-                              child: Icon(Icons.arrow_drop_down),
-                            )
-                          : Container()
-                    ],
+                        index == 0 &&
+                                _formItemList.first.sessionValues.isNotEmpty &&
+                                _formItemList.first.sessionValues.length > 1
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 4.0, bottom: 4),
+                                child: Icon(Icons.arrow_drop_down),
+                              )
+                            : Container()
+                      ],
+                    ),
                   );
                 },
                 shrinkWrap: true,
-                itemCount: 5,
+                itemCount: _formItemList.first.sessionValues.length,
               )),
         ));
   }
+
+  void _initFormData() {
+    if (_formItemList == null || _formItemList.isEmpty) {
+      _formItemList = [];
+      _formItemList.add(MedicalFormData(
+          bodyPartName: "head",
+          sessionValues: ["3", "5", "8"],
+          valueController: TextEditingController(),
+          isItemSeparated: false,
+          isSessionListOpened: false));
+      _formItemList.add(MedicalFormData(
+          bodyPartName: "chin",
+          sessionValues: ["2", "8", "11"],
+          valueController: TextEditingController(),
+          isItemSeparated: false,
+          isSessionListOpened: false));
+      _formItemList.add(MedicalFormData(
+          bodyPartName: "chest",
+          sessionValues: ["1", "5", "9"],
+          valueController: TextEditingController(),
+          isItemSeparated: false,
+          isSessionListOpened: false));
+    }
+  }
+
+  Widget _getAddButton() {
+    if (_formItemList.length == 1) {
+      return Container();
+    }
+    bool shouldShowButton = false;
+    _formItemList.forEach((element) {
+      if (!element.isItemSeparated && element != _formItemList.first) {
+        shouldShowButton = true;
+      }
+    });
+    if (!shouldShowButton) {
+      return Container();
+    }
+    return Container(
+      margin: EdgeInsets.only(left: 10),
+      child: InkWell(
+        onDoubleTap: () {},
+        onTap: () {
+          for (int index = 1; index < _formItemList.length; index++) {
+            if (!_formItemList[index].isItemSeparated) {
+              _formItemList[index].isItemSeparated = true;
+              break;
+            }
+          }
+          _setState();
+        },
+        child: CustomWidgets().getRoundedButton(
+            "Add", 6, PlunesColors.PARROTGREEN, 8, 8, PlunesColors.WHITECOLOR),
+      ),
+    );
+  }
+
+  Widget _getSeparatorLine() {
+    if (_formItemList.length == 1) {
+      return Container(
+          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1));
+    }
+    bool shouldShowButton = false;
+    _formItemList.forEach((element) {
+      if (element.isItemSeparated && element != _formItemList.first) {
+        shouldShowButton = true;
+      }
+    });
+    if (!shouldShowButton) {
+      return Container(
+          margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1));
+    }
+    return Container(
+      margin: EdgeInsets.only(
+          top: AppConfig.verticalBlockSize * 1 + 10, bottom: 10),
+      width: double.infinity,
+      height: 0.8,
+      color: PlunesColors.GREYCOLOR,
+    );
+  }
+}
+
+class MedicalFormData {
+  String bodyPartName, sessionValue;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MedicalFormData &&
+          runtimeType == other.runtimeType &&
+          bodyPartName == other.bodyPartName;
+
+  @override
+  int get hashCode => bodyPartName.hashCode;
+  TextEditingController valueController;
+  List<String> sessionValues;
+  bool isItemSeparated, isSessionListOpened;
+
+  MedicalFormData(
+      {this.bodyPartName,
+      this.sessionValue,
+      this.sessionValues,
+      this.valueController,
+      this.isItemSeparated,
+      this.isSessionListOpened});
 }
