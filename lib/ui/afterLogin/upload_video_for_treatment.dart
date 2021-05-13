@@ -16,7 +16,7 @@ import 'package:plunes/res/StringsFile.dart';
 
 // ignore: must_be_immutable
 class UploadVideoForTreatment extends BaseActivity {
-  SubmitUserMedicalDetailBloc submitUserMedicalDetailBloc;
+  UserMedicalDetailBloc submitUserMedicalDetailBloc;
 
   UploadVideoForTreatment({this.submitUserMedicalDetailBloc});
 

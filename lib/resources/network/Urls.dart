@@ -172,4 +172,6 @@ class Urls {
       "user/getProfessionalsFromCommonSpeciality";
   static const String GET_REPORT_BY_REPORT_ID = "user/getReportByReportId";
   static const String BANK_OFFER_URL = mcmBaseUrl + "plunes/getBankOffers";
+  static const String GET_FORM_DATA_ON_FILL_MEDICAL_DETAIL_SCREEN =
+      mcmBaseUrl + "mcmCatalogue/getServiceById";
 }

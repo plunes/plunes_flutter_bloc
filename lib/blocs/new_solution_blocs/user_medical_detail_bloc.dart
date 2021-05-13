@@ -5,7 +5,7 @@ import 'package:plunes/repositories/new_solution_repo/submit_user_medical_detail
 import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
 
-class SubmitUserMedicalDetailBloc extends BlocBase {
+class UserMedicalDetailBloc extends BlocBase {
   final _submitDetailStreamProvider = PublishSubject<RequestState>();
 
   Observable<RequestState> get submitDetailStream =>
@@ -14,6 +14,11 @@ class SubmitUserMedicalDetailBloc extends BlocBase {
 
   Observable<RequestState> get uploadFileStream =>
       _uploadFileStreamProvider.stream;
+
+  final _fetchDetailStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get fetchDetailStream =>
+      _fetchDetailStreamProvider.stream;
 
   Future<RequestState> submitUserMedicalDetail(
       Map<String, dynamic> postData) async {
@@ -28,6 +33,7 @@ class SubmitUserMedicalDetailBloc extends BlocBase {
   void dispose() {
     _submitDetailStreamProvider?.close();
     _uploadFileStreamProvider?.close();
+    _fetchDetailStreamProvider?.close();
     super.dispose();
   }
 
@@ -52,5 +58,17 @@ class SubmitUserMedicalDetailBloc extends BlocBase {
 
   void addIntoSubmitFileStream(RequestState data) {
     super.addStateInGenericStream(_uploadFileStreamProvider, data);
+  }
+
+  Future<RequestState> fetchUserMedicalDetail(String serviceId) async {
+    addIntoFetchMedicalDetailStream(RequestInProgress());
+    var result =
+        await SubmitMedicalDetailRepo().fetchUserMedicalDetail(serviceId);
+    addIntoFetchMedicalDetailStream(result);
+    return result;
+  }
+
+  void addIntoFetchMedicalDetailStream(RequestState data) {
+    super.addStateInGenericStream(_fetchDetailStreamProvider, data);
   }
 }

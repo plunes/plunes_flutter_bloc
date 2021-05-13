@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:plunes/models/new_solution_model/form_data_response_model.dart';
 import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -66,6 +67,21 @@ class SubmitMedicalDetailRepo {
     } else {
       return RequestFailed(
           failureCause: result.failureCause, response: fileType);
+    }
+  }
+
+  Future<RequestState> fetchUserMedicalDetail(String serviceId) async {
+    var result = await DioRequester().requestMethodWithNoBaseUrl(
+        requestType: HttpRequestMethods.HTTP_GET,
+        url: Urls.GET_FORM_DATA_ON_FILL_MEDICAL_DETAIL_SCREEN,
+        headerIncluded: true,
+        queryParameter: {"id": serviceId});
+    if (result.isRequestSucceed) {
+      FormDataModel _formDataModel =
+          FormDataModel.fromJson(result.response.data);
+      return RequestSuccess(response: _formDataModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
     }
   }
 }

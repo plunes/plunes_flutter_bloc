@@ -274,9 +274,9 @@ class PlunesStrings {
       "Make sure to Enter your time slots accurately so that you receive bookings as per your availability and never lose a patient";
 
   static const String cantBookPriceExpired =
-      "Can't book the appointment as the prices are valid for only one hour.";
+      "Can't book the appointment as the prices are valid for only 7 days.";
   static const String cantNegotiateWithMoreFacilities =
-      "Can't discover more facilities as the prices are valid for only one hour.";
+      "Can't discover more facilities as the prices are valid for only 7 days.";
 
   ///More Facilities Screen
   static const String moreFacilities = "More Facilities";
@@ -386,7 +386,8 @@ class PlunesStrings {
   static const String completePaymentText = "Complete Payment";
   static const String invalidPaymentDetails =
       "Invalid payment details, please try again later";
-  static const String discoverMoreFacilityButtonText = "Discover More Facilities";
+  static const String discoverMoreFacilityButtonText =
+      "Discover More Facilities";
   static const String discoverPrice = "Discover Prices Now";
   static const String discoverFacilityNearYou = "Discover facilities near you";
   static const String experienceText = "Experience";
