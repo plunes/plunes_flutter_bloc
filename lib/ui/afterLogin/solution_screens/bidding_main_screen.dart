@@ -1058,7 +1058,8 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
 
   Widget _getLocationWidget() {
     return Container(
-      margin: const EdgeInsets.only(left: 15.0, right: 5),
+      margin: const EdgeInsets.only(left: 5.0, right: 5),
+      alignment: Alignment.center,
       child: FutureBuilder<RequestState>(
         future: _getLocationStatusForTop(),
         builder: (context, snapshot) {
@@ -1077,45 +1078,61 @@ class _HomePageAppBarState extends State<HomePageAppBar> {
                 highlightColor: Colors.transparent,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Image.asset(
-                        plunesImages.locationIcon,
-                        color: PlunesColors.BLACKCOLOR,
-                        height: AppConfig.verticalBlockSize * 3,
-                        width: AppConfig.horizontalBlockSize * 5,
-                      ),
-                      Flexible(
-                        child: Container(
-                          margin: EdgeInsets.only(left: 5.0, right: 3),
-                          child: Tooltip(
-                              message: locationModel.address,
-                              margin: EdgeInsets.symmetric(
-                                  horizontal:
-                                      AppConfig.horizontalBlockSize * 5),
-                              preferBelow: true,
-                              child: Text(
-                                locationModel.address,
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.clip,
-                                softWrap: false,
-                                maxLines: 1,
-                                style: TextStyle(fontSize: 15),
-                              )),
-                        ),
-                      ),
+                    children: [
                       Container(
-                        child: Center(
-                          child: Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#4F4F4F")),
-                            size: 20,
-                          ),
+                        margin: EdgeInsets.only(bottom: 1),
+                        child: Text(
+                          "Location",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#707070"))),
                         ),
-                      )
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          // Image.asset(
+                          //   plunesImages.locationIcon,
+                          //   color: PlunesColors.BLACKCOLOR,
+                          //   height: AppConfig.verticalBlockSize * 3,
+                          //   width: AppConfig.horizontalBlockSize * 5,
+                          // ),
+                          Flexible(
+                            child: Container(
+                              margin: EdgeInsets.only(left: 5.0, right: 3),
+                              child: Tooltip(
+                                  message: locationModel.address,
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal:
+                                          AppConfig.horizontalBlockSize * 5),
+                                  preferBelow: true,
+                                  child: Text(
+                                    locationModel.address,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.clip,
+                                    softWrap: false,
+                                    maxLines: 1,
+                                    style: TextStyle(fontSize: 15),
+                                  )),
+                            ),
+                          ),
+                          Container(
+                            child: Center(
+                              child: Icon(
+                                Icons.keyboard_arrow_down,
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#4F4F4F")),
+                                size: 20,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 ),

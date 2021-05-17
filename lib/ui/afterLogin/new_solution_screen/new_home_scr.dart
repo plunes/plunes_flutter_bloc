@@ -122,8 +122,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _locationFilterName;
   bool _hasCalledTopFacilityApi;
 
+  ScrollController _gridViewScrollController;
+
   @override
   void initState() {
+    _gridViewScrollController = ScrollController();
     _hasSearchBar = false;
     _cartBloc = CartMainBloc();
     _isProcedureListOpened = false;
@@ -367,7 +370,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             left: AppConfig.horizontalBlockSize * 5,
             bottom: AppConfig.verticalBlockSize * 1.5,
             right: AppConfig.horizontalBlockSize * 5),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Container(
           margin: EdgeInsets.only(
               left: AppConfig.horizontalBlockSize * 2,
@@ -395,7 +398,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       horizontal: AppConfig.horizontalBlockSize * 4),
                   child: Icon(
                     Icons.search,
-                    color: Color(CommonMethods.getColorHexFromStr("#B1B1B1")),
+                    size: 30,
+                    color: Color(CommonMethods.getColorHexFromStr("#555555")),
                   ),
                 ),
                 Flexible(
@@ -409,10 +413,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         decoration: InputDecoration(
                           hintMaxLines: 1,
                           hintText: _solutionHomeScreenModel?.searchBarText ??
-                              'Search the desired service',
+                              'Search Disease ,Test or Medical Procedure',
                           hintStyle: TextStyle(
-                            color: Color(0xffB1B1B1).withOpacity(1.0),
-                            fontSize: AppConfig.mediumFont,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#B1B1B1")),
+                            fontSize: 16,
                           ),
                           enabledBorder: InputBorder.none,
                           focusedBorder: InputBorder.none,
@@ -459,16 +464,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                           maxLines: 2,
                           text: TextSpan(children: [
                             TextSpan(
-                                text:
-                                    _getHeading()?.split(" ")?.first ?? "Book",
-                                style: TextStyle(
-                                    color: PlunesColors.GREENCOLOR,
-                                    fontSize: 35)),
-                            TextSpan(
-                                text: _getTextAfterFirstWord(_getHeading()),
+                                text: _getHeading(),
                                 style: TextStyle(
                                     color: PlunesColors.BLACKCOLOR,
-                                    fontSize: 35))
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 23))
                           ])),
                     ),
                     // search box container
@@ -488,14 +488,14 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       },
                       child: Container(
                         margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 23,
-                            left: AppConfig.verticalBlockSize * 4,
-                            right: AppConfig.verticalBlockSize * 4),
+                            top: AppConfig.verticalBlockSize * 17,
+                            left: AppConfig.verticalBlockSize * 2,
+                            right: AppConfig.verticalBlockSize * 2),
                         height: AppConfig.verticalBlockSize * 6,
                         width: double.infinity,
                         decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(25.0),
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
                         child: InkWell(
                           onTap: () {
@@ -516,8 +516,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                         AppConfig.horizontalBlockSize * 4),
                                 child: Icon(
                                   Icons.search,
+                                  size: 30,
                                   color: Color(CommonMethods.getColorHexFromStr(
-                                      "#B1B1B1")),
+                                      "#555555")),
                                 ),
                               ),
                               Flexible(
@@ -532,11 +533,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                         hintMaxLines: 1,
                                         hintText: _solutionHomeScreenModel
                                                 ?.searchBarText ??
-                                            'Search the desired service',
+                                            'Search Disease ,Test or Medical Procedure',
                                         hintStyle: TextStyle(
-                                          color: Color(0xffB1B1B1)
-                                              .withOpacity(1.0),
-                                          fontSize: AppConfig.mediumFont,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#B1B1B1")),
+                                          fontSize: 16,
                                         ),
                                         enabledBorder: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -550,6 +552,37 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         ),
                       ),
                     ),
+                    Container(
+                      height: AppConfig.verticalBlockSize * 4.5,
+                      margin: EdgeInsets.only(
+                        top: AppConfig.verticalBlockSize * 25,
+                        left: AppConfig.verticalBlockSize * 2,
+                        // right: AppConfig.verticalBlockSize * 2
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return Container(
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            margin: EdgeInsets.only(right: 5),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#FAFBFD"))),
+                            child: Text(
+                              "some text",
+                              style: TextStyle(
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#303030")),
+                                  fontSize: 14),
+                            ),
+                          );
+                        },
+                        itemCount: 20,
+                      ),
+                    )
                   ],
                 ),
                 // services box row
@@ -874,13 +907,14 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               onTap: () => _getKnowYourProcedureData(),
                               isSizeLess: true),
                         )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            _proceduresGrid(),
-                            _getViewMoreButtonForProcedure()
-                          ],
-                        );
+                      : _proceduresGrid();
+                  // Column(
+                  //         mainAxisAlignment: MainAxisAlignment.start,
+                  //         children: [
+                  //           _proceduresGrid(),
+                  //           _getViewMoreButtonForProcedure()
+                  //         ],
+                  //       );
                 }),
           ],
         ),
@@ -890,15 +924,27 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   Widget _proceduresGrid() {
     return Center(
-      child: GridView.count(
-          shrinkWrap: true,
-          crossAxisCount: 2,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
-          padding: EdgeInsets.zero,
-          childAspectRatio: 0.88,
-          physics: NeverScrollableScrollPhysics(),
-          children: _getProcedureAlteredList()),
+      child: Container(
+        height: AppConfig.verticalBlockSize * 56,
+        margin: EdgeInsets.only(bottom: 5),
+        child: Scrollbar(
+          isAlwaysShown: true,
+          controller: _gridViewScrollController,
+          thickness: 6,
+          radius: Radius.circular(4),
+          child: GridView.count(
+              shrinkWrap: true,
+              controller: _gridViewScrollController,
+              crossAxisCount: 2,
+              crossAxisSpacing: 4,
+              mainAxisSpacing: 4,
+              padding: EdgeInsets.only(bottom: 15),
+              childAspectRatio: 1.2,
+              scrollDirection: Axis.horizontal,
+              // physics: NeverScrollableScrollPhysics(),
+              children: _getProcedureAlteredList()),
+        ),
+      ),
     );
   }
 
@@ -936,25 +982,24 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   List<Widget> _getProcedureAlteredList() {
     List<Widget> list = [];
-    if (_isProcedureListOpened) {
-      int length = (_knowYourProcedureModel.data.length > 6)
-          ? 6
-          : _knowYourProcedureModel.data.length;
-      for (int index = 0; index < length; index++) {
-        var data = _knowYourProcedureModel.data[index];
-        list.add(_proceduresCard(data.familyImage ?? "", data.familyName ?? "",
-            data.details ?? "", data));
-      }
-    } else {
-      int length = (_knowYourProcedureModel.data.length > 6)
-          ? 6
-          : _knowYourProcedureModel.data.length;
-      for (int index = 0; index < length; index++) {
-        var data = _knowYourProcedureModel.data[index];
-        list.add(_proceduresCard(data.familyImage ?? "", data.familyName ?? "",
-            data.details ?? "", data));
-      }
+    // if (_isProcedureListOpened) {
+    int length = _knowYourProcedureModel.data.length;
+    for (int index = 0; index < length; index++) {
+      var data = _knowYourProcedureModel.data[index];
+      list.add(_proceduresCard(data.familyImage ?? "", data.familyName ?? "",
+          data.details ?? "", data));
     }
+    // }
+    // else {
+    //   int length = (_knowYourProcedureModel.data.length > 6)
+    //       ? 6
+    //       : _knowYourProcedureModel.data.length;
+    //   for (int index = 0; index < length; index++) {
+    //     var data = _knowYourProcedureModel.data[index];
+    //     list.add(_proceduresCard(data.familyImage ?? "", data.familyName ?? "",
+    //         data.details ?? "", data));
+    //   }
+    // }
     return list;
   }
 
@@ -980,7 +1025,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ClipRRect(
-                child: _imageFittedBox(url),
+                child: Container(
+                  child: _imageFittedBox(url),
+                  height: AppConfig.verticalBlockSize * 15,
+                  width: double.infinity,
+                ),
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),
                     topRight: Radius.circular(10)),
@@ -996,7 +1045,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     label ?? "",
                     textAlign: TextAlign.left,
                     maxLines: 2,
-                    style: TextStyle(fontSize: 15),
+                    style:
+                        TextStyle(fontSize: 15, color: PlunesColors.BLACKCOLOR),
                   ),
                 ),
               ),
@@ -1012,7 +1062,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     child: ReadMoreText(text ?? "",
                         textAlign: TextAlign.left,
                         trimLines: 2,
-                        trimCollapsedText: " ..Learn more",
+                        trimCollapsedText: " ..Read More",
+                        colorClickableText: Color(0xff107C6F),
                         trimMode: TrimMode.Line,
                         style: TextStyle(
                           fontSize: 12,
@@ -1082,8 +1133,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               isSizeLess: true),
                         )
                       : Container(
-                          height: AppConfig.verticalBlockSize * 30,
-                          child: ListView.builder(
+                          height: AppConfig.verticalBlockSize * 40,
+                          child: GridView.builder(
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index) {
                               // print("${_newSpecialityModel.data[index]?.specailizationImage}");
@@ -1098,6 +1149,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             },
                             scrollDirection: Axis.horizontal,
                             shrinkWrap: true,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 1.2,
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 5),
                             itemCount: _newSpecialityModel.data.length ?? 0,
                           ),
                         );
@@ -1361,81 +1418,61 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   Widget _specialCard(
       String imageUrl, String label, String text, SpecData specialityData) {
     return Container(
-      width: AppConfig.horizontalBlockSize * 45,
-      margin: EdgeInsets.only(right: 4),
-      child: Card(
-        elevation: 2.0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: InkWell(
-          onTap: () {
-            ProcedureData procedureData = ProcedureData(
-                sId: specialityData?.specialityId,
-                defination: specialityData?.definition,
-                speciality: specialityData?.speciality,
-                familyImage: specialityData?.specailizationImage,
-                specialityId: specialityData?.specialityId,
-                details: specialityData?.definition,
-                familyName: specialityData?.speciality);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ViewProcedureAndProfessional(
-                        shouldUseSpecializationApi: true,
-                        procedureData: procedureData))).then((value) {
-              _getCartCount();
-            });
-          },
-          onDoubleTap: () {},
-          child: Column(
-            children: [
-              Expanded(
-                flex: 3,
-                child: Container(
-                  width: double.infinity,
-                  child: ClipRRect(
-                    child: _imageFittedBox(imageUrl, boxFit: BoxFit.cover),
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
-                  ),
+      // width: AppConfig.horizontalBlockSize * 30,
+      // margin: EdgeInsets.only(right: 4),
+      child: InkWell(
+        onTap: () {
+          ProcedureData procedureData = ProcedureData(
+              sId: specialityData?.specialityId,
+              defination: specialityData?.definition,
+              speciality: specialityData?.speciality,
+              familyImage: specialityData?.specailizationImage,
+              specialityId: specialityData?.specialityId,
+              details: specialityData?.definition,
+              familyName: specialityData?.speciality);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ViewProcedureAndProfessional(
+                      shouldUseSpecializationApi: true,
+                      procedureData: procedureData))).then((value) {
+            _getCartCount();
+          });
+        },
+        onDoubleTap: () {},
+        child: Column(
+          children: [
+            Card(
+              elevation: 2.0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Container(
+                width: double.infinity,
+                height: AppConfig.verticalBlockSize * 12,
+                child: ClipRRect(
+                  child: _imageFittedBox(imageUrl, boxFit: BoxFit.cover),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)),
                 ),
               ),
-              Flexible(
-                child: Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 2,
-                      vertical: 3),
-                  child: Text(
-                    label ?? "",
-                    textAlign: TextAlign.left,
-                    maxLines: 2,
-                    style: TextStyle(fontSize: 16),
-                  ),
+            ),
+            Flexible(
+              child: Container(
+                alignment: Alignment.center,
+                width: double.infinity,
+                margin: EdgeInsets.symmetric(
+                    horizontal: AppConfig.horizontalBlockSize * 2, vertical: 3),
+                child: Text(
+                  label ?? "",
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  style: TextStyle(fontSize: 16),
                 ),
               ),
-              Flexible(
-                  child: Container(
-                      alignment: Alignment.centerLeft,
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 2,
-                          vertical: 1),
-                      child: IgnorePointer(
-                        ignoring: true,
-                        child: ReadMoreText(text,
-                            textAlign: TextAlign.left,
-                            trimLines: 2,
-                            trimCollapsedText: " ..Learn more",
-                            trimMode: TrimMode.Line,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xff444444),
-                            )),
-                      )))
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );
@@ -1585,7 +1622,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                         CrossAxisAlignment.center,
                                     children: [
                                       Text(
-                                        _selectedSpecialityName ?? "Specialist",
+                                        _selectedSpecialityName ?? "Service",
                                         style: TextStyle(
                                             fontSize: 14,
                                             color: PlunesColors.BLACKCOLOR),
@@ -1794,7 +1831,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                 CommonMethods.getStringInCamelCase(
                                     _topFacilityModel.data[index].name),
                                 _topFacilityModel.data[index].biography ?? '',
-                                _topFacilityModel.data[index]?.rating),
+                                _topFacilityModel.data[index]?.rating,
+                                _topFacilityModel.data[index]),
                           );
                         },
                         itemCount: ((_topFacilityModel.data.length > 6) &&
@@ -1944,7 +1982,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   ),
                 ),
                 Text(
-                  "Specialist",
+                  "Service",
                   style: TextStyle(fontSize: 24, color: Colors.black),
                 ),
                 Container(
@@ -2194,16 +2232,17 @@ Widget _sectionHeading(String text) {
     maxLines: 2,
     style: TextStyle(
       fontSize: 20,
+      fontWeight: FontWeight.w500,
       color: Color(0xff000000),
     ),
   );
 }
 
-Widget _hospitalCard(
-    String imageUrl, String label, String text, double rating) {
+Widget _hospitalCard(String imageUrl, String label, String text, double rating,
+    TopFacility topFacilityData) {
   return Container(
     margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
-    height: AppConfig.verticalBlockSize * 38,
+    // height: AppConfig.verticalBlockSize * 38,
     child: Card(
       elevation: 2.0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
@@ -2256,22 +2295,132 @@ Widget _hospitalCard(
               ],
             ),
           ),
-          Flexible(
-            child: Container(
-              alignment: Alignment.topLeft,
-              margin: EdgeInsets.only(
-                  left: AppConfig.horizontalBlockSize * 2,
-                  right: AppConfig.horizontalBlockSize * 2,
-                  top: AppConfig.verticalBlockSize * 0.3),
-              child: Text(
-                text ?? "",
-                maxLines: 2,
-                style: TextStyle(
-                  fontSize: 12,
-                ),
-              ),
+          Container(
+            alignment: Alignment.topLeft,
+            margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 2,
+                right: AppConfig.horizontalBlockSize * 2,
+                top: AppConfig.verticalBlockSize * 0.8),
+            child: IgnorePointer(
+              ignoring: true,
+              child: ReadMoreText(text ?? "",
+                  textAlign: TextAlign.left,
+                  trimLines: 2,
+                  trimCollapsedText: " ..Read More",
+                  colorClickableText: Color(0xff107C6F),
+                  trimMode: TrimMode.Line,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Color(0xff444444),
+                  )),
             ),
-          )
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 2),
+            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+            alignment: Alignment.topLeft,
+            child: Text(
+              "Multispecialty | New Delhi",
+              style: TextStyle(
+                  color: Color(CommonMethods.getColorHexFromStr("#434343")),
+                  fontSize: 16),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 2),
+            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+            alignment: Alignment.topLeft,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("13+ Doctors",
+                        style: TextStyle(
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#000000")),
+                            fontSize: 16)),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    child: Text("Check insurance",
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            decorationThickness: 3.0,
+                            decorationColor: Color(
+                                CommonMethods.getColorHexFromStr("#107C6F")),
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#107C6F")),
+                            fontSize: 16)),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 2),
+            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+            alignment: Alignment.topLeft,
+            child: Row(
+              children: [
+                Container(
+                  height: 24,
+                  width: 24,
+                  alignment: Alignment.centerLeft,
+                  child: CustomWidgets().getImageFromUrl(""),
+                ),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.centerLeft,
+                    child: Text("   NABH Accredited",
+                        style: TextStyle(
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#434343")),
+                            fontSize: 14)),
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            height: AppConfig.verticalBlockSize * 6,
+            margin: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 2),
+            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+            child: ListView.builder(
+              shrinkWrap: true,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 2.5,
+                      vertical: AppConfig.verticalBlockSize * 0.8),
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(right: 8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                      border: Border.all(
+                          width: 1,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#D8D8D887")))),
+                  child: Text(
+                    "Some text",
+                    style: TextStyle(
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#434343")),
+                        fontSize: 14),
+                  ),
+                );
+              },
+              itemCount: 10,
+            ),
+          ),
+          SizedBox(height: 15)
         ],
       ),
     ),
