@@ -446,12 +446,11 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   children: [
                     // background image container
                     Container(
-                      height: AppConfig.verticalBlockSize * 36,
-                      width: AppConfig.horizontalBlockSize * 100,
-                      child: _imageFittedBox(
-                          _solutionHomeScreenModel?.backgroundImage ?? "",
-                          boxFit: BoxFit.cover),
-                    ),
+                        height: AppConfig.verticalBlockSize * 36,
+                        width: AppConfig.horizontalBlockSize * 100,
+                        child: _imageFittedBox(
+                            _solutionHomeScreenModel?.backgroundImage ?? "",
+                            boxFit: BoxFit.cover)),
                     // heading text
                     Container(
                       alignment: Alignment.center,

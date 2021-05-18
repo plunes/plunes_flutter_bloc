@@ -20,7 +20,7 @@ class Urls {
   // static const String baseUrl =
   //     'https://api.plunes.com/v9/'; // production server
   static const String baseUrl =
-      'https://devapi.plunes.com/v7/'; // staging server
+      'https://devapi.plunes.com/v9/'; // staging server
 
   // static const String customBaseUrl =
   //     'https://api.plunes.com/'; // production server

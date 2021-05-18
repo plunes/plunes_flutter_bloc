@@ -53,36 +53,6 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   List<SpecialityModel> _specialityList;
   FacilityHaveModel _facilityHaveModel;
 
-  // List<Widget> _tabsForDoc = [
-  //   ClipRRect(
-  //     borderRadius: BorderRadius.circular(30),
-  //     child: Container(
-  //         child: Text(
-  //       'Photos/Videos',
-  //       textAlign: TextAlign.center,
-  //       style: TextStyle(fontSize: 14),
-  //     )),
-  //   ),
-  //   ClipRRect(
-  //     borderRadius: BorderRadius.circular(30),
-  //     child: Container(
-  //         child: Text(
-  //       'Review',
-  //       textAlign: TextAlign.center,
-  //       style: TextStyle(fontSize: 14),
-  //     )),
-  //   ),
-  //   // ClipRRect(
-  //   //   borderRadius: BorderRadius.circular(30),
-  //   //   child: Container(
-  //   //       child: Text(
-  //   //     'Achievements',
-  //   //     textAlign: TextAlign.center,
-  //   //     style: TextStyle(fontSize: 14),
-  //   //   )),
-  //   // ),
-  // ];
-
   List<Widget> _tabsForHospital = [];
 
   String _failureMessageForFacilityHave;
@@ -189,197 +159,186 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
           child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          (_profileResponse.user.achievements != null &&
-                  _profileResponse.user.achievements.isNotEmpty)
-              ? Stack(
-                  children: [
-                    CarouselSlider.builder(
-                        itemCount:
-                            (_profileResponse.user.achievements.length > 5)
-                                ? 5
-                                : _profileResponse?.user?.achievements?.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              List<Photo> photos = [];
-                              _profileResponse.user.achievements
-                                  .forEach((element) {
-                                if (_profileResponse.user.achievements[index] ==
-                                        null ||
-                                    _profileResponse.user.achievements[index]
-                                        .imageUrl.isEmpty ||
-                                    !(_profileResponse
-                                        .user.achievements[index].imageUrl
-                                        .contains("http"))) {
-                                  photos.add(Photo(
-                                      assetName: plunesImages.achievementIcon));
-                                } else {
-                                  photos
-                                      .add(Photo(assetName: element.imageUrl));
-                                }
-                              });
-                              if (photos != null && photos.isNotEmpty) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PageSlider(photos, index)));
-                              }
-                            },
-                            child: CustomWidgets().getImageFromUrl(
-                                _profileResponse
-                                    .user.achievements[index].imageUrl,
-                                boxFit: BoxFit.fill),
-                          );
-                        },
-                        carouselController: _controller,
-                        options: CarouselOptions(
-                            autoPlay: true,
-                            autoPlayInterval: Duration(seconds: 5),
+          Stack(
+            children: [
+              Column(
+                children: [
+                  (_profileResponse.user.achievements != null &&
+                          _profileResponse.user.achievements.isNotEmpty)
+                      ? Stack(
+                          children: [
+                            CarouselSlider.builder(
+                                itemCount:
+                                    (_profileResponse.user.achievements.length >
+                                            5)
+                                        ? 5
+                                        : _profileResponse
+                                            ?.user?.achievements?.length,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    onTap: () {
+                                      List<Photo> photos = [];
+                                      _profileResponse.user.achievements
+                                          .forEach((element) {
+                                        if (_profileResponse
+                                                    .user.achievements[index] ==
+                                                null ||
+                                            _profileResponse
+                                                .user
+                                                .achievements[index]
+                                                .imageUrl
+                                                .isEmpty ||
+                                            !(_profileResponse.user
+                                                .achievements[index].imageUrl
+                                                .contains("http"))) {
+                                          photos.add(Photo(
+                                              assetName: plunesImages
+                                                  .achievementIcon));
+                                        } else {
+                                          photos.add(Photo(
+                                              assetName: element.imageUrl));
+                                        }
+                                      });
+                                      if (photos != null && photos.isNotEmpty) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PageSlider(photos, index)));
+                                      }
+                                    },
+                                    child: CustomWidgets().getImageFromUrl(
+                                        _profileResponse
+                                            .user.achievements[index].imageUrl,
+                                        boxFit: BoxFit.fill),
+                                  );
+                                },
+                                carouselController: _controller,
+                                options: CarouselOptions(
+                                    autoPlay: true,
+                                    autoPlayInterval: Duration(seconds: 5),
+                                    height: AppConfig.verticalBlockSize * 35,
+                                    viewportFraction: 1.0,
+                                    onPageChanged: (index, _) {
+                                      if (_currentDotPosition.toInt() !=
+                                          index) {
+                                        _currentDotPosition = index.toDouble();
+                                        _streamController?.add(null);
+                                      }
+                                    })),
+                            // Positioned(
+                            //   bottom: 0.0,
+                            //   left: 0.0,
+                            //   right: 0.0,
+                            //   child: StreamBuilder<Object>(
+                            //       stream: _streamController.stream,
+                            //       builder: (context, snapshot) {
+                            //         return DotsIndicator(
+                            //           dotsCount:
+                            //               (_profileResponse.user.achievements.length >
+                            //                       5)
+                            //                   ? 5
+                            //                   : _profileResponse
+                            //                       ?.user?.achievements?.length,
+                            //           position: _currentDotPosition?.toDouble() ?? 0,
+                            //           axis: Axis.horizontal,
+                            //           decorator: _decorator,
+                            //           onTap: (pos) {
+                            //             _controller.animateToPage(pos.toInt(),
+                            //                 curve: Curves.easeInOut,
+                            //                 duration: Duration(milliseconds: 300));
+                            //             _currentDotPosition = pos;
+                            //             _streamController?.add(null);
+                            //             return;
+                            //           },
+                            //         );
+                            //       }),
+                            // ),
+                            Positioned(
+                              top: 0.0,
+                              right: AppConfig.horizontalBlockSize * 5,
+                              child: StreamBuilder<Object>(
+                                  stream: _streamController.stream,
+                                  builder: (context, snapshot) {
+                                    return Chip(
+                                        backgroundColor: Color(CommonMethods
+                                                .getColorHexFromStr("#000000"))
+                                            .withOpacity(0.5),
+                                        label: Container(
+                                          child: Center(
+                                            child: Text(
+                                              "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
+                                              style: TextStyle(
+                                                  color:
+                                                      PlunesColors.WHITECOLOR,
+                                                  fontSize: 15),
+                                            ),
+                                          ),
+                                        ),
+                                        padding: EdgeInsets.all(3));
+                                  }),
+                            )
+                          ],
+                        )
+                      : InkWell(
+                          onTap: () {
+                            List<Photo> photos = [];
+                            if ((_profileResponse.user != null &&
+                                _profileResponse.user.imageUrl != null &&
+                                _profileResponse.user.imageUrl.isNotEmpty)) {
+                              photos.add(Photo(
+                                  assetName: _profileResponse.user.imageUrl));
+                            }
+                            if (photos != null && photos.isNotEmpty) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          PageSlider(photos, 0)));
+                            }
+                          },
+                          child: Container(
+                            color:
+                                PlunesColors.LIGHTESTGREYCOLOR.withOpacity(.5),
                             height: AppConfig.verticalBlockSize * 35,
-                            viewportFraction: 1.0,
-                            onPageChanged: (index, _) {
-                              if (_currentDotPosition.toInt() != index) {
-                                _currentDotPosition = index.toDouble();
-                                _streamController?.add(null);
-                              }
-                            })),
-                    Positioned(
-                      bottom: 0.0,
-                      left: 0.0,
-                      right: 0.0,
-                      child: StreamBuilder<Object>(
-                          stream: _streamController.stream,
-                          builder: (context, snapshot) {
-                            return DotsIndicator(
-                              dotsCount:
-                                  (_profileResponse.user.achievements.length >
-                                          5)
-                                      ? 5
-                                      : _profileResponse
-                                          ?.user?.achievements?.length,
-                              position: _currentDotPosition?.toDouble() ?? 0,
-                              axis: Axis.horizontal,
-                              decorator: _decorator,
-                              onTap: (pos) {
-                                _controller.animateToPage(pos.toInt(),
-                                    curve: Curves.easeInOut,
-                                    duration: Duration(milliseconds: 300));
-                                _currentDotPosition = pos;
-                                _streamController?.add(null);
-                                return;
-                              },
-                            );
-                          }),
-                    ),
-                    Positioned(
-                      bottom: 0.0,
-                      right: AppConfig.horizontalBlockSize * 5,
-                      child: StreamBuilder<Object>(
-                          stream: _streamController.stream,
-                          builder: (context, snapshot) {
-                            return Chip(
-                                backgroundColor: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#000000"))
-                                    .withOpacity(0.5),
-                                label: Container(
-                                  child: Center(
-                                    child: Text(
-                                      "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
-                                      style: TextStyle(
-                                          color: PlunesColors.WHITECOLOR,
-                                          fontSize: 15),
+                            width: double.infinity,
+                            child: (_profileResponse.user.imageUrl == null ||
+                                    _profileResponse.user.imageUrl.isEmpty ||
+                                    !(_profileResponse.user.imageUrl
+                                        .contains("http")))
+                                ? Container(
+                                    margin: EdgeInsets.all(
+                                        AppConfig.verticalBlockSize * 7.5),
+                                    child: Image.asset(
+                                      PlunesImages.defaultHosBac,
+                                      alignment: Alignment.center,
+                                      fit: BoxFit.contain,
                                     ),
+                                  )
+                                : SizedBox.expand(
+                                    child: CustomWidgets().getImageFromUrl(
+                                        _profileResponse.user.imageUrl,
+                                        boxFit: BoxFit.cover),
                                   ),
-                                ),
-                                padding: EdgeInsets.all(3));
-                          }),
-                    )
-                  ],
-                )
-              : InkWell(
-                  onTap: () {
-                    List<Photo> photos = [];
-                    if ((_profileResponse.user != null &&
-                        _profileResponse.user.imageUrl != null &&
-                        _profileResponse.user.imageUrl.isNotEmpty)) {
-                      photos.add(
-                          Photo(assetName: _profileResponse.user.imageUrl));
-                    }
-                    if (photos != null && photos.isNotEmpty) {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PageSlider(photos, 0)));
-                    }
-                  },
-                  child: Container(
-                    color: PlunesColors.LIGHTESTGREYCOLOR.withOpacity(.5),
-                    height: AppConfig.verticalBlockSize * 35,
-                    width: double.infinity,
-                    child: (_profileResponse.user.imageUrl == null ||
-                            _profileResponse.user.imageUrl.isEmpty ||
-                            !(_profileResponse.user.imageUrl.contains("http")))
-                        ? Container(
-                            margin: EdgeInsets.all(
-                                AppConfig.verticalBlockSize * 7.5),
-                            child: Image.asset(
-                              PlunesImages.defaultHosBac,
-                              alignment: Alignment.center,
-                              fit: BoxFit.contain,
-                            ),
-                          )
-                        : SizedBox.expand(
-                            child: CustomWidgets().getImageFromUrl(
-                                _profileResponse.user.imageUrl,
-                                boxFit: BoxFit.cover),
                           ),
-                  ),
-                ),
+                        ),
+                  SizedBox(height: AppConfig.verticalBlockSize * 9),
+                ],
+              ),
+              _getNameAndLocationCard()
+            ],
+          ),
           Container(
             margin: EdgeInsets.all(13),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        CommonMethods.getStringInCamelCase(
-                            _profileResponse.user?.name),
-                        maxLines: 2,
-                        style: TextStyle(color: Colors.black, fontSize: 20.0),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Icon(Icons.star, color: Color(0xffFDCC0D)),
-                        Text(
-                          _profileResponse.user?.rating?.toStringAsFixed(1) ??
-                              '4.5',
-                          style: TextStyle(color: Colors.black, fontSize: 25.0),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Text(
-                  _profileResponse.user?.qualification ?? _getEmptyString(),
-                  style: TextStyle(color: Color(0xff4F4F4F)),
-                ),
-                SizedBox(height: 15),
-                _getLineWidget(),
-                SizedBox(height: 15),
-                Text(
-                  plunesStrings.introduction,
-                  style: TextStyle(color: Colors.black, fontSize: 18.0),
-                ),
-                SizedBox(
-                  height: 13,
-                ),
+                _getRatingAndPatientServedWidget(),
+                _getCentresWidgetList(),
+                SizedBox(height: 13),
+                _getHeadingWidget(plunesStrings.introduction),
+                SizedBox(height: 13),
                 ReadMoreText(
                   _profileResponse.user?.biography ?? _getEmptyString(),
                   colorClickableText: PlunesColors.SPARKLINGGREEN,
@@ -390,141 +349,58 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14),
                 ),
                 SizedBox(
-                  height: 22,
-                ),
-                _getLineWidget(),
-                SizedBox(
-                  height: 22,
-                ),
-                (_profileResponse != null &&
-                        _profileResponse.user != null &&
-                        _profileResponse.user.distanceFromUser != null &&
-                        _profileResponse.user.distanceFromUser >= 0)
-                    ? Container(
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 126,
-                              child: InkWell(
-                                onTap: () => _getDirections(),
-                                child: Stack(
-                                  children: [
-                                    Positioned.fill(
-                                      child: Image.asset(
-                                        PlunesImages.setLocationMap,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ),
-                                    Positioned(
-                                      right:
-                                          AppConfig.horizontalBlockSize * 3.8,
-                                      bottom: AppConfig.verticalBlockSize * 0.9,
-                                      child: Chip(
-                                          backgroundColor:
-                                              PlunesColors.WHITECOLOR,
-                                          padding: EdgeInsets.all(3.0),
-                                          label: Container(
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                    height: AppConfig
-                                                            .verticalBlockSize *
-                                                        3,
-                                                    width: AppConfig
-                                                            .horizontalBlockSize *
-                                                        5,
-                                                    child: Image.asset(
-                                                        plunesImages
-                                                            .locationIcon,
-                                                        color: PlunesColors
-                                                            .BLACKCOLOR)),
-                                                Text(
-                                                  " ${_profileResponse.user.distanceFromUser?.toStringAsFixed(1)} Kms",
-                                                  style: TextStyle(
-                                                      color: PlunesColors
-                                                          .BLACKCOLOR),
-                                                )
-                                              ],
-                                            ),
-                                          )),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 22,
-                            ),
-                            _getLineWidget(),
-                            SizedBox(
-                              height: 22,
-                            ),
-                          ],
-                        ),
-                      )
-                    : Container(),
-                Text(
-                  'Facility have',
-                  style: TextStyle(color: Colors.black, fontSize: 18.0),
-                ),
-                SizedBox(
                   height: 20,
                 ),
+                _getHeadingWidget('Facility have'),
+                SizedBox(
+                  height: 13,
+                ),
                 _getFacilityHaveWidget(),
-                _getTabBar(),
-                SizedBox(
-                  height: 10,
-                ),
-                _getLineWidget(),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  'Time Slots',
-                  style: TextStyle(fontSize: 18),
-                )
+                // _getTabBar(),
+                (_profileResponse.user.hasMedia != null &&
+                        _profileResponse.user.hasMedia)
+                    ? Column(
+                        children: [
+                          SizedBox(
+                            height: 20,
+                          ),
+                          _getPhotoWidget(),
+                        ],
+                      )
+                    : Container(),
               ],
             ),
           ),
-          _getTimeSlotWidget(),
-          SizedBox(
-            height: 25,
-          ),
+          _getTestConsProcedureWidgets(),
           Container(
-              margin: EdgeInsets.symmetric(horizontal: 13),
-              child: _getLineWidget()),
-          (_specialityList == null || _specialityList.isEmpty)
-              ? Container()
-              : SizedBox(
-                  height: 25,
-                ),
-          (_specialityList == null || _specialityList.isEmpty)
-              ? Container()
-              : Container(
-                  margin: EdgeInsets.symmetric(horizontal: 13),
-                  child: Text(
-                    'Specialization',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-          (_specialityList == null || _specialityList.isEmpty)
-              ? Container()
-              : SizedBox(height: 20),
-          (_specialityList == null || _specialityList.isEmpty)
-              ? Container()
-              : Container(
-                  child: SpecialisationWidget(_specialityList, widget.userID),
-                  margin: EdgeInsets.symmetric(horizontal: 13),
-                ),
-          Container(
-              padding:
-                  EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
               child: ShowInsuranceListScreen(
-                  profId: widget.userID, shouldShowAppBar: false))
+                  profId: widget.userID, shouldShowAppBar: false)),
+          (_profileResponse.user.achievements != null &&
+                  _profileResponse.user.achievements.isNotEmpty)
+              ? AchievementWidget(_profileResponse.user.achievements)
+              : Container(),
+          (_specialityList != null && _specialityList.isNotEmpty)
+              ? Column(
+                  children: [
+                    SizedBox(height: 20),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      margin: EdgeInsets.symmetric(horizontal: 13),
+                      child: _getHeadingWidget('Specialization'),
+                    ),
+                    SizedBox(height: 13),
+                    Container(
+                      child:
+                          SpecialisationWidget(_specialityList, widget.userID),
+                      margin: EdgeInsets.symmetric(horizontal: 13),
+                    ),
+                  ],
+                )
+              : Container(),
+          ((_profileResponse.user.hasReviews != null &&
+                  _profileResponse.user.hasReviews))
+              ? _getRateAndReviewWidget()
+              : Container(),
         ],
       )),
     );
@@ -995,6 +871,513 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     }
     return _tabsForHospital;
   }
+
+  Widget _getNameAndLocationCard() {
+    return Positioned(
+      bottom: 0,
+      //AppConfig.verticalBlockSize * .2,
+      left: 0,
+      right: 0,
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
+        margin:
+            EdgeInsets.symmetric(horizontal: AppConfig.horizontalBlockSize * 3),
+        color: PlunesColors.WHITECOLOR,
+        child: Container(
+          margin: EdgeInsets.symmetric(
+              horizontal: AppConfig.horizontalBlockSize * 3,
+              vertical: AppConfig.verticalBlockSize * 1.5),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Flexible(
+                      child: Text(
+                    CommonMethods.getStringInCamelCase(
+                        _profileResponse.user?.name),
+                    maxLines: 2,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.black, fontSize: 18.0),
+                  )),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(Icons.info_outline, size: 24),
+                  )
+                ],
+              ),
+              (_profileResponse.user.address != null &&
+                      _profileResponse.user.address.trim().isNotEmpty)
+                  ? Container(
+                      margin: EdgeInsets.only(top: 8),
+                      child: InkWell(
+                        onTap: () {
+                          if (_profileResponse != null &&
+                              _profileResponse.user != null &&
+                              _profileResponse.user.distanceFromUser != null &&
+                              _profileResponse.user.distanceFromUser >= 0)
+                            _getDirections();
+                        },
+                        onDoubleTap: () {},
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(" Location",
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#747474")))),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 5),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.location_on_outlined,
+                                          size: 20,
+                                        ),
+                                        Expanded(
+                                            child: Text(
+                                          _profileResponse.user.address
+                                                  ?.trim() ??
+                                              '',
+                                          maxLines: 2,
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#797979"))),
+                                        )),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            Container(
+                              height: 40,
+                              width: 40,
+                              margin: EdgeInsets.only(left: 5),
+                              child: Image.asset(
+                                PlunesImages.setLocationMap,
+                                fit: BoxFit.fill,
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                  : SizedBox(height: AppConfig.verticalBlockSize * 7)
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _getRatingAndPatientServedWidget() {
+    return Container(
+      width: double.infinity,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 3,
+                right: AppConfig.horizontalBlockSize * 14,
+                top: AppConfig.verticalBlockSize * 0.8,
+                bottom: AppConfig.verticalBlockSize * 0.8),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(9)),
+                border: Border.all(
+                    width: 1,
+                    color:
+                        Color(CommonMethods.getColorHexFromStr("#70707045")))),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  "Rating",
+                  style: TextStyle(
+                      fontSize: 14,
+                      color:
+                          Color(CommonMethods.getColorHexFromStr("#9D9D9D"))),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.star,
+                        color: PlunesColors.BLACKCOLOR,
+                        size: 18,
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(left: 3),
+                        child: Text(
+                          _profileResponse.user?.rating?.toStringAsFixed(1) ??
+                              '4.5',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          1 == 1
+              ? Container(
+                  margin: EdgeInsets.only(left: 15),
+                  padding: EdgeInsets.only(
+                      left: AppConfig.horizontalBlockSize * 3,
+                      right: AppConfig.horizontalBlockSize * 3,
+                      top: AppConfig.verticalBlockSize * 0.8,
+                      bottom: AppConfig.verticalBlockSize * 0.8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(9)),
+                      border: Border.all(
+                          width: 1,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#70707045")))),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Patients served",
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#9D9D9D"))),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.account_circle,
+                              color: PlunesColors.BLACKCOLOR,
+                              size: 18,
+                            ),
+                            Container(
+                              margin: EdgeInsets.only(left: 3),
+                              child: Text(
+                                _profileResponse.user?.rating
+                                        ?.toStringAsFixed(1) ??
+                                    '4.5',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Container()
+        ],
+      ),
+    );
+  }
+
+  Widget _getCentresWidgetList() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: 20),
+        _getHeadingWidget("Centers"),
+        Container(
+          height: AppConfig.verticalBlockSize * 4.5,
+          margin: EdgeInsets.only(top: 13),
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 12),
+                margin: EdgeInsets.only(right: 7),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(4),
+                    border: Border.all(
+                        width: 1,
+                        color: Color(
+                            CommonMethods.getColorHexFromStr("#D8D8D887"))),
+                    color: Color(CommonMethods.getColorHexFromStr("#FAFAFA"))),
+                child: Text(
+                  "some text",
+                  style: TextStyle(
+                      color: Color(CommonMethods.getColorHexFromStr("#303030")),
+                      fontSize: 14),
+                ),
+              );
+            },
+            itemCount: 20,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _getHeadingWidget(String text) {
+    return Text(
+      text,
+      style: TextStyle(color: Colors.black, fontSize: 20.0),
+    );
+  }
+
+  Widget _getTestConsProcedureWidgets() {
+    return Column(
+      children: [
+        _getConsultationWidgetList(),
+        _getTestWidgetList(),
+        _getProcedureWidgetList(),
+      ],
+    );
+  }
+
+  Widget _getConsultationWidgetList() {
+    return Container(
+      child: Column(
+        children: [
+          SizedBox(height: 20),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: _getHeadingWidget("Book Consultation"),
+            alignment: Alignment.topLeft,
+          ),
+          SizedBox(height: 13),
+          ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Card(
+                margin: EdgeInsets.only(
+                    left: 20, right: 20, bottom: index == 4 ? 20 : 8),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                child: Container(
+                  margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
+                  child: Row(
+                    children: [
+                      Column(
+                        children: [
+                          Container(
+                            height: 130,
+                            width: 150,
+                            color: Colors.transparent,
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                              child: CustomWidgets().getImageFromUrl(
+                                  "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+                                  boxFit: BoxFit.fill),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 7),
+                            child: Text(
+                              "Next available at",
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#107C6F"))),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(top: 7, bottom: 7),
+                            child: Text(
+                              "12 : 30 PM, Today",
+                              style: TextStyle(
+                                  fontSize: 14, color: PlunesColors.BLACKCOLOR),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Flexible(
+                          child: Container(
+                        margin: EdgeInsets.only(left: 5),
+                        child: Column(
+                          children: [
+                            Container(
+                              child: Text("Dr. Aashish Chaudhry"),
+                            )
+                          ],
+                        ),
+                      )),
+                    ],
+                  ),
+                ),
+              );
+            },
+            itemCount: 5,
+          ),
+          _getLineWidget()
+        ],
+      ),
+    );
+  }
+
+  Widget _getTestWidgetList() {
+    return Container(
+      child: Column(
+        children: [
+          SizedBox(height: 20),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: _getHeadingWidget("Book Test"),
+            alignment: Alignment.topLeft,
+          ),
+          SizedBox(height: 13),
+          ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Card(
+                margin: EdgeInsets.only(
+                    left: 20, right: 20, bottom: index == 4 ? 20 : 8),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                child: Container(
+                  margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        color: Colors.transparent,
+                        child: CustomWidgets().getImageFromUrl(
+                            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+                            boxFit: BoxFit.fill),
+                      ),
+                      Expanded(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("child health checkup",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#595959")))),
+                              Text("400",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#2A2A2A"))))
+                            ],
+                          ),
+                        ),
+                      ),
+                      Text(
+                        PlunesStrings.book,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#25B281"))),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+            itemCount: 5,
+          ),
+          _getLineWidget()
+        ],
+      ),
+    );
+  }
+
+  Widget _getProcedureWidgetList() {
+    return Container(
+      child: Column(
+        children: [
+          SizedBox(height: 20),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: _getHeadingWidget("Book Procedure"),
+            alignment: Alignment.topLeft,
+          ),
+          SizedBox(height: 13),
+          ListView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Card(
+                margin: EdgeInsets.only(
+                    left: 20, right: 20, bottom: index == 4 ? 20 : 8),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                child: Container(
+                  margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        color: Colors.transparent,
+                        child: CustomWidgets().getImageFromUrl(
+                            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+                            boxFit: BoxFit.fill),
+                      ),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          margin: EdgeInsets.symmetric(horizontal: 10),
+                          child: Text("child health checkup",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#595959")))),
+                        ),
+                      ),
+                      Text(
+                        PlunesStrings.book,
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#25B281"))),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+            itemCount: 5,
+          ),
+          _getLineWidget()
+        ],
+      ),
+    );
+  }
 }
 
 // ignore: must_be_immutable
@@ -1034,15 +1417,13 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            height: 8,
-                          ),
                           Text(
                             'Photos',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(
+                                fontSize: 20, color: PlunesColors.BLACKCOLOR),
                           ),
                           SizedBox(
-                            height: 8,
+                            height: 13,
                           ),
                           Container(
                             height: 170,
@@ -1117,6 +1498,12 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                               },
                             ),
                           ),
+                          SizedBox(height: 20),
+                          Container(
+                            width: double.infinity,
+                            color: PlunesColors.GREYCOLOR.withOpacity(0.3),
+                            height: 0.8,
+                          )
                         ],
                       ),
                 (widget.mediaContent == null ||
@@ -1127,12 +1514,13 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                     : Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(height: 8),
+                          SizedBox(height: 20),
                           Text(
                             'Videos',
-                            style: TextStyle(fontSize: 18),
+                            style: TextStyle(
+                                fontSize: 20, color: PlunesColors.BLACKCOLOR),
                           ),
-                          SizedBox(height: 8),
+                          SizedBox(height: 13),
                           Container(
                             height: 170,
                             child: ListView.builder(
@@ -1203,6 +1591,12 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                               },
                             ),
                           ),
+                          SizedBox(height: 20),
+                          Container(
+                            width: double.infinity,
+                            color: PlunesColors.GREYCOLOR.withOpacity(0.3),
+                            height: 0.8,
+                          )
                         ],
                       )
               ],
@@ -1237,15 +1631,12 @@ class _ReviewWidgetState extends State<ReviewWidget> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 20),
+                Text('Patient review',
+                    style: TextStyle(
+                        fontSize: 20, color: PlunesColors.BLACKCOLOR)),
                 SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  'Patient review',
-                  style: TextStyle(fontSize: 18),
-                ),
-                SizedBox(
-                  height: 8,
+                  height: 13,
                 ),
                 Container(
                   height: 170,
@@ -1356,105 +1747,93 @@ class AchievementWidget extends StatefulWidget {
 class _AchievementWidgetState extends State<AchievementWidget> {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-          height: 8,
-        ),
-        Text(
-          'Achievements',
-          style: TextStyle(fontSize: 18),
-        ),
-        SizedBox(
-          height: 8,
-        ),
-        (widget.achievements == null || widget.achievements.isEmpty)
-            ? Container(
-                height: AppConfig.verticalBlockSize * 10,
-                child: Center(
-                  child: Text("No achievements yet"),
-                ),
-              )
-            : Container(
-                height: 170,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: widget.achievements?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    return Card(
-                        margin: EdgeInsets.only(right: 20),
-                        child: Container(
-                          child: InkWell(
-                            onTap: () {
-                              List<Photo> photos = [];
-                              widget.achievements.forEach((element) {
-                                if (widget.achievements[index] == null ||
-                                    widget
-                                        .achievements[index].imageUrl.isEmpty ||
-                                    !(widget.achievements[index].imageUrl
-                                        .contains("http"))) {
-                                  photos.add(Photo(
-                                      assetName: plunesImages.achievementIcon));
-                                } else {
-                                  photos
-                                      .add(Photo(assetName: element.imageUrl));
-                                }
-                              });
-                              if (photos != null && photos.isNotEmpty) {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            PageSlider(photos, index)));
-                              }
-                            },
-                            child: Column(
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(6),
-                                        bottomRight: Radius.circular(6),
-                                        topLeft: Radius.circular(13),
-                                        topRight: Radius.circular(13)),
-                                    child: (widget.achievements[index] ==
-                                                null ||
-                                            widget.achievements[index].imageUrl
-                                                    .isEmpty &&
-                                                !(widget.achievements[index]
-                                                    .imageUrl
-                                                    .contains("http")))
-                                        ? Container(
-                                            margin: EdgeInsets.symmetric(
-                                                vertical: AppConfig
-                                                        .verticalBlockSize *
-                                                    4,
-                                                horizontal: AppConfig
-                                                        .horizontalBlockSize *
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 20),
+          Text('Achievements',
+              style: TextStyle(fontSize: 20, color: PlunesColors.BLACKCOLOR)),
+          SizedBox(
+            height: 13,
+          ),
+          Container(
+            height: 170,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: widget.achievements?.length ?? 0,
+              itemBuilder: (context, index) {
+                return Card(
+                    margin: EdgeInsets.only(right: 20),
+                    child: Container(
+                      child: InkWell(
+                        onTap: () {
+                          List<Photo> photos = [];
+                          widget.achievements.forEach((element) {
+                            if (widget.achievements[index] == null ||
+                                widget.achievements[index].imageUrl.isEmpty ||
+                                !(widget.achievements[index].imageUrl
+                                    .contains("http"))) {
+                              photos.add(Photo(
+                                  assetName: plunesImages.achievementIcon));
+                            } else {
+                              photos.add(Photo(assetName: element.imageUrl));
+                            }
+                          });
+                          if (photos != null && photos.isNotEmpty) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        PageSlider(photos, index)));
+                          }
+                        },
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(6),
+                                    bottomRight: Radius.circular(6),
+                                    topLeft: Radius.circular(13),
+                                    topRight: Radius.circular(13)),
+                                child: (widget.achievements[index] == null ||
+                                        widget.achievements[index].imageUrl
+                                                .isEmpty &&
+                                            !(widget
+                                                .achievements[index].imageUrl
+                                                .contains("http")))
+                                    ? Container(
+                                        margin: EdgeInsets.symmetric(
+                                            vertical:
+                                                AppConfig.verticalBlockSize * 4,
+                                            horizontal:
+                                                AppConfig.horizontalBlockSize *
                                                     10),
-                                            child: Image.asset(
-                                              plunesImages.achievementIcon,
-                                            ))
-                                        : CustomWidgets().getImageFromUrl(
-                                            widget.achievements[index].imageUrl,
-                                            boxFit: BoxFit.cover),
-                                  ),
-                                ),
-                              ],
+                                        child: Image.asset(
+                                          plunesImages.achievementIcon,
+                                        ))
+                                    : CustomWidgets().getImageFromUrl(
+                                        widget.achievements[index].imageUrl,
+                                        boxFit: BoxFit.cover),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(6),
-                                bottomRight: Radius.circular(6),
-                                topLeft: Radius.circular(13),
-                                topRight: Radius.circular(13))));
-                  },
-                ),
-              ),
-      ],
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(6),
+                            bottomRight: Radius.circular(6),
+                            topLeft: Radius.circular(13),
+                            topRight: Radius.circular(13))));
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
