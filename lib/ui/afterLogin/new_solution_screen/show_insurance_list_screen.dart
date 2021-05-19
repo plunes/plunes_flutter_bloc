@@ -12,8 +12,9 @@ import 'package:plunes/res/ColorsFile.dart';
 class ShowInsuranceListScreen extends BaseActivity {
   final String profId;
   final bool shouldShowAppBar;
+  Function func;
 
-  ShowInsuranceListScreen({this.profId, this.shouldShowAppBar});
+  ShowInsuranceListScreen({this.profId, this.shouldShowAppBar, this.func});
 
   @override
   _ShowInsuranceListScreenState createState() =>
@@ -125,7 +126,7 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 3.5),
             child: Text(
-              "Insurance accepted in facility",
+              "Check your insurance provider",
               style: TextStyle(fontSize: 20, color: PlunesColors.BLACKCOLOR),
             ),
             alignment: Alignment.topLeft,
@@ -133,7 +134,9 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
           Container(
             margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.4),
           ),
-          _getSearchBar(),
+          (widget.shouldShowAppBar != null && !(widget.shouldShowAppBar))
+              ? Container()
+              : _getSearchBar(),
           Expanded(child: _getInsuranceListWidget())
         ],
       ),
@@ -143,66 +146,69 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
   Widget _getSearchBar() {
     return Column(
       children: [
-        Container(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Expanded(
-                  child: TextField(
-                controller: _policySearchController,
-                onChanged: (text) {
-                  if (text != null &&
-                      text.trim().isNotEmpty &&
-                      _insuranceModel != null &&
-                      _insuranceModel.data != null &&
-                      _insuranceModel.data.isNotEmpty) {
-                    _searchedItemList = [];
-                    _insuranceModel.data.forEach((element) {
-                      if (element.insurancePartner != null &&
-                          element.insurancePartner.trim().isNotEmpty &&
-                          element.insurancePartner
-                              .toLowerCase()
-                              .contains(text.trim().toLowerCase())) {
-                        _searchedItemList.add(element);
-                      }
-                    });
-                    _setState();
-                  } else if (text == null || text.trim().isEmpty) {
-                    _searchedItemList = [];
-                    _setState();
-                  }
-                },
-                decoration: InputDecoration(
-                  prefixIcon: Container(
-                    margin: EdgeInsets.only(right: 8),
-                    child: Icon(
-                      Icons.search,
-                      color: PlunesColors.BLACKCOLOR,
+        Card(
+          color: Color(CommonMethods.getColorHexFromStr("#FAFAFA")),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(
+                  color: Color(CommonMethods.getColorHexFromStr("#DDDDDD")),
+                  width: 1)),
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                    child: TextField(
+                  controller: _policySearchController,
+                  onChanged: (text) {
+                    if (text != null &&
+                        text.trim().isNotEmpty &&
+                        _insuranceModel != null &&
+                        _insuranceModel.data != null &&
+                        _insuranceModel.data.isNotEmpty) {
+                      _searchedItemList = [];
+                      _insuranceModel.data.forEach((element) {
+                        if (element.insurancePartner != null &&
+                            element.insurancePartner.trim().isNotEmpty &&
+                            element.insurancePartner
+                                .toLowerCase()
+                                .contains(text.trim().toLowerCase())) {
+                          _searchedItemList.add(element);
+                        }
+                      });
+                      _setState();
+                    } else if (text == null || text.trim().isEmpty) {
+                      _searchedItemList = [];
+                      _setState();
+                    }
+                  },
+                  decoration: InputDecoration(
+                    prefixIcon: Container(
+                      margin: EdgeInsets.only(right: 8),
+                      child: Icon(
+                        Icons.search,
+                        color: PlunesColors.BLACKCOLOR,
+                      ),
                     ),
+                    prefixIconConstraints: BoxConstraints(),
+                    hintText: "Search your insurance provider",
+                    isDense: false,
+                    hintStyle: TextStyle(
+                        fontSize: 12,
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#333333"))),
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
                   ),
-                  prefixIconConstraints: BoxConstraints(),
-                  hintText: "Search insurance provider",
-                  isDense: false,
-                  hintStyle: TextStyle(
-                      fontSize: 12,
-                      color:
-                          Color(CommonMethods.getColorHexFromStr("#333333"))),
-                  border: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
-                ),
-              )),
-            ],
+                )),
+              ],
+            ),
           ),
         ),
-        Container(
-          width: double.infinity,
-          color: Color(CommonMethods.getColorHexFromStr("#707070")),
-          height: 1,
-          margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 3),
-        )
       ],
     );
   }
@@ -217,19 +223,60 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
 
   Widget _getInsuranceListWidget() {
     List<InsuranceProvider> _list = [];
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 2),
-      padding: EdgeInsets.symmetric(horizontal: 3.5),
-      constraints: BoxConstraints(
-        maxHeight: AppConfig.verticalBlockSize * 35,
-        minHeight: AppConfig.verticalBlockSize * 0.5,
-      ),
-      child: _getILISTWidget((_policySearchController.text.trim().isNotEmpty &&
-              (_searchedItemList == null || _searchedItemList.isEmpty))
-          ? _list
-          : (_searchedItemList != null && _searchedItemList.isNotEmpty)
-              ? _searchedItemList
-              : _insuranceModel.data),
+    return Column(
+      children: [
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 2),
+            padding: EdgeInsets.symmetric(horizontal: 3.5),
+            constraints: BoxConstraints(
+              maxHeight: AppConfig.verticalBlockSize * 35,
+              minHeight: AppConfig.verticalBlockSize * 0.5,
+            ),
+            child: _getILISTWidget(_getListItems(_list)),
+          ),
+        ),
+        (widget.func != null &&
+                _getListItems(_list) != null &&
+                _getListItems(_list).length > 10)
+            ? Container(
+                margin: EdgeInsets.only(bottom: 12),
+                child: InkWell(
+                  onDoubleTap: () {},
+                  onTap: () {
+                    widget.func();
+                    return;
+                  },
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child: Container(
+                    padding: EdgeInsets.all(8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "View More",
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#25B281"))),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 3),
+                          child: Icon(Icons.keyboard_arrow_down,
+                              size: 18,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#25B281"))),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : Container()
+      ],
     );
   }
 
@@ -264,8 +311,18 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
             ),
           );
         },
-        itemCount: list?.length ?? 0,
+        itemCount:
+            (widget.func != null && list.length > 10) ? 10 : list?.length ?? 0,
       ),
     );
+  }
+
+  List<InsuranceProvider> _getListItems(List<InsuranceProvider> list) {
+    return (_policySearchController.text.trim().isNotEmpty &&
+            (_searchedItemList == null || _searchedItemList.isEmpty))
+        ? list
+        : (_searchedItemList != null && _searchedItemList.isNotEmpty)
+            ? _searchedItemList
+            : _insuranceModel.data;
   }
 }

@@ -144,10 +144,13 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: scaffoldKey,
-        appBar: widget.getAppBar(context, plunesStrings.profile, true),
-        body: _getBodyWidget());
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+          key: scaffoldKey,
+          appBar: widget.getAppBar(context, plunesStrings.profile, true),
+          body: _getBodyWidget()),
+    );
   }
 
   Widget _getLineWidget() {
@@ -379,7 +382,16 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
           _getTestConsProcedureWidgets(),
           Container(
               child: ShowInsuranceListScreen(
-                  profId: widget.userID, shouldShowAppBar: false)),
+            profId: widget.userID,
+            shouldShowAppBar: false,
+            func: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ShowInsuranceListScreen(profId: widget.userID)));
+            },
+          )),
           (_profileResponse.user.achievements != null &&
                   _profileResponse.user.achievements.isNotEmpty)
               ? AchievementWidget(_profileResponse.user.achievements)

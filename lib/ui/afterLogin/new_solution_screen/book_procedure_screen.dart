@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 
@@ -9,24 +10,55 @@ class BookProcedureScreen extends BaseActivity {
 }
 
 class _TestBookingScreenState extends BaseState<BookProcedureScreen> {
+  TextEditingController _textController;
+
+  _onTextClear() {}
+
+  @override
+  void initState() {
+    _textController = TextEditingController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _textController?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        key: scaffoldKey,
-        appBar: widget.getAppBar(context, "Book Procedure", true),
-        body: _getBodyWidget());
+    return SafeArea(
+      top: false,
+      child: Scaffold(
+          key: scaffoldKey,
+          appBar: widget.getAppBar(context, "Book Procedure", true),
+          body: _getBodyWidget()),
+    );
   }
 
   Widget _getBodyWidget() {
     return Container(
-      child: ListView.builder(
-        shrinkWrap: true,
-        padding: EdgeInsets.zero,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return CommonWidgets().getBookProcedureWidget(index);
-        },
-        itemCount: 5,
+      child: Column(
+        children: [
+          Container(
+            margin: EdgeInsets.symmetric(
+                vertical: AppConfig.verticalBlockSize * 1.5, horizontal: 20),
+            child: CommonWidgets().getSearchBarForTestConsProcedureScreens(
+                _textController, "Search procedure", () => _onTextClear()),
+          ),
+          Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return CommonWidgets().getBookProcedureWidget(index);
+              },
+              itemCount: 5,
+            ),
+          ),
+        ],
       ),
     );
   }
