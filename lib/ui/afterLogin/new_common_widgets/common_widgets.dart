@@ -3,6 +3,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -3255,6 +3256,292 @@ class CommonWidgets {
                         ))),
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getConsultationWidget(int index){
+    return Card(
+      margin: EdgeInsets.only(
+          left: 20, right: 20, bottom: index == 4 ? 20 : 8),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      child: Container(
+        margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              children: [
+                Container(
+                  height: 130,
+                  width: 150,
+                  color: Colors.transparent,
+                  child: ClipRRect(
+                    borderRadius:
+                    BorderRadius.all(Radius.circular(5)),
+                    child: CustomWidgets().getImageFromUrl(
+                        "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+                        boxFit: BoxFit.fill),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 7),
+                  child: Text(
+                    "Next available at",
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Color(CommonMethods.getColorHexFromStr(
+                            "#107C6F"))),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 7, bottom: 7),
+                  child: Text(
+                    "12 : 30 PM, Today",
+                    style: TextStyle(
+                        fontSize: 14, color: PlunesColors.BLACKCOLOR),
+                  ),
+                ),
+              ],
+            ),
+            Flexible(
+                child: Container(
+                  margin: EdgeInsets.only(left: 7, top: 5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child: Text(
+                          "Dr. Aashish Chaudhry",
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontSize: 18,
+                              color: PlunesColors.BLACKCOLOR),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 5),
+                        child: Text(
+                          "Neurologist",
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr(
+                                      "#434343"))),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(15)),
+                            color: Color(CommonMethods.getColorHexFromStr(
+                                "#F3F4F9"))),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 3),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: RatingBar(
+                                initialRating: 5,
+                                ignoreGestures: true,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemSize: 15,
+                                itemPadding:
+                                EdgeInsets.symmetric(horizontal: .3),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Color(
+                                      CommonMethods.getColorHexFromStr(
+                                          "#FEC30F")),
+                                ),
+                                unratedColor: PlunesColors.GREYCOLOR,
+                                onRatingUpdate: (rating) {},
+                              ),
+                            ),
+                            Container(
+                              child: Text("5",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(CommonMethods
+                                          .getColorHexFromStr(
+                                          "#434343")))),
+                              margin: EdgeInsets.only(left: 3),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Text(
+                          "20 year of experience",
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr(
+                                      "#000000"))),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                "Consultation Fees ",
+                                maxLines: 2,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#000000"))),
+                              ),
+                            ),
+                            Text(
+                              ": \u20B9 400",
+                              maxLines: 2,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(
+                                      CommonMethods.getColorHexFromStr(
+                                          "#000000"))),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 12),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: AppConfig.horizontalBlockSize * 5,
+                            vertical: AppConfig.verticalBlockSize * 1.2),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                            BorderRadius.all(Radius.circular(6)),
+                            border: Border.all(
+                                color: Color(
+                                    CommonMethods.getColorHexFromStr(
+                                        "#25B281")),
+                                width: 1),
+                            color: Color(CommonMethods.getColorHexFromStr(
+                                "#00000033"))),
+                        child: Text(PlunesStrings.bookAppointmentText,
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(
+                                    CommonMethods.getColorHexFromStr(
+                                        "#107C6F")))),
+                      )
+                    ],
+                  ),
+                )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getBookTestWidget(int index){
+    return Card(
+      margin: EdgeInsets.only(
+          left: 20, right: 20, bottom: index == 4 ? 20 : 8),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      child: Container(
+        margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
+        child: Row(
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              color: Colors.transparent,
+              child: CustomWidgets().getImageFromUrl(
+                  "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+                  boxFit: BoxFit.fill),
+            ),
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("child health checkup",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr(
+                                    "#595959")))),
+                    Text("400",
+                        style: TextStyle(
+                            fontSize: 16,
+                            color: Color(
+                                CommonMethods.getColorHexFromStr(
+                                    "#2A2A2A"))))
+                  ],
+                ),
+              ),
+            ),
+            Text(
+              PlunesStrings.book,
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Color(
+                      CommonMethods.getColorHexFromStr("#25B281"))),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getBookProcedureWidget(int index){
+    return Card(
+      margin: EdgeInsets.only(
+          left: 20, right: 20, bottom: index == 4 ? 20 : 8),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      child: Container(
+        margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
+        child: Row(
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              color: Colors.transparent,
+              child: CustomWidgets().getImageFromUrl(
+                  "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+                  boxFit: BoxFit.fill),
+            ),
+            Expanded(
+              child: Container(
+                alignment: Alignment.topLeft,
+                margin: EdgeInsets.symmetric(horizontal: 10),
+                child: Text("child health checkup",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Color(CommonMethods.getColorHexFromStr(
+                            "#595959")))),
+              ),
+            ),
+            Text(
+              PlunesStrings.book,
+              style: TextStyle(
+                  fontSize: 16,
+                  color: Color(
+                      CommonMethods.getColorHexFromStr("#25B281"))),
+            )
           ],
         ),
       ),

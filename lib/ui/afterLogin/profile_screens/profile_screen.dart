@@ -3,6 +3,7 @@ import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -20,6 +21,10 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/GalleryScreen.dart';
 import 'package:plunes/ui/afterLogin/doc_hos_screen/facility_detail_screen.dart';
+import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/book_consultation_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/book_procedure_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/book_test_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/show_insurance_list_screen.dart';
 import 'package:readmore/readmore.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -1172,69 +1177,56 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
             padding: EdgeInsets.zero,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return Card(
-                margin: EdgeInsets.only(
-                    left: 20, right: 20, bottom: index == 4 ? 20 : 8),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-                child: Container(
-                  margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
-                  child: Row(
-                    children: [
-                      Column(
-                        children: [
-                          Container(
-                            height: 130,
-                            width: 150,
-                            color: Colors.transparent,
-                            child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5)),
-                              child: CustomWidgets().getImageFromUrl(
-                                  "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-                                  boxFit: BoxFit.fill),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 7),
-                            child: Text(
-                              "Next available at",
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#107C6F"))),
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 7, bottom: 7),
-                            child: Text(
-                              "12 : 30 PM, Today",
-                              style: TextStyle(
-                                  fontSize: 14, color: PlunesColors.BLACKCOLOR),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Flexible(
-                          child: Container(
-                        margin: EdgeInsets.only(left: 5),
-                        child: Column(
-                          children: [
-                            Container(
-                              child: Text("Dr. Aashish Chaudhry"),
-                            )
-                          ],
-                        ),
-                      )),
-                    ],
-                  ),
-                ),
-              );
+              return CommonWidgets().getConsultationWidget(index);
             },
             itemCount: 5,
           ),
+          _getViewMoreButton(() {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => BookConsultationScreen()));
+          }),
           _getLineWidget()
         ],
+      ),
+    );
+  }
+
+  Widget _getViewMoreButton(Function func) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      child: InkWell(
+        onDoubleTap: () {},
+        onTap: () {
+          if (func != null) {
+            func();
+          }
+        },
+        focusColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        child: Container(
+          padding: EdgeInsets.all(8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "View More",
+                style: TextStyle(
+                    fontSize: 12,
+                    color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 3),
+                child: Icon(Icons.keyboard_arrow_down,
+                    size: 18,
+                    color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -1255,59 +1247,14 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
             padding: EdgeInsets.zero,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return Card(
-                margin: EdgeInsets.only(
-                    left: 20, right: 20, bottom: index == 4 ? 20 : 8),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-                child: Container(
-                  margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        color: Colors.transparent,
-                        child: CustomWidgets().getImageFromUrl(
-                            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-                            boxFit: BoxFit.fill),
-                      ),
-                      Expanded(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("child health checkup",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#595959")))),
-                              Text("400",
-                                  style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(
-                                          CommonMethods.getColorHexFromStr(
-                                              "#2A2A2A"))))
-                            ],
-                          ),
-                        ),
-                      ),
-                      Text(
-                        PlunesStrings.book,
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#25B281"))),
-                      )
-                    ],
-                  ),
-                ),
-              );
+              return CommonWidgets().getBookTestWidget(index);
             },
             itemCount: 5,
           ),
+          _getViewMoreButton(() {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => BookTestScreen()));
+          }),
           _getLineWidget()
         ],
       ),
@@ -1330,49 +1277,14 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
             padding: EdgeInsets.zero,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return Card(
-                margin: EdgeInsets.only(
-                    left: 20, right: 20, bottom: index == 4 ? 20 : 8),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-                child: Container(
-                  margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        color: Colors.transparent,
-                        child: CustomWidgets().getImageFromUrl(
-                            "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-                            boxFit: BoxFit.fill),
-                      ),
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.topLeft,
-                          margin: EdgeInsets.symmetric(horizontal: 10),
-                          child: Text("child health checkup",
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#595959")))),
-                        ),
-                      ),
-                      Text(
-                        PlunesStrings.book,
-                        style: TextStyle(
-                            fontSize: 16,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#25B281"))),
-                      )
-                    ],
-                  ),
-                ),
-              );
+              return CommonWidgets().getBookProcedureWidget(index);
             },
             itemCount: 5,
           ),
+          _getViewMoreButton(() {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => BookProcedureScreen()));
+          }),
           _getLineWidget()
         ],
       ),
