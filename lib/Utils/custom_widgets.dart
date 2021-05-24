@@ -767,9 +767,10 @@ class CustomWidgets {
   }
 
   EdgeInsetsGeometry getDefaultPaddingForScreens() {
-    return EdgeInsets.symmetric(
-        horizontal: AppConfig.horizontalBlockSize * 6,
-        vertical: AppConfig.verticalBlockSize * 3);
+    return EdgeInsets.only(
+        left: AppConfig.horizontalBlockSize * 6,
+        right: AppConfig.horizontalBlockSize * 6,
+        top: AppConfig.verticalBlockSize * 3);
   }
 
   EdgeInsetsGeometry getDefaultPaddingForScreensVertical(double size) {

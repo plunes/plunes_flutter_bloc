@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
-import 'package:dotted_line/dotted_line.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +24,6 @@ import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
 import 'package:plunes/models/new_solution_model/insurance_model.dart';
-import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -34,12 +31,9 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
-import 'package:plunes/resources/network/Urls.dart';
 import 'package:plunes/ui/afterLogin/appointment_screens/appointment_main_screen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 import 'package:plunes/ui/afterLogin/cart_screens/add_to_cart_main_screen.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/doc_profile.dart';
-import 'package:plunes/ui/afterLogin/profile_screens/hospital_profile.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart' as latest;
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 // import 'package:upi_pay/upi_pay.dart';
@@ -248,7 +242,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
             appBar: _getAppBar(),
             body: Builder(builder: (context) {
               return Container(
-                  padding: CustomWidgets().getDefaultPaddingForScreens(),
                   child: (_isFetchingDocHosInfo ||
                           _isFetchingUserInfo ||
                           _fetchingInsuranceList)
@@ -269,32 +262,51 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 
   Widget _getBody() {
     return Container(
-      child: ListView(
-        shrinkWrap: true,
-        children: <Widget>[
+      child: Column(
+        children: [
+          Flexible(
+            child: Container(
+              padding: CustomWidgets().getDefaultPaddingForScreens(),
+              child: ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        vertical: AppConfig.verticalBlockSize * 1.5),
+                    child: _getDoctorDetailsView(),
+                  ),
+                  Container(
+                    height: 1,
+                    color: Color(CommonMethods.getColorHexFromStr("#C4C4C4"))
+                        .withOpacity(0.33),
+                    width: double.infinity,
+                  ),
+                  (_insuranceModel == null ||
+                          _insuranceModel.data == null ||
+                          _insuranceModel.data.isEmpty)
+                      ? _getPatientDetailWidget()
+                      : _getInsuranceTabBar(),
+                  _getDatePicker(),
+                  widget.getSpacer(AppConfig.verticalBlockSize * 1.8,
+                      AppConfig.verticalBlockSize * 1.8),
+                  _getSlotsArray(),
+                ],
+              ),
+            ),
+          ),
           Container(
-            padding: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 1.5),
-            child: _getDoctorDetailsView(),
+            margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
+            width: double.infinity,
+            height: 0.5,
+            color: PlunesColors.GREYCOLOR,
           ),
-          DottedLine(
-            dashColor: Color(CommonMethods.getColorHexFromStr("#7070703B")),
-            lineThickness: 1,
+          Container(
+            margin: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 6,
+                right: AppConfig.horizontalBlockSize * 6,
+                bottom: AppConfig.verticalBlockSize * 2),
+            child: _getPayNowWidget(),
           ),
-          (_insuranceModel == null ||
-                  _insuranceModel.data == null ||
-                  _insuranceModel.data.isEmpty)
-              ? _getPatientDetailWidget()
-              : _getInsuranceTabBar(),
-          _getDatePicker(),
-          widget.getSpacer(AppConfig.verticalBlockSize * 1.8,
-              AppConfig.verticalBlockSize * 1.8),
-          _getSlotsArray(),
-          widget.getSpacer(
-              AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
-//          _getSelectedSlot(),
-          _getApplyCouponAndCashWidget(),
-          _getPayNowWidget()
         ],
       ),
     );
@@ -791,26 +803,37 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
   _getPayNowWidget() {
     return Padding(
       padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
-      child: Column(
-        children: <Widget>[
-          widget.appointmentModel == null
-              ? Center(
-                  child: Text(
-                    "Make a payment of  ${_calcPriceToShow()}/- to confirm the booking",
-                    style: TextStyle(fontSize: AppConfig.smallFont),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(
+            bottom: AppConfig.verticalBlockSize * 1.5,
+            top: AppConfig.verticalBlockSize * 0.5),
+        child: widget.appointmentModel == null
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      child: Column(
+                        children: [
+                          Text("\u20B9 ${_calcPriceToShow()}",
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                  color: PlunesColors.BLACKCOLOR)),
+                          Text("Fees",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.normal,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#107C6F"))))
+                        ],
+                      ),
+                    ),
                   ),
-                )
-              : Container(),
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.only(
-                bottom: AppConfig.verticalBlockSize * 1.5,
-                top: AppConfig.verticalBlockSize * 2.3),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                widget.appointmentModel == null
-                    ? StreamBuilder<RequestState>(
+                  Expanded(
+                    child: StreamBuilder<RequestState>(
                         stream: _cartMainBloc.baseStream,
                         builder: (context, snapshot) {
                           if (snapshot.data != null &&
@@ -852,6 +875,10 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                             margin: EdgeInsets.only(
                                 right: AppConfig.horizontalBlockSize * 2.5),
                             child: InkWell(
+                              splashColor: Colors.transparent,
+                              highlightColor: Colors.transparent,
+                              hoverColor: Colors.transparent,
+                              focusColor: Colors.transparent,
                               onTap: () {
                                 if (_selectedDate != null &&
                                     _selectedTimeSlot != null &&
@@ -885,90 +912,87 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                               onDoubleTap: () {},
                               child: CustomWidgets().getRoundedButton(
                                   PlunesStrings.bookLater,
-                                  AppConfig.horizontalBlockSize * 8,
-                                  PlunesColors.WHITECOLOR,
+                                  8,
+                                  Color(CommonMethods.getColorHexFromStr(
+                                      "#25B281")),
                                   AppConfig.horizontalBlockSize * 3,
                                   AppConfig.verticalBlockSize * 1,
-                                  PlunesColors.SPARKLINGGREEN,
+                                  PlunesColors.WHITECOLOR,
                                   borderColor: PlunesColors.SPARKLINGGREEN,
                                   hasBorder: true),
                             ),
                           );
-                        })
-                    : Container(),
-                widget.appointmentModel == null
-                    ? Container()
-                    : StreamBuilder<Object>(
-                        stream: _bookingBloc.rescheduleAppointmentStream,
-                        builder: (context, snapshot) {
-                          if (snapshot.data != null &&
-                              snapshot.data is RequestInProgress) {
-                            return CustomWidgets().getProgressIndicator();
-                          }
-                          if (snapshot.data != null &&
-                              snapshot.data is RequestSuccess) {
-                            Future.delayed(Duration(milliseconds: 20))
-                                .then((value) async {
-                              _showInSnackBar(
-                                  PlunesStrings.rescheduledSuccessMessage,
-                                  shouldPop: true);
-                            });
-                          }
-                          if (snapshot.data != null &&
-                              snapshot.data is RequestFailed) {
-                            RequestFailed requestFailed = snapshot.data;
-                            Future.delayed(Duration(milliseconds: 20))
-                                .then((value) async {
-                              _showInSnackBar(requestFailed.failureCause ??
-                                  PlunesStrings.rescheduledFailedMessage);
-                            });
-                            _bookingBloc.addStateInRescheduledProvider(null);
-                          }
-                          return InkWell(
-                            onTap: () {
-                              if (_selectedDate != null &&
-                                  _selectedTimeSlot != null &&
-                                  _selectedTimeSlot != PlunesStrings.noSlot) {
-                                if (_hasFilledDetails())
-                                  _doPaymentRelatedQueries();
-                              } else {
-                                _showInSnackBar(
-                                    PlunesStrings.pleaseSelectValidSlot);
-                              }
-                              return;
-                            },
-                            onDoubleTap: () {},
-                            child: CustomWidgets().getRoundedButton(
-                                widget.appointmentModel == null
-                                    ? PlunesStrings.payNow
-                                    : PlunesStrings.reschedule,
-                                AppConfig.horizontalBlockSize * 8,
-                                (_selectedDate != null &&
-                                        _selectedTimeSlot != null &&
-                                        _selectedTimeSlot !=
-                                            PlunesStrings.noSlot)
-                                    ? PlunesColors.SPARKLINGGREEN
-                                    : PlunesColors.WHITECOLOR,
-                                AppConfig.horizontalBlockSize * 3,
-                                AppConfig.verticalBlockSize * 1,
-                                (_selectedDate != null &&
-                                        _selectedTimeSlot != null &&
-                                        _selectedTimeSlot !=
-                                            PlunesStrings.noSlot)
-                                    ? PlunesColors.WHITECOLOR
-                                    : PlunesColors.BLACKCOLOR,
-                                hasBorder: (_selectedDate != null &&
-                                        _selectedTimeSlot != null &&
-                                        _selectedTimeSlot !=
-                                            PlunesStrings.noSlot)
-                                    ? false
-                                    : true),
-                          );
                         }),
-              ],
-            ),
-          ),
-        ],
+                  )
+                ],
+              )
+            : StreamBuilder<Object>(
+                stream: _bookingBloc.rescheduleAppointmentStream,
+                builder: (context, snapshot) {
+                  if (snapshot.data != null &&
+                      snapshot.data is RequestInProgress) {
+                    return CustomWidgets().getProgressIndicator();
+                  }
+                  if (snapshot.data != null &&
+                      snapshot.data is RequestSuccess) {
+                    Future.delayed(Duration(milliseconds: 20))
+                        .then((value) async {
+                      _showInSnackBar(PlunesStrings.rescheduledSuccessMessage,
+                          shouldPop: true);
+                    });
+                  }
+                  if (snapshot.data != null && snapshot.data is RequestFailed) {
+                    RequestFailed requestFailed = snapshot.data;
+                    Future.delayed(Duration(milliseconds: 20))
+                        .then((value) async {
+                      _showInSnackBar(requestFailed.failureCause ??
+                          PlunesStrings.rescheduledFailedMessage);
+                    });
+                    _bookingBloc.addStateInRescheduledProvider(null);
+                  }
+                  return InkWell(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    onTap: () {
+                      if (_selectedDate != null &&
+                          _selectedTimeSlot != null &&
+                          _selectedTimeSlot != PlunesStrings.noSlot) {
+                        if (_hasFilledDetails()) _doPaymentRelatedQueries();
+                      } else {
+                        _showInSnackBar(PlunesStrings.pleaseSelectValidSlot);
+                      }
+                      return;
+                    },
+                    onDoubleTap: () {},
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: AppConfig.horizontalBlockSize * 25),
+                      child: CustomWidgets().getRoundedButton(
+                          PlunesStrings.reschedule,
+                          8,
+                          (_selectedDate != null &&
+                                  _selectedTimeSlot != null &&
+                                  _selectedTimeSlot != PlunesStrings.noSlot)
+                              ? Color(
+                                  CommonMethods.getColorHexFromStr("#25B281"))
+                              : PlunesColors.WHITECOLOR,
+                          AppConfig.horizontalBlockSize * 3,
+                          AppConfig.verticalBlockSize * 1,
+                          (_selectedDate != null &&
+                                  _selectedTimeSlot != null &&
+                                  _selectedTimeSlot != PlunesStrings.noSlot)
+                              ? PlunesColors.WHITECOLOR
+                              : PlunesColors.BLACKCOLOR,
+                          hasBorder: (_selectedDate != null &&
+                                  _selectedTimeSlot != null &&
+                                  _selectedTimeSlot != PlunesStrings.noSlot)
+                              ? false
+                              : true),
+                    ),
+                  );
+                }),
       ),
     );
   }
@@ -2204,7 +2228,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                                 child: TextField(
                                     controller: _ageController,
                                     inputFormatters: [
-                                      WhitelistingTextInputFormatter.digitsOnly
+                                      FilteringTextInputFormatter.digitsOnly
                                     ],
                                     maxLength: 3,
                                     style: TextStyle(
@@ -2470,9 +2494,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                   padding: EdgeInsets.symmetric(
                       vertical: AppConfig.verticalBlockSize * 1.5),
                   child: _getPatientDetailsFillUpView()),
-              DottedLine(
-                dashColor: Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                lineThickness: 1,
+              Container(
+                height: 1,
+                color: Color(CommonMethods.getColorHexFromStr("#C4C4C4"))
+                    .withOpacity(0.33),
+                width: double.infinity,
               ),
               Container(
                   margin:
@@ -2831,10 +2857,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
         ),
         _insuranceProvider == null
             ? Container(
-                child: DottedLine(
-                  dashColor:
-                      Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                  lineThickness: 1,
+                child: Container(
+                  height: 1,
+                  color: Color(CommonMethods.getColorHexFromStr("#C4C4C4"))
+                      .withOpacity(0.33),
+                  width: double.infinity,
                 ),
                 margin: EdgeInsets.symmetric(vertical: 2.5, horizontal: 3),
               )

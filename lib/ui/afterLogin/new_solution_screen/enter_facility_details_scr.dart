@@ -279,22 +279,41 @@ class _EnterAdditionalUserDetailScrState
               child: Card(
                 elevation: 4.0,
                 color: Colors.white,
+                shadowColor: Color(CommonMethods.getColorHexFromStr("#E7E7E7")),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(24))),
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
                 margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 8),
+                    horizontal: AppConfig.horizontalBlockSize * 6),
                 child: Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 6,
+                      horizontal: AppConfig.horizontalBlockSize * 3,
                       vertical: AppConfig.verticalBlockSize * 1.6),
-                  child: Text(
-                    widget.catalogueData?.service ?? "",
-                    textAlign: TextAlign.left,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                  child: Row(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(
+                            right: AppConfig.horizontalBlockSize * 3),
+                        child: Image.asset(
+                          PlunesImages.searchIcon,
+                          color: Color(
+                            CommonMethods.getColorHexFromStr("#B1B1B1"),
+                          ),
+                          width: AppConfig.verticalBlockSize * 2.0,
+                          height: AppConfig.verticalBlockSize * 2.0,
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          widget.catalogueData?.service ?? "",
+                          textAlign: TextAlign.left,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -711,8 +730,8 @@ class _EnterAdditionalUserDetailScrState
                       horizontal: AppConfig.horizontalBlockSize * 3.5,
                       vertical: AppConfig.verticalBlockSize * 1.5),
                   constraints: BoxConstraints(
-                      minHeight: AppConfig.verticalBlockSize * 15,
-                      maxHeight: AppConfig.verticalBlockSize * 25),
+                      minHeight: AppConfig.verticalBlockSize * 10,
+                      maxHeight: AppConfig.verticalBlockSize * 20),
                   child: Row(
                     children: [
                       Flexible(
@@ -742,7 +761,7 @@ class _EnterAdditionalUserDetailScrState
               margin: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 2.5),
               child: Text(
-                "Upload Your Medical Profile Below",
+                "Upload pictures of your medical concern to get best prices from medical professionals",
                 textAlign: TextAlign.left,
                 style: TextStyle(
                     color: PlunesColors.BLACKCOLOR.withOpacity(0.8),
@@ -768,6 +787,16 @@ class _EnterAdditionalUserDetailScrState
                           ? _getReportWithBackground()
                           : _getUploadReportCard()),
                 ],
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              margin:
+                  EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2.5),
+              child: Text(
+                "Note* - Make sure to upload your correct medical reports & pictures as we share them with medical professionals to get best treatment details for you.",
+                textAlign: TextAlign.left,
+                style: TextStyle(fontSize: 11.5),
               ),
             ),
             _getPremiumBenefitsForUserWidget()
@@ -2007,7 +2036,7 @@ class _EnterAdditionalUserDetailScrState
         Container(
           alignment: Alignment.centerLeft,
           child: Text(
-            "Premium Benefits for Our Users",
+            "Premium benefits for our users",
             style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
           ),
         ),

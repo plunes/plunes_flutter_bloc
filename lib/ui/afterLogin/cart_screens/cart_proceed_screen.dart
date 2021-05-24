@@ -546,7 +546,7 @@ class _CartProceedScreenState extends BaseState<CartProceedScreen> {
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              "Premium Benefits for Our Users",
+              "Premium benefits for our users",
               style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
             ),
           ),

@@ -116,14 +116,39 @@ class CommonWidgets {
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
-                          // Text(
-                          //   CommonMethods.getStringInCamelCase(service?),
-                          //   style: TextStyle(
-                          //     fontSize: 18,
-                          //     color: Color(
-                          //         CommonMethods.getColorHexFromStr("#707070")),
-                          //   ),
-                          // ),
+                          (service != null &&
+                                  service.address != null &&
+                                  service.address.trim().isNotEmpty)
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(right: 5),
+                                        child: Icon(
+                                          Icons.location_on,
+                                          size: 18,
+                                          color: PlunesColors.BLACKCOLOR,
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          service?.address?.trim() ?? '',
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#797979")),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Container(),
                         ],
                       )),
                       Container(
@@ -280,14 +305,39 @@ class CommonWidgets {
                               color: PlunesColors.BLACKCOLOR,
                             ),
                           ),
-                          // Text(
-                          //   CommonMethods.getStringInCamelCase(service?),
-                          //   style: TextStyle(
-                          //     fontSize: 18,
-                          //     color: Color(
-                          //         CommonMethods.getColorHexFromStr("#707070")),
-                          //   ),
-                          // ),
+                          (service != null &&
+                                  service.address != null &&
+                                  service.address.trim().isNotEmpty)
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(right: 5),
+                                        child: Icon(
+                                          Icons.location_on,
+                                          size: 18,
+                                          color: PlunesColors.BLACKCOLOR,
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          service?.address?.trim() ?? '',
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#797979")),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Container(),
                         ],
                       )),
                       Container(
@@ -454,6 +504,39 @@ class CommonWidgets {
                                   CommonMethods.getColorHexFromStr("#707070")),
                             ),
                           ),
+                          (service != null &&
+                                  service.address != null &&
+                                  service.address.trim().isNotEmpty)
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(right: 5),
+                                        child: Icon(
+                                          Icons.location_on,
+                                          size: 18,
+                                          color: PlunesColors.BLACKCOLOR,
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          service?.address?.trim() ?? '',
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#797979")),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Container()
                         ],
                       )),
                       Container(
@@ -625,6 +708,39 @@ class CommonWidgets {
                                   CommonMethods.getColorHexFromStr("#707070")),
                             ),
                           ),
+                          (service != null &&
+                                  service.address != null &&
+                                  service.address.trim().isNotEmpty)
+                              ? Container(
+                                  margin: EdgeInsets.only(top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.only(right: 5),
+                                        child: Icon(
+                                          Icons.location_on,
+                                          size: 18,
+                                          color: PlunesColors.BLACKCOLOR,
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          service?.address?.trim() ?? '',
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Color(CommonMethods
+                                                .getColorHexFromStr("#797979")),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Container(),
                         ],
                       )),
                       Container(
@@ -1372,6 +1488,40 @@ class CommonWidgets {
                             : Container(),
                       ],
                     ),
+                    (service != null &&
+                            service.address != null &&
+                            service.address.trim().isNotEmpty)
+                        ? Container(
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  child: Icon(
+                                    Icons.location_on,
+                                    size: 18,
+                                    color: PlunesColors.BLACKCOLOR,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    service?.address?.trim() ?? '',
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#797979")),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(),
                     Container(
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
@@ -1838,6 +1988,40 @@ class CommonWidgets {
                             : Container(),
                       ],
                     ),
+                    (service != null &&
+                            service.address != null &&
+                            service.address.trim().isNotEmpty)
+                        ? Container(
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  child: Icon(
+                                    Icons.location_on,
+                                    size: 18,
+                                    color: PlunesColors.BLACKCOLOR,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    service?.address?.trim() ?? '',
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#797979")),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(),
                     Container(
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
@@ -2304,6 +2488,40 @@ class CommonWidgets {
                             : Container(),
                       ],
                     ),
+                    (service != null &&
+                            service.address != null &&
+                            service.address.trim().isNotEmpty)
+                        ? Container(
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  child: Icon(
+                                    Icons.location_on,
+                                    size: 18,
+                                    color: PlunesColors.BLACKCOLOR,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    service?.address?.trim() ?? '',
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#797979")),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(),
                     Container(
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
@@ -2781,6 +2999,40 @@ class CommonWidgets {
                             : Container(),
                       ],
                     ),
+                    (service != null &&
+                            service.address != null &&
+                            service.address.trim().isNotEmpty)
+                        ? Container(
+                            margin: EdgeInsets.only(
+                                top: AppConfig.verticalBlockSize * 1),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  margin: EdgeInsets.only(right: 5),
+                                  child: Icon(
+                                    Icons.location_on,
+                                    size: 18,
+                                    color: PlunesColors.BLACKCOLOR,
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    service?.address?.trim() ?? '',
+                                    maxLines: 2,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#797979")),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(),
                     Container(
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),

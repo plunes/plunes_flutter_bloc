@@ -803,6 +803,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                 _searchedDocResults.solution));
             Services service = Services(
                 name: doctor?.name ?? "",
+                address: _searchedDocResults.solution.services[index].address,
                 sId: _searchedDocResults.solution.services[index].sId,
                 latitude: _searchedDocResults.solution.services[index].latitude,
                 longitude:
@@ -1353,7 +1354,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
           Container(
             alignment: Alignment.centerLeft,
             child: Text(
-              "Premium Benefits for Our Users",
+              "Premium benefits for our users",
               style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
             ),
           ),

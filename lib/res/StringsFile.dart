@@ -394,7 +394,7 @@ class PlunesStrings {
   static const String selectedFacilities = "Selected facilities";
   static const String bookYourProcedure = "Book your Treatment";
   static const String enterAdditionalDetails =
-      "Enter additional details for your required Treatment";
+      "Enter additional details for the required service";
   static const String next = "Next";
   static const String previousText = "Previous";
   static const String haveYouEverBeenTreatedPreviously =
