@@ -6,8 +6,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
+import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -52,11 +54,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     _searchSolutionBloc = SearchSolutionBloc();
     _streamController = StreamController.broadcast();
     _locationSearchController = TextEditingController();
-    _facilitySearchController = TextEditingController()
-      ..addListener(_onSearch);
-    if (widget.searchQuery != null && widget.searchQuery
-        .trim()
-        .isNotEmpty) {
+    _facilitySearchController = TextEditingController()..addListener(_onSearch);
+    if (widget.searchQuery != null && widget.searchQuery.trim().isNotEmpty) {
       _facilitySearchController.text = widget.searchQuery;
     }
     super.initState();
@@ -151,8 +150,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                                 horizontal: AppConfig.horizontalBlockSize * 3),
                             child: _facilitySearchBar(
                                 hintText:
-                                "Search Disease, Test or Medical Procedure",
-                                hasFocus: false,
+                                    "Search Disease, Test or Medical Procedure",
+                                hasFocus: true,
                                 focusNode: _facilityFocusNode,
                                 searchController: _facilitySearchController));
                       },
@@ -165,11 +164,11 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
             (_locationFocusNode != null && _locationFocusNode.hasFocus)
                 ? Expanded(child: _getLocationSearchBarAndRelatedResults())
                 : Expanded(
-                child: StreamBuilder<Object>(
-                    stream: _streamController.stream,
-                    builder: (context, snapshot) {
-                      return _getFacilitySearchBarAndRelatedResult();
-                    }))
+                    child: StreamBuilder<Object>(
+                        stream: _streamController.stream,
+                        builder: (context, snapshot) {
+                          return _getFacilitySearchBarAndRelatedResult();
+                        }))
           ],
         ),
         Positioned(
@@ -178,9 +177,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               builder: (context, snapshot) {
                 if ((_facilitySearchController != null &&
                     _facilitySearchController.text != null &&
-                    _facilitySearchController.text
-                        .trim()
-                        .isNotEmpty &&
+                    _facilitySearchController.text.trim().isNotEmpty &&
                     _catalogues != null &&
                     _catalogues.isNotEmpty)) {
                   return _getManualBiddingWidget();
@@ -210,18 +207,16 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
           await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      SolutionShowPriceScreen(
-                          catalogueData: _catalogues[index], searchQuery: "")));
+                  builder: (context) => SolutionShowPriceScreen(
+                      catalogueData: _catalogues[index], searchQuery: "")));
           return;
         } else {
           ///when price not discovered but solution is active
           await Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) =>
-                      ViewSolutionsScreen(
-                          catalogueData: _catalogues[index], searchQuery: "")));
+                  builder: (context) => ViewSolutionsScreen(
+                      catalogueData: _catalogues[index], searchQuery: "")));
           return;
         }
       }
@@ -240,19 +235,16 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                EnterAdditionalUserDetailScr(
-                    _catalogues[index],
-                    _facilitySearchController.text.trim())));
+            builder: (context) => EnterAdditionalUserDetailScr(
+                _catalogues[index], _facilitySearchController.text.trim())));
   }
 
   _onViewMoreTap(int solution) {
     showDialog(
       context: context,
-      builder: (BuildContext context) =>
-          CustomWidgets().buildViewMoreDialog(
-            catalogueData: _catalogues[solution],
-          ),
+      builder: (BuildContext context) => CustomWidgets().buildViewMoreDialog(
+        catalogueData: _catalogues[solution],
+      ),
     );
   }
 
@@ -262,9 +254,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     _debounce = Timer(const Duration(milliseconds: 500), () {
       if (_facilitySearchController != null &&
           _facilitySearchController.text != null &&
-          _facilitySearchController.text
-              .trim()
-              .isNotEmpty) {
+          _facilitySearchController.text.trim().isNotEmpty) {
         _searchSolutionBloc.addIntoStream(RequestInProgress());
         _searchSolutionBloc.getSearchedSolution(
             searchedString: _facilitySearchController.text.trim().toString(),
@@ -281,9 +271,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
       onNotification: (scrollState) {
         if (scrollState is ScrollEndNotification &&
             scrollState.metrics.extentAfter == 0 &&
-            _facilitySearchController.text
-                .trim()
-                .isNotEmpty &&
+            _facilitySearchController.text.trim().isNotEmpty &&
             !_endReached) {
           _searchSolutionBloc.addIntoStream(RequestInProgress());
           _searchSolutionBloc.getSearchedSolution(
@@ -309,20 +297,18 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   Widget _getDefaultWidget(AsyncSnapshot<RequestState> snapshot) {
     return snapshot.data is RequestInProgress
         ? Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        SpinKitThreeBounce(
-            color: Color(hexColorCode.defaultGreen), size: 30.0),
-        Expanded(child: Container())
-      ],
-    )
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              SpinKitThreeBounce(
+                  color: Color(hexColorCode.defaultGreen), size: 30.0),
+              Expanded(child: Container())
+            ],
+          )
         : ((_catalogues == null || _catalogues.isEmpty) &&
-        _facilitySearchController.text
-            .trim()
-            .isNotEmpty)
-        ? _getManualBiddingWidget()
-        : Text(PlunesStrings.searchSolutions);
+                _facilitySearchController.text.trim().isNotEmpty)
+            ? _getManualBiddingWidget()
+            : Text(PlunesStrings.searchSolutions);
   }
 
   Widget _getManualBiddingWidget() {
@@ -379,7 +365,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
             children: [
               Container(
                 margin:
-                EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2.8),
+                    EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2.8),
                 child: Container(
                     color: Colors.white, child: _getPopularCitiesListWidget()),
               ),
@@ -402,10 +388,10 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
 
   Widget _facilitySearchBar(
       {@required final TextEditingController searchController,
-        @required final String hintText,
-        bool hasFocus = false,
-        FocusNode focusNode,
-        double searchBarHeight = 6}) {
+      @required final String hintText,
+      bool hasFocus = false,
+      FocusNode focusNode,
+      double searchBarHeight = 6}) {
     return StatefulBuilder(builder: (context, newState) {
       return Card(
         elevation: 3.0,
@@ -427,7 +413,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
             children: <Widget>[
               Container(
                 margin:
-                EdgeInsets.only(right: AppConfig.horizontalBlockSize * 4),
+                    EdgeInsets.only(right: AppConfig.horizontalBlockSize * 4),
                 child: Image.asset(
                   PlunesImages.searchIcon,
                   color: (focusNode != null && focusNode.hasFocus)
@@ -464,22 +450,20 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                           fontSize: 13)),
                 ),
               ),
-              searchController.text
-                  .trim()
-                  .isEmpty
+              searchController.text.trim().isEmpty
                   ? Container()
                   : InkWell(
-                onTap: () {
-                  searchController.text = "";
-                  newState(() {});
-                },
-                child: Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: Icon(
-                      Icons.clear,
-                      color: Colors.green,
-                    )),
-              )
+                      onTap: () {
+                        searchController.text = "";
+                        newState(() {});
+                      },
+                      child: Padding(
+                          padding: EdgeInsets.all(5.0),
+                          child: Icon(
+                            Icons.clear,
+                            color: Colors.green,
+                          )),
+                    )
             ],
           ),
         ),
@@ -487,86 +471,128 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
     });
   }
 
+  Future<RequestState> _getLocationStatusForTop() async {
+    RequestState _requestState;
+    var user = UserManager().getUserDetails();
+    if (user?.latitude != null &&
+        user?.longitude != null &&
+        user.latitude.isNotEmpty &&
+        user.longitude.isNotEmpty &&
+        user.latitude != "0.0" &&
+        user.latitude != "0" &&
+        user.longitude != "0.0" &&
+        user.longitude != "0") {
+      String address = await LocationUtil()
+          .getAddressFromLatLong(user.latitude, user.longitude);
+      _requestState = RequestSuccess(
+          response: LocationAppBarModel(
+              address: (address != null &&
+                      address == PlunesStrings.enterYourLocation)
+                  ? "Search location"
+                  : address,
+              hasLocation: (address != null &&
+                      address == PlunesStrings.enterYourLocation)
+                  ? false
+                  : true));
+    } else {
+      _requestState = RequestSuccess(
+          response: LocationAppBarModel(
+              address: "Search location", hasLocation: false));
+    }
+    return _requestState;
+  }
+
   Widget _getLocationSearchBar(
       {@required final TextEditingController searchController,
-        @required final String hintText,
-        bool hasFocus = false,
-        isRounded = true,
-        FocusNode focusNode,
-        double searchBarHeight = 6}) {
-    return StatefulBuilder(builder: (context, newState) {
-      return Card(
-        elevation: 3.0,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-            side: BorderSide(
-                color: (focusNode != null && focusNode.hasFocus)
-                    ? Color(CommonMethods.getColorHexFromStr("#1492E6"))
-                    : Color(CommonMethods.getColorHexFromStr("#CCCCCC")),
-                width: 1)),
-        child: Container(
-          height: AppConfig.verticalBlockSize * searchBarHeight,
-          padding: EdgeInsets.only(
-              left: AppConfig.horizontalBlockSize * 4,
-              right: AppConfig.horizontalBlockSize * 4),
-          child: InkWell(
-            onTap: () {
-              _facilityFocusNode?.unfocus();
-              if (focusNode != null && !focusNode.hasFocus) {
-                FocusScope.of(context).requestFocus(focusNode);
-                _setState();
-              }
-            },
-            onDoubleTap: () {},
-            focusColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            splashColor: Colors.transparent,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                Container(
-                  child: Icon(
-                    Icons.add_location_rounded,
-                    color: (focusNode != null && focusNode.hasFocus)
-                        ? Color(CommonMethods.getColorHexFromStr("#1492E6"))
-                        : Color(CommonMethods.getColorHexFromStr("#CCCCCC")),
+      @required final String hintText,
+      bool hasFocus = false,
+      isRounded = true,
+      FocusNode focusNode,
+      double searchBarHeight = 6}) {
+    return FutureBuilder<RequestState>(
+      builder: (context, snapshot) {
+        LocationAppBarModel locationModel;
+        if (snapshot.data is RequestSuccess) {
+          RequestSuccess reqSuccess = snapshot.data;
+          locationModel = reqSuccess.response;
+        }
+        return Card(
+          elevation: 3.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+              side: BorderSide(
+                  color: (focusNode != null && focusNode.hasFocus)
+                      ? Color(CommonMethods.getColorHexFromStr("#1492E6"))
+                      : Color(CommonMethods.getColorHexFromStr("#CCCCCC")),
+                  width: 1)),
+          child: Container(
+            height: AppConfig.verticalBlockSize * searchBarHeight,
+            padding: EdgeInsets.only(
+                left: AppConfig.horizontalBlockSize * 4,
+                right: AppConfig.horizontalBlockSize * 4),
+            child: InkWell(
+              onTap: () {
+                _facilityFocusNode?.unfocus();
+                if (focusNode != null && !focusNode.hasFocus) {
+                  FocusScope.of(context).requestFocus(focusNode);
+                  _setState();
+                } else if (focusNode != null && focusNode.hasFocus) {
+                  _getLocationFromUtil();
+                  return;
+                }
+              },
+              onDoubleTap: () {},
+              focusColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Container(
+                    child: Icon(
+                      Icons.add_location_rounded,
+                      color: (focusNode != null && focusNode.hasFocus)
+                          ? Color(CommonMethods.getColorHexFromStr("#1492E6"))
+                          : Color(CommonMethods.getColorHexFromStr("#CCCCCC")),
+                    ),
+                    width: AppConfig.verticalBlockSize * 2.0,
+                    height: AppConfig.verticalBlockSize * 2.0,
+                    margin: EdgeInsets.only(
+                        right: AppConfig.horizontalBlockSize * 4),
                   ),
-                  width: AppConfig.verticalBlockSize * 2.0,
-                  height: AppConfig.verticalBlockSize * 2.0,
-                  margin:
-                  EdgeInsets.only(right: AppConfig.horizontalBlockSize * 4),
-                ),
-                Expanded(
-                  child: IgnorePointer(
-                    ignoring: true,
-                    child: TextField(
-                      controller: searchController,
-                      focusNode: focusNode,
-                      autofocus: hasFocus,
-                      maxLines: 1,
-                      readOnly: true,
-                      style: TextStyle(
-                          color: PlunesColors.BLACKCOLOR,
-                          fontSize: AppConfig.mediumFont),
-                      inputFormatters: [LengthLimitingTextInputFormatter(40)],
-                      decoration: InputDecoration(
-                          isDense: true,
-                          border: InputBorder.none,
-                          hintText: hintText,
-                          hintStyle: TextStyle(
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#B1B1B1")),
-                              fontSize: 13)),
+                  Expanded(
+                    child: IgnorePointer(
+                      ignoring: true,
+                      child: TextField(
+                        controller: searchController,
+                        focusNode: focusNode,
+                        autofocus: hasFocus,
+                        maxLines: 1,
+                        readOnly: true,
+                        style: TextStyle(
+                            color: PlunesColors.BLACKCOLOR,
+                            fontSize: AppConfig.mediumFont),
+                        inputFormatters: [LengthLimitingTextInputFormatter(40)],
+                        decoration: InputDecoration(
+                            isDense: true,
+                            border: InputBorder.none,
+                            hintText: locationModel?.address ?? hintText,
+                            hintStyle: TextStyle(
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#B1B1B1")),
+                                fontSize: 13)),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      },
+      future: _getLocationStatusForTop(),
+    );
   }
 
   void _setState() {
@@ -574,9 +600,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   }
 
   Widget _getFacilitySearchBarAndRelatedResult() {
-    return _facilitySearchController.text
-        .trim()
-        .isEmpty
+    return _facilitySearchController.text.trim().isEmpty
         ? _getFacilitySuggestionWidget()
         : _getSearchedResultWidget();
   }
@@ -722,34 +746,33 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         ),
         Flexible(
             child: Container(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      _onLocationSelection();
-                      return;
-                    },
-                    onDoubleTap: () {},
-                    focusColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      margin: EdgeInsets.only(
-                          bottom: 2, top: index == 0 ? 5 : 0),
-                      child: Text(
-                        "City name",
-                        style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
-                      ),
-                    ),
-                  );
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  _onLocationSelection();
+                  return;
                 },
-                itemCount: 30,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-              ),
-            ))
+                onDoubleTap: () {},
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  margin: EdgeInsets.only(bottom: 2, top: index == 0 ? 5 : 0),
+                  child: Text(
+                    "City name",
+                    style:
+                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                  ),
+                ),
+              );
+            },
+            itemCount: 30,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+          ),
+        ))
       ],
     );
   }
@@ -765,34 +788,33 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         ),
         Flexible(
             child: Container(
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      _onServiceSelection();
-                      return;
-                    },
-                    onDoubleTap: () {},
-                    focusColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      margin: EdgeInsets.only(
-                          bottom: 2, top: index == 0 ? 5 : 0),
-                      child: Text(
-                        "service name",
-                        style:
-                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
-                      ),
-                    ),
-                  );
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  _onServiceSelection();
+                  return;
                 },
-                itemCount: 30,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-              ),
-            ))
+                onDoubleTap: () {},
+                focusColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  margin: EdgeInsets.only(bottom: 2, top: index == 0 ? 5 : 0),
+                  child: Text(
+                    "service name",
+                    style:
+                        TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
+                  ),
+                ),
+              );
+            },
+            itemCount: 30,
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+          ),
+        ))
       ],
     );
   }
@@ -809,49 +831,49 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
           Expanded(
               child: StreamBuilder<RequestState>(
-                builder: (context, snapShot) {
-                  _streamController?.add(null);
-                  if (snapShot.data is RequestSuccess) {
-                    RequestSuccess _requestSuccessObject = snapShot.data;
-                    if (_requestSuccessObject.requestCode ==
-                        SearchSolutionBloc.initialIndex) {
-                      pageIndex = SearchSolutionBloc.initialIndex;
-                      _catalogues = [];
-                    }
-                    if (_requestSuccessObject.requestCode !=
+            builder: (context, snapShot) {
+              _streamController?.add(null);
+              if (snapShot.data is RequestSuccess) {
+                RequestSuccess _requestSuccessObject = snapShot.data;
+                if (_requestSuccessObject.requestCode ==
+                    SearchSolutionBloc.initialIndex) {
+                  pageIndex = SearchSolutionBloc.initialIndex;
+                  _catalogues = [];
+                }
+                if (_requestSuccessObject.requestCode !=
                         SearchSolutionBloc.initialIndex &&
-                        _requestSuccessObject.response.isEmpty) {
-                      _endReached = true;
-                    } else {
-                      _endReached = false;
-                      Set _allItems = _catalogues.toSet();
-                      _allItems.addAll(_requestSuccessObject.response);
-                      _catalogues = _allItems.toList(growable: true);
-                    }
-                    pageIndex++;
-                  } else if (snapShot.data is RequestFailed) {
-                    pageIndex = SearchSolutionBloc.initialIndex;
-                  }
-                  return _catalogues == null || _catalogues.isEmpty
-                      ? _getDefaultWidget(snapShot)
-                      : Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: _showSearchedItems(),
-                        flex: 4,
-                      ),
-                      (snapShot.data is RequestInProgress &&
-                          (_catalogues != null && _catalogues.isNotEmpty))
-                          ? Expanded(
-                        child: CustomWidgets().getProgressIndicator(),
-                        flex: 1,
-                      )
-                          : Container()
-                    ],
-                  );
-                },
-                stream: _searchSolutionBloc.baseStream,
-              ))
+                    _requestSuccessObject.response.isEmpty) {
+                  _endReached = true;
+                } else {
+                  _endReached = false;
+                  Set _allItems = _catalogues.toSet();
+                  _allItems.addAll(_requestSuccessObject.response);
+                  _catalogues = _allItems.toList(growable: true);
+                }
+                pageIndex++;
+              } else if (snapShot.data is RequestFailed) {
+                pageIndex = SearchSolutionBloc.initialIndex;
+              }
+              return _catalogues == null || _catalogues.isEmpty
+                  ? _getDefaultWidget(snapShot)
+                  : Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: _showSearchedItems(),
+                          flex: 4,
+                        ),
+                        (snapShot.data is RequestInProgress &&
+                                (_catalogues != null && _catalogues.isNotEmpty))
+                            ? Expanded(
+                                child: CustomWidgets().getProgressIndicator(),
+                                flex: 1,
+                              )
+                            : Container()
+                      ],
+                    );
+            },
+            stream: _searchSolutionBloc.baseStream,
+          ))
         ],
       ),
     );
@@ -881,4 +903,24 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   }
 
   void _onServiceSelection() {}
+
+  void _getLocationFromUtil() async {
+    showDialog(
+            context: context,
+            builder: (context) {
+              return CustomWidgets()
+                  .fetchLocationPopUp(context, isCalledFromHomeScreen: true);
+            },
+            barrierDismissible: false)
+        .then((value) {
+      _setState();
+      if (UserManager().getIsUserInServiceLocation()) {
+        _locationFocusNode?.unfocus();
+        if (_facilityFocusNode != null && !_facilityFocusNode.hasFocus) {
+          FocusScope.of(context).requestFocus(_facilityFocusNode);
+          _setState();
+        }
+      }
+    });
+  }
 }

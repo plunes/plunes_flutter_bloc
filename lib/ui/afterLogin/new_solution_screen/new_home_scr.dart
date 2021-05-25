@@ -122,11 +122,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _locationFilterName;
   bool _hasCalledTopFacilityApi;
 
-  ScrollController _gridViewScrollController;
+  ScrollController _gridViewScrollController, _specialityScrollController;
 
   @override
   void initState() {
     _gridViewScrollController = ScrollController();
+    _specialityScrollController = ScrollController();
     _hasSearchBar = false;
     _cartBloc = CartMainBloc();
     _isProcedureListOpened = false;
@@ -202,6 +203,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _getCartCount();
     _homeScreenMainBloc?.dispose();
     _cartBloc?.dispose();
+    _specialityScrollController?.dispose();
+    _gridViewScrollController?.dispose();
     super.dispose();
   }
 
@@ -567,6 +570,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             padding: EdgeInsets.symmetric(horizontal: 10),
                             margin: EdgeInsets.only(right: 5),
                             decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey, width: 0.7),
                                 borderRadius: BorderRadius.circular(4),
                                 color: Color(CommonMethods.getColorHexFromStr(
                                     "#FAFBFD"))),
@@ -589,13 +594,12 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 _getProcedureWidget(),
                 // heading - why us
                 _getWhyUsSection(),
+                _getSpecialityWidget(),
 
                 // vertical view of cards
                 _getTopFacilitiesWidget(),
 
                 _getTopSearchWidget(),
-
-                _getSpecialityWidget(),
 
                 _getVideoWidget(),
 
@@ -1133,28 +1137,34 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         )
                       : Container(
                           height: AppConfig.verticalBlockSize * 40,
-                          child: GridView.builder(
-                            padding: EdgeInsets.zero,
-                            itemBuilder: (context, index) {
-                              // print("${_newSpecialityModel.data[index]?.specailizationImage}");
-                              return _specialCard(
-                                  _newSpecialityModel
-                                          .data[index]?.specailizationImage ??
-                                      "",
-                                  _newSpecialityModel.data[index]?.speciality,
-                                  _newSpecialityModel.data[index]?.definition ??
-                                      "",
-                                  _newSpecialityModel.data[index]);
-                            },
-                            scrollDirection: Axis.horizontal,
-                            shrinkWrap: true,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    childAspectRatio: 1.2,
-                                    crossAxisSpacing: 10,
-                                    mainAxisSpacing: 5),
-                            itemCount: _newSpecialityModel.data.length ?? 0,
+                          child: Scrollbar(
+                            controller: _specialityScrollController,
+                            thickness: 6,
+                            radius: Radius.circular(4),
+                            isAlwaysShown: true,
+                            child: GridView.builder(
+                              controller: _specialityScrollController,
+                              padding: EdgeInsets.only(bottom: 15),
+                              itemBuilder: (context, index) {
+                                return _specialCard(
+                                    _newSpecialityModel
+                                            .data[index]?.specailizationImage ??
+                                        "",
+                                    _newSpecialityModel.data[index]?.speciality,
+                                    _newSpecialityModel
+                                            .data[index]?.definition ??
+                                        "",
+                                    _newSpecialityModel.data[index]);
+                              },
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                      crossAxisCount: 2,
+                                      childAspectRatio: 1.3,
+                                      crossAxisSpacing: 10),
+                              itemCount: _newSpecialityModel.data.length ?? 0,
+                            ),
                           ),
                         );
                 }),
@@ -1417,8 +1427,6 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   Widget _specialCard(
       String imageUrl, String label, String text, SpecData specialityData) {
     return Container(
-      // width: AppConfig.horizontalBlockSize * 30,
-      // margin: EdgeInsets.only(right: 4),
       child: InkWell(
         onTap: () {
           ProcedureData procedureData = ProcedureData(
@@ -1447,7 +1455,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               child: Container(
-                width: double.infinity,
+                width: 102,
                 height: AppConfig.verticalBlockSize * 12,
                 child: ClipRRect(
                   child: _imageFittedBox(imageUrl, boxFit: BoxFit.cover),

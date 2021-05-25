@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
-import 'package:dotted_line/dotted_line.dart';
+
+// import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -174,11 +175,7 @@ class CommonWidgets {
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
-                  DottedLine(
-                    dashColor:
-                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                    lineThickness: 1,
-                  ),
+                  getSingleLine(),
                   Container(
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
@@ -363,11 +360,7 @@ class CommonWidgets {
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
-                  DottedLine(
-                    dashColor:
-                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                    lineThickness: 1,
-                  ),
+                  getSingleLine(),
                   Container(
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
@@ -562,11 +555,7 @@ class CommonWidgets {
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
-                  DottedLine(
-                    dashColor:
-                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                    lineThickness: 1,
-                  ),
+                  getSingleLine(),
                   Container(
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
@@ -766,11 +755,7 @@ class CommonWidgets {
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
-                  DottedLine(
-                    dashColor:
-                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                    lineThickness: 1,
-                  ),
+                  getSingleLine(),
                   Container(
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
@@ -938,11 +923,7 @@ class CommonWidgets {
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.8),
                   ),
-                  DottedLine(
-                    dashColor:
-                        Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                    lineThickness: 1,
-                  ),
+                  getSingleLine(),
                   Container(
                     margin:
                         EdgeInsets.only(top: AppConfig.verticalBlockSize * 2.1),
@@ -1526,11 +1507,7 @@ class CommonWidgets {
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
                     ),
-                    DottedLine(
-                      dashColor:
-                          Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                      lineThickness: 1,
-                    ),
+                    getSingleLine(),
                     Container(
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
@@ -1703,11 +1680,7 @@ class CommonWidgets {
                     ),
                     (service.specialOffers != null &&
                             service.specialOffers.isNotEmpty)
-                        ? DottedLine(
-                            dashColor: Color(
-                                CommonMethods.getColorHexFromStr("#7070703B")),
-                            lineThickness: 1,
-                          )
+                        ? getSingleLine()
                         : Container(),
                     (service.specialOffers != null &&
                             service.specialOffers.isNotEmpty &&
@@ -2026,11 +1999,7 @@ class CommonWidgets {
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
                     ),
-                    DottedLine(
-                      dashColor:
-                          Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                      lineThickness: 1,
-                    ),
+                    getSingleLine(),
                     Container(
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
@@ -2203,11 +2172,7 @@ class CommonWidgets {
                     ),
                     (service.specialOffers != null &&
                             service.specialOffers.isNotEmpty)
-                        ? DottedLine(
-                            dashColor: Color(
-                                CommonMethods.getColorHexFromStr("#7070703B")),
-                            lineThickness: 1,
-                          )
+                        ? getSingleLine()
                         : Container(),
                     (service.specialOffers != null &&
                             service.specialOffers.isNotEmpty &&
@@ -2526,11 +2491,7 @@ class CommonWidgets {
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
                     ),
-                    DottedLine(
-                      dashColor:
-                          Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                      lineThickness: 1,
-                    ),
+                    getSingleLine(),
                     Container(
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
@@ -2714,11 +2675,7 @@ class CommonWidgets {
                     ),
                     (service.specialOffers != null &&
                             service.specialOffers.isNotEmpty)
-                        ? DottedLine(
-                            dashColor: Color(
-                                CommonMethods.getColorHexFromStr("#7070703B")),
-                            lineThickness: 1,
-                          )
+                        ? getSingleLine()
                         : Container(),
                     (service.specialOffers != null &&
                             service.specialOffers.isNotEmpty &&
@@ -3037,11 +2994,7 @@ class CommonWidgets {
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
                     ),
-                    DottedLine(
-                      dashColor:
-                          Color(CommonMethods.getColorHexFromStr("#7070703B")),
-                      lineThickness: 1,
-                    ),
+                    getSingleLine(),
                     Container(
                       margin: EdgeInsets.only(
                           top: AppConfig.verticalBlockSize * 1.8),
@@ -3225,11 +3178,7 @@ class CommonWidgets {
                     ),
                     (service.specialOffers != null &&
                             service.specialOffers.isNotEmpty)
-                        ? DottedLine(
-                            dashColor: Color(
-                                CommonMethods.getColorHexFromStr("#7070703B")),
-                            lineThickness: 1,
-                          )
+                        ? getSingleLine()
                         : Container(),
                     (service.specialOffers != null &&
                             service.specialOffers.isNotEmpty &&
@@ -3850,5 +3799,13 @@ class CommonWidgets {
         ),
       );
     });
+  }
+
+  Widget getSingleLine() {
+    return Container(
+      height: 0.5,
+      width: double.infinity,
+      color: PlunesColors.GREYCOLOR,
+    );
   }
 }
