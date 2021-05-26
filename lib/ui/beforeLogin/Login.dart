@@ -48,11 +48,11 @@ class _LoginState extends State<Login> implements DialogCallBack {
       _passwordVisible = true,
       progress = false,
       isValidPassword = true,
-      isValidNumber = true;
+      isValidNumber = true,
+      _isProfessional = false;
   String title = '', body = '';
   var globalHeight, globalWidth;
   UserBloc _userBloc;
-  final String _dummyUserId = "PL-1WQPS-S7PN";
 
   @override
   void dispose() {
@@ -65,6 +65,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
   void initState() {
     _userBloc = UserBloc();
     phoneController.text = widget.phone;
+    _isProfessional = false;
     super.initState();
   }
 
@@ -175,8 +176,11 @@ class _LoginState extends State<Login> implements DialogCallBack {
             onChanged: (text) {
               setState(() {
                 if (controller == passwordController)
-                  isValidPassword =
-                      text.length > 7 ? true : text.length == 0 ? true : false;
+                  isValidPassword = text.length > 7
+                      ? true
+                      : text.length == 0
+                          ? true
+                          : false;
                 else if (controller == phoneController) {
                   validation(text);
                 }
@@ -510,8 +514,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
     progress = true;
     _setState();
     await Future.delayed(Duration(milliseconds: 100));
-    var result = await _userBloc.login(
-        phoneController.text.trim(), passwordController.text.trim());
+    var result = await _userBloc.login(phoneController.text.trim(),
+        passwordController.text.trim(), _isProfessional);
     progress = false;
     _setState();
     await Future.delayed(Duration(milliseconds: 100));

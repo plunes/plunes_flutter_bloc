@@ -24,8 +24,11 @@ class ChangePassword extends BaseActivity {
   static const tag = '/changePassword';
 
   String phone, from, otp;
+  bool isProfessional;
 
-  ChangePassword({Key key, this.phone, this.from, this.otp}) : super(key: key);
+  ChangePassword(
+      {Key key, this.phone, this.from, this.otp, this.isProfessional})
+      : super(key: key);
 
   @override
   _ChangePasswordState createState() => _ChangePasswordState();
@@ -85,8 +88,6 @@ class _ChangePasswordState extends State<ChangePassword>
 
   Widget getBodyView() {
     return Container(
-//        padding:
-//            EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 12),
         margin: EdgeInsets.only(left: 20, right: 20),
         child: Column(
           children: <Widget>[
@@ -206,14 +207,23 @@ class _ChangePasswordState extends State<ChangePassword>
             onChanged: (text) {
               setState(() {
                 if (controller == oldPasswordController)
-                  _isValidOldPassword =
-                      text.length > 7 ? true : text.length == 0 ? true : false;
+                  _isValidOldPassword = text.length > 7
+                      ? true
+                      : text.length == 0
+                          ? true
+                          : false;
                 else if (controller == passwordController)
-                  _isValidPassword =
-                      text.length > 7 ? true : text.length == 0 ? true : false;
+                  _isValidPassword = text.length > 7
+                      ? true
+                      : text.length == 0
+                          ? true
+                          : false;
                 else if (controller == newPasswordController)
-                  _isValidNewPassword =
-                      text.length > 7 ? true : text.length == 0 ? true : false;
+                  _isValidNewPassword = text.length > 7
+                      ? true
+                      : text.length == 0
+                          ? true
+                          : false;
               });
             },
             obscureText: obscureText,
@@ -265,23 +275,15 @@ class _ChangePasswordState extends State<ChangePassword>
     if (widget.from != plunesStrings.createPassword &&
         _isValidOldPassword &&
         oldPasswordController.text.isEmpty)
-//      widget.showInSnackBar(plunesStrings.emptyOldPasswordError,
-//          PlunesColors.BLACKCOLOR, _scaffoldKey);
       _showSnackBar(plunesStrings.emptyOldPasswordError);
     else if (_isValidPassword && passwordController.text.isEmpty)
-//      widget.showInSnackBar(plunesStrings.emptyNewPasswordError,
-//          PlunesColors.BLACKCOLOR, _scaffoldKey);
       _showSnackBar(plunesStrings.emptyNewPasswordError);
     else if (_isValidPassword &&
         _isValidNewPassword &&
         newPasswordController.text.isEmpty)
-//      widget.showInSnackBar(plunesStrings.emptyConfirmPasswordError,
-//          PlunesColors.BLACKCOLOR, _scaffoldKey);
       _showSnackBar(plunesStrings.emptyConfirmPasswordError);
     else if (_isValidOldPassword && _isValidPassword && _isValidNewPassword) {
       if (newPasswordController.text != passwordController.text)
-//        widget.showInSnackBar(plunesStrings.passwordMismatchError,
-//            PlunesColors.BLACKCOLOR, _scaffoldKey);
         _showSnackBar(plunesStrings.passwordMismatchError);
       else {
         progress = true;
@@ -335,7 +337,8 @@ class _ChangePasswordState extends State<ChangePassword>
 
   void _resetPassword() async {
     var result = await _userBloc.resetPassword(
-        widget.phone?.trim(), widget.otp, passwordController.text.trim());
+        widget.phone?.trim(), widget.otp, passwordController.text.trim(),
+        isProf: widget.isProfessional ?? false);
     delay(result);
   }
 

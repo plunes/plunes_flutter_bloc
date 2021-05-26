@@ -70,17 +70,22 @@ class UserBloc extends BlocBase {
   }
 
   Future<RequestState> getGenerateOtp(String mobileNumber,
-      {bool iFromForgotPassword = false, String signature}) async {
+      {bool iFromForgotPassword = false,
+      String signature,
+      bool isProfessional = false}) async {
     var result = await UserManager().getGenerateOtp(mobileNumber,
-        iFromForgotPassword: iFromForgotPassword, signature: signature);
+        iFromForgotPassword: iFromForgotPassword,
+        signature: signature,
+        isProfessional: isProfessional);
     super.addIntoStream(result);
     return result;
   }
 
   Future<RequestState> getVerifyOtp(String mobileNumber, var otp,
-      {bool iFromForgotPassword = false}) async {
+      {bool iFromForgotPassword = false, bool isProfessional = false}) async {
     var result = await UserManager().getVerifyOtp(mobileNumber, otp,
-        iFromForgotPassword: iFromForgotPassword);
+        iFromForgotPassword: iFromForgotPassword,
+        isProfessional: isProfessional);
     super.addIntoStream(result);
     return result;
   }
@@ -151,8 +156,10 @@ class UserBloc extends BlocBase {
   }
 
   Future<RequestState> resetPassword(
-      String phoneNumber, String otp, String password) async {
-    return UserManager().resetPassword(phoneNumber, otp, password);
+      String phoneNumber, String otp, String password,
+      {bool isProf = false}) async {
+    return UserManager()
+        .resetPassword(phoneNumber, otp, password, isProf: isProf);
   }
 
   Future<RequestState> changePassword(
@@ -168,8 +175,9 @@ class UserBloc extends BlocBase {
     return UserManager().checkUserExistence(phoneNumber);
   }
 
-  Future<RequestState> login(String phoneNumber, String password) {
-    return UserManager().login(phoneNumber, password);
+  Future<RequestState> login(
+      String phoneNumber, String password, bool isProfessional) {
+    return UserManager().login(phoneNumber, password, isProfessional);
   }
 
   Future<RequestState> signUp(Map<String, dynamic> body) {

@@ -30,13 +30,14 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
     implements DialogCallBack {
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   final phoneNumberController = new TextEditingController();
-  bool progress = false, isValidNumber = true;
+  bool progress = false, isValidNumber = true, _isProfessional = false;
   var globalHeight, globalWidth;
   UserBloc _userBloc;
 
   @override
   void initState() {
     _userBloc = UserBloc();
+    _isProfessional = false;
     super.initState();
   }
 
@@ -211,6 +212,7 @@ class _ForgetPasswordState extends BaseState<ForgetPassword>
       var requestState = await _userBloc.getGenerateOtp(
           phoneNumberController.text.trim(),
           iFromForgotPassword: true,
+          isProfessional: _isProfessional,
           signature: signature);
       progress = false;
       _setState();

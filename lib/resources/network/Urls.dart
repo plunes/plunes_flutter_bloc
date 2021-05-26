@@ -43,7 +43,7 @@ class Urls {
 
   get userBaseUrl => baseUrl + 'user';
 
-  get checkUserExistence => baseUrl + 'user?mobileNumber=';
+  get checkUserExistence => 'user?mobileNumber=';
 
   get whoAmI => baseUrl + 'user/whoami';
 
@@ -174,4 +174,12 @@ class Urls {
   static const String BANK_OFFER_URL = mcmBaseUrl + "plunes/getBankOffers";
   static const String GET_FORM_DATA_ON_FILL_MEDICAL_DETAIL_SCREEN =
       mcmBaseUrl + "mcmCatalogue/getServiceById";
+
+  ///new professional api's
+  static const String tempBaseUrl = "https://devapi.plunes.com/staging/";
+  static const String profLogin = tempBaseUrl + "professional/login";
+  static const String forgotPasswordProf =
+      tempBaseUrl + "professional/forgotPassword";
+  static const String resetPasswordProf =
+      tempBaseUrl + "professional/resetPasswordViaOTP";
 }

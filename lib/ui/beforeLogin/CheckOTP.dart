@@ -25,8 +25,9 @@ import 'Registration.dart';
 class CheckOTP extends BaseActivity {
   static const tag = '/checkOTP';
   final String phone, from;
+  bool isProfessional;
 
-  CheckOTP({this.phone, this.from});
+  CheckOTP({this.phone, this.from, this.isProfessional});
 
   @override
   _CheckOTPState createState() => _CheckOTPState();
@@ -45,7 +46,8 @@ class _CheckOTPState extends BaseState<CheckOTP> {
       return;
     }
     var result = await _userBloc.getVerifyOtp(widget.phone, pin,
-        iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle);
+        iFromForgotPassword: widget.from == plunesStrings.forgotPasswordTitle,
+        isProfessional: widget.isProfessional ?? false);
     if (result is RequestSuccess) {
       VerifyOtpResponse verifyOtpResponse = result.response;
       if (verifyOtpResponse != null &&
