@@ -192,7 +192,11 @@ class BaseActivity extends StatefulWidget {
       labelStyle: TextStyle(
           color: CommonMethods.getColorForSpecifiedCode("#000000"),
           fontSize: 14),
-      errorText: flag ? null : errorText,
+      errorText: flag
+          ? null
+          : (errorText == null || errorText.trim().isEmpty)
+              ? null
+              : errorText,
       counterText: '',
       hintText: hint,
       contentPadding: EdgeInsets.only(
@@ -223,14 +227,6 @@ class BaseActivity extends StatefulWidget {
             color: Color(CommonMethods.getColorHexFromStr(enableColor)),
             width: 1.0),
       ),
-      // border: OutlineInputBorder(
-      //   borderRadius: const BorderRadius.all(
-      //     const Radius.circular(10.0),
-      //   ),
-      //   borderSide: BorderSide(
-      //       color: Color(CommonMethods.getColorHexFromStr(enableColor)),
-      //       width: 1.0),
-      // ),
     );
   }
 

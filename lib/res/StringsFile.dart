@@ -492,7 +492,7 @@ class PlunesStrings {
 
   get resendCode => 'Resend code';
 
-  get signUp => 'Sign up';
+  get signUp => 'Sign Up';
 
   get login => 'Login';
 
