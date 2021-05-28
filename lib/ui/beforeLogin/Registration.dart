@@ -1193,10 +1193,9 @@ class _RegistrationState extends State<Registration> implements DialogCallBack {
     _selectedSpecializationData = [];
   }
 
-  changedDropDownItem(String selectedCity) {
-    print(selectedCity);
+  changedDropDownItem(String userTypeValue) {
     setState(() {
-      _userType = selectedCity;
+      _userType = userTypeValue;
       if (_userType == 'Doctor') {
         isDoctor = true;
         nameController.text = "Dr. ";

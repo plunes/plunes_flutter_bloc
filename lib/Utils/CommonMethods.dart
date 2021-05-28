@@ -882,4 +882,8 @@ class CommonMethods {
     }
     return _shouldShowProgressOnPrice;
   }
+
+  static Color getColorForSpecifiedCode(String colorCode) {
+    return Color(getColorHexFromStr(colorCode));
+  }
 }

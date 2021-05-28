@@ -36,7 +36,7 @@ class PlunesColors {
 
   get darkGrey1 => '#5D5D5D';
 
-  get lightGrey1 => '#B2B2B2';
+  get lightGrey1 => '#DBDBDB';
 
   get lightGrey2 => '#7E7E7E';
 

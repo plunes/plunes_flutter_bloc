@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
@@ -53,6 +54,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
   String title = '', body = '';
   var globalHeight, globalWidth;
   UserBloc _userBloc;
+  String _userType;
+  List<DropdownMenuItem<String>> _dropDownMenuItems;
 
   @override
   void dispose() {
@@ -65,6 +68,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
   void initState() {
     _userBloc = UserBloc();
     phoneController.text = widget.phone;
+    _dropDownMenuItems = widget.getDropDownMenuItems();
+    _userType = _dropDownMenuItems[0].value;
     _isProfessional = false;
     super.initState();
   }
@@ -98,8 +103,27 @@ class _LoginState extends State<Login> implements DialogCallBack {
                   child:
                       widget.getAssetImageWidget(plunesImages.loginLogoImage))),
           Container(
-              margin: EdgeInsets.fromLTRB(20, 50, 20, 20),
+              margin: EdgeInsets.symmetric(
+                  horizontal: AppConfig.horizontalBlockSize * 4,
+                  vertical: AppConfig.verticalBlockSize * 1.5),
               child: Column(children: <Widget>[
+                Container(
+                  alignment: Alignment.topLeft,
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: Text(
+                    "Enter a new Era of Healthcare",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w600,
+                        color:
+                            CommonMethods.getColorForSpecifiedCode("#141414")),
+                  ),
+                ),
+                Container(
+                  child: _getDropDown(),
+                  margin: EdgeInsets.only(bottom: 20),
+                ),
                 createTextField(
                     phoneController,
                     PlunesStrings.userName,
@@ -114,28 +138,27 @@ class _LoginState extends State<Login> implements DialogCallBack {
                 widget.getSpacer(0.0, 20.0),
                 getPasswordRow(plunesStrings.password.toString().substring(
                     0, plunesStrings.password.toString().length - 1)),
-                widget.getSpacer(0.0, 40.0),
+                getForgotPasswordButton(),
+                widget.getSpacer(0.0, 30.0),
                 progress
                     ? SpinKitThreeBounce(
-                        color: Color(hexColorCode.defaultGreen), size: 30.0)
+                        color:
+                            CommonMethods.getColorForSpecifiedCode("#107C6F"),
+                        size: 30.0)
                     : Container(
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 30,
-                            right: AppConfig.horizontalBlockSize * 30),
                         child: InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: _submitLogin,
                           child: CustomWidgets().getRoundedButton(
-                              plunesStrings.login,
-                              AppConfig.horizontalBlockSize * 8,
-                              PlunesColors.GREENCOLOR,
-                              AppConfig.horizontalBlockSize * 0,
+                              plunesStrings.login.toString().toUpperCase(),
+                              5,
+                              CommonMethods.getColorForSpecifiedCode("#107C6F"),
+                              0,
                               AppConfig.verticalBlockSize * 1.2,
                               PlunesColors.WHITECOLOR),
                         ),
                       ),
-                widget.getSpacer(0.0, 20.0),
-                getForgotPasswordButton(),
+                widget.getSpacer(0.0, 15.0),
                 getSignUpViewButton()
               ]))
         ],
@@ -191,9 +214,6 @@ class _LoginState extends State<Login> implements DialogCallBack {
                 : null,
             maxLength:
                 (controller == phoneController && _isNumber()) ? 10 : null,
-//                : (controller != passwordController)
-//                    ? _dummyUserId.length
-//                    : null,
             controller: controller,
             cursorColor: Color(
                 CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
@@ -289,13 +309,27 @@ class _LoginState extends State<Login> implements DialogCallBack {
 
   Widget getForgotPasswordButton() {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, ForgetPassword.tag),
-      child: Container(
-        padding: EdgeInsets.all(10),
-        child: widget.createTextViews(plunesStrings.forgotPassword, 16,
-            colorsFile.defaultGreen, TextAlign.center, FontWeight.normal),
-      ),
-    );
+        onTap: () => Navigator.pushNamed(context, ForgetPassword.tag),
+        focusColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        splashColor: Colors.transparent,
+        child: Container(
+          alignment: Alignment.topLeft,
+          padding: EdgeInsets.all(10),
+          child: Text(
+            "Forgot your password",
+            textAlign: TextAlign.left,
+            overflow: TextOverflow.clip,
+            style: TextStyle(
+                fontSize: 16,
+                decorationThickness: 2,
+                decorationColor:
+                    Color(CommonMethods.getColorHexFromStr("545454")),
+                decoration: TextDecoration.underline,
+                color: Color(CommonMethods.getColorHexFromStr("545454")),
+                fontWeight: FontWeight.normal),
+          ),
+        ));
   }
 
   Widget getSignUpViewButton() {
@@ -308,20 +342,18 @@ class _LoginState extends State<Login> implements DialogCallBack {
                     EnterPhoneScreen(from: plunesStrings.login)));
       },
       child: Container(
-          padding: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 5),
+          padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
           child: RichText(
             text: new TextSpan(
               children: <TextSpan>[
                 new TextSpan(
                     text: plunesStrings.dontHaveAccount,
-                    style: new TextStyle(
-                        fontSize: 16,
-                        color: Color(CommonMethods.getColorHexFromStr(
-                            colorsFile.grey1)))),
-                new TextSpan(
-                    text: plunesStrings.signUp,
-                    style: new TextStyle(
-                        fontSize: 16, color: Color(hexColorCode.defaultGreen))),
+                    style:
+                        new TextStyle(fontSize: 16, color: Color(0xff107C6F))),
+                // new TextSpan(
+                //     text: plunesStrings.signUp,
+                //     style:
+                //         new TextStyle(fontSize: 16, color: Color(0xff107C6F))),
               ],
             ),
           )),
@@ -494,7 +526,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
 
   _submitLogin() {
     if (!isValidNumber || phoneController.text.isEmpty)
-      widget.showInSnackBar(
+      _showInSnackBar(
           (_isNumber() && phoneController.text.trim().length != 10)
               ? "Please fill a valid Phone Number"
               : (!_isNumber() && phoneController.text.trim().isNotEmpty)
@@ -504,8 +536,8 @@ class _LoginState extends State<Login> implements DialogCallBack {
           PlunesColors.BLACKCOLOR,
           _scaffoldKey);
     else if (!isValidPassword || passwordController.text.isEmpty)
-      widget.showInSnackBar(plunesStrings.errorMsgPassword,
-          PlunesColors.BLACKCOLOR, _scaffoldKey);
+      _showInSnackBar(plunesStrings.errorMsgPassword, PlunesColors.BLACKCOLOR,
+          _scaffoldKey);
     else
       _userLoginRequest();
   }
@@ -524,14 +556,14 @@ class _LoginState extends State<Login> implements DialogCallBack {
       if (data.success) {
         AnalyticsProvider().registerEvent(AnalyticsKeys.loginKey);
         await bloc.saveDataInPreferences(data, context, plunesStrings.login);
-        widget.showInSnackBar(
-            plunesStrings.success, PlunesColors.GREENCOLOR, _scaffoldKey);
+        // _showInSnackBar(
+        //     plunesStrings.success, PlunesColors.GREENCOLOR, _scaffoldKey);
       } else {
-        widget.showInSnackBar(PlunesStrings.invalidCredentials,
+        _showInSnackBar(PlunesStrings.invalidCredentials,
             PlunesColors.BLACKCOLOR, _scaffoldKey);
       }
     } else if (result is RequestFailed) {
-      widget.showInSnackBar(
+      _showInSnackBar(
           result?.failureCause, PlunesColors.BLACKCOLOR, _scaffoldKey);
     }
   }
@@ -544,4 +576,57 @@ class _LoginState extends State<Login> implements DialogCallBack {
 
   @override
   dialogCallBackFunction(String action) {}
+
+  Widget _getDropDown() {
+    return Column(
+      children: [
+        Container(
+          margin: EdgeInsets.only(left: 10),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Login as",
+            style: TextStyle(fontSize: 12, color: PlunesColors.BLACKCOLOR),
+          ),
+        ),
+        Container(
+          child: DropdownButtonFormField(
+            value: _userType,
+            items: _dropDownMenuItems,
+            icon: Image.asset(
+              "assets/images/arrow-down-Icon.png",
+              color: PlunesColors.GREYCOLOR,
+              width: 15,
+              height: 15,
+            ),
+            onChanged: changedDropDownItem,
+            decoration: widget.myInputBoxDecoration(colorsFile.lightGrey1,
+                colorsFile.lightGrey1, null, null, true, null),
+          ),
+        ),
+      ],
+    );
+  }
+
+  changedDropDownItem(String userTypeValue) {
+    if (mounted)
+      setState(() {
+        _userType = userTypeValue;
+        if (_userType == Constants.generalUser) {
+          _isProfessional = false;
+        } else {
+          _isProfessional = true;
+        }
+      });
+  }
+
+  void _showInSnackBar(
+      String message, Color blackcolor, GlobalKey<ScaffoldState> scaffoldKey) {
+    if (mounted)
+      showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets()
+                .getInformativePopup(globalKey: _scaffoldKey, message: message);
+          });
+  }
 }

@@ -189,6 +189,9 @@ class BaseActivity extends StatefulWidget {
       String hint]) {
     return InputDecoration(
       labelText: label,
+      labelStyle: TextStyle(
+          color: CommonMethods.getColorForSpecifiedCode("#000000"),
+          fontSize: 14),
       errorText: flag ? null : errorText,
       counterText: '',
       hintText: hint,
@@ -198,11 +201,13 @@ class BaseActivity extends StatefulWidget {
                   (passwordController != null
                       ? passwordController
                       : controller))
-              ? (controller != null) ? 40 : 10
+              ? (controller != null)
+                  ? 40
+                  : 10
               : 10,
           top: 5,
           bottom: 5),
-/*      focusedBorder: OutlineInputBorder(
+      focusedBorder: UnderlineInputBorder(
         borderRadius: const BorderRadius.all(
           const Radius.circular(10.0),
         ),
@@ -210,7 +215,7 @@ class BaseActivity extends StatefulWidget {
             color: Color(CommonMethods.getColorHexFromStr(focusColor)),
             width: 1.0),
       ),
-      enabledBorder: OutlineInputBorder(
+      enabledBorder: UnderlineInputBorder(
         borderRadius: const BorderRadius.all(
           const Radius.circular(10.0),
         ),
@@ -218,14 +223,14 @@ class BaseActivity extends StatefulWidget {
             color: Color(CommonMethods.getColorHexFromStr(enableColor)),
             width: 1.0),
       ),
-      border: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(
-          const Radius.circular(10.0),
-        ),
-        borderSide: BorderSide(
-            color: Color(CommonMethods.getColorHexFromStr(enableColor)),
-            width: 1.0),
-      ),*/
+      // border: OutlineInputBorder(
+      //   borderRadius: const BorderRadius.all(
+      //     const Radius.circular(10.0),
+      //   ),
+      //   borderSide: BorderSide(
+      //       color: Color(CommonMethods.getColorHexFromStr(enableColor)),
+      //       width: 1.0),
+      // ),
     );
   }
 
@@ -409,7 +414,7 @@ class BaseActivity extends StatefulWidget {
     for (String user in usersType) {
       items.add(new DropdownMenuItem(
           value: user,
-          child: createTextViews(user, 18, colorsFile.black0, TextAlign.center,
+          child: createTextViews(user, 16, colorsFile.black0, TextAlign.center,
               FontWeight.normal)));
     }
     return items;

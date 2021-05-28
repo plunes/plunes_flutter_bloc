@@ -625,7 +625,7 @@ class PlunesStrings {
 
   get forgotPassword => 'Forgot password?';
 
-  get dontHaveAccount => 'Don\'t have an account? ';
+  get dontHaveAccount => 'Don\'t have an account ';
 
   get somethingWentWrong => "Sorry, we could not find what you're looking for";
 
