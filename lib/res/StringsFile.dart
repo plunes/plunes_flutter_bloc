@@ -547,7 +547,7 @@ class PlunesStrings {
 
   get proceed => 'PROCEED';
 
-  get signUpMsg => 'By registering, you agree to our';
+  get signUpMsg => 'By Registering you agree to our';
 
   get termsServices => 'Terms of Service.';
 
@@ -605,9 +605,9 @@ class PlunesStrings {
 
   get admin => 'Admin';
 
-  get userEmail => 'User Email';
+  get userEmail => 'User Email*';
 
-  get userPassword => 'User Password';
+  get userPassword => 'User Password*';
 
   get profileImage => 'Profile Image';
 

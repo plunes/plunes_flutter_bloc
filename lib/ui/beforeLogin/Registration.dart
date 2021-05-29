@@ -21,6 +21,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/resources/interface/DialogCallBack.dart';
+import 'package:plunes/ui/beforeLogin/Login.dart';
 import 'package:plunes/ui/commonView/LocationFetch.dart';
 import 'package:plunes/ui/commonView/SelectSpecialization.dart';
 
@@ -76,11 +77,7 @@ class _RegistrationState extends State<Registration>
       _doctorsList = List(),
       _selectedSpecializationData = List();
   String _userType, _latitude, _longitude, gender = plunesStrings.male;
-  bool _isHospital = false,
-      _isAddManualOpen = false,
-      isExperienceValid = true,
-      isDoctor = false,
-      isLab = false,
+  bool isExperienceValid = true,
       _passwordVisible = true,
       progress = false,
       isNameValid = true,
@@ -108,9 +105,11 @@ class _RegistrationState extends State<Registration>
   Preferences _preferenceObj;
   BuildContext _context;
   TabController _tabController;
+  int _previousTabIndex;
 
   @override
   void initState() {
+    _previousTabIndex = 0;
     _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     _userBloc = UserBloc();
     _isProcessing = false;
@@ -128,7 +127,7 @@ class _RegistrationState extends State<Registration>
 
   void initialize() {
     _dropDownMenuItems = widget.getDropDownMenuItems();
-    _userType = _dropDownMenuItems[0].value;
+    _userType = Constants.generalUser.toString();
     doc_availability_from.text = "00:00 AM";
     doc_availability_to.text = "00:00 PM";
     if (CommonMethods.catalogueLists == null ||
@@ -196,7 +195,20 @@ class _RegistrationState extends State<Registration>
                                   fontWeight: FontWeight.w500)),
                           bottom: TabBar(
                             controller: _tabController,
-                            onTap: (int index) {},
+                            onTap: (int selectedIndex) {
+                              if (selectedIndex == _previousTabIndex) {
+                                return;
+                              } else if (selectedIndex == 0) {
+                                _userType = Constants.generalUser.toString();
+                              } else if (selectedIndex == 1) {
+                                _userType = Constants.hospital.toString();
+                              }
+                              _previousTabIndex = selectedIndex;
+                              Future.delayed(Duration(milliseconds: 500))
+                                  .then((value) {
+                                _onTabChange();
+                              });
+                            },
                             indicatorColor:
                                 CommonMethods.getColorForSpecifiedCode(
                                     "#107C6F"),
@@ -239,13 +251,13 @@ class _RegistrationState extends State<Registration>
           _getUserView(),
           Column(
             children: [
-              _getProfessionalRow(),
+              _professionalTypeSelectionWidget(),
               Expanded(
                   child: (_userType == Constants.hospital.toString())
-                      ? getHospitalView()
+                      ? _getHospitalView()
                       : (_userType == Constants.doctor.toString())
-                          ? getDoctorView()
-                          : getLabView()),
+                          ? _getDoctorView()
+                          : _getLabView()),
             ],
           )
         ],
@@ -253,24 +265,24 @@ class _RegistrationState extends State<Registration>
     );
   }
 
-  Widget userTypeDropDown() {
-    return Container(
-      margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
-      child: DropdownButtonFormField(
-        value: _userType,
-        items: _dropDownMenuItems,
-        icon: Image.asset(
-          "assets/images/arrow-down-Icon.png",
-          color: PlunesColors.GREYCOLOR,
-          width: 20,
-          height: 20,
-        ),
-        onChanged: changedDropDownItem,
-        decoration: widget.myInputBoxDecoration(colorsFile.lightGrey1,
-            colorsFile.lightGrey1, null, null, true, null),
-      ),
-    );
-  }
+  // Widget userTypeDropDown() {
+  //   return Container(
+  //     margin: EdgeInsets.only(bottom: 20, left: 20, right: 20),
+  //     child: DropdownButtonFormField(
+  //       value: _userType,
+  //       items: _dropDownMenuItems,
+  //       icon: Image.asset(
+  //         "assets/images/arrow-down-Icon.png",
+  //         color: PlunesColors.GREYCOLOR,
+  //         width: 20,
+  //         height: 20,
+  //       ),
+  //       onChanged: changedDropDownItem,
+  //       decoration: widget.myInputBoxDecoration(colorsFile.lightGrey1,
+  //           colorsFile.lightGrey1, null, null, true, null),
+  //     ),
+  //   );
+  // }
 
   getHospitalSpecializationData() {
     showDialog(
@@ -293,38 +305,7 @@ class _RegistrationState extends State<Registration>
     });
   }
 
-  Widget getSlotsRow(TextEditingController controller, String hint) {
-    return Container(
-      height: 45,
-      alignment: Alignment.centerLeft,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          border: Border.all(
-              width: 1,
-              color: Color(
-                  CommonMethods.getColorHexFromStr(colorsFile.lightGrey1)))),
-      child: InkWell(
-        onTap: () {
-          CommonMethods.selectTime(context, controller.text).then((value) {
-            if (controller == doc_availability_from)
-              doc_availability_from.text = value;
-            else
-              doc_availability_to.text = value;
-          });
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextField(
-            enabled: false,
-            controller: controller,
-            decoration: InputDecoration.collapsed(hintText: hint),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget getHospitalView() {
+  Widget _getHospitalView() {
     return Container(
       child: ListView(
         shrinkWrap: true,
@@ -333,15 +314,14 @@ class _RegistrationState extends State<Registration>
             margin: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               children: <Widget>[
-                widget.getSpacer(0.0, 20.0),
-                widget.createTextViews(plunesStrings.profileInformation, 18,
-                    colorsFile.black0, TextAlign.center, FontWeight.w500),
-                widget.getSpacer(0.0, 20.0),
+                _getProfileInformationTextWidget(),
+                _getSpacer(),
                 createTextField(nameController, plunesStrings.hospitalName,
                     TextInputType.text, TextCapitalization.words, true, ''),
-                widget.getSpacer(0.0, 20.0),
+                _getSpacer(),
                 createTextField(locationController, plunesStrings.location,
                     TextInputType.text, TextCapitalization.none, false, ''),
+                _getSpacer(),
                 createTextField(
                     fullAddressController,
                     plunesStrings.fullAddress,
@@ -349,9 +329,10 @@ class _RegistrationState extends State<Registration>
                     TextCapitalization.none,
                     true,
                     ''),
-                widget.getSpacer(0.0, 20.0),
+                _getSpacer(),
                 createTextField(phoneController, plunesStrings.phoneNo,
                     TextInputType.number, TextCapitalization.none, false, ''),
+                _getSpacer(),
                 createTextField(
                     alternatePhoneController,
                     plunesStrings.alternatePhoneNo,
@@ -359,9 +340,10 @@ class _RegistrationState extends State<Registration>
                     TextCapitalization.none,
                     true,
                     ''),
+                _getSpacer(),
                 createTextField(aboutController, plunesStrings.aboutHospital,
                     TextInputType.text, TextCapitalization.none, true, ''),
-                widget.getSpacer(0.0, 20.0),
+                _getSpacer(),
                 createTextField(
                     professionRegController,
                     plunesStrings.registrationNo,
@@ -369,64 +351,84 @@ class _RegistrationState extends State<Registration>
                     TextCapitalization.characters,
                     true,
                     ''),
-                widget.getSpacer(0.0, 40.0),
-                widget.getDividerRow(context, 0.0, 0.0, 0.0),
-                widget.getSpacer(0.0, 30.0),
-                widget.createTextViews(plunesStrings.addSpecialization, 18,
-                    colorsFile.black0, TextAlign.center, FontWeight.w500),
-                widget.getSpacer(0.0, 5.0),
-                widget.createTextViews(
-                    plunesStrings.addSpecializationServices,
-                    16,
-                    colorsFile.lightGrey2,
-                    TextAlign.center,
-                    FontWeight.w100),
-                widget.getSpacer(0.0, 20.0),
+                _getSpacer(),
+                _getProfileInformationTextWidget(
+                    text: plunesStrings.addSpecialization),
+                _getSpacer(),
+                widget.getSpacer(0.0, 10.0),
                 Container(
-                  margin: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 30,
-                      right: AppConfig.horizontalBlockSize * 30),
-                  child: InkWell(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    onTap: getHospitalSpecializationData,
-                    child: CustomWidgets().getRoundedButton(
-                        plunesStrings.add,
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.GREENCOLOR,
-                        AppConfig.horizontalBlockSize * 0,
-                        AppConfig.verticalBlockSize * 1.2,
-                        PlunesColors.WHITECOLOR),
+                  width: double.infinity,
+                  margin: EdgeInsets.only(left: 8),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 5,
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      border: Border.all(
+                          color:
+                              CommonMethods.getColorForSpecifiedCode("#707070"),
+                          width: 0.4)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      widget.createTextViews(
+                          plunesStrings.addSpecializationServices,
+                          16,
+                          colorsFile.lightGrey2,
+                          TextAlign.center,
+                          FontWeight.w100),
+                      widget.getSpacer(0.0, 8.0),
+                      Container(
+                        margin: EdgeInsets.only(
+                            right: AppConfig.horizontalBlockSize * 58),
+                        child: InkWell(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          highlightColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: getHospitalSpecializationData,
+                          child: CustomWidgets().getRoundedButton(
+                              plunesStrings.add,
+                              5,
+                              CommonMethods.getColorForSpecifiedCode("#BCDAD7"),
+                              AppConfig.horizontalBlockSize * 0,
+                              AppConfig.verticalBlockSize * 1.2,
+                              CommonMethods.getColorForSpecifiedCode("#107C6F"),
+                              hasBorder: true,
+                              borderWidth: 0.4,
+                              borderColor:
+                                  CommonMethods.getColorForSpecifiedCode(
+                                      "#107C6F")),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                getSpecializationRow(),
+                widget.getSpacer(0.0, 5.0),
+                Container(
+                  child: getSpecializationRow(),
+                  margin: EdgeInsets.only(left: 8),
+                ),
               ],
             ),
           ),
-          widget.getSpacer(0.0, 20.0),
-          widget.getDividerRow(context, 0.0, 30.0, 0.0),
-          widget.getSpacer(0.0, 0.0),
-          widget.createTextViews(plunesStrings.manageAccount, 18,
-              colorsFile.black0, TextAlign.center, FontWeight.w500),
-          widget.getSpacer(0.0, 5.0),
-          widget.createTextViews(plunesStrings.addUsers, 16,
-              colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
-          widget.getSpacer(0.0, 20.0),
           Container(
             margin: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                widget.createTextViews(plunesStrings.admin, 18,
-                    colorsFile.black0, TextAlign.left, FontWeight.w500),
+                _getSpacer(),
+                widget.getDividerRow(context, 0.0, 1.0, 0.0),
+                _getProfileInformationTextWidget(
+                    text: plunesStrings.addUsers.toString().substring(
+                        0, plunesStrings.addUsers.toString().length - 1)),
+                _getSpacer(),
+                Container(
+                  margin: EdgeInsets.only(left: 8),
+                  child: widget.createTextViews(plunesStrings.admin, 18,
+                      "#000000", TextAlign.left, FontWeight.w500),
+                ),
                 widget.getSpacer(0.0, 10.0),
-                widget.createTextViews(
-                    plunesStrings.addUsers.toString().substring(
-                        0, plunesStrings.addUsers.toString().length - 1),
-                    18,
-                    colorsFile.black0,
-                    TextAlign.left,
-                    FontWeight.normal),
-                widget.getSpacer(0.0, 20.0),
                 createTextField(
                     emailController,
                     plunesStrings.userEmail,
@@ -436,30 +438,7 @@ class _RegistrationState extends State<Registration>
                     plunesStrings.errorValidEmailMsg),
                 widget.getSpacer(0.0, 20.0),
                 getPasswordRow(plunesStrings.userPassword),
-                widget.getSpacer(0.0, 20.0),
-                widget.createTextViews(plunesStrings.errorMsgPassword, 16,
-                    colorsFile.black0, TextAlign.center, FontWeight.normal),
-                widget.getSpacer(0.0, 20.0),
-                progress
-                    ? SpinKitThreeBounce(
-                        color: Color(hexColorCode.defaultGreen), size: 30.0)
-                    : Container(
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 30,
-                            right: AppConfig.horizontalBlockSize * 30),
-                        child: InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: submitRegistrationRequest,
-                          child: CustomWidgets().getRoundedButton(
-                              plunesStrings.submit,
-                              AppConfig.horizontalBlockSize * 8,
-                              PlunesColors.GREENCOLOR,
-                              AppConfig.horizontalBlockSize * 0,
-                              AppConfig.verticalBlockSize * 1.2,
-                              PlunesColors.WHITECOLOR),
-                        ),
-                      ),
-                widget.getSpacer(0.0, 30.0),
+                _getSubmitButtonView()
               ],
             ),
           )
@@ -476,7 +455,7 @@ class _RegistrationState extends State<Registration>
         shrinkWrap: true,
         children: <Widget>[
           _getGenderRow(),
-          widget.getSpacer(0.0, 20.0),
+          _getSpacer(),
           createTextField(
               nameController,
               plunesStrings.name,
@@ -484,10 +463,10 @@ class _RegistrationState extends State<Registration>
               TextCapitalization.words,
               isNameValid,
               plunesStrings.errorMsgEnterFullName),
-          widget.getSpacer(0.0, 20.0),
+          _getSpacer(),
           createTextField(phoneController, plunesStrings.phoneNo,
               TextInputType.number, TextCapitalization.none, false, ''),
-          widget.getSpacer(0.0, 20.0),
+          _getSpacer(),
           createTextField(
               emailController,
               plunesStrings.emailId,
@@ -495,27 +474,35 @@ class _RegistrationState extends State<Registration>
               TextCapitalization.none,
               isEmailValid,
               plunesStrings.errorValidEmailMsg),
-          widget.getSpacer(0.0, 20.0),
+          _getSpacer(),
           createTextField(dobController, plunesStrings.dateOfBirth,
               TextInputType.datetime, TextCapitalization.none, false, ''),
+          _getSpacer(),
           getPasswordRow(plunesStrings.password),
-          widget.getSpacer(0.0, 20.0),
+          _getSpacer(),
           createTextField(referralController, plunesStrings.referralCode,
               TextInputType.text, TextCapitalization.none, true, ''),
+          _getSpacer(),
           _getSubmitButtonView()
         ],
       ),
     );
   }
 
-  Widget getDoctorView() {
+  Widget _getSpacer() {
+    return widget.getSpacer(0.0, 20.0);
+  }
+
+  Widget _getDoctorView() {
     return Container(
       margin: EdgeInsets.only(left: 20, right: 20),
       child: ListView(
         shrinkWrap: true,
         children: <Widget>[
+          _getProfileInformationTextWidget(),
+          _getSpacer(),
           _getGenderRow(),
-          widget.getSpacer(0.0, 15.0),
+          _getSpacer(),
           createTextField(
               nameController,
               plunesStrings.name,
@@ -523,101 +510,70 @@ class _RegistrationState extends State<Registration>
               TextCapitalization.words,
               isNameValid,
               plunesStrings.errorMsgEnterFullName),
-          widget.getSpacer(0.0, 15.0),
+          _getSpacer(),
           createTextField(phoneController, plunesStrings.phoneNo,
               TextInputType.number, TextCapitalization.none, false, ''),
-          _userType == Constants.doctor
-              ? createTextField(
-                  alternatePhoneController,
-                  plunesStrings.alternatePhoneNo,
-                  TextInputType.number,
-                  TextCapitalization.none,
-                  true,
-                  '')
-              : Container(),
-          widget.getSpacer(0.0, 15.0),
+          _getSpacer(),
+          createTextField(
+              alternatePhoneController,
+              plunesStrings.alternatePhoneNo,
+              TextInputType.number,
+              TextCapitalization.none,
+              true,
+              ''),
+          _getSpacer(),
           createTextField(
               emailController,
               plunesStrings.emailId,
               TextInputType.emailAddress,
               TextCapitalization.none,
               isEmailValid,
-              plunesStrings.errorValidEmailMsg),
-          widget.getSpacer(0.0, 15.0),
+              plunesStrings.errorValidEmailMsg,
+              hasOutlinedBorder: true),
+          _getSpacer(),
           createTextField(dobController, plunesStrings.dateOfBirth,
-              TextInputType.datetime, TextCapitalization.none, false, ''),
-          getPasswordRow(plunesStrings.password),
-          widget.getSpacer(0.0, 15.0),
-          _userType == Constants.generalUser
-              ? Container()
-              : createTextField(locationController, plunesStrings.location,
-                  TextInputType.text, TextCapitalization.none, false, ''),
-          _userType == Constants.generalUser
-              ? Container()
-              : createTextField(
-                  fullAddressController,
-                  plunesStrings.fullAddress,
-                  TextInputType.text,
-                  TextCapitalization.none,
-                  true,
-                  ''),
-          widget.getSpacer(0.0, 15.0),
-          Visibility(
-              visible: isDoctor,
-              child: Column(children: <Widget>[
-                createTextField(
-                    professionRegController,
-                    plunesStrings.professionalRegNo,
-                    TextInputType.text,
-                    TextCapitalization.words,
-                    isProfessionValid,
-                    plunesStrings.errorMsgEnterProfRegNo),
-                widget.getSpacer(0.0, 15.0),
-                createTextField(
-                    specializationController,
-                    '${plunesStrings.specialization}*',
-                    TextInputType.text,
-                    TextCapitalization.words,
-                    isSpecificationValid,
-                    plunesStrings.errorMsgEnterSpecialization),
-                widget.getSpacer(0.0, 15.0),
-                createTextField(
-                    experienceController,
-                    plunesStrings.experienceInNo,
-                    TextInputType.numberWithOptions(
-                        signed: true, decimal: true),
-                    TextCapitalization.none,
-                    isExperienceValid,
-                    plunesStrings.errorMsgEnterExp),
-                widget.getSpacer(0.0, 15.0)
-              ])),
-          _userType == Constants.doctor
-              ? Container()
-              : createTextField(referralController, plunesStrings.referralCode,
-                  TextInputType.text, TextCapitalization.none, true, ''),
-          widget.getSpacer(0.0, 15.0),
-          progress
-              ? SpinKitThreeBounce(
-                  color: Color(hexColorCode.defaultGreen), size: 30.0)
-              : Container(
-                  margin: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 30,
-                      right: AppConfig.horizontalBlockSize * 30),
-                  child: InkWell(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    onTap: submitRegistrationRequest,
-                    child: CustomWidgets().getRoundedButton(
-                        plunesStrings.signUpBtn,
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.GREENCOLOR,
-                        AppConfig.horizontalBlockSize * 0,
-                        AppConfig.verticalBlockSize * 1.2,
-                        PlunesColors.WHITECOLOR),
-                  ),
-                ),
-          widget.getSpacer(0.0, 15.0),
-          widget.getTermsOfUseRow(),
-          widget.getSpacer(0.0, 30.0),
+              TextInputType.datetime, TextCapitalization.none, false, '',
+              hasOutlinedBorder: true),
+          _getSpacer(),
+          createTextField(locationController, plunesStrings.location,
+              TextInputType.text, TextCapitalization.none, false, '',
+              hasOutlinedBorder: true),
+          _getSpacer(),
+          createTextField(fullAddressController, plunesStrings.fullAddress,
+              TextInputType.text, TextCapitalization.none, true, '',
+              hasOutlinedBorder: true),
+          _getSpacer(),
+          Column(children: <Widget>[
+            createTextField(
+                professionRegController,
+                plunesStrings.professionalRegNo,
+                TextInputType.text,
+                TextCapitalization.words,
+                isProfessionValid,
+                plunesStrings.errorMsgEnterProfRegNo,
+                hasOutlinedBorder: true),
+            _getSpacer(),
+            createTextField(
+                specializationController,
+                '${plunesStrings.specialization}*',
+                TextInputType.text,
+                TextCapitalization.words,
+                isSpecificationValid,
+                plunesStrings.errorMsgEnterSpecialization,
+                hasOutlinedBorder: true),
+            _getSpacer(),
+            createTextField(
+                experienceController,
+                plunesStrings.experienceInNo,
+                TextInputType.numberWithOptions(signed: true, decimal: true),
+                TextCapitalization.none,
+                isExperienceValid,
+                plunesStrings.errorMsgEnterExp,
+                hasOutlinedBorder: true),
+            _getSpacer(),
+            getPasswordRow(plunesStrings.password),
+          ]),
+          _getSubmitButtonView()
         ],
       ),
     );
@@ -638,6 +594,9 @@ class _RegistrationState extends State<Registration>
           child: Align(
               alignment: FractionalOffset.centerRight,
               child: InkWell(
+                highlightColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
                 onTap: () {
                   setState(() {
                     _passwordVisible = !_passwordVisible;
@@ -717,6 +676,9 @@ class _RegistrationState extends State<Registration>
                       FontWeight.normal),
                 ),
                 InkWell(
+                  highlightColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  splashColor: Colors.transparent,
                   child: Container(
                     child: Padding(
                       padding: const EdgeInsets.all(3.0),
@@ -747,29 +709,6 @@ class _RegistrationState extends State<Registration>
       itemCount: _selectedSpecializationData.length,
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
-    );
-  }
-
-  Widget getAddManualButton() {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _isAddManualOpen = !_isAddManualOpen;
-        });
-      },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          widget.createTextViews(plunesStrings.addManually, 16,
-              colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
-          Container(
-              margin: EdgeInsets.only(top: 5),
-              child: _isAddManualOpen
-                  ? Icon(Icons.keyboard_arrow_up, color: Colors.grey, size: 30)
-                  : Icon(Icons.keyboard_arrow_down,
-                      color: Colors.grey, size: 30))
-        ],
-      ),
     );
   }
 
@@ -840,7 +779,7 @@ class _RegistrationState extends State<Registration>
     });
   }
 
-  submitRegistrationRequest() async {
+  _submitRegistrationRequest() async {
     if (validation()) {
       List specialistId = new List();
       for (var item in _selectedItemId)
@@ -924,16 +863,32 @@ class _RegistrationState extends State<Registration>
     }
   }
 
+  bool _isDoctorType() {
+    return _userType != null && _userType == Constants.doctor.toString();
+  }
+
+  bool _isUserType() {
+    return _userType != null && _userType == Constants.generalUser.toString();
+  }
+
+  bool _isHospitalType() {
+    return _userType != null && _userType == Constants.hospital.toString();
+  }
+
+  bool _isLabType() {
+    return _userType != null &&
+        _userType == Constants.labDiagnosticCenter.toString();
+  }
+
   bool validation() {
     if (nameController.text.trim().isEmpty ||
-        (isDoctor && nameController.text.toString().length < 6) ||
+        (_isDoctorType() && nameController.text.toString().length < 6) ||
         (nameController.text.toString().length < 2)) {
-      errorMessage = isDoctor
+      errorMessage = _isDoctorType()
           ? plunesStrings.errorMsgEnterDoctorName
           : PlunesStrings.nameMustBeGreaterThanTwoChar;
       return false;
-    } else if ((_userType == Constants.hospital ||
-            _userType == Constants.labDiagnosticCenter) &&
+    } else if ((_isHospitalType() || _isLabType()) &&
         professionRegController.text.isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterRegNo;
       return false;
@@ -949,7 +904,7 @@ class _RegistrationState extends State<Registration>
     } else if (passwordController.text.length < 8) {
       errorMessage = plunesStrings.errorMsgPassword;
       return false;
-    } else if (_userType != Constants.generalUser &&
+    } else if (_isUserType() &&
         (locationController.text.isEmpty ||
             _latitude == null ||
             _latitude.isEmpty ||
@@ -963,17 +918,18 @@ class _RegistrationState extends State<Registration>
         (fullAddressController.text.trim().isEmpty)) {
       errorMessage = plunesStrings.errorFullAddressRequired;
       return false;
-    } else if (isDoctor && professionRegController.text.trim().isEmpty) {
+    } else if (_isDoctorType() && professionRegController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterProfRegNo;
       return false;
-    } else if (isDoctor && specializationController.text.trim().isEmpty) {
+    } else if (_isDoctorType() &&
+        specializationController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
-    } else if ((isLab || _isHospital) &&
+    } else if ((_isLabType() || _isHospitalType()) &&
         (_selectedItemId == null || _selectedItemId.isEmpty)) {
       errorMessage = plunesStrings.errorMsgEnterSpecialization;
       return false;
-    } else if (isDoctor && experienceController.text.trim().isEmpty) {
+    } else if (_isDoctorType() && experienceController.text.trim().isEmpty) {
       errorMessage = plunesStrings.errorMsgEnterExp;
       return false;
     } else if (_userType != Constants.user &&
@@ -989,7 +945,7 @@ class _RegistrationState extends State<Registration>
   @override
   dialogCallBackFunction(String action) {}
 
-  resetFormData() {
+  _resetFormData() {
     _selectedItemId = [];
     experienceController.text = '';
     specializationController.text = '';
@@ -997,37 +953,27 @@ class _RegistrationState extends State<Registration>
     passwordController.text = '';
     emailController.text = '';
     alternatePhoneController.text = '';
+    aboutController.clear();
     _selectedSpecializationData = [];
+    gender = plunesStrings.male.toString();
   }
 
-  changedDropDownItem(String userTypeValue) {
-    setState(() {
-      _userType = userTypeValue;
-      if (_userType == 'Doctor') {
-        isDoctor = true;
-        nameController.text = "Dr. ";
-        _isHospital = false;
-        isLab = false;
-      } else if (_userType == 'Hospital') {
-        _isHospital = true;
-        isDoctor = false;
-        isLab = false;
-        nameController.text = '';
-        dobController.text = '';
-      } else if (_userType == Constants.labDiagnosticCenter) {
-        isLab = true;
-        _isHospital = false;
-        isDoctor = false;
-        nameController.text = '';
-        dobController.text = '';
-      } else {
-        nameController.text = '';
-        isDoctor = false;
-        isLab = false;
-        _isHospital = false;
-      }
-      resetFormData();
-    });
+  _onTabChange() {
+    if (mounted)
+      setState(() {
+        if (_userType == 'Doctor') {
+          nameController.text = "Dr. ";
+        } else if (_userType == 'Hospital') {
+          nameController.text = '';
+          dobController.text = '';
+        } else if (_userType == Constants.labDiagnosticCenter) {
+          nameController.text = '';
+          dobController.text = '';
+        } else {
+          nameController.text = '';
+        }
+        _resetFormData();
+      });
   }
 
   Widget _getGenderRow() {
@@ -1047,6 +993,9 @@ class _RegistrationState extends State<Registration>
                     ? CommonMethods.getColorForSpecifiedCode("#107C6F")
                     : Colors.white),
             child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
               onDoubleTap: () {},
               onTap: () {
                 gender = plunesStrings.male;
@@ -1074,6 +1023,9 @@ class _RegistrationState extends State<Registration>
                     ? CommonMethods.getColorForSpecifiedCode("#107C6F")
                     : Colors.white),
             child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
               onDoubleTap: () {},
               onTap: () {
                 gender = plunesStrings.female;
@@ -1094,7 +1046,7 @@ class _RegistrationState extends State<Registration>
     );
   }
 
-  Widget _getProfessionalRow() {
+  Widget _professionalTypeSelectionWidget() {
     return Container(
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -1111,10 +1063,16 @@ class _RegistrationState extends State<Registration>
                     ? CommonMethods.getColorForSpecifiedCode("#107C6F")
                     : Colors.white),
             child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
               onDoubleTap: () {},
               onTap: () {
+                if (_userType == Constants.hospital.toString()) {
+                  return;
+                }
                 _userType = Constants.hospital.toString();
-                _setState();
+                _onTabChange();
               },
               child: Text(
                 "${Constants.hospital.toString()}",
@@ -1138,10 +1096,16 @@ class _RegistrationState extends State<Registration>
                     ? CommonMethods.getColorForSpecifiedCode("#107C6F")
                     : Colors.white),
             child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
               onDoubleTap: () {},
               onTap: () {
+                if (_userType == Constants.doctor.toString()) {
+                  return;
+                }
                 _userType = Constants.doctor.toString();
-                _setState();
+                _onTabChange();
               },
               child: Text(
                 "${Constants.doctor.toString()}",
@@ -1165,10 +1129,16 @@ class _RegistrationState extends State<Registration>
                     ? CommonMethods.getColorForSpecifiedCode("#107C6F")
                     : Colors.white),
             child: InkWell(
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
+              splashColor: Colors.transparent,
               onDoubleTap: () {},
               onTap: () {
+                if (_userType == Constants.labDiagnosticCenter.toString()) {
+                  return;
+                }
                 _userType = Constants.labDiagnosticCenter.toString();
-                _setState();
+                _onTabChange();
               },
               child: Text(
                 "${Constants.labDiagnosticCenter.toString()}",
@@ -1191,12 +1161,16 @@ class _RegistrationState extends State<Registration>
       TextInputType inputType,
       TextCapitalization textCapitalization,
       bool fieldFlag,
-      String errorMsg) {
+      String errorMsg,
+      {bool hasOutlinedBorder = false}) {
     if (controller == phoneController) controller.text = widget.phone;
     return InkWell(
+      highlightColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      splashColor: Colors.transparent,
       onTap: () {
         if (controller == dobController)
-          CommonMethods.selectHoloTypeDate(context, isDoc: isDoctor)
+          CommonMethods.selectHoloTypeDate(context, isDoc: _isDoctorType())
               .then((value) {
             if (value != null && value.isNotEmpty) {
               dobController.text = value;
@@ -1207,73 +1181,90 @@ class _RegistrationState extends State<Registration>
         else if (controller == specializationController)
           getSpecializationData();
       },
-      child: Container(
-          padding: EdgeInsets.zero,
-          width: MediaQuery.of(context).size.width,
-          child: TextField(
-            maxLines: (controller == locationController ||
-                    controller == aboutController)
-                ? 2
-                : 1,
-            maxLength: (controller == aboutController)
-                ? 250
-                : (controller != null && controller == alternatePhoneController)
-                    ? 10
-                    : null,
-            textCapitalization: textCapitalization,
-            obscureText:
-                (controller == passwordController ? _passwordVisible : false),
-            keyboardType: inputType,
-            inputFormatters:
-                (controller != null && controller == alternatePhoneController)
-                    ? <TextInputFormatter>[
-                        WhitelistingTextInputFormatter.digitsOnly
-                      ]
-                    : (controller != null &&
-                            controller == nameController &&
-                            _userType == Constants.generalUser)
-                        ? [WhitelistingTextInputFormatter(RegExp("[a-zA-Z ]"))]
-                        : null,
-            textInputAction: controller == referralController
-                ? TextInputAction.done
-                : TextInputAction.next,
-            onSubmitted: (String value) {
-              setFocus(controller).unfocus();
-              FocusScope.of(context).requestFocus(setTargetFocus(controller));
-            },
-            onChanged: (text) {
-              setState(() {
-                if (controller == emailController) {
-                  isEmailValid = text.length > 0
-                      ? CommonMethods.validateEmail(text)
-                      : true;
-                } else if (controller == passwordController) {
-                  isPasswordValid = text.length > 7 ? true : false;
-                }
-              });
-            },
-            controller: controller,
-            cursorColor: Color(
-                CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
-            focusNode: setFocus(controller),
-            enabled: (controller == phoneController ||
-                    controller == dobController ||
-                    controller == locationController ||
-                    controller == specializationController)
-                ? false
-                : true,
-            style: TextStyle(
-              fontSize: 15.0,
-            ),
-            decoration: widget.myInputBoxDecoration(
-                colorsFile.defaultGreen,
-                colorsFile.lightGrey1,
-                placeHolder,
-                errorMsg,
-                fieldFlag,
-                controller,
-                passwordController),
-          )),
+      child: IgnorePointer(
+        ignoring: (_userType != null &&
+            _userType == Constants.doctor.toString() &&
+            hasOutlinedBorder),
+        child: Container(
+            padding: EdgeInsets.zero,
+            width: MediaQuery.of(context).size.width,
+            child: TextField(
+              maxLines: (controller == locationController ||
+                      controller == aboutController)
+                  ? 2
+                  : 1,
+              maxLength: (controller == aboutController)
+                  ? 250
+                  : (controller != null &&
+                          controller == alternatePhoneController)
+                      ? 10
+                      : null,
+              textCapitalization: textCapitalization,
+              obscureText:
+                  (controller == passwordController ? _passwordVisible : false),
+              keyboardType: inputType,
+              inputFormatters: (controller != null &&
+                      controller == alternatePhoneController)
+                  ? <TextInputFormatter>[
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ]
+                  : (controller != null &&
+                          controller == nameController &&
+                          _userType == Constants.generalUser)
+                      ? [WhitelistingTextInputFormatter(RegExp("[a-zA-Z ]"))]
+                      : null,
+              textInputAction: controller == referralController
+                  ? TextInputAction.done
+                  : TextInputAction.next,
+              onSubmitted: (String value) {
+                setFocus(controller).unfocus();
+                FocusScope.of(context).requestFocus(setTargetFocus(controller));
+              },
+              onChanged: (text) {
+                setState(() {
+                  if (controller == emailController) {
+                    isEmailValid = text.length > 0
+                        ? CommonMethods.validateEmail(text)
+                        : true;
+                  } else if (controller == passwordController) {
+                    isPasswordValid = text.length > 7 ? true : false;
+                  }
+                });
+              },
+              controller: controller,
+              cursorColor: Color(
+                  CommonMethods.getColorHexFromStr(colorsFile.defaultGreen)),
+              focusNode: setFocus(controller),
+              enabled: (controller == phoneController ||
+                      controller == dobController ||
+                      controller == locationController ||
+                      (controller == specializationController))
+                  ? (_isDoctorType() && hasOutlinedBorder)
+                      ? true
+                      : false
+                  : true,
+              style: TextStyle(
+                fontSize: 15.0,
+              ),
+              decoration: hasOutlinedBorder
+                  ? widget.myInputBoxDecorationWithOutlinedBorder(
+                      colorsFile.defaultGreen,
+                      colorsFile.lightGrey1,
+                      placeHolder,
+                      errorMsg,
+                      fieldFlag,
+                      controller,
+                      passwordController)
+                  : widget.myInputBoxDecoration(
+                      colorsFile.defaultGreen,
+                      colorsFile.lightGrey1,
+                      placeHolder,
+                      errorMsg,
+                      fieldFlag,
+                      controller,
+                      passwordController),
+            )),
+      ),
     );
   }
 
@@ -1287,9 +1278,9 @@ class _RegistrationState extends State<Registration>
       focusNode = emailFocusNode;
     } else if (controller == passwordController) {
       focusNode = passwordFocusNode;
-    } else if (isDoctor && controller == professionRegController) {
+    } else if (_isDoctorType() && controller == professionRegController) {
       focusNode = profRegNoFocusNode;
-    } else if (isDoctor && controller == experienceController) {
+    } else if (_isDoctorType() && controller == experienceController) {
       focusNode = expFocusNode;
     } else if (controller == referralController) {
       focusNode = referralFocusNode;
@@ -1303,9 +1294,9 @@ class _RegistrationState extends State<Registration>
       focusNode = emailFocusNode;
     } else if (controller == emailController) {
       focusNode = passwordFocusNode;
-    } else if (controller == passwordController && !isDoctor) {
+    } else if (controller == passwordController && !_isDoctorType()) {
       focusNode = referralFocusNode;
-    } else if (controller == passwordController && isDoctor) {
+    } else if (controller == passwordController && _isDoctorType()) {
       focusNode = profRegNoFocusNode;
     } else if (controller == professionRegController) {
       focusNode = expFocusNode;
@@ -1337,7 +1328,7 @@ class _RegistrationState extends State<Registration>
     fullAddressController.dispose();
   }
 
-  Widget getLabView() {
+  Widget _getLabView() {
     return Container(
       child: ListView(
         shrinkWrap: true,
@@ -1346,15 +1337,14 @@ class _RegistrationState extends State<Registration>
             margin: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               children: <Widget>[
-                widget.getSpacer(0.0, 20.0),
-                widget.createTextViews(plunesStrings.profileInformation, 18,
-                    colorsFile.black0, TextAlign.center, FontWeight.w500),
-                widget.getSpacer(0.0, 20.0),
+                _getProfileInformationTextWidget(),
+                _getSpacer(),
                 createTextField(nameController, plunesStrings.labName,
                     TextInputType.text, TextCapitalization.words, true, ''),
-                widget.getSpacer(0.0, 20.0),
+                _getSpacer(),
                 createTextField(locationController, plunesStrings.location,
                     TextInputType.text, TextCapitalization.none, false, ''),
+                _getSpacer(),
                 createTextField(
                     fullAddressController,
                     plunesStrings.fullAddress,
@@ -1362,9 +1352,10 @@ class _RegistrationState extends State<Registration>
                     TextCapitalization.none,
                     true,
                     ''),
-                widget.getSpacer(0.0, 20.0),
+                _getSpacer(),
                 createTextField(phoneController, plunesStrings.phoneNo,
                     TextInputType.number, TextCapitalization.none, false, ''),
+                _getSpacer(),
                 createTextField(
                     alternatePhoneController,
                     plunesStrings.alternatePhoneNo,
@@ -1372,9 +1363,10 @@ class _RegistrationState extends State<Registration>
                     TextCapitalization.none,
                     true,
                     ''),
-                createTextField(aboutController, plunesStrings.aboutLab,
+                _getSpacer(),
+                createTextField(aboutController, plunesStrings.aboutHospital,
                     TextInputType.text, TextCapitalization.none, true, ''),
-                widget.getSpacer(0.0, 20.0),
+                _getSpacer(),
                 createTextField(
                     professionRegController,
                     plunesStrings.registrationNo,
@@ -1382,64 +1374,84 @@ class _RegistrationState extends State<Registration>
                     TextCapitalization.characters,
                     true,
                     ''),
-                widget.getSpacer(0.0, 40.0),
-                widget.getDividerRow(context, 0.0, 0.0, 0.0),
-                widget.getSpacer(0.0, 30.0),
-                widget.createTextViews(plunesStrings.addSpecialization, 18,
-                    colorsFile.black0, TextAlign.center, FontWeight.w500),
-                widget.getSpacer(0.0, 5.0),
-                widget.createTextViews(
-                    plunesStrings.addSpecializationServices,
-                    16,
-                    colorsFile.lightGrey2,
-                    TextAlign.center,
-                    FontWeight.w100),
-                widget.getSpacer(0.0, 20.0),
+                _getSpacer(),
+                _getProfileInformationTextWidget(
+                    text: plunesStrings.addSpecialization),
+                _getSpacer(),
+                widget.getSpacer(0.0, 10.0),
                 Container(
-                  margin: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 30,
-                      right: AppConfig.horizontalBlockSize * 30),
-                  child: InkWell(
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    onTap: getHospitalSpecializationData,
-                    child: CustomWidgets().getRoundedButton(
-                        plunesStrings.add,
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.GREENCOLOR,
-                        AppConfig.horizontalBlockSize * 0,
-                        AppConfig.verticalBlockSize * 1.2,
-                        PlunesColors.WHITECOLOR),
+                  width: double.infinity,
+                  margin: EdgeInsets.only(left: 8),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: AppConfig.horizontalBlockSize * 5,
+                      vertical: AppConfig.verticalBlockSize * 2),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(5)),
+                      border: Border.all(
+                          color:
+                              CommonMethods.getColorForSpecifiedCode("#707070"),
+                          width: 0.4)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      widget.createTextViews(
+                          plunesStrings.addSpecializationServices,
+                          16,
+                          colorsFile.lightGrey2,
+                          TextAlign.center,
+                          FontWeight.w100),
+                      widget.getSpacer(0.0, 8.0),
+                      Container(
+                        margin: EdgeInsets.only(
+                            right: AppConfig.horizontalBlockSize * 58),
+                        child: InkWell(
+                          highlightColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          onTap: getHospitalSpecializationData,
+                          child: CustomWidgets().getRoundedButton(
+                              plunesStrings.add,
+                              5,
+                              CommonMethods.getColorForSpecifiedCode("#BCDAD7"),
+                              AppConfig.horizontalBlockSize * 0,
+                              AppConfig.verticalBlockSize * 1.2,
+                              CommonMethods.getColorForSpecifiedCode("#107C6F"),
+                              hasBorder: true,
+                              borderWidth: 0.4,
+                              borderColor:
+                                  CommonMethods.getColorForSpecifiedCode(
+                                      "#107C6F")),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                getSpecializationRow(),
+                widget.getSpacer(0.0, 5.0),
+                Container(
+                  child: getSpecializationRow(),
+                  margin: EdgeInsets.only(left: 8),
+                ),
               ],
             ),
           ),
-          widget.getSpacer(0.0, 20.0),
-          widget.getDividerRow(context, 0.0, 30.0, 0.0),
-          widget.getSpacer(0.0, 0.0),
-          widget.createTextViews(plunesStrings.manageAccount, 18,
-              colorsFile.black0, TextAlign.center, FontWeight.w500),
-          widget.getSpacer(0.0, 5.0),
-          widget.createTextViews(plunesStrings.addUsers, 16,
-              colorsFile.lightGrey2, TextAlign.center, FontWeight.w100),
-          widget.getSpacer(0.0, 20.0),
           Container(
             margin: EdgeInsets.only(left: 20, right: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                widget.createTextViews(plunesStrings.admin, 18,
-                    colorsFile.black0, TextAlign.left, FontWeight.w500),
+                _getSpacer(),
+                widget.getDividerRow(context, 0.0, 1.0, 0.0),
+                _getProfileInformationTextWidget(
+                    text: plunesStrings.addUsers.toString().substring(
+                        0, plunesStrings.addUsers.toString().length - 1)),
+                _getSpacer(),
+                Container(
+                  margin: EdgeInsets.only(left: 8),
+                  child: widget.createTextViews(plunesStrings.admin, 18,
+                      "#000000", TextAlign.left, FontWeight.w500),
+                ),
                 widget.getSpacer(0.0, 10.0),
-                widget.createTextViews(
-                    plunesStrings.addUsers.toString().substring(
-                        0, plunesStrings.addUsers.toString().length - 1),
-                    18,
-                    colorsFile.black0,
-                    TextAlign.left,
-                    FontWeight.normal),
-                widget.getSpacer(0.0, 20.0),
                 createTextField(
                     emailController,
                     plunesStrings.userEmail,
@@ -1449,30 +1461,7 @@ class _RegistrationState extends State<Registration>
                     plunesStrings.errorValidEmailMsg),
                 widget.getSpacer(0.0, 20.0),
                 getPasswordRow(plunesStrings.userPassword),
-                widget.getSpacer(0.0, 20.0),
-                widget.createTextViews(plunesStrings.errorMsgPassword, 16,
-                    colorsFile.black0, TextAlign.center, FontWeight.normal),
-                widget.getSpacer(0.0, 20.0),
-                progress
-                    ? SpinKitThreeBounce(
-                        color: Color(hexColorCode.defaultGreen), size: 30.0)
-                    : Container(
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 30,
-                            right: AppConfig.horizontalBlockSize * 30),
-                        child: InkWell(
-                          borderRadius: BorderRadius.all(Radius.circular(5)),
-                          onTap: submitRegistrationRequest,
-                          child: CustomWidgets().getRoundedButton(
-                              plunesStrings.submit,
-                              AppConfig.horizontalBlockSize * 8,
-                              PlunesColors.GREENCOLOR,
-                              AppConfig.horizontalBlockSize * 0,
-                              AppConfig.verticalBlockSize * 1.2,
-                              PlunesColors.WHITECOLOR),
-                        ),
-                      ),
-                widget.getSpacer(0.0, 30.0),
+                _getSubmitButtonView()
               ],
             ),
           )
@@ -1545,24 +1534,75 @@ class _RegistrationState extends State<Registration>
               ? SpinKitThreeBounce(
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
               : Container(
-                  margin: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 30,
-                      right: AppConfig.horizontalBlockSize * 30),
                   child: InkWell(
+                    highlightColor: Colors.transparent,
+                    focusColor: Colors.transparent,
+                    splashColor: Colors.transparent,
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    onTap: submitRegistrationRequest,
+                    onTap: _submitRegistrationRequest,
                     child: CustomWidgets().getRoundedButton(
-                        plunesStrings.signUpBtn,
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.GREENCOLOR,
+                        plunesStrings.signUpBtn.toString().toUpperCase(),
+                        5,
+                        CommonMethods.getColorForSpecifiedCode("#107C6F"),
                         AppConfig.horizontalBlockSize * 0,
-                        AppConfig.verticalBlockSize * 1.2,
+                        AppConfig.verticalBlockSize * 1.5,
                         PlunesColors.WHITECOLOR),
                   ),
                 ),
+          widget.getSpacer(0.0, 10.0),
+          InkWell(
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => Login()),
+                  (_) => false);
+            },
+            onDoubleTap: () {},
+            highlightColor: Colors.transparent,
+            focusColor: Colors.transparent,
+            splashColor: Colors.transparent,
+            child: Container(
+              alignment: Alignment.center,
+              width: double.infinity,
+              padding: EdgeInsets.all(5),
+              child: Container(
+                  child: Text("Already have an account",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          color: CommonMethods.getColorForSpecifiedCode(
+                              "#107C6F")))),
+            ),
+          ),
           widget.getSpacer(0.0, 15.0),
           widget.getTermsOfUseRow(),
           widget.getSpacer(0.0, 30.0),
+        ],
+      ),
+    );
+  }
+
+  Widget _getProfileInformationTextWidget({String text}) {
+    return Container(
+      margin: EdgeInsets.only(top: 25, left: 8),
+      child: Row(
+        children: [
+          Container(
+            child: Text(
+              text ?? "Profile Information",
+              style: TextStyle(
+                  fontSize: 18,
+                  color: PlunesColors.BLACKCOLOR,
+                  fontWeight: FontWeight.w500),
+            ),
+          ),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              height: 0.6,
+              color: CommonMethods.getColorForSpecifiedCode("#DBDBDB"),
+            ),
+          )
         ],
       ),
     );

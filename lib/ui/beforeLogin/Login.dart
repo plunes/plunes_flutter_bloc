@@ -109,7 +109,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
               child: Column(children: <Widget>[
                 Container(
                   alignment: Alignment.topLeft,
-                  margin: EdgeInsets.only(bottom: 20),
+                  margin: EdgeInsets.only(bottom: 20, left: 8),
                   child: Text(
                     "Enter a new Era of Healthcare",
                     textAlign: TextAlign.left,
@@ -146,6 +146,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
                             CommonMethods.getColorForSpecifiedCode("#107C6F"),
                         size: 30.0)
                     : Container(
+                        margin: EdgeInsets.only(left: 10, right: 10),
                         child: InkWell(
                           borderRadius: BorderRadius.all(Radius.circular(5)),
                           onTap: _submitLogin,
@@ -154,7 +155,7 @@ class _LoginState extends State<Login> implements DialogCallBack {
                               5,
                               CommonMethods.getColorForSpecifiedCode("#107C6F"),
                               0,
-                              AppConfig.verticalBlockSize * 1.2,
+                              AppConfig.verticalBlockSize * 1.5,
                               PlunesColors.WHITECOLOR),
                         ),
                       ),

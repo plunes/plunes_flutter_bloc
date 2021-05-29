@@ -230,6 +230,58 @@ class BaseActivity extends StatefulWidget {
     );
   }
 
+  InputDecoration myInputBoxDecorationWithOutlinedBorder(
+      String focusColor,
+      String enableColor,
+      String label,
+      String errorText,
+      bool flag,
+      TextEditingController passwordController,
+      [TextEditingController controller,
+      String hint]) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(
+          color: CommonMethods.getColorForSpecifiedCode("#000000"),
+          fontSize: 14),
+      errorText: flag
+          ? null
+          : (errorText == null || errorText.trim().isEmpty)
+              ? null
+              : errorText,
+      counterText: '',
+      hintText: hint,
+      contentPadding: EdgeInsets.only(
+          left: 10,
+          right: (controller ==
+                  (passwordController != null
+                      ? passwordController
+                      : controller))
+              ? (controller != null)
+                  ? 40
+                  : 10
+              : 10,
+          top: 5,
+          bottom: 5),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+        borderSide: BorderSide(
+            color: Color(CommonMethods.getColorHexFromStr(focusColor)),
+            width: 1.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(
+          const Radius.circular(10.0),
+        ),
+        borderSide: BorderSide(
+            color: Color(CommonMethods.getColorHexFromStr(enableColor)),
+            width: 1.0),
+      ),
+    );
+  }
+
   Widget getCountryBox() {
     return Container(
         height: 45,
