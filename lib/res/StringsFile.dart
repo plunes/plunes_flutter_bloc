@@ -404,7 +404,7 @@ class PlunesStrings {
   static const String isInsuranceCovered =
       "Do you have your insurance covered ?";
   static const String whyUs = "Why us";
-  static const String knowYourProcedure = "Look for your procedure";
+  static const String knowYourProcedure = "Book Your Medical Treatment";
   static const String selectValidDocWarningText =
       "Please select a valid document.Allowed format is .pdf";
   static const String close = "Close";

@@ -23,6 +23,7 @@ import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
+import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/know_your_procedure_cards.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_procedure_and_professional_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
@@ -142,11 +143,6 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         _getUserDetails();
         _setState();
       }
-      // else if (event != null &&
-      //     event.screenName == HealthSolutionNear.tag &&
-      //     mounted) {
-      //   _getPreviousSolutions();
-      // }
     });
     super.initState();
   }
@@ -162,20 +158,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         user.longitude != "0.0" &&
         user.longitude != "0") {
       _checkUserLocation(user?.latitude, user?.longitude);
-    } else {
-      // await Future.delayed(Duration(milliseconds: 500));
-      // _getCurrentLocation();
     }
-  }
-
-  _getCurrentLocation() async {
-    // var latLong = await LocationUtil().getCurrentLatLong(context);
-    // if (latLong != null &&
-    //     latLong.longitude != null &&
-    //     latLong.latitude != null) {
-    //   _checkUserLocation(
-    //       latLong?.latitude?.toString(), latLong?.longitude?.toString());
-    // }
   }
 
   _checkUserLocation(var latitude, var longitude,
@@ -184,12 +167,6 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         .isUserInServiceLocation(latitude, longitude,
             address: address, region: region)
         .then((result) {
-      // if (result is RequestSuccess) {
-      //   CheckLocationResponse checkLocationResponse = result.response;
-      //   if (checkLocationResponse != null &&
-      //       checkLocationResponse.msg != null &&
-      //       checkLocationResponse.msg.isNotEmpty) {}
-      // }
       _setState();
     });
   }
@@ -317,7 +294,6 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
           right: AppConfig.horizontalBlockSize * 2.8),
       child: Column(
         children: [
-          // heading - top facilities
           Container(
             alignment: Alignment.topLeft,
             margin: EdgeInsets.symmetric(
@@ -1833,7 +1809,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               }
                             },
                             onDoubleTap: () {},
-                            child: _hospitalCard(
+                            child: CommonWidgets().getHospitalCard(
                                 _topFacilityModel.data[index]?.imageUrl ?? '',
                                 CommonMethods.getStringInCamelCase(
                                     _topFacilityModel.data[index].name),
@@ -2241,195 +2217,6 @@ Widget _sectionHeading(String text) {
       fontSize: 20,
       fontWeight: FontWeight.w500,
       color: Color(0xff000000),
-    ),
-  );
-}
-
-Widget _hospitalCard(String imageUrl, String label, String text, double rating,
-    TopFacility topFacilityData) {
-  return Container(
-    margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
-    // height: AppConfig.verticalBlockSize * 38,
-    child: Card(
-      elevation: 2.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-      child: Column(
-        children: [
-          Container(
-            child: ClipRRect(
-              child: _imageFittedBox(imageUrl),
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(10), topLeft: Radius.circular(10)),
-            ),
-            height: AppConfig.verticalBlockSize * 26,
-            width: double.infinity,
-          ),
-          Container(
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 2,
-                right: AppConfig.horizontalBlockSize * 2,
-                top: AppConfig.verticalBlockSize * 0.3),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    label ?? "",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 19,
-                    ),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.topRight,
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: Colors.yellow,
-                      ),
-                      Text(
-                        " ${rating?.toStringAsFixed(1) ?? 4.5}",
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: PlunesColors.BLACKCOLOR,
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-            alignment: Alignment.topLeft,
-            margin: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 2,
-                right: AppConfig.horizontalBlockSize * 2,
-                top: AppConfig.verticalBlockSize * 0.8),
-            child: IgnorePointer(
-              ignoring: true,
-              child: ReadMoreText(text ?? "",
-                  textAlign: TextAlign.left,
-                  trimLines: 2,
-                  trimCollapsedText: " ..Read More",
-                  colorClickableText: Color(0xff107C6F),
-                  trimMode: TrimMode.Line,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xff444444),
-                  )),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 2),
-            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-            alignment: Alignment.topLeft,
-            child: Text(
-              "Multispecialty | New Delhi",
-              style: TextStyle(
-                  color: Color(CommonMethods.getColorHexFromStr("#434343")),
-                  fontSize: 16),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 2),
-            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-            alignment: Alignment.topLeft,
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("13+ Doctors",
-                        style: TextStyle(
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#000000")),
-                            fontSize: 16)),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.centerRight,
-                    child: Text("Check insurance",
-                        style: TextStyle(
-                            decoration: TextDecoration.underline,
-                            decorationThickness: 3.0,
-                            decorationColor: Color(
-                                CommonMethods.getColorHexFromStr("#107C6F")),
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#107C6F")),
-                            fontSize: 16)),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 2),
-            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-            alignment: Alignment.topLeft,
-            child: Row(
-              children: [
-                Container(
-                  height: 24,
-                  width: 24,
-                  alignment: Alignment.centerLeft,
-                  child: CustomWidgets().getImageFromUrl(""),
-                ),
-                Expanded(
-                  child: Container(
-                    alignment: Alignment.centerLeft,
-                    child: Text("   NABH Accredited",
-                        style: TextStyle(
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#434343")),
-                            fontSize: 14)),
-                  ),
-                )
-              ],
-            ),
-          ),
-          Container(
-            height: AppConfig.verticalBlockSize * 6,
-            margin: EdgeInsets.symmetric(
-                horizontal: AppConfig.horizontalBlockSize * 2),
-            padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-            child: ListView.builder(
-              shrinkWrap: true,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: AppConfig.horizontalBlockSize * 2.5,
-                      vertical: AppConfig.verticalBlockSize * 0.8),
-                  alignment: Alignment.center,
-                  margin: EdgeInsets.only(right: 8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(4)),
-                      border: Border.all(
-                          width: 1,
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#D8D8D887")))),
-                  child: Text(
-                    "Some text",
-                    style: TextStyle(
-                        color:
-                            Color(CommonMethods.getColorHexFromStr("#434343")),
-                        fontSize: 14),
-                  ),
-                );
-              },
-              itemCount: 10,
-            ),
-          ),
-          SizedBox(height: 15)
-        ],
-      ),
     ),
   );
 }
