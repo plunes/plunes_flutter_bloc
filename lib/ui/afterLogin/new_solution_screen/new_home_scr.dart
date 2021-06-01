@@ -1563,224 +1563,224 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        margin: EdgeInsets.only(
-                            bottom: AppConfig.verticalBlockSize * 2.2),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 1.2,
-                                    bottom: AppConfig.verticalBlockSize * 1.2,
-                                    left: AppConfig.horizontalBlockSize * 5,
-                                    right: AppConfig.horizontalBlockSize * 1),
-                                margin: EdgeInsets.only(
-                                    right: AppConfig.horizontalBlockSize * 3,
-                                    left: AppConfig.horizontalBlockSize * 2.2),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                            AppConfig.horizontalBlockSize *
-                                                10)),
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#00000012")),
-                                    border: Border.all(
-                                        width: 0.8,
-                                        color: Color(
-                                            CommonMethods.getColorHexFromStr(
-                                                "#26AF78")))),
-                                child: InkWell(
-                                  onTap: () {
-                                    _getModelBottomSheetForServiceList(context);
-                                  },
-                                  onDoubleTap: () {},
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        _selectedSpecialityName ?? "Service",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            color: PlunesColors.BLACKCOLOR),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 4.0),
-                                        child: Icon(Icons.arrow_drop_down),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                // DropdownButton<String>(
-                                //   items: _getSpecialityDropdownItems(),
-                                //   underline: Container(),
-                                //   value: _selectedSpeciality,
-                                //   isExpanded: false,
-                                //   hint: Text(
-                                //     "Service",
-                                //     style: TextStyle(
-                                //         fontSize: 14,
-                                //         color: PlunesColors.BLACKCOLOR),
-                                //   ),
-                                //   onChanged: (spec) {
-                                //     _selectedSpeciality = spec;
-                                //     _doFilterAndGetFacilities();
-                                //   },
-                                // ),
-                              ),
-                              Container(
-                                padding: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 1.2,
-                                    bottom: AppConfig.verticalBlockSize * 1.2,
-                                    left: AppConfig.horizontalBlockSize * 5,
-                                    right: AppConfig.horizontalBlockSize * 1),
-                                margin: EdgeInsets.only(
-                                    right: AppConfig.horizontalBlockSize * 3),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.all(
-                                        Radius.circular(
-                                            AppConfig.horizontalBlockSize *
-                                                10)),
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#00000012")),
-                                    border: Border.all(
-                                        width: 0.8,
-                                        color: Color(
-                                            CommonMethods.getColorHexFromStr(
-                                                "#26AF78")))),
-                                child: InkWell(
-                                    onTap: () {
-                                      _getModelBottomSheetForFacilityType(
-                                          context);
-                                    },
-                                    onDoubleTap: () {},
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          _userTypeFilterName ?? "Facility",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              color: PlunesColors.BLACKCOLOR),
-                                        ),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 4.0),
-                                          child: Icon(Icons.arrow_drop_down),
-                                        )
-                                      ],
-                                    )),
-                                // DropdownButton<String>(
-                                //   items: facilityTypeWidget,
-                                //   underline: Container(),
-                                //   value: _userTypeFilter,
-                                //   isExpanded: false,
-                                //   hint: Text(
-                                //     "Facility",
-                                //     style: TextStyle(
-                                //         fontSize: 14,
-                                //         color: PlunesColors.BLACKCOLOR),
-                                //   ),
-                                //   onChanged: (userType) {
-                                //     _userTypeFilter = userType;
-                                //     _doFilterAndGetFacilities();
-                                //   },
-                                // ),
-                              ),
-                              (UserManager().getUserDetails().latitude != null &&
-                                      UserManager()
-                                          .getUserDetails()
-                                          .latitude
-                                          .isNotEmpty &&
-                                      UserManager().getUserDetails().longitude !=
-                                          null &&
-                                      UserManager()
-                                          .getUserDetails()
-                                          .longitude
-                                          .isNotEmpty &&
-                                      UserManager()
-                                          .getIsUserInServiceLocation())
-                                  ? Container(
-                                      margin: EdgeInsets.only(
-                                          right: AppConfig.horizontalBlockSize *
-                                              3),
-                                      padding: EdgeInsets.only(
-                                          top:
-                                              AppConfig.verticalBlockSize * 1.2,
-                                          bottom:
-                                              AppConfig.verticalBlockSize * 1.2,
-                                          left:
-                                              AppConfig.horizontalBlockSize * 5,
-                                          right: AppConfig.horizontalBlockSize *
-                                              1),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(AppConfig
-                                                      .horizontalBlockSize *
-                                                  10)),
-                                          color:
-                                              Color(CommonMethods.getColorHexFromStr("#00000012")),
-                                          border: Border.all(width: 0.8, color: Color(CommonMethods.getColorHexFromStr("#26AF78")))),
-                                      child: InkWell(
-                                          onTap: () {
-                                            _getModelBottomSheetForLocationType(
-                                                context);
-                                          },
-                                          onDoubleTap: () {},
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                _locationFilterName ??
-                                                    "Near Me",
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: PlunesColors
-                                                        .BLACKCOLOR),
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 4.0),
-                                                child:
-                                                    Icon(Icons.arrow_drop_down),
-                                              )
-                                            ],
-                                          ))
-                                      // DropdownButton(
-                                      //   items: _facilityLocationDropDownItems,
-                                      //   isExpanded: false,
-                                      //   value: _locationFilter,
-                                      //   underline: Container(),
-                                      //   hint: Text(
-                                      //     "Near Me",
-                                      //     style: TextStyle(
-                                      //         fontSize: 14,
-                                      //         color: PlunesColors.BLACKCOLOR),
-                                      //   ),
-                                      //   onChanged: (locationFilter) {
-                                      //     _locationFilter = locationFilter;
-                                      //     _doFilterAndGetFacilities();
-                                      //   },
-                                      // ),
-                                      )
-                                  : Container()
-                            ],
-                          ),
-                        ),
-                      ),
+                      // Container(
+                      //   margin: EdgeInsets.only(
+                      //       bottom: AppConfig.verticalBlockSize * 2.2),
+                      //   child: SingleChildScrollView(
+                      //     scrollDirection: Axis.horizontal,
+                      //     child: Row(
+                      //       mainAxisSize: MainAxisSize.min,
+                      //       mainAxisAlignment: MainAxisAlignment.start,
+                      //       children: [
+                      //         Container(
+                      //           padding: EdgeInsets.only(
+                      //               top: AppConfig.verticalBlockSize * 1.2,
+                      //               bottom: AppConfig.verticalBlockSize * 1.2,
+                      //               left: AppConfig.horizontalBlockSize * 5,
+                      //               right: AppConfig.horizontalBlockSize * 1),
+                      //           margin: EdgeInsets.only(
+                      //               right: AppConfig.horizontalBlockSize * 3,
+                      //               left: AppConfig.horizontalBlockSize * 2.2),
+                      //           decoration: BoxDecoration(
+                      //               borderRadius: BorderRadius.all(
+                      //                   Radius.circular(
+                      //                       AppConfig.horizontalBlockSize *
+                      //                           10)),
+                      //               color: Color(
+                      //                   CommonMethods.getColorHexFromStr(
+                      //                       "#00000012")),
+                      //               border: Border.all(
+                      //                   width: 0.8,
+                      //                   color: Color(
+                      //                       CommonMethods.getColorHexFromStr(
+                      //                           "#26AF78")))),
+                      //           child: InkWell(
+                      //             onTap: () {
+                      //               _getModelBottomSheetForServiceList(context);
+                      //             },
+                      //             onDoubleTap: () {},
+                      //             child: Row(
+                      //               mainAxisAlignment: MainAxisAlignment.end,
+                      //               crossAxisAlignment:
+                      //                   CrossAxisAlignment.center,
+                      //               children: [
+                      //                 Text(
+                      //                   _selectedSpecialityName ?? "Service",
+                      //                   style: TextStyle(
+                      //                       fontSize: 14,
+                      //                       color: PlunesColors.BLACKCOLOR),
+                      //                 ),
+                      //                 Padding(
+                      //                   padding:
+                      //                       const EdgeInsets.only(left: 4.0),
+                      //                   child: Icon(Icons.arrow_drop_down),
+                      //                 )
+                      //               ],
+                      //             ),
+                      //           ),
+                      //           // DropdownButton<String>(
+                      //           //   items: _getSpecialityDropdownItems(),
+                      //           //   underline: Container(),
+                      //           //   value: _selectedSpeciality,
+                      //           //   isExpanded: false,
+                      //           //   hint: Text(
+                      //           //     "Service",
+                      //           //     style: TextStyle(
+                      //           //         fontSize: 14,
+                      //           //         color: PlunesColors.BLACKCOLOR),
+                      //           //   ),
+                      //           //   onChanged: (spec) {
+                      //           //     _selectedSpeciality = spec;
+                      //           //     _doFilterAndGetFacilities();
+                      //           //   },
+                      //           // ),
+                      //         ),
+                      //         Container(
+                      //           padding: EdgeInsets.only(
+                      //               top: AppConfig.verticalBlockSize * 1.2,
+                      //               bottom: AppConfig.verticalBlockSize * 1.2,
+                      //               left: AppConfig.horizontalBlockSize * 5,
+                      //               right: AppConfig.horizontalBlockSize * 1),
+                      //           margin: EdgeInsets.only(
+                      //               right: AppConfig.horizontalBlockSize * 3),
+                      //           decoration: BoxDecoration(
+                      //               borderRadius: BorderRadius.all(
+                      //                   Radius.circular(
+                      //                       AppConfig.horizontalBlockSize *
+                      //                           10)),
+                      //               color: Color(
+                      //                   CommonMethods.getColorHexFromStr(
+                      //                       "#00000012")),
+                      //               border: Border.all(
+                      //                   width: 0.8,
+                      //                   color: Color(
+                      //                       CommonMethods.getColorHexFromStr(
+                      //                           "#26AF78")))),
+                      //           child: InkWell(
+                      //               onTap: () {
+                      //                 _getModelBottomSheetForFacilityType(
+                      //                     context);
+                      //               },
+                      //               onDoubleTap: () {},
+                      //               child: Row(
+                      //                 mainAxisAlignment: MainAxisAlignment.end,
+                      //                 crossAxisAlignment:
+                      //                     CrossAxisAlignment.center,
+                      //                 children: [
+                      //                   Text(
+                      //                     _userTypeFilterName ?? "Facility",
+                      //                     style: TextStyle(
+                      //                         fontSize: 14,
+                      //                         color: PlunesColors.BLACKCOLOR),
+                      //                   ),
+                      //                   Padding(
+                      //                     padding:
+                      //                         const EdgeInsets.only(left: 4.0),
+                      //                     child: Icon(Icons.arrow_drop_down),
+                      //                   )
+                      //                 ],
+                      //               )),
+                      //           // DropdownButton<String>(
+                      //           //   items: facilityTypeWidget,
+                      //           //   underline: Container(),
+                      //           //   value: _userTypeFilter,
+                      //           //   isExpanded: false,
+                      //           //   hint: Text(
+                      //           //     "Facility",
+                      //           //     style: TextStyle(
+                      //           //         fontSize: 14,
+                      //           //         color: PlunesColors.BLACKCOLOR),
+                      //           //   ),
+                      //           //   onChanged: (userType) {
+                      //           //     _userTypeFilter = userType;
+                      //           //     _doFilterAndGetFacilities();
+                      //           //   },
+                      //           // ),
+                      //         ),
+                      //         (UserManager().getUserDetails().latitude != null &&
+                      //                 UserManager()
+                      //                     .getUserDetails()
+                      //                     .latitude
+                      //                     .isNotEmpty &&
+                      //                 UserManager().getUserDetails().longitude !=
+                      //                     null &&
+                      //                 UserManager()
+                      //                     .getUserDetails()
+                      //                     .longitude
+                      //                     .isNotEmpty &&
+                      //                 UserManager()
+                      //                     .getIsUserInServiceLocation())
+                      //             ? Container(
+                      //                 margin: EdgeInsets.only(
+                      //                     right: AppConfig.horizontalBlockSize *
+                      //                         3),
+                      //                 padding: EdgeInsets.only(
+                      //                     top:
+                      //                         AppConfig.verticalBlockSize * 1.2,
+                      //                     bottom:
+                      //                         AppConfig.verticalBlockSize * 1.2,
+                      //                     left:
+                      //                         AppConfig.horizontalBlockSize * 5,
+                      //                     right: AppConfig.horizontalBlockSize *
+                      //                         1),
+                      //                 decoration: BoxDecoration(
+                      //                     borderRadius: BorderRadius.all(
+                      //                         Radius.circular(AppConfig
+                      //                                 .horizontalBlockSize *
+                      //                             10)),
+                      //                     color:
+                      //                         Color(CommonMethods.getColorHexFromStr("#00000012")),
+                      //                     border: Border.all(width: 0.8, color: Color(CommonMethods.getColorHexFromStr("#26AF78")))),
+                      //                 child: InkWell(
+                      //                     onTap: () {
+                      //                       _getModelBottomSheetForLocationType(
+                      //                           context);
+                      //                     },
+                      //                     onDoubleTap: () {},
+                      //                     child: Row(
+                      //                       mainAxisAlignment:
+                      //                           MainAxisAlignment.end,
+                      //                       crossAxisAlignment:
+                      //                           CrossAxisAlignment.center,
+                      //                       children: [
+                      //                         Text(
+                      //                           _locationFilterName ??
+                      //                               "Near Me",
+                      //                           style: TextStyle(
+                      //                               fontSize: 14,
+                      //                               color: PlunesColors
+                      //                                   .BLACKCOLOR),
+                      //                         ),
+                      //                         Padding(
+                      //                           padding: const EdgeInsets.only(
+                      //                               left: 4.0),
+                      //                           child:
+                      //                               Icon(Icons.arrow_drop_down),
+                      //                         )
+                      //                       ],
+                      //                     ))
+                      //                 // DropdownButton(
+                      //                 //   items: _facilityLocationDropDownItems,
+                      //                 //   isExpanded: false,
+                      //                 //   value: _locationFilter,
+                      //                 //   underline: Container(),
+                      //                 //   hint: Text(
+                      //                 //     "Near Me",
+                      //                 //     style: TextStyle(
+                      //                 //         fontSize: 14,
+                      //                 //         color: PlunesColors.BLACKCOLOR),
+                      //                 //   ),
+                      //                 //   onChanged: (locationFilter) {
+                      //                 //     _locationFilter = locationFilter;
+                      //                 //     _doFilterAndGetFacilities();
+                      //                 //   },
+                      //                 // ),
+                      //                 )
+                      //             : Container()
+                      //       ],
+                      //     ),
+                      //   ),
+                      // ),
                       ListView.builder(
                         padding: EdgeInsets.zero,
                         physics: NeverScrollableScrollPhysics(),

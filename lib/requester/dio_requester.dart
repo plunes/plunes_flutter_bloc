@@ -49,7 +49,7 @@ class DioRequester {
     try {
       AppLog.printLog(_dioClient.options.baseUrl + url);
       AppLog.printLog(_debug + _postData + " $postData");
-      AppLog.printLog(_debug + _paramData + " $queryParameter");
+      print(_debug + _paramData + " $queryParameter");
       var options = Options(method: requestType);
       User userManager = UserManager().getUserDetails();
       var accessToken = userManager.accessToken;

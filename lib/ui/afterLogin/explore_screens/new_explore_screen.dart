@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
@@ -216,6 +215,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                       child: InkWell(
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
+                        focusColor: Colors.transparent,
                         onTap: () {
                           Navigator.push(
                               context,
@@ -260,6 +260,9 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                     color: CommonMethods.getColorForSpecifiedCode("#FFFFFF"),
                     margin: EdgeInsets.zero,
                     child: InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      focusColor: Colors.transparent,
                       onTap: () {
                         _getModelBottomSheetForFacilityType(context);
                       },
@@ -456,135 +459,135 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     );
   }
 
-  Widget _getReviewSection() {
-    return Container(
-      margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
-      child: Column(
-        children: [
-          Container(
-            alignment: Alignment.topLeft,
-            child: Text(
-              "People availing Discount",
-              style: TextStyle(
-                  color: PlunesColors.BLACKCOLOR,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 18),
-            ),
-            margin: EdgeInsets.symmetric(
-                vertical: AppConfig.verticalBlockSize * 2,
-                horizontal: AppConfig.horizontalBlockSize * 2),
-          ),
-          Card(
-              elevation: 2.0,
-              margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              child: Container(
-                height: AppConfig.verticalBlockSize * 20,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Flexible(
-                        flex: 3,
-                        child: Column(
-                          children: [
-                            Flexible(
-                              child: Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical: AppConfig.verticalBlockSize * 0.2,
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 0.8),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(12),
-                                      bottomRight: Radius.circular(12),
-                                      topLeft: Radius.circular(12),
-                                      topRight: Radius.circular(12)),
-                                  child: CustomWidgets()
-                                      .getImageFromUrl(kDefaultImageUrl),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                  vertical: AppConfig.verticalBlockSize * 2,
-                                  horizontal:
-                                      AppConfig.horizontalBlockSize * 3),
-                              child: CustomWidgets().getRoundedButton(
-                                  PlunesStrings.book,
-                                  AppConfig.horizontalBlockSize * 8,
-                                  PlunesColors.GREENCOLOR,
-                                  AppConfig.horizontalBlockSize * 5,
-                                  AppConfig.verticalBlockSize * 1,
-                                  PlunesColors.WHITECOLOR,
-                                  borderColor: PlunesColors.SPARKLINGGREEN,
-                                  hasBorder: false),
-                            )
-                          ],
-                        )),
-                    SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(
-                                vertical: AppConfig.verticalBlockSize * 0.2),
-                            child: Text(
-                              CommonMethods.getStringInCamelCase(
-                                  "Rahul Shukla"),
-                              softWrap: true,
-                              maxLines: 2,
-                              style: TextStyle(
-                                color: Color(0xff4E4E4E),
-                                fontSize: 18,
-                              ),
-                            ),
-                          ),
-                          Container(
-                            child: Text(
-                              "PRP",
-                              maxLines: 2,
-                              softWrap: true,
-                              style: TextStyle(
-                                color: Color(0xff4E4E4E),
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Flexible(
-                            child: Container(
-                              child: Text(
-                                "dsdsads asdasdsa sdas dsdsad sadasdasd ada a  asaasdasda dsdsads asdasdsa sdas dsdsad sadasdasd ada a  asaasdasda dsdsads asdasdsa sdas dsdsad sadasdasd ada a  asaasdasda",
-                                softWrap: true,
-                                maxLines: 4,
-                                textAlign: TextAlign.left,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Color(0xff4E4E4E),
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-        ],
-      ),
-    );
-  }
+  // Widget _getReviewSection() {
+  //   return Container(
+  //     margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
+  //     child: Column(
+  //       children: [
+  //         Container(
+  //           alignment: Alignment.topLeft,
+  //           child: Text(
+  //             "People availing Discount",
+  //             style: TextStyle(
+  //                 color: PlunesColors.BLACKCOLOR,
+  //                 fontWeight: FontWeight.w600,
+  //                 fontSize: 18),
+  //           ),
+  //           margin: EdgeInsets.symmetric(
+  //               vertical: AppConfig.verticalBlockSize * 2,
+  //               horizontal: AppConfig.horizontalBlockSize * 2),
+  //         ),
+  //         Card(
+  //             elevation: 2.0,
+  //             margin: EdgeInsets.only(right: AppConfig.horizontalBlockSize * 2),
+  //             shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(10.0)),
+  //             child: Container(
+  //               height: AppConfig.verticalBlockSize * 20,
+  //               child: Row(
+  //                 mainAxisAlignment: MainAxisAlignment.start,
+  //                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                 children: [
+  //                   Flexible(
+  //                       flex: 3,
+  //                       child: Column(
+  //                         children: [
+  //                           Flexible(
+  //                             child: Container(
+  //                               margin: EdgeInsets.symmetric(
+  //                                   vertical: AppConfig.verticalBlockSize * 0.2,
+  //                                   horizontal:
+  //                                       AppConfig.horizontalBlockSize * 0.8),
+  //                               child: ClipRRect(
+  //                                 borderRadius: BorderRadius.only(
+  //                                     bottomLeft: Radius.circular(12),
+  //                                     bottomRight: Radius.circular(12),
+  //                                     topLeft: Radius.circular(12),
+  //                                     topRight: Radius.circular(12)),
+  //                                 child: CustomWidgets()
+  //                                     .getImageFromUrl(kDefaultImageUrl),
+  //                               ),
+  //                             ),
+  //                           ),
+  //                           Container(
+  //                             margin: EdgeInsets.symmetric(
+  //                                 vertical: AppConfig.verticalBlockSize * 2,
+  //                                 horizontal:
+  //                                     AppConfig.horizontalBlockSize * 3),
+  //                             child: CustomWidgets().getRoundedButton(
+  //                                 PlunesStrings.book,
+  //                                 AppConfig.horizontalBlockSize * 8,
+  //                                 PlunesColors.GREENCOLOR,
+  //                                 AppConfig.horizontalBlockSize * 5,
+  //                                 AppConfig.verticalBlockSize * 1,
+  //                                 PlunesColors.WHITECOLOR,
+  //                                 borderColor: PlunesColors.SPARKLINGGREEN,
+  //                                 hasBorder: false),
+  //                           )
+  //                         ],
+  //                       )),
+  //                   SizedBox(
+  //                     width: 20,
+  //                   ),
+  //                   Expanded(
+  //                     flex: 5,
+  //                     child: Column(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Container(
+  //                           margin: EdgeInsets.symmetric(
+  //                               vertical: AppConfig.verticalBlockSize * 0.2),
+  //                           child: Text(
+  //                             CommonMethods.getStringInCamelCase(
+  //                                 "Rahul Shukla"),
+  //                             softWrap: true,
+  //                             maxLines: 2,
+  //                             style: TextStyle(
+  //                               color: Color(0xff4E4E4E),
+  //                               fontSize: 18,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         Container(
+  //                           child: Text(
+  //                             "PRP",
+  //                             maxLines: 2,
+  //                             softWrap: true,
+  //                             style: TextStyle(
+  //                               color: Color(0xff4E4E4E),
+  //                               fontSize: 16,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                         SizedBox(
+  //                           height: 20,
+  //                         ),
+  //                         Flexible(
+  //                           child: Container(
+  //                             child: Text(
+  //                               "dsdsads asdasdsa sdas dsdsad sadasdasd ada a  asaasdasda dsdsads asdasdsa sdas dsdsad sadasdasd ada a  asaasdasda dsdsads asdasdsa sdas dsdsad sadasdasd ada a  asaasdasda",
+  //                               softWrap: true,
+  //                               maxLines: 4,
+  //                               textAlign: TextAlign.left,
+  //                               overflow: TextOverflow.ellipsis,
+  //                               style: TextStyle(
+  //                                 color: Color(0xff4E4E4E),
+  //                                 fontSize: 16,
+  //                               ),
+  //                             ),
+  //                           ),
+  //                         )
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             )),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _getVideoWidget(List<MediaData> videos) {
     return ListView.builder(
@@ -600,6 +603,9 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0)),
               child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                focusColor: Colors.transparent,
                 onTap: () {
                   String mediaUrl = videos[index]?.mediaUrl;
                   if (mediaUrl == null || mediaUrl.trim().isEmpty) {
@@ -613,8 +619,6 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                                 title: videos[index]?.service ?? "Video",
                               )));
                 },
-                highlightColor: Colors.transparent,
-                splashColor: Colors.transparent,
                 child: Column(
                   children: [
                     Stack(
@@ -752,6 +756,9 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                             Container(
                           width: double.infinity,
                           child: InkWell(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
                             onTap: () {
                               if (_exploreModel.data.first.section2
                                           .elements[itemIndex].serviceName !=
@@ -947,6 +954,9 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       return InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        focusColor: Colors.transparent,
                         onTap: () {
                           if (_topFacilityModel.data[index] != null &&
                               _topFacilityModel.data[index].userType != null &&
@@ -1042,12 +1052,15 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                       scrollDirection: Axis.horizontal,
                       itemBuilder: (context, index) {
                         return InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          focusColor: Colors.transparent,
                           onTap: () {
-                            // _userTypeFilter = _facilityTypeList[index].id;
-                            // _userTypeFilterName =
-                            //     _facilityTypeList[index].speciality;
-                            // _doFilterAndGetFacilities();
-                            // Navigator.maybePop(context);
+                            _userTypeFilter = _facilityTypeList[index].id;
+                            _userTypeFilterName =
+                                _facilityTypeList[index].speciality;
+                            _doFilterAndGetFacilities();
+                            Navigator.maybePop(context);
                           },
                           onDoubleTap: () {},
                           child: Container(
@@ -1057,14 +1070,24 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                                 border:
                                     Border.all(color: Colors.grey, width: 0.7),
                                 borderRadius: BorderRadius.circular(4),
-                                color: Color(CommonMethods.getColorHexFromStr(
-                                    "#FAFBFD"))),
+                                color: (_userTypeFilter != null &&
+                                        _userTypeFilter ==
+                                            _facilityTypeList[index].id)
+                                    ? Color(CommonMethods.getColorHexFromStr(
+                                        "#107C6F"))
+                                    : Color(CommonMethods.getColorHexFromStr(
+                                        "#FAFBFD"))),
                             padding: EdgeInsets.symmetric(
                                 horizontal: AppConfig.horizontalBlockSize * 4),
                             child: Text(
                               _facilityTypeList[index].speciality ?? "NA",
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  color: (_userTypeFilter != null &&
+                                          _userTypeFilter ==
+                                              _facilityTypeList[index].id)
+                                      ? Colors.white
+                                      : Colors.black),
                             ),
                           ),
                         );
@@ -1072,61 +1095,91 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                       itemCount: _facilityTypeList.length,
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Text(
-                          "Find",
-                          style: TextStyle(fontSize: 20, color: Colors.black),
-                        ),
-                        margin: EdgeInsets.only(
-                            bottom: AppConfig.verticalBlockSize * 1.5,
-                            top: AppConfig.verticalBlockSize * 3.5),
-                      ),
-                      Container(
-                        height: 45,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                              onTap: () {
-                                // _userTypeFilter = _facilityTypeList[index].id;
-                                // _userTypeFilterName =
-                                //     _facilityTypeList[index].speciality;
-                                // _doFilterAndGetFacilities();
-                                // Navigator.maybePop(context);
-                              },
-                              onDoubleTap: () {},
-                              child: Container(
-                                alignment: Alignment.center,
-                                margin: EdgeInsets.only(right: 5),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 0.7),
-                                    borderRadius: BorderRadius.circular(4),
-                                    color: Color(
-                                        CommonMethods.getColorHexFromStr(
-                                            "#FAFBFD"))),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 4),
-                                child: Text(
-                                  _selectedLocationList[index].speciality ??
-                                      "NA",
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
-                                ),
+                  (UserManager().getUserDetails().latitude != null &&
+                          UserManager().getUserDetails().latitude.isNotEmpty &&
+                          UserManager().getUserDetails().longitude != null &&
+                          UserManager().getUserDetails().longitude.isNotEmpty &&
+                          UserManager().getIsUserInServiceLocation())
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              child: Text(
+                                "Find",
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.black),
                               ),
-                            );
-                          },
-                          itemCount: _selectedLocationList.length,
-                        ),
-                      ),
-                    ],
-                  ),
+                              margin: EdgeInsets.only(
+                                  bottom: AppConfig.verticalBlockSize * 1.5,
+                                  top: AppConfig.verticalBlockSize * 3.5),
+                            ),
+                            Container(
+                              height: 45,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  return InkWell(
+                                    splashColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    onTap: () {
+                                      _locationFilter =
+                                          _selectedLocationList[index].id;
+                                      _locationFilterName =
+                                          _selectedLocationList[index]
+                                              .speciality;
+                                      _doFilterAndGetFacilities();
+                                      Navigator.maybePop(context);
+                                    },
+                                    onDoubleTap: () {},
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      margin: EdgeInsets.only(right: 5),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey, width: 0.7),
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          color: (_locationFilter != null &&
+                                                  _locationFilter ==
+                                                      _selectedLocationList[
+                                                              index]
+                                                          .id)
+                                              ? Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#107C6F"))
+                                              : Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#FAFBFD"))),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              AppConfig.horizontalBlockSize *
+                                                  4),
+                                      child: Text(
+                                        _selectedLocationList[index]
+                                                .speciality ??
+                                            "NA",
+                                        style: TextStyle(
+                                            fontSize: 20,
+                                            color: (_locationFilter != null &&
+                                                    _locationFilter ==
+                                                        _selectedLocationList[
+                                                                index]
+                                                            .id)
+                                                ? Colors.white
+                                                : Colors.black),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                itemCount: _selectedLocationList.length,
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1151,11 +1204,12 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                             childAspectRatio: 3.7),
                         itemBuilder: (context, index) {
                           return InkWell(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            focusColor: Colors.transparent,
                             onTap: () {
                               _selectedSpeciality =
                                   _getSpecialityItems()[index].id;
-                              _selectedSpecialityName =
-                                  _getSpecialityItems()[index].speciality;
                               _doFilterAndGetFacilities();
                               Navigator.maybePop(context);
                             },
@@ -1169,14 +1223,12 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                                   Icon(
                                     (_selectedSpeciality != null &&
                                             _selectedSpeciality ==
-                                                _getSpecialityItems()[index]
-                                                    .speciality)
+                                                _getSpecialityItems()[index].id)
                                         ? Icons.radio_button_checked_rounded
                                         : Icons.radio_button_off,
                                     color: (_selectedSpeciality != null &&
                                             _selectedSpeciality ==
-                                                _getSpecialityItems()[index]
-                                                    .speciality)
+                                                _getSpecialityItems()[index].id)
                                         ? PlunesColors.GREENCOLOR
                                         : null,
                                   ),
