@@ -285,7 +285,10 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
   Widget _getILISTWidget(List<InsuranceProvider> list) {
     return Scrollbar(
       controller: _scrollController,
-      isAlwaysShown: true,
+      isAlwaysShown:
+          (widget.shouldShowAppBar != null && !(widget.shouldShowAppBar))
+              ? false
+              : true,
       child: ListView.builder(
         shrinkWrap: true,
         controller: _scrollController,

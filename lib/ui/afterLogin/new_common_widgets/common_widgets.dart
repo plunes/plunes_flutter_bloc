@@ -3499,7 +3499,7 @@ class CommonWidgets {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 7, bottom: 7),
+                  margin: EdgeInsets.only(top: 4, bottom: 7),
                   child: Text(
                     "12 : 30 PM, Today",
                     style:
@@ -3510,7 +3510,7 @@ class CommonWidgets {
             ),
             Flexible(
                 child: Container(
-              margin: EdgeInsets.only(left: 7, top: 5),
+              margin: EdgeInsets.only(left: 15, top: 5),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -3543,6 +3543,7 @@ class CommonWidgets {
                     padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Flexible(
                           child: RatingBar(
@@ -3613,6 +3614,7 @@ class CommonWidgets {
                   ),
                   Container(
                     margin: EdgeInsets.only(top: 12),
+                    width: double.infinity,
                     padding: EdgeInsets.symmetric(
                         horizontal: AppConfig.horizontalBlockSize * 5,
                         vertical: AppConfig.verticalBlockSize * 1.2),
@@ -3625,6 +3627,7 @@ class CommonWidgets {
                         color: Color(
                             CommonMethods.getColorHexFromStr("#00000033"))),
                     child: Text(PlunesStrings.bookAppointmentText,
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w500,

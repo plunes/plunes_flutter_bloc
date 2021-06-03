@@ -425,7 +425,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   children: [
                     // background image container
                     Container(
-                        height: AppConfig.verticalBlockSize * 36,
+                        height: AppConfig.verticalBlockSize * 34,
                         width: AppConfig.horizontalBlockSize * 100,
                         child: _imageFittedBox(
                             _solutionHomeScreenModel?.backgroundImage ?? "",
@@ -466,7 +466,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                       },
                       child: Container(
                         margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 17,
+                            top: AppConfig.verticalBlockSize * 14,
                             left: AppConfig.verticalBlockSize * 2,
                             right: AppConfig.verticalBlockSize * 2),
                         height: AppConfig.verticalBlockSize * 6,
@@ -533,9 +533,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                     Container(
                       height: AppConfig.verticalBlockSize * 4.5,
                       margin: EdgeInsets.only(
-                        top: AppConfig.verticalBlockSize * 25,
+                        top: AppConfig.verticalBlockSize * 22.5,
                         left: AppConfig.verticalBlockSize * 2,
-                        // right: AppConfig.verticalBlockSize * 2
                       ),
                       child: ListView.builder(
                         shrinkWrap: true,
@@ -1124,7 +1123,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               itemBuilder: (context, index) {
                                 return _specialCard(
                                     _newSpecialityModel
-                                            .data[index]?.specailizationImage ??
+                                            .data[index]?.specialityIconImage ??
                                         "",
                                     _newSpecialityModel.data[index]?.speciality,
                                     _newSpecialityModel
@@ -1138,7 +1137,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                   SliverGridDelegateWithFixedCrossAxisCount(
                                       crossAxisCount: 2,
                                       childAspectRatio: 1.3,
-                                      crossAxisSpacing: 10),
+                                      mainAxisSpacing: 20,
+                                      crossAxisSpacing: 1),
                               itemCount: _newSpecialityModel.data.length ?? 0,
                             ),
                           ),
@@ -1409,7 +1409,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               sId: specialityData?.specialityId,
               defination: specialityData?.definition,
               speciality: specialityData?.speciality,
-              familyImage: specialityData?.specailizationImage,
+              familyImage: specialityData?.specialityIconImage,
               specialityId: specialityData?.specialityId,
               details: specialityData?.definition,
               familyName: specialityData?.speciality);

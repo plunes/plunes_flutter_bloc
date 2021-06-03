@@ -36,7 +36,7 @@ class SpecData {
   String speciality;
   String specialityId;
   String definition;
-  String specailizationImage;
+  String specailizationImage, specialityIconImage;
 
   SpecData(
       {this.sId,
@@ -44,7 +44,8 @@ class SpecData {
       this.speciality,
       this.specialityId,
       this.definition,
-      this.specailizationImage});
+      this.specailizationImage,
+      this.specialityIconImage});
 
   SpecData.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -58,6 +59,7 @@ class SpecData {
     specialityId = json['specialityId'];
     definition = json['definition'];
     specailizationImage = json['specailizationImage'];
+    specialityIconImage = json["specialityIconImage"];
   }
 
   Map<String, dynamic> toJson() {

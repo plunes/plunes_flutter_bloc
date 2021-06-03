@@ -356,13 +356,9 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   trimExpandedText: '  read less',
                   style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-                _getHeadingWidget('Facility have'),
-                SizedBox(
-                  height: 13,
-                ),
+                SizedBox(height: 20),
+                _getHeadingWidget('This Facility Has'),
+                SizedBox(height: 13),
                 _getFacilityHaveWidget(),
                 // _getTabBar(),
                 (_profileResponse.user.hasMedia != null &&
@@ -720,6 +716,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                     itemCount: _facilityHaveModel.data.length ?? 0,
                     itemBuilder: (context, index) {
                       return Card(
+                          elevation: 0,
                           margin: EdgeInsets.only(right: 20, bottom: 2),
                           child: InkWell(
                             hoverColor: Colors.transparent,
