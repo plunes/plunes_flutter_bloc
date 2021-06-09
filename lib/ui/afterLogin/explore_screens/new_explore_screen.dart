@@ -65,6 +65,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
   String _userTypeFilterName;
   String _locationFilterName;
   List<SpecialityModel> _specialityItems = [];
+  StreamController _streamControllerForTopFacility;
 
   List<SpecialityModel> _facilityTypeList = [
     SpecialityModel(speciality: "Hospital", id: Constants.hospital.toString()),
@@ -81,6 +82,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
 
   @override
   void initState() {
+    _streamControllerForTopFacility = StreamController.broadcast();
     FirebaseNotification.setScreenName(FirebaseNotification.exploreScreen);
     _cartBloc = CartMainBloc();
     _exploreMainBloc = ExploreMainBloc();
@@ -123,6 +125,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
     _exploreMainBloc?.dispose();
     _streamController?.close();
     _cartBloc?.dispose();
+    _streamControllerForTopFacility?.close();
     super.dispose();
   }
 
@@ -983,7 +986,8 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                                 _topFacilityModel.data[index].name),
                             _topFacilityModel.data[index].biography ?? '',
                             _topFacilityModel.data[index]?.rating,
-                            _topFacilityModel.data[index]),
+                            _topFacilityModel.data[index],
+                            _streamControllerForTopFacility),
                       );
                     },
                     itemCount: _topFacilityModel.data.length,

@@ -1,3 +1,5 @@
+import 'package:plunes/models/Models.dart';
+
 class TopFacilityModel {
   bool success;
   List<TopFacility> data;
@@ -33,10 +35,10 @@ class TopFacility {
   String address;
   String imageUrl;
   String biography;
-
-  // List<Achievement> achievements;
+  List<AchievementsData> achievements;
   int experience;
-  double rating;
+  double rating, distance, dotsPositionForTopFacility = 0.0;
+
   List<String> specialities;
 
   TopFacility(
@@ -46,24 +48,30 @@ class TopFacility {
       this.address,
       this.imageUrl,
       this.biography,
-      // this.achievements,
+      this.achievements,
       this.experience,
       this.rating,
-      this.specialities});
+      this.specialities,
+      this.distance});
 
   TopFacility.fromJson(Map<String, dynamic> json) {
+    double dis = 0.0;
     professionalId = json['professionalId'];
     name = json['name'];
     userType = json['userType'];
     address = json['address'];
     imageUrl = json['imageUrl'];
     biography = json['biography'];
-    // if (json['achievements'] != null) {
-    //   achievements = new List<Achievements>();
-    //   json['achievements'].forEach((v) {
-    //     achievements.add(new Achievements.fromJson(v));
-    //   });
-    // }
+    if (json['achievements'] != null) {
+      achievements = new List<AchievementsData>();
+      json['achievements'].forEach((v) {
+        achievements.add(new AchievementsData.fromJson(v));
+      });
+    }
+    if (json["distance"] != null &&
+        json["distance"].runtimeType == dis.runtimeType) {
+      distance = json["distance"];
+    }
     experience = json['experience'];
     if (json['rating'] != null &&
         json['rating'].runtimeType != "".runtimeType) {

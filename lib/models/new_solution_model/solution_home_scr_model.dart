@@ -11,6 +11,7 @@ class SolutionHomeScreenModel {
       heading,
       searchBarText;
   List<HomeScreenButtonInfo> data;
+  List<String> specialityList;
 
   SolutionHomeScreenModel(
       {this.success,
@@ -24,7 +25,8 @@ class SolutionHomeScreenModel {
       this.topSearch,
       this.whyUs,
       this.heading,
-      this.searchBarText});
+      this.searchBarText,
+      this.specialityList});
 
   SolutionHomeScreenModel.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -43,6 +45,10 @@ class SolutionHomeScreenModel {
       json['data'].forEach((v) {
         data.add(new HomeScreenButtonInfo.fromJson(v));
       });
+    }
+    if (json["specialityList"] != null) {
+      specialityList = [];
+      specialityList = json["specialityList"].cast<String>();
     }
   }
 
@@ -71,7 +77,7 @@ class HomeScreenButtonInfo {
     index = json['index'];
     category = json['category'];
     categoryName = json['categoryName'];
-    categoryImage = json['categoryImage'];
+    categoryImage = json['categoryIcon'];
   }
 
   Map<String, dynamic> toJson() {
@@ -79,7 +85,7 @@ class HomeScreenButtonInfo {
     data['index'] = this.index;
     data['category'] = this.category;
     data['categoryName'] = this.categoryName;
-    data['categoryImage'] = this.categoryImage;
+    data['categoryIcon'] = this.categoryImage;
     return data;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
@@ -99,6 +101,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
   String _userTypeFilter;
   String _locationFilter = _nearMeKey;
   String _selectedSpeciality;
+  StreamController _streamControllerForTopFacility;
 
   List<DropdownMenuItem<String>> _facilityLocationDropDownItems = [
     DropdownMenuItem(
@@ -127,6 +130,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   @override
   void initState() {
+    _streamControllerForTopFacility = StreamController.broadcast();
     _gridViewScrollController = ScrollController();
     _specialityScrollController = ScrollController();
     _hasSearchBar = false;
@@ -182,6 +186,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     _cartBloc?.dispose();
     _specialityScrollController?.dispose();
     _gridViewScrollController?.dispose();
+    _streamControllerForTopFacility?.close();
     super.dispose();
   }
 
@@ -530,38 +535,73 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         ),
                       ),
                     ),
-                    Container(
-                      height: AppConfig.verticalBlockSize * 4.5,
-                      margin: EdgeInsets.only(
-                        top: AppConfig.verticalBlockSize * 22.5,
-                        left: AppConfig.verticalBlockSize * 2,
-                      ),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.symmetric(horizontal: 10),
-                            margin: EdgeInsets.only(right: 5),
-                            decoration: BoxDecoration(
-                                border:
-                                    Border.all(color: Colors.grey, width: 0.7),
-                                borderRadius: BorderRadius.circular(4),
-                                color: Color(CommonMethods.getColorHexFromStr(
-                                    "#FAFBFD"))),
-                            child: Text(
-                              "some text",
-                              style: TextStyle(
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#303030")),
-                                  fontSize: 14),
+                    _solutionHomeScreenModel != null &&
+                            _solutionHomeScreenModel.specialityList != null &&
+                            _solutionHomeScreenModel.specialityList.isNotEmpty
+                        ? Container(
+                            height: AppConfig.verticalBlockSize * 4.5,
+                            margin: EdgeInsets.only(
+                              top: AppConfig.verticalBlockSize * 22.5,
+                              left: AppConfig.verticalBlockSize * 2,
                             ),
-                          );
-                        },
-                        itemCount: 20,
-                      ),
-                    )
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    if (_solutionHomeScreenModel
+                                                ?.specialityList[index] !=
+                                            null &&
+                                        _solutionHomeScreenModel
+                                            ?.specialityList[index]
+                                            .isNotEmpty) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SolutionBiddingScreen(
+                                                      searchQuery:
+                                                          _solutionHomeScreenModel
+                                                                  ?.specialityList[
+                                                              index]))).then(
+                                          (value) {
+                                        _getCartCount();
+                                      });
+                                    }
+                                  },
+                                  onDoubleTap: () {},
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 10),
+                                    margin: EdgeInsets.only(right: 5),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.grey, width: 0.7),
+                                        borderRadius: BorderRadius.circular(4),
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#FAFBFD"))),
+                                    child: Text(
+                                      _solutionHomeScreenModel
+                                              ?.specialityList[index] ??
+                                          "",
+                                      style: TextStyle(
+                                          color: Color(
+                                              CommonMethods.getColorHexFromStr(
+                                                  "#303030")),
+                                          fontSize: 14),
+                                    ),
+                                  ),
+                                );
+                              },
+                              itemCount: _solutionHomeScreenModel
+                                      ?.specialityList?.length ??
+                                  0,
+                            ),
+                          )
+                        : Container()
                   ],
                 ),
                 // services box row
@@ -652,7 +692,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 height: 78,
                 child: SizedBox.expand(
                   child: ClipRRect(
-                    child: _imageFittedBox(url, boxFit: BoxFit.fill),
+                    child: _imageFittedBox(url, boxFit: BoxFit.contain),
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(10),
                         topLeft: Radius.circular(10)),
@@ -1402,6 +1442,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   Widget _specialCard(
       String imageUrl, String label, String text, SpecData specialityData) {
+    print("${specialityData?.specialityIconImage}");
     return Container(
       child: InkWell(
         onTap: () {
@@ -1434,7 +1475,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 width: 102,
                 height: AppConfig.verticalBlockSize * 12,
                 child: ClipRRect(
-                  child: _imageFittedBox(imageUrl, boxFit: BoxFit.cover),
+                  child: _imageFittedBox(imageUrl, boxFit: BoxFit.fitWidth),
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10)),
@@ -1815,7 +1856,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                     _topFacilityModel.data[index].name),
                                 _topFacilityModel.data[index].biography ?? '',
                                 _topFacilityModel.data[index]?.rating,
-                                _topFacilityModel.data[index]),
+                                _topFacilityModel.data[index],
+                                _streamControllerForTopFacility),
                           );
                         },
                         itemCount: ((_topFacilityModel.data.length > 6) &&

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dots_indicator/dots_indicator.dart';
 
@@ -33,6 +35,7 @@ class CommonWidgets {
   }
 
   final CarouselController _controller = CarouselController();
+  final CarouselController _topFacilityController = CarouselController();
 
   var _decorator = DotsDecorator(
       activeColor: PlunesColors.BLACKCOLOR,
@@ -3814,8 +3817,13 @@ class CommonWidgets {
     );
   }
 
-  Widget getHospitalCard(String imageUrl, String label, String text,
-      double rating, TopFacility topFacilityData) {
+  Widget getHospitalCard(
+      String imageUrl,
+      String label,
+      String text,
+      double rating,
+      TopFacility topFacilityData,
+      StreamController streamController) {
     return Container(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
       child: Card(
@@ -3824,16 +3832,118 @@ class CommonWidgets {
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         child: Column(
           children: [
-            Container(
-              child: ClipRRect(
-                child: _imageFittedBox(imageUrl),
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(10),
-                    topLeft: Radius.circular(10)),
-              ),
-              height: AppConfig.verticalBlockSize * 26,
-              width: double.infinity,
-            ),
+            (topFacilityData.achievements != null &&
+                    topFacilityData.achievements.isNotEmpty)
+                ? ClipRRect(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(10),
+                        topLeft: Radius.circular(10)),
+                    child: Stack(
+                      children: [
+                        CarouselSlider.builder(
+                            itemCount: (topFacilityData.achievements.length > 5)
+                                ? 5
+                                : topFacilityData.achievements?.length,
+                            itemBuilder: (context, index) {
+                              return CustomWidgets().getImageFromUrl(
+                                  topFacilityData.achievements[index].imageUrl,
+                                  boxFit: BoxFit.fill);
+                            },
+                            carouselController: _topFacilityController,
+                            options: CarouselOptions(
+                                autoPlay: true,
+                                autoPlayInterval: Duration(seconds: 5),
+                                height: AppConfig.verticalBlockSize * 26,
+                                viewportFraction: 1.0,
+                                onPageChanged: (index, _) {
+                                  if (topFacilityData.dotsPositionForTopFacility
+                                          .toInt() !=
+                                      index) {
+                                    topFacilityData.dotsPositionForTopFacility =
+                                        index.toDouble();
+                                    streamController?.add(null);
+                                  }
+                                })),
+                        Positioned(
+                          bottom: 0.0,
+                          left: 0.0,
+                          right: 0.0,
+                          child: StreamBuilder<Object>(
+                              stream: streamController.stream,
+                              builder: (context, snapshot) {
+                                return DotsIndicator(
+                                  dotsCount:
+                                      (topFacilityData.achievements.length > 5)
+                                          ? 5
+                                          : topFacilityData
+                                              .achievements?.length,
+                                  position: topFacilityData
+                                          .dotsPositionForTopFacility
+                                          ?.toDouble() ??
+                                      0,
+                                  axis: Axis.horizontal,
+                                  decorator: _decorator,
+                                  onTap: (pos) {
+                                    _topFacilityController.animateToPage(
+                                        pos.toInt(),
+                                        curve: Curves.easeInOut,
+                                        duration: Duration(milliseconds: 300));
+                                    topFacilityData.dotsPositionForTopFacility =
+                                        pos;
+                                    streamController?.add(null);
+                                    return;
+                                  },
+                                );
+                              }),
+                        ),
+                        topFacilityData.distance != null
+                            ? Positioned(
+                                bottom: 0.0,
+                                right: AppConfig.horizontalBlockSize * 2,
+                                child: Chip(
+                                  backgroundColor: Colors.white,
+                                  label: Container(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          margin: EdgeInsets.only(right: 5),
+                                          child: Icon(
+                                            Icons.location_on,
+                                            size: 18,
+                                            color: PlunesColors.BLACKCOLOR,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${topFacilityData.distance.toStringAsFixed(1).length > 3 ? topFacilityData.distance.toStringAsFixed(1).substring(0, 3) : topFacilityData?.distance?.toStringAsFixed(1) ?? ''} kms",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: PlunesColors.BLACKCOLOR,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container()
+                      ],
+                    ),
+                  )
+                : Container(
+                    child: ClipRRect(
+                      child: _imageFittedBox(imageUrl),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          topLeft: Radius.circular(10)),
+                    ),
+                    height: AppConfig.verticalBlockSize * 26,
+                    width: double.infinity,
+                  ),
             Container(
               margin: EdgeInsets.only(
                   left: AppConfig.horizontalBlockSize * 2,
