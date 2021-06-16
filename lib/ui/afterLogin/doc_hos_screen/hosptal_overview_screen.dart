@@ -5,7 +5,6 @@ import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
-import 'package:plunes/Utils/date_util.dart';
 import 'package:plunes/Utils/event_bus.dart';
 import 'package:plunes/Utils/socket_io_util.dart';
 import 'package:plunes/Utils/video_util.dart';
@@ -1286,7 +1285,6 @@ class _HospitalOverviewScreenState
   }
 
   Widget _getVideoWidget(RealInsight data) {
-    // print("data?.userReport?.videoUrl?.first?.thumbnail ${data?.userReport?.videoUrl?.first?.thumbnail}");
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
@@ -1461,18 +1459,6 @@ class _HospitalOverviewScreenState
                       ),
                     ),
                   ),
-                  // data.userReport.reportUrl.length > 1
-                  //     ? Positioned.fill(
-                  //         child: Container(
-                  //           alignment: Alignment.center,
-                  //           child: Text(
-                  //             "+${data.userReport.reportUrl.length}",
-                  //             style: TextStyle(
-                  //                 color: PlunesColors.GREYCOLOR, fontSize: 60),
-                  //           ),
-                  //         ),
-                  //       )
-                  //     : Container()
                 ],
               ),
             ),
@@ -1863,35 +1849,6 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                 fontWeight: FontWeight.normal,
               ),
             ),
-            // child: Row(
-            //   mainAxisAlignment:
-            //   MainAxisAlignment.start,
-            //   crossAxisAlignment:
-            //   CrossAxisAlignment.center,
-            //   children: <Widget>[
-            //     Image.asset(
-            //       PlunesImages.serviceNotAvail,
-            //       height:
-            //       AppConfig.verticalBlockSize *
-            //           2.6,
-            //       width:
-            //       AppConfig.horizontalBlockSize *
-            //           8,
-            //     ),
-            //     Flexible(
-            //         child: Text(
-            //           PlunesStrings
-            //               .serviceNotAvailableText,
-            //           style: TextStyle(
-            //             color: Color(CommonMethods
-            //                 .getColorHexFromStr(
-            //                 "#1473E6")),
-            //             fontSize: AppConfig.smallFont - 2,
-            //             fontWeight: FontWeight.normal,
-            //           ),
-            //         ))
-            //   ],
-            // ),
           ),
         ),
       ),
@@ -1902,7 +1859,6 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
     if (widget.remainingTime != null && widget.remainingTime != 0) {
       var duration = DateTime.now().difference(
           DateTime.fromMillisecondsSinceEpoch(widget.remainingTime));
-      // print("duration.inHours.abs() ${duration.inHours.abs()}");
       if (duration.inDays.abs() > 1 || duration.inHours.abs() >= 24) {
         _timeValue =
             "${duration.inDays.abs() + 1} ${duration.inDays.abs() == 1 ? "day" : "days"}";
@@ -1911,8 +1867,6 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
         _timeValue =
             "${duration.inHours.abs()} ${duration.inHours.abs() == 1 ? "hour" : "hours"}";
       } else if (duration != null && duration.inMinutes != null) {
-        // print("duration.inMinutes ${duration.inMinutes}");
-        // int val = _countDownValue - duration.inMinutes.abs();
         int val = duration.inMinutes.abs();
         if (_prevMinValue == null) {
           _prevMinValue = val;
@@ -1995,10 +1949,8 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
 
   void _runSolutionExpireTimer() {
     _timerForSolutionExpire = Timer.periodic(Duration(seconds: 1), (timer) {
-//      print("hello ${widget.serviceName} ${widget.remainingTime}");
       _timerForSolutionExpire = timer;
       if (widget.remainingTime == null || widget.remainingTime == 0) {
-//        print("timer cancelled ${widget.serviceName} ${widget.remainingTime}");
         timer.cancel();
         _setState();
       } else if (DateTime.now()
@@ -2006,11 +1958,9 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
                   DateTime.fromMillisecondsSinceEpoch(widget.remainingTime))
               .inSeconds >=
           0) {
-//        print("refreshing insights now ${widget.serviceName}");
         widget.getRealTimeInsights();
         timer.cancel();
       }
-//      print("kuch nhi chala ${widget.serviceName}");
       return;
     });
   }
@@ -2154,41 +2104,6 @@ class _PatientServiceInfoState extends State<PatientServiceInfo> {
               : Container()
         ],
       ),
-    );
-  }
-
-  Widget _getDistanceAndTimerWidget() {
-    return Column(
-      children: <Widget>[
-        // Image.asset(
-        //   PlunesImages.darkMap,
-        //   fit: BoxFit.contain,
-        //   height: AppConfig.verticalBlockSize * 5,
-        //   alignment: Alignment.center,
-        // ),
-        // Container(
-        //   margin:
-        //       EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 1),
-        //   child: Row(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children: <Widget>[
-        //       Icon(
-        //         Icons.perm_identity,
-        //         size: AppConfig.verySmallFont,
-        //         color: PlunesColors.BLACKCOLOR,
-        //       ),
-        //       Text(
-        //         "${_realInsight.distance?.toStringAsFixed(0) ?? 0} Km",
-        //         style: TextStyle(
-        //             fontSize: AppConfig.verySmallFont - 2,
-        //             fontWeight: FontWeight.w600,
-        //             color: PlunesColors.BLACKCOLOR),
-        //       )
-        //     ],
-        //   ),
-        // ),
-        _getTimeWidget()
-      ],
     );
   }
 

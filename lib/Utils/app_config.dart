@@ -73,27 +73,4 @@ class AppConfig {
 //    print("signature $signature");
     return signature;
   }
-
-  ///provides a unique device-Id of the Device
-//  static Future<String> getDeviceUniqueId() async {
-//    final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
-//    String identifier;
-//    try {
-//      if (Platform.isAndroid) {
-//        var build = await deviceInfoPlugin.androidInfo;
-//        identifier = build.androidId; //UUID for Android
-//      } else if (Platform.isIOS) {
-//        var data = await deviceInfoPlugin.iosInfo;
-//        identifier = data.identifierForVendor; //UUID for iOS
-//      }
-//    } catch (e) {
-//      print('Failed to get platform version');
-//    }
-//    print("uuid is  $identifier");
-//    if (identifier != null) {
-//      print("saving device-id $identifier");
-//      UserManager().setDeviceId(identifier);
-//    }
-//    return identifier;
-//  }
 }
