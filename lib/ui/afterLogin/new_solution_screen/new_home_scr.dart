@@ -435,173 +435,186 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         child: _imageFittedBox(
                             _solutionHomeScreenModel?.backgroundImage ?? "",
                             boxFit: BoxFit.cover)),
-                    // heading text
                     Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(
-                          top: AppConfig.verticalBlockSize * 8,
-                          left: AppConfig.verticalBlockSize * 4,
-                          right: AppConfig.verticalBlockSize * 4),
-                      child: RichText(
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          text: TextSpan(children: [
-                            TextSpan(
-                                text: _getHeading(),
-                                style: TextStyle(
-                                    color: PlunesColors.BLACKCOLOR,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 23))
-                          ])),
-                    ),
-                    // search box container
-                    VisibilityDetector(
-                      key: Key("VisibilityDetector"),
-                      onVisibilityChanged: (visibilityInfo) {
-                        if (visibilityInfo != null) {
-                          var visiblePercentage =
-                              visibilityInfo.visibleFraction * 100;
-                          if (visiblePercentage < 1) {
-                            _hasSearchBar = true;
-                          } else {
-                            _hasSearchBar = false;
-                          }
-                          _setState();
-                        }
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            top: AppConfig.verticalBlockSize * 14,
-                            left: AppConfig.verticalBlockSize * 2,
-                            right: AppConfig.verticalBlockSize * 2),
-                        height: AppConfig.verticalBlockSize * 6,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        SolutionBiddingScreen())).then((value) {
-                              _getCartCount();
-                            });
-                          },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        AppConfig.horizontalBlockSize * 4),
-                                child: Icon(
-                                  Icons.search,
-                                  size: 30,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#555555")),
-                                ),
-                              ),
-                              Flexible(
-                                child: Container(
-                                  padding: EdgeInsets.only(bottom: 2),
-                                  child: IgnorePointer(
-                                    ignoring: true,
-                                    child: TextField(
-                                      textAlign: TextAlign.left,
-                                      onTap: () {},
-                                      decoration: InputDecoration(
-                                        hintMaxLines: 1,
-                                        hintText: _solutionHomeScreenModel
-                                                ?.searchBarText ??
-                                            'Search Disease ,Test or Medical Procedure',
-                                        hintStyle: TextStyle(
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#B1B1B1")),
-                                          fontSize: 16,
-                                        ),
-                                        enabledBorder: InputBorder.none,
-                                        focusedBorder: InputBorder.none,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    _solutionHomeScreenModel != null &&
-                            _solutionHomeScreenModel.specialityList != null &&
-                            _solutionHomeScreenModel.specialityList.isNotEmpty
-                        ? Container(
-                            height: AppConfig.verticalBlockSize * 4.5,
+                      margin:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 8),
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
                             margin: EdgeInsets.only(
-                              top: AppConfig.verticalBlockSize * 22.5,
-                              left: AppConfig.verticalBlockSize * 2,
-                            ),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return InkWell(
-                                  onTap: () {
-                                    if (_solutionHomeScreenModel
-                                                ?.specialityList[index] !=
-                                            null &&
-                                        _solutionHomeScreenModel
-                                            ?.specialityList[index]
-                                            .isNotEmpty) {
-                                      Navigator.push(
+                                left: AppConfig.verticalBlockSize * 4,
+                                right: AppConfig.verticalBlockSize * 4),
+                            child: RichText(
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                      text: _getHeading(),
+                                      style: TextStyle(
+                                          color: PlunesColors.BLACKCOLOR,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 23))
+                                ])),
+                          ),
+                          // search box container
+                          VisibilityDetector(
+                            key: Key("VisibilityDetector"),
+                            onVisibilityChanged: (visibilityInfo) {
+                              if (visibilityInfo != null) {
+                                var visiblePercentage =
+                                    visibilityInfo.visibleFraction * 100;
+                                if (visiblePercentage < 1) {
+                                  _hasSearchBar = true;
+                                } else {
+                                  _hasSearchBar = false;
+                                }
+                                _setState();
+                              }
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  top: AppConfig.verticalBlockSize * 2,
+                                  left: AppConfig.verticalBlockSize * 2,
+                                  right: AppConfig.verticalBlockSize * 2),
+                              height: AppConfig.verticalBlockSize * 6,
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  SolutionBiddingScreen(
-                                                      searchQuery:
-                                                          _solutionHomeScreenModel
-                                                                  ?.specialityList[
-                                                              index]))).then(
-                                          (value) {
-                                        _getCartCount();
-                                      });
-                                    }
-                                  },
-                                  onDoubleTap: () {},
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
-                                    margin: EdgeInsets.only(right: 5),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.grey, width: 0.7),
-                                        borderRadius: BorderRadius.circular(4),
+                                                  SolutionBiddingScreen()))
+                                      .then((value) {
+                                    _getCartCount();
+                                  });
+                                },
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              AppConfig.horizontalBlockSize *
+                                                  4),
+                                      child: Icon(
+                                        Icons.search,
+                                        size: 30,
                                         color: Color(
                                             CommonMethods.getColorHexFromStr(
-                                                "#FAFBFD"))),
-                                    child: Text(
-                                      _solutionHomeScreenModel
-                                              ?.specialityList[index] ??
-                                          "",
-                                      style: TextStyle(
-                                          color: Color(
-                                              CommonMethods.getColorHexFromStr(
-                                                  "#303030")),
-                                          fontSize: 14),
+                                                "#555555")),
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
-                              itemCount: _solutionHomeScreenModel
-                                      ?.specialityList?.length ??
-                                  0,
+                                    Flexible(
+                                      child: Container(
+                                        padding: EdgeInsets.only(bottom: 2),
+                                        child: IgnorePointer(
+                                          ignoring: true,
+                                          child: TextField(
+                                            textAlign: TextAlign.left,
+                                            onTap: () {},
+                                            decoration: InputDecoration(
+                                              hintMaxLines: 1,
+                                              hintText: _solutionHomeScreenModel
+                                                      ?.searchBarText ??
+                                                  'Search Disease ,Test or Medical Procedure',
+                                              hintStyle: TextStyle(
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#B1B1B1")),
+                                                fontSize: 16,
+                                              ),
+                                              enabledBorder: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
-                          )
-                        : Container()
+                          ),
+                          _solutionHomeScreenModel != null &&
+                                  _solutionHomeScreenModel.specialityList !=
+                                      null &&
+                                  _solutionHomeScreenModel
+                                      .specialityList.isNotEmpty
+                              ? Container(
+                                  height: AppConfig.verticalBlockSize * 4.5,
+                                  margin: EdgeInsets.only(
+                                    top: AppConfig.verticalBlockSize * 2,
+                                    left: AppConfig.verticalBlockSize * 2,
+                                  ),
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          if (_solutionHomeScreenModel
+                                                      ?.specialityList[index] !=
+                                                  null &&
+                                              _solutionHomeScreenModel
+                                                  ?.specialityList[index]
+                                                  .isNotEmpty) {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SolutionBiddingScreen(
+                                                            searchQuery:
+                                                                _solutionHomeScreenModel
+                                                                        ?.specialityList[
+                                                                    index]))).then(
+                                                (value) {
+                                              _getCartCount();
+                                            });
+                                          }
+                                        },
+                                        onDoubleTap: () {},
+                                        child: Container(
+                                          alignment: Alignment.center,
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          margin: EdgeInsets.only(right: 5),
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey,
+                                                  width: 0.7),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              color: Color(CommonMethods
+                                                  .getColorHexFromStr(
+                                                      "#FAFBFD"))),
+                                          child: Text(
+                                            _solutionHomeScreenModel
+                                                    ?.specialityList[index] ??
+                                                "",
+                                            style: TextStyle(
+                                                color: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#303030")),
+                                                fontSize: 14),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    itemCount: _solutionHomeScreenModel
+                                            ?.specialityList?.length ??
+                                        0,
+                                  ),
+                                )
+                              : Container()
+                        ],
+                      ),
+                    )
                   ],
                 ),
                 // services box row
@@ -690,6 +703,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   borderRadius: BorderRadius.circular(10.0)),
               child: Container(
                 height: 78,
+                padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
                 child: SizedBox.expand(
                   child: ClipRRect(
                     child: _imageFittedBox(url, boxFit: BoxFit.contain),
@@ -1442,7 +1456,6 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   Widget _specialCard(
       String imageUrl, String label, String text, SpecData specialityData) {
-    print("${specialityData?.specialityIconImage}");
     return Container(
       child: InkWell(
         onTap: () {

@@ -91,12 +91,6 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     });
     _iconGen.getBytesFromAsset(PlunesImages.labMapImage, 100).then((value) {
       hosImage2XGreenBgDesc = BitmapDescriptor.fromBytes(value);
-      // _markers.add(Marker(
-      //     icon: hosImage2XGreenBgDesc,
-      //     position: LatLng(28.443, 78.3222),
-      //     markerId: MarkerId("ds"),
-      //     onTap: () => _doSomething()));
-      // if (mounted) setState(() {});
     });
     EventProvider().getSessionEventBus().on<ScreenRefresher>().listen((event) {
       if (event != null &&

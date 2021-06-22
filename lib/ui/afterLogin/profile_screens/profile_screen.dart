@@ -57,7 +57,6 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   bool _reviewApiHitOnce = false, _mediaContentApiHitOnce = false, _isDoc;
   List<SpecialityModel> _specialityList;
   FacilityHaveModel _facilityHaveModel;
-
   List<Widget> _tabsForHospital = [];
 
   String _failureMessageForFacilityHave;

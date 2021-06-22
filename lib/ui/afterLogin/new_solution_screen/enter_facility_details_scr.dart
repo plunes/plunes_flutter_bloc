@@ -1556,6 +1556,7 @@ class _EnterAdditionalUserDetailScrState
                               _pageController.page.toInt() == 0)) {
                             return;
                           }
+                          _removeFocus();
                           _pageController
                               .previousPage(
                                   duration: Duration(milliseconds: 500),
@@ -1600,6 +1601,7 @@ class _EnterAdditionalUserDetailScrState
                               _pageController.page.toInt() == 1) {
                             _submitUserDetail();
                           } else {
+                            _removeFocus();
                             _pageController
                                 .nextPage(
                                     duration: Duration(milliseconds: 500),
@@ -2634,6 +2636,12 @@ class _EnterAdditionalUserDetailScrState
         ))
       ],
     );
+  }
+
+  void _removeFocus() {
+    if (mounted) {
+      FocusScope.of(context).requestFocus(FocusNode());
+    }
   }
 }
 

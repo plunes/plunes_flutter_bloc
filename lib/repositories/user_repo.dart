@@ -194,12 +194,12 @@ class UserManager {
             ? "mobileNumber"
             : 'userId'
         : 'mobileNumber';
-    var result = await DioRequester().requestMethodWithNoBaseUrl(
+    var result = await DioRequester().requestMethod(
         url: iFromForgotPassword
             ? (isProfessional)
                 ? Urls.forgotPasswordProf
-                : Urls.baseUrl + Urls.FORGOT_PASSWORD_URL
-            : Urls.baseUrl + Urls.GENERATE_OTP_URL,
+                : Urls.FORGOT_PASSWORD_URL
+            : Urls.GENERATE_OTP_URL,
         headerIncluded: false,
         requestType: HttpRequestMethods.HTTP_POST,
         postData: {key: mobileNumber, "signature": signature});
@@ -359,10 +359,8 @@ class UserManager {
   Future<RequestState> resetPassword(
       String phoneNumber, String otp, String password,
       {bool isProf = false}) async {
-    var result = await DioRequester().requestMethodWithNoBaseUrl(
-        url: isProf
-            ? Urls.resetPasswordProf
-            : Urls.baseUrl + Urls.RESET_PASSWORD_URL,
+    var result = await DioRequester().requestMethod(
+        url: isProf ? Urls.resetPasswordProf : Urls.RESET_PASSWORD_URL,
         postData: {
           isProf ? "mobileNumber" : "userId": phoneNumber,
           "otp": otp,
@@ -420,7 +418,7 @@ class UserManager {
 
   Future<RequestState> login(
       String phoneNumber, String password, bool isProfessional) async {
-    var result = await DioRequester().requestMethodWithNoBaseUrl(
+    var result = await DioRequester().requestMethod(
         url: (isProfessional != null && isProfessional)
             ? Urls.profLogin
             : urls.login,

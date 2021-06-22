@@ -20,7 +20,7 @@ class Urls {
   // static const String baseUrl =
   //     'https://api.plunes.com/v9/'; // production server
   static const String baseUrl =
-      'https://devapi.plunes.com/v9/'; // staging server
+      'https://devapi.plunes.com/staging/'; // staging server
 
   // static const String customBaseUrl =
   //     'https://api.plunes.com/'; // production server
@@ -69,7 +69,7 @@ class Urls {
   static const String GET_TEST_AND_PROCEDURES_CATALOGUE_API =
       "catalogue/serviceList";
   static const String CHECK_LOCATION_API = "user/checkLocation";
-  static const String GET_DOC_HOS_API = "solution";
+  static const String GET_DOC_HOS_API = "solution/solution";
   static const String BOOKING_URL = 'booking';
 
   // static const String PAYMENT_WEB_VIEW_URL =
@@ -176,10 +176,7 @@ class Urls {
       mcmBaseUrl + "mcmCatalogue/getServiceById";
 
   ///new professional api's
-  static const String tempBaseUrl = "https://devapi.plunes.com/staging/";
-  static const String profLogin = tempBaseUrl + "professional/login";
-  static const String forgotPasswordProf =
-      tempBaseUrl + "professional/forgotPassword";
-  static const String resetPasswordProf =
-      tempBaseUrl + "professional/resetPasswordViaOTP";
+  static const String profLogin = "professional/login";
+  static const String forgotPasswordProf = "professional/forgotPassword";
+  static const String resetPasswordProf = "professional/resetPasswordViaOTP";
 }

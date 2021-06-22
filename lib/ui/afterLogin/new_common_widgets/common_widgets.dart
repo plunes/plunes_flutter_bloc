@@ -3482,7 +3482,7 @@ class CommonWidgets {
               children: [
                 Container(
                   height: 130,
-                  width: 150,
+                  width: 130,
                   color: Colors.transparent,
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
