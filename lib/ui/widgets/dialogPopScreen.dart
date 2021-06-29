@@ -263,31 +263,6 @@ class DialogWidgets {
     );
   }
 
-  Widget buildViewMoreDialog({
-    CatalogueData catalogueData,
-  }) {
-    return StatefulBuilder(builder: (context, newState) {
-      if (catalogueData.service == null) {
-        catalogueData.service = 'NA';
-      }
-      if (catalogueData.dnd == null) {
-        catalogueData.dnd = 'NA';
-      }
-      if (catalogueData.sitting == null) {
-        catalogueData.sitting = 'NA';
-      }
-      if (catalogueData.duration == null) {
-        catalogueData.duration = 'NA';
-      }
-      return Dialog(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-        elevation: 0.0,
-        child: viewMoreContent(context, catalogueData),
-      );
-    });
-  }
-
   Widget viewMoreContent(
     BuildContext context,
     CatalogueData catalogueData,

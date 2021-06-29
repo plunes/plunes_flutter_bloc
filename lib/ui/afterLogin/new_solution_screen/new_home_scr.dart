@@ -703,7 +703,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   borderRadius: BorderRadius.circular(10.0)),
               child: Container(
                 height: 78,
-                padding: EdgeInsets.symmetric(horizontal: 3, vertical: 3),
+                padding: EdgeInsets.symmetric(horizontal: 13, vertical: 13),
                 child: SizedBox.expand(
                   child: ClipRRect(
                     child: _imageFittedBox(url, boxFit: BoxFit.contain),
@@ -959,23 +959,17 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       child: Container(
         height: AppConfig.verticalBlockSize * 56,
         margin: EdgeInsets.only(bottom: 5),
-        child: Scrollbar(
-          isAlwaysShown: true,
-          controller: _gridViewScrollController,
-          thickness: 6,
-          radius: Radius.circular(4),
-          child: GridView.count(
-              shrinkWrap: true,
-              controller: _gridViewScrollController,
-              crossAxisCount: 2,
-              crossAxisSpacing: 4,
-              mainAxisSpacing: 4,
-              padding: EdgeInsets.only(bottom: 15),
-              childAspectRatio: 1.2,
-              scrollDirection: Axis.horizontal,
-              // physics: NeverScrollableScrollPhysics(),
-              children: _getProcedureAlteredList()),
-        ),
+        child: GridView.count(
+            shrinkWrap: true,
+            controller: _gridViewScrollController,
+            crossAxisCount: 2,
+            crossAxisSpacing: 4,
+            mainAxisSpacing: 14,
+            padding: EdgeInsets.only(bottom: 15),
+            childAspectRatio: 1.2,
+            scrollDirection: Axis.horizontal,
+            // physics: NeverScrollableScrollPhysics(),
+            children: _getProcedureAlteredList()),
       ),
     );
   }
@@ -1166,35 +1160,28 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                         )
                       : Container(
                           height: AppConfig.verticalBlockSize * 40,
-                          child: Scrollbar(
+                          child: GridView.builder(
                             controller: _specialityScrollController,
-                            thickness: 6,
-                            radius: Radius.circular(4),
-                            isAlwaysShown: true,
-                            child: GridView.builder(
-                              controller: _specialityScrollController,
-                              padding: EdgeInsets.only(bottom: 15),
-                              itemBuilder: (context, index) {
-                                return _specialCard(
-                                    _newSpecialityModel
-                                            .data[index]?.specialityIconImage ??
-                                        "",
-                                    _newSpecialityModel.data[index]?.speciality,
-                                    _newSpecialityModel
-                                            .data[index]?.definition ??
-                                        "",
-                                    _newSpecialityModel.data[index]);
-                              },
-                              scrollDirection: Axis.horizontal,
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      childAspectRatio: 1.3,
-                                      mainAxisSpacing: 20,
-                                      crossAxisSpacing: 1),
-                              itemCount: _newSpecialityModel.data.length ?? 0,
-                            ),
+                            padding: EdgeInsets.only(bottom: 15),
+                            itemBuilder: (context, index) {
+                              return _specialCard(
+                                  _newSpecialityModel
+                                          .data[index]?.specialityIconImage ??
+                                      "",
+                                  _newSpecialityModel.data[index]?.speciality,
+                                  _newSpecialityModel.data[index]?.definition ??
+                                      "",
+                                  _newSpecialityModel.data[index]);
+                            },
+                            scrollDirection: Axis.horizontal,
+                            shrinkWrap: true,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    childAspectRatio: 1.3,
+                                    mainAxisSpacing: 20,
+                                    crossAxisSpacing: 1),
+                            itemCount: _newSpecialityModel.data.length ?? 0,
                           ),
                         );
                 }),

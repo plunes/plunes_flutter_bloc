@@ -113,8 +113,10 @@ class SearchedSolutionRepo {
             needFullLocation: true);
       }
       queryParams = {
-        "serviceId": catalogueData.serviceId,
-        "userReportId": userReportId,
+        "serviceId": "6092dfd1b4dbc5d66eb748ea",
+        // catalogueData.serviceId,
+        "userReportId": "60c4940ad2f2fe32d257ed66",
+        // userReportId,
         "latitude": lat,
         "longitude": long,
         "searchQuery": searchQuery,
@@ -244,8 +246,10 @@ class SearchedSolutionRepo {
         url: Urls.DISCOVER_PRICE_API,
         headerIncluded: true,
         postData: {
-          "solutionId": solutionId,
-          "serviceId": serviceId,
+          "solutionId": "60d5a11529b4bb331c229df1",
+          // solutionId,
+          "serviceId": "6092dfd1b4dbc5d66eb748ea",
+          // serviceId,
           "suggestedInsights": true
         });
     if (result.isRequestSucceed) {

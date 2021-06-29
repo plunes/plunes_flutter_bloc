@@ -1,7 +1,7 @@
 class CatalogueData {
   String service;
   String details;
-  String dnd;
+  List<String> dnd;
   String category;
   bool isSelected = false,
       isActive,
@@ -57,7 +57,12 @@ class CatalogueData {
     serviceId = json['serviceId'];
     service = json['service'];
     details = json['details'];
-    dnd = json['dnd'];
+    if (json['dnd'] != null && json['dnd'].runtimeType == [].runtimeType) {
+      dnd = [];
+      for (var value in json['dnd']) {
+        dnd.add(value?.toString());
+      }
+    }
     category = json['category'];
     isActive = json['active'] ?? true;
     createdAt = json['createdAt'];

@@ -3474,11 +3474,11 @@ class CommonWidgets {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(8))),
       child: Container(
-        margin: EdgeInsets.only(top: 8, bottom: 8, right: 8, left: 5),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        margin: EdgeInsets.only(top: 8, bottom: 10, right: 8, left: 5),
+        child: Column(
           children: [
-            Column(
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   height: 130,
@@ -3491,155 +3491,181 @@ class CommonWidgets {
                         boxFit: BoxFit.fill),
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.only(top: 7),
-                  child: Text(
-                    "Next available at",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color:
-                            Color(CommonMethods.getColorHexFromStr("#107C6F"))),
+                Flexible(
+                    child: Container(
+                  margin: EdgeInsets.only(left: 15, top: 5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child: Text(
+                          "Dr. Aashish Chaudhry",
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 5),
+                        child: Text(
+                          "Neurologist",
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#434343"))),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                            color: Color(
+                                CommonMethods.getColorHexFromStr("#F3F4F9"))),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: RatingBar(
+                                initialRating: 5,
+                                ignoreGestures: true,
+                                minRating: 1,
+                                direction: Axis.horizontal,
+                                allowHalfRating: true,
+                                itemCount: 5,
+                                itemSize: 15,
+                                itemPadding:
+                                    EdgeInsets.symmetric(horizontal: .3),
+                                itemBuilder: (context, _) => Icon(
+                                  Icons.star,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#FEC30F")),
+                                ),
+                                unratedColor: PlunesColors.GREYCOLOR,
+                                onRatingUpdate: (rating) {},
+                              ),
+                            ),
+                            Container(
+                              child: Text("5",
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#434343")))),
+                              margin: EdgeInsets.only(left: 3),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Text(
+                          "20 year of experience",
+                          maxLines: 2,
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#000000"))),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                "Consultation Fees ",
+                                maxLines: 2,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#000000"))),
+                              ),
+                            ),
+                            Text(
+                              ": \u20B9 400",
+                              maxLines: 2,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#000000"))),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 4, bottom: 7),
-                  child: Text(
-                    "12 : 30 PM, Today",
-                    style:
-                        TextStyle(fontSize: 14, color: PlunesColors.BLACKCOLOR),
-                  ),
-                ),
+                )),
               ],
             ),
-            Flexible(
-                child: Container(
-              margin: EdgeInsets.only(left: 15, top: 5),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+            Container(
+              margin: EdgeInsets.only(top: 22),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    child: Text(
-                      "Dr. Aashish Chaudhry",
-                      maxLines: 2,
-                      style: TextStyle(
-                          fontSize: 18, color: PlunesColors.BLACKCOLOR),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 5),
-                    child: Text(
-                      "Neurologist",
-                      maxLines: 2,
-                      style: TextStyle(
-                          fontSize: 14,
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#434343"))),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        color:
-                            Color(CommonMethods.getColorHexFromStr("#F3F4F9"))),
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                    width: 130,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Flexible(
-                          child: RatingBar(
-                            initialRating: 5,
-                            ignoreGestures: true,
-                            minRating: 1,
-                            direction: Axis.horizontal,
-                            allowHalfRating: true,
-                            itemCount: 5,
-                            itemSize: 15,
-                            itemPadding: EdgeInsets.symmetric(horizontal: .3),
-                            itemBuilder: (context, _) => Icon(
-                              Icons.star,
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#FEC30F")),
-                            ),
-                            unratedColor: PlunesColors.GREYCOLOR,
-                            onRatingUpdate: (rating) {},
+                        Container(
+                          child: Text(
+                            "Next available at",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 12,
+                                color: Color(CommonMethods.getColorHexFromStr(
+                                    "#107C6F"))),
                           ),
                         ),
                         Container(
-                          child: Text("5",
-                              style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(CommonMethods.getColorHexFromStr(
-                                      "#434343")))),
-                          margin: EdgeInsets.only(left: 3),
+                          margin: EdgeInsets.only(top: 4),
+                          child: Text(
+                            "12 : 30 PM, Today",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 14, color: PlunesColors.BLACKCOLOR),
+                          ),
                         )
                       ],
                     ),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    child: Text(
-                      "20 year of experience",
-                      maxLines: 2,
-                      style: TextStyle(
-                          fontSize: 16,
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#000000"))),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 10),
-                    child: Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            "Consultation Fees ",
-                            maxLines: 2,
-                            style: TextStyle(
-                                fontSize: 16,
+                  Flexible(
+                      child: Container(
+                          margin: EdgeInsets.only(left: 15),
+                          child: Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 5,
+                                vertical: AppConfig.verticalBlockSize * 1.2),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(6)),
+                                border: Border.all(
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#25B281")),
+                                    width: 1),
                                 color: Color(CommonMethods.getColorHexFromStr(
-                                    "#000000"))),
-                          ),
-                        ),
-                        Text(
-                          ": \u20B9 400",
-                          maxLines: 2,
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#000000"))),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(top: 12),
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 5,
-                        vertical: AppConfig.verticalBlockSize * 1.2),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(6)),
-                        border: Border.all(
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#25B281")),
-                            width: 1),
-                        color: Color(
-                            CommonMethods.getColorHexFromStr("#00000033"))),
-                    child: Text(PlunesStrings.bookAppointmentText,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#107C6F")))),
-                  )
+                                    "#00000033"))),
+                            child: Text(PlunesStrings.bookAppointmentText,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#107C6F")))),
+                          )))
                 ],
               ),
-            )),
+            )
           ],
         ),
       ),

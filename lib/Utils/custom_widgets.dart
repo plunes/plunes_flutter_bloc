@@ -1345,26 +1345,26 @@ class CustomWidgets {
                       color: Colors.black38, fontSize: AppConfig.smallFont),
                 ),
               ]),
-              Divider(
-                color: Colors.black45,
-              ),
-              Text(
-                'Do\'s and Don\'ts:',
-                style: TextStyle(
-                    fontSize: AppConfig.smallFont, fontWeight: FontWeight.w600),
-              ),
-              Container(
-                margin:
-                    EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
-                child: Text(
-                  catalogueData?.dnd?.replaceAll(replaceFrom, "") ??
-                      PlunesStrings.NA,
-                  style: TextStyle(
-                    fontSize: AppConfig.smallFont,
-                    color: Colors.black38,
-                  ),
-                ),
-              ),
+              // Divider(
+              //   color: Colors.black45,
+              // ),
+              // Text(
+              //   'Do\'s and Don\'ts:',
+              //   style: TextStyle(
+              //       fontSize: AppConfig.smallFont, fontWeight: FontWeight.w600),
+              // ),
+              // Container(
+              //   margin:
+              //       EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
+              //   child: Text(
+              //     catalogueData?.dnd?.replaceAll(replaceFrom, "") ??
+              //         PlunesStrings.NA,
+              //     style: TextStyle(
+              //       fontSize: AppConfig.smallFont,
+              //       color: Colors.black38,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
