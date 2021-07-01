@@ -66,7 +66,7 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
               padding: EdgeInsets.zero,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                return CommonWidgets().getConsultationWidget(index);
+                return CommonWidgets().getConsultationWidget(null,index);
               },
               itemCount: 5,
             ),

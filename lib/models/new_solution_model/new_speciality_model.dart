@@ -59,7 +59,8 @@ class SpecData {
     specialityId = json['specialityId'];
     definition = json['definition'];
     specailizationImage = json['specailizationImage'];
-    specialityIconImage = json["specialityIconImage"];
+    print("yeee ${json["specialityIconImageApp"]}");
+    specialityIconImage = json["specialityIconImageApp"];
   }
 
   Map<String, dynamic> toJson() {

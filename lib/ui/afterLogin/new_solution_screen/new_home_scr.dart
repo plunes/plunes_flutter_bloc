@@ -1443,6 +1443,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   Widget _specialCard(
       String imageUrl, String label, String text, SpecData specialityData) {
+    print(imageUrl);
     return Container(
       child: InkWell(
         onTap: () {

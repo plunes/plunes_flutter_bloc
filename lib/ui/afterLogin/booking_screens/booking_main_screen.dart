@@ -180,12 +180,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     return Platform.isAndroid ?? false;
   }
 
-  // _getInstalledUpiApps() async {
-  //   if (_isAndroid()) {
-  //     _availableUpiApps = await UpiPay.getInstalledUpiApplications();
-  //   }
-  // }
-
   _getDetails() {
     _isFetchingUserInfo = true;
     _fetchingInsuranceList = true;
@@ -193,7 +187,6 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
     _getUserInfo();
     _getInsuranceList();
     _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
-//    _getSlotsInfo(DateUtil.getDayAsString(_currentDate));
   }
 
   @override

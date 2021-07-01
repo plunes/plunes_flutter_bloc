@@ -179,4 +179,5 @@ class Urls {
   static const String profLogin = "professional/login";
   static const String forgotPasswordProf = "professional/forgotPassword";
   static const String resetPasswordProf = "professional/resetPasswordViaOTP";
+  static const String profDetails = "professional";
 }

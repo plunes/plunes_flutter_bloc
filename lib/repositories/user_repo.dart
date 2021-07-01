@@ -158,12 +158,14 @@ class UserManager {
 
   Future<RequestState> getUserProfile(String userId,
       {bool shouldSaveInfo = false}) async {
+    bool isUser =
+        UserManager().getUserDetails().userType == Constants.generalUser;
     var result = await DioRequester().requestMethod(
-        url: urls.userBaseUrl,
+        url: isUser ? urls.userBaseUrl : Urls.profDetails,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {
-          "userId": userId,
+          isUser ? "userId" : "professionalId": userId,
           "lattitude": UserManager().getUserDetails().latitude,
           "longitude": UserManager().getUserDetails().longitude
         });

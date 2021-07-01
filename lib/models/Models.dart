@@ -270,6 +270,7 @@ class User {
     if (lat == null || lat.isEmpty || lat == "0") {
       lat = "0.0";
     }
+    print("\n \n specialities specialities ${json['specialities']==null}");
 //    print("lat in models $lat");
 //    print(
 //        "${json["rating"].runtimeType.toString()}long in ${_rating.runtimeType.toString()}models ${json["rating"]}");

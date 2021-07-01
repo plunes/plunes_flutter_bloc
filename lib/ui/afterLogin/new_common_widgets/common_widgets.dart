@@ -11,6 +11,8 @@ import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/Utils/app_config.dart';
 import 'package:plunes/Utils/custom_widgets.dart';
+import 'package:plunes/Utils/date_util.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/new_solution_model/professional_model.dart';
 import 'package:plunes/models/new_solution_model/top_facility_model.dart';
@@ -3468,7 +3470,9 @@ class CommonWidgets {
     );
   }
 
-  Widget getConsultationWidget(int index) {
+  Widget getConsultationWidget(List<DoctorsData> doctorsData, int index) {
+    var docData = doctorsData[index];
+    String nextAvlText = _getSlotsInfo(docData?.timeSlots);
     return Card(
       margin: EdgeInsets.only(left: 20, right: 20, bottom: index == 4 ? 20 : 8),
       shape: RoundedRectangleBorder(
@@ -3487,8 +3491,9 @@ class CommonWidgets {
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     child: CustomWidgets().getImageFromUrl(
-                        "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
-                        boxFit: BoxFit.fill),
+                        docData?.imageUrl ?? "",
+                        placeHolderPath: PlunesImages.doc_placeholder,
+                        boxFit: BoxFit.cover),
                   ),
                 ),
                 Flexible(
@@ -3500,7 +3505,7 @@ class CommonWidgets {
                     children: [
                       Container(
                         child: Text(
-                          "Dr. Aashish Chaudhry",
+                          CommonMethods.getStringInCamelCase(docData?.name),
                           maxLines: 2,
                           style: TextStyle(
                               fontSize: 18, color: PlunesColors.BLACKCOLOR),
@@ -3509,7 +3514,7 @@ class CommonWidgets {
                       Container(
                         margin: EdgeInsets.only(top: 5),
                         child: Text(
-                          "Neurologist",
+                          docData?.department ?? "",
                           maxLines: 2,
                           style: TextStyle(
                               fontSize: 14,
@@ -3531,7 +3536,7 @@ class CommonWidgets {
                           children: [
                             Flexible(
                               child: RatingBar(
-                                initialRating: 5,
+                                initialRating: 3,
                                 ignoreGestures: true,
                                 minRating: 1,
                                 direction: Axis.horizontal,
@@ -3561,17 +3566,21 @@ class CommonWidgets {
                           ],
                         ),
                       ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10),
-                        child: Text(
-                          "20 year of experience",
-                          maxLines: 2,
-                          style: TextStyle(
-                              fontSize: 16,
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#000000"))),
-                        ),
-                      ),
+                      (docData.experience != null &&
+                              docData.experience.trim().isNotEmpty)
+                          ? Container(
+                              margin: EdgeInsets.only(top: 10),
+                              child: Text(
+                                "${docData.experience} year of experience",
+                                maxLines: 2,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#000000"))),
+                              ),
+                            )
+                          : Container(),
                       Container(
                         margin: EdgeInsets.only(top: 10),
                         child: Row(
@@ -3608,33 +3617,38 @@ class CommonWidgets {
               margin: EdgeInsets.only(top: 22),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
                     width: 130,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          child: Text(
-                            "Next available at",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 12,
-                                color: Color(CommonMethods.getColorHexFromStr(
-                                    "#107C6F"))),
+                    child: nextAvlText == null || nextAvlText.trim().isEmpty
+                        ? Container()
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                child: Text(
+                                  "Next available at",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#107C6F"))),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 4),
+                                child: Text(
+                                  "12 : 30 PM, Today",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      color: PlunesColors.BLACKCOLOR),
+                                ),
+                              )
+                            ],
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 4),
-                          child: Text(
-                            "12 : 30 PM, Today",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontSize: 14, color: PlunesColors.BLACKCOLOR),
-                          ),
-                        )
-                      ],
-                    ),
                   ),
                   Flexible(
                       child: Container(
@@ -4142,5 +4156,150 @@ class CommonWidgets {
 
   Widget _imageFittedBox(String imageUrl, {BoxFit boxFit = BoxFit.cover}) {
     return CustomWidgets().getImageFromUrl(imageUrl, boxFit: boxFit);
+  }
+
+  // _getSlotsInfo(DateUtil.getDayAsString()
+  String _getSlotsInfo(List<TimeSlots> timeSlots) {
+    if (timeSlots == null || timeSlots.isEmpty) {
+      return null;
+    }
+    DateTime _currentDate = DateTime.now();
+    String _selectedTimeSlot;
+    try {
+      timeSlots.forEach((slot) {
+        if (slot.day
+            .toLowerCase()
+            .contains(DateUtil.getDayAsString(_currentDate).toLowerCase())) {
+          if (!slot.closed &&
+              slot.slotArray != null &&
+              slot.slotArray.isNotEmpty) {
+            slot.slotArray.forEach((element) {
+              if (_selectedTimeSlot == PlunesStrings.noSlot) {
+                _selectedTimeSlot =
+                    _checkSelectedSlot(element, _currentDate, slot.slotArray);
+              }
+            });
+          }
+        }
+      });
+    } catch (e) {
+      _selectedTimeSlot = null;
+    }
+    return _selectedTimeSlot;
+  }
+
+  String _checkSelectedSlot(
+      String selectedTime, DateTime _selectedDate, List<String> _slotArray) {
+    String _selectedTimeSlot;
+    try {
+      var _currentDateTime = DateTime.now();
+      List<String> splitTime = selectedTime.split(":");
+      int _pmTime = 0;
+      bool _shouldDecreaseDay = false;
+      if (selectedTime.contains("PM") && splitTime.first != "12") {
+//        print("contains pm");
+        _pmTime = 12;
+        splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+      } else if (selectedTime.contains("AM") && splitTime.first == "12") {
+//        print("contains pm");
+        _pmTime = 12;
+        splitTime.first = "${_pmTime + int.parse(splitTime.first)}";
+        _shouldDecreaseDay = true;
+      }
+      List<String> lastTimeOfBooking =
+          _slotArray[_slotArray.length - 1].split(":");
+      int _pmTimeLastSlot = 0;
+      if (_slotArray[_slotArray.length - 1].contains("PM") &&
+          lastTimeOfBooking.first != "12") {
+        _pmTimeLastSlot = 12;
+        lastTimeOfBooking.first =
+            "${_pmTimeLastSlot + int.parse(lastTimeOfBooking.first)}";
+      }
+      if (_selectedDate != null &&
+          (_selectedDate.year == _currentDateTime.year &&
+              _selectedDate.month == _currentDateTime.month &&
+              _selectedDate.day == _currentDateTime.day)) {
+        List<String> _currentTimeOfBooking =
+            DateUtil.getTimeWithAmAndPmFormat(_currentDateTime).split(":");
+        int _pmSlotForCurrentTime = 0;
+        if (DateUtil.getTimeWithAmAndPmFormat(_currentDateTime)
+                .contains("PM") &&
+            _currentTimeOfBooking.first != "12") {
+          _pmSlotForCurrentTime = 12;
+          _currentTimeOfBooking.first =
+              "${_pmSlotForCurrentTime + int.parse(_currentTimeOfBooking.first)}";
+        }
+        _currentDateTime = DateTime(
+            _currentDateTime.year,
+            _currentDateTime.month,
+            _currentDateTime.day,
+            int.tryParse(_currentTimeOfBooking.first),
+            int.tryParse(_currentTimeOfBooking[1]
+                .substring(0, _currentTimeOfBooking[1].indexOf(" "))));
+//        print("$lastTimeOfBooking lastTimeOfBooking hello $splitTime");
+        var _selectedDateTime = DateTime(
+            _currentDateTime.year,
+            _currentDateTime.month,
+            _shouldDecreaseDay
+                ? _currentDateTime.day - 1
+                : _currentDateTime.day,
+            int.tryParse(splitTime.first),
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+        var _todayLatBookingDateTime = DateTime(
+            _currentDateTime.year,
+            _currentDateTime.month,
+            _currentDateTime.day,
+            int.tryParse(lastTimeOfBooking.first),
+            int.tryParse(lastTimeOfBooking[1]
+                .substring(0, lastTimeOfBooking[1].indexOf(" "))));
+//        print(
+//            "_selectedDateTime $_selectedDateTime  _currentDateTime $_currentDateTime _todayLatBookingDateTime $_todayLatBookingDateTime");
+//        print(
+//            "sdsdsdsds ${((_selectedDateTime.isAfter(_currentDateTime) || (_selectedDateTime.difference(_currentDateTime)).inMinutes == 0) && _selectedDateTime.isBefore(_todayLatBookingDateTime))}");
+        if ((_selectedDateTime.isAfter(_currentDateTime) ||
+                (_selectedDateTime.difference(_currentDateTime)).inMinutes ==
+                    0) &&
+            _selectedDateTime.isBefore(_todayLatBookingDateTime)) {
+          _selectedTimeSlot = selectedTime;
+          _selectedDate = DateTime(
+              _selectedDate.year,
+              _selectedDate.month,
+              _selectedDate.day,
+              (int.tryParse(splitTime.first)),
+              int.tryParse(
+                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+//          print("valid");
+        } else if ((_selectedDateTime.isBefore(_todayLatBookingDateTime) ||
+                (_selectedDateTime.difference(_todayLatBookingDateTime))
+                        .inMinutes ==
+                    0) &&
+            (_selectedDateTime.isAfter(_currentDateTime))) {
+          _selectedTimeSlot = selectedTime;
+          _selectedDate = DateTime(
+              _selectedDate.year,
+              _selectedDate.month,
+              _selectedDate.day,
+              (int.tryParse(splitTime.first)),
+              int.tryParse(
+                  splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+//          print("valid");
+        } else {
+//          print("invalid slot");
+        }
+      } else {
+//        print("else part");
+        _selectedTimeSlot = selectedTime;
+        _selectedDate = DateTime(
+            _selectedDate.year,
+            _selectedDate.month,
+            _selectedDate.day,
+            (int.tryParse(splitTime.first)),
+            int.tryParse(splitTime[1].substring(0, splitTime[1].indexOf(" "))));
+      }
+    } catch (e, s) {
+      _selectedTimeSlot = null;
+//      print("error hai $s");
+    }
+    return _selectedTimeSlot;
   }
 }

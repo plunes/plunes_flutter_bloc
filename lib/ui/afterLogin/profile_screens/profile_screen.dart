@@ -94,7 +94,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   void _getUserDetails() {
-    _userBloc.getUserProfile(widget.userID);
+    _userBloc.getUserProfile("5ef491c0863b3a5968662c4d");
   }
 
   void _getDirections() {
@@ -1170,35 +1170,46 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   Widget _getConsultationWidgetList() {
-    return Container(
-      child: Column(
-        children: [
-          SizedBox(height: 20),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            child: _getHeadingWidget("Book Consultation"),
-            alignment: Alignment.topLeft,
-          ),
-          SizedBox(height: 13),
-          ListView.builder(
-            shrinkWrap: true,
-            padding: EdgeInsets.zero,
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              return CommonWidgets().getConsultationWidget(index);
-            },
-            itemCount: 5,
-          ),
-          _getViewMoreButton(() {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => BookConsultationScreen()));
-          }),
-          _getLineWidget()
-        ],
-      ),
-    );
+    return (_profileResponse != null &&
+            _profileResponse.user != null &&
+            _profileResponse.user.doctorsData != null &&
+            _profileResponse.user.doctorsData.isNotEmpty)
+        ? Container(
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20),
+                  child: _getHeadingWidget("Book Consultation"),
+                  alignment: Alignment.topLeft,
+                ),
+                SizedBox(height: 13),
+                ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return CommonWidgets().getConsultationWidget(
+                        _profileResponse.user.doctorsData, index);
+                  },
+                  itemCount: _profileResponse.user.doctorsData.length > 3
+                      ? 3
+                      : _profileResponse.user.doctorsData.length,
+                ),
+                _profileResponse.user.doctorsData.length > 3
+                    ? _getViewMoreButton(() {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    BookConsultationScreen()));
+                      })
+                    : Container(),
+                _getLineWidget()
+              ],
+            ),
+          )
+        : Container();
   }
 
   Widget _getViewMoreButton(Function func) {
