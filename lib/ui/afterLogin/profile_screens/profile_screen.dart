@@ -15,6 +15,8 @@ import 'package:plunes/blocs/user_bloc.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/facility_have_model.dart';
+import 'package:plunes/models/new_solution_model/hos_facility_model.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
@@ -25,6 +27,7 @@ import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/book_consultation_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/book_procedure_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/book_test_screen.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/show_insurance_list_screen.dart';
 import 'package:readmore/readmore.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -44,9 +47,6 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     with TickerProviderStateMixin {
   int _selectedIndex = 0;
   double _currentDotPosition = 0.0;
-  var _decorator = DotsDecorator(
-      activeColor: PlunesColors.BLACKCOLOR,
-      color: Color(CommonMethods.getColorHexFromStr("#E4E4E4")));
   UserBloc _userBloc;
   LoginPost _profileResponse;
   String _failureCause, _failureCauseForMediaContent, _failureForReview;
@@ -58,8 +58,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   List<SpecialityModel> _specialityList;
   FacilityHaveModel _facilityHaveModel;
   List<Widget> _tabsForHospital = [];
-
   String _failureMessageForFacilityHave;
+  HosFacilityData _hosFacilityData;
 
   @override
   void initState() {
@@ -69,7 +69,18 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     _streamController = StreamController.broadcast();
     _userBloc = UserBloc();
     _getUserDetails();
+    _getServiceCategoryData();
     super.initState();
+  }
+
+  _getServiceCategoryData() {
+    _userBloc.getServiceCategoryData("5ef491c0863b3a5968662c4d").then((value) {
+      if (value is RequestSuccess) {
+        RequestSuccess requestSuccess = value;
+        _hosFacilityData = requestSuccess.response;
+      }
+      _setState();
+    });
   }
 
   void _getReviews() {
@@ -163,258 +174,272 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   Widget _getMainBody() {
     return SingleChildScrollView(
       child: Container(
+          margin: EdgeInsets.only(bottom: 5),
           child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Stack(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
+              Stack(
                 children: [
-                  (_profileResponse.user.achievements != null &&
-                          _profileResponse.user.achievements.isNotEmpty)
-                      ? Stack(
-                          children: [
-                            CarouselSlider.builder(
-                                itemCount:
-                                    (_profileResponse.user.achievements.length >
+                  Column(
+                    children: [
+                      (_profileResponse.user.achievements != null &&
+                              _profileResponse.user.achievements.isNotEmpty)
+                          ? Stack(
+                              children: [
+                                CarouselSlider.builder(
+                                    itemCount: (_profileResponse
+                                                .user.achievements.length >
                                             5)
                                         ? 5
                                         : _profileResponse
                                             ?.user?.achievements?.length,
-                                itemBuilder: (context, index) {
-                                  return InkWell(
-                                    onTap: () {
-                                      List<Photo> photos = [];
-                                      _profileResponse.user.achievements
-                                          .forEach((element) {
-                                        if (_profileResponse
-                                                    .user.achievements[index] ==
-                                                null ||
-                                            _profileResponse
-                                                .user
-                                                .achievements[index]
-                                                .imageUrl
-                                                .isEmpty ||
-                                            !(_profileResponse.user
-                                                .achievements[index].imageUrl
-                                                .contains("http"))) {
-                                          photos.add(Photo(
-                                              assetName: plunesImages
-                                                  .achievementIcon));
-                                        } else {
-                                          photos.add(Photo(
-                                              assetName: element.imageUrl));
-                                        }
-                                      });
-                                      if (photos != null && photos.isNotEmpty) {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PageSlider(photos, index)));
-                                      }
+                                    itemBuilder: (context, index) {
+                                      return InkWell(
+                                        onTap: () {
+                                          List<Photo> photos = [];
+                                          _profileResponse.user.achievements
+                                              .forEach((element) {
+                                            if (_profileResponse.user
+                                                        .achievements[index] ==
+                                                    null ||
+                                                _profileResponse
+                                                    .user
+                                                    .achievements[index]
+                                                    .imageUrl
+                                                    .isEmpty ||
+                                                !(_profileResponse
+                                                    .user
+                                                    .achievements[index]
+                                                    .imageUrl
+                                                    .contains("http"))) {
+                                              photos.add(Photo(
+                                                  assetName: plunesImages
+                                                      .achievementIcon));
+                                            } else {
+                                              photos.add(Photo(
+                                                  assetName: element.imageUrl));
+                                            }
+                                          });
+                                          if (photos != null &&
+                                              photos.isNotEmpty) {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        PageSlider(
+                                                            photos, index)));
+                                          }
+                                        },
+                                        child: CustomWidgets().getImageFromUrl(
+                                            _profileResponse.user
+                                                .achievements[index].imageUrl,
+                                            boxFit: BoxFit.fill),
+                                      );
                                     },
-                                    child: CustomWidgets().getImageFromUrl(
-                                        _profileResponse
-                                            .user.achievements[index].imageUrl,
-                                        boxFit: BoxFit.fill),
-                                  );
-                                },
-                                carouselController: _controller,
-                                options: CarouselOptions(
-                                    autoPlay: true,
-                                    autoPlayInterval: Duration(seconds: 5),
-                                    height: AppConfig.verticalBlockSize * 35,
-                                    viewportFraction: 1.0,
-                                    onPageChanged: (index, _) {
-                                      if (_currentDotPosition.toInt() !=
-                                          index) {
-                                        _currentDotPosition = index.toDouble();
-                                        _streamController?.add(null);
-                                      }
-                                    })),
-                            // Positioned(
-                            //   bottom: 0.0,
-                            //   left: 0.0,
-                            //   right: 0.0,
-                            //   child: StreamBuilder<Object>(
-                            //       stream: _streamController.stream,
-                            //       builder: (context, snapshot) {
-                            //         return DotsIndicator(
-                            //           dotsCount:
-                            //               (_profileResponse.user.achievements.length >
-                            //                       5)
-                            //                   ? 5
-                            //                   : _profileResponse
-                            //                       ?.user?.achievements?.length,
-                            //           position: _currentDotPosition?.toDouble() ?? 0,
-                            //           axis: Axis.horizontal,
-                            //           decorator: _decorator,
-                            //           onTap: (pos) {
-                            //             _controller.animateToPage(pos.toInt(),
-                            //                 curve: Curves.easeInOut,
-                            //                 duration: Duration(milliseconds: 300));
-                            //             _currentDotPosition = pos;
-                            //             _streamController?.add(null);
-                            //             return;
-                            //           },
-                            //         );
-                            //       }),
-                            // ),
-                            Positioned(
-                              top: 0.0,
-                              right: AppConfig.horizontalBlockSize * 5,
-                              child: StreamBuilder<Object>(
-                                  stream: _streamController.stream,
-                                  builder: (context, snapshot) {
-                                    return Chip(
-                                        backgroundColor: Color(CommonMethods
-                                                .getColorHexFromStr("#000000"))
-                                            .withOpacity(0.5),
-                                        label: Container(
-                                          child: Center(
-                                            child: Text(
-                                              "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
-                                              style: TextStyle(
-                                                  color:
-                                                      PlunesColors.WHITECOLOR,
-                                                  fontSize: 15),
+                                    carouselController: _controller,
+                                    options: CarouselOptions(
+                                        autoPlay: true,
+                                        autoPlayInterval: Duration(seconds: 5),
+                                        height:
+                                            AppConfig.verticalBlockSize * 35,
+                                        viewportFraction: 1.0,
+                                        onPageChanged: (index, _) {
+                                          if (_currentDotPosition.toInt() !=
+                                              index) {
+                                            _currentDotPosition =
+                                                index.toDouble();
+                                            _streamController?.add(null);
+                                          }
+                                        })),
+                                // Positioned(
+                                //   bottom: 0.0,
+                                //   left: 0.0,
+                                //   right: 0.0,
+                                //   child: StreamBuilder<Object>(
+                                //       stream: _streamController.stream,
+                                //       builder: (context, snapshot) {
+                                //         return DotsIndicator(
+                                //           dotsCount:
+                                //               (_profileResponse.user.achievements.length >
+                                //                       5)
+                                //                   ? 5
+                                //                   : _profileResponse
+                                //                       ?.user?.achievements?.length,
+                                //           position: _currentDotPosition?.toDouble() ?? 0,
+                                //           axis: Axis.horizontal,
+                                //           decorator: _decorator,
+                                //           onTap: (pos) {
+                                //             _controller.animateToPage(pos.toInt(),
+                                //                 curve: Curves.easeInOut,
+                                //                 duration: Duration(milliseconds: 300));
+                                //             _currentDotPosition = pos;
+                                //             _streamController?.add(null);
+                                //             return;
+                                //           },
+                                //         );
+                                //       }),
+                                // ),
+                                Positioned(
+                                  top: 0.0,
+                                  right: AppConfig.horizontalBlockSize * 5,
+                                  child: StreamBuilder<Object>(
+                                      stream: _streamController.stream,
+                                      builder: (context, snapshot) {
+                                        return Chip(
+                                            backgroundColor: Color(CommonMethods
+                                                    .getColorHexFromStr(
+                                                        "#000000"))
+                                                .withOpacity(0.5),
+                                            label: Container(
+                                              child: Center(
+                                                child: Text(
+                                                  "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
+                                                  style: TextStyle(
+                                                      color: PlunesColors
+                                                          .WHITECOLOR,
+                                                      fontSize: 15),
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                        padding: EdgeInsets.all(3));
-                                  }),
+                                            padding: EdgeInsets.all(3));
+                                      }),
+                                )
+                              ],
                             )
-                          ],
-                        )
-                      : InkWell(
-                          onTap: () {
-                            List<Photo> photos = [];
-                            if ((_profileResponse.user != null &&
-                                _profileResponse.user.imageUrl != null &&
-                                _profileResponse.user.imageUrl.isNotEmpty)) {
-                              photos.add(Photo(
-                                  assetName: _profileResponse.user.imageUrl));
-                            }
-                            if (photos != null && photos.isNotEmpty) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PageSlider(photos, 0)));
-                            }
-                          },
-                          child: Container(
-                            color:
-                                PlunesColors.LIGHTESTGREYCOLOR.withOpacity(.5),
-                            height: AppConfig.verticalBlockSize * 35,
-                            width: double.infinity,
-                            child: (_profileResponse.user.imageUrl == null ||
-                                    _profileResponse.user.imageUrl.isEmpty ||
-                                    !(_profileResponse.user.imageUrl
-                                        .contains("http")))
-                                ? Container(
-                                    margin: EdgeInsets.all(
-                                        AppConfig.verticalBlockSize * 7.5),
-                                    child: Image.asset(
-                                      PlunesImages.defaultHosBac,
-                                      alignment: Alignment.center,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  )
-                                : SizedBox.expand(
-                                    child: CustomWidgets().getImageFromUrl(
-                                        _profileResponse.user.imageUrl,
-                                        boxFit: BoxFit.cover),
-                                  ),
-                          ),
-                        ),
-                  SizedBox(height: AppConfig.verticalBlockSize * 9),
+                          : InkWell(
+                              onTap: () {
+                                List<Photo> photos = [];
+                                if ((_profileResponse.user != null &&
+                                    _profileResponse.user.imageUrl != null &&
+                                    _profileResponse
+                                        .user.imageUrl.isNotEmpty)) {
+                                  photos.add(Photo(
+                                      assetName:
+                                          _profileResponse.user.imageUrl));
+                                }
+                                if (photos != null && photos.isNotEmpty) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              PageSlider(photos, 0)));
+                                }
+                              },
+                              child: Container(
+                                color: PlunesColors.LIGHTESTGREYCOLOR
+                                    .withOpacity(.5),
+                                height: AppConfig.verticalBlockSize * 35,
+                                width: double.infinity,
+                                child: (_profileResponse
+                                                .user.imageUrl ==
+                                            null ||
+                                        _profileResponse
+                                            .user.imageUrl.isEmpty ||
+                                        !(_profileResponse.user.imageUrl
+                                            .contains("http")))
+                                    ? Container(
+                                        margin: EdgeInsets.all(
+                                            AppConfig.verticalBlockSize * 7.5),
+                                        child: Image.asset(
+                                          PlunesImages.defaultHosBac,
+                                          alignment: Alignment.center,
+                                          fit: BoxFit.contain,
+                                        ),
+                                      )
+                                    : SizedBox.expand(
+                                        child: CustomWidgets().getImageFromUrl(
+                                            _profileResponse.user.imageUrl,
+                                            boxFit: BoxFit.cover),
+                                      ),
+                              ),
+                            ),
+                      SizedBox(height: AppConfig.verticalBlockSize * 9),
+                    ],
+                  ),
+                  _getNameAndLocationCard()
                 ],
               ),
-              _getNameAndLocationCard()
-            ],
-          ),
-          Container(
-            margin: EdgeInsets.all(13),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _getRatingAndPatientServedWidget(),
-                _getCentresWidgetList(),
-                SizedBox(height: 13),
-                _getHeadingWidget(plunesStrings.introduction),
-                SizedBox(height: 13),
-                ReadMoreText(
-                  _profileResponse.user?.biography ?? _getEmptyString(),
-                  colorClickableText: PlunesColors.SPARKLINGGREEN,
-                  trimLines: 4,
-                  trimMode: TrimMode.Line,
-                  trimCollapsedText: '  ...read more',
-                  trimExpandedText: '  read less',
-                  style: TextStyle(color: PlunesColors.GREYCOLOR, fontSize: 14),
-                ),
-                SizedBox(height: 20),
-                _getHeadingWidget('This Facility Has'),
-                SizedBox(height: 13),
-                _getFacilityHaveWidget(),
-                // _getTabBar(),
-                (_profileResponse.user.hasMedia != null &&
-                        _profileResponse.user.hasMedia)
-                    ? Column(
-                        children: [
-                          SizedBox(
-                            height: 20,
-                          ),
-                          _getPhotoWidget(),
-                        ],
-                      )
-                    : Container(),
-              ],
-            ),
-          ),
-          _getTestConsProcedureWidgets(),
-          Container(
-              child: ShowInsuranceListScreen(
-            profId: widget.userID,
-            shouldShowAppBar: false,
-            func: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          ShowInsuranceListScreen(profId: widget.userID)));
-            },
-          )),
-          (_profileResponse.user.achievements != null &&
-                  _profileResponse.user.achievements.isNotEmpty)
-              ? AchievementWidget(_profileResponse.user.achievements)
-              : Container(),
-          (_specialityList != null && _specialityList.isNotEmpty)
-              ? Column(
+              Container(
+                margin: EdgeInsets.all(13),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 20),
-                    Container(
-                      alignment: Alignment.topLeft,
-                      margin: EdgeInsets.symmetric(horizontal: 13),
-                      child: _getHeadingWidget('Specialization'),
-                    ),
+                    _getRatingAndPatientServedWidget(),
+                    _getCentresWidgetList(),
                     SizedBox(height: 13),
-                    Container(
-                      child:
-                          SpecialisationWidget(_specialityList, widget.userID),
-                      margin: EdgeInsets.symmetric(horizontal: 13),
+                    _getHeadingWidget(plunesStrings.introduction),
+                    SizedBox(height: 13),
+                    ReadMoreText(
+                      _profileResponse.user?.biography ?? _getEmptyString(),
+                      colorClickableText: PlunesColors.SPARKLINGGREEN,
+                      trimLines: 4,
+                      trimMode: TrimMode.Line,
+                      trimCollapsedText: '  ...read more',
+                      trimExpandedText: '  read less',
+                      style: TextStyle(
+                          color: PlunesColors.GREYCOLOR, fontSize: 14),
                     ),
+                    SizedBox(height: 20),
+                    _getHeadingWidget('This Facility Has'),
+                    SizedBox(height: 13),
+                    _getFacilityHaveWidget(),
+                    // _getTabBar(),
+                    (_profileResponse.user.hasMedia != null &&
+                            _profileResponse.user.hasMedia)
+                        ? Column(
+                            children: [
+                              SizedBox(
+                                height: 20,
+                              ),
+                              _getPhotoWidget(),
+                            ],
+                          )
+                        : Container(),
                   ],
-                )
-              : Container(),
-          ((_profileResponse.user.hasReviews != null &&
-                  _profileResponse.user.hasReviews))
-              ? _getRateAndReviewWidget()
-              : Container(),
-        ],
-      )),
+                ),
+              ),
+              _getTestConsProcedureWidgets(),
+              Container(
+                  child: ShowInsuranceListScreen(
+                profId: widget.userID,
+                shouldShowAppBar: false,
+                func: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              ShowInsuranceListScreen(profId: widget.userID)));
+                },
+              )),
+              (_profileResponse.user.achievements != null &&
+                      _profileResponse.user.achievements.isNotEmpty)
+                  ? AchievementWidget(_profileResponse.user.achievements)
+                  : Container(),
+              (_specialityList != null && _specialityList.isNotEmpty)
+                  ? Column(
+                      children: [
+                        SizedBox(height: 20),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          margin: EdgeInsets.symmetric(horizontal: 13),
+                          child: _getHeadingWidget('Specialization'),
+                        ),
+                        SizedBox(height: 13),
+                        Container(
+                          child: SpecialisationWidget(
+                              _specialityList, widget.userID),
+                          margin: EdgeInsets.symmetric(horizontal: 13),
+                        ),
+                      ],
+                    )
+                  : Container(),
+              ((_profileResponse.user.hasReviews != null &&
+                      _profileResponse.user.hasReviews))
+                  ? _getRateAndReviewWidget()
+                  : Container(),
+            ],
+          )),
     );
   }
 
@@ -1163,8 +1188,23 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     return Column(
       children: [
         _getConsultationWidgetList(),
-        _getTestWidgetList(),
-        _getProcedureWidgetList(),
+        (_hosFacilityData == null ||
+                _hosFacilityData.data == null ||
+                (_hosFacilityData.data.procedure == null &&
+                    _hosFacilityData.data.test == null))
+            ? Container()
+            : Column(
+                children: [
+                  _hosFacilityData.data.test == null ||
+                          _hosFacilityData.data.test.isEmpty
+                      ? Container()
+                      : _getTestWidgetList(),
+                  _hosFacilityData.data.procedure == null ||
+                          _hosFacilityData.data.procedure.isEmpty
+                      ? Container()
+                      : _getProcedureWidgetList(),
+                ],
+              )
       ],
     );
   }
@@ -1190,7 +1230,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     return CommonWidgets().getConsultationWidget(
-                        _profileResponse.user.doctorsData, index);
+                        _profileResponse.user.doctorsData,
+                        index,
+                        () =>
+                            _calcConsultationDataAndOpenAdditionalDetailScreen(
+                                _profileResponse.user.doctorsData[index]));
                   },
                   itemCount: _profileResponse.user.doctorsData.length > 3
                       ? 3
@@ -1201,8 +1245,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    BookConsultationScreen()));
+                                builder: (context) => BookConsultationScreen(
+                                    _profileResponse.user.doctorsData)));
                       })
                     : Container(),
                 _getLineWidget()
@@ -1266,14 +1310,25 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
             padding: EdgeInsets.zero,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return CommonWidgets().getBookTestWidget(index);
+              return CommonWidgets().getBookTestWidget(
+                  _hosFacilityData.data.test,
+                  index,
+                  () => _calcTestDataAndOpenAdditionalDetailScr(
+                      _hosFacilityData.data.test[index]));
             },
-            itemCount: 5,
+            itemCount: (_hosFacilityData.data.test.length > 5)
+                ? 5
+                : _hosFacilityData.data.test.length,
           ),
-          _getViewMoreButton(() {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => BookTestScreen()));
-          }),
+          _hosFacilityData.data.test.length > 5
+              ? _getViewMoreButton(() {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              BookTestScreen(_hosFacilityData.data.test)));
+                })
+              : Container(),
           _getLineWidget()
         ],
       ),
@@ -1296,18 +1351,57 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
             padding: EdgeInsets.zero,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return CommonWidgets().getBookProcedureWidget(index);
+              return CommonWidgets().getBookProcedureWidget(
+                  _hosFacilityData.data.procedure,
+                  index,
+                  () => _calcTestDataAndOpenAdditionalDetailScr(
+                      _hosFacilityData.data.procedure[index]));
             },
-            itemCount: 5,
+            itemCount: (_hosFacilityData.data.procedure.length > 5)
+                ? 5
+                : _hosFacilityData.data.procedure.length,
           ),
-          _getViewMoreButton(() {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => BookProcedureScreen()));
-          }),
+          _hosFacilityData.data.procedure.length > 5
+              ? _getViewMoreButton(() {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BookProcedureScreen(
+                              _hosFacilityData.data.procedure)));
+                })
+              : Container(),
           _getLineWidget()
         ],
       ),
     );
+  }
+
+  _openEnterAdditionalUserDetailScr(CatalogueData data) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EnterAdditionalUserDetailScr(data, "")));
+  }
+
+  _calcTestDataAndOpenAdditionalDetailScr(ServiceCategory procedure) {
+    var data = CatalogueData(
+        category: procedure.category,
+        serviceId: procedure.serviceId,
+        service: procedure.service,
+        speciality: procedure.speciality,
+        specialityId: procedure.specialityId);
+    _openEnterAdditionalUserDetailScr(data);
+  }
+
+  _calcConsultationDataAndOpenAdditionalDetailScreen(DoctorsData doctorsData) {
+    var data = CatalogueData(
+        serviceId: doctorsData?.specialities?.first?.services?.first?.id,
+        speciality: doctorsData?.specialities?.first?.speciality,
+        specialityId: doctorsData?.specialities?.first?.id,
+        service: doctorsData?.specialities?.first?.services?.first?.service,
+        category: doctorsData?.specialities?.first?.services?.first?.category,
+        details: doctorsData?.specialities?.first?.services?.first?.details);
+    _openEnterAdditionalUserDetailScr(data);
   }
 }
 

@@ -52,6 +52,8 @@ class ProcedureList {
 class _Services {
   String _id, _service, _details, _category, _description;
   List _categoriesArray;
+  List<num> _nums = [];
+  num price;
 
   get id => _id;
 
@@ -76,6 +78,16 @@ class _Services {
               : [];
     }
     _description = result['dnd'] != null ? result['dnd'] : '';
+    if (result["price"] != null) {
+      try {
+        _nums = result["price"].cast<num>();
+        if (_nums != null && _nums.isNotEmpty) {
+          price = _nums.first;
+        }
+      } catch (e) {
+        price = 0;
+      }
+    }
   }
 }
 
@@ -270,7 +282,7 @@ class User {
     if (lat == null || lat.isEmpty || lat == "0") {
       lat = "0.0";
     }
-    print("\n \n specialities specialities ${json['specialities']==null}");
+    print("\n \n specialities specialities ${json['specialities'] == null}");
 //    print("lat in models $lat");
 //    print(
 //        "${json["rating"].runtimeType.toString()}long in ${_rating.runtimeType.toString()}models ${json["rating"]}");
@@ -424,6 +436,7 @@ class DoctorsData {
   List<ProcedureList> specialities = [];
   List<TimeSlots> timeSlots = [];
   String id, name, education, designation, department, experience, imageUrl;
+  num rating;
 
   DoctorsData(
       {this.specialities,
@@ -434,26 +447,32 @@ class DoctorsData {
       this.designation,
       this.department,
       this.experience,
-      this.imageUrl});
+      this.imageUrl,
+      this.rating});
 
   factory DoctorsData.fromJson(Map<String, dynamic> parsedJson) {
+    num _rating = 4.5;
+    if (parsedJson["rating"] != null) {
+      _rating = num.tryParse(parsedJson["rating"].toString());
+    }
     return new DoctorsData(
-      name: parsedJson['name'] != null ? parsedJson['name'] : 'NA',
-      education: parsedJson['education'] != null ? parsedJson['education'] : '',
-      designation:
-          parsedJson['designation'] != null ? parsedJson['designation'] : '',
-      department:
-          parsedJson['department'] != null ? parsedJson['department'] : '',
-      experience: parsedJson['experience'].toString() != null
-          ? parsedJson['experience'].toString()
-          : '',
-      specialities: List<ProcedureList>.from(
-          parsedJson['specialities'].map((i) => ProcedureList.fromJson(i))),
-      id: parsedJson['_id'] != null ? parsedJson['_id'] : '',
-      imageUrl: parsedJson['imageUrl'] != null ? parsedJson['imageUrl'] : '',
-      timeSlots: List<TimeSlots>.from(
-          parsedJson['timeSlots'].map((i) => TimeSlots.fromJson(i))),
-    );
+        name: parsedJson['name'] != null ? parsedJson['name'] : 'NA',
+        education:
+            parsedJson['education'] != null ? parsedJson['education'] : '',
+        designation:
+            parsedJson['designation'] != null ? parsedJson['designation'] : '',
+        department:
+            parsedJson['department'] != null ? parsedJson['department'] : '',
+        experience: parsedJson['experience'].toString() != null
+            ? parsedJson['experience'].toString()
+            : '',
+        specialities: List<ProcedureList>.from(
+            parsedJson['specialities'].map((i) => ProcedureList.fromJson(i))),
+        id: parsedJson['_id'] != null ? parsedJson['_id'] : '',
+        imageUrl: parsedJson['imageUrl'] != null ? parsedJson['imageUrl'] : '',
+        timeSlots: List<TimeSlots>.from(
+            parsedJson['timeSlots'].map((i) => TimeSlots.fromJson(i))),
+        rating: _rating);
   }
 }
 

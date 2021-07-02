@@ -33,10 +33,10 @@ class UserBloc extends BlocBase {
   Observable<RequestState> get insuranceStream =>
       _insuranceStreamProvider.stream;
 
-  final _insuranceFileUploadStrreamProvider = PublishSubject<RequestState>();
+  final _insuranceFileUploadStreamProvider = PublishSubject<RequestState>();
 
   Observable<RequestState> get insuranceFileUploadStream =>
-      _insuranceFileUploadStrreamProvider.stream;
+      _insuranceFileUploadStreamProvider.stream;
 
   final _serviceRelatedToSpecilaityStreamProvider =
       PublishSubject<RequestState>();
@@ -54,6 +54,11 @@ class UserBloc extends BlocBase {
 
   Observable<RequestState> get premiumBenefitsStream =>
       _premiumBenefitsStreamProvider.stream;
+
+  final _serviceCategoryStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get serviceCategoryStream =>
+      _serviceCategoryStreamProvider.stream;
 
   Future<RequestState> isUserInServiceLocation(var latitude, var longitude,
       {String address, bool isFromPopup = false, String region}) {
@@ -140,10 +145,11 @@ class UserBloc extends BlocBase {
     _profileImageProvider?.close();
     _mediaContentStreamProvider?.close();
     _insuranceStreamProvider?.close();
-    _insuranceFileUploadStrreamProvider?.close();
+    _insuranceFileUploadStreamProvider?.close();
     _serviceRelatedToSpecilaityStreamProvider?.close();
     _facilityAvailableInHospitalStreamProvider?.close();
     _premiumBenefitsStreamProvider?.close();
+    _serviceCategoryStreamProvider?.close();
     super.dispose();
   }
 
@@ -220,7 +226,7 @@ class UserBloc extends BlocBase {
   }
 
   addStateInUploadInsuranceFileStream(RequestState data) {
-    addStateInGenericStream(_insuranceFileUploadStrreamProvider, data);
+    addStateInGenericStream(_insuranceFileUploadStreamProvider, data);
   }
 
   addStateInMediaContentStream(RequestState data) {
@@ -280,5 +286,15 @@ class UserBloc extends BlocBase {
 
   Future<RequestState> getBankOffers() {
     return UserManager().getBankOffers();
+  }
+
+  Future<RequestState> getServiceCategoryData(String profId) async {
+    var result = await UserManager().getServiceCategoryData(profId: profId);
+    addStateInServiceCategoryData(result);
+    return result;
+  }
+
+  void addStateInServiceCategoryData(RequestState data) {
+    addStateInGenericStream(_serviceCategoryStreamProvider, RequestSuccess());
   }
 }

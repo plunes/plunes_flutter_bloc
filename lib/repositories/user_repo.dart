@@ -9,6 +9,7 @@ import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/media_content_model.dart';
 import 'package:plunes/models/new_solution_model/bank_offer_model.dart';
 import 'package:plunes/models/new_solution_model/facility_have_model.dart';
+import 'package:plunes/models/new_solution_model/hos_facility_model.dart';
 import 'package:plunes/models/new_solution_model/insurance_model.dart';
 import 'package:plunes/models/new_solution_model/premium_benefits_model.dart';
 import 'package:plunes/models/new_solution_model/service_detail_model.dart';
@@ -665,6 +666,21 @@ class UserManager {
       BankOfferModel _mediaContentModel =
           BankOfferModel.fromJson(result.response.data);
       return RequestSuccess(response: _mediaContentModel);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getServiceCategoryData({String profId}) async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.getServiceByProfessionalId,
+        queryParameter: {"professionalId": profId},
+        requestType: HttpRequestMethods.HTTP_GET,
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      HosFacilityData hosFacilityData =
+          HosFacilityData.fromJson(result.response.data);
+      return RequestSuccess(response: hosFacilityData);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

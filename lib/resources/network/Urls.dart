@@ -180,4 +180,6 @@ class Urls {
   static const String forgotPasswordProf = "professional/forgotPassword";
   static const String resetPasswordProf = "professional/resetPasswordViaOTP";
   static const String profDetails = "professional";
+  static const String getServiceByProfessionalId =
+      "professional/getServiceByProfessionalId";
 }
