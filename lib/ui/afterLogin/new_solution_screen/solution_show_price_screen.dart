@@ -806,6 +806,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                         .solution.services[index].professionalPhotos ??
                     [],
                 distance: _searchedDocResults.solution.services[index].distance,
+                hasPrice: _searchedDocResults.solution.services[index].hasPrice,
                 priceUpdated:
                     _searchedDocResults.solution.services[index].priceUpdated);
             _customServices.add(service);
@@ -827,7 +828,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                         CommonMethods.getColorHexFromStr(
                                             "#70707038")))),
                             child: Text(
-                              "\u20B9 ${doctor?.newPrice?.first?.toStringAsFixed(1) ?? "0.0"}",
+                              "\u20B9 ${_getPriceForHospitalDoctor(doctor)}",
                               style: TextStyle(
                                   color: PlunesColors.BLACKCOLOR, fontSize: 18),
                             ),
@@ -892,7 +893,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                   color: Color(CommonMethods.getColorHexFromStr(
                                       "#70707038")))),
                           child: Text(
-                            "\u20B9 ${_searchedDocResults.solution?.services[index]?.newPrice?.first?.toStringAsFixed(1) ?? "0.0"}",
+                            "\u20B9 ${_getPriceToShow(_searchedDocResults, index) ?? "0.0"}",
                             style: TextStyle(
                                 color: PlunesColors.BLACKCOLOR, fontSize: 18),
                           ),
@@ -1017,12 +1018,12 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
         service.professionalId != null) {
       _setScreenName(null);
       Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DoctorInfo(service.professionalId,
-                      isDoc: (service.userType.toLowerCase() ==
-                          Constants.doctor.toString().toLowerCase()))))
-          .then((value) {
+          context,
+          MaterialPageRoute(
+              builder: (context) => DoctorInfo(service.professionalId,
+                  isDoc: (service.userType.toLowerCase() ==
+                      Constants.doctor.toString().toLowerCase()),
+                  isAlreadyInBookingProcess: true))).then((value) {
         _setScreenName(FirebaseNotification.solutionScreen);
       });
     }
@@ -1487,5 +1488,28 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       // add the [https]
       return "https://api.whatsapp.com/send?phone=$phone=${Uri.parse(message)}"; // new line
     }
+  }
+
+  String _getPriceToShow(SearchedDocResults searchedDocResults, int index) {
+    if (searchedDocResults != null &&
+        searchedDocResults.solution != null &&
+        searchedDocResults.solution.services != null &&
+        searchedDocResults.solution.services.isNotEmpty &&
+        searchedDocResults.solution.services[index].newPrice != null &&
+        searchedDocResults.solution.services[index].newPrice.isNotEmpty) {
+      return searchedDocResults.solution?.services[index]?.newPrice?.first
+          ?.toStringAsFixed(1);
+    } else {
+      return "0.0";
+    }
+  }
+
+  String _getPriceForHospitalDoctor(Doctors doctor) {
+    if (doctor != null &&
+        doctor.newPrice != null &&
+        doctor.newPrice.isNotEmpty) {
+      return doctor?.newPrice?.first?.toStringAsFixed(1);
+    }
+    return PlunesStrings.NA;
   }
 }

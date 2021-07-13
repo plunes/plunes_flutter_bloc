@@ -135,7 +135,8 @@ class Services {
   bool homeCollection,
       isExpanded = false,
       insuranceAvailable,
-      priceUpdated;
+      priceUpdated,
+      hasPrice;
   num recommendation;
   num bookIn;
   num rating;
@@ -169,10 +170,15 @@ class Services {
       this.professionalPhotos,
       this.insuranceAvailable,
       this.specialOffers,
-      this.priceUpdated});
+      this.priceUpdated,
+      this.hasPrice});
 
   Services.fromJson(Map<String, dynamic> json) {
     isExpanded = false;
+    hasPrice = true;
+    if (json["isPrice"] != null) {
+      hasPrice = json["isPrice"];
+    }
     specialOffers = [];
     price = json['price'].cast<num>();
     newPrice = json['newPrice']?.cast<num>();
@@ -322,7 +328,9 @@ class Doctors {
     price = json['price'].cast<num>();
     homeCollection = json['homeCollection'];
     discount = json['discount'];
-    experience = json['experience'];
+    if (json['experience'] != null) {
+      experience = num.tryParse(json['experience'].toString());
+    }
     newPrice = json['newPrice']?.cast<num>();
     category = json['category']?.cast<String>();
     bookIn = json['bookIn'];

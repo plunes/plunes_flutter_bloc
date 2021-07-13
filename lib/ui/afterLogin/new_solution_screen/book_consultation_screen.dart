@@ -8,12 +8,16 @@ import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 
 // ignore: must_be_immutable
 class BookConsultationScreen extends BaseActivity {
   List<DoctorsData> docList;
+  String profId;
+  bool isAlreadyInBookingProcess;
 
-  BookConsultationScreen(this.docList);
+  BookConsultationScreen(this.docList, this.profId,
+      {this.isAlreadyInBookingProcess});
 
   @override
   _TestBookingScreenState createState() => _TestBookingScreenState();
@@ -93,14 +97,12 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
                         .trim()
                         .toLowerCase()
                         .contains(_textController.text.trim().toLowerCase())) {
-                  return CommonWidgets().getConsultationWidget(widget.docList,
-                      index, () => _openConsScreen(widget.docList[index]));
+                  return _showConsWidget(index);
                 }
                 if (widget.docList[index].department.trim().toLowerCase() ==
                         _selectedService &&
                     _textController.text.trim().isEmpty) {
-                  return CommonWidgets().getConsultationWidget(widget.docList,
-                      index, () => _openConsScreen(widget.docList[index]));
+                  return _showConsWidget(index);
                 }
                 _totalCount++;
                 return _totalCount == widget.docList.length
@@ -119,22 +121,68 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
     );
   }
 
+  Widget _showConsWidget(int index) {
+    return InkWell(
+      focusColor: Colors.transparent,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
+      onDoubleTap: () {},
+      onTap: () {
+        if (widget.docList[index].id != null &&
+            widget.docList[index].id.trim().isNotEmpty) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DoctorInfo(
+                        widget.profId,
+                        isDoc: true,
+                        docId: widget.docList[index].id,
+                        openEnterDetailScreen: () =>
+                            _openConsScreen(widget.docList[index]),
+                        isAlreadyInBookingProcess:
+                            widget.isAlreadyInBookingProcess,
+                      )));
+        }
+      },
+      child: CommonWidgets().getConsultationWidget(
+          widget.docList, index, () => _openConsScreen(widget.docList[index])),
+    );
+  }
+
   _openConsScreen(DoctorsData doctorsData) {
+    if (widget.isAlreadyInBookingProcess != null) {
+      return;
+    }
+    num servicePrice = 0;
+    if (doctorsData != null &&
+        doctorsData.specialities != null &&
+        doctorsData.specialities.isNotEmpty &&
+        doctorsData.specialities.first.services != null &&
+        doctorsData.specialities.first.services.isNotEmpty &&
+        doctorsData.specialities.first.services.first.price != null &&
+        doctorsData.specialities.first.services.first.price > 0) {
+      servicePrice = doctorsData.specialities.first.services.first.price;
+    }
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (context) => EnterAdditionalUserDetailScr(
                 CatalogueData(
-                    serviceId:
-                        doctorsData?.specialities?.first?.services?.first?.id,
-                    speciality: doctorsData?.specialities?.first?.speciality,
-                    specialityId: doctorsData?.specialities?.first?.id,
-                    service: doctorsData
-                        ?.specialities?.first?.services?.first?.service,
-                    category: doctorsData
-                        ?.specialities?.first?.services?.first?.category,
-                    details: doctorsData
-                        ?.specialities?.first?.services?.first?.details),
+                  serviceId:
+                      doctorsData?.specialities?.first?.services?.first?.id,
+                  speciality: doctorsData?.specialities?.first?.speciality,
+                  specialityId: doctorsData?.specialities?.first?.id,
+                  service: doctorsData
+                      ?.specialities?.first?.services?.first?.service,
+                  category: doctorsData
+                      ?.specialities?.first?.services?.first?.category,
+                  details: doctorsData
+                      ?.specialities?.first?.services?.first?.details,
+                  isFromProfileScreen: true,
+                  profId: widget.profId,
+                  doctorId: doctorsData.id,
+                  servicePrice: servicePrice,
+                ),
                 "")));
   }
 

@@ -10,8 +10,11 @@ import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_
 // ignore: must_be_immutable
 class BookProcedureScreen extends BaseActivity {
   List<ServiceCategory> procedures;
+  String profId;
+  bool isAlreadyInBookingProcess;
 
-  BookProcedureScreen(this.procedures);
+  BookProcedureScreen(this.procedures, this.profId,
+      {this.isAlreadyInBookingProcess});
 
   @override
   _TestBookingScreenState createState() => _TestBookingScreenState();
@@ -109,12 +112,26 @@ class _TestBookingScreenState extends BaseState<BookProcedureScreen> {
   }
 
   _calcTestDataAndOpenAdditionalDetailScr(ServiceCategory serviceCategory) {
+    if (widget.isAlreadyInBookingProcess != null) {
+      return;
+    }
+    num servicePrice = 0;
+    if (serviceCategory != null &&
+        serviceCategory.price != null &&
+        serviceCategory.price.isNotEmpty &&
+        serviceCategory.price.first > 0) {
+      servicePrice = serviceCategory.price.first;
+    }
     var data = CatalogueData(
-        category: serviceCategory.category,
-        serviceId: serviceCategory.serviceId,
-        service: serviceCategory.service,
-        speciality: serviceCategory.speciality,
-        specialityId: serviceCategory.specialityId);
+      category: serviceCategory.category,
+      serviceId: serviceCategory.serviceId,
+      service: serviceCategory.service,
+      speciality: serviceCategory.speciality,
+      specialityId: serviceCategory.specialityId,
+      isFromProfileScreen: true,
+      profId: widget.profId,
+      servicePrice: servicePrice,
+    );
     Navigator.push(
         context,
         MaterialPageRoute(

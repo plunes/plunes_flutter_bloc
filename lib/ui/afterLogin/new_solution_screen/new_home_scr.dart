@@ -551,6 +551,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                   margin: EdgeInsets.only(
                                     top: AppConfig.verticalBlockSize * 2,
                                     left: AppConfig.verticalBlockSize * 2,
+                                    right: AppConfig.verticalBlockSize * 2,
                                   ),
                                   child: ListView.builder(
                                     shrinkWrap: true,
@@ -1475,8 +1476,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               child: Container(
                 width: 102,
                 height: AppConfig.verticalBlockSize * 12,
+                padding: EdgeInsets.all(5),
                 child: ClipRRect(
-                  child: _imageFittedBox(imageUrl, boxFit: BoxFit.fitWidth),
+                  child: _imageFittedBox(imageUrl, boxFit: BoxFit.fill),
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10)),
@@ -1489,11 +1491,14 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 width: double.infinity,
                 margin: EdgeInsets.symmetric(
                     horizontal: AppConfig.horizontalBlockSize * 2, vertical: 3),
-                child: Text(
-                  label ?? "",
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  style: TextStyle(fontSize: 16),
+                child: FittedBox(
+                  fit: BoxFit.fill,
+                  child: Text(
+                    label ?? "",
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
             )

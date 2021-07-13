@@ -23,12 +23,13 @@ class LocationUtil {
     return _instance;
   }
 
-  Future<LatLng> getCurrentLatLong(BuildContext context) async {
+  Future<LatLng> getCurrentLatLong(BuildContext context,
+      {bool shouldOpenPopup = true}) async {
     try {
       LocationData _currentLocation = await _location.getLocation();
       return LatLng(_currentLocation.latitude, _currentLocation.longitude);
     } catch (e) {
-      if (e is PlatformException) {
+      if ((e is PlatformException) && shouldOpenPopup) {
         var result = await _openPermissionPopUp(context);
         if (result != null && result) {
           openSettings();

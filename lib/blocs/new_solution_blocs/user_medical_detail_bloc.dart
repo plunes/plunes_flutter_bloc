@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:plunes/blocs/base_bloc.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/new_solution_repo/submit_user_medical_detail_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:rxdart/rxdart.dart';
@@ -60,10 +61,10 @@ class UserMedicalDetailBloc extends BlocBase {
     super.addStateInGenericStream(_uploadFileStreamProvider, data);
   }
 
-  Future<RequestState> fetchUserMedicalDetail(String serviceId) async {
+  Future<RequestState> fetchUserMedicalDetail(CatalogueData catalogueData) async {
     addIntoFetchMedicalDetailStream(RequestInProgress());
     var result =
-        await SubmitMedicalDetailRepo().fetchUserMedicalDetail(serviceId);
+        await SubmitMedicalDetailRepo().fetchUserMedicalDetail(catalogueData);
     addIntoFetchMedicalDetailStream(result);
     return result;
   }

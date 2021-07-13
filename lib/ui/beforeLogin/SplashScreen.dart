@@ -63,11 +63,14 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
     await Preferences().instantiatePreferences();
     preferences = new Preferences();
     try {
-      LocationUtil().getCurrentLatLong(context);
+      LocationUtil().getCurrentLatLong(context, shouldOpenPopup: false);
       if (preferences.getPreferenceString(Constants.ACCESS_TOKEN) != null &&
           preferences.getPreferenceString(Constants.ACCESS_TOKEN).length > 0) {
         await UserManager().getUserProfile(UserManager().getUserDetails().uid,
-            shouldSaveInfo: true);
+            shouldSaveInfo: true,
+            isUser: (UserManager().getUserDetails().userType != null &&
+                UserManager().getUserDetails().userType ==
+                    Constants.generalUser));
 //        await _getCurrentLocation();
       }
     } catch (e) {}

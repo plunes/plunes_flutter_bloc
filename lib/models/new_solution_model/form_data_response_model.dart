@@ -1,6 +1,8 @@
 class FormDataModel {
   bool success;
   FormInnerData data;
+  static const String bodyPartKey = "bodyPart",
+      sessionGraftKey = "session_grafts";
 
   FormDataModel({this.success, this.data});
 

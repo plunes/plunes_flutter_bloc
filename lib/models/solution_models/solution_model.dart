@@ -8,10 +8,11 @@ class CatalogueData {
       topSearch,
       toShowSearched,
       priceDiscovered,
-      hasUserReport;
+      hasUserReport,
+      isFromProfileScreen;
   String speciality;
   String specialityId;
-  String serviceId;
+  String serviceId, profId, doctorId;
   String sitting, expirationMessage, userReportId;
 
   @override
@@ -21,7 +22,7 @@ class CatalogueData {
 
   String duration;
   int iV, createdAt, solutionExpiredAt;
-  num maxDiscount;
+  num maxDiscount, servicePrice;
   bool isFromNotification, booked;
   String solutionId;
 
@@ -49,7 +50,11 @@ class CatalogueData {
       this.toShowSearched,
       this.expirationMessage,
       this.userReportId,
-      this.hasUserReport});
+      this.hasUserReport,
+      this.profId,
+      this.isFromProfileScreen,
+      this.servicePrice,
+      this.doctorId});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];

@@ -1307,7 +1307,8 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
 
   void _getDocHosInfo() async {
     _isFetchingDocHosInfo = true;
-    RequestState requestState = await UserBloc().getUserProfile(widget.profId);
+    RequestState requestState =
+        await UserBloc().getUserProfile(widget.profId, isGenUser: false);
     if (requestState is RequestSuccess) {
       _docProfileInfo = requestState.response;
     } else if (requestState is RequestFailed) {
@@ -1503,9 +1504,11 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DoctorInfo(_docProfileInfo.user.uid,
-                  isDoc: (_docProfileInfo.user.userType.toLowerCase() ==
-                      Constants.doctor.toString().toLowerCase()))));
+              builder: (context) => DoctorInfo(
+                    _docProfileInfo.user.uid,
+                    isDoc: (_docProfileInfo.user.userType.toLowerCase() ==
+                        Constants.doctor.toString().toLowerCase()),
+                  isAlreadyInBookingProcess: true)));
     }
   }
 

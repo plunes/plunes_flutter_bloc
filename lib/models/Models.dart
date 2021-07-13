@@ -66,7 +66,7 @@ class _Services {
   get description => _description;
 
   _Services(result) {
-    _id = result['_id'] != null ? result['_id'] : '';
+    _id = result['serviceId'] != null ? result['serviceId'] : '';
     _service = result['service'] != null ? result['service'] : '';
     _details = result['details'] != null ? result['details'] : '';
     if (result['category'] != null && result['category'] is String) {
@@ -202,6 +202,8 @@ class User {
   int cartCount;
   bool hasMedia, hasReviews;
   num distanceFromUser;
+  List<Centre> centres;
+  String patientServed;
 
   User(
       {this.hasMedia,
@@ -245,10 +247,11 @@ class User {
       this.bankDetails,
       this.googleLocation,
       this.region,
-      this.distanceFromUser});
+      this.distanceFromUser,
+      this.centres,
+      this.patientServed});
 
   factory User.fromJson(Map<String, dynamic> json) {
-    // print("distance"+json["distance"].runtimeType.toString());
     num _rating = 4.0;
     num _distanceFromUser;
     if (json["rating"] != null &&
@@ -348,7 +351,12 @@ class User {
         referralExpired: _referralExpired,
         cartCount: json["cartCount"],
         rating: _rating,
-        distanceFromUser: _distanceFromUser);
+        distanceFromUser: _distanceFromUser,
+        centres: json['centers'] != null
+            ? List.from(json['centers'].map((i) => Centre.from(i)))
+            : null,
+        patientServed:
+            json['patientServed'] != null ? json['patientServed'] : null);
   }
 
   Map<String, dynamic> toJson() {
@@ -947,5 +955,18 @@ class RateAndReview {
     data['userName'] = this.userName;
     data['userImage'] = this.userImage;
     return data;
+  }
+}
+
+class Centre {
+  String name, id, address, mobileNumber;
+
+  Centre(this.id, this.name, this.address, this.mobileNumber);
+
+  Centre.from(Map<String, dynamic> json) {
+    id = json['_id'];
+    name = json['name'];
+    address = json['address'];
+    mobileNumber = json['mobileNumber'];
   }
 }

@@ -34,10 +34,15 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 // ignore: must_be_immutable
 class DoctorInfo extends BaseActivity {
-  final String userID;
-  bool isDoc;
+  final String userID, docId;
+  Function openEnterDetailScreen;
+  bool isDoc, isAlreadyInBookingProcess;
 
-  DoctorInfo(this.userID, {this.isDoc});
+  DoctorInfo(this.userID,
+      {this.isDoc,
+      this.isAlreadyInBookingProcess,
+      this.docId,
+      this.openEnterDetailScreen});
 
   @override
   _DoctorInfoState createState() => _DoctorInfoState();
@@ -74,7 +79,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   _getServiceCategoryData() {
-    _userBloc.getServiceCategoryData("5ef491c0863b3a5968662c4d").then((value) {
+    _userBloc.getServiceCategoryData(widget.userID).then((value) {
       if (value is RequestSuccess) {
         RequestSuccess requestSuccess = value;
         _hosFacilityData = requestSuccess.response;
@@ -105,7 +110,8 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   void _getUserDetails() {
-    _userBloc.getUserProfile("5ef491c0863b3a5968662c4d");
+    _userBloc.getUserProfile(widget.userID,
+        isGenUser: false, docId: widget.docId);
   }
 
   void _getDirections() {
@@ -172,274 +178,298 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   Widget _getMainBody() {
-    return SingleChildScrollView(
-      child: Container(
-          margin: EdgeInsets.only(bottom: 5),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Stack(
-                children: [
-                  Column(
-                    children: [
-                      (_profileResponse.user.achievements != null &&
-                              _profileResponse.user.achievements.isNotEmpty)
-                          ? Stack(
-                              children: [
-                                CarouselSlider.builder(
-                                    itemCount: (_profileResponse
-                                                .user.achievements.length >
-                                            5)
-                                        ? 5
-                                        : _profileResponse
-                                            ?.user?.achievements?.length,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          List<Photo> photos = [];
-                                          _profileResponse.user.achievements
-                                              .forEach((element) {
-                                            if (_profileResponse.user
-                                                        .achievements[index] ==
-                                                    null ||
-                                                _profileResponse
-                                                    .user
-                                                    .achievements[index]
-                                                    .imageUrl
-                                                    .isEmpty ||
-                                                !(_profileResponse
-                                                    .user
-                                                    .achievements[index]
-                                                    .imageUrl
-                                                    .contains("http"))) {
-                                              photos.add(Photo(
-                                                  assetName: plunesImages
-                                                      .achievementIcon));
-                                            } else {
-                                              photos.add(Photo(
-                                                  assetName: element.imageUrl));
-                                            }
-                                          });
-                                          if (photos != null &&
-                                              photos.isNotEmpty) {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        PageSlider(
-                                                            photos, index)));
-                                          }
-                                        },
-                                        child: CustomWidgets().getImageFromUrl(
-                                            _profileResponse.user
-                                                .achievements[index].imageUrl,
-                                            boxFit: BoxFit.fill),
-                                      );
-                                    },
-                                    carouselController: _controller,
-                                    options: CarouselOptions(
-                                        autoPlay: true,
-                                        autoPlayInterval: Duration(seconds: 5),
-                                        height:
-                                            AppConfig.verticalBlockSize * 35,
-                                        viewportFraction: 1.0,
-                                        onPageChanged: (index, _) {
-                                          if (_currentDotPosition.toInt() !=
-                                              index) {
-                                            _currentDotPosition =
-                                                index.toDouble();
-                                            _streamController?.add(null);
-                                          }
-                                        })),
-                                // Positioned(
-                                //   bottom: 0.0,
-                                //   left: 0.0,
-                                //   right: 0.0,
-                                //   child: StreamBuilder<Object>(
-                                //       stream: _streamController.stream,
-                                //       builder: (context, snapshot) {
-                                //         return DotsIndicator(
-                                //           dotsCount:
-                                //               (_profileResponse.user.achievements.length >
-                                //                       5)
-                                //                   ? 5
-                                //                   : _profileResponse
-                                //                       ?.user?.achievements?.length,
-                                //           position: _currentDotPosition?.toDouble() ?? 0,
-                                //           axis: Axis.horizontal,
-                                //           decorator: _decorator,
-                                //           onTap: (pos) {
-                                //             _controller.animateToPage(pos.toInt(),
-                                //                 curve: Curves.easeInOut,
-                                //                 duration: Duration(milliseconds: 300));
-                                //             _currentDotPosition = pos;
-                                //             _streamController?.add(null);
-                                //             return;
-                                //           },
-                                //         );
-                                //       }),
-                                // ),
-                                Positioned(
-                                  top: 0.0,
-                                  right: AppConfig.horizontalBlockSize * 5,
-                                  child: StreamBuilder<Object>(
-                                      stream: _streamController.stream,
-                                      builder: (context, snapshot) {
-                                        return Chip(
-                                            backgroundColor: Color(CommonMethods
-                                                    .getColorHexFromStr(
-                                                        "#000000"))
-                                                .withOpacity(0.5),
-                                            label: Container(
-                                              child: Center(
-                                                child: Text(
-                                                  "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
-                                                  style: TextStyle(
-                                                      color: PlunesColors
-                                                          .WHITECOLOR,
-                                                      fontSize: 15),
-                                                ),
-                                              ),
-                                            ),
-                                            padding: EdgeInsets.all(3));
-                                      }),
-                                )
-                              ],
-                            )
-                          : InkWell(
-                              onTap: () {
-                                List<Photo> photos = [];
-                                if ((_profileResponse.user != null &&
-                                    _profileResponse.user.imageUrl != null &&
-                                    _profileResponse
-                                        .user.imageUrl.isNotEmpty)) {
-                                  photos.add(Photo(
-                                      assetName:
-                                          _profileResponse.user.imageUrl));
-                                }
-                                if (photos != null && photos.isNotEmpty) {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              PageSlider(photos, 0)));
-                                }
-                              },
-                              child: Container(
-                                color: PlunesColors.LIGHTESTGREYCOLOR
-                                    .withOpacity(.5),
-                                height: AppConfig.verticalBlockSize * 35,
-                                width: double.infinity,
-                                child: (_profileResponse
-                                                .user.imageUrl ==
-                                            null ||
-                                        _profileResponse
-                                            .user.imageUrl.isEmpty ||
-                                        !(_profileResponse.user.imageUrl
-                                            .contains("http")))
-                                    ? Container(
-                                        margin: EdgeInsets.all(
-                                            AppConfig.verticalBlockSize * 7.5),
-                                        child: Image.asset(
-                                          PlunesImages.defaultHosBac,
-                                          alignment: Alignment.center,
-                                          fit: BoxFit.contain,
-                                        ),
-                                      )
-                                    : SizedBox.expand(
-                                        child: CustomWidgets().getImageFromUrl(
-                                            _profileResponse.user.imageUrl,
-                                            boxFit: BoxFit.cover),
-                                      ),
-                              ),
-                            ),
-                      SizedBox(height: AppConfig.verticalBlockSize * 9),
-                    ],
-                  ),
-                  _getNameAndLocationCard()
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.all(13),
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Container(
+                margin: EdgeInsets.only(bottom: 5),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _getRatingAndPatientServedWidget(),
-                    _getCentresWidgetList(),
-                    SizedBox(height: 13),
-                    _getHeadingWidget(plunesStrings.introduction),
-                    SizedBox(height: 13),
-                    ReadMoreText(
-                      _profileResponse.user?.biography ?? _getEmptyString(),
-                      colorClickableText: PlunesColors.SPARKLINGGREEN,
-                      trimLines: 4,
-                      trimMode: TrimMode.Line,
-                      trimCollapsedText: '  ...read more',
-                      trimExpandedText: '  read less',
-                      style: TextStyle(
-                          color: PlunesColors.GREYCOLOR, fontSize: 14),
+                    Stack(
+                      children: [
+                        Column(
+                          children: [
+                            (_profileResponse.user.achievements != null &&
+                                    _profileResponse
+                                        .user.achievements.isNotEmpty)
+                                ? Stack(
+                                    children: [
+                                      CarouselSlider.builder(
+                                          itemCount: (_profileResponse.user
+                                                      .achievements.length >
+                                                  5)
+                                              ? 5
+                                              : _profileResponse
+                                                  ?.user?.achievements?.length,
+                                          itemBuilder: (context, index) {
+                                            return InkWell(
+                                              onTap: () {
+                                                List<Photo> photos = [];
+                                                _profileResponse
+                                                    .user.achievements
+                                                    .forEach((element) {
+                                                  if (_profileResponse.user
+                                                                  .achievements[
+                                                              index] ==
+                                                          null ||
+                                                      _profileResponse
+                                                          .user
+                                                          .achievements[index]
+                                                          .imageUrl
+                                                          .isEmpty ||
+                                                      !(_profileResponse
+                                                          .user
+                                                          .achievements[index]
+                                                          .imageUrl
+                                                          .contains("http"))) {
+                                                    photos.add(Photo(
+                                                        assetName: plunesImages
+                                                            .achievementIcon));
+                                                  } else {
+                                                    photos.add(Photo(
+                                                        assetName:
+                                                            element.imageUrl));
+                                                  }
+                                                });
+                                                if (photos != null &&
+                                                    photos.isNotEmpty) {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              PageSlider(photos,
+                                                                  index)));
+                                                }
+                                              },
+                                              child: CustomWidgets()
+                                                  .getImageFromUrl(
+                                                      _profileResponse
+                                                          .user
+                                                          .achievements[index]
+                                                          .imageUrl,
+                                                      boxFit: BoxFit.fill),
+                                            );
+                                          },
+                                          carouselController: _controller,
+                                          options: CarouselOptions(
+                                              autoPlay: true,
+                                              autoPlayInterval:
+                                                  Duration(seconds: 5),
+                                              height:
+                                                  AppConfig.verticalBlockSize *
+                                                      35,
+                                              viewportFraction: 1.0,
+                                              onPageChanged: (index, _) {
+                                                if (_currentDotPosition
+                                                        .toInt() !=
+                                                    index) {
+                                                  _currentDotPosition =
+                                                      index.toDouble();
+                                                  _streamController?.add(null);
+                                                }
+                                              })),
+                                      // Positioned(
+                                      //   bottom: 0.0,
+                                      //   left: 0.0,
+                                      //   right: 0.0,
+                                      //   child: StreamBuilder<Object>(
+                                      //       stream: _streamController.stream,
+                                      //       builder: (context, snapshot) {
+                                      //         return DotsIndicator(
+                                      //           dotsCount:
+                                      //               (_profileResponse.user.achievements.length >
+                                      //                       5)
+                                      //                   ? 5
+                                      //                   : _profileResponse
+                                      //                       ?.user?.achievements?.length,
+                                      //           position: _currentDotPosition?.toDouble() ?? 0,
+                                      //           axis: Axis.horizontal,
+                                      //           decorator: _decorator,
+                                      //           onTap: (pos) {
+                                      //             _controller.animateToPage(pos.toInt(),
+                                      //                 curve: Curves.easeInOut,
+                                      //                 duration: Duration(milliseconds: 300));
+                                      //             _currentDotPosition = pos;
+                                      //             _streamController?.add(null);
+                                      //             return;
+                                      //           },
+                                      //         );
+                                      //       }),
+                                      // ),
+                                      Positioned(
+                                        top: 0.0,
+                                        right:
+                                            AppConfig.horizontalBlockSize * 5,
+                                        child: StreamBuilder<Object>(
+                                            stream: _streamController.stream,
+                                            builder: (context, snapshot) {
+                                              return Chip(
+                                                  backgroundColor: Color(
+                                                          CommonMethods
+                                                              .getColorHexFromStr(
+                                                                  "#000000"))
+                                                      .withOpacity(0.5),
+                                                  label: Container(
+                                                    child: Center(
+                                                      child: Text(
+                                                        "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
+                                                        style: TextStyle(
+                                                            color: PlunesColors
+                                                                .WHITECOLOR,
+                                                            fontSize: 15),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  padding: EdgeInsets.all(3));
+                                            }),
+                                      )
+                                    ],
+                                  )
+                                : InkWell(
+                                    onTap: () {
+                                      List<Photo> photos = [];
+                                      if ((_profileResponse.user != null &&
+                                          _profileResponse.user.imageUrl !=
+                                              null &&
+                                          _profileResponse
+                                              .user.imageUrl.isNotEmpty)) {
+                                        photos.add(Photo(
+                                            assetName: _profileResponse
+                                                .user.imageUrl));
+                                      }
+                                      if (photos != null && photos.isNotEmpty) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PageSlider(photos, 0)));
+                                      }
+                                    },
+                                    child: Container(
+                                      color: PlunesColors.LIGHTESTGREYCOLOR
+                                          .withOpacity(.5),
+                                      height: AppConfig.verticalBlockSize * 35,
+                                      width: double.infinity,
+                                      child: (_profileResponse
+                                                      .user.imageUrl ==
+                                                  null ||
+                                              _profileResponse
+                                                  .user.imageUrl.isEmpty ||
+                                              !(_profileResponse.user.imageUrl
+                                                  .contains("http")))
+                                          ? Container(
+                                              margin: EdgeInsets.all(
+                                                  AppConfig.verticalBlockSize *
+                                                      7.5),
+                                              child: Image.asset(
+                                                PlunesImages.defaultHosBac,
+                                                alignment: Alignment.center,
+                                                fit: BoxFit.contain,
+                                              ),
+                                            )
+                                          : SizedBox.expand(
+                                              child: CustomWidgets()
+                                                  .getImageFromUrl(
+                                                      _profileResponse
+                                                          .user.imageUrl,
+                                                      boxFit: BoxFit.cover),
+                                            ),
+                                    ),
+                                  ),
+                            SizedBox(height: AppConfig.verticalBlockSize * 9),
+                          ],
+                        ),
+                        _getNameAndLocationCard()
+                      ],
                     ),
-                    SizedBox(height: 20),
-                    _getHeadingWidget('This Facility Has'),
-                    SizedBox(height: 13),
-                    _getFacilityHaveWidget(),
-                    // _getTabBar(),
-                    (_profileResponse.user.hasMedia != null &&
-                            _profileResponse.user.hasMedia)
+                    Container(
+                      margin: EdgeInsets.all(13),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _getRatingAndPatientServedWidget(),
+                          _getCentresWidgetList(),
+                          SizedBox(height: 13),
+                          _getHeadingWidget(plunesStrings.introduction),
+                          SizedBox(height: 13),
+                          ReadMoreText(
+                            _profileResponse.user?.biography ??
+                                _getEmptyString(),
+                            colorClickableText: PlunesColors.SPARKLINGGREEN,
+                            trimLines: 4,
+                            trimMode: TrimMode.Line,
+                            trimCollapsedText: '  ...read more',
+                            trimExpandedText: '  read less',
+                            style: TextStyle(
+                                color: PlunesColors.GREYCOLOR, fontSize: 14),
+                          ),
+                          SizedBox(height: 20),
+                          _getHeadingWidget('This Facility Has'),
+                          SizedBox(height: 13),
+                          _getFacilityHaveWidget(),
+                          // _getTabBar(),
+                          (_profileResponse.user.hasMedia != null &&
+                                  _profileResponse.user.hasMedia)
+                              ? Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    _getPhotoWidget(),
+                                  ],
+                                )
+                              : Container(),
+                        ],
+                      ),
+                    ),
+                    _getTestConsProcedureWidgets(),
+                    Container(
+                        child: ShowInsuranceListScreen(
+                      profId: widget.userID,
+                      shouldShowAppBar: false,
+                      func: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ShowInsuranceListScreen(
+                                    profId: widget.userID)));
+                      },
+                    )),
+                    (_profileResponse.user.achievements != null &&
+                            _profileResponse.user.achievements.isNotEmpty)
+                        ? AchievementWidget(_profileResponse.user.achievements)
+                        : Container(),
+                    (_specialityList != null && _specialityList.isNotEmpty)
                         ? Column(
                             children: [
-                              SizedBox(
-                                height: 20,
+                              SizedBox(height: 20),
+                              Container(
+                                alignment: Alignment.topLeft,
+                                margin: EdgeInsets.symmetric(horizontal: 13),
+                                child: _getHeadingWidget('Specialization'),
                               ),
-                              _getPhotoWidget(),
+                              SizedBox(height: 13),
+                              Container(
+                                child: SpecialisationWidget(
+                                    _specialityList, widget.userID),
+                                margin: EdgeInsets.symmetric(horizontal: 13),
+                              ),
                             ],
                           )
                         : Container(),
+                    ((_profileResponse.user.hasReviews != null &&
+                            _profileResponse.user.hasReviews))
+                        ? _getRateAndReviewWidget()
+                        : Container(),
                   ],
-                ),
-              ),
-              _getTestConsProcedureWidgets(),
-              Container(
-                  child: ShowInsuranceListScreen(
-                profId: widget.userID,
-                shouldShowAppBar: false,
-                func: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) =>
-                              ShowInsuranceListScreen(profId: widget.userID)));
-                },
-              )),
-              (_profileResponse.user.achievements != null &&
-                      _profileResponse.user.achievements.isNotEmpty)
-                  ? AchievementWidget(_profileResponse.user.achievements)
-                  : Container(),
-              (_specialityList != null && _specialityList.isNotEmpty)
-                  ? Column(
-                      children: [
-                        SizedBox(height: 20),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          margin: EdgeInsets.symmetric(horizontal: 13),
-                          child: _getHeadingWidget('Specialization'),
-                        ),
-                        SizedBox(height: 13),
-                        Container(
-                          child: SpecialisationWidget(
-                              _specialityList, widget.userID),
-                          margin: EdgeInsets.symmetric(horizontal: 13),
-                        ),
-                      ],
-                    )
-                  : Container(),
-              ((_profileResponse.user.hasReviews != null &&
-                      _profileResponse.user.hasReviews))
-                  ? _getRateAndReviewWidget()
-                  : Container(),
-            ],
-          )),
+                )),
+          ),
+        ),
+        _getBookAppointmentButton()
+      ],
     );
   }
 
@@ -1026,119 +1056,182 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   Widget _getRatingAndPatientServedWidget() {
     return Container(
       width: double.infinity,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.only(
-                left: AppConfig.horizontalBlockSize * 3,
-                right: AppConfig.horizontalBlockSize * 14,
-                top: AppConfig.verticalBlockSize * 0.8,
-                bottom: AppConfig.verticalBlockSize * 0.8),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(9)),
-                border: Border.all(
-                    width: 1,
-                    color:
-                        Color(CommonMethods.getColorHexFromStr("#70707045")))),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "Rating",
-                  style: TextStyle(
-                      fontSize: 14,
-                      color:
-                          Color(CommonMethods.getColorHexFromStr("#9D9D9D"))),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Icon(
-                        Icons.star,
-                        color: PlunesColors.BLACKCOLOR,
-                        size: 18,
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: 3),
-                        child: Text(
-                          _profileResponse.user?.rating?.toStringAsFixed(1) ??
-                              '4.5',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.w500),
-                        ),
-                      ),
-                    ],
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: EdgeInsets.only(
+                  left: AppConfig.horizontalBlockSize * 3,
+                  right: AppConfig.horizontalBlockSize * 14,
+                  top: AppConfig.verticalBlockSize * 0.8,
+                  bottom: AppConfig.verticalBlockSize * 0.8),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(9)),
+                  border: Border.all(
+                      width: 1,
+                      color: Color(
+                          CommonMethods.getColorHexFromStr("#70707045")))),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                    'Rating',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#9D9D9D"))),
                   ),
-                ),
-              ],
+                  Container(
+                    margin: EdgeInsets.only(top: 5),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: PlunesColors.BLACKCOLOR,
+                          size: 18,
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(left: 3),
+                          child: Text(
+                            _profileResponse.user?.rating?.toStringAsFixed(1) ??
+                                '4.5',
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          1 == 1
-              ? Container(
-                  margin: EdgeInsets.only(left: 15),
-                  padding: EdgeInsets.only(
-                      left: AppConfig.horizontalBlockSize * 3,
-                      right: AppConfig.horizontalBlockSize * 3,
-                      top: AppConfig.verticalBlockSize * 0.8,
-                      bottom: AppConfig.verticalBlockSize * 0.8),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(9)),
-                      border: Border.all(
-                          width: 1,
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#70707045")))),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Patients served",
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#9D9D9D"))),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.account_circle,
-                              color: PlunesColors.BLACKCOLOR,
-                              size: 18,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 3),
-                              child: Text(
-                                _profileResponse.user?.rating
-                                        ?.toStringAsFixed(1) ??
-                                    '4.5',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                          ],
+            (_profileResponse.user != null &&
+                    _profileResponse.user.experience != null &&
+                    _profileResponse.user.experience.trim().isNotEmpty)
+                ? Container(
+                    margin: EdgeInsets.only(left: 15),
+                    padding: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 3,
+                        right: AppConfig.horizontalBlockSize * 3,
+                        top: AppConfig.verticalBlockSize * 0.8,
+                        bottom: AppConfig.verticalBlockSize * 0.8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(9)),
+                        border: Border.all(
+                            width: 1,
+                            color: Color(CommonMethods.getColorHexFromStr(
+                                "#70707045")))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Experience",
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#9D9D9D"))),
                         ),
-                      ),
-                    ],
-                  ),
-                )
-              : Container()
-        ],
+                        Container(
+                          margin: EdgeInsets.only(top: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.group_add_outlined,
+                                color: PlunesColors.BLACKCOLOR,
+                                size: 18,
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: 3),
+                                child: Text(
+                                  _profileResponse.user.experience.trim() +
+                                      " Year's",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container(),
+            (_profileResponse.user != null &&
+                    _profileResponse.user.patientServed != null)
+                ? Container(
+                    margin: EdgeInsets.only(left: 15),
+                    padding: EdgeInsets.only(
+                        left: AppConfig.horizontalBlockSize * 3,
+                        right: AppConfig.horizontalBlockSize * 3,
+                        top: AppConfig.verticalBlockSize * 0.8,
+                        bottom: AppConfig.verticalBlockSize * 0.8),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(9)),
+                        border: Border.all(
+                            width: 1,
+                            color: Color(CommonMethods.getColorHexFromStr(
+                                "#70707045")))),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Patients served",
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Color(
+                                  CommonMethods.getColorHexFromStr("#9D9D9D"))),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.account_circle,
+                                color: PlunesColors.BLACKCOLOR,
+                                size: 18,
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: 3),
+                                child: Text(
+                                  _profileResponse.user.patientServed ?? '',
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : Container()
+          ],
+        ),
       ),
     );
   }
 
   Widget _getCentresWidgetList() {
+    if (_profileResponse.user == null ||
+        _profileResponse.user.centres == null ||
+        _profileResponse.user.centres.isEmpty) {
+      return Container();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1151,26 +1244,49 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                margin: EdgeInsets.only(right: 7),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    border: Border.all(
-                        width: 1,
-                        color: Color(
-                            CommonMethods.getColorHexFromStr("#D8D8D887"))),
-                    color: Color(CommonMethods.getColorHexFromStr("#FAFAFA"))),
-                child: Text(
-                  "some text",
-                  style: TextStyle(
-                      color: Color(CommonMethods.getColorHexFromStr("#303030")),
-                      fontSize: 14),
+              return InkWell(
+                focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                onTap: () {
+                  if (_profileResponse.user.centres[index].id != null &&
+                      _profileResponse.user.centres[index].id
+                          .trim()
+                          .isNotEmpty) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DoctorInfo(
+                                _profileResponse.user.centres[index].id,
+                                isDoc: true,
+                                isAlreadyInBookingProcess:
+                                    widget.isAlreadyInBookingProcess)));
+                  }
+                },
+                onDoubleTap: () {},
+                child: Container(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  margin: EdgeInsets.only(right: 7),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(4),
+                      border: Border.all(
+                          width: 1,
+                          color: Color(
+                              CommonMethods.getColorHexFromStr("#D8D8D887"))),
+                      color:
+                          Color(CommonMethods.getColorHexFromStr("#FAFAFA"))),
+                  child: Text(
+                    _profileResponse.user.centres[index].name ?? "",
+                    style: TextStyle(
+                        color:
+                            Color(CommonMethods.getColorHexFromStr("#303030")),
+                        fontSize: 14),
+                  ),
                 ),
               );
             },
-            itemCount: 20,
+            itemCount: _profileResponse.user.centres.length,
           ),
         ),
       ],
@@ -1229,12 +1345,41 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   padding: EdgeInsets.zero,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
-                    return CommonWidgets().getConsultationWidget(
-                        _profileResponse.user.doctorsData,
-                        index,
-                        () =>
-                            _calcConsultationDataAndOpenAdditionalDetailScreen(
-                                _profileResponse.user.doctorsData[index]));
+                    return InkWell(
+                      focusColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onDoubleTap: () {},
+                      onTap: () {
+                        if (_profileResponse.user.doctorsData[index].id !=
+                                null &&
+                            _profileResponse.user.doctorsData[index].id
+                                .trim()
+                                .isNotEmpty) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => DoctorInfo(
+                                        widget.userID,
+                                        isDoc: true,
+                                        openEnterDetailScreen: () =>
+                                            _calcConsultationDataAndOpenAdditionalDetailScreen(
+                                                _profileResponse
+                                                    .user.doctorsData[index]),
+                                        docId: _profileResponse
+                                            .user.doctorsData[index].id,
+                                        isAlreadyInBookingProcess:
+                                            widget.isAlreadyInBookingProcess,
+                                      )));
+                        }
+                      },
+                      child: CommonWidgets().getConsultationWidget(
+                          _profileResponse.user.doctorsData,
+                          index,
+                          () =>
+                              _calcConsultationDataAndOpenAdditionalDetailScreen(
+                                  _profileResponse.user.doctorsData[index])),
+                    );
                   },
                   itemCount: _profileResponse.user.doctorsData.length > 3
                       ? 3
@@ -1246,7 +1391,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                             context,
                             MaterialPageRoute(
                                 builder: (context) => BookConsultationScreen(
-                                    _profileResponse.user.doctorsData)));
+                                      _profileResponse.user.doctorsData,
+                                      widget.userID,
+                                      isAlreadyInBookingProcess:
+                                          widget.isAlreadyInBookingProcess,
+                                    )));
                       })
                     : Container(),
                 _getLineWidget()
@@ -1325,8 +1474,12 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              BookTestScreen(_hosFacilityData.data.test)));
+                          builder: (context) => BookTestScreen(
+                                _hosFacilityData.data.test,
+                                widget.userID,
+                                isAlreadyInBookingProcess:
+                                    widget.isAlreadyInBookingProcess,
+                              )));
                 })
               : Container(),
           _getLineWidget()
@@ -1341,10 +1494,9 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
         children: [
           SizedBox(height: 20),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            child: _getHeadingWidget("Book Procedure"),
-            alignment: Alignment.topLeft,
-          ),
+              margin: EdgeInsets.symmetric(horizontal: 20),
+              child: _getHeadingWidget("Book Procedure"),
+              alignment: Alignment.topLeft),
           SizedBox(height: 13),
           ListView.builder(
             shrinkWrap: true,
@@ -1367,7 +1519,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                       context,
                       MaterialPageRoute(
                           builder: (context) => BookProcedureScreen(
-                              _hosFacilityData.data.procedure)));
+                                _hosFacilityData.data.procedure,
+                                widget.userID,
+                                isAlreadyInBookingProcess:
+                                    widget.isAlreadyInBookingProcess,
+                              )));
                 })
               : Container(),
           _getLineWidget()
@@ -1377,6 +1533,9 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   _openEnterAdditionalUserDetailScr(CatalogueData data) {
+    if (widget.isAlreadyInBookingProcess != null) {
+      return;
+    }
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -1384,24 +1543,79 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   }
 
   _calcTestDataAndOpenAdditionalDetailScr(ServiceCategory procedure) {
+    num servicePrice = 0;
+    if (procedure != null &&
+        procedure.price != null &&
+        procedure.price.isNotEmpty &&
+        procedure.price.first > 0) {
+      servicePrice = procedure.price.first;
+    }
     var data = CatalogueData(
         category: procedure.category,
         serviceId: procedure.serviceId,
         service: procedure.service,
         speciality: procedure.speciality,
+        isFromProfileScreen: true,
+        profId: widget.userID,
+        servicePrice: servicePrice,
         specialityId: procedure.specialityId);
     _openEnterAdditionalUserDetailScr(data);
   }
 
   _calcConsultationDataAndOpenAdditionalDetailScreen(DoctorsData doctorsData) {
+    num servicePrice = 0;
+    if (doctorsData != null &&
+        doctorsData.specialities != null &&
+        doctorsData.specialities.isNotEmpty &&
+        doctorsData.specialities.first.services != null &&
+        doctorsData.specialities.first.services.isNotEmpty &&
+        doctorsData.specialities.first.services.first.price != null &&
+        doctorsData.specialities.first.services.first.price > 0) {
+      servicePrice = doctorsData.specialities.first.services.first.price;
+    }
     var data = CatalogueData(
         serviceId: doctorsData?.specialities?.first?.services?.first?.id,
         speciality: doctorsData?.specialities?.first?.speciality,
         specialityId: doctorsData?.specialities?.first?.id,
         service: doctorsData?.specialities?.first?.services?.first?.service,
         category: doctorsData?.specialities?.first?.services?.first?.category,
+        isFromProfileScreen: true,
+        profId: widget.userID,
+        doctorId: doctorsData.id,
+        servicePrice: servicePrice,
         details: doctorsData?.specialities?.first?.services?.first?.details);
     _openEnterAdditionalUserDetailScr(data);
+  }
+
+  Widget _getBookAppointmentButton() {
+    if (widget.docId != null && widget.openEnterDetailScreen != null) {
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: 7),
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 26),
+        child: InkWell(
+          onTap: () {
+            widget.openEnterDetailScreen();
+          },
+          onDoubleTap: () {},
+          hoverColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
+          focusColor: Colors.transparent,
+          child: CustomWidgets().getRoundedButton(
+              PlunesStrings.bookAppointmentText,
+              4,
+              CommonMethods.getColorForSpecifiedCode("#25B281"),
+              20,
+              8,
+              PlunesColors.WHITECOLOR,
+              hasBorder: true,
+              borderColor: CommonMethods.getColorForSpecifiedCode("#25B281"),
+              borderWidth: 1.2),
+        ),
+      );
+    }
+    return Container();
   }
 }
 

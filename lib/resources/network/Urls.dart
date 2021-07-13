@@ -173,7 +173,7 @@ class Urls {
   static const String GET_REPORT_BY_REPORT_ID = "user/getReportByReportId";
   static const String BANK_OFFER_URL = mcmBaseUrl + "plunes/getBankOffers";
   static const String GET_FORM_DATA_ON_FILL_MEDICAL_DETAIL_SCREEN =
-      mcmBaseUrl + "mcmCatalogue/getServiceById";
+      "catalogue/getServiceById";
 
   ///new professional api's
   static const String profLogin = "professional/login";
@@ -182,4 +182,6 @@ class Urls {
   static const String profDetails = "professional";
   static const String getServiceByProfessionalId =
       "professional/getServiceByProfessionalId";
+  static const String createSolutionFromProfProfile =
+      "solution/professionalSolution";
 }

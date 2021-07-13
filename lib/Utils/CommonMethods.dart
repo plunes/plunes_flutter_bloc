@@ -876,8 +876,8 @@ class CommonMethods {
     bool _shouldShowProgressOnPrice = false;
     if (shouldNegotiate != null &&
         shouldNegotiate &&
-        service.priceUpdated != null &&
-        !(service.priceUpdated)) {
+        (service.priceUpdated != null && !(service.priceUpdated) ||
+            service.hasPrice != null && !(service.hasPrice))) {
       _shouldShowProgressOnPrice = true;
     }
     return _shouldShowProgressOnPrice;

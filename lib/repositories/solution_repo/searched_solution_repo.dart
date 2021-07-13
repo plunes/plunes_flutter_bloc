@@ -105,6 +105,24 @@ class SearchedSolutionRepo {
         "solutionId": catalogueData.solutionId,
         "notification": catalogueData.isFromNotification,
       };
+    } else if (catalogueData.isFromProfileScreen != null &&
+        catalogueData.isFromProfileScreen) {
+      String _loc = "";
+      if (lat != null && long != null && lat != 0.0 && long != 0.0) {
+        _loc = await LocationUtil().getAddressFromLatLong(
+            lat.toString(), long.toString(),
+            needFullLocation: true);
+      }
+      queryParams = {
+        "serviceId": catalogueData.serviceId,
+        "userReportId": catalogueData.userReportId,
+        "professionalId": catalogueData.profId,
+        "latitude": lat,
+        "longitude": long,
+        "doctorId": catalogueData.doctorId,
+        "searchQuery": searchQuery,
+        "geoLocationName": _loc == PlunesStrings.enterYourLocation ? "" : _loc
+      };
     } else {
       String _loc = "";
       if (lat != null && long != null && lat != 0.0 && long != 0.0) {
@@ -113,10 +131,8 @@ class SearchedSolutionRepo {
             needFullLocation: true);
       }
       queryParams = {
-        "serviceId": "6092dfd1b4dbc5d66eb748ea",
-        // catalogueData.serviceId,
-        "userReportId": "60c4940ad2f2fe32d257ed66",
-        // userReportId,
+        "serviceId": catalogueData.serviceId,
+        "userReportId": userReportId,
         "latitude": lat,
         "longitude": long,
         "searchQuery": searchQuery,
@@ -125,7 +141,10 @@ class SearchedSolutionRepo {
     }
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
-        url: Urls.GET_DOC_HOS_API,
+        url: (catalogueData.isFromProfileScreen != null &&
+                catalogueData.isFromProfileScreen)
+            ? Urls.createSolutionFromProfProfile
+            : Urls.GET_DOC_HOS_API,
         headerIncluded: true,
         queryParameter: queryParams);
     if (result.isRequestSucceed) {
@@ -246,10 +265,8 @@ class SearchedSolutionRepo {
         url: Urls.DISCOVER_PRICE_API,
         headerIncluded: true,
         postData: {
-          "solutionId": "60d5a11529b4bb331c229df1",
-          // solutionId,
-          "serviceId": "6092dfd1b4dbc5d66eb748ea",
-          // serviceId,
+          "solutionId": solutionId,
+          "serviceId": serviceId,
           "suggestedInsights": true
         });
     if (result.isRequestSucceed) {

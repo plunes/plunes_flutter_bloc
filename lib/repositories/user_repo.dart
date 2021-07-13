@@ -158,15 +158,47 @@ class UserManager {
   }
 
   Future<RequestState> getUserProfile(String userId,
-      {bool shouldSaveInfo = false}) async {
-    bool isUser =
-        UserManager().getUserDetails().userType == Constants.generalUser;
+      {bool shouldSaveInfo = false, bool isUser = true, String docId}) async {
+    if (!isUser && docId != null && docId.trim().isNotEmpty) {
+      return getDocProfileRelatedToHospital(userId,
+          doctorId: docId, shouldSaveInfo: shouldSaveInfo);
+    }
     var result = await DioRequester().requestMethod(
         url: isUser ? urls.userBaseUrl : Urls.profDetails,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET,
         queryParameter: {
           isUser ? "userId" : "professionalId": userId,
+          "lattitude": UserManager().getUserDetails().latitude,
+          "longitude": UserManager().getUserDetails().longitude
+        });
+    if (result.isRequestSucceed) {
+      LoginPost _loginPost = LoginPost.fromJson(result.response.data);
+//      print(_loginPost == null);
+      if (shouldSaveInfo) {
+        if (_loginPost != null &&
+            _loginPost.user != null &&
+            (_loginPost.token == null || _loginPost.token.trim().isEmpty)) {
+          _loginPost = LoginPost(
+              token: getUserDetails().accessToken, user: _loginPost.user);
+        }
+        Bloc().saveDataInPreferences(_loginPost, null, null);
+      }
+      return RequestSuccess(response: _loginPost);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getDocProfileRelatedToHospital(String userId,
+      {bool shouldSaveInfo = false, String doctorId}) async {
+    var result = await DioRequester().requestMethod(
+        url: Urls.profDetails + "/doctor",
+        headerIncluded: true,
+        requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {
+          "professionalId": userId,
+          "doctorId": doctorId,
           "lattitude": UserManager().getUserDetails().latitude,
           "longitude": UserManager().getUserDetails().longitude
         });

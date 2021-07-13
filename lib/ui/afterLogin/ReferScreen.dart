@@ -231,8 +231,10 @@ class _ReferScreenState extends BaseState<ReferScreen> {
       progress = true;
       _setState();
     }
-    var requestState =
-        await _userBloc.getUserProfile(UserManager().getUserDetails().uid);
+    var requestState = await _userBloc.getUserProfile(
+        UserManager().getUserDetails().uid,
+        isGenUser: UserManager().getUserDetails().userType != null &&
+            UserManager().getUserDetails().userType == Constants.generalUser);
     if (requestState is RequestSuccess) {
       _userProfileInfo = requestState.response;
       if (_userProfileInfo != null &&

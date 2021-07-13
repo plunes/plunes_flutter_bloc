@@ -22,6 +22,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:plunes/ui/afterLogin/upload_video_for_treatment.dart';
@@ -368,7 +369,7 @@ class _EnterAdditionalUserDetailScrState
                                     Container(
                                       width: double.infinity,
                                       child: Text(
-                                        "Select the ${_formDataModel?.data?.childrenKeys?.first ?? "body part"}",
+                                        "${_formDataModel?.data?.childrenKeys?.first ?? "body part"}",
                                         textAlign: TextAlign.left,
                                         maxLines: 2,
                                         style: TextStyle(
@@ -390,7 +391,7 @@ class _EnterAdditionalUserDetailScrState
                                       Container(
                                         width: double.infinity,
                                         child: Text(
-                                          "Select ${_formDataModel?.data?.childrenKeys[1] ?? "session"}",
+                                          "${_formDataModel?.data?.childrenKeys[1] ?? "session"}",
                                           textAlign: TextAlign.left,
                                           maxLines: 2,
                                           style: TextStyle(
@@ -1996,6 +1997,19 @@ class _EnterAdditionalUserDetailScrState
       });
       return;
     }
+    Map<String, dynamic> formDataReq = Map();
+    if (_hasFormDataList()) {
+      if (_medicalSessionModel != null &&
+          _medicalSessionModel.sessions != null) {
+        formDataReq[FormDataModel.sessionGraftKey] =
+            _medicalSessionModel.selectedSession ??
+                _medicalSessionModel.sessions.first;
+      } else {
+        if (_formItemList != null && _formItemList.isNotEmpty) {
+          // _formItemList.forEach((element) {});
+        }
+      }
+    }
     Map<String, dynamic> _postData = {
       "serviceId": widget.catalogueData?.serviceId,
       "reportUrls": _docUrls ?? [],
@@ -2013,9 +2027,27 @@ class _EnterAdditionalUserDetailScrState
     _submitUserMedicalDetailBloc.submitUserMedicalDetail(_postData);
   }
 
+  bool isFromProfileScreenAndPriceAvailable() {
+    return (widget.catalogueData != null &&
+        widget.catalogueData.isFromProfileScreen != null &&
+        widget.catalogueData.isFromProfileScreen &&
+        widget.catalogueData.servicePrice != null &&
+        widget.catalogueData.servicePrice > 0);
+  }
+
   void _navigateToNextScreen(String reportId) {
     // print("report id is $reportId");
     Future.delayed(Duration(milliseconds: 10)).then((value) {
+      widget.catalogueData.userReportId = reportId;
+      if (isFromProfileScreenAndPriceAvailable()) {
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SolutionShowPriceScreen(
+                    searchQuery: widget.searchQuery,
+                    catalogueData: widget.catalogueData)));
+        return;
+      }
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -2371,8 +2403,7 @@ class _EnterAdditionalUserDetailScrState
 
   _getFormData() {
     _failedMessage = null;
-    _submitUserMedicalDetailBloc
-        .fetchUserMedicalDetail(widget.catalogueData.serviceId);
+    _submitUserMedicalDetailBloc.fetchUserMedicalDetail(widget.catalogueData);
   }
 
   _openTextEditingPopup(MedicalFormData medicalFormData) {
@@ -2494,7 +2525,7 @@ class _EnterAdditionalUserDetailScrState
               Container(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  "Select ${_medicalSessionModel?.key ?? "Session"}",
+                  "${_medicalSessionModel?.key ?? "Session"}",
                   style:
                       TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
                 ),

@@ -387,7 +387,8 @@ class _SolutionMapState extends BaseState<SolutionMap> {
           MaterialPageRoute(
               builder: (context) => DoctorInfo(service.professionalId,
                   isDoc: (service.userType.toLowerCase() ==
-                      Constants.doctor.toString().toLowerCase()))));
+                      Constants.doctor.toString().toLowerCase()),
+                  isAlreadyInBookingProcess: true)));
     }
   }
 }

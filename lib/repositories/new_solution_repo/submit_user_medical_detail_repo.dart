@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:plunes/models/new_solution_model/form_data_response_model.dart';
 import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
@@ -70,12 +71,17 @@ class SubmitMedicalDetailRepo {
     }
   }
 
-  Future<RequestState> fetchUserMedicalDetail(String serviceId) async {
-    var result = await DioRequester().requestMethodWithNoBaseUrl(
+  Future<RequestState> fetchUserMedicalDetail(
+      CatalogueData catalogueData) async {
+    Map<String,dynamic> queryData = {"id": catalogueData.serviceId};
+    if (catalogueData.profId != null) {
+      queryData["professionalId"] = catalogueData.profId;
+    }
+    var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         url: Urls.GET_FORM_DATA_ON_FILL_MEDICAL_DETAIL_SCREEN,
         headerIncluded: true,
-        queryParameter: {"id": serviceId});
+        queryParameter: queryData);
     if (result.isRequestSucceed) {
       FormDataModel _formDataModel =
           FormDataModel.fromJson(result.response.data);

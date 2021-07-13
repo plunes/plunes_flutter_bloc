@@ -666,7 +666,8 @@ class _MoreFacilityScreenState extends BaseState<MoreFacilityScreen> {
     if (service.userType != null && service.professionalId != null) {
       Widget route = DoctorInfo(service.professionalId,
           isDoc: (service.userType.toLowerCase() ==
-              Constants.doctor.toString().toLowerCase()));
+              Constants.doctor.toString().toLowerCase()),
+          isAlreadyInBookingProcess: true);
       Navigator.push(context, MaterialPageRoute(builder: (context) => route));
     }
   }

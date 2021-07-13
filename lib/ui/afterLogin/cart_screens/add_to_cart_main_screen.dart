@@ -929,7 +929,8 @@ class _AddToCartMainScreenState extends BaseState<AddToCartMainScreen> {
           MaterialPageRoute(
               builder: (context) => DoctorInfo(booking.professionalId,
                   isDoc: (booking.service.userType.toLowerCase() ==
-                      Constants.doctor.toString().toLowerCase()))));
+                      Constants.doctor.toString().toLowerCase()),
+                  isAlreadyInBookingProcess: true)));
       // Widget route;
       // if (booking.service.userType.toLowerCase() ==
       //     Constants.doctor.toString().toLowerCase()) {

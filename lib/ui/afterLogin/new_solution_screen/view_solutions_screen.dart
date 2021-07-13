@@ -380,6 +380,11 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
           if (_searchedDocResults.solution.services.length == index) {
             if (_searchedDocResults.solution.showAdditionalFacilities != null &&
                 _searchedDocResults.solution.showAdditionalFacilities) {
+              if (widget.catalogueData != null &&
+                  widget.catalogueData.isFromProfileScreen != null &&
+                  widget.catalogueData.isFromProfileScreen) {
+                return Container();
+              }
               return Container(
                 padding:
                     EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
@@ -702,11 +707,10 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => DoctorInfo(
-                    service.professionalId,
-                    isDoc: (service.userType.toLowerCase() ==
-                        Constants.doctor.toString().toLowerCase()),
-                  ))).then((value) {
+              builder: (context) => DoctorInfo(service.professionalId,
+                  isDoc: (service.userType.toLowerCase() ==
+                      Constants.doctor.toString().toLowerCase()),
+                  isAlreadyInBookingProcess: true))).then((value) {
         _setScreenName(FirebaseNotification.solutionViewScreen);
       });
     }

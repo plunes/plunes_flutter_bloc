@@ -67,9 +67,11 @@ class UserBloc extends BlocBase {
   }
 
   Future<RequestState> getUserProfile(final String userId,
-      {bool shouldSaveInfo = false}) async {
-    var result = await UserManager()
-        .getUserProfile(userId, shouldSaveInfo: shouldSaveInfo);
+      {bool shouldSaveInfo = false,
+      bool isGenUser = true,
+      String docId}) async {
+    var result = await UserManager().getUserProfile(userId,
+        shouldSaveInfo: shouldSaveInfo, isUser: isGenUser,docId: docId);
     super.addIntoStream(result);
     return result;
   }

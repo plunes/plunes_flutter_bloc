@@ -103,8 +103,8 @@ class _AvailabilitySelectionScreenState
       progress = true;
       _setState();
     }
-    var result =
-        await userBloc.getUserProfile(UserManager().getUserDetails().uid);
+    var result = await userBloc
+        .getUserProfile(UserManager().getUserDetails().uid, isGenUser: false);
     _availabilityModel = [];
     if (result is RequestSuccess) {
       RequestSuccess requestSuccess = result;
