@@ -38,7 +38,7 @@ class TopFacility {
   List<AchievementsData> achievements;
   int experience;
   double rating, distance, dotsPositionForTopFacility = 0.0;
-
+  List<Centre> centres;
   List<String> specialities;
 
   TopFacility(
@@ -52,7 +52,8 @@ class TopFacility {
       this.experience,
       this.rating,
       this.specialities,
-      this.distance});
+      this.distance,
+      this.centres});
 
   TopFacility.fromJson(Map<String, dynamic> json) {
     double dis = 0.0;
@@ -68,6 +69,9 @@ class TopFacility {
         achievements.add(new AchievementsData.fromJson(v));
       });
     }
+    centres = json['centers'] != null
+        ? List.from(json['centers'].map((i) => Centre.from(i)))
+        : null;
     if (json["distance"] != null &&
         json["distance"].runtimeType == dis.runtimeType) {
       distance = json["distance"];

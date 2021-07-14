@@ -299,7 +299,7 @@ class Doctors {
   num discount;
   num experience;
   List<num> newPrice;
-  List<String> category;
+  // List<String> category;
   List<TimeSlots> timeSlots;
   bool negotiating, zestMoney;
   num bookIn;
@@ -314,7 +314,7 @@ class Doctors {
       this.discount,
       this.experience,
       this.newPrice,
-      this.category,
+      // this.category,
       this.timeSlots,
       this.negotiating,
       this.rating,
@@ -332,7 +332,7 @@ class Doctors {
       experience = num.tryParse(json['experience'].toString());
     }
     newPrice = json['newPrice']?.cast<num>();
-    category = json['category']?.cast<String>();
+    // category = json['category']?.cast<String>();
     bookIn = json['bookIn'];
     rating = json['rating'];
     negotiating = json['negotiating'];
@@ -355,7 +355,7 @@ class Doctors {
     data['discount'] = this.discount;
     data['experience'] = this.experience;
     data['newPrice'] = this.newPrice;
-    data['category'] = this.category;
+    // data['category'] = this.category;
     if (this.timeSlots != null) {
       data['timeSlots'] = this.timeSlots.map((v) => v.toJson()).toList();
     }

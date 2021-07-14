@@ -356,7 +356,7 @@ class User {
             ? List.from(json['centers'].map((i) => Centre.from(i)))
             : null,
         patientServed:
-            json['patientServed'] != null ? json['patientServed'] : null);
+            json['patientsServed'] != null ? json['patientsServed'] : null);
   }
 
   Map<String, dynamic> toJson() {

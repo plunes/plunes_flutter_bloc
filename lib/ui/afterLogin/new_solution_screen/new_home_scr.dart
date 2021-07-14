@@ -1476,7 +1476,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               child: Container(
                 width: 102,
                 height: AppConfig.verticalBlockSize * 12,
-                padding: EdgeInsets.all(5),
+                padding: EdgeInsets.all(15),
                 child: ClipRRect(
                   child: _imageFittedBox(imageUrl, boxFit: BoxFit.fill),
                   borderRadius: BorderRadius.only(

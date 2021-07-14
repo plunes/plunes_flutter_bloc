@@ -230,9 +230,6 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
   Widget _getBody() {
     return Stack(
       children: [
-        // Container(
-        //   child: ListView(children: _mapWidgets ?? []),
-        // ),
         Container(
           width: double.infinity,
           height: double.infinity,
@@ -328,9 +325,36 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             bottom: 0.0,
             left: 0.0,
             right: 0.0,
-            child: _getDiscoverPriceButton())
+            child: Card(
+              margin: EdgeInsets.all(0),
+              child: Container(
+                margin: EdgeInsets.only(
+                    left: AppConfig.horizontalBlockSize * 4,
+                    right: AppConfig.horizontalBlockSize * 4,
+                    bottom: AppConfig.verticalBlockSize * 2,
+                    top: AppConfig.verticalBlockSize * 1),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    _getDiscoverMoreFacilitiesButton(),
+                    _hasDiscoverMoreFacilityButton()
+                        ? Flexible(child: _getDiscoverPriceButton())
+                        : _getDiscoverPriceButton()
+                  ],
+                ),
+              ),
+            ))
       ],
     );
+  }
+
+  bool _hasDiscoverMoreFacilityButton() {
+    return ((_searchedDocResults.solution.showAdditionalFacilities != null &&
+            _searchedDocResults.solution.showAdditionalFacilities) &&
+        !(widget.catalogueData != null &&
+            widget.catalogueData.isFromProfileScreen != null &&
+            widget.catalogueData.isFromProfileScreen));
   }
 
   // Widget _getBenefitsWidget() {
@@ -377,56 +401,6 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
       child: ListView.builder(
         physics: NeverScrollableScrollPhysics(),
         itemBuilder: (context, index) {
-          if (_searchedDocResults.solution.services.length == index) {
-            if (_searchedDocResults.solution.showAdditionalFacilities != null &&
-                _searchedDocResults.solution.showAdditionalFacilities) {
-              if (widget.catalogueData != null &&
-                  widget.catalogueData.isFromProfileScreen != null &&
-                  widget.catalogueData.isFromProfileScreen) {
-                return Container();
-              }
-              return Container(
-                padding:
-                    EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 2),
-                margin: EdgeInsets.symmetric(
-                    horizontal: AppConfig.horizontalBlockSize * 20,
-                    vertical: AppConfig.verticalBlockSize * 1),
-                child: Container(
-                  margin:
-                      EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 3),
-                  child: InkWell(
-                    onTap: () {
-                      _setScreenName(null);
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MoreFacilityScreen(
-                                    catalogueData:
-                                        _searchedDocResults.catalogueData,
-                                    docHosSolution:
-                                        _searchedDocResults.solution,
-                                    searchSolutionBloc: _searchSolutionBloc,
-                                  ))).then((value) {
-                        _setScreenName(FirebaseNotification.solutionViewScreen);
-                        _getFacilities();
-                      });
-                    },
-                    child: CustomWidgets().getRoundedButton(
-                        PlunesStrings.discoverMoreFacilityButtonText,
-                        AppConfig.horizontalBlockSize * 8,
-                        PlunesColors.WHITECOLOR,
-                        AppConfig.horizontalBlockSize * 3,
-                        AppConfig.verticalBlockSize * 1,
-                        Color(CommonMethods.getColorHexFromStr("#25B281")),
-                        borderColor:
-                            Color(CommonMethods.getColorHexFromStr("#25B281")),
-                        hasBorder: true),
-                  ),
-                ),
-              );
-            }
-            return Container();
-          }
           return (_searchedDocResults.solution.services[index].doctors !=
                       null &&
                   _searchedDocResults
@@ -439,63 +413,56 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                   () => _openProfile(
                       _searchedDocResults.solution.services[index]));
         },
-        itemCount: _searchedDocResults.solution.services.length + 1,
+        itemCount: _searchedDocResults.solution.services.length,
         shrinkWrap: true,
       ),
     );
   }
 
   Widget _getDiscoverPriceButton() {
-    return Card(
-      margin: EdgeInsets.all(0),
-      child: Container(
-        margin: EdgeInsets.only(
-            left: AppConfig.horizontalBlockSize * 25,
-            right: AppConfig.horizontalBlockSize * 25,
-            bottom: AppConfig.verticalBlockSize * 2,
-            top: AppConfig.verticalBlockSize * 1),
-        child: StreamBuilder<RequestState>(
-            stream: _searchSolutionBloc.discoverPriceStream,
-            initialData: null,
-            builder: (context, snapshot) {
-              if (snapshot.data is RequestInProgress) {
-                return CustomWidgets().getProgressIndicator();
-              } else if (snapshot.data is RequestSuccess) {
-                _searchSolutionBloc.addStateInDiscoverPriceStream(null);
-                Future.delayed(Duration(milliseconds: 10)).then((value) {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => SolutionShowPriceScreen(
-                                catalogueData: widget.catalogueData,
-                                searchQuery: widget.searchQuery,
-                              )));
-                });
-              } else if (snapshot.data is RequestFailed) {
-                RequestFailed _reqFailed = snapshot.data;
-                Future.delayed(Duration(milliseconds: 10)).then((value) {
-                  _showMessagePopup(_reqFailed?.failureCause);
-                });
-                _searchSolutionBloc.addStateInDiscoverPriceStream(null);
-              }
-              return InkWell(
-                onTap: () {
-                  _searchSolutionBloc.discoverPrice(
-                      _searchedDocResults?.solution?.sId,
-                      _searchedDocResults?.solution?.serviceId);
-                },
-                onDoubleTap: () {},
-                child: CustomWidgets().getRoundedButton(
-                    PlunesStrings.discoverPrice,
-                    AppConfig.horizontalBlockSize * 8,
-                    PlunesColors.PARROTGREEN,
-                    AppConfig.horizontalBlockSize * 3,
-                    AppConfig.verticalBlockSize * 1,
-                    PlunesColors.WHITECOLOR,
-                    hasBorder: false),
-              );
-            }),
-      ),
+    return Container(
+      margin: EdgeInsets.only(left: 10),
+      child: StreamBuilder<RequestState>(
+          stream: _searchSolutionBloc.discoverPriceStream,
+          initialData: null,
+          builder: (context, snapshot) {
+            if (snapshot.data is RequestInProgress) {
+              return CustomWidgets().getProgressIndicator();
+            } else if (snapshot.data is RequestSuccess) {
+              _searchSolutionBloc.addStateInDiscoverPriceStream(null);
+              Future.delayed(Duration(milliseconds: 10)).then((value) {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SolutionShowPriceScreen(
+                              catalogueData: widget.catalogueData,
+                              searchQuery: widget.searchQuery,
+                            )));
+              });
+            } else if (snapshot.data is RequestFailed) {
+              RequestFailed _reqFailed = snapshot.data;
+              Future.delayed(Duration(milliseconds: 10)).then((value) {
+                _showMessagePopup(_reqFailed?.failureCause);
+              });
+              _searchSolutionBloc.addStateInDiscoverPriceStream(null);
+            }
+            return InkWell(
+              onTap: () {
+                _searchSolutionBloc.discoverPrice(
+                    _searchedDocResults?.solution?.sId,
+                    _searchedDocResults?.solution?.serviceId);
+              },
+              onDoubleTap: () {},
+              child: CustomWidgets().getRoundedButton(
+                  PlunesStrings.discoverPrice,
+                  AppConfig.horizontalBlockSize * 8,
+                  PlunesColors.PARROTGREEN,
+                  AppConfig.horizontalBlockSize * 3,
+                  AppConfig.verticalBlockSize * 1,
+                  PlunesColors.WHITECOLOR,
+                  hasBorder: false),
+            );
+          }),
     );
   }
 
@@ -778,5 +745,49 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
     Future.delayed(Duration(seconds: 1)).then((value) {
       _setScreenName(FirebaseNotification.solutionViewScreen);
     });
+  }
+
+  Widget _getDiscoverMoreFacilitiesButton() {
+    if (_searchedDocResults.solution.showAdditionalFacilities != null &&
+        _searchedDocResults.solution.showAdditionalFacilities) {
+      if (widget.catalogueData != null &&
+          widget.catalogueData.isFromProfileScreen != null &&
+          widget.catalogueData.isFromProfileScreen) {
+        return Container();
+      }
+      return Flexible(
+        child: Container(
+          child: Container(
+            child: InkWell(
+              onTap: () {
+                _setScreenName(null);
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MoreFacilityScreen(
+                              catalogueData: _searchedDocResults.catalogueData,
+                              docHosSolution: _searchedDocResults.solution,
+                              searchSolutionBloc: _searchSolutionBloc,
+                            ))).then((value) {
+                  _setScreenName(FirebaseNotification.solutionViewScreen);
+                  _getFacilities();
+                });
+              },
+              child: CustomWidgets().getRoundedButton(
+                  PlunesStrings.discoverMoreFacilityButtonText,
+                  AppConfig.horizontalBlockSize * 8,
+                  PlunesColors.WHITECOLOR,
+                  AppConfig.horizontalBlockSize * 3,
+                  AppConfig.verticalBlockSize * 1,
+                  Color(CommonMethods.getColorHexFromStr("#25B281")),
+                  borderColor:
+                      Color(CommonMethods.getColorHexFromStr("#25B281")),
+                  hasBorder: true),
+            ),
+          ),
+        ),
+      );
+    }
+    return Container();
   }
 }

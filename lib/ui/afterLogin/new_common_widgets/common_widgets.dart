@@ -23,6 +23,7 @@ import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:readmore/readmore.dart';
 
 class CommonWidgets {
@@ -3658,7 +3659,7 @@ class CommonWidgets {
                               Container(
                                 margin: EdgeInsets.only(top: 4),
                                 child: Text(
-                                  "12 : 30 PM, Today",
+                                  "$nextAvlText",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontSize: 14,
@@ -4194,39 +4195,65 @@ class CommonWidgets {
                 ],
               ),
             ),
-            Container(
-              height: AppConfig.verticalBlockSize * 6,
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 2),
-              padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  return Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: AppConfig.horizontalBlockSize * 2.5,
-                        vertical: AppConfig.verticalBlockSize * 0.8),
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(right: 8),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                        border: Border.all(
-                            width: 1,
-                            color: Color(CommonMethods.getColorHexFromStr(
-                                "#D8D8D887")))),
-                    child: Text(
-                      "Some text",
-                      style: TextStyle(
-                          color: Color(
-                              CommonMethods.getColorHexFromStr("#434343")),
-                          fontSize: 14),
+            (topFacilityData == null ||
+                    topFacilityData.centres == null ||
+                    topFacilityData.centres.isEmpty)
+                ? Container()
+                : Container(
+                    height: AppConfig.verticalBlockSize * 6,
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 2),
+                    padding:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onTap: () {
+                            if (topFacilityData.centres[index].id != null &&
+                                topFacilityData.centres[index].id
+                                    .trim()
+                                    .isNotEmpty) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DoctorInfo(
+                                          topFacilityData.centres[index].id,
+                                          isDoc: true)));
+                            }
+                          },
+                          onDoubleTap: () {},
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: AppConfig.horizontalBlockSize * 2.5,
+                                vertical: AppConfig.verticalBlockSize * 0.8),
+                            alignment: Alignment.center,
+                            margin: EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                                border: Border.all(
+                                    width: 1,
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#D8D8D887")))),
+                            child: Text(
+                              topFacilityData.centres[index].name ?? "",
+                              style: TextStyle(
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#434343")),
+                                  fontSize: 14),
+                            ),
+                          ),
+                        );
+                      },
+                      itemCount: topFacilityData.centres.length,
                     ),
-                  );
-                },
-                itemCount: 10,
-              ),
-            ),
+                  ),
             SizedBox(height: 15)
           ],
         ),
@@ -4254,11 +4281,44 @@ class CommonWidgets {
               slot.slotArray != null &&
               slot.slotArray.isNotEmpty) {
             slot.slotArray.forEach((element) {
-              if (_selectedTimeSlot == PlunesStrings.noSlot) {
+              if (_selectedTimeSlot == null) {
                 _selectedTimeSlot =
                     _checkSelectedSlot(element, _currentDate, slot.slotArray);
+                if (_selectedTimeSlot != null) {
+                  _selectedTimeSlot = _selectedTimeSlot + ", ${slot.day}";
+                }
               }
             });
+          }
+          if (_selectedTimeSlot == null) {
+            List<TimeSlots> reArrangedSlots = [];
+            int index = timeSlots.indexOf(slot);
+            if (index > 0 && index <= 5) {
+              for (int lIndex = index + 1;
+                  lIndex < timeSlots.length;
+                  lIndex++) {
+                reArrangedSlots.add(timeSlots[lIndex]);
+              }
+              for (int lIndex = 0; lIndex < index + 1; lIndex++) {
+                reArrangedSlots.add(timeSlots[lIndex]);
+              }
+            } else {
+              reArrangedSlots = timeSlots;
+            }
+            if (reArrangedSlots.isNotEmpty) {
+              for (int lIndex = 0; lIndex < reArrangedSlots.length; lIndex++) {
+                if (_selectedTimeSlot != null) {
+                  break;
+                }
+                TimeSlots innerSlot = reArrangedSlots[lIndex];
+                if (!innerSlot.closed &&
+                    innerSlot.slotArray != null &&
+                    innerSlot.slotArray.isNotEmpty) {
+                  _selectedTimeSlot = innerSlot.slotArray.first +
+                      ", on Upcoming ${innerSlot.day}";
+                }
+              }
+            }
           }
         }
       });
