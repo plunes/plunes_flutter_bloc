@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -27,8 +29,9 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
   TextEditingController _textController;
   List<DocServiceData> _serviceNameList = [];
   String _selectedService;
-
+  StreamController _streamConForDocTiming;
   int _totalCount = 0;
+  Timer _timerForEverySecond;
 
   _onTextClear() {
     if (mounted) {
@@ -45,12 +48,27 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
         _onSearch();
       });
     _initServiceList();
+    _streamConForDocTiming = StreamController.broadcast();
+    _startSecondTimer();
     super.initState();
+  }
+
+  void _startSecondTimer() {
+    _timerForEverySecond = Timer.periodic(Duration(seconds: 10), (timer) {
+      _timerForEverySecond = timer;
+      if (mounted) {
+        _streamConForDocTiming.add(null);
+      } else if (timer != null && timer.isActive) {
+        timer.cancel();
+      }
+    });
   }
 
   @override
   void dispose() {
+    _streamConForDocTiming?.close();
     _textController?.dispose();
+    _timerForEverySecond?.cancel();
     super.dispose();
   }
 
@@ -144,8 +162,12 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
                       )));
         }
       },
-      child: CommonWidgets().getConsultationWidget(
-          widget.docList, index, () => _openConsScreen(widget.docList[index])),
+      child: StreamBuilder<Object>(
+          stream: _streamConForDocTiming.stream,
+          builder: (context, snapshot) {
+            return CommonWidgets().getConsultationWidget(widget.docList, index,
+                () => _openConsScreen(widget.docList[index]));
+          }),
     );
   }
 

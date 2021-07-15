@@ -27,6 +27,7 @@ import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/ui/afterLogin/EditProfileScreen.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/know_your_procedure_cards.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/show_insurance_list_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_procedure_and_professional_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
@@ -541,78 +542,102 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                               ),
                             ),
                           ),
-                          _solutionHomeScreenModel != null &&
-                                  _solutionHomeScreenModel.specialityList !=
-                                      null &&
-                                  _solutionHomeScreenModel
-                                      .specialityList.isNotEmpty
-                              ? Container(
-                                  height: AppConfig.verticalBlockSize * 4.5,
-                                  margin: EdgeInsets.only(
-                                    top: AppConfig.verticalBlockSize * 2,
-                                    left: AppConfig.verticalBlockSize * 2,
-                                    right: AppConfig.verticalBlockSize * 2,
-                                  ),
-                                  child: ListView.builder(
-                                    shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: (context, index) {
-                                      return InkWell(
-                                        onTap: () {
-                                          if (_solutionHomeScreenModel
-                                                      ?.specialityList[index] !=
-                                                  null &&
-                                              _solutionHomeScreenModel
-                                                  ?.specialityList[index]
-                                                  .isNotEmpty) {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SolutionBiddingScreen(
-                                                            searchQuery:
-                                                                _solutionHomeScreenModel
-                                                                        ?.specialityList[
-                                                                    index]))).then(
-                                                (value) {
-                                              _getCartCount();
-                                            });
-                                          }
-                                        },
-                                        onDoubleTap: () {},
-                                        child: Container(
-                                          alignment: Alignment.center,
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          margin: EdgeInsets.only(right: 5),
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Colors.grey,
-                                                  width: 0.7),
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              color: Color(CommonMethods
-                                                  .getColorHexFromStr(
-                                                      "#FAFBFD"))),
-                                          child: Text(
-                                            _solutionHomeScreenModel
-                                                    ?.specialityList[index] ??
-                                                "",
-                                            style: TextStyle(
-                                                color: Color(CommonMethods
-                                                    .getColorHexFromStr(
-                                                        "#303030")),
-                                                fontSize: 14),
-                                          ),
+                          StreamBuilder<Object>(
+                              stream:
+                                  _homeScreenMainBloc?.commonSpecialityStream,
+                              builder: (context, snapshot) {
+                                return (_newSpecialityModel == null ||
+                                        _newSpecialityModel.data == null ||
+                                        _newSpecialityModel.data.isEmpty)
+                                    ? Container()
+                                    : Container(
+                                        height:
+                                            AppConfig.verticalBlockSize * 4.5,
+                                        margin: EdgeInsets.only(
+                                          top: AppConfig.verticalBlockSize * 2,
+                                          left: AppConfig.verticalBlockSize * 2,
+                                          right:
+                                              AppConfig.verticalBlockSize * 2,
+                                        ),
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: (context, index) {
+                                            return InkWell(
+                                              onTap: () {
+                                                var specialityData =
+                                                    _newSpecialityModel
+                                                        .data[index];
+                                                ProcedureData procedureData =
+                                                    ProcedureData(
+                                                        sId: specialityData
+                                                            ?.specialityId,
+                                                        defination:
+                                                            specialityData
+                                                                ?.definition,
+                                                        speciality:
+                                                            specialityData
+                                                                ?.speciality,
+                                                        familyImage: specialityData
+                                                            ?.specailizationImage,
+                                                        specialityId:
+                                                            specialityData
+                                                                ?.specialityId,
+                                                        details: specialityData
+                                                            ?.definition,
+                                                        familyName:
+                                                            specialityData
+                                                                ?.speciality);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ViewProcedureAndProfessional(
+                                                                shouldUseSpecializationApi:
+                                                                    true,
+                                                                procedureData:
+                                                                    procedureData))).then(
+                                                    (value) {
+                                                  _getCartCount();
+                                                });
+                                              },
+                                              onDoubleTap: () {},
+                                              child: Container(
+                                                alignment: Alignment.center,
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 10),
+                                                margin:
+                                                    EdgeInsets.only(right: 5),
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.grey,
+                                                        width: 0.7),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    color: Color(CommonMethods
+                                                        .getColorHexFromStr(
+                                                            "#FAFBFD"))),
+                                                child: Text(
+                                                  _newSpecialityModel
+                                                          .data[index]
+                                                          .speciality ??
+                                                      "",
+                                                  style: TextStyle(
+                                                      color: Color(CommonMethods
+                                                          .getColorHexFromStr(
+                                                              "#303030")),
+                                                      fontSize: 14),
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          itemCount: _newSpecialityModel
+                                                  .data?.length ??
+                                              0,
                                         ),
                                       );
-                                    },
-                                    itemCount: _solutionHomeScreenModel
-                                            ?.specialityList?.length ??
-                                        0,
-                                  ),
-                                )
-                              : Container()
+                              })
                         ],
                       ),
                     )
@@ -1444,7 +1469,6 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
 
   Widget _specialCard(
       String imageUrl, String label, String text, SpecData specialityData) {
-    print(imageUrl);
     return Container(
       child: InkWell(
         onTap: () {
@@ -1452,7 +1476,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               sId: specialityData?.specialityId,
               defination: specialityData?.definition,
               speciality: specialityData?.speciality,
-              familyImage: specialityData?.specialityIconImage,
+              familyImage: specialityData?.specailizationImage,
               specialityId: specialityData?.specialityId,
               details: specialityData?.definition,
               familyName: specialityData?.speciality);
@@ -1863,7 +1887,9 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                 _topFacilityModel.data[index].biography ?? '',
                                 _topFacilityModel.data[index]?.rating,
                                 _topFacilityModel.data[index],
-                                _streamControllerForTopFacility),
+                                _streamControllerForTopFacility,
+                                () => _openInsuranceScreen(
+                                    _topFacilityModel.data[index])),
                           );
                         },
                         itemCount: ((_topFacilityModel.data.length > 6) &&
@@ -1905,6 +1931,19 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                   ),
                 );
         });
+  }
+
+  _openInsuranceScreen(TopFacility service) {
+    if (service != null &&
+        service.professionalId != null &&
+        service.professionalId.trim().isNotEmpty) {
+      Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ShowInsuranceListScreen(profId: service.professionalId)))
+          .then((value) {});
+    }
   }
 
   Future<RequestState> _getSpecialityList() async {

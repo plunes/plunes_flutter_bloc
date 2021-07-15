@@ -3474,6 +3474,7 @@ class CommonWidgets {
 
   Widget getConsultationWidget(
       List<DoctorsData> doctorsData, int index, Function func) {
+    print("called again");
     var docData = doctorsData[index];
     String nextAvlText = _getSlotsInfo(docData?.timeSlots);
     String price;
@@ -3944,7 +3945,8 @@ class CommonWidgets {
       String text,
       double rating,
       TopFacility topFacilityData,
-      StreamController streamController) {
+      StreamController streamController,
+      Function openInsuranceScreen) {
     return Container(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
       child: Card(
@@ -4129,7 +4131,7 @@ class CommonWidgets {
               padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
               alignment: Alignment.topLeft,
               child: Text(
-                "Multispecialty | New Delhi",
+                "${topFacilityData.hospitalType != null ? "${topFacilityData.hospitalType} |" : ""}${topFacilityData.locality != null ? "${topFacilityData.locality}" : ""}",
                 style: TextStyle(
                     color: Color(CommonMethods.getColorHexFromStr("#434343")),
                     fontSize: 16),
@@ -4143,58 +4145,98 @@ class CommonWidgets {
               child: Row(
                 children: [
                   Expanded(
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text("13+ Doctors",
-                          style: TextStyle(
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#000000")),
-                              fontSize: 16)),
-                    ),
+                    child: (topFacilityData.doctorCount != null &&
+                            topFacilityData.doctorCount > 0)
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                                "${topFacilityData.doctorCount == 1 ? "${topFacilityData.doctorCount} Doctor" : "${topFacilityData.doctorCount} Doctors"}",
+                                style: TextStyle(
+                                    color: Color(
+                                        CommonMethods.getColorHexFromStr(
+                                            "#000000")),
+                                    fontSize: 16)),
+                          )
+                        : Container(),
                   ),
                   Expanded(
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      child: Text("Check insurance",
-                          style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationThickness: 3.0,
-                              decorationColor: Color(
-                                  CommonMethods.getColorHexFromStr("#107C6F")),
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#107C6F")),
-                              fontSize: 16)),
-                    ),
+                    child: (topFacilityData.insuranceAvailable != null &&
+                            topFacilityData.insuranceAvailable)
+                        ? InkWell(
+                            focusColor: Colors.transparent,
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            onTap: () {
+                              if (openInsuranceScreen != null) {
+                                openInsuranceScreen();
+                              }
+                            },
+                            onDoubleTap: () {},
+                            child: Container(
+                              alignment: Alignment.centerRight,
+                              child: Text("Check insurance",
+                                  style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      decorationThickness: 3.0,
+                                      decorationColor: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#107C6F")),
+                                      color: Color(
+                                          CommonMethods.getColorHexFromStr(
+                                              "#107C6F")),
+                                      fontSize: 16)),
+                            ),
+                          )
+                        : Container(),
                   )
                 ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 2),
-              padding: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
-              alignment: Alignment.topLeft,
-              child: Row(
-                children: [
-                  Container(
-                    height: 24,
-                    width: 24,
-                    alignment: Alignment.centerLeft,
-                    child: CustomWidgets().getImageFromUrl(""),
-                  ),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.centerLeft,
-                      child: Text("   NABH Accredited",
-                          style: TextStyle(
-                              color: Color(
-                                  CommonMethods.getColorHexFromStr("#434343")),
-                              fontSize: 14)),
-                    ),
-                  )
-                ],
-              ),
-            ),
+            topFacilityData.accreditationList == null ||
+                    topFacilityData.accreditationList.isEmpty
+                ? Container()
+                : Container(
+                    margin: EdgeInsets.symmetric(
+                        horizontal: AppConfig.horizontalBlockSize * 2),
+                    padding:
+                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1.5),
+                    alignment: Alignment.topLeft,
+                    height: AppConfig.verticalBlockSize * 5,
+                    child: ListView.builder(
+                      itemBuilder: (context, index) {
+                        return Container(
+                          margin: EdgeInsets.only(right: 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                  height: 24,
+                                  width: 24,
+                                  alignment: Alignment.centerLeft,
+                                  child: CustomWidgets().getImageFromUrl(
+                                      topFacilityData.accreditationImage ??
+                                          "")),
+                              Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                    " ${topFacilityData?.accreditationList[index]}",
+                                    style: TextStyle(
+                                        color: Color(
+                                            CommonMethods.getColorHexFromStr(
+                                                "#434343")),
+                                        fontSize: 14)),
+                              )
+                            ],
+                          ),
+                        );
+                      },
+                      itemCount:
+                          topFacilityData?.accreditationList?.length ?? 0,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                    )),
             (topFacilityData == null ||
                     topFacilityData.centres == null ||
                     topFacilityData.centres.isEmpty)

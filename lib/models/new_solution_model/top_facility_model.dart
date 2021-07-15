@@ -32,14 +32,15 @@ class TopFacility {
   String professionalId;
   String name;
   String userType;
-  String address;
+  String address, locality, accreditationImage, hospitalType;
   String imageUrl;
   String biography;
   List<AchievementsData> achievements;
-  int experience;
+  int experience, doctorCount;
   double rating, distance, dotsPositionForTopFacility = 0.0;
   List<Centre> centres;
-  List<String> specialities;
+  List<String> specialities, accreditationList;
+  bool insuranceAvailable;
 
   TopFacility(
       {this.professionalId,
@@ -53,10 +54,20 @@ class TopFacility {
       this.rating,
       this.specialities,
       this.distance,
-      this.centres});
+      this.centres,
+      this.accreditationImage,
+      this.doctorCount,
+      this.locality,
+      this.hospitalType,
+      this.accreditationList,
+      this.insuranceAvailable});
 
   TopFacility.fromJson(Map<String, dynamic> json) {
     double dis = 0.0;
+    if (json['accreditation'] != null) {
+      accreditationList = json['accreditation'].cast<String>();
+    }
+    insuranceAvailable = json['insuranceAvailable'];
     professionalId = json['professionalId'];
     name = json['name'];
     userType = json['userType'];
@@ -82,6 +93,10 @@ class TopFacility {
       rating = double.tryParse(json['rating'].toString());
     }
     specialities = json['specialities'].cast<String>();
+    accreditationImage = json['accreditationImage'];
+    doctorCount = json['doctorCount'];
+    locality = json['locality'];
+    hospitalType = json['hospitalType'];
   }
 
   Map<String, dynamic> toJson() {

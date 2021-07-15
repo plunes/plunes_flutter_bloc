@@ -58,8 +58,7 @@ class SpecData {
     speciality = json['speciality'];
     specialityId = json['specialityId'];
     definition = json['definition'];
-    specailizationImage = json['specailizationImage'];
-    print("yeee ${json["specialityIconImageApp"]}");
+    specailizationImage = json['specialityPicture'];
     specialityIconImage = json["specialityIconImageApp"];
   }
 

@@ -24,6 +24,7 @@ import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_common_widgets/common_widgets.dart';
+import 'package:plunes/ui/afterLogin/new_solution_screen/show_insurance_list_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_main_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/bidding_screen.dart';
@@ -990,13 +991,28 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                             _topFacilityModel.data[index].biography ?? '',
                             _topFacilityModel.data[index]?.rating,
                             _topFacilityModel.data[index],
-                            _streamControllerForTopFacility),
+                            _streamControllerForTopFacility,
+                            () => _openInsuranceScreen(
+                                _topFacilityModel.data[index])),
                       );
                     },
                     itemCount: _topFacilityModel.data.length,
                   ),
                 );
         });
+  }
+
+  _openInsuranceScreen(TopFacility service) {
+    if (service != null &&
+        service.professionalId != null &&
+        service.professionalId.trim().isNotEmpty) {
+      Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      ShowInsuranceListScreen(profId: service.professionalId)))
+          .then((value) {});
+    }
   }
 
   _getModelBottomSheetForFacilityType(BuildContext context) {

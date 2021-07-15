@@ -56,7 +56,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   LoginPost _profileResponse;
   String _failureCause, _failureCauseForMediaContent, _failureForReview;
   final CarouselController _controller = CarouselController();
-  StreamController _streamController;
+  StreamController _streamController, _streamConForDocTiming;
   MediaContentModel _mediaContent;
   List<RateAndReview> _rateAndReviewList = [];
   bool _reviewApiHitOnce = false, _mediaContentApiHitOnce = false, _isDoc;
@@ -65,6 +65,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   List<Widget> _tabsForHospital = [];
   String _failureMessageForFacilityHave;
   HosFacilityData _hosFacilityData;
+  Timer _timerForEverySecond;
 
   @override
   void initState() {
@@ -72,10 +73,23 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
     _isDoc = widget.isDoc ?? false;
     _rateAndReviewList = [];
     _streamController = StreamController.broadcast();
+    _streamConForDocTiming = StreamController.broadcast();
     _userBloc = UserBloc();
     _getUserDetails();
     _getServiceCategoryData();
+    _startSecondTimer();
     super.initState();
+  }
+
+  void _startSecondTimer() {
+    _timerForEverySecond = Timer.periodic(Duration(seconds: 10), (timer) {
+      _timerForEverySecond = timer;
+      if (mounted) {
+        _streamConForDocTiming.add(null);
+      } else if (timer != null && timer.isActive) {
+        timer.cancel();
+      }
+    });
   }
 
   _getServiceCategoryData() {
@@ -105,7 +119,9 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
   @override
   void dispose() {
     _streamController?.close();
+    _streamConForDocTiming?.close();
     _userBloc?.dispose();
+    _timerForEverySecond?.cancel();
     super.dispose();
   }
 
@@ -1373,12 +1389,17 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                       )));
                         }
                       },
-                      child: CommonWidgets().getConsultationWidget(
-                          _profileResponse.user.doctorsData,
-                          index,
-                          () =>
-                              _calcConsultationDataAndOpenAdditionalDetailScreen(
-                                  _profileResponse.user.doctorsData[index])),
+                      child: StreamBuilder<Object>(
+                          stream: _streamConForDocTiming?.stream,
+                          builder: (context, snapshot) {
+                            return CommonWidgets().getConsultationWidget(
+                                _profileResponse.user.doctorsData,
+                                index,
+                                () =>
+                                    _calcConsultationDataAndOpenAdditionalDetailScreen(
+                                        _profileResponse
+                                            .user.doctorsData[index]));
+                          }),
                     );
                   },
                   itemCount: _profileResponse.user.doctorsData.length > 3
