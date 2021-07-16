@@ -168,7 +168,7 @@ class CustomWidgets {
   Widget getSolutionRow(List<CatalogueData> solutionList, int index,
       {Function onButtonTap,
       TapGestureRecognizer onViewMoreTap,
-      bool isTopSearches = false}) {
+      bool isTopSearches = true}) {
     return StatefulBuilder(builder: (context, newState) {
       return Column(
         children: <Widget>[
@@ -227,77 +227,84 @@ class CustomWidgets {
                               left: AppConfig.horizontalBlockSize * 2)),
                       Expanded(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
+                          mainAxisSize: MainAxisSize.max,
                           children: <Widget>[
                             RichText(
                                 text: TextSpan(
-                                    text: solutionList[index]?.service ??
+                                    text: solutionList[index]?.family ??
                                         PlunesStrings.NA,
                                     style: TextStyle(
-                                      fontSize: AppConfig.smallFont + 1,
-                                      color: Colors.black,
-                                      //fontWeight: FontWeight.w500
-                                    ),
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500),
                                     children: [
-//                                  TextSpan(
-//                                      text:
-//                                          "(${solutionList[index].category ?? PlunesStrings.NA})",
-//                                      style: TextStyle(
-//                                          fontSize: AppConfig.smallFont,
-//                                          color: PlunesColors.GREENCOLOR))
+                                  TextSpan(
+                                      text: solutionList[index].technique ==
+                                                  null ||
+                                              solutionList[index]
+                                                  .technique
+                                                  .trim()
+                                                  .isEmpty
+                                          ? ""
+                                          : " (${solutionList[index].technique.trim() ?? PlunesStrings.NA})",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                          color: PlunesColors.BLACKCOLOR))
                                 ])),
                             Padding(
                                 padding: EdgeInsets.only(
                                     top: AppConfig.verticalBlockSize * 1)),
-                            (solutionList[index].details == null ||
-                                    solutionList[index].details.isEmpty)
-                                ? (solutionList[index].createdAt == null ||
-                                        solutionList[index].createdAt == 0)
-                                    ? Container()
-                                    : Text(
-                                        DateUtil.getDuration(
-                                            solutionList[index].createdAt),
-                                        style: TextStyle(
-                                            fontSize: AppConfig.smallFont,
-                                            color: PlunesColors.GREYCOLOR))
-                                : RichText(
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    text: TextSpan(
-                                      text: solutionList[index].details ??
-                                          PlunesStrings.NA,
-                                      style: TextStyle(
-                                          fontSize: AppConfig.verySmallFont,
-                                          color: Colors.black),
-                                    )),
-                            (solutionList[index].details == null ||
-                                    solutionList[index].details.isEmpty)
-                                ? Container()
-                                : RichText(
-                                    text: TextSpan(
-                                        text: plunesStrings.viewMore,
-                                        recognizer: onViewMoreTap,
-                                        style: TextStyle(
-                                            fontSize: AppConfig.verySmallFont,
-                                            color: PlunesColors.GREENCOLOR)),
-                                  ),
-                            (!(solutionList[index].isActive) &&
-                                    solutionList[index].maxDiscount != null &&
-                                    solutionList[index].maxDiscount != 0 &&
-                                    (solutionList[index].booked == null ||
-                                        !(solutionList[index].booked)))
-                                ? Padding(
-                                    padding: EdgeInsets.only(
-                                        top: AppConfig.verticalBlockSize * 1),
-                                    child: Text(
-                                      "You have missed ${solutionList[index].maxDiscount.toStringAsFixed(0)}% on your ${solutionList[index].service ?? PlunesStrings.NA} Previously",
-                                      style: TextStyle(
-                                          fontSize: AppConfig.smallFont,
-                                          color: Colors.black),
-                                    ))
+                            (solutionList[index].service != null &&
+                                    solutionList[index]
+                                        .service
+                                        .trim()
+                                        .isNotEmpty)
+                                ? Text("${solutionList[index].service.trim()}",
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: CommonMethods
+                                            .getColorForSpecifiedCode(
+                                                "#909090")))
                                 : Container()
+                            //     : RichText(
+                            //         maxLines: 1,
+                            //         overflow: TextOverflow.ellipsis,
+                            //         text: TextSpan(
+                            //           text: solutionList[index].details ??
+                            //               PlunesStrings.NA,
+                            //           style: TextStyle(
+                            //               fontSize: AppConfig.verySmallFont,
+                            //               color: Colors.black),
+                            //         )),
+                            // (solutionList[index].details == null ||
+                            //         solutionList[index].details.isEmpty)
+                            //     ? Container()
+                            //     : RichText(
+                            //         text: TextSpan(
+                            //             text: plunesStrings.viewMore,
+                            //             recognizer: onViewMoreTap,
+                            //             style: TextStyle(
+                            //                 fontSize: AppConfig.verySmallFont,
+                            //                 color: PlunesColors.GREENCOLOR)),
+                            //       ),
+                            // (!(solutionList[index].isActive) &&
+                            //         solutionList[index].maxDiscount != null &&
+                            //         solutionList[index].maxDiscount != 0 &&
+                            //         (solutionList[index].booked == null ||
+                            //             !(solutionList[index].booked)))
+                            //     ? Padding(
+                            //         padding: EdgeInsets.only(
+                            //             top: AppConfig.verticalBlockSize * 1),
+                            //         child: Text(
+                            //           "You have missed ${solutionList[index].maxDiscount.toStringAsFixed(0)}% on your ${solutionList[index].service ?? PlunesStrings.NA} Previously",
+                            //           style: TextStyle(
+                            //               fontSize: AppConfig.smallFont,
+                            //               color: Colors.black),
+                            //         ))
+                            //     : Container()
                           ],
                         ),
                       ),
