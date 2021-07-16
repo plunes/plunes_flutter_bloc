@@ -305,15 +305,34 @@ class _EnterAdditionalUserDetailScrState
                         ),
                       ),
                       Expanded(
-                        child: Text(
-                          widget.catalogueData?.service ?? "",
-                          textAlign: TextAlign.left,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              color: PlunesColors.BLACKCOLOR, fontSize: 16),
+                          child: FittedBox(
+                        child: RichText(
+                          text: TextSpan(
+                              text: widget.catalogueData?.family ?? "",
+                              children: [
+                                TextSpan(
+                                    text:
+                                        "${widget.catalogueData.service == null ? "" : " (${widget.catalogueData.service})"}",
+                                    style: TextStyle(
+                                        color: CommonMethods
+                                            .getColorForSpecifiedCode(
+                                                "#444444"),
+                                        fontSize: 14))
+                              ],
+                              style: TextStyle(
+                                  color: PlunesColors.BLACKCOLOR,
+                                  fontSize: 18)),
                         ),
-                      ),
+                      )
+                          // Text(
+                          //   widget.catalogueData?.service ?? "",
+                          //   textAlign: TextAlign.left,
+                          //   maxLines: 1,
+                          //   overflow: TextOverflow.ellipsis,
+                          //   style: TextStyle(
+                          //       color: PlunesColors.BLACKCOLOR, fontSize: 16)
+                          // ),
+                          ),
                     ],
                   ),
                 ),
