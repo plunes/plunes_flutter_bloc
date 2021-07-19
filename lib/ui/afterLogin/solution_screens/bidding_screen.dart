@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,7 +35,8 @@ class SolutionBiddingScreen extends BaseActivity {
   _SolutionBiddingScreenState createState() => _SolutionBiddingScreenState();
 }
 
-class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
+class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
+    with TickerProviderStateMixin {
   List<CatalogueData> _catalogues;
   Function onViewMoreTap;
   TextEditingController _facilitySearchController, _locationSearchController;
@@ -42,13 +44,36 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
   SearchSolutionBloc _searchSolutionBloc;
   int pageIndex = SearchSolutionBloc.initialIndex;
   StreamController _streamController;
-  bool _endReached;
+  bool _endReached, _isHospitalSelected;
   FocusNode _facilityFocusNode, _locationFocusNode;
+  int _selectedIndex = 0;
+  List<Widget> _tabs = [
+    ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(3)),
+      child: Container(
+          child: Text(
+        'Hospital',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+    ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(3)),
+      child: Container(
+          child: Text(
+        "Treatment",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 14),
+      )),
+    ),
+  ];
 
   @override
   void initState() {
     _catalogues = [];
     _endReached = false;
+    _selectedIndex = 0;
+    _isHospitalSelected = false;
     _facilityFocusNode = FocusNode();
     _locationFocusNode = FocusNode();
     _searchSolutionBloc = SearchSolutionBloc();
@@ -132,6 +157,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               color: Color(CommonMethods.getColorHexFromStr("#FAFAFA")),
               child: Column(
                 children: [
+                  _getToggleForHospitalAndService(),
                   Container(
                     margin: EdgeInsets.symmetric(
                         horizontal: AppConfig.horizontalBlockSize * 3),
@@ -149,8 +175,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                             margin: EdgeInsets.symmetric(
                                 horizontal: AppConfig.horizontalBlockSize * 3),
                             child: _facilitySearchBar(
-                                hintText:
-                                    "Search Disease, Test or Medical Procedure",
+                                hintText: _isHospitalSelected
+                                    ? "Search Hospitals, Doctors & Labs"
+                                    : "Search Disease, Test or Medical Procedure",
                                 hasFocus: true,
                                 focusNode: _facilityFocusNode,
                                 searchController: _facilitySearchController));
@@ -171,23 +198,23 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                         }))
           ],
         ),
-        Positioned(
-          child: StreamBuilder<Object>(
-              stream: _streamController.stream,
-              builder: (context, snapshot) {
-                if ((_facilitySearchController != null &&
-                    _facilitySearchController.text != null &&
-                    _facilitySearchController.text.trim().isNotEmpty &&
-                    _catalogues != null &&
-                    _catalogues.isNotEmpty)) {
-                  return _getManualBiddingWidget();
-                }
-                return Container();
-              }),
-          bottom: 0.0,
-          right: 0,
-          left: 0,
-        )
+        // Positioned(
+        //   child: StreamBuilder<Object>(
+        //       stream: _streamController.stream,
+        //       builder: (context, snapshot) {
+        //         if ((_facilitySearchController != null &&
+        //             _facilitySearchController.text != null &&
+        //             _facilitySearchController.text.trim().isNotEmpty &&
+        //             _catalogues != null &&
+        //             _catalogues.isNotEmpty)) {
+        //           return _getManualBiddingWidget();
+        //         }
+        //         return Container();
+        //       }),
+        //   bottom: 0.0,
+        //   right: 0,
+        //   left: 0,
+        // )
       ],
     );
   }
@@ -282,6 +309,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
       },
       child: ListView.builder(
         itemBuilder: (context, index) {
+          if (_catalogues.length == index) {
+            return _getManualBiddingWidget();
+          }
           TapGestureRecognizer tapRecognizer = TapGestureRecognizer()
             ..onTap = () => _onViewMoreTap(index);
           return CustomWidgets().getSolutionRow(_catalogues, index,
@@ -289,7 +319,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
               onViewMoreTap: tapRecognizer);
         },
         shrinkWrap: true,
-        itemCount: _catalogues.length,
+        itemCount: _catalogues.length + 1,
       ),
     );
   }
@@ -866,8 +896,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
                                 (_catalogues != null && _catalogues.isNotEmpty))
                             ? Expanded(
                                 child: CustomWidgets().getProgressIndicator(),
-                                flex: 1,
-                              )
+                                flex: 1)
                             : Container()
                       ],
                     );
@@ -922,5 +951,51 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen> {
         }
       }
     });
+  }
+
+  Widget _getToggleForHospitalAndService() {
+    return Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: AppConfig.horizontalBlockSize * 15),
+        child: Card(
+          margin: EdgeInsets.only(bottom: 8),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(7)),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(7)),
+                border: Border.all(
+                    color: CommonMethods.getColorForSpecifiedCode("#289486"),
+                    width: 1)),
+            alignment: Alignment.center,
+            child: TabBar(
+              unselectedLabelColor: Colors.black,
+              isScrollable: false,
+              labelColor: Colors.white,
+              labelPadding: EdgeInsets.symmetric(vertical: 8),
+              controller: TabController(
+                length: 2,
+                vsync: this,
+                initialIndex: _selectedIndex,
+              ),
+              indicator: new BubbleTabIndicator(
+                indicatorHeight: 35.0,
+                indicatorRadius: 7,
+                indicatorColor:
+                    CommonMethods.getColorForSpecifiedCode("#289486"),
+                tabBarIndicatorSize: TabBarIndicatorSize.label,
+              ),
+              onTap: (i) {
+                _selectedIndex = i;
+                if (_selectedIndex == 0) {
+                  _isHospitalSelected = true;
+                } else {
+                  _isHospitalSelected = false;
+                }
+                _setState();
+              },
+              tabs: _tabs,
+            ),
+          ),
+        ));
   }
 }
