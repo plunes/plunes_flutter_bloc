@@ -247,7 +247,6 @@ class _EnterAdditionalUserDetailScrState
             Row(
               children: [
                 Container(
-                    // padding: EdgeInsets.all(5),
                     child: IconButton(
                   onPressed: () {
                     Navigator.pop(context, false);
@@ -305,24 +304,23 @@ class _EnterAdditionalUserDetailScrState
                         ),
                       ),
                       Expanded(
-                          child: FittedBox(
-                        child: RichText(
-                          text: TextSpan(
-                              text: widget.catalogueData?.family ?? "",
-                              children: [
-                                TextSpan(
-                                    text:
-                                        "${widget.catalogueData.service == null ? "" : " (${widget.catalogueData.service})"}",
-                                    style: TextStyle(
-                                        color: CommonMethods
-                                            .getColorForSpecifiedCode(
-                                                "#444444"),
-                                        fontSize: 14))
-                              ],
-                              style: TextStyle(
-                                  color: PlunesColors.BLACKCOLOR,
-                                  fontSize: 18)),
-                        ),
+                          child: RichText(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                            text: widget.catalogueData?.family ?? "",
+                            // children: [
+                            //   TextSpan(
+                            //       text:
+                            //           "${widget.catalogueData.service == null ? "" : " (${widget.catalogueData.service})"}",
+                            //       style: TextStyle(
+                            //           color: CommonMethods
+                            //               .getColorForSpecifiedCode(
+                            //                   "#444444"),
+                            //           fontSize: 14))
+                            // ],
+                            style: TextStyle(
+                                color: PlunesColors.BLACKCOLOR, fontSize: 18)),
                       )
                           // Text(
                           //   widget.catalogueData?.service ?? "",
@@ -729,9 +727,10 @@ class _EnterAdditionalUserDetailScrState
             Container(
               width: double.infinity,
               child: Text(
-                PlunesStrings.enterAdditionalDetails,
+                "${PlunesStrings.enterAdditionalDetails}${(widget.catalogueData.service == null) ? "service" : "${widget.catalogueData.service}"}",
                 textAlign: TextAlign.left,
                 maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                     fontSize: 18,
                     color: PlunesColors.BLACKCOLOR.withOpacity(0.8)),

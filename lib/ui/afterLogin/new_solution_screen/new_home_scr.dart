@@ -424,7 +424,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       children: [
         SingleChildScrollView(
           child: Container(
-            color: Color(CommonMethods.getColorHexFromStr("#FAF9F9")),
+            color: Color(CommonMethods.getColorHexFromStr("#FAFBFD")),
             child: Column(
               children: [
                 Stack(

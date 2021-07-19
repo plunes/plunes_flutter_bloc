@@ -193,13 +193,17 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
         child: Column(
           children: [
             ListTile(
-              title: Text(
-                PlunesStrings.knowYourProcedure,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: PlunesColors.BLACKCOLOR,
-                    fontSize: 23,
-                    fontWeight: FontWeight.w700),
+              title: FittedBox(
+                fit: BoxFit.fill,
+                child: Text(
+                  PlunesStrings.knowYourProcedure,
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: TextStyle(
+                      color: PlunesColors.BLACKCOLOR,
+                      fontSize: 23,
+                      fontWeight: FontWeight.w700),
+                ),
               ),
             ),
             Container(
@@ -1209,7 +1213,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                     children: [
                       Container(
                         child: Text(
-                          "Service",
+                          "Speciality",
                           style: TextStyle(fontSize: 20, color: Colors.black),
                         ),
                         margin: EdgeInsets.only(
@@ -1265,7 +1269,7 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                                             "NA",
                                         maxLines: 1,
                                         style: TextStyle(
-                                            fontSize: 20, color: Colors.black),
+                                            fontSize: 16, color: Colors.black),
                                       ),
                                     ),
                                   ),
