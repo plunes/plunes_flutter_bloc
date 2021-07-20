@@ -406,7 +406,7 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                       ? Image.asset(PlunesImages.basicImage,
                           fit: BoxFit.contain)
                       : CustomWidgets().getImageFromUrl(
-                          "https://specialities.s3.ap-south-1.amazonaws.com/${catalogueData.speciality}.png",
+                          "https://specialities.s3.ap-south-1.amazonaws.com/new-specialization_icons/${catalogueData.speciality}.png",
                           boxFit: BoxFit.contain),
                 ),
                 Expanded(
