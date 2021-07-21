@@ -11,6 +11,7 @@ import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
+import 'package:plunes/models/doc_hos_models/common_models/facility_collection_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -20,6 +21,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/enter_facility_details_scr.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_screen.dart';
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
+import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/manual_bidding.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
@@ -38,6 +40,7 @@ class SolutionBiddingScreen extends BaseActivity {
 class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
     with TickerProviderStateMixin {
   List<CatalogueData> _catalogues;
+  List<Facility> _facilities;
   Function onViewMoreTap;
   TextEditingController _facilitySearchController, _locationSearchController;
   Timer _debounce;
@@ -68,12 +71,14 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
     ),
   ];
 
+  TabController _tabController;
+
   @override
   void initState() {
     _catalogues = [];
     _endReached = false;
     _selectedIndex = 0;
-    _isHospitalSelected = false;
+    _isHospitalSelected = true;
     _facilityFocusNode = FocusNode();
     _locationFocusNode = FocusNode();
     _searchSolutionBloc = SearchSolutionBloc();
@@ -83,6 +88,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
     if (widget.searchQuery != null && widget.searchQuery.trim().isNotEmpty) {
       _facilitySearchController.text = widget.searchQuery;
     }
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     super.initState();
   }
 
@@ -285,8 +291,12 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
         _searchSolutionBloc.addIntoStream(RequestInProgress());
         _searchSolutionBloc.getSearchedSolution(
             searchedString: _facilitySearchController.text.trim().toString(),
-            index: 0);
+            index: 0,
+            isFacilitySelected: _isHospitalSelected);
       } else {
+        if (_isHospitalSelected) {
+          _facilities = [];
+        }
         _catalogues = [];
         _searchSolutionBloc.addState(null);
       }
@@ -485,6 +495,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                   : InkWell(
                       onTap: () {
                         searchController.text = "";
+                        if (_isHospitalSelected) {
+                          _facilities = [];
+                        }
                         newState(() {});
                       },
                       child: Padding(
@@ -857,30 +870,37 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
         children: [
           widget.getSpacer(
               AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
-          widget.getSpacer(
-              AppConfig.verticalBlockSize * 1, AppConfig.verticalBlockSize * 1),
           Expanded(
               child: StreamBuilder<RequestState>(
+            initialData: (_isHospitalSelected &&
+                    (_facilities == null || _facilities.isEmpty))
+                ? RequestInProgress()
+                : null,
             builder: (context, snapShot) {
               _streamController?.add(null);
+              if (_isHospitalSelected) {
+                return _getFacilityWidgets(snapShot);
+              }
               if (snapShot.data is RequestSuccess) {
                 RequestSuccess _requestSuccessObject = snapShot.data;
-                if (_requestSuccessObject.requestCode ==
-                    SearchSolutionBloc.initialIndex) {
-                  pageIndex = SearchSolutionBloc.initialIndex;
-                  _catalogues = [];
+                if (_requestSuccessObject.additionalData == null) {
+                  if (_requestSuccessObject.requestCode ==
+                      SearchSolutionBloc.initialIndex) {
+                    pageIndex = SearchSolutionBloc.initialIndex;
+                    _catalogues = [];
+                  }
+                  if (_requestSuccessObject.requestCode !=
+                          SearchSolutionBloc.initialIndex &&
+                      _requestSuccessObject.response.isEmpty) {
+                    _endReached = true;
+                  } else {
+                    _endReached = false;
+                    Set _allItems = _catalogues.toSet();
+                    _allItems.addAll(_requestSuccessObject.response);
+                    _catalogues = _allItems.toList(growable: true);
+                  }
+                  pageIndex++;
                 }
-                if (_requestSuccessObject.requestCode !=
-                        SearchSolutionBloc.initialIndex &&
-                    _requestSuccessObject.response.isEmpty) {
-                  _endReached = true;
-                } else {
-                  _endReached = false;
-                  Set _allItems = _catalogues.toSet();
-                  _allItems.addAll(_requestSuccessObject.response);
-                  _catalogues = _allItems.toList(growable: true);
-                }
-                pageIndex++;
               } else if (snapShot.data is RequestFailed) {
                 pageIndex = SearchSolutionBloc.initialIndex;
               }
@@ -972,11 +992,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               isScrollable: false,
               labelColor: Colors.white,
               labelPadding: EdgeInsets.symmetric(vertical: 8),
-              controller: TabController(
-                length: 2,
-                vsync: this,
-                initialIndex: _selectedIndex,
-              ),
+              controller: _tabController,
               indicator: new BubbleTabIndicator(
                 indicatorHeight: 35.0,
                 indicatorRadius: 7,
@@ -985,6 +1001,10 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 tabBarIndicatorSize: TabBarIndicatorSize.label,
               ),
               onTap: (i) {
+                if (_selectedIndex == i) {
+                  return;
+                }
+                _facilitySearchController.clear();
                 _selectedIndex = i;
                 if (_selectedIndex == 0) {
                   _isHospitalSelected = true;
@@ -997,5 +1017,106 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
             ),
           ),
         ));
+  }
+
+  Widget _getFacilityWidgets(AsyncSnapshot<RequestState> snapShot) {
+    if (snapShot.data is RequestSuccess) {
+      RequestSuccess _requestSuccessObject = snapShot.data;
+      if (_requestSuccessObject.additionalData != null) {
+        _facilities = [];
+        _facilities = _requestSuccessObject.response;
+      }
+    } else if (snapShot.data is RequestFailed) {
+      _facilities = [];
+    }
+    return _facilities == null || _facilities.isEmpty
+        ? snapShot.data is RequestInProgress
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  SpinKitThreeBounce(
+                      color: Color(hexColorCode.defaultGreen), size: 30.0),
+                  Expanded(child: Container())
+                ],
+              )
+            : CustomWidgets().errorWidget("Hospitals not found")
+        : _getHospitalWidget(_facilities);
+  }
+
+  Widget _getHospitalWidget(List<Facility> facilities) {
+    return Container(
+      color: Colors.white,
+      padding: EdgeInsets.only(top: 16),
+      child: ListView.builder(
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index) {
+          return _getHospitalCard(facilities[index]);
+        },
+        itemCount: facilities.length,
+        shrinkWrap: true,
+      ),
+    );
+  }
+
+  Widget _getHospitalCard(Facility facility) {
+    return Container(
+      margin: EdgeInsets.only(
+          left: AppConfig.horizontalBlockSize * 5,
+          bottom: 12,
+          right: AppConfig.horizontalBlockSize * 5),
+      child: InkWell(
+        onTap: () {
+          if (facility.sId != null && facility.sId.trim().isNotEmpty) {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DoctorInfo(facility.sId)));
+          }
+        },
+        onDoubleTap: () {},
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        focusColor: Colors.transparent,
+        child: Column(
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                    child: ClipRRect(
+                      child: ClipOval(
+                          child: CustomWidgets().getImageFromUrl(
+                              facility?.imageUrl,
+                              boxFit: BoxFit.cover)),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    height: 48,
+                    width: 48),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.only(left: 20),
+                    child: Text(
+                      CommonMethods.getStringInCamelCase(facility.name),
+                      textAlign: TextAlign.left,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                )
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.only(top: 16),
+              color: CommonMethods.getColorForSpecifiedCode("#707070"),
+              height: 0.4,
+              width: double.infinity,
+            )
+          ],
+        ),
+      ),
+    );
   }
 }

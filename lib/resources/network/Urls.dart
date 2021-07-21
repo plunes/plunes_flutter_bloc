@@ -184,4 +184,5 @@ class Urls {
       "professional/getServiceByProfessionalId";
   static const String createSolutionFromProfProfile =
       "solution/professionalSolution";
+  static const String SEARCH_FACILITY_API = "catalogue/hospitalSearch";
 }

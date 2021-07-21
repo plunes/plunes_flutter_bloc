@@ -42,12 +42,16 @@ class SearchSolutionBloc extends BlocBase {
   Observable<RequestState> getManualBiddingAdditionStream() =>
       _manualBiddingAdditionProvider.stream;
 
-  Future getSearchedSolution({
-    @required String searchedString,
-    int index = initialIndex,
-  }) async {
-    super.addIntoStream(await SearchedSolutionRepo()
-        .getSearchedSolution(searchedString, index));
+  Future getSearchedSolution(
+      {@required String searchedString,
+      int index = initialIndex,
+      bool isFacilitySelected = false}) async {
+    if (isFacilitySelected) {
+      super.addIntoStream(RequestInProgress());
+    }
+    super.addIntoStream(await SearchedSolutionRepo().getSearchedSolution(
+        searchedString, index,
+        isFacilitySelected: isFacilitySelected));
   }
 
   void addState(RequestState requestState) {

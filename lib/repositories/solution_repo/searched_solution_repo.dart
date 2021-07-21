@@ -2,6 +2,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/models/doc_hos_models/common_models/facility_collection_model.dart';
 import 'package:plunes/models/solution_models/more_facilities_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -24,8 +25,11 @@ class SearchedSolutionRepo {
     return _instance;
   }
 
-  Future<RequestState> getSearchedSolution(
-      String searchedString, int index) async {
+  Future<RequestState> getSearchedSolution(String searchedString, int index,
+      {bool isFacilitySelected = false}) async {
+    if (isFacilitySelected) {
+      return getSearchedFacilities(searchedString);
+    }
     var serverResponse = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_POST,
         postData: {
@@ -44,6 +48,30 @@ class SearchedSolutionRepo {
             .toList(growable: true);
       }
       return RequestSuccess(response: _solutions, requestCode: index);
+    } else {
+      return RequestFailed(failureCause: serverResponse.failureCause);
+    }
+  }
+
+  Future<RequestState> getSearchedFacilities(String searchedString) async {
+    var serverResponse = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_POST,
+        postData: {
+          "expression": searchedString,
+          "userId": UserManager().getUserDetails().uid
+        },
+        url: Urls.SEARCH_FACILITY_API);
+    if (serverResponse.isRequestSucceed) {
+      List<Facility> _solutions = [];
+      if (serverResponse.response.data != null &&
+          serverResponse.response.data['data'] != null) {
+        Iterable _items = serverResponse.response.data['data'];
+        _solutions = _items
+            .map((item) => Facility.fromJson(item))
+            .toList(growable: true);
+      }
+      return RequestSuccess(
+          response: _solutions, additionalData: searchedString);
     } else {
       return RequestFailed(failureCause: serverResponse.failureCause);
     }
