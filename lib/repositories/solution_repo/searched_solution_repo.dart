@@ -3,6 +3,7 @@ import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/doc_hos_models/common_models/facility_collection_model.dart';
+import 'package:plunes/models/new_solution_model/locations_model.dart';
 import 'package:plunes/models/solution_models/more_facilities_model.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
@@ -299,6 +300,20 @@ class SearchedSolutionRepo {
         });
     if (result.isRequestSucceed) {
       return RequestSuccess(response: true);
+    } else {
+      return RequestFailed(failureCause: result.failureCause);
+    }
+  }
+
+  Future<RequestState> getPopularCitiesAndServices() async {
+    var result = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_GET,
+        url: Urls.POPULAR_CITIES_AND_SERVICES_URL,
+        headerIncluded: true);
+    if (result.isRequestSucceed) {
+      LocationAndServiceModel _locationAndServiceModel =
+          LocationAndServiceModel.fromJson(result.response.data);
+      return RequestSuccess(response: _locationAndServiceModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }

@@ -4193,7 +4193,7 @@ class CustomWidgets {
                                                 return;
                                               } else if (message == null) {
                                                 message =
-                                                    "Seems like we are not available in your area";
+                                                    "Seem like we are not available in your area";
                                               }
                                             } else if (value is RequestFailed) {
                                               message = value.failureCause;

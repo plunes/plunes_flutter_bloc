@@ -974,9 +974,9 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => DoctorInfo(
-                                          "5dfcca413d6ac133c4b6f42b",
-                                          // _topFacilityModel
-                                          //     .data[index].professionalId,
+                                          // "5dfcca413d6ac133c4b6f42b",
+                                          _topFacilityModel
+                                              .data[index].professionalId,
                                           isDoc: false,
                                           // (_topFacilityModel
                                           //         .data[index].userType

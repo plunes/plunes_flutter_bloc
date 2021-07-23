@@ -1732,11 +1732,8 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                         },
                                         onDoubleTap: () {},
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(6),
-                                              bottomRight: Radius.circular(6),
-                                              topLeft: Radius.circular(13),
-                                              topRight: Radius.circular(13)),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
                                           child: CustomWidgets()
                                               .getImageFromUrl(
                                                   widget
@@ -1791,62 +1788,47 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                   width: AppConfig.horizontalBlockSize * 62,
                                   child: Card(
                                       margin: EdgeInsets.only(right: 20),
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.only(
-                                                  bottomLeft:
-                                                      Radius.circular(6),
-                                                  bottomRight:
-                                                      Radius.circular(6),
-                                                  topLeft: Radius.circular(13),
-                                                  topRight:
-                                                      Radius.circular(13)),
-                                              child: InkWell(
-                                                child: Stack(
-                                                  children: [
-                                                    CustomWidgets().getImageFromUrl(
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: InkWell(
+                                          child: Stack(
+                                            children: [
+                                              Positioned.fill(
+                                                child: CustomWidgets()
+                                                    .getImageFromUrl(
                                                         "https://img.youtube.com/vi/${YoutubePlayer.convertUrlToId(widget.mediaContent.data.videos[index].videoUrl)}/0.jpg",
                                                         boxFit: BoxFit.cover),
-                                                    Positioned.fill(
-                                                      child: Center(
-                                                        child: Image.asset(
-                                                          PlunesImages
-                                                              .pauseVideoIcon,
-                                                          height: 50,
-                                                          width: 50,
-                                                        ),
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              YoutubePlayerProvider(
-                                                                widget
-                                                                    .mediaContent
-                                                                    .data
-                                                                    .videos[
-                                                                        index]
-                                                                    .videoUrl,
-                                                                title: "Video",
-                                                              )));
-                                                },
                                               ),
-                                            ),
+                                              Positioned.fill(
+                                                child: Center(
+                                                  child: Image.asset(
+                                                    PlunesImages.pauseVideoIcon,
+                                                    height: 50,
+                                                    width: 50,
+                                                  ),
+                                                ),
+                                              )
+                                            ],
                                           ),
-                                        ],
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        YoutubePlayerProvider(
+                                                          widget
+                                                              .mediaContent
+                                                              .data
+                                                              .videos[index]
+                                                              .videoUrl,
+                                                          title: "Video",
+                                                        )));
+                                          },
+                                        ),
                                       ),
                                       shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.only(
-                                              bottomLeft: Radius.circular(6),
-                                              bottomRight: Radius.circular(6),
-                                              topLeft: Radius.circular(13),
-                                              topRight: Radius.circular(13)))),
+                                          borderRadius:
+                                              BorderRadius.circular(5))),
                                 );
                               },
                             ),

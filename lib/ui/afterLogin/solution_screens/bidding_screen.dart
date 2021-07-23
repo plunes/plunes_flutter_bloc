@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -10,8 +12,11 @@ import 'package:plunes/Utils/custom_widgets.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/solution_blocs/search_solution_bloc.dart';
+import 'package:plunes/blocs/user_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/facility_collection_model.dart';
+import 'package:plunes/models/new_solution_model/locations_model.dart';
 import 'package:plunes/models/solution_models/solution_model.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
@@ -49,6 +54,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   StreamController _streamController;
   bool _endReached, _isHospitalSelected;
   FocusNode _facilityFocusNode, _locationFocusNode;
+  LocationAndServiceModel _locationAndServiceModel;
   int _selectedIndex = 0;
   List<Widget> _tabs = [
     ClipRRect(
@@ -73,23 +79,34 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
 
   TabController _tabController;
 
+  String _requestFailCause;
+
+  bool _isSettingLocation;
+
   @override
   void initState() {
     _catalogues = [];
     _endReached = false;
-    _selectedIndex = 0;
-    _isHospitalSelected = true;
+    _isSettingLocation = false;
+    _selectedIndex = 1;
+    _isHospitalSelected = false;
     _facilityFocusNode = FocusNode();
     _locationFocusNode = FocusNode();
     _searchSolutionBloc = SearchSolutionBloc();
+    _getPopularCitiesAndServices();
     _streamController = StreamController.broadcast();
     _locationSearchController = TextEditingController();
     _facilitySearchController = TextEditingController()..addListener(_onSearch);
     if (widget.searchQuery != null && widget.searchQuery.trim().isNotEmpty) {
       _facilitySearchController.text = widget.searchQuery;
     }
-    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
+    _tabController =
+        TabController(length: 2, vsync: this, initialIndex: _selectedIndex);
     super.initState();
+  }
+
+  _getPopularCitiesAndServices() {
+    _searchSolutionBloc.getPopularCitiesAndServices();
   }
 
   @override
@@ -146,7 +163,37 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               padding: EdgeInsets.symmetric(
                   vertical: AppConfig.verticalBlockSize * 3),
               width: double.infinity,
-              child: _showBody(),
+              child: _isSettingLocation
+                  ? Center(child: CustomWidgets().getProgressIndicator())
+                  : StreamBuilder<RequestState>(
+                      initialData: (_locationAndServiceModel == null)
+                          ? RequestInProgress()
+                          : null,
+                      stream:
+                          _searchSolutionBloc.popularCitiesAndServicesStream,
+                      builder: (context, snapShot) {
+                        if (snapShot.data is RequestSuccess) {
+                          RequestSuccess reqSuccess = snapShot.data;
+                          _locationAndServiceModel = reqSuccess.response;
+                          _searchSolutionBloc
+                              .addStateInPopularCitiesAndServicesStream(null);
+                        } else if (snapShot.data is RequestInProgress) {
+                          return CustomWidgets().getProgressIndicator();
+                        } else if (snapShot.data is RequestFailed) {
+                          RequestFailed reqFailed = snapShot.data;
+                          _requestFailCause = reqFailed.failureCause;
+                          _searchSolutionBloc
+                              .addStateInPopularCitiesAndServicesStream(null);
+                        }
+                        return (_locationAndServiceModel == null ||
+                                (_locationAndServiceModel.success != null &&
+                                    !_locationAndServiceModel.success))
+                            ? CustomWidgets().errorWidget(
+                                _requestFailCause ??
+                                    _locationAndServiceModel?.message,
+                                onTap: () => _getPopularCitiesAndServices())
+                            : _showBody();
+                      }),
             );
           }),
         ),
@@ -226,6 +273,53 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   }
 
   _onSolutionItemTap(int index) async {
+    FocusScope.of(context).requestFocus(FocusNode());
+    var nowTime = DateTime.now();
+    if (_catalogues[index].solutionExpiredAt != null &&
+        _catalogues[index].solutionExpiredAt != 0) {
+      var solExpireTime = DateTime.fromMillisecondsSinceEpoch(
+          _catalogues[index].solutionExpiredAt);
+      var diff = nowTime.difference(solExpireTime);
+      if (diff.inSeconds < 5) {
+        ///when price discovered and solution is active
+        if (_catalogues[index].priceDiscovered != null &&
+            _catalogues[index].priceDiscovered) {
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SolutionShowPriceScreen(
+                      catalogueData: _catalogues[index], searchQuery: "")));
+          return;
+        } else {
+          ///when price not discovered but solution is active
+          await Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ViewSolutionsScreen(
+                      catalogueData: _catalogues[index], searchQuery: "")));
+          return;
+        }
+      }
+    }
+    if (!UserManager().getIsUserInServiceLocation()) {
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return CustomWidgets().fetchLocationPopUp(context);
+          },
+          barrierDismissible: false);
+      if (!UserManager().getIsUserInServiceLocation()) {
+        return;
+      }
+    }
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => EnterAdditionalUserDetailScr(
+                _catalogues[index], _facilitySearchController.text.trim())));
+  }
+
+  _onOtherServiceTap(int index, List<CatalogueData> _catalogues) async {
     FocusScope.of(context).requestFocus(FocusNode());
     var nowTime = DateTime.now();
     if (_catalogues[index].solutionExpiredAt != null &&
@@ -408,11 +502,6 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                     EdgeInsets.only(left: AppConfig.horizontalBlockSize * 2.8),
                 child: Container(
                     color: Colors.white, child: _getPopularCitiesListWidget()),
-              ),
-              Container(
-                height: 3,
-                width: double.infinity,
-                color: Color(CommonMethods.getColorHexFromStr("#7070701F")),
               ),
               Container(
                 margin: EdgeInsets.only(
@@ -643,12 +732,19 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   }
 
   Widget _getFacilitySearchBarAndRelatedResult() {
-    return _facilitySearchController.text.trim().isEmpty
-        ? _getFacilitySuggestionWidget()
+    return (_facilitySearchController.text.trim().isEmpty)
+        ? _isHospitalSelected
+            ? _getHospitalWidget(_locationAndServiceModel.facilities ?? [])
+            : _getFacilitySuggestionWidget()
         : _getSearchedResultWidget();
   }
 
   Widget _getPopularCitiesListWidget() {
+    if (_locationAndServiceModel == null ||
+        _locationAndServiceModel.popularCities == null ||
+        _locationAndServiceModel.popularCities.isEmpty) {
+      return Container();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -664,10 +760,65 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
           child: ListView.builder(
             padding: EdgeInsets.zero,
             itemBuilder: (context, index) {
+              if (index == 0) {
+                return Container(
+                  margin: EdgeInsets.only(right: 8),
+                  child: InkWell(
+                    onTap: () {
+                      _getLocationFromUtil();
+                      return;
+                    },
+                    onDoubleTap: () {},
+                    focusColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    splashColor: Colors.transparent,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Card(
+                          margin: EdgeInsets.zero,
+                          elevation: 3,
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5))),
+                          child: Container(
+                            height: 60,
+                            width: 95,
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(5)),
+                              child: Icon(
+                                Icons.filter_center_focus_rounded,
+                                size: 35,
+                                color: CommonMethods.getColorForSpecifiedCode(
+                                    "#355789"),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: EdgeInsets.only(top: 5),
+                          child: Text(
+                            "Near me",
+                            style: TextStyle(
+                                fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                );
+              }
+              index = index - 1;
               return Container(
                 margin: EdgeInsets.only(right: 8),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    _setLocationFromPopularLocations(
+                        _locationAndServiceModel.popularCities[index]);
+                    return;
+                  },
                   onDoubleTap: () {},
                   focusColor: Colors.transparent,
                   highlightColor: Colors.transparent,
@@ -686,7 +837,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             child: CustomWidgets().getImageFromUrl(
-                                "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+                                _locationAndServiceModel
+                                    .popularCities[index]?.imageUrl,
                                 boxFit: BoxFit.fill),
                           ),
                         ),
@@ -694,7 +846,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                       Container(
                         margin: EdgeInsets.only(top: 5),
                         child: Text(
-                          "Location",
+                          _locationAndServiceModel
+                                  .popularCities[index]?.locality ??
+                              "",
                           style: TextStyle(
                               fontSize: 16, color: PlunesColors.BLACKCOLOR),
                         ),
@@ -704,16 +858,26 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 ),
               );
             },
-            itemCount: 5,
+            itemCount: _locationAndServiceModel.popularCities.length + 1,
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
           ),
+        ),
+        Container(
+          height: 3,
+          width: double.infinity,
+          color: Color(CommonMethods.getColorHexFromStr("#7070701F")),
         ),
       ],
     );
   }
 
   Widget _getPopularServicesWidget() {
+    if (_locationAndServiceModel == null ||
+        _locationAndServiceModel.popularServices == null ||
+        _locationAndServiceModel.popularServices.isEmpty) {
+      return Container();
+    }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -732,7 +896,11 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               return Container(
                 margin: EdgeInsets.only(right: 8),
                 child: InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    _onOtherServiceTap(
+                        index, _locationAndServiceModel.popularServices);
+                    return;
+                  },
                   onDoubleTap: () {},
                   focusColor: Colors.transparent,
                   highlightColor: Colors.transparent,
@@ -751,15 +919,21 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             child: CustomWidgets().getImageFromUrl(
-                                "https://thumbs.dreamstime.com/b/environment-earth-day-hands-trees-growing-seedlings-bokeh-green-background-female-hand-holding-tree-nature-field-gra-130247647.jpg",
+                                "https://specialities.s3.ap-south-1.amazonaws.com/new-specialization_icons/${_locationAndServiceModel.popularServices[index]?.speciality}.png",
                                 boxFit: BoxFit.fill),
                           ),
                         ),
                       ),
                       Container(
+                        width: 95,
+                        alignment: Alignment.center,
                         margin: EdgeInsets.only(top: 5),
                         child: Text(
-                          "Service",
+                          _locationAndServiceModel
+                                  .popularServices[index]?.speciality ??
+                              '',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               fontSize: 16, color: PlunesColors.BLACKCOLOR),
                         ),
@@ -769,16 +943,26 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 ),
               );
             },
-            itemCount: 5,
+            itemCount: _locationAndServiceModel.popularServices.length,
             shrinkWrap: true,
             scrollDirection: Axis.horizontal,
           ),
+        ),
+        Container(
+          height: 3,
+          width: double.infinity,
+          color: Color(CommonMethods.getColorHexFromStr("#7070701F")),
         ),
       ],
     );
   }
 
   Widget _getOtherLocationListWidget() {
+    if (_locationAndServiceModel == null ||
+        _locationAndServiceModel.otherLocations == null ||
+        _locationAndServiceModel.otherLocations.isEmpty) {
+      return Container();
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -793,7 +977,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  _onLocationSelection();
+                  _setLocationFromPopularLocations(
+                      _locationAndServiceModel.otherLocations[index]);
                   return;
                 },
                 onDoubleTap: () {},
@@ -804,14 +989,15 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                   padding: EdgeInsets.symmetric(vertical: 10),
                   margin: EdgeInsets.only(bottom: 2, top: index == 0 ? 5 : 0),
                   child: Text(
-                    "City name",
+                    _locationAndServiceModel.otherLocations[index].locality ??
+                        "",
                     style:
                         TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
                   ),
                 ),
               );
             },
-            itemCount: 30,
+            itemCount: _locationAndServiceModel.otherLocations.length,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
           ),
@@ -821,6 +1007,11 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   }
 
   Widget _getOtherServicesListWidget() {
+    if (_locationAndServiceModel == null ||
+        _locationAndServiceModel.otherServices == null ||
+        _locationAndServiceModel.otherServices.isEmpty) {
+      return Container();
+    }
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -835,7 +1026,8 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  _onServiceSelection();
+                  _onOtherServiceTap(
+                      index, _locationAndServiceModel.otherServices);
                   return;
                 },
                 onDoubleTap: () {},
@@ -846,14 +1038,15 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                   padding: EdgeInsets.symmetric(vertical: 10),
                   margin: EdgeInsets.only(bottom: 2, top: index == 0 ? 5 : 0),
                   child: Text(
-                    "service name",
+                    _locationAndServiceModel.otherServices[index].speciality ??
+                        '',
                     style:
                         TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
                   ),
                 ),
               );
             },
-            itemCount: 30,
+            itemCount: _locationAndServiceModel.otherServices?.length ?? 0,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
           ),
@@ -861,8 +1054,6 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
       ],
     );
   }
-
-  void _onLocationSelection() {}
 
   Widget _getSearchedResultWidget() {
     return Container(
@@ -938,11 +1129,6 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
               color: Colors.white, child: _getPopularServicesWidget()),
         ),
         Container(
-          height: 3,
-          width: double.infinity,
-          color: Color(CommonMethods.getColorHexFromStr("#7070701F")),
-        ),
-        Container(
           margin: EdgeInsets.only(
               left: AppConfig.horizontalBlockSize * 2.8, top: 10),
           child: _getOtherServicesListWidget(),
@@ -950,8 +1136,6 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
       ],
     );
   }
-
-  void _onServiceSelection() {}
 
   void _getLocationFromUtil() async {
     showDialog(
@@ -971,6 +1155,48 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
         }
       }
     });
+  }
+
+  _setLocationFromPopularLocations(PopularCities addressLine) async {
+    if (addressLine != null &&
+        addressLine.location != null &&
+        addressLine.location.coordinates.isNotEmpty &&
+        addressLine.location.coordinates.length > 1) {
+      _isSettingLocation = true;
+      _setState();
+      UserBloc()
+          .isUserInServiceLocation(
+              addressLine?.location?.coordinates[1]?.toString(),
+              addressLine?.location?.coordinates?.first?.toString(),
+              address: addressLine?.locality ?? "",
+              isFromPopup: true,
+              region: addressLine?.locality ?? '')
+          .then((value) async {
+        _isSettingLocation = false;
+        _setState();
+        await Future.delayed(Duration(milliseconds: 50));
+        if (value is RequestSuccess) {
+          CheckLocationResponse checkLocationResponse = value.response;
+          if (checkLocationResponse != null &&
+              checkLocationResponse.msg != null &&
+              checkLocationResponse.msg.isNotEmpty &&
+              mounted) {
+            CustomWidgets().getInformativePopup(
+                message: checkLocationResponse.msg, globalKey: scaffoldKey);
+          }
+          if (UserManager().getIsUserInServiceLocation()) {
+            _locationFocusNode?.unfocus();
+            if (_facilityFocusNode != null && !_facilityFocusNode.hasFocus) {
+              FocusScope.of(context).requestFocus(_facilityFocusNode);
+              _setState();
+            }
+          }
+        } else if (value is RequestFailed && mounted) {
+          CustomWidgets().getInformativePopup(
+              message: value.failureCause, globalKey: scaffoldKey);
+        }
+      });
+    }
   }
 
   Widget _getToggleForHospitalAndService() {

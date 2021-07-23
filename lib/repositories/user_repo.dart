@@ -136,6 +136,8 @@ class UserManager {
           checkLocationResponse.success) {
         setIsUserInServiceLocation(checkLocationResponse.success);
         setLanLong(latitude, longitude);
+        setAddress(address);
+        setRegion(region);
         if (address == null || address.isEmpty) {
           LocationUtil()
               .getAddressFromLatLong(
@@ -152,8 +154,6 @@ class UserManager {
     } else {
       requestState = RequestFailed(failureCause: result.failureCause);
     }
-    setAddress(address);
-    setRegion(region);
     return requestState;
   }
 

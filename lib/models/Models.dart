@@ -73,9 +73,9 @@ class _Services {
       _category = result['category'] != null ? result['category'] : '';
     } else if (result['category'] != null && result['category'] is List) {
       _categoriesArray =
-          (result['category'] != null && result['category'].isNotEmpty)
-              ? result['category']
-              : [];
+      (result['category'] != null && result['category'].isNotEmpty)
+          ? result['category']
+          : [];
     }
     _description = result['dnd'] != null ? result['dnd'] : '';
     if (result["price"] != null) {
@@ -135,12 +135,11 @@ class BankDetails {
     return 'BankDetails{name: $accountHolderName, ifscCode: $ifscCode, accountNumber: $accountNumber, panNumber: $panNumber, bankName: $bankName}';
   }
 
-  BankDetails(
-      {this.accountHolderName,
-      this.ifscCode,
-      this.accountNumber,
-      this.panNumber,
-      this.bankName});
+  BankDetails({this.accountHolderName,
+    this.ifscCode,
+    this.accountNumber,
+    this.panNumber,
+    this.bankName});
 
   BankDetails.fromJson(Map<String, dynamic> json) {
     accountHolderName = json['name'];
@@ -205,51 +204,50 @@ class User {
   List<Centre> centres;
   String patientServed;
 
-  User(
-      {this.hasMedia,
-      this.hasReviews,
-      this.uid,
-      this.name,
-      this.gender,
-      this.birthDate,
-      this.mobileNumber,
-      this.email,
-      this.verifiedUser,
-      this.userType,
-      this.address,
-      this.referralCode,
-      this.specialities,
-      this.timeSlots,
-      this.experience,
-      this.practising,
-      this.college,
-      this.biography,
-      this.registrationNumber,
-      this.qualification,
-      this.imageUrl,
-      this.achievements,
-      this.latitude,
-      this.longitude,
-      this.doctorsData,
-      this.coverImageUrl,
-      this.accessToken,
-      this.about,
-      this.speciality,
-      this.prescriptionLogoUrl,
-      this.credits,
-      this.userReferralCode,
-      this.notificationEnabled,
-      this.cartCount,
-      this.isAdmin,
-      this.isCentre,
-      this.rating,
-      this.referralExpired,
-      this.bankDetails,
-      this.googleLocation,
-      this.region,
-      this.distanceFromUser,
-      this.centres,
-      this.patientServed});
+  User({this.hasMedia,
+    this.hasReviews,
+    this.uid,
+    this.name,
+    this.gender,
+    this.birthDate,
+    this.mobileNumber,
+    this.email,
+    this.verifiedUser,
+    this.userType,
+    this.address,
+    this.referralCode,
+    this.specialities,
+    this.timeSlots,
+    this.experience,
+    this.practising,
+    this.college,
+    this.biography,
+    this.registrationNumber,
+    this.qualification,
+    this.imageUrl,
+    this.achievements,
+    this.latitude,
+    this.longitude,
+    this.doctorsData,
+    this.coverImageUrl,
+    this.accessToken,
+    this.about,
+    this.speciality,
+    this.prescriptionLogoUrl,
+    this.credits,
+    this.userReferralCode,
+    this.notificationEnabled,
+    this.cartCount,
+    this.isAdmin,
+    this.isCentre,
+    this.rating,
+    this.referralExpired,
+    this.bankDetails,
+    this.googleLocation,
+    this.region,
+    this.distanceFromUser,
+    this.centres,
+    this.patientServed});
 
   factory User.fromJson(Map<String, dynamic> json) {
     num _rating = 4.0;
@@ -272,7 +270,8 @@ class User {
           .map((value) => TimeSlots.fromJson(value))
           .toList(growable: true);
     }
-    String lat = "0.0", long = "0.0";
+    String lat = "0.0",
+        long = "0.0";
     if (json['location'] != null &&
         json['location']['coordinates'] != null &&
         json['location']['coordinates'].isNotEmpty) {
@@ -299,27 +298,27 @@ class User {
         mobileNumber: json['mobileNumber'] != null ? json['mobileNumber'] : '',
         email: json['email'] != null ? json['email'] : '',
         verifiedUser:
-            json['verifiedUser'] != null ? json['verifiedUser'] : false,
+        json['verifiedUser'] != null ? json['verifiedUser'] : false,
         userType: json['userType'] != null ? json['userType'] : '',
         address: json['address'] != null ? json['address'] : '',
         referralCode:
-            json['userReferralCode'] != null ? json['userReferralCode'] : null,
+        json['userReferralCode'] != null ? json['userReferralCode'] : null,
         coverImageUrl:
-            json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
+        json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
         specialities: json['specialities'] != null
             ? List<ProcedureList>.from(
-                json['specialities'].map((i) => ProcedureList.fromJson(i)))
+            json['specialities'].map((i) => ProcedureList.fromJson(i)))
             : List(),
         achievements: json['achievements'] != null
             ? List<AchievementsData>.from(
-                json['achievements'].map((i) => AchievementsData.fromJson(i)))
+            json['achievements'].map((i) => AchievementsData.fromJson(i)))
             : List(),
         doctorsData: json['doctors'] != null
             ? List<DoctorsData>.from(
-                json['doctors'].map((i) => DoctorsData.fromJson(i)))
+            json['doctors'].map((i) => DoctorsData.fromJson(i)))
             : List(),
         experience:
-            json['experience'] != null ? json['experience'].toString() : '',
+        json['experience'] != null ? json['experience'].toString() : '',
         practising: json['practising'] != null ? json['practising'] : '',
         college: json['college'] != null ? json['college'] : '',
         biography: json['biography'] != null ? json['biography'] : '',
@@ -327,7 +326,7 @@ class User {
             ? json['registrationNumber']
             : '',
         qualification:
-            json['qualification'] != null ? json['qualification'] : '',
+        json['qualification'] != null ? json['qualification'] : '',
         imageUrl: json['imageUrl'] != null ? json['imageUrl'] : '',
         latitude: lat,
         longitude: long,
@@ -335,8 +334,8 @@ class User {
         isCentre: _isCenter,
         prescriptionLogoUrl: json['prescription'] != null
             ? (json['prescription']['logoUrl'] != null
-                ? json['prescription']['logoUrl']
-                : '')
+            ? json['prescription']['logoUrl']
+            : '')
             : '',
         credits: json['credits'].toString() != null
             ? json['credits'].toString()
@@ -356,7 +355,7 @@ class User {
             ? List.from(json['centers'].map((i) => Centre.from(i)))
             : null,
         patientServed:
-            json['patientsServed'] != null ? json['patientsServed'] : null);
+        json['patientsServed'] != null ? json['patientsServed'] : null);
   }
 
   Map<String, dynamic> toJson() {
@@ -417,7 +416,8 @@ class User {
 
   @override
   String toString() {
-    return 'User{email: $email, name: $name, activated: $activated, userType: $userType, uid: $uid, imageUrl: $imageUrl, speciality: $speciality, profRegistrationNumber: $profRegistrationNumber, qualification: $qualification, experience: $experience, practising: $practising, college: $college, about: $about, gender: $gender, birthDate: $birthDate, referralCode: $referralCode, coverImageUrl: $coverImageUrl, mobileNumber: $mobileNumber, latitude: $latitude, longitude: $longitude, address: $address, biography: $biography, registrationNumber: $registrationNumber, prescriptionLogoUrl: $prescriptionLogoUrl, accessToken: $accessToken, credits: $credits, specialities: $specialities, timeSlots: $timeSlots, doctorsData: $doctorsData, achievements: $achievements, verifiedUser: $verifiedUser, bankDetais: ${bankDetails.toString()}';
+    return 'User{email: $email, name: $name, activated: $activated, userType: $userType, uid: $uid, imageUrl: $imageUrl, speciality: $speciality, profRegistrationNumber: $profRegistrationNumber, qualification: $qualification, experience: $experience, practising: $practising, college: $college, about: $about, gender: $gender, birthDate: $birthDate, referralCode: $referralCode, coverImageUrl: $coverImageUrl, mobileNumber: $mobileNumber, latitude: $latitude, longitude: $longitude, address: $address, biography: $biography, registrationNumber: $registrationNumber, prescriptionLogoUrl: $prescriptionLogoUrl, accessToken: $accessToken, credits: $credits, specialities: $specialities, timeSlots: $timeSlots, doctorsData: $doctorsData, achievements: $achievements, verifiedUser: $verifiedUser, bankDetais: ${bankDetails
+        .toString()}';
   }
 }
 
@@ -429,7 +429,13 @@ class Location {
 
   Location.fromJson(Map<String, dynamic> json) {
     type = json['type'];
-    coordinates = json['coordinates'].cast<num>();
+    if (json['coordinates'] != null) {
+      coordinates = [];
+      json['coordinates'].forEach((element) {
+        coordinates.add(double.tryParse(element.toString()));
+      });
+    }
+    // coordinates = json['coordinates'].cast<num>();
   }
 
   Map<String, dynamic> toJson() {
@@ -446,17 +452,16 @@ class DoctorsData {
   String id, name, education, designation, department, experience, imageUrl;
   num rating;
 
-  DoctorsData(
-      {this.specialities,
-      this.timeSlots,
-      this.name,
-      this.education,
-      this.id,
-      this.designation,
-      this.department,
-      this.experience,
-      this.imageUrl,
-      this.rating});
+  DoctorsData({this.specialities,
+    this.timeSlots,
+    this.name,
+    this.education,
+    this.id,
+    this.designation,
+    this.department,
+    this.experience,
+    this.imageUrl,
+    this.rating});
 
   factory DoctorsData.fromJson(Map<String, dynamic> parsedJson) {
     num _rating = 4.5;
@@ -466,11 +471,11 @@ class DoctorsData {
     return new DoctorsData(
         name: parsedJson['name'] != null ? parsedJson['name'] : 'NA',
         education:
-            parsedJson['education'] != null ? parsedJson['education'] : '',
+        parsedJson['education'] != null ? parsedJson['education'] : '',
         designation:
-            parsedJson['designation'] != null ? parsedJson['designation'] : '',
+        parsedJson['designation'] != null ? parsedJson['designation'] : '',
         department:
-            parsedJson['department'] != null ? parsedJson['department'] : '',
+        parsedJson['department'] != null ? parsedJson['department'] : '',
         experience: parsedJson['experience'].toString() != null
             ? parsedJson['experience'].toString()
             : '',
@@ -558,7 +563,7 @@ class AllNotificationsPost {
       message: json['message'] != null ? json['message'] : '',
       posts: (json['data'] != null && json['data']['notifications'] != null)
           ? List<PostsData>.from(
-              json['data']['notifications'].map((i) => PostsData.fromJson(i)))
+          json['data']['notifications'].map((i) => PostsData.fromJson(i)))
           : <PostsData>[],
       unreadCount: (json['data'] != null && json['data']['count'] != null)
           ? json['data']['count']
@@ -579,18 +584,17 @@ class PostsData {
   final String notificationScreen;
   bool hasSeen, deleted;
 
-  PostsData(
-      {this.senderImageUrl,
-      this.createdTime,
-      this.notificationType,
-      this.senderUserId,
-      this.id,
-      this.notification,
-      this.senderName,
-      this.deleted,
-      this.notificationId,
-      this.notificationScreen,
-      this.hasSeen});
+  PostsData({this.senderImageUrl,
+    this.createdTime,
+    this.notificationType,
+    this.senderUserId,
+    this.id,
+    this.notification,
+    this.senderName,
+    this.deleted,
+    this.notificationId,
+    this.notificationScreen,
+    this.hasSeen});
 
   factory PostsData.fromJson(Map<String, dynamic> parsedJson) {
 //    print("parsedJson ${parsedJson["deleted"]}");
@@ -599,7 +603,7 @@ class PostsData {
             ? parsedJson['senderImageUrl']
             : '',
         createdTime:
-            parsedJson['createdTime'] != null ? parsedJson['createdTime'] : 0,
+        parsedJson['createdTime'] != null ? parsedJson['createdTime'] : 0,
         notificationType: parsedJson['notificationType'] != null
             ? parsedJson['notificationType']
             : '',
@@ -611,7 +615,7 @@ class PostsData {
             ? parsedJson['notification']
             : '',
         senderName:
-            parsedJson['senderName'] != null ? parsedJson['senderName'] : '',
+        parsedJson['senderName'] != null ? parsedJson['senderName'] : '',
         notificationId: parsedJson['notificationId'] != null
             ? parsedJson['notificationId']
             : '',
@@ -626,7 +630,7 @@ class PostsData {
     if (Platform.isIOS) {
       return PostsData(
           notificationType:
-              parsedJson['screen'] != null ? parsedJson['screen'] : null,
+          parsedJson['screen'] != null ? parsedJson['screen'] : null,
           id: parsedJson['id'] != null ? parsedJson['id'] : null);
     } else {
       var data = new PostsData(
@@ -713,9 +717,9 @@ class SpecialityModel {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is SpecialityModel &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
+          other is SpecialityModel &&
+              runtimeType == other.runtimeType &&
+              id == other.id;
 
   @override
   int get hashCode => id.hashCode;
@@ -788,7 +792,7 @@ class CheckLocationResponse {
     success = json['success'];
     msg = json['msg'];
     coordinates =
-        json['coordinates'] != null ? json['coordinates'].cast<double>() : null;
+    json['coordinates'] != null ? json['coordinates'].cast<double>() : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -871,20 +875,19 @@ class CentreData {
   String adminRefId;
   String address;
 
-  CentreData(
-      {this.address,
-      this.imageUrl,
-      this.name,
-      this.userType,
-      this.adminMobileNumber,
-      this.adminRefId,
-      this.centerLocation,
-      this.email,
-      this.isAdmin,
-      this.isCenter,
-      this.location,
-      this.mobileNumber,
-      this.sId});
+  CentreData({this.address,
+    this.imageUrl,
+    this.name,
+    this.userType,
+    this.adminMobileNumber,
+    this.adminRefId,
+    this.centerLocation,
+    this.email,
+    this.isAdmin,
+    this.isCenter,
+    this.location,
+    this.mobileNumber,
+    this.sId});
 
   CentreData.fromJson(Map<String, dynamic> json) {
 //    location = json['location'] != null
@@ -918,17 +921,16 @@ class RateAndReview {
 
   int createdAt;
 
-  RateAndReview(
-      {this.sId,
-      this.professionalId,
-      this.userId,
-      this.iV,
-      this.description,
-      this.rating,
-      this.title,
-      this.userName,
-      this.createdAt,
-      this.userImage});
+  RateAndReview({this.sId,
+    this.professionalId,
+    this.userId,
+    this.iV,
+    this.description,
+    this.rating,
+    this.title,
+    this.userName,
+    this.createdAt,
+    this.userImage});
 
   RateAndReview.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];

@@ -721,37 +721,42 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 e.categoryName, e.category == Constants.procedureKey);
           }
         },
-        child: Column(
-          children: [
-            Card(
-              elevation: 2.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0)),
-              child: Container(
-                height: 78,
-                padding: EdgeInsets.symmetric(horizontal: 13, vertical: 13),
-                child: SizedBox.expand(
-                  child: ClipRRect(
-                    child: _imageFittedBox(url, boxFit: BoxFit.contain),
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(10),
-                        topLeft: Radius.circular(10)),
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 10),
+          child: Column(
+            children: [
+              Card(
+                elevation: 2.0,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                child: Container(
+                  height: 78,
+                  padding: EdgeInsets.symmetric(horizontal: 13, vertical: 13),
+                  child: SizedBox.expand(
+                    child: ClipRRect(
+                      child: _imageFittedBox(url, boxFit: BoxFit.contain),
+                      borderRadius: BorderRadius.only(
+                          topRight: Radius.circular(10),
+                          topLeft: Radius.circular(10)),
+                    ),
                   ),
                 ),
               ),
-            ),
-            Container(
-              margin: EdgeInsets.only(
-                  bottom: AppConfig.verticalBlockSize * 0.3, left: 2, right: 2),
-              alignment: Alignment.center,
-              child: Text(
-                label ?? "",
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-              ),
-            )
-          ],
+              Container(
+                margin: EdgeInsets.only(
+                    bottom: AppConfig.verticalBlockSize * 0.3,
+                    left: 2,
+                    right: 2),
+                alignment: Alignment.center,
+                child: Text(
+                  label ?? "",
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

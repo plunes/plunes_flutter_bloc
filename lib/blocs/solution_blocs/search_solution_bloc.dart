@@ -18,6 +18,10 @@ class SearchSolutionBloc extends BlocBase {
   final _manualBiddingFacilitiesProvider = PublishSubject<RequestState>();
   final _manualBiddingAdditionProvider = PublishSubject<RequestState>();
   final _discoverPriceStreamProvider = PublishSubject<RequestState>();
+  final _popularCitiesStreamProvider = PublishSubject<RequestState>();
+
+  Observable<RequestState> get popularCitiesAndServicesStream =>
+      _popularCitiesStreamProvider.stream;
 
   Observable<RequestState> get discoverPriceStream =>
       _discoverPriceStreamProvider.stream;
@@ -93,6 +97,7 @@ class SearchSolutionBloc extends BlocBase {
     _manualBiddingFacilitiesProvider?.close();
     _manualBiddingAdditionProvider?.close();
     _discoverPriceStreamProvider?.close();
+    _popularCitiesStreamProvider?.close();
     super.dispose();
   }
 
@@ -191,5 +196,16 @@ class SearchSolutionBloc extends BlocBase {
 
   void addStateInDiscoverPriceStream(RequestState requestState) {
     super.addStateInGenericStream(_discoverPriceStreamProvider, requestState);
+  }
+
+  Future<RequestState> getPopularCitiesAndServices() async {
+    addStateInPopularCitiesAndServicesStream(RequestInProgress());
+    var result = await SearchedSolutionRepo().getPopularCitiesAndServices();
+    addStateInPopularCitiesAndServicesStream(result);
+    return result;
+  }
+
+  void addStateInPopularCitiesAndServicesStream(RequestState requestState) {
+    super.addStateInGenericStream(_popularCitiesStreamProvider, requestState);
   }
 }

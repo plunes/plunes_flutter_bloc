@@ -727,7 +727,7 @@ class _EnterAdditionalUserDetailScrState
             Container(
               width: double.infinity,
               child: Text(
-                "${PlunesStrings.enterAdditionalDetails}${(widget.catalogueData.service == null) ? "service" : "${widget.catalogueData.service}"}",
+                "${PlunesStrings.enterAdditionalDetails}${(widget.catalogueData.service != null && widget.catalogueData.family != null && (widget.catalogueData.service.trim().toLowerCase() != widget.catalogueData.family.trim().toLowerCase())) ? "${widget.catalogueData.service}" : "service"}",
                 textAlign: TextAlign.left,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,

@@ -185,4 +185,6 @@ class Urls {
   static const String createSolutionFromProfProfile =
       "solution/professionalSolution";
   static const String SEARCH_FACILITY_API = "catalogue/hospitalSearch";
+  static const String POPULAR_CITIES_AND_SERVICES_URL =
+      "catalogue/getPopularCitesAndService";
 }
