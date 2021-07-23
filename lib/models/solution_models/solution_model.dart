@@ -14,7 +14,7 @@ class CatalogueData {
   String specialityId;
   String serviceId, profId, doctorId;
   String sitting, expirationMessage, userReportId;
-  String family, technique;
+  String family, technique, specialityPicture, familyName;
 
   @override
   String toString() {
@@ -57,7 +57,9 @@ class CatalogueData {
       this.servicePrice,
       this.doctorId,
       this.family,
-      this.technique});
+      this.technique,
+      this.specialityPicture,
+      this.familyName});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
@@ -89,6 +91,8 @@ class CatalogueData {
     hasUserReport = json['hasUserReport'];
     family = json['family'];
     technique = json['technique'];
+    specialityPicture = json['specialityPicture'];
+    familyName = json['familyName'];
   }
 
   Map<String, dynamic> toJson() {
@@ -103,8 +107,6 @@ class CatalogueData {
     data['__v'] = this.iV;
     data['active'] = this.isActive;
     data['createdAt'] = this.createdAt;
-//    data['sitting'] = this.sitting;
-//    data['duration'] = this.duration;
     data['maxDiscount'] = this.maxDiscount;
     return data;
   }

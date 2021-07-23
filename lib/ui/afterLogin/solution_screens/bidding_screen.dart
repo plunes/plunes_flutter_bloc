@@ -919,7 +919,9 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                           child: ClipRRect(
                             borderRadius: BorderRadius.all(Radius.circular(5)),
                             child: CustomWidgets().getImageFromUrl(
-                                "https://specialities.s3.ap-south-1.amazonaws.com/new-specialization_icons/${_locationAndServiceModel.popularServices[index]?.speciality}.png",
+                                _locationAndServiceModel.popularServices[index]
+                                        ?.specialityPicture ??
+                                    "",
                                 boxFit: BoxFit.fill),
                           ),
                         ),
@@ -930,7 +932,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                         margin: EdgeInsets.only(top: 5),
                         child: Text(
                           _locationAndServiceModel
-                                  .popularServices[index]?.speciality ??
+                                  .popularServices[index]?.familyName ??
                               '',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -1038,7 +1040,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                   padding: EdgeInsets.symmetric(vertical: 10),
                   margin: EdgeInsets.only(bottom: 2, top: index == 0 ? 5 : 0),
                   child: Text(
-                    _locationAndServiceModel.otherServices[index].speciality ??
+                    _locationAndServiceModel.otherServices[index].familyName ??
                         '',
                     style:
                         TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
