@@ -36,7 +36,7 @@ class FacilityCategoryData {
       });
     }
     if (json['test'] != null) {
-      test = new List<Null>();
+      test = new List<ServiceCategory>();
       json['test'].forEach((v) {
         test.add(new ServiceCategory.fromJson(v));
       });

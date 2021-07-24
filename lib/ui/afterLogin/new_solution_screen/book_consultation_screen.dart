@@ -196,6 +196,8 @@ class _TestBookingScreenState extends BaseState<BookConsultationScreen> {
                   specialityId: doctorsData?.specialities?.first?.id,
                   service: doctorsData
                       ?.specialities?.first?.services?.first?.service,
+                  family: doctorsData
+                      ?.specialities?.first?.services?.first?.service,
                   category: doctorsData
                       ?.specialities?.first?.services?.first?.category,
                   details: doctorsData

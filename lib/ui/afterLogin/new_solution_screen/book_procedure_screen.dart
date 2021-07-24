@@ -128,6 +128,7 @@ class _TestBookingScreenState extends BaseState<BookProcedureScreen> {
       service: serviceCategory.service,
       speciality: serviceCategory.speciality,
       specialityId: serviceCategory.specialityId,
+      family: serviceCategory.service,
       isFromProfileScreen: true,
       profId: widget.profId,
       servicePrice: servicePrice,

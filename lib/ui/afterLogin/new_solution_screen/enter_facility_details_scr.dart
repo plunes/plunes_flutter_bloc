@@ -386,7 +386,7 @@ class _EnterAdditionalUserDetailScrState
                                     Container(
                                       width: double.infinity,
                                       child: Text(
-                                        "${_formDataModel?.data?.childrenKeys?.first ?? "body part"}",
+                                        "${(_formDataModel.data != null && _formDataModel?.data?.childrenKeys != null && _formDataModel.data.childrenKeys.isNotEmpty) ? _formDataModel.data.childrenKeys.first : ""}",
                                         textAlign: TextAlign.left,
                                         maxLines: 2,
                                         style: TextStyle(
@@ -408,7 +408,7 @@ class _EnterAdditionalUserDetailScrState
                                       Container(
                                         width: double.infinity,
                                         child: Text(
-                                          "${_formDataModel?.data?.childrenKeys[1] ?? "session"}",
+                                          "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.length > 1) ? _formDataModel?.data?.childrenKeys[1] : ""}",
                                           textAlign: TextAlign.left,
                                           maxLines: 2,
                                           style: TextStyle(
@@ -518,7 +518,7 @@ class _EnterAdditionalUserDetailScrState
                                                             ],
                                                           ),
                                                           Text(
-                                                            "${_formDataModel?.data?.childrenKeys?.first ?? "body part"}",
+                                                            "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.isNotEmpty) ? _formDataModel.data.childrenKeys.first : ""}",
                                                             maxLines: 1,
                                                             style: TextStyle(
                                                                 fontSize: 12,
@@ -666,7 +666,7 @@ class _EnterAdditionalUserDetailScrState
                                                                       .length,
                                                                 ),
                                                                 Text(
-                                                                  "${_formDataModel?.data?.childrenKeys[1] ?? "session"}",
+                                                                  "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.length > 1) ? _formDataModel?.data?.childrenKeys[1] : ""}",
                                                                   maxLines: 1,
                                                                   style: TextStyle(
                                                                       fontSize:
@@ -2343,13 +2343,23 @@ class _EnterAdditionalUserDetailScrState
           _possibleValues.addAll(element.possibleValues);
           _possibleValues.add(_enterManually);
         }
+        String firstKey = "";
+        String secondKey = '';
+        if (_formDataModel.data != null &&
+            _formDataModel.data.childrenKeys != null &&
+            _formDataModel.data.childrenKeys.isNotEmpty) {
+          firstKey = _formDataModel.data.childrenKeys.first;
+          if (_formDataModel.data.childrenKeys.length > 1) {
+            secondKey = _formDataModel.data.childrenKeys[1];
+          }
+        }
         _formItemList.add(MedicalFormData(
             bodyPartName: element.bodyPart ?? "",
             sessionValues: _possibleValues,
             valueController: TextEditingController(),
             isItemSeparated: false,
-            firstKey: _formDataModel.data?.childrenKeys?.first ?? "body part",
-            secondKey: _formDataModel.data?.childrenKeys[1] ?? "session",
+            firstKey: firstKey,
+            secondKey: secondKey,
             isSessionListOpened: false));
       });
     } else if (_formDataModel != null &&
@@ -2359,7 +2369,7 @@ class _EnterAdditionalUserDetailScrState
       _medicalSessionModel = MedicalSession(
           key: _formDataModel.data.sessionKey,
           isListOpened: false,
-          sessions: _formDataModel.data.sessions ?? []);
+          sessions: _formDataModel?.data?.sessions ?? []);
     }
   }
 
