@@ -1,5 +1,7 @@
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/firebase/FirebaseNotification.dart';
 import 'package:plunes/models/Models.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
@@ -8,7 +10,9 @@ import 'package:plunes/resources/network/Urls.dart';
 class NotificationRepo {
   Future<RequestState> getNotifications({bool shouldNotify = false}) async {
     var result = await DioRequester().requestMethod(
-        url: Urls.GET_NOTIFICATIONS_URL,
+        url: (UserManager().getUserDetails().userType != Constants.user)
+            ? Urls.GET_NOTIFICATIONS_URL_FOR_PROF
+            : Urls.GET_NOTIFICATIONS_URL,
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true);
     if (result.isRequestSucceed) {
@@ -34,7 +38,9 @@ class NotificationRepo {
 
   Future<RequestState> setUnreadCountToZero() async {
     var result = await DioRequester().requestMethod(
-        url: Urls.SET_NOTIFICATION_COUNT_ZERO,
+        url: (UserManager().getUserDetails().userType != Constants.user)
+            ? Urls.SET_NOTIFICATION_COUNT_ZERO + "/professional"
+            : Urls.SET_NOTIFICATION_COUNT_ZERO,
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true);
     if (result.isRequestSucceed) {
@@ -44,11 +50,13 @@ class NotificationRepo {
     }
   }
 
-  removeNotification(PostsData post) async{
+  removeNotification(PostsData post) async {
     var result = await DioRequester().requestMethod(
         url: Urls.DELETE_NOTIFICATIONS_URL,
         requestType: HttpRequestMethods.HTTP_DELETE,
-        postData: {"deleteNotification":[post.id]},
+        postData: {
+          "deleteNotification": [post.id]
+        },
         headerIncluded: true);
     if (result.isRequestSucceed) {
       return RequestSuccess(response: true);

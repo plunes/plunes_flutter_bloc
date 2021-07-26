@@ -208,4 +208,8 @@ class SearchSolutionBloc extends BlocBase {
   void addStateInPopularCitiesAndServicesStream(RequestState requestState) {
     super.addStateInGenericStream(_popularCitiesStreamProvider, requestState);
   }
+
+  Future<RequestState> getCatalogueUsingFamilyId(String familyName) {
+    return SearchedSolutionRepo().getCatalogueUsingFamilyId(familyName);
+  }
 }

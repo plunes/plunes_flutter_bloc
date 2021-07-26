@@ -318,4 +318,24 @@ class SearchedSolutionRepo {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
+
+  Future<RequestState> getCatalogueUsingFamilyId(String familyName) async {
+    var serverResponse = await DioRequester().requestMethod(
+        requestType: HttpRequestMethods.HTTP_GET,
+        queryParameter: {"familyName": familyName},
+        url: Urls.FamilyCatalogueUrl);
+    if (serverResponse.isRequestSucceed) {
+      List<CatalogueData> _solutions = [];
+      if (serverResponse.response.data != null &&
+          serverResponse.response.data['data'] != null) {
+        Iterable _items = serverResponse.response.data['data'];
+        _solutions = _items
+            .map((item) => CatalogueData.fromJson(item))
+            .toList(growable: true);
+      }
+      return RequestSuccess(response: _solutions);
+    } else {
+      return RequestFailed(failureCause: serverResponse.failureCause);
+    }
+  }
 }

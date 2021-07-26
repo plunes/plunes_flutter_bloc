@@ -28,6 +28,7 @@ import 'package:plunes/ui/afterLogin/new_solution_screen/solution_show_price_scr
 import 'package:plunes/ui/afterLogin/new_solution_screen/view_solutions_screen.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/consultations.dart';
+import 'package:plunes/ui/afterLogin/solution_screens/family_catalogue.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/manual_bidding.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/negotiate_waiting_screen.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/testNproceduresMainScreen.dart';
@@ -320,6 +321,11 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
   }
 
   _onOtherServiceTap(int index, List<CatalogueData> _catalogues) async {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CatalogueListScreen(_catalogues[index])));
+    return;
     FocusScope.of(context).requestFocus(FocusNode());
     var nowTime = DateTime.now();
     if (_catalogues[index].solutionExpiredAt != null &&

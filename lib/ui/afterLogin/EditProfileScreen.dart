@@ -252,6 +252,7 @@ class _EditProfileState extends State<EditProfileScreen>
                   color: Color(hexColorCode.defaultGreen), size: 30.0)
               : Container(
                   margin: EdgeInsets.only(
+                      top: 10,
                       left: AppConfig.horizontalBlockSize * 30,
                       right: AppConfig.horizontalBlockSize * 30),
                   child: InkWell(

@@ -221,40 +221,6 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                     ),
                   ),
                 )
-//              Container(
-//                      padding: EdgeInsets.symmetric(
-//                          horizontal: AppConfig.horizontalBlockSize * 6,
-//                          vertical: AppConfig.verticalBlockSize * 2),
-//                      child: Column(
-//                        mainAxisAlignment: MainAxisAlignment.center,
-//                        crossAxisAlignment: CrossAxisAlignment.center,
-//                        children: <Widget>[
-//                          Container(
-//                              margin: EdgeInsets.symmetric(
-//                                  vertical: AppConfig.verticalBlockSize * 3),
-//                              height: AppConfig.verticalBlockSize * 25,
-//                              child: Image.asset(PlunesImages.helpThankyou)),
-//                          Center(
-//                            child: Text(PlunesStrings.thankYouMessage,
-//                                style: TextStyle(
-//                                    fontSize: AppConfig.veryExtraLargeFont,
-//                                    fontWeight: FontWeight.w500,
-//                                    color: PlunesColors.BLACKCOLOR)),
-//                          ),
-//                          Container(
-//                            margin: EdgeInsets.symmetric(
-//                                vertical: AppConfig.verticalBlockSize * 3,
-//                                horizontal: AppConfig.horizontalBlockSize * 3),
-//                            child: Text(PlunesStrings.helpQuerySuccessMessage,
-//                                textAlign: TextAlign.center,
-//                                style: TextStyle(
-//                                    fontSize: AppConfig.extraLargeFont,
-//                                    fontWeight: FontWeight.w500,
-//                                    color: PlunesColors.GREYCOLOR)),
-//                          ),
-//                        ],
-//                      ),
-//                    )
               : SingleChildScrollView(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -275,16 +241,6 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                           textAlign: TextAlign.center,
                         ),
                       ),
-//                      Container(
-//                          alignment: Alignment.topLeft,
-//                          padding: EdgeInsets.only(
-//                              top: AppConfig.verticalBlockSize * 4),
-//                          child: Text(PlunesStrings.writeYourConcern,
-//                              textAlign: TextAlign.start,
-//                              style: TextStyle(
-//                                fontSize: AppConfig.mediumFont,
-//                              ))),
-
                       Container(
                         margin: EdgeInsets.only(
                           left: AppConfig.horizontalBlockSize * 5,
@@ -340,43 +296,6 @@ class _HelpScreenState extends BaseState<HelpScreen> implements DialogCallBack {
                                 AppConfig.verticalBlockSize * 1.2,
                                 PlunesColors.WHITECOLOR)),
                       ),
-//                        FlatButton(
-//                            focusColor:
-//                                PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-//                            splashColor:
-//                                PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-//                            highlightColor:
-//                                PlunesColors.SPARKLINGGREEN.withOpacity(.2),
-//                            onPressed: () {
-//                              if (_docHosQueryController.text
-//                                  .trim()
-//                                  .isNotEmpty) {
-//                                _docHosMainInsightBloc.helpDocHosQuery(
-//                                    _docHosQueryController.text.trim());
-//                              } else if (_docHosQueryController.text
-//                                  .trim()
-//                                  .isEmpty) {
-//                                failureMessage =
-//                                    PlunesStrings.emptyQueryFieldMessage;
-//                                _docHosMainInsightBloc
-//                                    .addStateInHelpQueryStream(null);
-//                              }
-//                            },
-//                            child: Container(
-//                                width: double.infinity,
-//                                padding: EdgeInsets.symmetric(
-////                                      vertical:
-////                                          AppConfig.verticalBlockSize * 1.5,
-//                                    horizontal:
-//                                        AppConfig.horizontalBlockSize * 7),
-//                                child: Text(
-//                                  'Submit',
-//                                  textAlign: TextAlign.center,
-//                                  style: TextStyle(
-//                                      fontSize: AppConfig.largeFont,
-//                                      fontWeight: FontWeight.w500,
-//                                      color: PlunesColors.SPARKLINGGREEN),
-//                                ))),
                       failureMessage == null || failureMessage.isEmpty
                           ? Container()
                           : Container(

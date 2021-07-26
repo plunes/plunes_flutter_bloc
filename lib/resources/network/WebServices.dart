@@ -81,8 +81,8 @@ class WebServices {
     var deviceToken = UserManager().getDeviceToken();
     return await _apiCall.getAPIRequest(
         context,
-        context.widget.toString() == 'SecuritySettings'
-            ? urls.logoutAll
+        (UserManager().getUserDetails().userType != Constants.user)
+            ? urls.logoutProf
             : urls.logout,
         '1',
         false,

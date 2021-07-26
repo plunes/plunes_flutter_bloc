@@ -1,3 +1,5 @@
+import 'package:plunes/Utils/Constants.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
@@ -19,12 +21,14 @@ class AppointmentRepo {
   Future<RequestState> getAppointmentDetails() async {
     var result = await DioRequester().requestMethod(
       requestType: HttpRequestMethods.HTTP_GET,
-      url: Urls.BOOKING_URL,
+      url: (UserManager().getUserDetails().userType != Constants.user)
+          ? Urls.PROF_BOOKING_URL
+          : Urls.BOOKING_URL,
       headerIncluded: true,
     );
     if (result.isRequestSucceed) {
       AppointmentResponseModel _appointmentModel =
-      AppointmentResponseModel.fromJson(result.response.data);
+          AppointmentResponseModel.fromJson(result.response.data);
       return RequestSuccess(response: _appointmentModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);

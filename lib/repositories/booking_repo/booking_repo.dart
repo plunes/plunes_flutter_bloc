@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
-
-import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
+import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/dio_requester.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/Http_constants.dart';
@@ -40,7 +39,9 @@ class BookingRepo {
 
   Future<RequestState> rescheduleAppointment(
       String bookingId, String appointmentTime, String selectedTimeSlot) async {
-    String url = Urls.GET_CANCEL_AND_RESCHEDULE_URL + "/$bookingId/reschedule";
+    String url = (UserManager().getUserDetails().userType != Constants.user)
+        ? Urls.GET_CANCEL_AND_RESCHEDULE_URL_FOR_PROF + "/$bookingId/reschedule"
+        : Urls.GET_CANCEL_AND_RESCHEDULE_URL + "/$bookingId/reschedule";
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true,
@@ -57,8 +58,11 @@ class BookingRepo {
   }
 
   Future<RequestState> cancelAppointment(String bookingId, int index) async {
-    String url =
-        Urls.GET_CANCEL_AND_RESCHEDULE_URL + "/$bookingId/cancellationRequest";
+    String url = (UserManager().getUserDetails().userType != Constants.user)
+        ? Urls.GET_CANCEL_AND_RESCHEDULE_URL_FOR_PROF +
+            "/$bookingId/cancellationRequest"
+        : Urls.GET_CANCEL_AND_RESCHEDULE_URL +
+            "/$bookingId/cancellationRequest";
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_PUT,
         headerIncluded: true,
@@ -90,7 +94,9 @@ class BookingRepo {
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true,
-        url: Urls.GET_CONFIRM_APPOINTMENT_URL,
+        url: (UserManager().getUserDetails().userType != Constants.user)
+            ? Urls.GET_CONFIRM_APPOINTMENT_URL_FOR_PROF
+            : Urls.GET_CONFIRM_APPOINTMENT_URL,
         queryParameter: {
           "bookingId": bookingId,
         });
@@ -158,7 +164,6 @@ class BookingRepo {
     String url = Urls.REQUEST_INVOICE_URL +
         "/$bookingId" +
         "${shouldSendInvoice ? "/true" : ""}";
-//    print("url $url");
     var result = await DioRequester().requestMethod(
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true,
@@ -183,7 +188,6 @@ class BookingRepo {
 
   Future<RequestState> processZestMoney(
       InitPaymentResponse initPaymentResponse) async {
-//    print("Urls.ZEST_MONEY_URL ${Urls.ZEST_MONEY_URL}");
     var result = await DioRequester().requestMethodWithNoBaseUrl(
         requestType: HttpRequestMethods.HTTP_POST,
         headerIncluded: true,

@@ -1,3 +1,4 @@
+import 'package:plunes/Utils/Constants.dart';
 import 'package:plunes/models/doc_hos_models/common_models/actionable_insights_response_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/realtime_insights_response_model.dart';
 import 'package:plunes/models/doc_hos_models/common_models/total_business_earnedLoss_model.dart';
@@ -37,7 +38,7 @@ class DocHosMainRepo {
   Future<RequestState> getActionableInsights({String userId}) async {
     String url = Urls.GET_ACTIONABLE_INSIGHTS_URL;
     if (userId != null) {
-      url = url + "?userId=$userId";
+      url = url + "?professionalId=$userId";
     }
     var result = await DioRequester().requestMethod(
       url: url,
@@ -57,7 +58,7 @@ class DocHosMainRepo {
       {String userId}) async {
     Map<String, dynamic> _queryData = {"days": days};
     if (userId != null) {
-      _queryData["userId"] = userId;
+      _queryData["professionalId"] = userId;
     }
     var result = await DioRequester().requestMethod(
       url: Urls.GET_TOTAL_BUSINESS_EARNED_AND_LOSS_URL,
@@ -120,7 +121,7 @@ class DocHosMainRepo {
     Map<String, dynamic> queryParam;
     if (centreId != null && centreId.isNotEmpty) {
       queryParam = {};
-      queryParam["userId"] = centreId;
+      queryParam["professionalId"] = centreId;
     }
     var result = await DioRequester().requestMethodWithNoBaseUrl(
       url: Urls.customBaseUrl + Urls.UPDATE_ACTIONABLE_INSIGHT_PRICE_URL,
@@ -145,7 +146,9 @@ class DocHosMainRepo {
         requestType: HttpRequestMethods.HTTP_POST,
         headerIncluded: true,
         postData: {"enquiry": query},
-        url: Urls.HELP_QUERY_URL_FOR_DOC_HOS);
+        url: (UserManager().getUserDetails().userType != Constants.user)
+            ? Urls.HELP_QUERY_URL_FOR_DOC_HOS
+            : Urls.HELP_QUERY_URL_FOR_USER);
     if (result.isRequestSucceed) {
       return RequestSuccess(response: result.isRequestSucceed);
     } else {

@@ -39,6 +39,8 @@ class Urls {
 
   get logout => baseUrl + 'user/logout';
 
+  get logoutProf => baseUrl + 'professional/logout';
+
   get logoutAll => baseUrl + 'user/logout_all';
 
   get userBaseUrl => baseUrl + 'user';
@@ -71,6 +73,7 @@ class Urls {
   static const String CHECK_LOCATION_API = "user/checkLocation";
   static const String GET_DOC_HOS_API = "solution/solution";
   static const String BOOKING_URL = 'booking';
+  static const String PROF_BOOKING_URL = "professionalBooking";
 
   // static const String PAYMENT_WEB_VIEW_URL =
   //     "https://api.plunes.com/payment"; //production
@@ -94,25 +97,36 @@ class Urls {
       'solution/updateSolution';
   static const String UPDATE_ACTIONABLE_INSIGHT_PRICE_URL = 'admin/updatePrice';
   static const String GET_CANCEL_AND_RESCHEDULE_URL = 'booking/';
+  static const String GET_CANCEL_AND_RESCHEDULE_URL_FOR_PROF =
+      PROF_BOOKING_URL + "/";
   static const String GET_CONFIRM_APPOINTMENT_URL = 'booking/confirmBooking';
+  static const String GET_CONFIRM_APPOINTMENT_URL_FOR_PROF =
+      PROF_BOOKING_URL + '/confirmBooking';
   static const String GET_REFUND_URL = 'booking/refund';
   static const String GET_SPECIALITIES_URL = 'catalogue/getSpecialities';
   static const GET_UPLOAD_PLOCKR_DATA_URL = 'report';
   static const GET_SHARABLE_LINK_FILE_URL = 'report/getShareableLink/';
   static const String UPDATE_TOKEN = "user/notificationTokenRefresh";
+  static const String UPDATE_TOKEN_PROF = "professional/notificationTokenRefresh";
   static const String NOTIFICATION_SWITCH = "user/notificationSwitch";
-  static const String HELP_QUERY_URL_FOR_DOC_HOS = "user/enquiry";
+  static const String NOTIFICATION_SWITCH_PROF = "professional/notificationSwitch";
+  static const String HELP_QUERY_URL_FOR_DOC_HOS = "professional/enquiry";
+  static const String HELP_QUERY_URL_FOR_USER = "user/enquiry";
   static const String GET_USER_SPECIFIC_SPECIALITY =
       "user/getProfessionalSpecialities";
   static const String GET_SPECIALITY_RELATED_SERVICE =
       "user/getProfessionalServices?";
   static const String RESET_PASSWORD_URL = "user/updatePassword";
   static const String CHANGE_PASSWORD_URL = "user/changePassword";
+  static const String CHANGE_PASSWORD_URL_FOR_PROF =
+      "professional/changePassword";
   static const String SET_NOTIFICATION_COUNT_ZERO = "notification";
   static const String GET_NOTIFICATIONS_URL = "notification/0";
+  static const String GET_NOTIFICATIONS_URL_FOR_PROF =
+      "notification/professional/0";
   static const String GET_HELPLINE_NUMBER_URL = "user/contactSupport";
   static const String GET_COUPON_TEXT_URL = "user/couponText";
-  static const String GET_CENTRES_DATA = "user/getAllCenters";
+  static const String GET_CENTRES_DATA = "professional/getAllCenters";
   static const String RATE_AND_REVIEW = "review";
   static const String MEDIA_CONTENT_URL = "user/getMediaContent";
   static const String REQUEST_INVOICE_URL = 'booking/invoice';
@@ -125,9 +139,9 @@ class Urls {
       "notification/deleteNotifications";
   static const String CHANGE_PROFILE_URL = "upload/profilePicture";
   static const String SERVICE_NOTIFICATION_DISABLE_URL =
-      "user/serviceNotificationException/";
+      "professional/serviceNotificationException/";
   static const String UPDATE_PRICE_IN_CATALOGUE_FROM_REAL_INSIGHT =
-      "user/addServiceToCatalogue";
+      "professional/addServiceToCatalogue";
   static const String EXPLORE_URL = "explore/";
   static const String ADD_TO_CART_URL = "cart/add";
   static const String DELETE_FROM_CART = "cart/delete/";
@@ -187,4 +201,5 @@ class Urls {
   static const String SEARCH_FACILITY_API = "catalogue/hospitalSearch";
   static const String POPULAR_CITIES_AND_SERVICES_URL =
       "catalogue/getPopularCitesAndService";
+  static const String FamilyCatalogueUrl = "catalogue/getServicesbyfamily";
 }

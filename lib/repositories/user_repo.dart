@@ -271,7 +271,9 @@ class UserManager {
 
   Future<RequestState> updateUserData(Map<String, dynamic> userData) async {
     var result = await DioRequester().requestMethod(
-      url: "user/",
+      url: (UserManager().getUserDetails().userType != Constants.user)
+          ? "professional/"
+          : "user/",
       headerIncluded: true,
       requestType: HttpRequestMethods.HTTP_PUT,
       postData: userData,
@@ -321,7 +323,9 @@ class UserManager {
     }
     var postData = {"newToken": token, "oldToken": savedToken};
     var result = await DioRequester().requestMethod(
-        url: Urls.UPDATE_TOKEN,
+        url: (UserManager().getUserDetails().userType != Constants.user)
+            ? Urls.UPDATE_TOKEN_PROF
+            : Urls.UPDATE_TOKEN,
         headerIncluded: true,
         postData: postData,
         requestType: HttpRequestMethods.HTTP_POST);
@@ -335,7 +339,9 @@ class UserManager {
 
   Future<RequestState> turnOnOffNotification(bool isOn) async {
     var result = await DioRequester().requestMethod(
-        url: Urls.NOTIFICATION_SWITCH,
+        url: (UserManager().getUserDetails().userType != Constants.user)
+            ? Urls.NOTIFICATION_SWITCH_PROF
+            : Urls.NOTIFICATION_SWITCH,
         queryParameter: {"deviceId": getDeviceToken(), "op": isOn},
         requestType: HttpRequestMethods.HTTP_GET,
         headerIncluded: true);
@@ -415,7 +421,10 @@ class UserManager {
   Future<RequestState> changePassword(
       String oldPassword, String newPassword) async {
     var result = await DioRequester().requestMethod(
-        url: Urls.CHANGE_PASSWORD_URL,
+        url: (UserManager().getUserDetails().userType != null &&
+                UserManager().getUserDetails().userType != Constants.user)
+            ? Urls.CHANGE_PASSWORD_URL_FOR_PROF
+            : Urls.CHANGE_PASSWORD_URL,
         postData: {"oldPassword": oldPassword, "newPassword": newPassword},
         requestType: HttpRequestMethods.HTTP_PATCH,
         headerIncluded: true);
