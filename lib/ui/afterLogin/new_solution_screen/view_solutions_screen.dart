@@ -357,45 +357,6 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
             widget.catalogueData.isFromProfileScreen));
   }
 
-  // Widget _getBenefitsWidget() {
-  //   if (_premiumBenefitsModel == null ||
-  //       _premiumBenefitsModel.data == null ||
-  //       _premiumBenefitsModel.data.isEmpty) {
-  //     return Container();
-  //   }
-  //   return Container(
-  //     margin: EdgeInsets.symmetric(
-  //         vertical: AppConfig.verticalBlockSize * 1.8,
-  //         horizontal: AppConfig.horizontalBlockSize * 1.2),
-  //     child: Column(
-  //       children: [
-  //         Container(
-  //           alignment: Alignment.centerLeft,
-  //           child: Text(
-  //             "Premium Benefits for Our Users",
-  //             style: TextStyle(color: PlunesColors.BLACKCOLOR, fontSize: 18),
-  //           ),
-  //         ),
-  //         Container(
-  //           margin: EdgeInsets.only(
-  //             top: AppConfig.verticalBlockSize * 1.8,
-  //           ),
-  //         ),
-  //         Container(
-  //           height: 300,
-  //           child: ListView.builder(
-  //             shrinkWrap: true,
-  //             scrollDirection: Axis.horizontal,
-  //             itemBuilder: (context, index) => CommonWidgets()
-  //                 .getPremiumBenefitsWidget(_premiumBenefitsModel.data[index]),
-  //             itemCount: _premiumBenefitsModel.data.length,
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _getSolutionListWidget() {
     return Container(
       child: ListView.builder(

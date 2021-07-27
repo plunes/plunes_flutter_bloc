@@ -36,10 +36,11 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   num chancesPercent = 25;
   num half;
   TextEditingController _priceController = TextEditingController();
+  TextEditingController _offeredPriceController = TextEditingController();
 
   // ScrollController _scrollController = ScrollController();
   String failureCause;
-  bool shouldShowField = false;
+  bool shouldShowField = false, _hasPrice;
   RealInsight _realInsight;
   DocHosMainInsightBloc _docHosMainInsightBloc;
   Timer _timer;
@@ -54,47 +55,56 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
     _realInsight = widget.realInsight;
     _streamForIcon = StreamController.broadcast();
     _docHosMainInsightBloc = widget.docHosMainInsightBloc;
-    if (_realInsight.recommendation != null &&
-        _realInsight.recommendation > 0) {
-      var recommendation = 100 - _realInsight.recommendation;
-      if (_realInsight.userPrice <= 5) {
-        sliderVal =
-            ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-        half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-        _priceController.text = half?.toStringAsFixed(1) ?? '';
-      } else {
-        sliderVal =
-            ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-        half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-        sliderVal = sliderVal - (sliderVal % 5);
-        half = half - (half % 5);
-        _priceController.text = half?.toStringAsFixed(1) ?? '';
-      }
-      if (sliderVal < _realInsight.min) {
-        sliderVal = _realInsight.min;
-        half = _realInsight.min;
-        _priceController.text = _realInsight.min?.toStringAsFixed(1) ?? '';
-      }
-    } else if (_realInsight.suggested != null && _realInsight.suggested) {
-      sliderVal = _realInsight.userPrice.toInt().toDouble();
-      half = _realInsight.userPrice.toInt().toDouble();
-      _priceController.text = half?.toStringAsFixed(1) ?? '';
-    } else {
-      Navigator.pop(context);
-    }
-    _setChancesOfConversion();
-    if (sliderVal == null || sliderVal == 0) {
-      chancesPercent = 0;
-    }
-    _timer = Timer.periodic(Duration(milliseconds: 1200), (timer) {
-      if (_topMargin == 0) {
-        _topMargin = 3;
-      } else {
-        _topMargin = 0;
-      }
-      _streamForIcon.add(null);
-    });
+    _init();
     super.initState();
+  }
+
+  _init() {
+    if (_realInsight.isPrice != null && !_realInsight.isPrice) {
+      _hasPrice = false;
+    } else {
+      _hasPrice = true;
+      if (_realInsight.recommendation != null &&
+          _realInsight.recommendation > 0) {
+        var recommendation = 100 - _realInsight.recommendation;
+        if (_realInsight.userPrice <= 5) {
+          sliderVal =
+              ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+          half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+          _priceController.text = half?.toStringAsFixed(1) ?? '';
+        } else {
+          sliderVal =
+              ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+          half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+          sliderVal = sliderVal - (sliderVal % 5);
+          half = half - (half % 5);
+          _priceController.text = half?.toStringAsFixed(1) ?? '';
+        }
+        if (sliderVal < _realInsight.min) {
+          sliderVal = _realInsight.min;
+          half = _realInsight.min;
+          _priceController.text = _realInsight.min?.toStringAsFixed(1) ?? '';
+        }
+      } else if (_realInsight.suggested != null && _realInsight.suggested) {
+        sliderVal = _realInsight.userPrice.toInt().toDouble();
+        half = _realInsight.userPrice.toInt().toDouble();
+        _priceController.text = half?.toStringAsFixed(1) ?? '';
+      } else {
+        Navigator.pop(context);
+      }
+      _setChancesOfConversion();
+      if (sliderVal == null || sliderVal == 0) {
+        chancesPercent = 0;
+      }
+      _timer = Timer.periodic(Duration(milliseconds: 1200), (timer) {
+        if (_topMargin == 0) {
+          _topMargin = 3;
+        } else {
+          _topMargin = 0;
+        }
+        _streamForIcon.add(null);
+      });
+    }
   }
 
   @override
@@ -930,7 +940,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             color: PlunesColors.WHITECOLOR, width: 0.8)),
                     child: TextField(
                       textAlign: TextAlign.left,
-                      controller: _priceController,
+                      controller: _offeredPriceController,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       style: TextStyle(
                           fontSize: 12, color: PlunesColors.WHITECOLOR),
@@ -1308,6 +1318,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   }
 
   Widget _getSliderWidget() {
+    if (!_hasPrice) {
+      return Container();
+    }
     return Container(
       padding: EdgeInsets.all(8),
       margin: EdgeInsets.only(top: 10),
@@ -1320,34 +1333,6 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            // Container(
-            //   margin: EdgeInsets.symmetric(
-            //       horizontal: AppConfig.horizontalBlockSize * 3),
-            //   child: Text(
-            //     _realInsight?.serviceName ?? PlunesStrings.NA,
-            //     style: TextStyle(
-            //       color: Colors.white,
-            //       fontSize: AppConfig.mediumFont,
-            //     ),
-            //     textAlign: TextAlign.center,
-            //   ),
-            // ),
-            // Container(
-            //   margin: EdgeInsets.symmetric(
-            //       horizontal: AppConfig.horizontalBlockSize * 3),
-            //   padding: EdgeInsets.only(
-            //       left: AppConfig.horizontalBlockSize * 3,
-            //       right: AppConfig.horizontalBlockSize * 3,
-            //       top: AppConfig.verticalBlockSize * 2.5,
-            //       bottom: AppConfig.verticalBlockSize * 1.2),
-            //   child: Text(
-            //     'Update your best price for maximum bookings',
-            //     style: TextStyle(
-            //         color: Colors.white,
-            //         fontSize: AppConfig.mediumFont),
-            //     textAlign: TextAlign.center,
-            //   ),
-            // ),
             Column(
               children: <Widget>[
                 Container(
@@ -1361,62 +1346,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     animationDuration: 2000,
                     percent: 0.5,
                     linearStrokeCap: LinearStrokeCap.roundAll,
-                    // center: Text(
-                    //   "${_realInsight.compRate?.toStringAsFixed(0) ?? 0} %",
-                    //   style: TextStyle(
-                    //       color: PlunesColors.BLACKCOLOR, fontSize: 10),
-                    // ),
                     progressColor: PlunesColors.GREENCOLOR,
                   ),
-                  // child: SliderTheme(
-                  //   data: SliderTheme.of(context).copyWith(
-                  //     activeTrackColor: Color.lerp(
-                  //         Color(CommonMethods.getColorHexFromStr("#CEFFE2")),
-                  //         Color(CommonMethods.getColorHexFromStr("#01D35A")),
-                  //         0.7),
-                  //     inactiveTrackColor: PlunesColors.WHITECOLOR,
-                  //     showValueIndicator: ShowValueIndicator.never,
-                  //     trackShape: RoundedRectSliderTrackShape(),
-                  //     trackHeight: 8.5,
-                  //     thumbColor: PlunesColors.LIGHTGREENCOLOR,
-                  //     thumbShape: SliderThumbShape(
-                  //       enabledThumbRadius: 12,
-                  //     ),
-                  //     overlayColor: PlunesColors.GREENCOLOR.withAlpha(32),
-                  //     overlayShape:
-                  //         RoundSliderOverlayShape(overlayRadius: 28.0),
-                  //   ),
-                  //   child: Slider(
-                  //     value: sliderVal?.toDouble(),
-                  //     min: _realInsight.min?.toDouble() ?? 0,
-                  //     max: _realInsight.max?.toDouble() ??
-                  //         ((_realInsight.min ?? 0) + 1),
-                  //     divisions: 100,
-                  //     onChanged: (newValue) {
-                  //       return;
-                  //       if (shouldShowField) {
-                  //         return;
-                  //       }
-                  //       newState(() {
-                  //         try {
-                  //           var firstVal =
-                  //               (_realInsight.max - _realInsight.min) / 70;
-                  //           var secVal =
-                  //               (newValue - _realInsight.min) / firstVal;
-                  //           var thirdVal = 70 - secVal;
-                  //           chancesPercent = thirdVal?.floor()?.toDouble() ?? 0;
-                  //         } catch (e) {
-                  //           chancesPercent = 0;
-                  //         }
-                  //         sliderVal = newValue;
-                  //         if (chancesPercent >= 70) {
-                  //           chancesPercent = 70;
-                  //         }
-                  //       });
-                  //     },
-                  //     label: "${sliderVal.toStringAsFixed(1)}",
-                  //   ),
-                  // ),
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(
@@ -1482,171 +1413,6 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                 ),
-                // Container(
-                //     margin: EdgeInsets.symmetric(
-                //         vertical: AppConfig.verticalBlockSize * 1.2,
-                //         horizontal: AppConfig.horizontalBlockSize * 3),
-                //     padding: EdgeInsets.symmetric(
-                //         horizontal: AppConfig.horizontalBlockSize * 15),
-                //     child: (_realInsight.suggested != null &&
-                //             _realInsight.suggested &&
-                //             shouldShowField)
-                //         ? Row(
-                //             mainAxisAlignment: MainAxisAlignment.end,
-                //             crossAxisAlignment: CrossAxisAlignment.end,
-                //             children: <Widget>[
-                //               Flexible(
-                //                 child: TextField(
-                //                   controller: _priceController,
-                //                   inputFormatters: [
-                //                     WhitelistingTextInputFormatter.digitsOnly
-                //                   ],
-                //                   maxLines: 1,
-                //                   autofocus: true,
-                //                   keyboardType: TextInputType.number,
-                //                   textAlignVertical: TextAlignVertical.bottom,
-                //                   textAlign: TextAlign.center,
-                //                   style: TextStyle(
-                //                     color: Colors.white70,
-                //                   ),
-                //                 ),
-                //               ),
-                //               InkWell(
-                //                 onTap: () {
-                //                   shouldShowField = false;
-                //                   newState(() {});
-                //                 },
-                //                 child: Container(
-                //                   margin: EdgeInsets.only(
-                //                       left: AppConfig.horizontalBlockSize * 3),
-                //                   padding: EdgeInsets.all(5.0),
-                //                   alignment: Alignment.bottomRight,
-                //                   child: Icon(
-                //                     Icons.mode_edit,
-                //                     color: PlunesColors.GREENCOLOR,
-                //                   ),
-                //                 ),
-                //               )
-                //             ],
-                //           )
-                //         : Row(
-                //             mainAxisAlignment:
-                //                 (_realInsight.suggested != null &&
-                //                         _realInsight.suggested &&
-                //                         shouldShowField)
-                //                     ? MainAxisAlignment.end
-                //                     : MainAxisAlignment.center,
-                //             crossAxisAlignment: CrossAxisAlignment.end,
-                //             children: <Widget>[
-                //               Flexible(
-                //                 flex: 2,
-                //                 child: Text(
-                //                   ' \u20B9 ${sliderVal.toStringAsFixed(1)}',
-                //                   style: TextStyle(
-                //                       color: Colors.white70,
-                //                       fontSize: AppConfig.largeFont,
-                //                       fontWeight: FontWeight.w600),
-                //                 ),
-                //               ),
-                //               (_realInsight.suggested != null &&
-                //                       _realInsight.suggested)
-                //                   ? Flexible(
-                //                       child: InkWell(
-                //                       onTap: () {
-                //                         shouldShowField = true;
-                //                         newState(() {});
-                //                       },
-                //                       child: Container(
-                //                         padding: EdgeInsets.all(5.0),
-                //                         alignment: Alignment.topCenter,
-                //                         child: Icon(
-                //                           Icons.mode_edit,
-                //                           color: PlunesColors.WHITECOLOR,
-                //                         ),
-                //                       ),
-                //                     ))
-                //                   : Container()
-                //             ],
-                //           )),
-                // FlatButton(
-                //     focusColor: Colors.transparent,
-                //     splashColor: Colors.transparent,
-                //     highlightColor: Colors.transparent,
-                //     onPressed: () {
-                //       // if (_realInsight.suggested != null &&
-                //       //     _realInsight.suggested &&
-                //       //     shouldShowField) {
-                //       //   if (_priceController.text.trim().isEmpty ||
-                //       //       _priceController.text.trim().substring(0) == "0" ||
-                //       //       (double.tryParse(_priceController.text.trim()) <
-                //       //           1)) {
-                //       //     failureCause =
-                //       //         'Price must not be lesser than 1 or empty';
-                //       //     newState(() {});
-                //       //     return;
-                //       //   }
-                //       //   _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
-                //       //       RequestInProgress());
-                //       //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
-                //       //       num.tryParse(_priceController.text.trim()),
-                //       //       _realInsight.solutionId,
-                //       //       _realInsight.serviceId,
-                //       //       isSuggestive: true,
-                //       //       suggestedPrice:
-                //       //           num.tryParse(_priceController.text.trim()),
-                //       //       realInsight: _realInsight);
-                //       // } else {
-                //       //   if (sliderVal == null || sliderVal == 0) {
-                //       //     failureCause = 'Price must not be 0.';
-                //       //     newState(() {});
-                //       //     return;
-                //       //   } else if (sliderVal == _realInsight.userPrice) {
-                //       //     failureCause =
-                //       //         'Sorry, Make sure Updated Price is not equal to Original Price !';
-                //       //     newState(() {});
-                //       //     return;
-                //       //   }
-                //       //   _docHosMainInsightBloc.updateRealTimeInsightPriceStream(
-                //       //       RequestInProgress());
-                //       //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
-                //       //       chancesPercent,
-                //       //       _realInsight.solutionId,
-                //       //       _realInsight.serviceId,
-                //       //       isSuggestive: (_realInsight.suggested != null &&
-                //       //           _realInsight.suggested),
-                //       //       suggestedPrice: sliderVal,
-                //       //       realInsight: _realInsight);
-                //       // }
-                //     },
-                //     child: Container(
-                //         height: AppConfig.verticalBlockSize * 4,
-                //         width: double.infinity,
-                //         child: Center(
-                //           child: Text(
-                //             'Apply here',
-                //             textAlign: TextAlign.center,
-                //             style: TextStyle(
-                //                 fontSize: AppConfig.largeFont + 2,
-                //                 color: PlunesColors.GREENCOLOR),
-                //           ),
-                //         ))),
-                // failureCause != null
-                //     ? Container(
-                //         margin: EdgeInsets.only(
-                //             top: AppConfig.verticalBlockSize * 1.2,
-                //             left: AppConfig.horizontalBlockSize * 10,
-                //             right: AppConfig.horizontalBlockSize * 10),
-                //         child: Text(
-                //           failureCause,
-                //           textAlign: TextAlign.center,
-                //           style: TextStyle(
-                //               fontSize: AppConfig.smallFont,
-                //               color: Color(
-                //                   CommonMethods.getColorHexFromStr("#FF9194")),
-                //               fontWeight: FontWeight.w600),
-                //         ),
-                //         alignment: Alignment.center)
-                //     : Container(),
                 chancesPercent != null
                     ? Container(
                         margin: EdgeInsets.only(
@@ -1764,6 +1530,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   }
 
   Widget _getGraphWidget() {
+    if (!_hasPrice) {
+      return Container();
+    }
     return Container(
       padding: EdgeInsets.all(8),
       margin: EdgeInsets.only(top: 10),

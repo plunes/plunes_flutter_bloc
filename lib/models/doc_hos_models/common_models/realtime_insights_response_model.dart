@@ -43,7 +43,8 @@ class RealInsight {
       professionalBooked,
       priceUpdated,
       isCardOpened,
-      hasUserReport;
+      hasUserReport,
+      isPrice;
   int timeRemaining, expirationTimer;
   num userPrice, compRate, distance, recommendation, min, max;
   int createdAt, expiredAt;
@@ -90,10 +91,10 @@ class RealInsight {
       this.specialOffers,
       this.category,
       this.hasUserReport,
-      this.expiredAt});
+      this.expiredAt,
+      this.isPrice});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
-    // print("json insight $json");
     solutionId = json['solutionId'];
     serviceId = json['serviceId'];
     userName = json['userName'];
@@ -150,6 +151,7 @@ class RealInsight {
     category = json['category'];
     hasUserReport = json['hasUserReport'];
     expiredAt = json['expiredAt'];
+    isPrice = json['isPrice'];
   }
 
   Map<String, dynamic> toJson() {
