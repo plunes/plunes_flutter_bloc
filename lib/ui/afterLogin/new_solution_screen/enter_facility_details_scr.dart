@@ -2015,16 +2015,41 @@ class _EnterAdditionalUserDetailScrState
       });
       return;
     }
+    List<Map<String, dynamic>> _formSubmissionList = [];
     Map<String, dynamic> formDataReq = Map();
     if (_hasFormDataList()) {
       if (_medicalSessionModel != null &&
-          _medicalSessionModel.sessions != null) {
+          _medicalSessionModel.sessions != null &&
+          _medicalSessionModel.sessions.isNotEmpty) {
         formDataReq[FormDataModel.sessionGraftKey] =
             _medicalSessionModel.selectedSession ??
                 _medicalSessionModel.sessions.first;
+        _formSubmissionList.add(formDataReq);
       } else {
         if (_formItemList != null && _formItemList.isNotEmpty) {
-          // _formItemList.forEach((element) {});
+          for (int index = 0; index < _formItemList.length; index++) {
+            if (_formItemList[index].isItemSeparated != null &&
+                _formItemList[index].isItemSeparated) {
+              Map<String, dynamic> _formDataReq = Map();
+              _formDataReq[FormDataModel.bodyPartKey] =
+                  _formItemList[index].bodyPartName;
+              _formDataReq[FormDataModel.sessionGraftKey] =
+                  _formItemList[index].sessionValue;
+              _formSubmissionList.add(_formDataReq);
+            }
+          }
+          if (_formSubmissionList == null || _formSubmissionList.isEmpty) {
+            _showMessagePopup(
+                "Please select ${_formItemList?.last?.firstKey ?? "body part"}");
+            _pageController
+                .animateToPage(1,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeInOut)
+                .then((value) {
+              _pageStream.add(null);
+            });
+            return;
+          }
         }
       }
     }
@@ -2039,7 +2064,8 @@ class _EnterAdditionalUserDetailScrState
           ? _previousMedicalConditionController.text.trim()
           : null,
       "additionalDetails": _additionalDetailController.text.trim(),
-      "insurance": _isInsuranceCovered
+      "insurance": _isInsuranceCovered,
+      "serviceChildren": _formSubmissionList
     };
     // print("data $_postData");
     _submitUserMedicalDetailBloc.submitUserMedicalDetail(_postData);
@@ -2336,6 +2362,14 @@ class _EnterAdditionalUserDetailScrState
       if (_formItemList == null || _formItemList.isEmpty) {
         _formItemList = [];
       }
+      _formItemList.add(MedicalFormData(
+          bodyPartName: "Select",
+          sessionValues: [],
+          valueController: TextEditingController(),
+          isItemSeparated: false,
+          firstKey: "Select",
+          secondKey: "Select",
+          isSessionListOpened: false));
       _formDataModel.data.children.forEach((element) {
         List<String> _possibleValues = [];
         if (element.possibleValues != null &&

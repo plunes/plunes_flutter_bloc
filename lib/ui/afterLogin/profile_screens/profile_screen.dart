@@ -1169,7 +1169,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                 margin: EdgeInsets.only(left: 3),
                                 child: Text(
                                   _profileResponse.user.experience.trim() +
-                                      " Year's",
+                                      " Years",
                                   style: TextStyle(
                                       color: Colors.black,
                                       fontSize: 16.0,

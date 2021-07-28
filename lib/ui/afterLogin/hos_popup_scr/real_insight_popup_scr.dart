@@ -224,29 +224,32 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                 fontSize: 14, color: PlunesColors.WHITECOLOR)),
                       )
                     : Container(),
-                _getInsuranceDetailsSection(),
-                Container(
-                  margin: EdgeInsets.only(top: 10),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text("Price Insight",
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                              fontSize: 21, color: PlunesColors.WHITECOLOR)),
-                      Expanded(
-                          child: Container(
-                        margin: EdgeInsets.only(
-                            left: AppConfig.horizontalBlockSize * 2),
-                        height: 0.8,
-                        width: double.infinity,
-                        color: Colors.white38,
-                      ))
-                    ],
-                  ),
-                ),
+                // _getInsuranceDetailsSection(),
+                (!_hasPrice)
+                    ? Container()
+                    : Container(
+                        margin: EdgeInsets.only(top: 10),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text("Price Insight",
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 21,
+                                    color: PlunesColors.WHITECOLOR)),
+                            Expanded(
+                                child: Container(
+                              margin: EdgeInsets.only(
+                                  left: AppConfig.horizontalBlockSize * 2),
+                              height: 0.8,
+                              width: double.infinity,
+                              color: Colors.white38,
+                            ))
+                          ],
+                        ),
+                      ),
                 _getSliderWidget(),
                 _getGraphWidget(),
                 _getAddonAndSpecialOfferProviderWidget(),
