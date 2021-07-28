@@ -1976,7 +1976,7 @@ class CustomWidgets {
                                                             realInsight
                                                                 .serviceId,
                                                             isSuggestive: true,
-                                                            suggestedPrice:
+                                                            packagePrice:
                                                                 num.tryParse(
                                                                     _priceController
                                                                         .text
@@ -2010,7 +2010,7 @@ class CustomWidgets {
                                                                     null &&
                                                                 realInsight
                                                                     .suggested),
-                                                            suggestedPrice:
+                                                            packagePrice:
                                                                 sliderVal);
                                                   }
                                                 },

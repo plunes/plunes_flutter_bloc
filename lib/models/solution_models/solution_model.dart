@@ -66,7 +66,7 @@ class CatalogueData {
     specialityId = json['specialityId'];
     serviceId = json['serviceId'];
     service = json['service'];
-    details = json['details'];
+    details = json["definition"];
     if (json['dnd'] != null && json['dnd'].runtimeType == [].runtimeType) {
       dnd = [];
       for (var value in json['dnd']) {

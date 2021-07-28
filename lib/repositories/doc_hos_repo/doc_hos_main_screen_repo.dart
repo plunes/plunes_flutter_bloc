@@ -78,7 +78,8 @@ class DocHosMainRepo {
   Future<RequestState> updateRealTimeInsightPrice(
       num price, String solutionId, String serviceId,
       {bool isSuggestive = false,
-      num suggestedPrice,
+      num packagePrice,
+      num offeredPrice,
       RealInsight realInsight,
       String addOnText,
       String specialOfferText,
@@ -88,13 +89,15 @@ class DocHosMainRepo {
       postData = {
         "solutionId": solutionId,
         "serviceId": serviceId,
-        "price": suggestedPrice
+        "price": packagePrice
       };
     } else {
       postData = {
         "solutionId": solutionId,
         "serviceId": serviceId,
-        "price": suggestedPrice,
+        "price": packagePrice,
+        "newPrice": offeredPrice,
+        "isPrice": (realInsight?.isPrice),
         "min": realInsight?.min,
         "max": realInsight?.max,
         "technique": techniqueText,

@@ -115,7 +115,8 @@ class DocHosMainInsightBloc extends BlocBase {
 
   getUpdateRealTimeInsightPrice(num price, String solutionId, String serviceId,
       {bool isSuggestive = false,
-      num suggestedPrice,
+      num packagePrice,
+      num offeredPrice,
       RealInsight realInsight,
       String addOnText,
       String specialOfferText,
@@ -124,8 +125,9 @@ class DocHosMainInsightBloc extends BlocBase {
     updateRealTimeInsightPriceStream(await DocHosMainRepo()
         .updateRealTimeInsightPrice(price, solutionId, serviceId,
             isSuggestive: isSuggestive,
-            suggestedPrice: suggestedPrice,
+            packagePrice: packagePrice,
             realInsight: realInsight,
+            offeredPrice: offeredPrice,
             techniqueText: techniqueText,
             specialOfferText: specialOfferText,
             addOnText: addOnText));

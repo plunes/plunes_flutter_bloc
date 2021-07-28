@@ -71,24 +71,25 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
           sliderVal =
               ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
           half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-          _priceController.text = half?.toStringAsFixed(1) ?? '';
+          _offeredPriceController.text = half?.toStringAsFixed(1) ?? '';
         } else {
           sliderVal =
               ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
           half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
           sliderVal = sliderVal - (sliderVal % 5);
           half = half - (half % 5);
-          _priceController.text = half?.toStringAsFixed(1) ?? '';
+          _offeredPriceController.text = half?.toStringAsFixed(1) ?? '';
         }
         if (sliderVal < _realInsight.min) {
           sliderVal = _realInsight.min;
           half = _realInsight.min;
-          _priceController.text = _realInsight.min?.toStringAsFixed(1) ?? '';
+          _offeredPriceController.text =
+              _realInsight.min?.toStringAsFixed(1) ?? '';
         }
       } else if (_realInsight.suggested != null && _realInsight.suggested) {
         sliderVal = _realInsight.userPrice.toInt().toDouble();
         half = _realInsight.userPrice.toInt().toDouble();
-        _priceController.text = half?.toStringAsFixed(1) ?? '';
+        _offeredPriceController.text = half?.toStringAsFixed(1) ?? '';
       } else {
         Navigator.pop(context);
       }
@@ -207,7 +208,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                      "is looking for MRI is looking for ${_realInsight?.serviceName ?? ''}",
+                      "is looking for ${_realInsight?.serviceName ?? ''}",
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -223,102 +224,6 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                 fontSize: 14, color: PlunesColors.WHITECOLOR)),
                       )
                     : Container(),
-                // (_hasMediaData() || _hasTextData())
-                //     ? Container(
-                //         margin: EdgeInsets.only(top: 10),
-                //         child: Row(
-                //           crossAxisAlignment: CrossAxisAlignment.center,
-                //           mainAxisAlignment: MainAxisAlignment.start,
-                //           children: [
-                //             Text("User details",
-                //                 maxLines: 2,
-                //                 overflow: TextOverflow.ellipsis,
-                //                 style: TextStyle(
-                //                     fontSize: 21,
-                //                     color: PlunesColors.WHITECOLOR)),
-                //             Expanded(
-                //                 child: Container(
-                //               margin: EdgeInsets.only(
-                //                   left: AppConfig.horizontalBlockSize * 2),
-                //               height: 0.8,
-                //               width: double.infinity,
-                //               color: Colors.white38,
-                //             ))
-                //           ],
-                //         ),
-                //       )
-                //     : Container(),
-                // (_realInsight.userReport != null &&
-                //         _realInsight.userReport.additionalDetails != null &&
-                //         _realInsight.userReport.additionalDetails
-                //             .trim()
-                //             .isNotEmpty)
-                //     ? Container(
-                //         padding: EdgeInsets.all(8),
-                //         margin: EdgeInsets.only(top: 10),
-                //         decoration: BoxDecoration(
-                //             borderRadius: BorderRadius.all(Radius.circular(12)),
-                //             color: Color(
-                //                 CommonMethods.getColorHexFromStr("#2D2C3E"))),
-                //         child: Column(
-                //           children: [
-                //             Container(
-                //               alignment: Alignment.centerLeft,
-                //               child: Text("Additional Details of the service",
-                //                   maxLines: 1,
-                //                   overflow: TextOverflow.ellipsis,
-                //                   style: TextStyle(
-                //                       fontSize: 16,
-                //                       color: PlunesColors.WHITECOLOR)),
-                //             ),
-                //             Container(
-                //               alignment: Alignment.centerLeft,
-                //               margin: EdgeInsets.only(top: 8),
-                //               child: Text(
-                //                   _realInsight?.userReport?.additionalDetails ??
-                //                       "",
-                //                   style: TextStyle(
-                //                       fontSize: 14,
-                //                       color: PlunesColors.WHITECOLOR)),
-                //             ),
-                //           ],
-                //         ),
-                //       )
-                //     : Container(),
-                // (_realInsight.userReport != null &&
-                //         _realInsight.userReport.description != null &&
-                //         _realInsight.userReport.description.trim().isNotEmpty)
-                //     ? Container(
-                //         padding: EdgeInsets.all(8),
-                //         margin: EdgeInsets.only(top: 10),
-                //         decoration: BoxDecoration(
-                //             borderRadius: BorderRadius.all(Radius.circular(12)),
-                //             color: Color(
-                //                 CommonMethods.getColorHexFromStr("#2D2C3E"))),
-                //         child: Column(
-                //           children: [
-                //             Container(
-                //               alignment: Alignment.centerLeft,
-                //               child: Text("Previous Treatment Details",
-                //                   maxLines: 1,
-                //                   overflow: TextOverflow.ellipsis,
-                //                   style: TextStyle(
-                //                       fontSize: 16,
-                //                       color: PlunesColors.WHITECOLOR)),
-                //             ),
-                //             Container(
-                //               alignment: Alignment.centerLeft,
-                //               margin: EdgeInsets.only(top: 8),
-                //               child: Text(
-                //                   _realInsight?.userReport?.description ?? "",
-                //                   style: TextStyle(
-                //                       fontSize: 14,
-                //                       color: PlunesColors.WHITECOLOR)),
-                //             ),
-                //           ],
-                //         ),
-                //       )
-                //     : Container(),
                 _getInsuranceDetailsSection(),
                 Container(
                   margin: EdgeInsets.only(top: 10),
@@ -383,164 +288,181 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
               ],
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(top: 10),
-            height: AppConfig.verticalBlockSize * 25,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                (_realInsight.userReport != null &&
-                        _realInsight.userReport.imageUrl != null &&
-                        _realInsight.userReport.imageUrl.isNotEmpty)
-                    ? Flexible(
-                        child: Container(
-                        padding: EdgeInsets.only(
-                            left: 8, right: 8, top: 8, bottom: 8),
-                        margin: EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#2D2C3E"))),
-                        child: InkWell(
-                          onTap: () {
-                            List<Photo> photos = [];
-                            _realInsight.userReport.imageUrl.forEach((element) {
-                              if (element == null ||
-                                  element.isEmpty ||
-                                  !(element.contains("http"))) {
-                              } else {
-                                photos.add(Photo(assetName: element));
-                              }
-                            });
-                            if (photos != null && photos.isNotEmpty) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          PageSlider(photos, 0)));
-                            }
-                          },
-                          onDoubleTap: () {},
-                          child: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Insurance Photo",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: PlunesColors.WHITECOLOR
-                                          .withOpacity(0.8)),
+          (_realInsight.userReport != null &&
+                      _realInsight.userReport.imageUrl != null &&
+                      _realInsight.userReport.imageUrl.isNotEmpty) ||
+                  (_realInsight.userReport != null &&
+                      _realInsight.userReport.reportUrl != null &&
+                      _realInsight.userReport.reportUrl.isNotEmpty)
+              ? Container(
+                  margin: EdgeInsets.only(top: 10),
+                  height: AppConfig.verticalBlockSize * 25,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      (_realInsight.userReport != null &&
+                              _realInsight.userReport.imageUrl != null &&
+                              _realInsight.userReport.imageUrl.isNotEmpty)
+                          ? Flexible(
+                              child: Container(
+                              padding: EdgeInsets.only(
+                                  left: 8, right: 8, top: 8, bottom: 8),
+                              margin: EdgeInsets.only(right: 8),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)),
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#2D2C3E"))),
+                              child: InkWell(
+                                onTap: () {
+                                  List<Photo> photos = [];
+                                  _realInsight.userReport.imageUrl
+                                      .forEach((element) {
+                                    if (element == null ||
+                                        element.isEmpty ||
+                                        !(element.contains("http"))) {
+                                    } else {
+                                      photos.add(Photo(assetName: element));
+                                    }
+                                  });
+                                  if (photos != null && photos.isNotEmpty) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                PageSlider(photos, 0)));
+                                  }
+                                },
+                                onDoubleTap: () {},
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Insurance Photo",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: PlunesColors.WHITECOLOR
+                                                .withOpacity(0.8)),
+                                      ),
+                                    ),
+                                    Flexible(
+                                        child: Container(
+                                      alignment: Alignment.centerLeft,
+                                      margin: EdgeInsets.only(top: 5),
+                                      child: Stack(
+                                        children: [
+                                          Positioned.fill(
+                                            child: Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(12))),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(12)),
+                                                child: CustomWidgets()
+                                                    .getImageFromUrl(
+                                                        _realInsight
+                                                                .userReport
+                                                                .imageUrl
+                                                                ?.first ??
+                                                            "",
+                                                        boxFit: BoxFit.fill),
+                                              ),
+                                            ),
+                                          ),
+                                          _realInsight.userReport.imageUrl
+                                                      .length >
+                                                  1
+                                              ? Positioned.fill(
+                                                  child: Container(
+                                                    alignment: Alignment.center,
+                                                    child: Text(
+                                                      "+${_realInsight.userReport.imageUrl.length}",
+                                                      style: TextStyle(
+                                                          color: PlunesColors
+                                                              .GREYCOLOR,
+                                                          fontSize: 60),
+                                                    ),
+                                                  ),
+                                                )
+                                              : Container()
+                                        ],
+                                      ),
+                                    )),
+                                  ],
                                 ),
                               ),
-                              Flexible(
-                                  child: Container(
-                                alignment: Alignment.centerLeft,
-                                margin: EdgeInsets.only(top: 5),
-                                child: Stack(
+                            ))
+                          : Container(),
+                      (_realInsight.userReport != null &&
+                              _realInsight.userReport.reportUrl != null &&
+                              _realInsight.userReport.reportUrl.isNotEmpty)
+                          ? Flexible(
+                              child: Container(
+                              padding: EdgeInsets.only(
+                                  left: 8, right: 8, top: 8, bottom: 8),
+                              margin: EdgeInsets.only(right: 5),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(12)),
+                                  color: Color(CommonMethods.getColorHexFromStr(
+                                      "#2D2C3E"))),
+                              child: InkWell(
+                                onTap: () {
+                                  if (_realInsight.userReport.reportUrl.first !=
+                                      null) {
+                                    _launch(_realInsight
+                                        .userReport.reportUrl.first);
+                                  }
+                                },
+                                onDoubleTap: () {},
+                                child: Column(
                                   children: [
-                                    Positioned.fill(
+                                    Container(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        "Insurance Documents",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            color: PlunesColors.WHITECOLOR
+                                                .withOpacity(0.8)),
+                                      ),
+                                    ),
+                                    Flexible(
                                       child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12))),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(12)),
-                                          child: CustomWidgets()
-                                              .getImageFromUrl(
-                                                  _realInsight.userReport
-                                                          .imageUrl?.first ??
-                                                      "",
-                                                  boxFit: BoxFit.fill),
+                                        alignment: Alignment.centerLeft,
+                                        margin: EdgeInsets.only(top: 5),
+                                        child: Stack(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          Radius.circular(12))),
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(12)),
+                                                child: Image.asset(
+                                                  plunesImages.pdfIcon1,
+                                                  fit: BoxFit.fill,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
-                                    _realInsight.userReport.imageUrl.length > 1
-                                        ? Positioned.fill(
-                                            child: Container(
-                                              alignment: Alignment.center,
-                                              child: Text(
-                                                "+${_realInsight.userReport.imageUrl.length}",
-                                                style: TextStyle(
-                                                    color:
-                                                        PlunesColors.GREYCOLOR,
-                                                    fontSize: 60),
-                                              ),
-                                            ),
-                                          )
-                                        : Container()
                                   ],
                                 ),
-                              )),
-                            ],
-                          ),
-                        ),
-                      ))
-                    : Container(),
-                (_realInsight.userReport != null &&
-                        _realInsight.userReport.reportUrl != null &&
-                        _realInsight.userReport.reportUrl.isNotEmpty)
-                    ? Flexible(
-                        child: Container(
-                        padding: EdgeInsets.only(
-                            left: 8, right: 8, top: 8, bottom: 8),
-                        margin: EdgeInsets.only(right: 5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
-                            color: Color(
-                                CommonMethods.getColorHexFromStr("#2D2C3E"))),
-                        child: InkWell(
-                          onTap: () {
-                            if (_realInsight.userReport.reportUrl.first !=
-                                null) {
-                              _launch(_realInsight.userReport.reportUrl.first);
-                            }
-                          },
-                          onDoubleTap: () {},
-                          child: Column(
-                            children: [
-                              Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Insurance Documents",
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      color: PlunesColors.WHITECOLOR
-                                          .withOpacity(0.8)),
-                                ),
                               ),
-                              Flexible(
-                                child: Container(
-                                  alignment: Alignment.centerLeft,
-                                  margin: EdgeInsets.only(top: 5),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(12))),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(12)),
-                                          child: Image.asset(
-                                            plunesImages.pdfIcon1,
-                                            fit: BoxFit.fill,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ))
-                    : Container(),
-              ],
-            ),
-          ),
+                            ))
+                          : Container(),
+                    ],
+                  ),
+                )
+              : Container(),
           Container(
             width: double.infinity,
             margin: EdgeInsets.only(top: 10),
@@ -940,7 +862,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             color: PlunesColors.WHITECOLOR, width: 0.8)),
                     child: TextField(
                       textAlign: TextAlign.left,
-                      controller: _offeredPriceController,
+                      controller: _priceController,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       style: TextStyle(
                           fontSize: 12, color: PlunesColors.WHITECOLOR),
@@ -983,7 +905,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             color: PlunesColors.WHITECOLOR, width: 0.8)),
                     child: TextField(
                       textAlign: TextAlign.left,
-                      controller: _priceController,
+                      controller: _offeredPriceController,
                       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                       style: TextStyle(
                           fontSize: 12, color: PlunesColors.WHITECOLOR),
@@ -1250,58 +1172,29 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
           if (_priceController.text.trim().isEmpty ||
               _priceController.text.trim().substring(0) == "0" ||
               (double.tryParse(_priceController.text.trim()) < 1)) {
-            _showSnackBar('Price must not be lesser than 1 or empty');
+            _showSnackBar('Package price must not be lesser than 1 or empty');
+            return;
+          } else if (_offeredPriceController.text.trim().isEmpty ||
+              _offeredPriceController.text.trim().substring(0) == "0" ||
+              (double.tryParse(_offeredPriceController.text.trim()) < 1)) {
+            _showSnackBar('Offered price must not be lesser than 1 or empty');
+            return;
+          } else if (double.tryParse(_priceController.text.trim()) <
+              double.tryParse(_offeredPriceController.text.trim())) {
+            _showSnackBar(
+                'Offered price must not be lesser than Package price');
             return;
           }
           _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
               chancesPercent, _realInsight.solutionId, _realInsight.serviceId,
               isSuggestive:
                   (_realInsight.suggested != null && _realInsight.suggested),
-              suggestedPrice: num.tryParse(_priceController.text.trim()),
+              packagePrice: num.tryParse(_priceController.text.trim()),
               realInsight: _realInsight,
+              offeredPrice: num.tryParse(_offeredPriceController.text.trim()),
               addOnText: _addOnController.text.trim(),
               specialOfferText: _specialOfferController.text.trim(),
               techniqueText: _techniqueController.text.trim());
-
-          // if (_realInsight.suggested != null &&
-          //     _realInsight.suggested &&
-          //     shouldShowField) {
-          //   if (_priceController.text.trim().isEmpty ||
-          //       _priceController.text.trim().substring(0) == "0" ||
-          //       (double.tryParse(_priceController.text.trim()) < 1)) {
-          //     failureCause = 'Price must not be lesser than 1 or empty';
-          //     newState(() {});
-          //     return;
-          //   }
-          //   _docHosMainInsightBloc
-          //       .updateRealTimeInsightPriceStream(RequestInProgress());
-          //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
-          //       num.tryParse(_priceController.text.trim()),
-          //       _realInsight.solutionId,
-          //       _realInsight.serviceId,
-          //       isSuggestive: true,
-          //       suggestedPrice: num.tryParse(_priceController.text.trim()),
-          //       realInsight: _realInsight);
-          // } else {
-          //   if (sliderVal == null || sliderVal == 0) {
-          //     failureCause = 'Price must not be 0.';
-          //     newState(() {});
-          //     return;
-          //   } else if (sliderVal == _realInsight.userPrice) {
-          //     failureCause =
-          //         'Sorry, Make sure Updated Price is not equal to Original Price !';
-          //     newState(() {});
-          //     return;
-          //   }
-          //   _docHosMainInsightBloc
-          //       .updateRealTimeInsightPriceStream(RequestInProgress());
-          //   _docHosMainInsightBloc.getUpdateRealTimeInsightPrice(
-          //       chancesPercent, _realInsight.solutionId, _realInsight.serviceId,
-          //       isSuggestive:
-          //           (_realInsight.suggested != null && _realInsight.suggested),
-          //       suggestedPrice: sliderVal,
-          //       realInsight: _realInsight);
-          // }
         },
         onDoubleTap: () {},
         child: CustomWidgets().getRoundedButton(
