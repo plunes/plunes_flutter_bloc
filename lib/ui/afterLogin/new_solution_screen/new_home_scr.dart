@@ -785,6 +785,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
         specialityId: _selectedSpeciality,
         shouldSortByNearest: (_locationFilter == _allKey) ? false : true,
         facilityType: _userTypeFilter,
+        isFromHomeScreen: true,
         isInitialRequest: isInitialRequest);
   }
 

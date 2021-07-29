@@ -5,6 +5,8 @@ final plunesStrings = PlunesStrings();
 class PlunesStrings {
 //  static const String hospitalTiming = "Hospital Timing";
   static const String savePriceInCataloge = "Save the price in your Catalog ?";
+  static const String gettingPriceForFacilityText =
+      "Getting Best Prices from this facility";
   static const String exploreSpecialities =
       "Explore all our Specialities and try Negotiating. Save Thousands of Rupees in a click";
   static const String hospitals = "Hospitals";
@@ -386,8 +388,7 @@ class PlunesStrings {
   static const String completePaymentText = "Complete Payment";
   static const String invalidPaymentDetails =
       "Invalid payment details, please try again later";
-  static const String discoverMoreFacilityButtonText =
-      "Add more facility";
+  static const String discoverMoreFacilityButtonText = "Add more facility";
   static const String discoverPrice = "Discover Prices Now";
   static const String discoverFacilityNearYou = "Discover facilities near you";
   static const String experienceText = "Experience";
@@ -404,7 +405,8 @@ class PlunesStrings {
   static const String isInsuranceCovered =
       "Do you have your insurance covered ?";
   static const String whyUs = "Why us";
-  static const String knowYourProcedure = "Explore Top rated Hospitals Near You";
+  static const String knowYourProcedure =
+      "Explore Top rated Hospitals Near You";
   static const String selectValidDocWarningText =
       "Please select a valid document.Allowed format is .pdf";
   static const String close = "Close";

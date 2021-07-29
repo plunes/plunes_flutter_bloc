@@ -106,7 +106,7 @@ class Children {
 
   Children.fromJson(Map<String, dynamic> json) {
     bodyPart = json['bodyPart'];
-    possibleValues = json['possibleValues'].cast<String>();
+    possibleValues = json['possibleValues']?.cast<String>();
   }
 
   Map<String, dynamic> toJson() {

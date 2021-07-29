@@ -64,47 +64,47 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       _hasPrice = false;
     } else {
       _hasPrice = true;
-      if (_realInsight.recommendation != null &&
-          _realInsight.recommendation > 0) {
-        var recommendation = 100 - _realInsight.recommendation;
-        if (_realInsight.userPrice <= 5) {
-          sliderVal =
-              ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-          half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-          _offeredPriceController.text = half?.toStringAsFixed(1) ?? '';
-        } else {
-          sliderVal =
-              ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-          half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
-          sliderVal = sliderVal - (sliderVal % 5);
-          half = half - (half % 5);
-          _offeredPriceController.text = half?.toStringAsFixed(1) ?? '';
-        }
-        if (sliderVal < _realInsight.min) {
-          sliderVal = _realInsight.min;
-          half = _realInsight.min;
-          _offeredPriceController.text =
-              _realInsight.min?.toStringAsFixed(1) ?? '';
-        }
-      } else if (_realInsight.suggested != null && _realInsight.suggested) {
-        sliderVal = _realInsight.userPrice.toInt().toDouble();
-        half = _realInsight.userPrice.toInt().toDouble();
-        _offeredPriceController.text = half?.toStringAsFixed(1) ?? '';
-      } else {
-        Navigator.pop(context);
-      }
-      _setChancesOfConversion();
-      if (sliderVal == null || sliderVal == 0) {
-        chancesPercent = 0;
-      }
-      _timer = Timer.periodic(Duration(milliseconds: 1200), (timer) {
-        if (_topMargin == 0) {
-          _topMargin = 3;
-        } else {
-          _topMargin = 0;
-        }
-        _streamForIcon.add(null);
-      });
+      // if (_realInsight.recommendation != null &&
+      //     _realInsight.recommendation > 0) {
+      //   var recommendation = 100 - _realInsight.recommendation;
+      //   if (_realInsight.userPrice <= 5) {
+      //     sliderVal =
+      //         ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+      //     half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+      //     _offeredPriceController.text = half?.toStringAsFixed(1) ?? '';
+      //   } else {
+      //     sliderVal =
+      //         ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+      //     half = ((_realInsight.userPrice / 100) * recommendation)?.toDouble();
+      //     sliderVal = sliderVal - (sliderVal % 5);
+      //     half = half - (half % 5);
+      //     _offeredPriceController.text = half?.toStringAsFixed(1) ?? '';
+      //   }
+      //   if (sliderVal < _realInsight.min) {
+      //     sliderVal = _realInsight.min;
+      //     half = _realInsight.min;
+      //     _offeredPriceController.text =
+      //         _realInsight.min?.toStringAsFixed(1) ?? '';
+      //   }
+      // } else if (_realInsight.suggested != null && _realInsight.suggested) {
+      //   sliderVal = _realInsight.userPrice.toInt().toDouble();
+      //   half = _realInsight.userPrice.toInt().toDouble();
+      //   _offeredPriceController.text = half?.toStringAsFixed(1) ?? '';
+      // } else {
+      //   Navigator.pop(context);
+      // }
+      // _setChancesOfConversion();
+      // if (sliderVal == null || sliderVal == 0) {
+      //   chancesPercent = 0;
+      // }
+      // _timer = Timer.periodic(Duration(milliseconds: 1200), (timer) {
+      //   if (_topMargin == 0) {
+      //     _topMargin = 3;
+      //   } else {
+      //     _topMargin = 0;
+      //   }
+      //   _streamForIcon.add(null);
+      // });
     }
   }
 
@@ -224,8 +224,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                                 fontSize: 14, color: PlunesColors.WHITECOLOR)),
                       )
                     : Container(),
+                _getBodyPartsSessionWidget(),
                 // _getInsuranceDetailsSection(),
-                (!_hasPrice)
+                1 == 1
                     ? Container()
                     : Container(
                         margin: EdgeInsets.only(top: 10),
@@ -846,9 +847,25 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 fontSize: 20, color: PlunesColors.WHITECOLOR)),
-                        Icon(
-                          Icons.info_outline,
-                          color: PlunesColors.WHITECOLOR.withOpacity(0.8),
+                        InkWell(
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return CustomWidgets().getInformativePopup(
+                                      globalKey: scaffoldKey,
+                                      message:
+                                          "Package Price is the Total amount for the Service at your Facility.");
+                                });
+                            return;
+                          },
+                          onDoubleTap: () {},
+                          child: Icon(
+                            Icons.info_outline,
+                            color: PlunesColors.WHITECOLOR.withOpacity(0.8),
+                          ),
                         )
                       ],
                     ),
@@ -889,9 +906,25 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
                                 fontSize: 20, color: PlunesColors.WHITECOLOR)),
-                        Icon(
-                          Icons.info_outline,
-                          color: PlunesColors.WHITECOLOR.withOpacity(0.8),
+                        InkWell(
+                          focusColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return CustomWidgets().getInformativePopup(
+                                      globalKey: scaffoldKey,
+                                      message:
+                                          "Offered Price is the discounted price of the service you're providing to your potential Patient.");
+                                });
+                            return;
+                          },
+                          onDoubleTap: () {},
+                          child: Icon(
+                            Icons.info_outline,
+                            color: PlunesColors.WHITECOLOR.withOpacity(0.8),
+                          ),
                         )
                       ],
                     ),
@@ -1214,7 +1247,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   }
 
   Widget _getSliderWidget() {
-    if (!_hasPrice) {
+    if (1 == 1) {
       return Container();
     }
     return Container(
@@ -1426,7 +1459,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   }
 
   Widget _getGraphWidget() {
-    if (!_hasPrice) {
+    if (1 == 1) {
       return Container();
     }
     return Container(
@@ -1516,6 +1549,78 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
       hasTextData = true;
     }
     return hasTextData;
+  }
+
+  Widget _getBodyPartsSessionWidget() {
+    if (1 != 1) {
+      return Container();
+    }
+    return Container(
+      height: AppConfig.verticalBlockSize * 8,
+      margin: EdgeInsets.only(
+          bottom: AppConfig.verticalBlockSize * 2,
+          top: AppConfig.verticalBlockSize * 2),
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return Container(
+            margin: EdgeInsets.only(right: 10),
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+              color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(right: 15),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment:MainAxisAlignment.center,
+                    children: [
+                      Text("Body Part",
+                          style: TextStyle(
+                              fontSize: 15, color: PlunesColors.BLACKCOLOR)),
+                      Container(
+                        margin: EdgeInsets.only(top: 4),
+                        child: Text(
+                          "Beard",
+                          style: TextStyle(
+                              fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment:MainAxisAlignment.center,
+                  children: [
+                    Text("Session",
+                        style: TextStyle(
+                            fontSize: 15, color: PlunesColors.BLACKCOLOR)),
+                    Container(
+                      margin: EdgeInsets.only(top: 4),
+                      child: Text(
+                        "* 3",
+                        style: TextStyle(
+                            fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: 5,
+      ),
+    );
   }
 }
 

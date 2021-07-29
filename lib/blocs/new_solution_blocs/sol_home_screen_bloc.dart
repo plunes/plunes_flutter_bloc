@@ -153,7 +153,8 @@ class HomeScreenMainBloc extends BlocBase {
       {String specialityId,
       bool shouldSortByNearest,
       String facilityType,
-      bool isInitialRequest = false}) async {
+      bool isInitialRequest = false,
+      bool isFromHomeScreen = false}) async {
     addIntoTopFacilityStream(RequestInProgress());
     if (isInitialRequest &&
         HomeScreenMainRepo().getTopFacilityModelCachedData() != null) {
@@ -164,7 +165,8 @@ class HomeScreenMainBloc extends BlocBase {
         facilityType: facilityType,
         shouldSortByNearest: shouldSortByNearest,
         specialityId: specialityId,
-        isInitialRequest: isInitialRequest);
+        isInitialRequest: isInitialRequest,
+        isFromHomeScreen: isFromHomeScreen);
     addIntoTopFacilityStream(result);
     return result;
   }

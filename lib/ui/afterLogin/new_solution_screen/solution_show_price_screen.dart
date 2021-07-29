@@ -545,6 +545,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
                                   return _getDialerWidget();
                                 }),
                             _getTypeOfFacilityWidget(),
+                            _getBodyPartsSessionWidget(),
                             _getFacilityDefinitionWidget(),
                             _getProfessionalListWidget(),
                             _getBenefitsWidget(),
@@ -1511,5 +1512,79 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
       return doctor?.newPrice?.first?.toStringAsFixed(1);
     }
     return PlunesStrings.NA;
+  }
+
+  Widget _getBodyPartsSessionWidget() {
+    if (1 != 1) {
+      return Container();
+    }
+    return Container(
+      height: AppConfig.verticalBlockSize * 8,
+      margin: EdgeInsets.only(
+          bottom: AppConfig.verticalBlockSize * 2,
+          top: AppConfig.verticalBlockSize * 1),
+      child: ListView.builder(
+        itemBuilder: (context, index) {
+          return Container(
+            margin: EdgeInsets.only(right: 10),
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(14)),
+              border: Border.all(
+                  color: PlunesColors.GREYCOLOR.withOpacity(0.6), width: 0.8),
+              color: PlunesColors.WHITECOLOR,
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(right: 15),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Body Part",
+                          style: TextStyle(
+                              fontSize: 15, color: PlunesColors.BLACKCOLOR)),
+                      Container(
+                        margin: EdgeInsets.only(top: 4),
+                        child: Text(
+                          "Beard",
+                          style: TextStyle(
+                              fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Session",
+                        style: TextStyle(
+                            fontSize: 15, color: PlunesColors.BLACKCOLOR)),
+                    Container(
+                      margin: EdgeInsets.only(top: 4),
+                      child: Text(
+                        "* 3",
+                        style: TextStyle(
+                            fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: 5,
+      ),
+    );
   }
 }

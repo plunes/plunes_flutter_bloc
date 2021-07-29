@@ -107,9 +107,11 @@ class Urls {
   static const GET_UPLOAD_PLOCKR_DATA_URL = 'report';
   static const GET_SHARABLE_LINK_FILE_URL = 'report/getShareableLink/';
   static const String UPDATE_TOKEN = "user/notificationTokenRefresh";
-  static const String UPDATE_TOKEN_PROF = "professional/notificationTokenRefresh";
+  static const String UPDATE_TOKEN_PROF =
+      "professional/notificationTokenRefresh";
   static const String NOTIFICATION_SWITCH = "user/notificationSwitch";
-  static const String NOTIFICATION_SWITCH_PROF = "professional/notificationSwitch";
+  static const String NOTIFICATION_SWITCH_PROF =
+      "professional/notificationSwitch";
   static const String HELP_QUERY_URL_FOR_DOC_HOS = "professional/enquiry";
   static const String HELP_QUERY_URL_FOR_USER = "user/enquiry";
   static const String GET_USER_SPECIFIC_SPECIALITY =
@@ -175,6 +177,8 @@ class Urls {
       "professional/insurancesByProfessionalId";
   static const String UPLOAD_INSURANCE_URL = "user/uploadInsurance";
   static const String TOP_FACILITY_URL = "solution/getTopFacilities";
+  static const String TOP_FACILITY_URL_FOR_HOME_SCREEN =
+      "solution/exploreForMap";
   static const String GET_ALL_SERVICE_BY_SPECIALITY_ID =
       "professional/getProfessionalServiceBySpecilityId";
   static const String FACILITY_HAVE_URL = mcmBaseUrl + "plunes/getcuration";

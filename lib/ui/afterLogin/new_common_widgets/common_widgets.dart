@@ -1530,12 +1530,27 @@ class CommonWidgets {
                                   service, solution.shouldNegotiate)
                               ? Expanded(
                                   flex: 3,
-                                  child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      height: 100,
-                                      width: 100,
-                                      child: Image.asset(
-                                          PlunesImages.timeMachineImage)),
+                                  child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          alignment: Alignment.centerLeft,
+                                          height: 100,
+                                          width: 100,
+                                          child: Image.asset(
+                                              PlunesImages.timeMachineImage)),
+                                      Container(
+                                        child: Text(
+                                          PlunesStrings
+                                              .gettingPriceForFacilityText,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: PlunesColors.BLACKCOLOR),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 )
                               : Expanded(
                                   flex: 3,
@@ -2022,12 +2037,27 @@ class CommonWidgets {
                                   service, solution.shouldNegotiate)
                               ? Expanded(
                                   flex: 3,
-                                  child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      height: 100,
-                                      width: 100,
-                                      child: Image.asset(
-                                          PlunesImages.timeMachineImage)),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          alignment: Alignment.centerLeft,
+                                          height: 100,
+                                          width: 100,
+                                          child: Image.asset(
+                                              PlunesImages.timeMachineImage)),
+                                      Container(
+                                        child: Text(
+                                          PlunesStrings
+                                              .gettingPriceForFacilityText,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: PlunesColors.BLACKCOLOR),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 )
                               : Expanded(
                                   flex: 3,
@@ -2514,12 +2544,27 @@ class CommonWidgets {
                                   service, solution.shouldNegotiate)
                               ? Expanded(
                                   flex: 3,
-                                  child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      height: 100,
-                                      width: 100,
-                                      child: Image.asset(
-                                          PlunesImages.timeMachineImage)),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          alignment: Alignment.centerLeft,
+                                          height: 100,
+                                          width: 100,
+                                          child: Image.asset(
+                                              PlunesImages.timeMachineImage)),
+                                      Container(
+                                        child: Text(
+                                          PlunesStrings
+                                              .gettingPriceForFacilityText,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: PlunesColors.BLACKCOLOR),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 )
                               : Expanded(
                                   flex: 3,
@@ -3017,12 +3062,27 @@ class CommonWidgets {
                                   service, solution.shouldNegotiate)
                               ? Expanded(
                                   flex: 3,
-                                  child: Container(
-                                      alignment: Alignment.centerLeft,
-                                      height: 100,
-                                      width: 100,
-                                      child: Image.asset(
-                                          PlunesImages.timeMachineImage)),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                          alignment: Alignment.centerLeft,
+                                          height: 100,
+                                          width: 100,
+                                          child: Image.asset(
+                                              PlunesImages.timeMachineImage)),
+                                      Container(
+                                        child: Text(
+                                          PlunesStrings
+                                              .gettingPriceForFacilityText,
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: PlunesColors.BLACKCOLOR),
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 )
                               : Expanded(
                                   flex: 3,
