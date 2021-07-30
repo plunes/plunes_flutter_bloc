@@ -1566,8 +1566,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
             margin: EdgeInsets.only(right: 10),
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             decoration: BoxDecoration(
+              border: Border.all(width: 1, color: PlunesColors.GREYCOLOR),
               borderRadius: BorderRadius.all(Radius.circular(14)),
-              color: Color(CommonMethods.getColorHexFromStr("#FBFBFB")),
+              color: Color(CommonMethods.getColorHexFromStr("#2D2C3E")),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -1578,17 +1579,17 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment:MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text("Body Part",
                           style: TextStyle(
-                              fontSize: 15, color: PlunesColors.BLACKCOLOR)),
+                              fontSize: 15, color: PlunesColors.WHITECOLOR)),
                       Container(
                         margin: EdgeInsets.only(top: 4),
                         child: Text(
                           "Beard",
                           style: TextStyle(
-                              fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                              fontSize: 18, color: PlunesColors.WHITECOLOR),
                         ),
                       )
                     ],
@@ -1597,17 +1598,17 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment:MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Session",
                         style: TextStyle(
-                            fontSize: 15, color: PlunesColors.BLACKCOLOR)),
+                            fontSize: 15, color: PlunesColors.WHITECOLOR)),
                     Container(
                       margin: EdgeInsets.only(top: 4),
                       child: Text(
                         "* 3",
                         style: TextStyle(
-                            fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                            fontSize: 18, color: PlunesColors.WHITECOLOR),
                       ),
                     )
                   ],

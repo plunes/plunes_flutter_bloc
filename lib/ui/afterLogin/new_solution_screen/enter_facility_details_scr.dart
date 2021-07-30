@@ -373,7 +373,7 @@ class _EnterAdditionalUserDetailScrState
               child: Column(
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: Row(
@@ -398,34 +398,38 @@ class _EnterAdditionalUserDetailScrState
                                     _getDropDownOfBodyParts()
                                   ],
                                 )),
-                            Expanded(
-                                flex: 5,
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 10),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: double.infinity,
-                                        child: Text(
-                                          "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.length > 1) ? _formDataModel?.data?.childrenKeys[1] : ""}",
-                                          textAlign: TextAlign.left,
-                                          maxLines: 2,
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              color: PlunesColors.BLACKCOLOR
-                                                  .withOpacity(0.8)),
-                                        ),
+                            _formItemList.first.sessionValues == null ||
+                                    _formItemList.first.sessionValues.isEmpty
+                                ? Container()
+                                : Expanded(
+                                    flex: 5,
+                                    child: Container(
+                                      margin: EdgeInsets.only(left: 10),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            width: double.infinity,
+                                            child: Text(
+                                              "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.length > 1) ? _formDataModel?.data?.childrenKeys[1] : ""}",
+                                              textAlign: TextAlign.left,
+                                              maxLines: 2,
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: PlunesColors.BLACKCOLOR
+                                                      .withOpacity(0.8)),
+                                            ),
+                                          ),
+                                          _formItemList.first.sessionValues ==
+                                                      null ||
+                                                  _formItemList.first
+                                                      .sessionValues.isEmpty
+                                              ? Container()
+                                              : _getSessionDropDown()
+                                        ],
                                       ),
-                                      _formItemList.first.sessionValues ==
-                                                  null ||
-                                              _formItemList
-                                                  .first.sessionValues.isEmpty
-                                          ? Container()
-                                          : _getSessionDropDown()
-                                    ],
-                                  ),
-                                )),
+                                    )),
                           ],
                         ),
                       ),
@@ -531,154 +535,149 @@ class _EnterAdditionalUserDetailScrState
                                                       ),
                                                     )),
                                               ))),
-                                          Expanded(
-                                              flex: 5,
-                                              child: Container(
-                                                margin:
-                                                    EdgeInsets.only(left: 10),
-                                                child: _formItemList[index]
-                                                                .sessionValues ==
-                                                            null ||
-                                                        _formItemList[index]
-                                                            .sessionValues
-                                                            .isEmpty
-                                                    ? Container()
-                                                    : Container(
-                                                        child: Card(
-                                                        margin: EdgeInsets.zero,
-                                                        elevation: 2,
-                                                        child: Container(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        5,
-                                                                    vertical:
-                                                                        5),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                                    gradient: LinearGradient(
-                                                                        colors: [
+                                          _formItemList[index].sessionValues ==
+                                                      null ||
+                                                  _formItemList[index]
+                                                      .sessionValues
+                                                      .isEmpty
+                                              ? Container()
+                                              : Expanded(
+                                                  flex: 5,
+                                                  child: Container(
+                                                    margin: EdgeInsets.only(
+                                                        left: 10),
+                                                    child: _formItemList[index]
+                                                                    .sessionValues ==
+                                                                null ||
+                                                            _formItemList[index]
+                                                                .sessionValues
+                                                                .isEmpty
+                                                        ? Container()
+                                                        : Container(
+                                                            child: Card(
+                                                            margin:
+                                                                EdgeInsets.zero,
+                                                            elevation: 2,
+                                                            child: Container(
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        horizontal:
+                                                                            5,
+                                                                        vertical:
+                                                                            5),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                        gradient:
+                                                                            LinearGradient(colors: [
                                                                   Color(CommonMethods
                                                                       .getColorHexFromStr(
                                                                           "#FEFEFE")),
                                                                   Color(CommonMethods
                                                                       .getColorHexFromStr(
                                                                           "#F6F6F6"))
-                                                                ],
-                                                                        begin: Alignment
-                                                                            .topCenter,
-                                                                        end: Alignment
-                                                                            .bottomCenter)),
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                ListView
-                                                                    .builder(
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
+                                                                ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    ListView
+                                                                        .builder(
+                                                                      padding: EdgeInsets.symmetric(
                                                                           horizontal:
                                                                               5),
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          innerIndex) {
-                                                                    if (innerIndex !=
-                                                                            0 &&
-                                                                        !_formItemList[index]
-                                                                            .isSessionListOpened) {
-                                                                      return Container();
-                                                                    }
-                                                                    return InkWell(
-                                                                      onTap:
-                                                                          () {
-                                                                        _formItemList[index]
-                                                                            .isSessionListOpened = !_formItemList[
-                                                                                index]
-                                                                            .isSessionListOpened;
-                                                                        _setState();
-                                                                        if (_formItemList[index].sessionValues[innerIndex] ==
-                                                                            _enterManually) {
-                                                                          _openTextEditingPopup(
-                                                                              _formItemList[index]);
-                                                                          return;
+                                                                      itemBuilder:
+                                                                          (context,
+                                                                              innerIndex) {
+                                                                        if (innerIndex !=
+                                                                                0 &&
+                                                                            !_formItemList[index].isSessionListOpened) {
+                                                                          return Container();
                                                                         }
-                                                                        _formItemList[index]
-                                                                            .sessionValue = _formItemList[index]
-                                                                                .sessionValues[innerIndex] ??
-                                                                            "";
-                                                                        _setState();
-                                                                      },
-                                                                      onDoubleTap:
-                                                                          () {},
-                                                                      child:
-                                                                          Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.end,
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.center,
-                                                                        children: [
-                                                                          Expanded(
-                                                                            child:
-                                                                                Container(
-                                                                              padding: const EdgeInsets.only(top: 4.0),
-                                                                              child: _formItemList[index].isSessionListOpened && _formItemList[index].sessionValues[innerIndex] == _enterManually
-                                                                                  ? Row(
-                                                                                      children: [
-                                                                                        Expanded(
-                                                                                          child: Text(
-                                                                                            "Enter",
-                                                                                            style: TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
-                                                                                          ),
+                                                                        return InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            _formItemList[index].isSessionListOpened =
+                                                                                !_formItemList[index].isSessionListOpened;
+                                                                            _setState();
+                                                                            if (_formItemList[index].sessionValues[innerIndex] ==
+                                                                                _enterManually) {
+                                                                              _openTextEditingPopup(_formItemList[index]);
+                                                                              return;
+                                                                            }
+                                                                            _formItemList[index].sessionValue =
+                                                                                _formItemList[index].sessionValues[innerIndex] ?? "";
+                                                                            _setState();
+                                                                          },
+                                                                          onDoubleTap:
+                                                                              () {},
+                                                                          child:
+                                                                              Row(
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.end,
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.center,
+                                                                            children: [
+                                                                              Expanded(
+                                                                                child: Container(
+                                                                                  padding: const EdgeInsets.only(top: 4.0),
+                                                                                  child: _formItemList[index].isSessionListOpened && _formItemList[index].sessionValues[innerIndex] == _enterManually
+                                                                                      ? Row(
+                                                                                          children: [
+                                                                                            Expanded(
+                                                                                              child: Text(
+                                                                                                "Enter",
+                                                                                                style: TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
+                                                                                              ),
+                                                                                            ),
+                                                                                            Icon(Icons.mode_edit, size: 18),
+                                                                                          ],
+                                                                                        )
+                                                                                      : Text(
+                                                                                          _formItemList[index].isSessionListOpened ? _formItemList[index].sessionValues[innerIndex] ?? "" : _formItemList[index].sessionValue ?? _formItemList[index].sessionValues.first ?? "",
+                                                                                          maxLines: 1,
+                                                                                          style: TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
                                                                                         ),
-                                                                                        Icon(Icons.mode_edit, size: 18),
-                                                                                      ],
+                                                                                ),
+                                                                              ),
+                                                                              innerIndex == 0 && _formItemList[index].sessionValues.isNotEmpty && _formItemList[index].sessionValues.length > 1
+                                                                                  ? InkWell(
+                                                                                      onTap: () {
+                                                                                        _formItemList[index].isSessionListOpened = !_formItemList[index].isSessionListOpened;
+                                                                                        _setState();
+                                                                                      },
+                                                                                      onDoubleTap: () {},
+                                                                                      child: Container(
+                                                                                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                                                                                        child: Icon(Icons.arrow_drop_down),
+                                                                                      ),
                                                                                     )
-                                                                                  : Text(
-                                                                                      _formItemList[index].isSessionListOpened ? _formItemList[index].sessionValues[innerIndex] ?? "" : _formItemList[index].sessionValue ?? _formItemList[index].sessionValues.first ?? "",
-                                                                                      maxLines: 1,
-                                                                                      style: TextStyle(fontSize: 16, color: PlunesColors.BLACKCOLOR),
-                                                                                    ),
-                                                                            ),
+                                                                                  : Container()
+                                                                            ],
                                                                           ),
-                                                                          innerIndex == 0 && _formItemList[index].sessionValues.isNotEmpty && _formItemList[index].sessionValues.length > 1
-                                                                              ? InkWell(
-                                                                                  onTap: () {
-                                                                                    _formItemList[index].isSessionListOpened = !_formItemList[index].isSessionListOpened;
-                                                                                    _setState();
-                                                                                  },
-                                                                                  onDoubleTap: () {},
-                                                                                  child: Container(
-                                                                                    padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                                                                                    child: Icon(Icons.arrow_drop_down),
-                                                                                  ),
-                                                                                )
-                                                                              : Container()
-                                                                        ],
-                                                                      ),
-                                                                    );
-                                                                  },
-                                                                  shrinkWrap:
-                                                                      true,
-                                                                  itemCount: _formItemList[
-                                                                          index]
-                                                                      .sessionValues
-                                                                      .length,
-                                                                ),
-                                                                Text(
-                                                                  "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.length > 1) ? _formDataModel?.data?.childrenKeys[1] : ""}",
-                                                                  maxLines: 1,
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          12,
-                                                                      color: Color(
-                                                                          CommonMethods.getColorHexFromStr(
-                                                                              "#797979"))),
-                                                                ),
-                                                              ],
-                                                            )),
-                                                      )),
-                                              ))
+                                                                        );
+                                                                      },
+                                                                      shrinkWrap:
+                                                                          true,
+                                                                      itemCount: _formItemList[
+                                                                              index]
+                                                                          .sessionValues
+                                                                          .length,
+                                                                    ),
+                                                                    Text(
+                                                                      "${(_formDataModel.data != null && _formDataModel.data.childrenKeys != null && _formDataModel.data.childrenKeys.length > 1) ? _formDataModel?.data?.childrenKeys[1] : ""}",
+                                                                      maxLines:
+                                                                          1,
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          color:
+                                                                              Color(CommonMethods.getColorHexFromStr("#797979"))),
+                                                                    ),
+                                                                  ],
+                                                                )),
+                                                          )),
+                                                  ))
                                         ],
                                       ),
                                     ),
@@ -724,10 +723,27 @@ class _EnterAdditionalUserDetailScrState
       child: SingleChildScrollView(
         child: Column(
           children: [
+            (widget.catalogueData.service != null &&
+                    widget.catalogueData.family != null &&
+                    (widget.catalogueData.service.trim().toLowerCase() !=
+                        widget.catalogueData.family.trim().toLowerCase()))
+                ? Container(
+                    margin: EdgeInsets.only(bottom: 7),
+                    width: double.infinity,
+                    child: Text(
+                      "${widget.catalogueData.service.trim()}",
+                      textAlign: TextAlign.left,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          fontSize: 20, color: PlunesColors.BLACKCOLOR),
+                    ),
+                  )
+                : Container(),
             Container(
               width: double.infinity,
               child: Text(
-                "${PlunesStrings.enterAdditionalDetails}${(widget.catalogueData.service != null && widget.catalogueData.family != null && (widget.catalogueData.service.trim().toLowerCase() != widget.catalogueData.family.trim().toLowerCase())) ? "${widget.catalogueData.service}" : "service"}",
+                "${PlunesStrings.enterAdditionalDetails + "medical treatment"}",
                 textAlign: TextAlign.left,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -2196,6 +2212,9 @@ class _EnterAdditionalUserDetailScrState
           elevation: 2,
           child: Container(
               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+              constraints: BoxConstraints(
+                  maxHeight: AppConfig.verticalBlockSize * 40,
+                  minHeight: AppConfig.verticalBlockSize * 1),
               decoration: BoxDecoration(
                   gradient: LinearGradient(colors: [
                 Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
@@ -2413,18 +2432,18 @@ class _EnterAdditionalUserDetailScrState
     }
     bool shouldShowButton = false;
     _formItemList.forEach((element) {
-      if (!element.isItemSeparated && element != _formItemList.first) {
+      if (element.isItemSeparated) {
         shouldShowButton = true;
       }
     });
-    if (!shouldShowButton) {
-      return Container();
-    }
     return Container(
-      margin: EdgeInsets.only(left: 10),
+      margin: EdgeInsets.only(left: 10, top: AppConfig.verticalBlockSize * 4.8),
       child: InkWell(
         onDoubleTap: () {},
         onTap: () {
+          if (!shouldShowButton) {
+            return;
+          }
           for (int index = 1; index < _formItemList.length; index++) {
             if (!_formItemList[index].isItemSeparated) {
               _formItemList[index].isItemSeparated = true;
@@ -2434,7 +2453,14 @@ class _EnterAdditionalUserDetailScrState
           _setState();
         },
         child: CustomWidgets().getRoundedButton(
-            "Add", 6, PlunesColors.PARROTGREEN, 8, 8, PlunesColors.WHITECOLOR),
+            "Add",
+            6,
+            shouldShowButton
+                ? PlunesColors.PARROTGREEN
+                : PlunesColors.GREYCOLOR,
+            8,
+            8,
+            PlunesColors.WHITECOLOR),
       ),
     );
   }
