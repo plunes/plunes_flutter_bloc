@@ -423,17 +423,6 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                             style: TextStyle(fontSize: 17),
                           ),
                         ),
-                        // Container(
-                        //   alignment: Alignment.topLeft,
-                        //   child: (catalogueData.createdAt == null ||
-                        //           catalogueData.createdAt == 0)
-                        //       ? Container()
-                        //       : Text(
-                        //           DateUtil.getDuration(catalogueData.createdAt),
-                        //           style: TextStyle(
-                        //               fontSize: 14,
-                        //               color: PlunesColors.GREYCOLOR)),
-                        // ),
                         StreamBuilder<Object>(
                             stream: _streamController?.stream,
                             builder: (context, snapshot) {
@@ -492,10 +481,16 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                               : Container(),
                         ),
                         (catalogueData != null &&
-                                catalogueData.hasUserReport != null &&
-                                catalogueData.hasUserReport &&
-                                catalogueData.userReportId != null &&
-                                catalogueData.userReportId.trim().isNotEmpty &&
+                                ((catalogueData.hasUserReport != null &&
+                                        catalogueData.hasUserReport &&
+                                        catalogueData.userReportId != null &&
+                                        catalogueData.userReportId
+                                            .trim()
+                                            .isNotEmpty) ||
+                                    (catalogueData.isServiceChildrenAvailable !=
+                                            null &&
+                                        catalogueData
+                                            .isServiceChildrenAvailable)) &&
                                 (!_isCardExpired(catalogueData)))
                             ? Container(
                                 width: double.infinity,
@@ -520,7 +515,8 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
                                                     builder: (context) =>
                                                         PreviousActivityReport(
                                                             catalogueData
-                                                                .userReportId)));
+                                                                .userReportId,
+                                                            catalogueData)));
                                         },
                                         onDoubleTap: () {},
                                         child: Container(
@@ -712,8 +708,9 @@ class _PreviousActivityState extends BaseState<PreviousActivity> {
 // ignore: must_be_immutable
 class PreviousActivityReport extends BaseActivity {
   String userReportId;
+  CatalogueData catalogueData;
 
-  PreviousActivityReport(this.userReportId);
+  PreviousActivityReport(this.userReportId, this.catalogueData);
 
   @override
   _PreviousActivityReportState createState() => _PreviousActivityReportState();
@@ -728,7 +725,12 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
 
   @override
   void initState() {
-    _isProcessing = true;
+    if ((widget.catalogueData.hasUserReport == null ||
+        !widget.catalogueData.hasUserReport)) {
+      _isProcessing = false;
+    } else {
+      _isProcessing = true;
+    }
     _prevMissSolutionBloc = PrevMissSolutionBloc();
     _getReport();
     super.initState();
@@ -755,22 +757,16 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
             widget.getAppBar(context, PlunesStrings.previousActivities, true),
         body: _isProcessing
             ? CustomWidgets().getProgressIndicator()
-            : (_userReport == null ||
-                    _userReport.success == null ||
-                    !(_userReport.success) ||
-                    _userReport.data == null ||
-                    _userReport.data.additionalDetails == null ||
-                    _userReport.data.additionalDetails.isEmpty)
-                ? CustomWidgets().errorWidget(
-                    _userReport?.message ?? _failureCause,
-                    buttonText: PlunesStrings.refresh,
-                    onTap: () => _getReport())
-                : _getWidgetBody(),
+            : _getWidgetBody(),
       ),
     );
   }
 
   void _getReport() {
+    if ((widget.catalogueData.hasUserReport == null ||
+        !widget.catalogueData.hasUserReport)) {
+      return;
+    }
     _failureCause = null;
     if (!_isProcessing) {
       _isProcessing = true;
@@ -807,7 +803,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                   Container(
                       margin: EdgeInsets.only(top: 5),
                       alignment: Alignment.topLeft,
-                      child: Text("Laser hair",
+                      child: Text(widget.catalogueData?.service ?? "",
                           maxLines: 2,
                           style: TextStyle(
                               color: PlunesColors.BLACKCOLOR, fontSize: 20))),
@@ -815,11 +811,28 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
                 ],
               ),
             ),
-            _getAdditionalDetailWidget(),
-            _getPreviousDetailWidget(),
-            _getPhotosWidget(),
-            _getVideoWidget(),
-            _getDocWidget()
+            ((widget.catalogueData.hasUserReport == null ||
+                    !widget.catalogueData.hasUserReport))
+                ? Container()
+                : (_userReport == null ||
+                        _userReport.success == null ||
+                        !(_userReport.success) ||
+                        _userReport.data == null ||
+                        _userReport.data.additionalDetails == null ||
+                        _userReport.data.additionalDetails.isEmpty)
+                    ? CustomWidgets().errorWidget(
+                        _userReport?.message ?? _failureCause,
+                        buttonText: PlunesStrings.refresh,
+                        onTap: () => _getReport())
+                    : Column(
+                        children: [
+                          _getAdditionalDetailWidget(),
+                          _getPreviousDetailWidget(),
+                          _getPhotosWidget(),
+                          _getVideoWidget(),
+                          _getDocWidget()
+                        ],
+                      )
           ],
         ),
       ),
@@ -827,7 +840,8 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
   }
 
   Widget _getBodyPartsSessionWidget() {
-    if (1 != 1) {
+    if (widget.catalogueData.serviceChildren == null ||
+        widget.catalogueData.serviceChildren.isEmpty) {
       return Container();
     }
     return Container(
@@ -837,6 +851,15 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
           top: AppConfig.verticalBlockSize * 2),
       child: ListView.builder(
         itemBuilder: (context, index) {
+          var bodyObj = widget.catalogueData.serviceChildren[index];
+          if ((bodyObj == null ||
+                  bodyObj.bodyPart == null ||
+                  bodyObj.bodyPart.trim().isEmpty) &&
+              (bodyObj == null ||
+                  bodyObj.sessionGrafts == null ||
+                  bodyObj.sessionGrafts.trim().isEmpty)) {
+            return Container();
+          }
           return Container(
             margin: EdgeInsets.only(right: 10),
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -850,52 +873,63 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                  margin: EdgeInsets.only(right: 15),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Body Part",
-                          style: TextStyle(
-                              fontSize: 15, color: PlunesColors.BLACKCOLOR)),
-                      Container(
-                        margin: EdgeInsets.only(top: 4),
-                        child: Text(
-                          "Beard",
-                          style: TextStyle(
-                              fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                (bodyObj != null &&
+                        bodyObj.bodyPart != null &&
+                        bodyObj.bodyPart.trim().isNotEmpty)
+                    ? Container(
+                        margin: EdgeInsets.only(right: 15),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Body Part",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: PlunesColors.BLACKCOLOR)),
+                            Container(
+                              margin: EdgeInsets.only(top: 4),
+                              child: Text(
+                                bodyObj?.bodyPart ?? "",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: PlunesColors.BLACKCOLOR),
+                              ),
+                            )
+                          ],
                         ),
                       )
-                    ],
-                  ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Session",
-                        style: TextStyle(
-                            fontSize: 15, color: PlunesColors.BLACKCOLOR)),
-                    Container(
-                      margin: EdgeInsets.only(top: 4),
-                      child: Text(
-                        "* 3",
-                        style: TextStyle(
-                            fontSize: 18, color: PlunesColors.BLACKCOLOR),
-                      ),
-                    )
-                  ],
-                ),
+                    : Container(),
+                (bodyObj != null &&
+                        bodyObj.sessionGrafts != null &&
+                        bodyObj.sessionGrafts.trim().isNotEmpty)
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Session",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: PlunesColors.BLACKCOLOR)),
+                          Container(
+                            margin: EdgeInsets.only(top: 4),
+                            child: Text(
+                              "* " + bodyObj?.sessionGrafts ?? "",
+                              style: TextStyle(
+                                  fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                            ),
+                          )
+                        ],
+                      )
+                    : Container(),
               ],
             ),
           );
         },
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: 5,
+        itemCount: widget.catalogueData.serviceChildren.length,
       ),
     );
   }

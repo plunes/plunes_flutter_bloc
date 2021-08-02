@@ -2,6 +2,7 @@ class CatalogueData {
   String service;
   String details;
   List<String> dnd;
+  List<ServiceChildren> serviceChildren;
   String category;
   bool isSelected = false,
       isActive,
@@ -9,7 +10,8 @@ class CatalogueData {
       toShowSearched,
       priceDiscovered,
       hasUserReport,
-      isFromProfileScreen;
+      isFromProfileScreen,
+      isServiceChildrenAvailable;
   String speciality;
   String specialityId;
   String serviceId, profId, doctorId;
@@ -59,7 +61,9 @@ class CatalogueData {
       this.family,
       this.technique,
       this.specialityPicture,
-      this.familyName});
+      this.familyName,
+      this.serviceChildren,
+      this.isServiceChildrenAvailable});
 
   CatalogueData.fromJson(Map<String, dynamic> json) {
     speciality = json['speciality'];
@@ -73,6 +77,13 @@ class CatalogueData {
         dnd.add(value?.toString());
       }
     }
+    if (json['serviceChildren'] != null) {
+      serviceChildren = new List<ServiceChildren>();
+      json['serviceChildren'].forEach((v) {
+        serviceChildren.add(new ServiceChildren.fromJson(v));
+      });
+    }
+    isServiceChildrenAvailable = json['isServiceChildren'];
     category = json['category'];
     isActive = json['active'] ?? true;
     createdAt = json['createdAt'];
@@ -108,6 +119,28 @@ class CatalogueData {
     data['active'] = this.isActive;
     data['createdAt'] = this.createdAt;
     data['maxDiscount'] = this.maxDiscount;
+    return data;
+  }
+}
+
+class ServiceChildren {
+  String sId;
+  String bodyPart;
+  String sessionGrafts;
+
+  ServiceChildren({this.sId, this.bodyPart, this.sessionGrafts});
+
+  ServiceChildren.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    bodyPart = json['bodyPart'];
+    sessionGrafts = json['session_grafts'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['bodyPart'] = this.bodyPart;
+    data['session_grafts'] = this.sessionGrafts;
     return data;
   }
 }

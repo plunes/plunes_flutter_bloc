@@ -1552,7 +1552,8 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
   }
 
   Widget _getBodyPartsSessionWidget() {
-    if (1 != 1) {
+    if (_realInsight.serviceChildren == null ||
+        _realInsight.serviceChildren.isEmpty) {
       return Container();
     }
     return Container(
@@ -1562,6 +1563,15 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
           top: AppConfig.verticalBlockSize * 2),
       child: ListView.builder(
         itemBuilder: (context, index) {
+          var bodyObj = _realInsight.serviceChildren[index];
+          if ((bodyObj == null ||
+                  bodyObj.bodyPart == null ||
+                  bodyObj.bodyPart.trim().isEmpty) &&
+              (bodyObj == null ||
+                  bodyObj.sessionGrafts == null ||
+                  bodyObj.sessionGrafts.trim().isEmpty)) {
+            return Container();
+          }
           return Container(
             margin: EdgeInsets.only(right: 10),
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
@@ -1574,52 +1584,63 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                  margin: EdgeInsets.only(right: 15),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Body Part",
-                          style: TextStyle(
-                              fontSize: 15, color: PlunesColors.WHITECOLOR)),
-                      Container(
-                        margin: EdgeInsets.only(top: 4),
-                        child: Text(
-                          "Beard",
-                          style: TextStyle(
-                              fontSize: 18, color: PlunesColors.WHITECOLOR),
+                (bodyObj != null &&
+                        bodyObj.bodyPart != null &&
+                        bodyObj.bodyPart.trim().isNotEmpty)
+                    ? Container(
+                        margin: EdgeInsets.only(right: 15),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Body Part",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: PlunesColors.BLACKCOLOR)),
+                            Container(
+                              margin: EdgeInsets.only(top: 4),
+                              child: Text(
+                                bodyObj?.bodyPart ?? "",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    color: PlunesColors.BLACKCOLOR),
+                              ),
+                            )
+                          ],
                         ),
                       )
-                    ],
-                  ),
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Session",
-                        style: TextStyle(
-                            fontSize: 15, color: PlunesColors.WHITECOLOR)),
-                    Container(
-                      margin: EdgeInsets.only(top: 4),
-                      child: Text(
-                        "* 3",
-                        style: TextStyle(
-                            fontSize: 18, color: PlunesColors.WHITECOLOR),
-                      ),
-                    )
-                  ],
-                ),
+                    : Container(),
+                (bodyObj != null &&
+                        bodyObj.sessionGrafts != null &&
+                        bodyObj.sessionGrafts.trim().isNotEmpty)
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Session",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: PlunesColors.BLACKCOLOR)),
+                          Container(
+                            margin: EdgeInsets.only(top: 4),
+                            child: Text(
+                              "* " + bodyObj?.sessionGrafts ?? "",
+                              style: TextStyle(
+                                  fontSize: 18, color: PlunesColors.BLACKCOLOR),
+                            ),
+                          )
+                        ],
+                      )
+                    : Container(),
               ],
             ),
           );
         },
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
-        itemCount: 5,
+        itemCount: _realInsight.serviceChildren.length,
       ),
     );
   }

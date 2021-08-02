@@ -43,6 +43,7 @@ class DocHosSolution {
   List<Services> services;
   int iV;
   bool shouldNegotiate;
+  List<ServiceChildren> serviceChildren;
 
   DocHosSolution(
       {this.booked,
@@ -57,7 +58,8 @@ class DocHosSolution {
       this.showAdditionalFacilities,
       this.expirationTimer,
       this.expiredAt,
-      this.shouldNegotiate});
+      this.shouldNegotiate,
+      this.serviceChildren});
 
   DocHosSolution.fromJson(Map<String, dynamic> json) {
     // print("serviceId ${json['serviceId']} solId ${json['_id']}");
@@ -72,6 +74,12 @@ class DocHosSolution {
       services = new List<Services>();
       json['services'].forEach((v) {
         services.add(new Services.fromJson(v));
+      });
+    }
+    if (json['serviceChildren'] != null) {
+      serviceChildren = new List<ServiceChildren>();
+      json['serviceChildren'].forEach((v) {
+        serviceChildren.add(new ServiceChildren.fromJson(v));
       });
     }
     iV = json['__v'];
@@ -299,6 +307,7 @@ class Doctors {
   num discount;
   num experience;
   List<num> newPrice;
+
   // List<String> category;
   List<TimeSlots> timeSlots;
   bool negotiating, zestMoney;

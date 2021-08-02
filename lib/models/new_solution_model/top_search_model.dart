@@ -79,7 +79,7 @@ class TopSearchData {
         }
       });
     }
-    tags = json['tags'];
+    // tags = json['tags'];
     definition = json['definition'];
     searchTags = json['search_tags'];
     category = json['category'];

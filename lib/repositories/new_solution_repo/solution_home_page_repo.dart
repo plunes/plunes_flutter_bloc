@@ -37,7 +37,7 @@ class HomeScreenMainRepo {
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       SolutionHomeScreenModel solutionHomeScreenModel =
-      SolutionHomeScreenModel.fromJson(result.response.data);
+          SolutionHomeScreenModel.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -51,7 +51,7 @@ class HomeScreenMainRepo {
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       WhyUsModel solutionHomeScreenModel =
-      WhyUsModel.fromJson(result.response.data);
+          WhyUsModel.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -65,7 +65,7 @@ class HomeScreenMainRepo {
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       WhyUsByIdModel solutionHomeScreenModel =
-      WhyUsByIdModel.fromJson(result.response.data);
+          WhyUsByIdModel.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -79,7 +79,7 @@ class HomeScreenMainRepo {
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       KnowYourProcedureModel solutionHomeScreenModel =
-      KnowYourProcedureModel.fromJson(result.response.data);
+          KnowYourProcedureModel.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -88,18 +88,12 @@ class HomeScreenMainRepo {
 
   Future<RequestState> getProfessionalsForService(String familyId,
       {bool shouldHitSpecialityApi = false,
-        bool shouldShowNearFacilities = false}) async {
+      bool shouldShowNearFacilities = false}) async {
     double lat, long;
     try {
-      if (UserManager()
-          .getUserDetails()
-          .latitude != null) {
-        lat = double.tryParse(UserManager()
-            .getUserDetails()
-            .latitude);
-        long = double.tryParse(UserManager()
-            .getUserDetails()
-            .latitude);
+      if (UserManager().getUserDetails().latitude != null) {
+        lat = double.tryParse(UserManager().getUserDetails().latitude);
+        long = double.tryParse(UserManager().getUserDetails().latitude);
       }
     } catch (e) {}
     Map<String, dynamic> map;
@@ -125,7 +119,7 @@ class HomeScreenMainRepo {
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       ProfessionDataModel solutionHomeScreenModel =
-      ProfessionDataModel.fromJson(result.response.data);
+          ProfessionDataModel.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -139,7 +133,7 @@ class HomeScreenMainRepo {
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       NewSpecialityModel solutionHomeScreenModel =
-      NewSpecialityModel.fromJson(result.response.data);
+          NewSpecialityModel.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -154,7 +148,7 @@ class HomeScreenMainRepo {
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       MediaContentPlunes solutionHomeScreenModel =
-      MediaContentPlunes.fromJson(result.response.data);
+          MediaContentPlunes.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
@@ -168,35 +162,31 @@ class HomeScreenMainRepo {
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       TopSearchOuterModel solutionHomeScreenModel =
-      TopSearchOuterModel.fromJson(result.response.data);
+          TopSearchOuterModel.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);
     }
   }
 
-  Future<RequestState> getTopFacilities({String specialityId,
-    bool shouldSortByNearest,
-    String facilityType,
-    bool isInitialRequest = false, bool isFromHomeScreen = false}) async {
+  Future<RequestState> getTopFacilities(
+      {String specialityId,
+      bool shouldSortByNearest,
+      String facilityType,
+      bool isInitialRequest = false,
+      bool isFromHomeScreen = false}) async {
     double lat, long;
     try {
-      if (UserManager()
-          .getUserDetails()
-          .latitude != null) {
-        lat = double.tryParse(UserManager()
-            .getUserDetails()
-            .latitude);
-        long = double.tryParse(UserManager()
-            .getUserDetails()
-            .latitude);
+      if (UserManager().getUserDetails().latitude != null) {
+        lat = double.tryParse(UserManager().getUserDetails().latitude);
+        long = double.tryParse(UserManager().getUserDetails().longitude);
       }
     } catch (e) {}
     final String all = "All";
     var result = await DioRequester().requestMethod(
-        url:isFromHomeScreen
-        ?Urls.TOP_FACILITY_URL_FOR_HOME_SCREEN
-        :Urls.TOP_FACILITY_URL,
+        url: isFromHomeScreen
+            ? Urls.TOP_FACILITY_URL_FOR_HOME_SCREEN
+            : Urls.TOP_FACILITY_URL,
         queryParameter: {
           "lat": lat,
           "lng": long,
@@ -210,7 +200,7 @@ class HomeScreenMainRepo {
         requestType: HttpRequestMethods.HTTP_GET);
     if (result.isRequestSucceed) {
       TopFacilityModel solutionHomeScreenModel =
-      TopFacilityModel.fromJson(result.response.data);
+          TopFacilityModel.fromJson(result.response.data);
       if (isInitialRequest &&
           solutionHomeScreenModel != null &&
           solutionHomeScreenModel.data != null &&

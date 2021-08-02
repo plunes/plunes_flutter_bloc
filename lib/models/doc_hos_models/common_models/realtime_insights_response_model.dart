@@ -1,4 +1,5 @@
 import 'package:plunes/models/new_solution_model/medical_file_upload_response_model.dart';
+import 'package:plunes/models/solution_models/solution_model.dart';
 
 class RealTimeInsightsResponse {
   bool success;
@@ -51,6 +52,7 @@ class RealInsight {
   List<DataPoint> dataPoints;
   List<Map<String, dynamic>> specialOffers;
   String category;
+  List<ServiceChildren> serviceChildren;
 
   @override
   String toString() {
@@ -92,7 +94,8 @@ class RealInsight {
       this.category,
       this.hasUserReport,
       this.expiredAt,
-      this.isPrice});
+      this.isPrice,
+      this.serviceChildren});
 
   RealInsight.fromJson(Map<String, dynamic> json) {
     solutionId = json['solutionId'];
@@ -118,6 +121,12 @@ class RealInsight {
       dataPoints = [];
       json['dataPoints'].forEach((v) {
         dataPoints.add(new DataPoint.fromJson(v));
+      });
+    }
+    if (json['serviceChildren'] != null) {
+      serviceChildren = new List<ServiceChildren>();
+      json['serviceChildren'].forEach((v) {
+        serviceChildren.add(new ServiceChildren.fromJson(v));
       });
     }
     compRate = json['competitionRate'];
