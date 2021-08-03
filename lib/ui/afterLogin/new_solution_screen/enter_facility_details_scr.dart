@@ -461,23 +461,32 @@ class _EnterAdditionalUserDetailScrState
                                               flex: 7,
                                               child: Container(
                                                   child: Card(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.all(
+                                                            Radius.circular(
+                                                                5))),
                                                 margin: EdgeInsets.zero,
                                                 elevation: 2,
                                                 child: Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
+                                                    padding: EdgeInsets
+                                                        .symmetric(
                                                             horizontal: 5,
                                                             vertical: 5),
                                                     decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                Radius.circular(
+                                                                    5)),
                                                         gradient: LinearGradient(
                                                             colors: [
-                                                          Color(CommonMethods
-                                                              .getColorHexFromStr(
-                                                                  "#FEFEFE")),
-                                                          Color(CommonMethods
-                                                              .getColorHexFromStr(
-                                                                  "#F6F6F6"))
-                                                        ],
+                                                              Color(CommonMethods
+                                                                  .getColorHexFromStr(
+                                                                      "#FEFEFE")),
+                                                              Color(CommonMethods
+                                                                  .getColorHexFromStr(
+                                                                      "#F6F6F6"))
+                                                            ],
                                                             begin: Alignment
                                                                 .topCenter,
                                                             end: Alignment
@@ -555,6 +564,11 @@ class _EnterAdditionalUserDetailScrState
                                                         ? Container()
                                                         : Container(
                                                             child: Card(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius: BorderRadius
+                                                                    .all(Radius
+                                                                        .circular(
+                                                                            5))),
                                                             margin:
                                                                 EdgeInsets.zero,
                                                             elevation: 2,
@@ -567,15 +581,17 @@ class _EnterAdditionalUserDetailScrState
                                                                             5),
                                                                 decoration:
                                                                     BoxDecoration(
-                                                                        gradient:
-                                                                            LinearGradient(colors: [
-                                                                  Color(CommonMethods
-                                                                      .getColorHexFromStr(
-                                                                          "#FEFEFE")),
-                                                                  Color(CommonMethods
-                                                                      .getColorHexFromStr(
-                                                                          "#F6F6F6"))
-                                                                ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                                                                        borderRadius:
+                                                                            BorderRadius.all(Radius.circular(
+                                                                                5)),
+                                                                        gradient: LinearGradient(
+                                                                            colors: [
+                                                                              Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                                                                              Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
+                                                                            ],
+                                                                            begin:
+                                                                                Alignment.topCenter,
+                                                                            end: Alignment.bottomCenter)),
                                                                 child: Column(
                                                                   crossAxisAlignment:
                                                                       CrossAxisAlignment
@@ -692,6 +708,7 @@ class _EnterAdditionalUserDetailScrState
                                                   .isItemSeparated;
                                           _formItemList[index]
                                               .isSessionListOpened = false;
+                                          _isBodyPartListOpened = false;
                                           _setState();
                                         },
                                       ),
@@ -1511,10 +1528,10 @@ class _EnterAdditionalUserDetailScrState
                   _showMessagePopup(PlunesStrings.selectValidDocWarningText);
                 }
               }).catchError((e) {
-                print(e);
+                // print(e);
               });
             } catch (e) {
-              print(e);
+              // print(e);
             }
           });
         },
@@ -2209,6 +2226,8 @@ class _EnterAdditionalUserDetailScrState
         margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
         child: Card(
           margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5))),
           elevation: 2,
           child: Container(
               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
@@ -2216,10 +2235,11 @@ class _EnterAdditionalUserDetailScrState
                   maxHeight: AppConfig.verticalBlockSize * 40,
                   minHeight: AppConfig.verticalBlockSize * 1),
               decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
                   gradient: LinearGradient(colors: [
-                Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
-                Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
-              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                    Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                    Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
+                  ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 itemBuilder: (context, index) {
@@ -2233,7 +2253,14 @@ class _EnterAdditionalUserDetailScrState
                       _isBodyPartListOpened = !_isBodyPartListOpened;
                       _setState();
                       if (index != 0) {
-                        _formItemList[index].isItemSeparated = true;
+                        var medicalObj = _formItemList[index];
+                        if (_formItemList
+                            .contains(_medicalFormDataSelectionObj)) {
+                          _formItemList.remove(_medicalFormDataSelectionObj);
+                        }
+                        _formItemList.remove(medicalObj);
+                        _formItemList.insert(0, medicalObj);
+                        // _formItemList[index].isItemSeparated = true;
                         _setState();
                       }
                     },
@@ -2276,14 +2303,17 @@ class _EnterAdditionalUserDetailScrState
         margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 2),
         child: Card(
           margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(5))),
           elevation: 2,
           child: Container(
               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
               decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
                   gradient: LinearGradient(colors: [
-                Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
-                Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
-              ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
+                    Color(CommonMethods.getColorHexFromStr("#FEFEFE")),
+                    Color(CommonMethods.getColorHexFromStr("#F6F6F6"))
+                  ], begin: Alignment.topCenter, end: Alignment.bottomCenter)),
               child: ListView.builder(
                 padding: EdgeInsets.symmetric(horizontal: 5),
                 itemBuilder: (context, index) {
@@ -2372,6 +2402,14 @@ class _EnterAdditionalUserDetailScrState
   }
 
   final String _enterManually = "Enter manually";
+  MedicalFormData _medicalFormDataSelectionObj = MedicalFormData(
+      bodyPartName: "Select",
+      sessionValues: [],
+      valueController: TextEditingController(),
+      isItemSeparated: false,
+      firstKey: "Select",
+      secondKey: "Select",
+      isSessionListOpened: false);
 
   void _initFormData() {
     if (_formDataModel != null &&
@@ -2381,14 +2419,7 @@ class _EnterAdditionalUserDetailScrState
       if (_formItemList == null || _formItemList.isEmpty) {
         _formItemList = [];
       }
-      _formItemList.add(MedicalFormData(
-          bodyPartName: "Select",
-          sessionValues: [],
-          valueController: TextEditingController(),
-          isItemSeparated: false,
-          firstKey: "Select",
-          secondKey: "Select",
-          isSessionListOpened: false));
+      _formItemList.add(_medicalFormDataSelectionObj);
       _formDataModel.data.children.forEach((element) {
         List<String> _possibleValues = [];
         if (element.possibleValues != null &&
@@ -2428,28 +2459,40 @@ class _EnterAdditionalUserDetailScrState
 
   Widget _getAddButton() {
     if (_formItemList.length == 1) {
-      return Container();
+      return Container(
+        margin:
+            EdgeInsets.only(left: 10, top: AppConfig.verticalBlockSize * 4.85),
+        child: InkWell(
+          child: Icon(Icons.close),
+          onDoubleTap: () {},
+          onTap: () {
+            _formItemList.first.isItemSeparated = false;
+            _formItemList.insert(0, _medicalFormDataSelectionObj);
+            _isBodyPartListOpened = false;
+            _setState();
+          },
+        ),
+      );
     }
     bool shouldShowButton = false;
-    _formItemList.forEach((element) {
-      if (element.isItemSeparated) {
-        shouldShowButton = true;
-      }
-    });
+    // _formItemList.forEach((element) {
+    if (_formItemList != null &&
+        _formItemList.isNotEmpty &&
+        !(_formItemList.first == _medicalFormDataSelectionObj)) {
+      shouldShowButton = true;
+    }
+    // });
     return Container(
-      margin: EdgeInsets.only(left: 10, top: AppConfig.verticalBlockSize * 4.8),
+      margin:
+          EdgeInsets.only(left: 10, top: AppConfig.verticalBlockSize * 4.85),
       child: InkWell(
         onDoubleTap: () {},
         onTap: () {
           if (!shouldShowButton) {
             return;
           }
-          for (int index = 1; index < _formItemList.length; index++) {
-            if (!_formItemList[index].isItemSeparated) {
-              _formItemList[index].isItemSeparated = true;
-              break;
-            }
-          }
+          _formItemList.first.isItemSeparated = true;
+          _formItemList.insert(0, _medicalFormDataSelectionObj);
           _setState();
         },
         child: CustomWidgets().getRoundedButton(
