@@ -846,6 +846,7 @@ class _PreviousActivityReportState extends BaseState<PreviousActivityReport> {
     }
     return Container(
       height: AppConfig.verticalBlockSize * 8,
+      alignment: Alignment.topLeft,
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2,
           top: AppConfig.verticalBlockSize * 2),

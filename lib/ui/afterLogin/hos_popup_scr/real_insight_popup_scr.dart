@@ -1558,6 +1558,7 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
     }
     return Container(
       height: AppConfig.verticalBlockSize * 8,
+      alignment: Alignment.topLeft,
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2,
           top: AppConfig.verticalBlockSize * 2),

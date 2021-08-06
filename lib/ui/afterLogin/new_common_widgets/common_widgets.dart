@@ -1531,8 +1531,9 @@ class CommonWidgets {
                               ? Expanded(
                                   flex: 3,
                                   child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                           alignment: Alignment.centerLeft,
@@ -2039,7 +2040,8 @@ class CommonWidgets {
                                   flex: 3,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                           alignment: Alignment.centerLeft,
@@ -2546,7 +2548,8 @@ class CommonWidgets {
                                   flex: 3,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                           alignment: Alignment.centerLeft,
@@ -3064,7 +3067,8 @@ class CommonWidgets {
                                   flex: 3,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                           alignment: Alignment.centerLeft,
@@ -4302,6 +4306,7 @@ class CommonWidgets {
                     topFacilityData.centres.isEmpty)
                 ? Container()
                 : Container(
+                    alignment: Alignment.topLeft,
                     height: AppConfig.verticalBlockSize * 6,
                     margin: EdgeInsets.symmetric(
                         horizontal: AppConfig.horizontalBlockSize * 2),

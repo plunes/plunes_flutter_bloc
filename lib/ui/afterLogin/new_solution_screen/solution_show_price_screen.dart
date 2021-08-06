@@ -1523,6 +1523,7 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
     }
     return Container(
       height: AppConfig.verticalBlockSize * 8,
+      alignment: Alignment.topLeft,
       margin: EdgeInsets.only(
           bottom: AppConfig.verticalBlockSize * 2,
           top: AppConfig.verticalBlockSize * 1),
