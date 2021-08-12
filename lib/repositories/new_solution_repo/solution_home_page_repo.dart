@@ -177,7 +177,8 @@ class HomeScreenMainRepo {
       bool isFromHomeScreen = false}) async {
     double lat, long;
     try {
-      if (UserManager().getUserDetails().latitude != null) {
+      if (UserManager().getUserDetails().latitude != null &&
+          !isFromHomeScreen) {
         lat = double.tryParse(UserManager().getUserDetails().latitude);
         long = double.tryParse(UserManager().getUserDetails().longitude);
       }

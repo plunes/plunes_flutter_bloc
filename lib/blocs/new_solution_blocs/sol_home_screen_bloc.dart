@@ -157,7 +157,7 @@ class HomeScreenMainBloc extends BlocBase {
       bool isFromHomeScreen = false}) async {
     addIntoTopFacilityStream(RequestInProgress());
     if (isInitialRequest &&
-        HomeScreenMainRepo().getTopFacilityModelCachedData() != null) {
+        HomeScreenMainRepo().getTopFacilityModelCachedData() != null && !isFromHomeScreen) {
       addIntoTopFacilityStream(RequestSuccess(
           response: HomeScreenMainRepo().getTopFacilityModelCachedData()));
     }

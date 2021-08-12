@@ -171,6 +171,11 @@ class _SolutionShowPriceScreenState extends BaseState<SolutionShowPriceScreen> {
   }
 
   void _getFacilities() {
+    if (widget.catalogueData != null &&
+        widget.catalogueData.isFromProfileScreen != null &&
+        widget.catalogueData.isFromProfileScreen) {
+      widget.catalogueData.isFromProfileScreen = null;
+    }
     _searchSolutionBloc.getDocHosSolution(widget.catalogueData,
         searchQuery: widget.searchQuery);
   }

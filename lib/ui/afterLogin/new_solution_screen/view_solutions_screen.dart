@@ -604,13 +604,6 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
       }
       await Future.delayed(Duration(seconds: 1));
       for (int index = 0; index < _globalKeys.length; index++) {
-        // RenderRepaintBoundary boundary =
-        //     _globalKeys[index].currentContext.findRenderObject();
-        // var image = await boundary?.toImage(pixelRatio: 2.0);
-        // ByteData byteData =
-        //     await image?.toByteData(format: ui.ImageByteFormat.png);
-        // var bytes = byteData.buffer.asUint8List();
-        // print("bytes are $bytes");
         await Future.delayed(Duration(milliseconds: 150));
         _markers.add(Marker(
             markerId: MarkerId(_customServices[index].sId),
