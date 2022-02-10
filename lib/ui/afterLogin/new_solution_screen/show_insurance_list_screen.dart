@@ -297,7 +297,7 @@ class _ShowInsuranceListScreenState extends BaseState<ShowInsuranceListScreen> {
             padding: const EdgeInsets.only(top: 5.0, bottom: 5.0, right: 5.0),
             child: Row(
               children: [
-                Icon(Icons.circle,
+                Icon(Icons.add_circle,
                     size: 8.5,
                     color: Color(CommonMethods.getColorHexFromStr("#25B281"))),
                 Expanded(

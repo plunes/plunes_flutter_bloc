@@ -883,7 +883,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     child: TextField(
                       textAlign: TextAlign.left,
                       controller: _priceController,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      inputFormatters: [
+                        // FilteringTextInputFormatter.digitsOnly
+                      ],
                       style: TextStyle(
                           fontSize: 12, color: PlunesColors.WHITECOLOR),
                       decoration: InputDecoration.collapsed(
@@ -942,8 +944,9 @@ class _RealInsightPopupState extends BaseState<RealInsightPopup> {
                     child: TextField(
                       textAlign: TextAlign.left,
                       controller: _offeredPriceController,
-                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                      style: TextStyle(
+                      inputFormatters: [
+                        // FilteringTextInputFormatter.digitsOnly],
+                      ],style: TextStyle(
                           fontSize: 12, color: PlunesColors.WHITECOLOR),
                       decoration: InputDecoration.collapsed(
                           hintText: "Enter price",

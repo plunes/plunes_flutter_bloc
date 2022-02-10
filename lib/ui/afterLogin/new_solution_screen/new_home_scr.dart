@@ -1137,6 +1137,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
+
+  // choose speciality method
   Widget _getSpecialityWidget() {
     return Container(
       color: PlunesColors.WHITECOLOR,
@@ -1196,6 +1198,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                             controller: _specialityScrollController,
                             padding: EdgeInsets.only(bottom: 15),
                             itemBuilder: (context, index) {
+                              print("-----00--------------$index-----${_newSpecialityModel.data[index]?.speciality}--\n${_newSpecialityModel.data[index]?.specialityIconImage}");
                               return _specialCard(
                                   _newSpecialityModel
                                           .data[index]?.specialityIconImage ??
@@ -1473,6 +1476,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     if (mounted) setState(() {});
   }
 
+  // choose speciality card itemview
   Widget _specialCard(
       String imageUrl, String label, String text, SpecData specialityData) {
     return Container(
@@ -1508,7 +1512,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 height: AppConfig.verticalBlockSize * 12,
                 padding: EdgeInsets.all(15),
                 child: ClipRRect(
-                  child: _imageFittedBox(imageUrl, boxFit: BoxFit.fill),
+                  child: Image.network(imageUrl),
+                  // child: _imageFittedBox(imageUrl, boxFit: BoxFit.fill),
                   borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(10),
                       topRight: Radius.circular(10)),

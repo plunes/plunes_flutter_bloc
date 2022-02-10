@@ -97,7 +97,7 @@ class _UploadVideoForTreatmentState extends BaseState<UploadVideoForTreatment>
                         borderRadius: BorderRadius.all(Radius.circular(20)),
                         child: LinearProgressIndicator(
                           backgroundColor: Colors.grey,
-                          minHeight: 22,
+                          // minHeight: 22,
                           value: progressValue == 150
                               ? (0.0)
                               : (progressValue / 100),

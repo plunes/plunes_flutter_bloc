@@ -135,7 +135,7 @@ class _ViewProcedureAndProfessionalState
                 Container(
                     child: IconButton(
                   padding: EdgeInsets.zero,
-                  splashRadius: 2,
+                  // splashRadius: 2,
                   onPressed: () {
                     Navigator.pop(context, false);
                     return;

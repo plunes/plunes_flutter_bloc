@@ -689,7 +689,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                 children: <Widget>[
                   Container(
                     child: Icon(
-                      Icons.add_location_rounded,
+                      Icons.add_location,
                       color: (focusNode != null && focusNode.hasFocus)
                           ? Color(CommonMethods.getColorHexFromStr("#1492E6"))
                           : Color(CommonMethods.getColorHexFromStr("#CCCCCC")),
@@ -795,7 +795,7 @@ class _SolutionBiddingScreenState extends BaseState<SolutionBiddingScreen>
                               borderRadius:
                                   BorderRadius.all(Radius.circular(5)),
                               child: Icon(
-                                Icons.filter_center_focus_rounded,
+                                Icons.filter_center_focus,
                                 size: 35,
                                 color: CommonMethods.getColorForSpecifiedCode(
                                     "#355789"),

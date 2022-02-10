@@ -1251,8 +1251,8 @@ class _NewExploreScreenState extends BaseState<NewExploreScreen> {
                                     (_selectedSpeciality != null &&
                                             _selectedSpeciality ==
                                                 _getSpecialityItems()[index].id)
-                                        ? Icons.radio_button_checked_rounded
-                                        : Icons.radio_button_off,
+                                        ? Icons.radio_button_checked
+                                        : Icons.radio_button_unchecked,
                                     color: (_selectedSpeciality != null &&
                                             _selectedSpeciality ==
                                                 _getSpecialityItems()[index].id)

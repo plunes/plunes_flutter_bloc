@@ -2579,7 +2579,7 @@ class _EnterAdditionalUserDetailScrState
                                     color: PlunesColors.BLACKCOLOR,
                                     fontSize: 15),
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly
+                                  // FilteringTextInputFormatter.digitsOnly
                                 ],
                                 decoration: InputDecoration.collapsed(
                                     hintText: "Enter Number"),

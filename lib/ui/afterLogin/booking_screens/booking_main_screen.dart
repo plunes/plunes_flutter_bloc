@@ -2224,7 +2224,7 @@ class _BookingMainScreenState extends BaseState<BookingMainScreen>
                                 child: TextField(
                                     controller: _ageController,
                                     inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly
+                                      // FilteringTextInputFormatter.digitsOnly
                                     ],
                                     maxLength: 3,
                                     style: TextStyle(

@@ -1026,7 +1026,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                           CrossAxisAlignment.center,
                                       children: [
                                         Icon(
-                                          Icons.location_on_outlined,
+                                          Icons.location_on,
                                           size: 20,
                                         ),
                                         Expanded(
@@ -1161,7 +1161,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Icon(
-                                Icons.group_add_outlined,
+                                Icons.group_add,
                                 color: PlunesColors.BLACKCOLOR,
                                 size: 18,
                               ),

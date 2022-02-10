@@ -3650,7 +3650,7 @@ class CommonWidgets {
                           ? Container(
                               margin: EdgeInsets.only(top: 10),
                               child: Text(
-                                "${docData.experience} year of experience",
+                                "${docData.experience} years of experience",
                                 maxLines: 2,
                                 style: TextStyle(
                                     fontSize: 16,
@@ -3669,7 +3669,7 @@ class CommonWidgets {
                                   Flexible(
                                     child: Text(
                                       "Consultation Fees ",
-                                      maxLines: 2,
+                                      maxLines: 1,
                                       style: TextStyle(
                                           fontSize: 16,
                                           color: Color(
@@ -3677,8 +3677,9 @@ class CommonWidgets {
                                                   "#000000"))),
                                     ),
                                   ),
-                                  Flexible(
-                                    child: Text(
+                                  // Flexible(
+                                  //   child:
+                                    Text(
                                       ": \u20B9 $price",
                                       maxLines: 2,
                                       style: TextStyle(
@@ -3688,7 +3689,7 @@ class CommonWidgets {
                                               CommonMethods.getColorHexFromStr(
                                                   "#000000"))),
                                     ),
-                                  ),
+                                  // ),
                                 ],
                               ),
                             ),
