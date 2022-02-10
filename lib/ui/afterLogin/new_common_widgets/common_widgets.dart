@@ -26,6 +26,7 @@ import 'package:plunes/res/StringsFile.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
 import 'package:readmore/readmore.dart';
 
+
 class CommonWidgets {
   static CommonWidgets _instance;
 
