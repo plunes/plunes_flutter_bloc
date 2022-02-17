@@ -1618,6 +1618,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
             horizontal: AppConfig.horizontalBlockSize * 26),
         child: InkWell(
           onTap: () {
+            print("------- open book oyour treatemnet");
             widget.openEnterDetailScreen();
           },
           onDoubleTap: () {},

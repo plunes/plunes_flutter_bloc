@@ -349,4 +349,8 @@ class PlunesImages {
   get checkIcon => 'assets/images/bid/check.png';
 
   get unCheckIcon => 'assets/images/bid/uncheck.png';
+
+ static String nabhImages = 'assets/images/nabh_logo.png';
+ static String jciImages = 'assets/images/jci_logo.png';
+
 }

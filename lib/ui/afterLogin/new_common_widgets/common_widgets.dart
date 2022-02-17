@@ -3743,8 +3743,10 @@ class CommonWidgets {
                             onDoubleTap: () {},
                             onTap: () {
                               if (func != null) {
+                                print("-2-22------ open book oyour treatemnet");
                                 func();
                               }
+                              print("-2else-22------ open book oyour treatemnet");
                             },
                             focusColor: Colors.transparent,
                             splashColor: Colors.transparent,
@@ -4270,6 +4272,8 @@ class CommonWidgets {
                     height: AppConfig.verticalBlockSize * 5,
                     child: ListView.builder(
                       itemBuilder: (context, index) {
+                        print("-----images");
+                        print(topFacilityData.accreditationImage);
                         return Container(
                           margin: EdgeInsets.only(right: 10),
                           child: Row(
@@ -4281,9 +4285,10 @@ class CommonWidgets {
                                   height: 24,
                                   width: 24,
                                   alignment: Alignment.centerLeft,
-                                  child: CustomWidgets().getImageFromUrl(
-                                      topFacilityData.accreditationImage ??
-                                          "")),
+                                  child: null != topFacilityData.accreditationImage ? CustomWidgets().getImageFromUrl(
+                                      topFacilityData.accreditationImage ?? "" ) :
+                                  CustomWidgets().getImageFromAsset(index==0 ? PlunesImages.nabhImages : PlunesImages.jciImages)
+                              ),
                               Container(
                                 alignment: Alignment.centerLeft,
                                 child: Text(

@@ -29,6 +29,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/services.dart';
 import 'package:plunes/ui/afterLogin/solution_screens/choose_more_facilities_screen.dart';
 
+
+// map screen book facitlity -> bottom two button addmore facility
 // ignore: must_be_immutable
 class ViewSolutionsScreen extends BaseActivity {
   final String searchQuery, reportId;
@@ -337,6 +339,7 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    // this is add more facility button
                     _getDiscoverMoreFacilitiesButton(),
                     _hasDiscoverMoreFacilityButton()
                         ? Flexible(child: _getDiscoverPriceButton())
@@ -421,7 +424,8 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                   AppConfig.horizontalBlockSize * 3,
                   AppConfig.verticalBlockSize * 1,
                   PlunesColors.WHITECOLOR,
-                  hasBorder: false),
+                  hasBorder: false,
+                fontSize: 14,),
             );
           }),
     );
@@ -736,7 +740,8 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
                   Color(CommonMethods.getColorHexFromStr("#25B281")),
                   borderColor:
                       Color(CommonMethods.getColorHexFromStr("#25B281")),
-                  hasBorder: true),
+                  hasBorder: true,
+              fontSize: 14,),
             ),
           ),
         ),

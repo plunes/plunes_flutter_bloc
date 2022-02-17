@@ -30,6 +30,9 @@ class SubmitMedicalDetailRepo {
     if (result.isRequestSucceed) {
       bool isSuccess = false;
       String reportData;
+
+      print("response--->${result.response}");
+
       if (result.response != null &&
           result.response.data != null &&
           result.response.data["success"] != null) {

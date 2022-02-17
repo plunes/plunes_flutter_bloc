@@ -571,6 +571,15 @@ class CustomWidgets {
     );
   }
 
+  Widget getImageFromAsset(final String imageUrl,
+      {BoxFit boxFit = BoxFit.contain, String placeHolderPath}) {
+//    print("file url is $imageUrl");
+    return Image.asset(
+      imageUrl,
+      fit: boxFit,
+    );
+  }
+
   Widget getRoundedButton(
       String buttonName,
       double cornerPadding,
@@ -736,6 +745,8 @@ class CustomWidgets {
       bool isSizeLess = false,
       bool shouldNotShowImage = false,
       String imagePath}) {
+
+    print("-------working no service available------>$failureCause---->$imagePath-");
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

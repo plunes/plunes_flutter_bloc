@@ -182,6 +182,12 @@ class _EnterAdditionalUserDetailScrState
           } else if (snapshot.data is RequestInProgress) {
             return CustomWidgets().getProgressIndicator();
           }
+
+          print("-------data-----------response");
+          print("-----${_formDataModel.success}");
+          print("-----${_failedMessage}");
+          print("-----${_formDataModel.data}");
+
           return (_formDataModel == null ||
                   (_formDataModel.success != null && !_formDataModel.success))
               ? CustomWidgets().errorWidget(_failedMessage,
@@ -199,6 +205,7 @@ class _EnterAdditionalUserDetailScrState
           } else if (snapshot.data is RequestSuccess) {
             RequestSuccess data = snapshot.data;
             if (data.response != null && data.response) {
+              print("-------working------${data.requestCode}-\n\n---response-----${data.response}-\n\n---data-->${data?.additionalData?.toString()}");
               _navigateToNextScreen(data?.additionalData?.toString());
             }
             _submitUserMedicalDetailBloc.addIntoSubmitMedicalDetailStream(null);
@@ -1646,13 +1653,15 @@ class _EnterAdditionalUserDetailScrState
                         splashColor: Colors.transparent,
                         onDoubleTap: () {},
                         onTap: () {
-                          if (_hasFormDataList() &&
-                              _pageController.page.toInt() == 2) {
+                          print("asdf");
+                          if (_hasFormDataList() && _pageController.page.toInt() == 2) {
+                            print("asdf==2");
                             _submitUserDetail();
-                          } else if (!_hasFormDataList() &&
-                              _pageController.page.toInt() == 1) {
+                          } else if (!_hasFormDataList() && _pageController.page.toInt() == 1) {
+                            print("asdf==1");
                             _submitUserDetail();
                           } else {
+                            print("asdf==else");
                             _removeFocus();
                             _pageController
                                 .nextPage(
@@ -2041,8 +2050,7 @@ class _EnterAdditionalUserDetailScrState
   void _submitUserDetail() {
     if (!_isNecessaryDataFilled()) {
       _pageController
-          .animateToPage(0,
-              duration: Duration(milliseconds: 500), curve: Curves.easeInOut)
+          .animateToPage(0, duration: Duration(milliseconds: 500), curve: Curves.easeInOut)
           .then((value) {
         _pageStream.add(null);
       });
@@ -2113,10 +2121,10 @@ class _EnterAdditionalUserDetailScrState
   }
 
   void _navigateToNextScreen(String reportId) {
-    // print("report id is $reportId");
     Future.delayed(Duration(milliseconds: 10)).then((value) {
       widget.catalogueData.userReportId = reportId;
       if (isFromProfileScreenAndPriceAvailable()) {
+        print("report id is iffffff -> $reportId");
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -2125,6 +2133,7 @@ class _EnterAdditionalUserDetailScrState
                     catalogueData: widget.catalogueData)));
         return;
       }
+      print("report id is elseelse -> $reportId");
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(

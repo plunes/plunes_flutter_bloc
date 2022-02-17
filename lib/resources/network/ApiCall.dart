@@ -64,7 +64,7 @@ class ApiCall implements CallBackListener {
             .then((http.Response response) {
           onlyOnce = false;
           final String res = response.body;
-          print("result=res============" + res.toString());
+          print("result=res============67" + res.toString());
           statusCode = response.statusCode;
           resultFinal = _decoder.convert(res);
           if (isLoader) Navigator.pop(mContextLoader);
@@ -82,7 +82,7 @@ class ApiCall implements CallBackListener {
             .then((http.Response response) {
           onlyOnce = false;
           final String res = response.body;
-          print("result=res============" + res.toString());
+          print("result=res============85" + res.toString());
           statusCode = response.statusCode;
           resultFinal = _decoder.convert(res);
           if (isLoader) Navigator.pop(mContextLoader);
@@ -100,7 +100,7 @@ class ApiCall implements CallBackListener {
           .then((http.Response response) {
         onlyOnce = false;
         final String res = response.body;
-        print("result=res============" + res.toString());
+        print("result=res============103" + res.toString());
         statusCode = response.statusCode;
         resultFinal = _decoder.convert(res);
         if (isLoader) Navigator.pop(mContextLoader);

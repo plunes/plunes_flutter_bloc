@@ -116,6 +116,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/
     - assets/send.png
     - assets/gif/loading.gif
     - assets/send_active.png
