@@ -47,6 +47,7 @@ class DioRequester {
       bool isMultipartEnabled = false}) async {
     RequestOutput response;
     try {
+      print(url);
       AppLog.printLog(_dioClient.options.baseUrl + url);
       AppLog.printLog(_debug + _postData + " $postData");
       print(_debug + _paramData + " $queryParameter");
@@ -64,6 +65,8 @@ class DioRequester {
       if (isMultipartEnabled) {
         options.contentType = "multipart/form-data";
       }
+
+
       Response response = await _dioClient.request(url,
           data: postData,
           queryParameters: queryParameter,
@@ -73,6 +76,21 @@ class DioRequester {
           fileUploadProgress(sent / total * 100);
         }
       });
+
+
+      print("result.statusCode----->all_common_data");
+      print(requestType);
+      print(_dioClient.options.baseUrl + url);
+      print(url);
+      print(accessToken);
+      print(postData);
+      print(_postData);
+      print(response.statusCode);
+      print(response.request);
+      print(response.request.data);
+      print(response.data);
+      print(response.statusMessage);
+
       AppLog.printLog("Response occurred ${response.data.toString()}");
       return ResponseStatusCodeHandler()
           .checkRequestResponseStatusCode(response);

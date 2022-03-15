@@ -35,6 +35,10 @@ class HomeScreenMainRepo {
         url: Urls.GET_HOME_SCREEN_CATEGORY_DATA_URL,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
+    print("result.statusCode----->9");
+    print(result.statusCode);
+    print(result.isRequestSucceed);
+    print(result.response);
     if (result.isRequestSucceed) {
       SolutionHomeScreenModel solutionHomeScreenModel =
           SolutionHomeScreenModel.fromJson(result.response.data);
@@ -49,6 +53,10 @@ class HomeScreenMainRepo {
         url: Urls.GET_WHY_US_URL,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
+    print("result.statusCode----->8");
+    print(result.statusCode);
+    print(result.isRequestSucceed);
+    print(result.response);
     if (result.isRequestSucceed) {
       WhyUsModel solutionHomeScreenModel =
           WhyUsModel.fromJson(result.response.data);
@@ -63,6 +71,10 @@ class HomeScreenMainRepo {
         url: Urls.GET_WHY_US_BY_ID_URL + "$cardId",
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
+    print("result.statusCode----->7");
+    print(result.statusCode);
+    print(result.isRequestSucceed);
+    print(result.response);
     if (result.isRequestSucceed) {
       WhyUsByIdModel solutionHomeScreenModel =
           WhyUsByIdModel.fromJson(result.response.data);
@@ -77,6 +89,11 @@ class HomeScreenMainRepo {
         url: Urls.KNOW_YOUR_PROCEDURE_URL,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
+
+    print("result.statusCode----->6");
+    print(result.statusCode);
+    print(result.isRequestSucceed);
+    print(result.response);
     if (result.isRequestSucceed) {
       KnowYourProcedureModel solutionHomeScreenModel =
           KnowYourProcedureModel.fromJson(result.response.data);
@@ -86,7 +103,8 @@ class HomeScreenMainRepo {
     }
   }
 
-  Future<RequestState> getProfessionalsForService(String familyId,
+  // for facility newar you and all
+  Future<RequestState> getProfessionalsForService(String familyId, String familyName,
       {bool shouldHitSpecialityApi = false,
       bool shouldShowNearFacilities = false}) async {
     double lat, long;
@@ -100,8 +118,8 @@ class HomeScreenMainRepo {
     if (shouldHitSpecialityApi) {
       map = {
         "specialityId": familyId,
-        "longitude": shouldShowNearFacilities ? long : null,
-        "latitude": shouldShowNearFacilities ? lat : null
+        "longitude": shouldShowNearFacilities ? long : "77.1025",
+        "latitude": shouldShowNearFacilities ? lat : "28.704"
       };
     } else {
       map = {
@@ -112,11 +130,22 @@ class HomeScreenMainRepo {
     }
     var result = await DioRequester().requestMethod(
         url: shouldHitSpecialityApi
-            ? Urls.GET_PROFESSIONAL_FOR_COMMON_SPECIALITY
+            ? Urls.getProfessionalForCommaSpeciality(familyName)
             : Urls.GET_PROFESSIONAL_FOR_SERVICE_URL,
         headerIncluded: true,
         queryParameter: map,
         requestType: HttpRequestMethods.HTTP_GET);
+
+
+    print("result.statusCode----->1");
+    print(Urls.getProfessionalForCommaSpeciality(familyName));
+    print(familyName);
+    print(shouldHitSpecialityApi);
+    print(map);
+    print(result.statusCode);
+    print(result.isRequestSucceed);
+    print(result.response);
+
     if (result.isRequestSucceed) {
       ProfessionDataModel solutionHomeScreenModel =
           ProfessionDataModel.fromJson(result.response.data);
@@ -131,6 +160,11 @@ class HomeScreenMainRepo {
         url: Urls.GET_COMMON_SPECIALITIES_URL,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
+
+    print("result.statusCode----->2");
+    print(result.statusCode);
+    print(result.isRequestSucceed);
+    print(result.response);
     if (result.isRequestSucceed) {
       NewSpecialityModel solutionHomeScreenModel =
           NewSpecialityModel.fromJson(result.response.data);
@@ -146,6 +180,11 @@ class HomeScreenMainRepo {
         headerIncluded: true,
         queryParameter: {"mediaType": mediaType},
         requestType: HttpRequestMethods.HTTP_GET);
+
+    print("result.statusCode----->3");
+    print(result.statusCode);
+    print(result.isRequestSucceed);
+    print(result.response);
     if (result.isRequestSucceed) {
       MediaContentPlunes solutionHomeScreenModel =
           MediaContentPlunes.fromJson(result.response.data);
@@ -160,6 +199,11 @@ class HomeScreenMainRepo {
         url: Urls.TOP_SEARCH_URL,
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
+
+    print("result.statusCode----->5");
+    print(result.statusCode);
+    print(result.isRequestSucceed);
+    print(result.response);
     if (result.isRequestSucceed) {
       TopSearchOuterModel solutionHomeScreenModel =
           TopSearchOuterModel.fromJson(result.response.data);
@@ -199,6 +243,12 @@ class HomeScreenMainRepo {
         },
         headerIncluded: true,
         requestType: HttpRequestMethods.HTTP_GET);
+
+    print("result.statusCode----->4");
+    print(result.statusCode);
+    print(result.isRequestSucceed);
+    print(result.response);
+    print(isFromHomeScreen);
     if (result.isRequestSucceed) {
       TopFacilityModel solutionHomeScreenModel =
           TopFacilityModel.fromJson(result.response.data);

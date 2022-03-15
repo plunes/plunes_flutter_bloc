@@ -558,7 +558,7 @@ class CustomWidgets {
 
   Widget getImageFromUrl(final String imageUrl,
       {BoxFit boxFit = BoxFit.contain, String placeHolderPath}) {
-//    print("file url is $imageUrl");
+    print("file-->url is $imageUrl");
     return CachedNetworkImage(
       imageUrl: imageUrl ?? PlunesStrings.NA,
       fit: boxFit,
@@ -746,7 +746,6 @@ class CustomWidgets {
       bool shouldNotShowImage = false,
       String imagePath}) {
 
-    print("-------working no service available------>$failureCause---->$imagePath-");
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

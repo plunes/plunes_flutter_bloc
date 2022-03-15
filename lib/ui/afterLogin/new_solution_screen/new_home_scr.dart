@@ -292,6 +292,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     }
   }
 
+  // top rated facilities with us
   Widget _getTopFacilitiesWidget() {
     return Container(
       margin: EdgeInsets.only(
@@ -305,7 +306,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             margin: EdgeInsets.symmetric(
                 vertical: AppConfig.verticalBlockSize * 2.2),
             child: _sectionHeading(
-                _solutionHomeScreenModel?.topFacilities ?? 'Top facilities'),
+                _solutionHomeScreenModel?.topFacilities+"" ?? 'Top facilities'),
           ),
           StatefulBuilder(builder: (context, newState) {
             return FutureBuilder<RequestState>(
@@ -685,7 +686,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       ],
     );
   }
-
+// onsultation proced, test row
   Widget _servicesRow() {
     return Container(
       color: PlunesColors.WHITECOLOR,
@@ -705,6 +706,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
+  //consultation procedures test box
   Widget _servicesButtonCard(String url, String label, HomeScreenButtonInfo e) {
     return Expanded(
       child: InkWell(

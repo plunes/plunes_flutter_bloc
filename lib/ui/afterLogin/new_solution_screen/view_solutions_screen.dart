@@ -146,6 +146,9 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
               _failedMessage = _reqFailObj?.failureCause;
               _searchSolutionBloc.addIntoDocHosStream(null);
             }
+
+            print("--------------------------------------------ErrorWidget");
+            print("------------>-------------------${_failedMessage}-------------${_searchedDocResults?.msg}");
             return (_searchedDocResults == null ||
                     (_searchedDocResults.success != null &&
                         !_searchedDocResults.success) ||

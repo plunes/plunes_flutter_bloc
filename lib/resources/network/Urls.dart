@@ -188,6 +188,14 @@ class Urls {
       "catalogue/getServiceBySpecialityId";
   static const String GET_PROFESSIONAL_FOR_COMMON_SPECIALITY =
       "user/getProfessionalsFromCommonSpeciality";
+
+
+  static String getProfessionalForCommaSpeciality(String serviceName, [String lat, String long]){
+    return "solution/exploreForMap?speciality=$serviceName&serviceId=&locality=All&lat$lat=&lng=$long";
+  }
+
+  static const String GET_PROFESSIONAL_FOR_COMMON_SPECIALITY2 =
+      "solution/exploreForMap?speciality=Proctology&serviceId=&locality=All&lat=&lng=";
   static const String GET_REPORT_BY_REPORT_ID = "user/getReportByReportId";
   static const String BANK_OFFER_URL = mcmBaseUrl + "plunes/getBankOffers";
   static const String GET_FORM_DATA_ON_FILL_MEDICAL_DETAIL_SCREEN =

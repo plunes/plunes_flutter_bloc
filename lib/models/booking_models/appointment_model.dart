@@ -132,12 +132,17 @@ class AppointmentModel {
       this.insuranceDetails});
 
   AppointmentModel.fromJson(Map<String, dynamic> json) {
-    print("json['paymentOptions'] ${json['paymentOptions']}");
+    // print("json['paymentOptions'] ${json['paymentOptions']}");
     professionalId = json['professionalId'];
     solutionServiceId = json['solutionServiceId'];
     serviceId = json['serviceId'];
     professionalName = json['professionalName'];
-    professionalAddress = json['professionalAddress'];
+
+    try {
+      professionalAddress = json['professionalAddress'];
+    } catch (e) {
+      professionalAddress = json['professionalAddress'][0];
+    }
     professionalMobileNumber = json['professionalMobileNumber'];
     professionalImageUrl = json['professionalImageUrl '];
     userName = json['userName'];
@@ -177,14 +182,22 @@ class AppointmentModel {
     }
     visitAgain = json['visitAgain'];
     serviceType = json['serviceType'];
-    if (json['location'] != null &&
-        json['location']['coordinates'] != null &&
-        json['location']['coordinates'].length == 2) {
-      lat = json['location']['coordinates'][1]?.toString();
-      long = json['location']['coordinates'][0]?.toString();
-    }
+    // if (json['location'] != null && --------------------------------------------------
+    //     json['location']['coordinates'] != null &&
+    //     json['location']['coordinates'].length == 2) {
+    //   lat = json['location']['coordinates'][1]?.toString();
+    //   long = json['location']['coordinates'][0]?.toString();
+    // }
+    lat = "json['location']['coordinates'][1]?.toString()";
+    long =
+        "json['location']['coordinates'][0]?.toString()"; // ----------------------
     serviceProviderType = json['serviceProviderType'];
-    isCentre = json['isCenter'];
+
+    try {
+      isCentre = json['isCenter'];
+    } catch (e) {
+      isCentre = false;
+    }
     alternateNumber = json['alternateNumber'];
     centreNumber = json['centerMobileNumber'];
     adminHosNumber = json['adminMobileNumber'];
@@ -196,9 +209,11 @@ class AppointmentModel {
     if (json['paymentOptions'] != null && json['paymentOptions'].isNotEmpty) {
       paymentOptions = json['paymentOptions'].cast<num>();
     }
-    userImage = json["userImageUrl"];
-    if (json["insuranceDetails"] != null) {
-      insuranceDetails = InsuranceDetails.fromJson(json["insuranceDetails"]);
+    userImage = json['userImageUrl'];
+
+    if (json['insuranceDetails'] != null) {
+      insuranceDetails =
+          InsuranceDetails.fromJson(json['insuranceDetails']);
     }
   }
 
@@ -309,9 +324,16 @@ class InsuranceDetails {
       this.insurancePolicy});
 
   InsuranceDetails.fromJson(Map<String, dynamic> json) {
-    insuranceId = json['insuranceId'];
     policyNumber = json['policyNumber'];
-    insuranceCard = json['insuranceCard'];
+    try {
+      insuranceCard = json['insuranceCard'];
+    } catch (e) {
+      if(json['insuranceCard'].toString()=="[]") {
+        insuranceCard = "";
+      } else {
+         insuranceCard = json['insuranceCard'][0];
+      }
+    }
     insurancePolicy = json['insurancePolicy'];
     insurancePartner = json['insurancePartner'];
   }

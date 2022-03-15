@@ -1653,15 +1653,14 @@ class _EnterAdditionalUserDetailScrState
                         splashColor: Colors.transparent,
                         onDoubleTap: () {},
                         onTap: () {
-                          print("asdf");
                           if (_hasFormDataList() && _pageController.page.toInt() == 2) {
-                            print("asdf==2");
+
                             _submitUserDetail();
                           } else if (!_hasFormDataList() && _pageController.page.toInt() == 1) {
-                            print("asdf==1");
+
                             _submitUserDetail();
                           } else {
-                            print("asdf==else");
+
                             _removeFocus();
                             _pageController
                                 .nextPage(

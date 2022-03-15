@@ -70,6 +70,7 @@ class _ViewProcedureAndProfessionalState
 
   _getProfessionals() {
     _homeScreenMainBloc.getProfessionalsForService(widget.procedureData.sId,
+        widget.procedureData.familyName,
         shouldHitSpecialityApi: (widget.shouldUseSpecializationApi != null &&
             widget.shouldUseSpecializationApi),
         shouldShowNearFacilities:
@@ -529,6 +530,7 @@ class _ViewProcedureAndProfessionalState
                   height: AppConfig.verticalBlockSize * 28,
                 );
               }
+              print("error__message__-->$_professionalFailedMessage");
               return (_professionDataModel == null ||
                       _professionDataModel.data == null ||
                       _professionDataModel.data.isEmpty)

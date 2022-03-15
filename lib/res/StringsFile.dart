@@ -393,7 +393,8 @@ class PlunesStrings {
   static const String discoverFacilityNearYou = "Discover facilities near you";
   static const String experienceText = "Experience";
   static const String selectedFacilities = "Selected facilities";
-  static const String bookYourProcedure = "Book your Treatment";
+  //static const String bookYourProcedure = "Book your Treatment";
+  static const String bookYourProcedure = "Book your Test";
   static const String enterAdditionalDetails =
       "Enter additional details for the required ";
   static const String next = "Next";

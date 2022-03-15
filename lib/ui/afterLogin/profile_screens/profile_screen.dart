@@ -251,12 +251,23 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                                 });
                                                 if (photos != null &&
                                                     photos.isNotEmpty) {
+
+
+                                                  print("------------there_no_image----------------navigation--------------------");
+                                                  print("---->${_profileResponse
+                                                      .user
+                                                      .achievements[index]
+                                                      .imageUrl}");
+
+
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               PageSlider(photos,
                                                                   index)));
+                                                } else {
+                                                  print("------------there_no_image------------------------------------");
                                                 }
                                               },
                                               child: CustomWidgets()
@@ -389,7 +400,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                               child: CustomWidgets()
                                                   .getImageFromUrl(
                                                       _profileResponse
-                                                          .user.imageUrl,
+                                                          .user.imageUrl+"2",
                                                       boxFit: BoxFit.cover),
                                             ),
                                     ),
@@ -655,7 +666,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                       topRight: Radius.circular(16)),
                                   child: CustomWidgets().getImageFromUrl(
                                       _profileResponse
-                                          .user.doctorsData[index].imageUrl,
+                                          .user.doctorsData[index].imageUrl+"3",
                                       boxFit: BoxFit.fill,
                                       placeHolderPath:
                                           PlunesImages.doc_placeholder),
@@ -824,7 +835,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                       child: Container(
                                         child: CustomWidgets().getImageFromUrl(
                                             _facilityHaveModel
-                                                    .data[index]?.titleImage ??
+                                                    .data[index]?.titleImage+"4" ??
                                                 '',
                                             boxFit: BoxFit.cover),
                                       ),
@@ -1743,7 +1754,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                                           .mediaContent
                                                           .data
                                                           .hosPictures[index]
-                                                          .imageUrl ??
+                                                          .imageUrl+"5" ??
                                                       "",
                                                   boxFit: BoxFit.fill),
                                         ),
@@ -1911,7 +1922,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                                               .getImageFromUrl(
                                                   widget
                                                       .rateAndReviewList[index]
-                                                      .userImage,
+                                                      .userImage+"7",
                                                   boxFit: BoxFit.cover),
                                         ),
                                       ),
@@ -2060,7 +2071,7 @@ class _AchievementWidgetState extends State<AchievementWidget> {
                                           plunesImages.achievementIcon,
                                         ))
                                     : CustomWidgets().getImageFromUrl(
-                                        widget.achievements[index].imageUrl,
+                                        widget.achievements[index].imageUrl+"8",
                                         boxFit: BoxFit.cover),
                               ),
                             ),
@@ -2155,7 +2166,7 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
                                 topLeft: Radius.circular(13),
                                 topRight: Radius.circular(13)),
                             child: CustomWidgets().getImageFromUrl(
-                                widget.specialityList[index].specialityImageUrl,
+                                widget.specialityList[index].specialityImageUrl+"9",
                                 boxFit: BoxFit.fill),
                           ),
                         ),

@@ -1,4 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:path/path.dart';
 import 'package:plunes/Utils/location_util.dart';
 import 'package:plunes/Utils/log.dart';
 import 'package:plunes/models/Models.dart';
@@ -176,11 +177,32 @@ class SearchedSolutionRepo {
             : Urls.GET_DOC_HOS_API,
         headerIncluded: true,
         queryParameter: queryParams);
+
+
+
+
+    print("----newurl--->${catalogueData.isFromProfileScreen}");
+    print(queryParams);
+
     if (result.isRequestSucceed) {
       SearchedDocResults _searchedDocResult =
           SearchedDocResults.fromJson(result.response.data);
+      print("----newurl--if->${result.response.data}");
+
+      try{
+        print("----newurl--if1->${_searchedDocResult.solution.services.length}");
+      } catch(e){
+        print("error1-->${e.toString()}");
+      }
+
+      try{
+        print("----newurl--if2->${_searchedDocResult.catalogueData.familyName}");
+      } catch(e){
+        print("error2-->${e.toString()}");
+      }
       return RequestSuccess(response: _searchedDocResult);
     } else {
+      print("----newurl--else->${result.failureCause}");
       return RequestFailed(failureCause: result.failureCause);
     }
   }

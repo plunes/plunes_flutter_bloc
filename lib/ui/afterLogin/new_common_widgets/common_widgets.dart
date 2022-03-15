@@ -4015,6 +4015,8 @@ class CommonWidgets {
       TopFacility topFacilityData,
       StreamController streamController,
       Function openInsuranceScreen) {
+    print("----------img====->$imageUrl");
+
     return Container(
       margin: EdgeInsets.only(bottom: AppConfig.verticalBlockSize * 1),
       child: Card(
@@ -4037,7 +4039,8 @@ class CommonWidgets {
                                 : topFacilityData.achievements?.length,
                             itemBuilder: (context, index) {
                               return CustomWidgets().getImageFromUrl(
-                                  topFacilityData.achievements[index].imageUrl,
+                                  imageUrl,
+                                  // topFacilityData.achievements[index].imageUrl,
                                   boxFit: BoxFit.fill);
                             },
                             carouselController: _topFacilityController,

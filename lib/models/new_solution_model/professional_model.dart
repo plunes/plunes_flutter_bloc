@@ -46,7 +46,7 @@ class ProfData {
   bool isAdmin;
   bool isCenter;
   int level;
-  double rating;
+  dynamic rating;
   num experience;
 
   ProfData(

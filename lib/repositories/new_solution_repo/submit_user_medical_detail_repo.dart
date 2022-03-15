@@ -31,7 +31,7 @@ class SubmitMedicalDetailRepo {
       bool isSuccess = false;
       String reportData;
 
-      print("response--->${result.response}");
+      print("response--34->${result.response}");
 
       if (result.response != null &&
           result.response.data != null &&
@@ -46,6 +46,7 @@ class SubmitMedicalDetailRepo {
       }
       return RequestSuccess(response: isSuccess, additionalData: reportData);
     } else {
+      print("------------else---49->${result.failureCause}");
       return RequestFailed(failureCause: result.failureCause);
     }
   }

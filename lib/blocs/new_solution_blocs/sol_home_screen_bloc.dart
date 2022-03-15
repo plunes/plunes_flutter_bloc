@@ -100,11 +100,11 @@ class HomeScreenMainBloc extends BlocBase {
     addStateInGenericStream(_knowYourProcedureStreamProvider, state);
   }
 
-  Future<RequestState> getProfessionalsForService(String familyId,
+  Future<RequestState> getProfessionalsForService(String familyId,String familyName,
       {bool shouldHitSpecialityApi = false,
       bool shouldShowNearFacilities}) async {
     addIntoGetProfessionalForServiceDataStream(RequestInProgress());
-    var result = await HomeScreenMainRepo().getProfessionalsForService(familyId,
+    var result = await HomeScreenMainRepo().getProfessionalsForService(familyId,familyName,
         shouldHitSpecialityApi: shouldHitSpecialityApi,
         shouldShowNearFacilities: shouldShowNearFacilities);
     addIntoGetProfessionalForServiceDataStream(result);

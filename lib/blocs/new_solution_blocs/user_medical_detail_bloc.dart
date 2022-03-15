@@ -24,8 +24,7 @@ class UserMedicalDetailBloc extends BlocBase {
   Future<RequestState> submitUserMedicalDetail(
       Map<String, dynamic> postData) async {
     addIntoSubmitMedicalDetailStream(RequestInProgress());
-    var result =
-        await SubmitMedicalDetailRepo().submitUserMedicalDetail(postData);
+    var result = await SubmitMedicalDetailRepo().submitUserMedicalDetail(postData);
     addIntoSubmitMedicalDetailStream(result);
     return result;
   }
