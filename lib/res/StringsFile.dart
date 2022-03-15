@@ -133,10 +133,13 @@ class PlunesStrings {
   static const String closed = "Closed";
   static const String reschedule = "Reschedule";
   static const String requestInvoice = "Download Invoice";
+  static const String requestInvoice2 = "Request Invoice";
   static const String refund = "Request Refund";
+  static const String refund2 = "Refund";
   static const String visitAgain = "Visit Again";
   static const String appointmentScreenError = "Appointment Screen Error";
-  static const String paymentStatus = "Payment Status";
+  static const String paymentStatus = "Payment status";
+  static const String bookedViaInsurance = "Booked Via Insurance";
   static const String rescheduledSuccessMessage =
       "Appointment rescheduled successfully!";
   static const String rescheduledFailedMessage =

@@ -2638,19 +2638,20 @@ class CustomWidgets {
                         animationDuration: 800,
                         linearStrokeCap: LinearStrokeCap.roundAll,
                         animation: true,
-                        lineHeight: 10.0,
+                        lineHeight: 14.0,
                         progressColor: PlunesColors.GREENCOLOR,
                         backgroundColor:
                             PlunesColors.GREYCOLOR.withOpacity(0.4),
 //                  width: double.infinity,
                       )
                     : LinearPercentIndicator(
+                  //leading: Icon(Icons.add, color: Colors.red,),
                         percent: percentage,
                         animationDuration: 800,
                         linearStrokeCap: LinearStrokeCap.roundAll,
                         animation: true,
-                        lineHeight: 10.0,
-                        progressColor: PlunesColors.GREENCOLOR,
+                        lineHeight: 14.0,
+                        progressColor: PlunesColors.GREENCOLOR2,
                         backgroundColor:
                             PlunesColors.GREYCOLOR.withOpacity(0.4),
 //                  width: double.infinity,
@@ -2659,7 +2660,7 @@ class CustomWidgets {
                   margin: EdgeInsets.only(
                       left: AppConfig.horizontalBlockSize * 2,
                       right: AppConfig.horizontalBlockSize * 2,
-                      top: AppConfig.verticalBlockSize * 1.5),
+                      top: AppConfig.verticalBlockSize * 1.7),
                   child: Row(
                     children: <Widget>[
                       Expanded(
@@ -2669,17 +2670,20 @@ class CustomWidgets {
                             Text(
                               PlunesStrings.amountPaidText,
                               style: TextStyle(
-                                fontWeight: FontWeight.normal,
+                                fontWeight: FontWeight.bold,
                                 fontSize: 14,
-                                color: Colors.black54,
+                                color: PlunesColors.LIGHT_BLUEMIX,
                               ),
+                            ),
+                            SizedBox(
+                                height: 3,
                             ),
                             Text(
                               "\u20B9${appointmentModel.paidBookingAmount?.toStringAsFixed(1) ?? 0}",
                               maxLines: 2,
                               style: TextStyle(
                                 fontWeight: FontWeight.normal,
-                                fontSize: 14,
+                                fontSize: 13,
                                 color: Colors.black54,
                               ),
                             )
@@ -2695,10 +2699,13 @@ class CustomWidgets {
                               Text(
                                 PlunesStrings.totalAmountText,
                                 style: TextStyle(
-                                  fontWeight: FontWeight.normal,
+                                  fontWeight: FontWeight.bold,
                                   fontSize: 14,
-                                  color: Colors.black54,
+                                  color: PlunesColors.LIGHT_BLUEMIX,
                                 ),
+                              ),
+                              SizedBox(
+                                height: 3,
                               ),
                               Text(
                                 "\u20B9${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}",

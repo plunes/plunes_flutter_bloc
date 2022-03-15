@@ -147,8 +147,20 @@ class _ViewSolutionsScreenState extends BaseState<ViewSolutionsScreen> {
               _searchSolutionBloc.addIntoDocHosStream(null);
             }
 
-            print("--------------------------------------------ErrorWidget");
-            print("------------>-------------------${_failedMessage}-------------${_searchedDocResults?.msg}");
+            if(_searchedDocResults == null ||
+                (_searchedDocResults.success != null &&
+                    !_searchedDocResults.success) ||
+                _searchedDocResults.solution == null ||
+                _searchedDocResults.solution.services == null ||
+                _searchedDocResults.solution.services.isEmpty) {
+              print("--------------------------------------------ErrorWidget");
+              print(
+                  "------------>-------------------${_failedMessage}-------------${_searchedDocResults
+                      ?.msg}");
+            } else {
+
+              print("-----------------------everything is fine for ->ErrorWidget");
+            }
             return (_searchedDocResults == null ||
                     (_searchedDocResults.success != null &&
                         !_searchedDocResults.success) ||

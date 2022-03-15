@@ -32,6 +32,7 @@ class SubmitMedicalDetailRepo {
       String reportData;
 
       print("response--34->${result.response}");
+      print("response--341->${postData}");
 
       if (result.response != null &&
           result.response.data != null &&
