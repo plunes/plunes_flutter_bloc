@@ -400,7 +400,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                               child: CustomWidgets()
                                                   .getImageFromUrl(
                                                       _profileResponse
-                                                          .user.imageUrl+"2",
+                                                          .user.imageUrl,
                                                       boxFit: BoxFit.cover),
                                             ),
                                     ),
@@ -666,7 +666,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                       topRight: Radius.circular(16)),
                                   child: CustomWidgets().getImageFromUrl(
                                       _profileResponse
-                                          .user.doctorsData[index].imageUrl+"3",
+                                          .user.doctorsData[index].imageUrl,
                                       boxFit: BoxFit.fill,
                                       placeHolderPath:
                                           PlunesImages.doc_placeholder),
@@ -807,6 +807,9 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                             onTap: () {
                               List<Photo> photos = [];
                               _facilityHaveModel.data.forEach((element) {
+                                print("element.title");
+                                print(element.title);
+                                print(element.titleImage);
                                 if (element.titleImage != null &&
                                     element.titleImage.isNotEmpty &&
                                     (element.titleImage.contains("http"))) {
@@ -835,7 +838,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                       child: Container(
                                         child: CustomWidgets().getImageFromUrl(
                                             _facilityHaveModel
-                                                    .data[index]?.titleImage+"4" ??
+                                                    .data[index]?.titleImage ??
                                                 '',
                                             boxFit: BoxFit.cover),
                                       ),
@@ -1754,7 +1757,7 @@ class _PhotosWidgetState extends State<PhotosWidget> {
                                                           .mediaContent
                                                           .data
                                                           .hosPictures[index]
-                                                          .imageUrl+"5" ??
+                                                          .imageUrl ??
                                                       "",
                                                   boxFit: BoxFit.fill),
                                         ),
@@ -1922,7 +1925,7 @@ class _ReviewWidgetState extends State<ReviewWidget> {
                                               .getImageFromUrl(
                                                   widget
                                                       .rateAndReviewList[index]
-                                                      .userImage+"7",
+                                                      .userImage,
                                                   boxFit: BoxFit.cover),
                                         ),
                                       ),
@@ -2071,7 +2074,7 @@ class _AchievementWidgetState extends State<AchievementWidget> {
                                           plunesImages.achievementIcon,
                                         ))
                                     : CustomWidgets().getImageFromUrl(
-                                        widget.achievements[index].imageUrl+"8",
+                                        widget.achievements[index].imageUrl,
                                         boxFit: BoxFit.cover),
                               ),
                             ),
@@ -2166,7 +2169,7 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
                                 topLeft: Radius.circular(13),
                                 topRight: Radius.circular(13)),
                             child: CustomWidgets().getImageFromUrl(
-                                widget.specialityList[index].specialityImageUrl+"9",
+                                widget.specialityList[index].specialityImageUrl,
                                 boxFit: BoxFit.fill),
                           ),
                         ),

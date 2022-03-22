@@ -548,6 +548,7 @@ class _ViewProcedureAndProfessionalState
                         itemBuilder: (context, index) {
                           return CommonWidgets()
                               .getProfessionalWidgetForSearchDesiredServiceScreen(
+                            context,
                                   index,
                                   _professionDataModel.data[index],
                                   widget.procedureData?.speciality,

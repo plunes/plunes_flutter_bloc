@@ -1389,6 +1389,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
+  // top searched services
   Widget _getTopSearchWidget() {
     return Container(
       color: PlunesColors.WHITECOLOR,
@@ -1878,6 +1879,23 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                                   _topFacilityModel
                                           .data[index].professionalId !=
                                       null) {
+
+
+                                print("--------clickedHospital");
+                                print(_topFacilityModel
+                                    .data[index].professionalId);
+                                print(_topFacilityModel
+                                    .data[index].userType);
+
+                                print("--------clickedHospital--------------->");
+                                print(_topFacilityModel
+                                    .data[index].userType
+                                    .toLowerCase() ==
+                                    Constants.doctor
+                                        .toString()
+                                        .toLowerCase());
+
+
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
