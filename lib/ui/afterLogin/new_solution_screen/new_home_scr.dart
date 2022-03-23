@@ -1630,6 +1630,16 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
               height: AppConfig.verticalBlockSize * 25,
             );
           }
+
+          print("_topFacilityModel.res");
+          print(_topFacilityModel.data);
+          print(_topFacilityModel.data.toString());
+          _topFacilityModel.data.forEach((element) {
+
+            print(element.name);
+            print(element.professionalId);
+          });
+
           return (_topFacilityModel == null ||
                   (_topFacilityModel.success != null &&
                       !_topFacilityModel.success) ||

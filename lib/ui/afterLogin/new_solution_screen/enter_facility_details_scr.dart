@@ -31,8 +31,9 @@ import 'package:plunes/ui/afterLogin/upload_video_for_treatment.dart';
 class EnterAdditionalUserDetailScr extends BaseActivity {
   final CatalogueData catalogueData;
   final String searchQuery;
+  bool consultation;
 
-  EnterAdditionalUserDetailScr(this.catalogueData, this.searchQuery);
+  EnterAdditionalUserDetailScr(this.catalogueData, this.searchQuery, {this.consultation=false});
 
   @override
   _EnterAdditionalUserDetailScrState createState() =>
@@ -183,11 +184,6 @@ class _EnterAdditionalUserDetailScrState
             return CustomWidgets().getProgressIndicator();
           }
 
-          print("-------data-----------response");
-          print("-----${_formDataModel.success}");
-          print("-----${_failedMessage}");
-          print("-----${_formDataModel.data}");
-
           return (_formDataModel == null ||
                   (_formDataModel.success != null && !_formDataModel.success))
               ? CustomWidgets().errorWidget(_failedMessage,
@@ -205,7 +201,6 @@ class _EnterAdditionalUserDetailScrState
           } else if (snapshot.data is RequestSuccess) {
             RequestSuccess data = snapshot.data;
             if (data.response != null && data.response) {
-              print("-------working------${data.requestCode}-\n\n---response-----${data.response}-\n\n---data-->${data?.additionalData?.toString()}");
               _navigateToNextScreen(data?.additionalData?.toString());
             }
             _submitUserMedicalDetailBloc.addIntoSubmitMedicalDetailStream(null);
@@ -268,6 +263,7 @@ class _EnterAdditionalUserDetailScrState
                   child: Container(
                     margin: EdgeInsets.only(left: 28),
                     child: Text(
+                     widget.consultation ? "Book your Consultation" :
                       PlunesStrings.bookYourProcedure,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.ellipsis,

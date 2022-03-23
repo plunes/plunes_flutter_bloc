@@ -41,6 +41,7 @@ class ProfData {
   // GeoLocation geoLocation;
   String email;
   String coverImageUrl;
+  String professionalId;
   String imageUrl;
   Location location;
   bool isAdmin;
@@ -60,6 +61,7 @@ class ProfData {
       // this.geoLocation,
       this.email,
       this.coverImageUrl,
+      this.professionalId,
       this.imageUrl,
       this.location,
       this.isAdmin,
@@ -85,6 +87,7 @@ class ProfData {
     }
     email = json['email'];
     coverImageUrl = json['coverImageUrl'];
+    professionalId = json['professionalId'];
     imageUrl = json['imageUrl'];
     // location = json['location'] != null
     //     ? new Location.fromJson(json['location'])
@@ -110,6 +113,7 @@ class ProfData {
     // }
     data['email'] = this.email;
     data['coverImageUrl'] = this.coverImageUrl;
+    data['professionalId'] = this.professionalId;
     data['imageUrl'] = this.imageUrl;
     if (this.location != null) {
       data['location'] = this.location.toJson();

@@ -356,6 +356,11 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                   )
                                 : InkWell(
                                     onTap: () {
+
+                                      print("------>");
+                                      print(_profileResponse
+                                          .user.imageUrl);
+
                                       List<Photo> photos = [];
                                       if ((_profileResponse.user != null &&
                                           _profileResponse.user.imageUrl !=
@@ -2124,6 +2129,7 @@ class _SpecialisationWidgetState extends State<SpecialisationWidget> {
                 width: AppConfig.horizontalBlockSize * 45,
                 child: InkWell(
                   onTap: () {
+
                     if (widget.specialityList[index].id != null &&
                         widget.specialityList[index].id.isNotEmpty) {
                       Navigator.push(

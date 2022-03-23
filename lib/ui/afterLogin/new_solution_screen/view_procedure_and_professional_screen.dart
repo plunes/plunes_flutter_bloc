@@ -220,6 +220,8 @@ class _ViewProcedureAndProfessionalState
   }
 
   Widget _getProcedureDetailWidget() {
+    print("image----->");
+    print(widget.procedureData.familyImage);
     return Container(
       child: Column(
         children: [
@@ -546,6 +548,9 @@ class _ViewProcedureAndProfessionalState
                         padding: EdgeInsets.zero,
                         physics: NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) {
+
+                          print(_professionDataModel.data[index].professionalId);
+
                           return CommonWidgets()
                               .getProfessionalWidgetForSearchDesiredServiceScreen(
                             context,

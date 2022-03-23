@@ -150,6 +150,6 @@ class _ConsultationState extends BaseState<ConsultationScreen> {
         context,
         MaterialPageRoute(
             builder: (context) =>
-                EnterAdditionalUserDetailScr(_catalogueList[index], "")));
+                EnterAdditionalUserDetailScr(_catalogueList[index], "",consultation: true,)));
   }
 }

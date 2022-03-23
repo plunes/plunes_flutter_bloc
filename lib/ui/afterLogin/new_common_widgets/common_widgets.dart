@@ -977,18 +977,18 @@ class CommonWidgets {
                                     Navigator.push(context,
                                         MaterialPageRoute(
                                             builder: (context) => DoctorInfo(
-                                                profData.name == "RG Stone Urology & Laparoscopy Hospital" ? "5f0026141429b961951111aa" :
-                                                profData.name == "Artemis Hospital" ? "5ef08a56a40fa92a2b25f05a" :
-                                                profData.name == "Columbia Asia Hospital" ? "5ec91c1eeb9fc84cef7795f1" :
-                                                profData.name == "Medeor Hospital" ? "6052ee258260c5082eaf537d" :
-                                                profData.name == "Aakash Health Care" ? "5ec784c2eb9fc84cef779420" :
-                                                profData.name == "Park Hospital" ? "5ef07eb7a40fa92a2b25eff6" :
-                                                profData.name == "Vimhans Nayati Super Speciality Hospital" ? "5ef986b534fca41358369405" :
-                                                profData.name == "Saroj Super Speciality Hospital" ? "6002d7c3f66a421030fbfc31" :
-                                                profData.name == "IndoGulf Hospital & Diagnostics" ? "5f226fbb666b9c3405ee13aa" :
-                                                profData.name == "SCI International Hospital" ? "5fdde06a3aea61390dd1eade" :
-                                                profData.name == "Signature Hospital" ? "5ef43b8fa40fa92a2b263cb5" :
-                                                profData.name == "Primus Super Speciality Hospital" ? "5ef491c0863b3a5968662c4d" : "",
+                                              profData.professionalId,                                                // profData.name == "RG Stone Urology & Laparoscopy Hospital" ? "5f0026141429b961951111aa" :
+                                                // profData.name == "Artemis Hospital" ? "5ef08a56a40fa92a2b25f05a" :
+                                                // profData.name == "Columbia Asia Hospital" ? "5ec91c1eeb9fc84cef7795f1" :
+                                                // profData.name == "Medeor Hospital" ? "6052ee258260c5082eaf537d" :
+                                                // profData.name == "Aakash Health Care" ? "5ec784c2eb9fc84cef779420" :
+                                                // profData.name == "Park Hospital" ? "5ef07eb7a40fa92a2b25eff6" :
+                                                // profData.name == "Vimhans Nayati Super Speciality Hospital" ? "5ef986b534fca41358369405" :
+                                                // profData.name == "Saroj Super Speciality Hospital" ? "6002d7c3f66a421030fbfc31" :
+                                                // profData.name == "IndoGulf Hospital & Diagnostics" ? "5f226fbb666b9c3405ee13aa" :
+                                                // profData.name == "SCI International Hospital" ? "5fdde06a3aea61390dd1eade" :
+                                                // profData.name == "Signature Hospital" ? "5ef43b8fa40fa92a2b263cb5" :
+                                                // profData.name == "Primus Super Speciality Hospital" ? "5ef491c0863b3a5968662c4d" : profData.professionalId,
                                                 isDoc: (profData.userType
                                                     .toLowerCase() ==
                                                     Constants.doctor

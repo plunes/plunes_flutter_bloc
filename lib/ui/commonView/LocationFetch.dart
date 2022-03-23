@@ -225,12 +225,12 @@ class _LocationFetchState extends State<LocationFetch> {
                 context: context,
                 apiKey: Urls.googleApiKey,
                 onError: (error) {
-//                  print("error ${error.errorMessage}");
+                 print("error ${error.errorMessage}");
                 });
             displayPrediction(p);
           }
         } catch (e) {
-//          print(e);
+          print("error catch ${e.toString()}");
         }
       },
       child: Container(
@@ -394,6 +394,8 @@ class _LocationFetchState extends State<LocationFetch> {
       } else {
         regionController.text = address.addressLine;
       }
+    } else {
+      print("address is null");
     }
   }
 }
