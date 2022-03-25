@@ -48,7 +48,8 @@ class ImagePickerHandler {
   }
 
   showDialog(BuildContext context) {
-    if (_context == null) _context = context;
+    if (_context == null)
+      _context = context;
     imagePicker.getImage(context);
   }
 

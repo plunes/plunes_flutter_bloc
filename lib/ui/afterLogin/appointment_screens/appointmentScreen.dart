@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'package:plunes/OpenMap.dart';
 import 'package:plunes/Utils/CommonMethods.dart';
 import 'package:plunes/Utils/Constants.dart';
-import 'package:plunes/Utils/ImagePicker/ImagePickerDialog.dart';
 import 'package:plunes/Utils/ImagePicker/ImagePickerHandler.dart';
 import 'package:plunes/Utils/analytics.dart';
 import 'package:plunes/Utils/app_config.dart';
@@ -16,15 +16,19 @@ import 'package:plunes/Utils/log.dart';
 import 'package:plunes/Utils/payment_web_view.dart';
 import 'package:plunes/base/BaseActivity.dart';
 import 'package:plunes/blocs/booking_blocs/booking_main_bloc.dart';
+import 'package:plunes/models/Models.dart';
 import 'package:plunes/models/booking_models/appointment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_model.dart';
 import 'package:plunes/models/booking_models/init_payment_response.dart';
+import 'package:plunes/models/insurance_image/common_model.dart';
+import 'package:plunes/models/insurance_image/insurance_image_response.dart';
 import 'package:plunes/models/solution_models/searched_doc_hospital_result.dart';
 import 'package:plunes/repositories/user_repo.dart';
 import 'package:plunes/requester/request_states.dart';
 import 'package:plunes/res/AssetsImagesFile.dart';
 import 'package:plunes/res/ColorsFile.dart';
 import 'package:plunes/res/StringsFile.dart';
+import 'package:plunes/resources/network/Urls.dart';
 import 'package:plunes/ui/afterLogin/HelpScreen.dart';
 import 'package:plunes/ui/afterLogin/booking_screens/booking_payment_option_popup.dart';
 import 'package:plunes/ui/afterLogin/profile_screens/profile_screen.dart';
@@ -47,13 +51,14 @@ class AppointmentScreen extends BaseActivity {
   _AppointmentScreenState createState() => _AppointmentScreenState();
 }
 
-class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerProviderStateMixin, ImagePickerListener {
+class _AppointmentScreenState extends BaseState<AppointmentScreen>
+    with TickerProviderStateMixin, ImagePickerListener {
   BookingBloc _bookingBloc;
   int index;
   String _profNumber;
   ImagePickerHandler imagePicker;
   AnimationController _animationController;
-  File _image;
+  String bookingIdForImageUpload = "";
 
   @override
   void initState() {
@@ -62,7 +67,6 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
     initializeForImageFetching();
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -77,285 +81,294 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
     imagePicker.init();
   }
 
-
   Widget _getBodyWidget(AppointmentModel appointmentModel, int index) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      null != appointmentModel.insuranceDetails &&
+    return Stack(
+      children : [
+
+        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          null != appointmentModel.insuranceDetails &&
               null != appointmentModel.insuranceDetails.policyNumber &&
               null != appointmentModel.insuranceDetails.policyNumber.isNotEmpty
-          ? Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: AppConfig.horizontalBlockSize * 3),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 180,
-                      color: PlunesColors.LIGHTGREYCOLOR,
-                      child: Image.network(
-                        appointmentModel.insuranceDetails.insuranceCard??"",
-                        fit: BoxFit.fill,
-                        errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-                          return Image.asset(PlunesImages.common, color: PlunesColors.DarkGREYCOLOR,);
-                        },
+              ? Padding(
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 3),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 180,
+                    color: PlunesColors.LIGHTGREYCOLOR,
+                    child: Image.network(
+                      appointmentModel.insuranceDetails.insuranceCard ?? "",
+                      fit: BoxFit.fill,
+                      errorBuilder: (BuildContext context, Object exception,
+                          StackTrace stackTrace) {
+                        return Image.asset(
+                          PlunesImages.common,
+                          color: PlunesColors.DarkGREYCOLOR,
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      bookingIdForImageUpload = appointmentModel.bookingId;
+                    });
+                    imagePicker.showDialog(context);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Image.asset(
+                        'assets/images/insurance_edit.png',
+                        height: 18,
+                        width: 18,
                       ),
-                    ),
+                      SizedBox(width: 4),
+                      Text(
+                        "Request Edit",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            color: Colors.black),
+                      )
+                    ],
                   ),
-                  SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: () {
-                      imagePicker.showDialog(context);
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Image.asset(
-                          'assets/images/insurance_edit.png',
-                          height: 18,
-                          width: 18,
-                        ),
-                        SizedBox(width: 4),
-                        Text(
-                          "Request Edit",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline,
-                              color: Colors.black),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 24),
-                  Text("Insurance Policy Number",
+                ),
+                SizedBox(height: 24),
+                Text("Insurance Policy Number",
+                    overflow: TextOverflow.visible,
+                    style: TextStyle(
+                        fontSize: AppConfig.smallFont,
+                        color: Colors.black87)),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                  color: Colors.white,
+                  child: Text(appointmentModel.insuranceDetails.policyNumber,
                       overflow: TextOverflow.visible,
                       style: TextStyle(
-                          fontSize: AppConfig.smallFont,
-                          color: Colors.black87)),
-                  Container(
+                          fontWeight: FontWeight.bold, color: Colors.black)),
+                ),
+                Container(
                     width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
-                    color: Colors.white,
-                    child: Text(appointmentModel.insuranceDetails.policyNumber,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 0,
+                        vertical: AppConfig.verticalBlockSize * 1.5),
+                    child: Text("Insurance Policy Provider",
                         overflow: TextOverflow.visible,
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black)),
-                  ),
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 0,
-                          vertical: AppConfig.verticalBlockSize * 1.5),
-                      child: Text("Insurance Policy Provider",
-                          overflow: TextOverflow.visible,
-                          style: TextStyle(
-                              fontSize: AppConfig.smallFont,
-                              color: Colors.black87))),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
-                    color: Colors.white,
-                    child: Text(
-                        appointmentModel.insuranceDetails.insurancePartner,
-                        overflow: TextOverflow.visible,
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.black)),
-                  ),
-                ],
-              ),
-            )
-          : Container(),
-      Container(
-        color: (widget.bookingId != null &&
+                            fontSize: AppConfig.smallFont,
+                            color: Colors.black87))),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.all(AppConfig.horizontalBlockSize * 3),
+                  color: Colors.white,
+                  child: Text(
+                      appointmentModel.insuranceDetails.insurancePartner,
+                      overflow: TextOverflow.visible,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black)),
+                ),
+              ],
+            ),
+          )
+              : Container(),
+          Container(
+            color: (widget.bookingId != null &&
                 widget.bookingId == appointmentModel.bookingId)
-            ? PlunesColors.LIGHTGREENCOLOR
-            : PlunesColors.DIMWHITECOLOR,
-        padding: EdgeInsets.symmetric(
-            horizontal: AppConfig.horizontalBlockSize * 3,
-            vertical: AppConfig.verticalBlockSize * 2),
-        child: Column(
-          children: <Widget>[
-            Container(
-              child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Expanded(
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            InkWell(
-                              onTap: () => _openProfile(),
-                              onDoubleTap: () {},
-                              child: Text(
-                                CommonMethods.getStringInCamelCase(
+                ? PlunesColors.LIGHTGREENCOLOR
+                : PlunesColors.DIMWHITECOLOR,
+            padding: EdgeInsets.symmetric(
+                horizontal: AppConfig.horizontalBlockSize * 3,
+                vertical: AppConfig.verticalBlockSize * 2),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Expanded(
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                InkWell(
+                                  onTap: () => _openProfile(),
+                                  onDoubleTap: () {},
+                                  child: Text(
+                                    CommonMethods.getStringInCamelCase(
                                         appointmentModel?.professionalName) ??
-                                    PlunesStrings.NA,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: AppConfig.mediumFont,
-                                ),
-                              ),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                                appointmentModel?.serviceName ??
-                                    PlunesStrings.NA,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: AppConfig.mediumFont,
-                                    color: Color(0xff3759AA))),
-                            SizedBox(height: 10),
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    "assets/images/location_address.png",
-                                    height: 14,
-                                    width: 14,
+                                        PlunesStrings.NA,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: AppConfig.mediumFont,
+                                    ),
                                   ),
-                                  Flexible(
-                                    child: InkWell(
-                                      onTap: () => _openProfile(),
-                                      onDoubleTap: () {},
-                                      child: Text(
-                                        " " +
+                                ),
+                                SizedBox(height: 10),
+                                Text(
+                                    appointmentModel?.serviceName ??
+                                        PlunesStrings.NA,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: AppConfig.mediumFont,
+                                        color: Color(0xff3759AA))),
+                                SizedBox(height: 10),
+                                Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/location_address.png",
+                                        height: 14,
+                                        width: 14,
+                                      ),
+                                      Flexible(
+                                        child: InkWell(
+                                          onTap: () => _openProfile(),
+                                          onDoubleTap: () {},
+                                          child: Text(
+                                            " " +
                                                 appointmentModel
                                                     .professionalAddress
                                                     ?.trim() ??
-                                            PlunesStrings.NA,
-                                        overflow: TextOverflow.visible,
-                                        style: TextStyle(
-                                            fontSize: AppConfig.smallFont,
-                                            color: Colors.black87),
+                                                PlunesStrings.NA,
+                                            overflow: TextOverflow.visible,
+                                            style: TextStyle(
+                                                fontSize: AppConfig.smallFont,
+                                                color: Colors.black87),
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                ])
-                          ],
+                                    ])
+                              ],
+                            ),
+                          ),
+                          flex: 3,
                         ),
-                      ),
-                      flex: 3,
-                    ),
-                    // Expanded(
-                    //   flex: 1,
-                    //   child: Container(
-                    //     margin: EdgeInsets.only(
-                    //         bottom: AppConfig.verticalBlockSize * 1),
-                    //     child: Center(
-                    //       child: IconButton(
-                    //           icon: Image.asset(
-                    //             "assets/images/drop-location-icon.png",
-                    //             width: AppConfig.verticalBlockSize * 5,
-                    //             height: AppConfig.verticalBlockSize * 5,
-                    //           ),
-                    //           onPressed: () {
-                    //             (appointmentModel?.lat == null ||
-                    //                     appointmentModel.lat.isEmpty ||
-                    //                     appointmentModel?.long == null ||
-                    //                     appointmentModel.long.isEmpty)
-                    //                 ? _showSnackBar(
-                    //                     PlunesStrings.locationNotAvailable)
-                    //                 : LauncherUtil.openMap(
-                    //                     double.tryParse(appointmentModel.lat),
-                    //                     double.tryParse(appointmentModel.long));
-                    //           }),
-                    //     ),
-                    //   ),
-                    // ),
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(_getFullDate().substring(0, 6),
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: AppConfig.smallFont,
-                                    color: Colors.black)),
+                        // Expanded(
+                        //   flex: 1,
+                        //   child: Container(
+                        //     margin: EdgeInsets.only(
+                        //         bottom: AppConfig.verticalBlockSize * 1),
+                        //     child: Center(
+                        //       child: IconButton(
+                        //           icon: Image.asset(
+                        //             "assets/images/drop-location-icon.png",
+                        //             width: AppConfig.verticalBlockSize * 5,
+                        //             height: AppConfig.verticalBlockSize * 5,
+                        //           ),
+                        //           onPressed: () {
+                        //             (appointmentModel?.lat == null ||
+                        //                     appointmentModel.lat.isEmpty ||
+                        //                     appointmentModel?.long == null ||
+                        //                     appointmentModel.long.isEmpty)
+                        //                 ? _showSnackBar(
+                        //                     PlunesStrings.locationNotAvailable)
+                        //                 : LauncherUtil.openMap(
+                        //                     double.tryParse(appointmentModel.lat),
+                        //                     double.tryParse(appointmentModel.long));
+                        //           }),
+                        //     ),
+                        //   ),
+                        // ),
+                        Expanded(
+                          flex: 1,
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(_getFullDate().substring(0, 6),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: AppConfig.smallFont,
+                                        color: Colors.black)),
 
-                            SizedBox(
-                              height: AppConfig.verticalBlockSize * 1,
-                            ),
-
-                            Row(
-                              children: [
-                                Image.asset(
-                                  "assets/images/insurance_calender.png",
-                                  height: 12,
-                                  width: 12,
-                                ),
                                 SizedBox(
-                                  width: 4,
+                                  height: AppConfig.verticalBlockSize * 1,
                                 ),
-                                Text(_getFullDate(),
-                                    style: TextStyle(
-                                        fontSize:
+
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/insurance_calender.png",
+                                      height: 12,
+                                      width: 12,
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(_getFullDate(),
+                                        style: TextStyle(
+                                            fontSize:
                                             AppConfig.horizontalBlockSize * 2.5,
-                                        color: Colors.black54)),
-                              ],
-                            ),
-
-                            SizedBox(
-                              height: AppConfig.verticalBlockSize * 1,
-                            ),
-
-                            Row(
-                              children: [
-                                Image.asset(
-                                  'assets/images/insurance_time.png',
-                                  height: 12,
-                                  width: 12,
+                                            color: Colors.black54)),
+                                  ],
                                 ),
+
                                 SizedBox(
-                                  width: 4,
+                                  height: AppConfig.verticalBlockSize * 1,
                                 ),
-                                Text(_getAmPmTime(),
-                                    style: TextStyle(
-                                        fontSize:
+
+                                Row(
+                                  children: [
+                                    Image.asset(
+                                      'assets/images/insurance_time.png',
+                                      height: 12,
+                                      width: 12,
+                                    ),
+                                    SizedBox(
+                                      width: 4,
+                                    ),
+                                    Text(_getAmPmTime(),
+                                        style: TextStyle(
+                                            fontSize:
                                             AppConfig.horizontalBlockSize * 2.5,
-                                        color: Colors.black54)),
-                              ],
-                            ),
-
-                            SizedBox(
-                              height: AppConfig.verticalBlockSize * 1.5,
-                            ),
-
-                            InkWell(
-                              child: Container(
-                                padding: EdgeInsets.only(
-                                    top: 3, bottom: 3, left: 12, right: 12),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(14),
-                                  color: PlunesColors.GREENCOLOR2,
+                                            color: Colors.black54)),
+                                  ],
                                 ),
-                                child: Text(appointmentModel.bookingStatus,
-                                    style: TextStyle(
-                                        fontSize:
+
+                                SizedBox(
+                                  height: AppConfig.verticalBlockSize * 1.5,
+                                ),
+
+                                InkWell(
+                                  child: Container(
+                                    padding: EdgeInsets.only(
+                                        top: 3, bottom: 3, left: 12, right: 12),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: PlunesColors.GREENCOLOR2,
+                                    ),
+                                    child: Text(appointmentModel.bookingStatus,
+                                        style: TextStyle(
+                                            fontSize:
                                             AppConfig.horizontalBlockSize * 2.5,
-                                        color: Colors.white)),
-                              ),
-                              onTap: () {
-                                if (appointmentModel != null &&
-                                    appointmentModel.bookingStatus !=
-                                        AppointmentModel.confirmedStatus &&
-                                    appointmentModel.bookingStatus !=
-                                        AppointmentModel.reservedStatus &&
-                                    appointmentModel.appointmentTime != null &&
-                                    DateTime.fromMillisecondsSinceEpoch(
+                                            color: Colors.white)),
+                                  ),
+                                  onTap: () {
+                                    if (appointmentModel != null &&
+                                        appointmentModel.bookingStatus !=
+                                            AppointmentModel.confirmedStatus &&
+                                        appointmentModel.bookingStatus !=
+                                            AppointmentModel.reservedStatus &&
+                                        appointmentModel.appointmentTime != null &&
+                                        DateTime.fromMillisecondsSinceEpoch(
                                             int.parse(appointmentModel
                                                 .appointmentTime))
-                                        .isBefore(DateTime.now())) {
-                                  _showSnackBar(PlunesStrings.unableToProcess);
-                                }
-                              },
-                              onDoubleTap: () {},
-                            ),
+                                            .isBefore(DateTime.now())) {
+                                      _showSnackBar(PlunesStrings.unableToProcess);
+                                    }
+                                  },
+                                  onDoubleTap: () {},
+                                ),
 
 //                          (appointmentModel.serviceType == 'Procedure' &&
 //                                  appointmentModel.paymentPercent == '20' &&
@@ -392,38 +405,38 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
 //                                  ),
 //                                )
 //                              : Container(),
-                          ],
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ]),
-            ),
-            SizedBox(height: 5),
-            // appointmentModel.patientName != null
-            //     ? Container(
-            //         alignment: Alignment.topLeft,
-            //         child: Text(
-            //           "Patient Name - ${CommonMethods.getStringInCamelCase(appointmentModel?.patientName) ?? PlunesStrings.NA}",
-            //           style: TextStyle(
-            //             fontSize: AppConfig.mediumFont,
-            //           ),
-            //         ),
-            //       )
-            //     : Container(),
-            SizedBox(height: 3),
-            _getProfessionalNumber(appointmentModel),
-            (appointmentModel.centreNumber != null &&
+                      ]),
+                ),
+                SizedBox(height: 5),
+                // appointmentModel.patientName != null
+                //     ? Container(
+                //         alignment: Alignment.topLeft,
+                //         child: Text(
+                //           "Patient Name - ${CommonMethods.getStringInCamelCase(appointmentModel?.patientName) ?? PlunesStrings.NA}",
+                //           style: TextStyle(
+                //             fontSize: AppConfig.mediumFont,
+                //           ),
+                //         ),
+                //       )
+                //     : Container(),
+                SizedBox(height: 3),
+                _getProfessionalNumber(appointmentModel),
+                (appointmentModel.centreNumber != null &&
                     appointmentModel.centreNumber.isNotEmpty &&
                     _profNumber != null &&
                     _profNumber != appointmentModel.centreNumber)
-                ? SizedBox(height: AppConfig.verticalBlockSize * 1.5)
-                : Container(),
-            (appointmentModel.centreNumber != null &&
+                    ? SizedBox(height: AppConfig.verticalBlockSize * 1.5)
+                    : Container(),
+                (appointmentModel.centreNumber != null &&
                     appointmentModel.centreNumber.isNotEmpty &&
                     _profNumber != null &&
                     _profNumber != appointmentModel.centreNumber)
-                ? _getCentreNumber(appointmentModel)
-                : Container(),
+                    ? _getCentreNumber(appointmentModel)
+                    : Container(),
 //             Container(
 //               margin: EdgeInsets.symmetric(
 //                   vertical: AppConfig.verticalBlockSize * 6),
@@ -850,137 +863,144 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
 //                 ],
 //               ),
 //             ),
-            InkWell(
-              onTap: () {
-                if (widget.appointmentModel.isOpened != null &&
-                    UserManager().getUserDetails().userType != Constants.user) {
-                  widget.appointmentModel.isOpened =
+                InkWell(
+                  onTap: () {
+                    if (widget.appointmentModel.isOpened != null &&
+                        UserManager().getUserDetails().userType != Constants.user) {
+                      widget.appointmentModel.isOpened =
                       !widget.appointmentModel.isOpened;
-                  _setState();
-                }
-              },
-              onDoubleTap: () {},
-              child: Container(
-                margin: EdgeInsets.only(
-                  top: AppConfig.verticalBlockSize * 3.3,
-                  bottom: AppConfig.verticalBlockSize * .2,
-                ),
-                child: Column(
-                  children: <Widget>[
-                    Text(PlunesStrings.paymentStatus,
-                        style: TextStyle(
-                          color: Color(0xff215675),
-                          fontSize: AppConfig.largeFont,
-                          decoration: TextDecoration.underline,
-                          fontWeight: FontWeight.bold,
-                        )),
-                    (widget.appointmentModel.isOpened != null &&
-                            UserManager().getUserDetails().userType !=
-                                Constants.user)
-                        ? Icon(widget.appointmentModel.isOpened
-                            ? Icons.keyboard_arrow_up
-                            : Icons.keyboard_arrow_down)
-                        : Container()
-                  ],
-                ),
-              ),
-            ),
-            (widget.appointmentModel.isOpened != null &&
-                    UserManager().getUserDetails().userType != Constants.user &&
-                    widget.appointmentModel.isOpened)
-                ? _getData(appointmentModel)
-                : UserManager().getUserDetails().userType == Constants.user
-                    ? _getData(appointmentModel)
-                    : Container(),
-
-            null != appointmentModel &&
-                null != appointmentModel.insuranceDetails &&
-                null != appointmentModel.insuranceDetails.insurancePartner &&
-                appointmentModel.insuranceDetails.insurancePartner.isNotEmpty
-                ? Container(
-                    margin: EdgeInsets.symmetric(
-                      vertical: AppConfig.verticalBlockSize * 2,
+                      _setState();
+                    }
+                  },
+                  onDoubleTap: () {},
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      top: AppConfig.verticalBlockSize * 3.3,
+                      bottom: AppConfig.verticalBlockSize * .2,
                     ),
                     child: Column(
                       children: <Widget>[
-                        Text(
-                            null != appointmentModel.insuranceDetails.policyNumber &&
-                                null != appointmentModel.insuranceDetails.policyNumber.isNotEmpty ? "Paid via insurance "
-                            : PlunesStrings.bookedViaInsurance,
+                        Text(PlunesStrings.paymentStatus,
                             style: TextStyle(
                               color: Color(0xff215675),
-                              fontSize: AppConfig.mediumFont,
+                              fontSize: AppConfig.largeFont,
+                              decoration: TextDecoration.underline,
                               fontWeight: FontWeight.bold,
                             )),
+                        (widget.appointmentModel.isOpened != null &&
+                            UserManager().getUserDetails().userType !=
+                                Constants.user)
+                            ? Icon(widget.appointmentModel.isOpened
+                            ? Icons.keyboard_arrow_up
+                            : Icons.keyboard_arrow_down)
+                            : Container()
                       ],
                     ),
-                  )
-                : Container(),
-            Container(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: (appointmentModel.bookingStatus != null &&
+                  ),
+                ),
+                (widget.appointmentModel.isOpened != null &&
+                    UserManager().getUserDetails().userType != Constants.user &&
+                    widget.appointmentModel.isOpened)
+                    ? _getData(appointmentModel)
+                    : UserManager().getUserDetails().userType == Constants.user
+                    ? _getData(appointmentModel)
+                    : Container(),
+
+                null != appointmentModel &&
+                    null != appointmentModel.insuranceDetails &&
+                    null !=
+                        appointmentModel.insuranceDetails.insurancePartner &&
+                    appointmentModel
+                        .insuranceDetails.insurancePartner.isNotEmpty
+                    ? Container(
+                  margin: EdgeInsets.symmetric(
+                    vertical: AppConfig.verticalBlockSize * 2,
+                  ),
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                          null !=
+                              appointmentModel
+                                  .insuranceDetails.policyNumber &&
+                              null !=
+                                  appointmentModel.insuranceDetails
+                                      .policyNumber.isNotEmpty
+                              ? "Paid via insurance "
+                              : PlunesStrings.bookedViaInsurance,
+                          style: TextStyle(
+                            color: Color(0xff215675),
+                            fontSize: AppConfig.mediumFont,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ],
+                  ),
+                )
+                    : Container(),
+                Container(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: (appointmentModel.bookingStatus != null &&
                         (appointmentModel.bookingStatus ==
-                                AppointmentModel.confirmedStatus ||
+                            AppointmentModel.confirmedStatus ||
                             appointmentModel.bookingStatus ==
                                 AppointmentModel.reservedStatus))
-                    ? MainAxisAlignment.spaceBetween
-                    : MainAxisAlignment.end,
-                children: <Widget>[
-                  (appointmentModel.bookingStatus != null &&
+                        ? MainAxisAlignment.spaceBetween
+                        : MainAxisAlignment.end,
+                    children: <Widget>[
+                      (appointmentModel.bookingStatus != null &&
                           (appointmentModel.bookingStatus ==
-                                  AppointmentModel.confirmedStatus ||
+                              AppointmentModel.confirmedStatus ||
                               appointmentModel.bookingStatus ==
                                   AppointmentModel.reservedStatus))
-                      ? InkWell(
-                          onTap: () {
-                            if (!_isPaymentCompleted()) {
-                              _showSnackBar(PlunesStrings.pleasePayFull);
-                              return;
-                            }
-                            _bookingBloc
-                                .requestInvoice(
-                                    appointmentModel.bookingId, index, true)
-                                .then((value) {});
-                          },
-                          onDoubleTap: () {},
-                          child: StreamBuilder<RequestState>(
-                              stream: _bookingBloc.requestInvoiceStream,
-                              builder: (context, snapshot) {
-                                if (snapshot.data != null &&
-                                    snapshot.data is RequestInProgress) {
-                                  RequestInProgress req = snapshot.data;
-                                  if (req.requestCode != null &&
-                                      req.requestCode == index) {
-                                    return CustomWidgets()
-                                        .getProgressIndicator();
-                                  }
+                          ? InkWell(
+                        onTap: () {
+                          if (!_isPaymentCompleted()) {
+                            _showSnackBar(PlunesStrings.pleasePayFull);
+                            return;
+                          }
+                          _bookingBloc
+                              .requestInvoice(
+                              appointmentModel.bookingId, index, true)
+                              .then((value) {});
+                        },
+                        onDoubleTap: () {},
+                        child: StreamBuilder<RequestState>(
+                            stream: _bookingBloc.requestInvoiceStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.data != null &&
+                                  snapshot.data is RequestInProgress) {
+                                RequestInProgress req = snapshot.data;
+                                if (req.requestCode != null &&
+                                    req.requestCode == index) {
+                                  return CustomWidgets()
+                                      .getProgressIndicator();
                                 }
-                                if (snapshot.data != null &&
-                                    snapshot.data is RequestSuccess) {
-                                  RequestSuccess req = snapshot.data;
-                                  if (req.requestCode != null &&
-                                      req.requestCode == index) {
-                                    Future.delayed(Duration(milliseconds: 20))
-                                        .then((value) async {
-                                      if (req.response != null) {
-                                        File file = req.response;
-                                        print("file path ${file.path}");
-                                        showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return CustomWidgets()
-                                                  .getInvoiceSuccessPopup(
-                                                      globalKey:
-                                                          widget.globalKey,
-                                                      message:
-                                                          "Invoice saved successfully ${file.path}",
-                                                      pdfUrl: req.additionalData
-                                                          ?.toString());
-                                            });
+                              }
+                              if (snapshot.data != null &&
+                                  snapshot.data is RequestSuccess) {
+                                RequestSuccess req = snapshot.data;
+                                if (req.requestCode != null &&
+                                    req.requestCode == index) {
+                                  Future.delayed(Duration(milliseconds: 20))
+                                      .then((value) async {
+                                    if (req.response != null) {
+                                      File file = req.response;
+                                      print("file path ${file.path}");
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return CustomWidgets()
+                                                .getInvoiceSuccessPopup(
+                                                globalKey:
+                                                widget.globalKey,
+                                                message:
+                                                "Invoice saved successfully ${file.path}",
+                                                pdfUrl: req.additionalData
+                                                    ?.toString());
+                                          });
 //                                      LauncherUtil.launchUrl(
 //                                          file.path);
-                                      }
+                                    }
 //                                    showDialog(
 //                                        context: context,
 //                                        builder: (context) {
@@ -991,153 +1011,162 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
 //                                                  widget.globalKey);
 //                                        });
 //                                    widget.getAppointment();
-                                    });
-                                    _bookingBloc
-                                        .addStateInRequestInvoiceProvider(null);
-                                  }
+                                  });
+                                  _bookingBloc
+                                      .addStateInRequestInvoiceProvider(null);
                                 }
-                                if (snapshot.data != null &&
-                                    snapshot.data is RequestFailed) {
-                                  RequestFailed requestFailed = snapshot.data;
-                                  if (requestFailed.requestCode != null &&
-                                      requestFailed.requestCode == index) {
-                                    Future.delayed(Duration(milliseconds: 20))
-                                        .then((value) async {
-                                      _showSnackBar(
-                                          requestFailed.failureCause ??
-                                              PlunesStrings
-                                                  .unableToGenerateInvoice);
-                                    });
-                                    _bookingBloc
-                                        .addStateInRequestInvoiceProvider(null);
-                                  }
+                              }
+                              if (snapshot.data != null &&
+                                  snapshot.data is RequestFailed) {
+                                RequestFailed requestFailed = snapshot.data;
+                                if (requestFailed.requestCode != null &&
+                                    requestFailed.requestCode == index) {
+                                  Future.delayed(Duration(milliseconds: 20))
+                                      .then((value) async {
+                                    _showSnackBar(
+                                        requestFailed.failureCause ??
+                                            PlunesStrings
+                                                .unableToGenerateInvoice);
+                                  });
+                                  _bookingBloc
+                                      .addStateInRequestInvoiceProvider(null);
                                 }
-                                return Text(PlunesStrings.requestInvoice2,
-                                    style: TextStyle(
-                                      fontSize: AppConfig.smallFont,
-                                      fontWeight: FontWeight.bold,
-                                      decoration: TextDecoration.underline,
-                                      color: Colors.black,
-                                    ));
-                              }),
-                        )
-                      : Container(),
-                  (appointmentModel.bookingStatus != null &&
+                              }
+                              return Text(PlunesStrings.requestInvoice2,
+                                  style: TextStyle(
+                                    fontSize: AppConfig.smallFont,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                    color: Colors.black,
+                                  ));
+                            }),
+                      )
+                          : Container(),
+                      (appointmentModel.bookingStatus != null &&
                           (appointmentModel.bookingStatus ==
-                                  AppointmentModel.confirmedStatus ||
+                              AppointmentModel.confirmedStatus ||
                               appointmentModel.bookingStatus ==
                                   AppointmentModel.reservedStatus) &&
                           _isPaymentCompleted())
-                      ? Expanded(child: Container())
-                      : Container(),
-                  (appointmentModel.paymentStatus != null &&
+                          ? Expanded(child: Container())
+                          : Container(),
+                      (appointmentModel.paymentStatus != null &&
                           appointmentModel.paymentStatus.isNotEmpty &&
                           !(appointmentModel.paymentStatus.first.status))
-                      ? Container()
-                      : (appointmentModel.refundStatus != null &&
-                              appointmentModel.refundStatus ==
-                                  AppointmentModel.notRequested)
+                          ? Container()
+                          : (appointmentModel.refundStatus != null &&
+                          appointmentModel.refundStatus ==
+                              AppointmentModel.notRequested)
                           ? InkWell(
-                              onTap: () {
-                                showDialog(
-                                        context: context,
-                                        builder: (context) => CustomWidgets()
-                                            .refundPopup(
-                                                _bookingBloc, appointmentModel))
-                                    .then((value) {
-                                  _bookingBloc.addStateInRefundProvider(null);
-                                  if (widget.getAppointment != null) {
-                                    widget.getAppointment();
-                                  }
-                                });
-                              },
-                              onDoubleTap: () {},
-                              child: Text(
-                                PlunesStrings.refund2,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.black,
-                                  decorationColor: Colors.black,
-                                  fontSize: AppConfig.smallFont,
-                                ),
-                              ),
-                            )
+                        onTap: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => CustomWidgets()
+                                  .refundPopup(
+                                  _bookingBloc, appointmentModel))
+                              .then((value) {
+                            _bookingBloc.addStateInRefundProvider(null);
+                            if (widget.getAppointment != null) {
+                              widget.getAppointment();
+                            }
+                          });
+                        },
+                        onDoubleTap: () {},
+                        child: Text(
+                          PlunesStrings.refund2,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            decoration: TextDecoration.underline,
+                            color: Colors.black,
+                            decorationColor: Colors.black,
+                            fontSize: AppConfig.smallFont,
+                          ),
+                        ),
+                      )
                           : Text(
-                              'Refund ${appointmentModel.refundStatus}',
-                              style: TextStyle(
-                                  fontSize: AppConfig.smallFont,
-                                  color: PlunesColors.GREENCOLOR2),
-                            )
-                ],
-              ),
-            ),
-            (_isPaymentCompleted() &&
+                        'Refund ${appointmentModel.refundStatus}',
+                        style: TextStyle(
+                            fontSize: AppConfig.smallFont,
+                            color: PlunesColors.GREENCOLOR2),
+                      )
+                    ],
+                  ),
+                ),
+                (_isPaymentCompleted() &&
                     (appointmentModel.bookingStatus ==
-                            AppointmentModel.confirmedStatus ||
+                        AppointmentModel.confirmedStatus ||
                         appointmentModel.bookingStatus ==
                             AppointmentModel.reservedStatus))
-                ? Container(
-                    margin:
-                        EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                    child: InkWell(
-                      onTap: () {
-                        CustomWidgets().showScrollableDialog(
-                            widget.context, appointmentModel, _bookingBloc);
-                      },
-                      onDoubleTap: () {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.star,
-                              color: PlunesColors.GREENCOLOR2,
+                    ? Container(
+                  margin:
+                  EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                  child: InkWell(
+                    onTap: () {
+                      CustomWidgets().showScrollableDialog(
+                          widget.context, appointmentModel, _bookingBloc);
+                    },
+                    onDoubleTap: () {},
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(
+                            Icons.star,
+                            color: PlunesColors.GREENCOLOR2,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(left: 10.0),
+                            child: Text(
+                              PlunesStrings.reviewYourExpr,
+                              style: TextStyle(
+                                  color: PlunesColors.GREENCOLOR2,
+                                  fontWeight: FontWeight.normal,
+                                  fontSize: AppConfig.smallFont),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                PlunesStrings.reviewYourExpr,
-                                style: TextStyle(
-                                    color: PlunesColors.GREENCOLOR2,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: AppConfig.smallFont),
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
                     ),
-                  )
-                : Container(),
+                  ),
+                )
+                    : Container(),
 
-            null != appointmentModel &&
-                null != appointmentModel.insuranceDetails &&
-                null != appointmentModel.insuranceDetails.insurancePartner &&
-                appointmentModel.insuranceDetails.insurancePartner.isNotEmpty
-                ? Column(
-                    children: [
-                      SizedBox(
-                        height: AppConfig.verticalBlockSize * 1.6,
-                      ),
-                      Text(
-                        "Confirmation of Booking is subjected to change upon Insurance Verification*",
-                        style: TextStyle(fontSize: 9.5),
-                      ),
-                    ],
-                  )
-                : Container(),
+                null != appointmentModel &&
+                    null != appointmentModel.insuranceDetails &&
+                    null !=
+                        appointmentModel.insuranceDetails.insurancePartner &&
+                    appointmentModel
+                        .insuranceDetails.insurancePartner.isNotEmpty
+                    ? Column(
+                  children: [
+                    SizedBox(
+                      height: AppConfig.verticalBlockSize * 1.6,
+                    ),
+                    Text(
+                      "Confirmation of Booking is subjected to change upon Insurance Verification*",
+                      style: TextStyle(fontSize: 9.5),
+                    ),
+                  ],
+                )
+                    : Container(),
 
-            SizedBox(
-              height: AppConfig.verticalBlockSize * 2,
+                SizedBox(
+                  height: AppConfig.verticalBlockSize * 2,
+                ),
+                CustomWidgets().getSeparatorLine(),
+              ],
             ),
-            CustomWidgets().getSeparatorLine(),
-          ],
-        ),
-      ),
-    ]);
+          ),
+        ]),
+
+        showImageUploadProgress ? Container(child: Center(child: CircularProgressIndicator(
+          backgroundColor: Colors.lightGreen,
+        ),),) : Container()
+
+      ],
+    );
   }
 
   String _getFullDate() {
@@ -1204,43 +1233,45 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
             child: CustomWidgets().amountProgressBar(appointmentModel),
           ),
           SizedBox(height: AppConfig.verticalBlockSize * 3),
-
-          null != appointmentModel.insuranceDetails ? Container() :
-
-          (appointmentModel.bookingStatus != null &&
-                  appointmentModel.bookingStatus ==
-                      AppointmentModel.cancelledStatus)
-              ? Text(AppointmentModel.cancelledStatus)
+          null != appointmentModel.insuranceDetails
+              ? Container()
+              : (appointmentModel.bookingStatus != null &&
+                      appointmentModel.bookingStatus ==
+                          AppointmentModel.cancelledStatus)
+                  ? Text(AppointmentModel.cancelledStatus)
+                  : isPaymentCompleted
+                      ? Text(PlunesStrings.paymentDone)
+                      : Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: AppConfig.horizontalBlockSize * 21.5),
+                          child: InkWell(
+                            onTap: () => _queryPayment(),
+                            onDoubleTap: () {},
+                            child: CustomWidgets().getRoundedButton(
+                                PlunesStrings.completePaymentText,
+                                10.0,
+                                PlunesColors.GREENCOLOR2,
+                                AppConfig.horizontalBlockSize * 1.5,
+                                AppConfig.horizontalBlockSize * 2.5,
+                                Colors.white),
+                          ),
+                        ),
+          null != appointmentModel.insuranceDetails
+              ? Container()
               : isPaymentCompleted
-                  ? Text(PlunesStrings.paymentDone)
+                  ? Container()
                   : Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppConfig.horizontalBlockSize * 21.5),
-                      child: InkWell(
-                        onTap: () => _queryPayment(),
-                        onDoubleTap: () {},
-                        child: CustomWidgets().getRoundedButton(
-                            PlunesStrings.completePaymentText,
-                            10.0,
-                            PlunesColors.GREENCOLOR2,
-                            AppConfig.horizontalBlockSize * 1.5,
-                            AppConfig.horizontalBlockSize * 2.5,
-                            Colors.white),
+                      margin:
+                          EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
+                      child: Text(
+                        "(Amount due \u20B9${appointmentModel.dueBookingAmount?.toStringAsFixed(1)})",
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14,
+                          color: Colors.black54,
+                        ),
                       ),
                     ),
-          null != appointmentModel.insuranceDetails ? Container() : isPaymentCompleted
-              ? Container()
-              : Container(
-                  margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),
-                  child: Text(
-                    "(Amount due \u20B9${appointmentModel.dueBookingAmount?.toStringAsFixed(1)})",
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                      fontSize: 14,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
           (appointmentModel.service == null ||
                   appointmentModel.service.discount == null ||
                   appointmentModel.service.discount == 0 ||
@@ -1622,19 +1653,91 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
   @override
   fetchImageCallBack(File _image) {
     if (_image != null) {
-      print("--image==" + base64Encode(_image.readAsBytesSync()).toString());
       print("--imagePath==" + _image.path);
-      this._image = _image;
-      // if (isBackgroundImage) {
-      //   _bannerImageUrl = _image.path;
-      //   setState(() {});
-      // } else {
-      //   imageUrl = _image.path;
-      //   _fetchImage.sink.add(_image.path.toString());
-      // }
-    }else{
+      uploadImage(_image.path);
+    }
+  }
 
-      print("--imageElse==");
+  bool showImageUploadProgress = false;
+  void uploadImage(var path) async {
+    User userManager = UserManager().getUserDetails();
+    var accessToken = userManager.accessToken;
+
+    setState(() {
+      showImageUploadProgress = true;
+    });
+
+    var headers = {
+      'Authorization': '$accessToken',
+      'Content-Type': 'application/x-www-form-urlencoded'
+    };
+    var request =
+        http.MultipartRequest('POST', Uri.parse('${Urls.uploadImage}'));
+    request.files.add(await http.MultipartFile.fromPath('file', '$path'));
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    setState(() {
+      showImageUploadProgress = false;
+    });
+    if (response.statusCode == 200) {
+      InsuranceImageRespnse insuranceImageRespnse = InsuranceImageRespnse.fromJson(jsonDecode(await response.stream.bytesToString()));
+      print(insuranceImageRespnse.data.reports[insuranceImageRespnse.data.reports.length - 1].url);
+      updateUrl(insuranceImageRespnse, accessToken);
+    } else {
+      print(response.reasonPhrase);
+    }
+  }
+
+  void updateUrl(
+      InsuranceImageRespnse insuranceImageRespnse, String accessToken) async {
+    if (insuranceImageRespnse.data.reports.length > 0 &&
+        insuranceImageRespnse
+            .data
+            .reports[insuranceImageRespnse.data.reports.length - 1]
+            .url
+            .isNotEmpty) {
+
+      setState(() {
+        showImageUploadProgress = true;
+      });
+
+      var headers = {
+        'Authorization': '$accessToken',
+        'Content-Type': 'application/json'
+      };
+      var request = http.Request('PUT', Uri.parse('${Urls.sendImageUrl}'));
+      request.body = json.encode({
+        "bookingId": "$bookingIdForImageUpload",
+        "insurance": [
+          "${insuranceImageRespnse.data.reports[insuranceImageRespnse.data.reports.length - 1].url}"
+        ]
+      });
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+
+      setState(() {
+        showImageUploadProgress = false;
+      });
+
+      if (response.statusCode == 200) {
+        CommonModel commonModel = CommonModel.fromJson(jsonDecode(await response.stream.bytesToString()));
+        if(commonModel.success) {
+          print("fallll ifDone- $bookingIdForImageUpload");
+          Fluttertoast.showToast(msg: "Image Uploaded Successfully");
+
+        } else {
+          print("fallll elsedone- $bookingIdForImageUpload");
+          Fluttertoast.showToast(msg: commonModel.msg);
+        }
+
+      } else {
+        print(response.reasonPhrase);
+      }
+    } else {
+      print("----");
     }
   }
 }

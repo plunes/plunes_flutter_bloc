@@ -2628,7 +2628,8 @@ class CustomWidgets {
             appointmentModel.totalAmount >= 0)
         ? Container(
             child: Column(
-              children: <Widget>[
+              children: <Widget>[  (null != appointmentModel.insuranceDetails && null != appointmentModel.insuranceDetails.insurancePolicy &&
+                  null != appointmentModel.insuranceDetails.insurancePolicy.toString().isNotEmpty ) ||
                 (appointmentModel.paidBookingAmount != null &&
                         appointmentModel.totalAmount != null &&
                         appointmentModel.paidBookingAmount ==

@@ -215,4 +215,7 @@ class Urls {
   static const String POPULAR_CITIES_AND_SERVICES_URL =
       "catalogue/getPopularCitesAndService";
   static const String FamilyCatalogueUrl = "catalogue/getServicesbyfamily";
+
+  static const String uploadImage = "https://devapi.plunes.com/v10/user/uploadInsurance?insuranceType=CARD";
+  static const String sendImageUrl = "https://devapi.plunes.com/v10/booking/editInsurance";
 }
