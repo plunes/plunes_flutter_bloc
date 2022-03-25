@@ -903,7 +903,10 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
                     ),
                     child: Column(
                       children: <Widget>[
-                        Text(PlunesStrings.bookedViaInsurance,
+                        Text(
+                            null != appointmentModel.insuranceDetails.policyNumber &&
+                                null != appointmentModel.insuranceDetails.policyNumber.isNotEmpty ? "Paid via insurance "
+                            : PlunesStrings.bookedViaInsurance,
                             style: TextStyle(
                               color: Color(0xff215675),
                               fontSize: AppConfig.mediumFont,
@@ -1201,6 +1204,9 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
             child: CustomWidgets().amountProgressBar(appointmentModel),
           ),
           SizedBox(height: AppConfig.verticalBlockSize * 3),
+
+          null != appointmentModel.insuranceDetails ? Container() :
+
           (appointmentModel.bookingStatus != null &&
                   appointmentModel.bookingStatus ==
                       AppointmentModel.cancelledStatus)
@@ -1222,7 +1228,7 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen> with TickerPr
                             Colors.white),
                       ),
                     ),
-          isPaymentCompleted
+          null != appointmentModel.insuranceDetails ? Container() : isPaymentCompleted
               ? Container()
               : Container(
                   margin: EdgeInsets.only(top: AppConfig.verticalBlockSize * 1),

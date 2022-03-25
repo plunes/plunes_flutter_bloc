@@ -55,7 +55,7 @@ class ServiceDetailDataModel {
   String speciality;
   String specialityId;
   String serviceId;
-  String dnd;
+  List<String> dnd;
   String details;
   String definitions;
   String category;
@@ -81,7 +81,7 @@ class ServiceDetailDataModel {
     speciality = json['speciality'];
     specialityId = json['specialityId'];
     serviceId = json['serviceId'];
-    dnd = json['dnd'];
+    dnd = json['dnd']?.cast<String>();
     details = json['details'];
     definitions = json['definitions'];
     category = json['category'];

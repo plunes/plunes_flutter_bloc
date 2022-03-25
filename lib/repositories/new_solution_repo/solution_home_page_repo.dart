@@ -111,26 +111,29 @@ class HomeScreenMainRepo {
     try {
       if (UserManager().getUserDetails().latitude != null) {
         lat = double.tryParse(UserManager().getUserDetails().latitude);
-        long = double.tryParse(UserManager().getUserDetails().latitude);
+        long = double.tryParse(UserManager().getUserDetails().longitude);
       }
     } catch (e) {}
+
+    print("----shouldHitSpecialityApi---->$shouldHitSpecialityApi ----shouldShowNearFacilities---->$shouldShowNearFacilities");
+
     Map<String, dynamic> map;
-    if (shouldHitSpecialityApi) {
+    // if (shouldShowNearFacilities) {
       map = {
         "specialityId": familyId,
-        "longitude": shouldShowNearFacilities ? long : "77.1025",
-        "latitude": shouldShowNearFacilities ? lat : "28.704"
-      };
-    } else {
-      map = {
-        "familyId": familyId,
         "longitude": shouldShowNearFacilities ? long : null,
-        "latitude": shouldShowNearFacilities ? lat : null
+        "latitude": shouldShowNearFacilities ? lat : null,
       };
-    }
+    // } else {
+    //   map = {
+    //     "familyId": familyId,
+    //     "longitude": shouldShowNearFacilities ? long : null,
+    //     "latitude": shouldShowNearFacilities ? lat : null
+    //   };
+    // }
     var result = await DioRequester().requestMethod(
         url: shouldHitSpecialityApi
-            ? Urls.getProfessionalForCommaSpeciality(familyName)
+            ? Urls.getProfessionalForCommaSpeciality(familyName, shouldShowNearFacilities ? lat.toString() : null, shouldShowNearFacilities ? long.toString() : null)
             : Urls.GET_PROFESSIONAL_FOR_SERVICE_URL,
         headerIncluded: true,
         queryParameter: map,
@@ -139,6 +142,7 @@ class HomeScreenMainRepo {
 
     print("result.statusCode----->1");
     print(Urls.getProfessionalForCommaSpeciality(familyName));
+    print("familyName");
     print(familyName);
     print(shouldHitSpecialityApi);
     print(map);

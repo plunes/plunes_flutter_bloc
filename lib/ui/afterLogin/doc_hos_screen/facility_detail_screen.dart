@@ -254,7 +254,7 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                             top: AppConfig.verticalBlockSize *
                                                 2.5),
                                         child: Text(
-                                          serviceData?.dnd ?? "",
+                                          serviceData?.dnd.toString() ?? "",
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                               fontSize: 12,

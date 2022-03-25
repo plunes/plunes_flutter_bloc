@@ -2679,6 +2679,10 @@ class CustomWidgets {
                                 height: 3,
                             ),
                             Text(
+
+                             null != appointmentModel.insuranceDetails && null != appointmentModel.insuranceDetails.insurancePolicy &&
+                                  null != appointmentModel.insuranceDetails.insurancePolicy.toString().isNotEmpty ?
+                              "\u20B9 ${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}" :
                               "\u20B9${appointmentModel.paidBookingAmount?.toStringAsFixed(1) ?? 0}",
                               maxLines: 2,
                               style: TextStyle(
@@ -2697,7 +2701,8 @@ class CustomWidgets {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text(
-                                PlunesStrings.totalAmountText,
+                                null != appointmentModel.insuranceDetails && null != appointmentModel.insuranceDetails.policyNumber &&
+                                    null != appointmentModel.insuranceDetails.policyNumber.isNotEmpty ? "Insurance Covered" : PlunesStrings.totalAmountText,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 14,
@@ -2707,8 +2712,11 @@ class CustomWidgets {
                               SizedBox(
                                 height: 3,
                               ),
-                              Text(
-                                "\u20B9${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}",
+                              Text( null != appointmentModel.insuranceDetails &&
+                                  null != appointmentModel.insuranceDetails.policyNumber &&
+                                  null != appointmentModel.insuranceDetails.policyNumber.isNotEmpty ?
+                              "-\u20B9 ${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}" :
+                                "\u20B9 ${appointmentModel.totalAmount?.toStringAsFixed(1) ?? 0}",
                                 maxLines: 2,
                                 style: TextStyle(
                                   fontWeight: FontWeight.normal,
