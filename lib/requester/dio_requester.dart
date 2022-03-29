@@ -79,6 +79,7 @@ class DioRequester {
 
 
       print("result.statusCode----->all_common_data");
+      print("url-->${_dioClient.options.baseUrl + url}");
       print(response);
       print(requestType);
       print(_dioClient.options.baseUrl + url);

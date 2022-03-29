@@ -72,6 +72,8 @@ class UserBloc extends BlocBase {
       String docId}) async {
     var result = await UserManager().getUserProfile(userId,
         shouldSaveInfo: shouldSaveInfo, isUser: isGenUser,docId: docId);
+    print("result------------------->");
+    print(result);
     super.addIntoStream(result);
     return result;
   }

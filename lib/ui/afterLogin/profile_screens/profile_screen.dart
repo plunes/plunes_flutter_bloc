@@ -781,6 +781,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
               height: AppConfig.verticalBlockSize * 25,
             );
           }
+          print("-----------failureCause-->$_failureMessageForFacilityHave");
           return (_facilityHaveModel == null ||
                   (_facilityHaveModel.success != null &&
                       !_facilityHaveModel.success) ||

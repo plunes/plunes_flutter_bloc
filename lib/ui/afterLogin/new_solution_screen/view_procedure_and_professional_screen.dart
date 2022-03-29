@@ -69,12 +69,12 @@ class _ViewProcedureAndProfessionalState
   }
 
   _getProfessionals() {
+    print("-----widget.shouldUseSpecializationApi--->${widget.shouldUseSpecializationApi}");
+
     _homeScreenMainBloc.getProfessionalsForService(widget.procedureData.sId,
         widget.procedureData.familyName,
-        shouldHitSpecialityApi: (widget.shouldUseSpecializationApi != null &&
-            widget.shouldUseSpecializationApi),
-        shouldShowNearFacilities:
-            (_selectedIndex != null && _selectedIndex == 1));
+        shouldHitSpecialityApi: (widget.shouldUseSpecializationApi != null && widget.shouldUseSpecializationApi),
+        shouldShowNearFacilities: (_selectedIndex != null && _selectedIndex == 1));
   }
 
   _getVideos() {

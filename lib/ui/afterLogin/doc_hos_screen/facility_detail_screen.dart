@@ -13,6 +13,7 @@ class FacilityDetailScreen extends BaseActivity {
   final String profId;
   final String specialityId, speciality;
 
+  //
   FacilityDetailScreen({this.profId, this.specialityId, this.speciality});
 
   @override
@@ -145,7 +146,7 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                             children: [
                               Row(
                                 children: [
-                                  Expanded(
+                                 null != serviceData?.duration && serviceData?.duration.isNotEmpty ?  Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -170,8 +171,8 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                         ),
                                       ],
                                     ),
-                                  ),
-                                  Expanded(
+                                  ) : Container(),
+                                  null != serviceData?.sittings &&  serviceData?.sittings.isNotEmpty ? Expanded(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -197,10 +198,10 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                         ),
                                       ],
                                     ),
-                                  ),
+                                  ) : Container(),
                                 ],
                               ),
-                              Container(
+                              null != serviceData?.definitions && serviceData?.definitions.isNotEmpty ? Container(
                                 alignment: Alignment.topLeft,
                                 margin: EdgeInsets.only(
                                     top: AppConfig.verticalBlockSize * 2.5),
@@ -211,8 +212,8 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                       color: PlunesColors.BLACKCOLOR,
                                       fontWeight: FontWeight.normal),
                                 ),
-                              ),
-                              Row(
+                              ) : Container(),
+                              null != serviceData?.definitions && serviceData?.definitions.isNotEmpty ? Row(
                                 children: [
                                   Flexible(
                                     child: Container(
@@ -232,8 +233,8 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                         )),
                                   ),
                                 ],
-                              ),
-                              Container(
+                              ) : Container(),
+                              null != serviceData?.dnd && serviceData?.dnd.isNotEmpty ? Container(
                                 alignment: Alignment.topLeft,
                                 margin: EdgeInsets.only(
                                     top: AppConfig.verticalBlockSize * 2.5),
@@ -244,8 +245,8 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                       color: PlunesColors.BLACKCOLOR,
                                       fontWeight: FontWeight.normal),
                                 ),
-                              ),
-                              Row(
+                              ) : Container(),
+                              null != serviceData?.dnd && serviceData?.dnd.isNotEmpty ? Row(
                                 children: [
                                   Flexible(
                                     child: Container(
@@ -265,7 +266,7 @@ class _FacilityDetailScreenState extends BaseState<FacilityDetailScreen> {
                                         )),
                                   ),
                                 ],
-                              ),
+                              ) : Container(),
                             ],
                           ),
                         )

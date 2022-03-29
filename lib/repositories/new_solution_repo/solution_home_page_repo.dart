@@ -151,8 +151,7 @@ class HomeScreenMainRepo {
     print(result.response);
 
     if (result.isRequestSucceed) {
-      ProfessionDataModel solutionHomeScreenModel =
-          ProfessionDataModel.fromJson(result.response.data);
+      ProfessionDataModel solutionHomeScreenModel = ProfessionDataModel.fromJson(result.response.data);
       return RequestSuccess(response: solutionHomeScreenModel);
     } else {
       return RequestFailed(failureCause: result.failureCause);

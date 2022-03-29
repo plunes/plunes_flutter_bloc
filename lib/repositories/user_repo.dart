@@ -172,7 +172,14 @@ class UserManager {
           "lattitude": UserManager().getUserDetails().latitude,
           "longitude": UserManager().getUserDetails().longitude
         });
+
+
+    print("-----user_profile----1>$isUser");
+    print("-----user_profile----2>${result.isRequestSucceed}");
+    print("-----user_profile----3>${result.response}");
+    print("-----user_profile----4>${result.statusCode}");
     if (result.isRequestSucceed) {
+      print("-----user_profile----if");
       LoginPost _loginPost = LoginPost.fromJson(result.response.data);
 //      print(_loginPost == null);
       if (shouldSaveInfo) {
@@ -186,6 +193,7 @@ class UserManager {
       }
       return RequestSuccess(response: _loginPost);
     } else {
+      print("-----user_profile----else");
       return RequestFailed(failureCause: result.failureCause);
     }
   }

@@ -646,6 +646,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
                 ),
                 // services box row
                 _servicesRow(),
+
                 _getProcedureWidget(),
                 // heading - why us
                 _getWhyUsSection(),
@@ -686,7 +687,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
       ],
     );
   }
-// onsultation proced, test row
+// consultation proced, test row
   Widget _servicesRow() {
     return Container(
       color: PlunesColors.WHITECOLOR,
@@ -920,6 +921,7 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
     );
   }
 
+  // most booked treatments
   Widget _getProcedureWidget() {
     return Container(
       color: PlunesColors.WHITECOLOR,
@@ -1071,7 +1073,8 @@ class _NewSolutionHomePageState extends BaseState<NewSolutionHomePage> {
             context,
             MaterialPageRoute(
                 builder: (context) => ViewProcedureAndProfessional(
-                    procedureData: procedureData))).then((value) {
+                    procedureData: procedureData,
+                  shouldUseSpecializationApi: true,))).then((value) {
           _getCartCount();
         });
       },
