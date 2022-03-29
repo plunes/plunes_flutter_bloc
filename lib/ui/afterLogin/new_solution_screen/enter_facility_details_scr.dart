@@ -1650,12 +1650,14 @@ class _EnterAdditionalUserDetailScrState
                         onDoubleTap: () {},
                         onTap: () {
                           if (_hasFormDataList() && _pageController.page.toInt() == 2) {
-
+                            print("11111------111");
                             _submitUserDetail();
                           } else if (!_hasFormDataList() && _pageController.page.toInt() == 1) {
-
+                            print("11111------222");
                             _submitUserDetail();
+
                           } else {
+                            print("11111------333");
 
                             _removeFocus();
                             _pageController
@@ -2220,6 +2222,10 @@ class _EnterAdditionalUserDetailScrState
     //   }
     // }
     if (!hasAppropriateData) {
+      _showMessagePopup(errorMessage);
+    } else if (_additionalDetailController.text.trim().isEmpty) {
+      errorMessage = "Please fill additional detail for treatment";
+      hasAppropriateData = false;
       _showMessagePopup(errorMessage);
     }
     return hasAppropriateData;

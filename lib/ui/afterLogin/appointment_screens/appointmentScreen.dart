@@ -1224,6 +1224,11 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen>
         appointmentModel.dueBookingAmount > 0) {
       isPaymentCompleted = false;
     }
+
+    print(">--------0-$isPaymentCompleted");
+    print(">--------1-${appointmentModel.dueBookingAmount}");
+    print(">--------1-${appointmentModel.serviceName}");
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: AppConfig.verticalBlockSize * 2),
       child: Column(
@@ -1233,7 +1238,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen>
             child: CustomWidgets().amountProgressBar(appointmentModel),
           ),
           SizedBox(height: AppConfig.verticalBlockSize * 3),
-          null != appointmentModel.insuranceDetails
+          null != appointmentModel.insuranceDetails &&
+              null != appointmentModel.insuranceDetails.insurancePolicy
               ? Container()
               : (appointmentModel.bookingStatus != null &&
                       appointmentModel.bookingStatus ==
@@ -1256,7 +1262,8 @@ class _AppointmentScreenState extends BaseState<AppointmentScreen>
                                 Colors.white),
                           ),
                         ),
-          null != appointmentModel.insuranceDetails
+          null != appointmentModel.insuranceDetails &&
+             null != appointmentModel.insuranceDetails.insurancePolicy
               ? Container()
               : isPaymentCompleted
                   ? Container()

@@ -200,7 +200,12 @@ class AppointmentModel {
     }
     alternateNumber = json['alternateNumber'];
     centreNumber = json['centerMobileNumber'];
-    adminHosNumber = json['adminMobileNumber'];
+   // adminHosNumber = json['adminMobileNumber'];
+    try {
+      adminHosNumber = json['adminHosNumber'];
+    } catch (e) {
+      adminHosNumber = json['adminHosNumber'][0];
+    }
     patientName = json['patientName'];
     totalAmount = json['totalAmount'];
     paidBookingAmount = json['paidBookingAmount'];

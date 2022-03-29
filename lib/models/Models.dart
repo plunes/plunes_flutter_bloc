@@ -191,6 +191,8 @@ class User {
       region,
       googleLocation;
 
+
+  List<InsurancePartners> insurancePartners;
   List<ProcedureList> specialities = [];
   List<TimeSlots> timeSlots = [];
   List<DoctorsData> doctorsData = [];
@@ -222,6 +224,7 @@ class User {
     this.practising,
     this.college,
     this.biography,
+    this.insurancePartners,
     this.registrationNumber,
     this.qualification,
     this.imageUrl,
@@ -305,10 +308,9 @@ class User {
         json['userReferralCode'] != null ? json['userReferralCode'] : null,
         coverImageUrl:
         json['coverImageUrl'] != null ? json['coverImageUrl'] : '',
-        specialities: json['specialities'] != null
-            ? List<ProcedureList>.from(
-            json['specialities'].map((i) => ProcedureList.fromJson(i)))
-            : List(),
+        specialities: json['specialities'] != null ? List<ProcedureList>.from(json['specialities'].map((i) => ProcedureList.fromJson(i))) : List(),
+        insurancePartners: json['insurancePartners'] != null ? List<InsurancePartners>.from(json['insurancePartners'].map((i) => InsurancePartners.from(i))) : List(),
+
         achievements: json['achievements'] != null
             ? List<AchievementsData>.from(
             json['achievements'].map((i) => AchievementsData.fromJson(i)))
@@ -905,6 +907,7 @@ class CentreData {
     adminMobileNumber = json['adminMobileNumber'];
     adminRefId = json['adminRefId'];
     address = json['address'];
+
   }
 }
 
@@ -957,6 +960,18 @@ class RateAndReview {
     data['userName'] = this.userName;
     data['userImage'] = this.userImage;
     return data;
+  }
+}
+
+class InsurancePartners {
+  String id, insuranceId, insurancePartner;
+
+  InsurancePartners(this.id, this.insuranceId, this.insurancePartner);
+
+  InsurancePartners.from(Map<String, dynamic> json) {
+    id = json['_id'];
+    insuranceId = json['insuranceId'];
+    insurancePartner = json['insurancePartner'];
   }
 }
 

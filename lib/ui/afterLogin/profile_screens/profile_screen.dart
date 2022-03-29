@@ -207,18 +207,16 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                       children: [
                         Column(
                           children: [
-                            (_profileResponse.user.achievements != null &&
+                            (_profileResponse.user.imageUrl != null &&
                                     _profileResponse
-                                        .user.achievements.isNotEmpty)
+                                        .user.imageUrl.isNotEmpty)
                                 ? Stack(
                                     children: [
                                       CarouselSlider.builder(
-                                          itemCount: (_profileResponse.user
-                                                      .achievements.length >
-                                                  5)
-                                              ? 5
-                                              : _profileResponse
-                                                  ?.user?.achievements?.length,
+                                          // itemCount: (_profileResponse.user.imageUrl.length > 5) ? 5
+                                          //     : _profileResponse?.user?.imageUrl?.length,
+                                          itemCount: 1,
+
                                           itemBuilder: (context, index) {
                                             return InkWell(
                                               onTap: () {
@@ -274,7 +272,7 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                                   .getImageFromUrl(
                                                       _profileResponse
                                                           .user
-                                                          .achievements[index]
+                                                          //.imageUrl[index]
                                                           .imageUrl,
                                                       boxFit: BoxFit.fill),
                                             );
@@ -325,33 +323,33 @@ class _DoctorInfoState extends BaseState<DoctorInfo>
                                       //         );
                                       //       }),
                                       // ),
-                                      Positioned(
-                                        top: 0.0,
-                                        right:
-                                            AppConfig.horizontalBlockSize * 5,
-                                        child: StreamBuilder<Object>(
-                                            stream: _streamController.stream,
-                                            builder: (context, snapshot) {
-                                              return Chip(
-                                                  backgroundColor: Color(
-                                                          CommonMethods
-                                                              .getColorHexFromStr(
-                                                                  "#000000"))
-                                                      .withOpacity(0.5),
-                                                  label: Container(
-                                                    child: Center(
-                                                      child: Text(
-                                                        "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
-                                                        style: TextStyle(
-                                                            color: PlunesColors
-                                                                .WHITECOLOR,
-                                                            fontSize: 15),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  padding: EdgeInsets.all(3));
-                                            }),
-                                      )
+                                      // Positioned(
+                                      //   top: 0.0,
+                                      //   right:
+                                      //       AppConfig.horizontalBlockSize * 5,
+                                      //   child: StreamBuilder<Object>(
+                                      //       stream: _streamController.stream,
+                                      //       builder: (context, snapshot) {
+                                      //         return Chip(
+                                      //             backgroundColor: Color(
+                                      //                     CommonMethods
+                                      //                         .getColorHexFromStr(
+                                      //                             "#000000"))
+                                      //                 .withOpacity(0.5),
+                                      //             label: Container(
+                                      //               child: Center(
+                                      //                 child: Text(
+                                      //                   "${_currentDotPosition.toInt() + 1}/${(_profileResponse.user.achievements.length > 5) ? 5 : _profileResponse?.user?.achievements?.length}",
+                                      //                   style: TextStyle(
+                                      //                       color: PlunesColors
+                                      //                           .WHITECOLOR,
+                                      //                       fontSize: 15),
+                                      //                 ),
+                                      //               ),
+                                      //             ),
+                                      //             padding: EdgeInsets.all(3));
+                                      //       }),
+                                      // )
                                     ],
                                   )
                                 : InkWell(
