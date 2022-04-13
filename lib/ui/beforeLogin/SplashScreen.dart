@@ -163,6 +163,10 @@ class _SplashScreenState extends State<SplashScreen> implements DialogCallBack {
           .getString('force_update_current_version')
           .trim()
           .replaceAll(".", ""));
+
+      print("verion-new=$newVersion");
+      print("verion-cur=$currentVersion");
+
       if (newVersion > currentVersion) {
         Future.delayed(Duration(seconds: 2)).then((value) {
           Navigator.pushAndRemoveUntil(

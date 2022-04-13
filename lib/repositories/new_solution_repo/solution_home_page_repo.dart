@@ -133,7 +133,7 @@ class HomeScreenMainRepo {
     // }
     var result = await DioRequester().requestMethod(
         url: shouldHitSpecialityApi
-            ? Urls.getProfessionalForCommaSpeciality(familyName, shouldShowNearFacilities ? lat.toString() : null, shouldShowNearFacilities ? long.toString() : null)
+            ? Urls.getProfessionalForCommaSpeciality(familyName, shouldShowNearFacilities ? lat.toString() : "", shouldShowNearFacilities ? long.toString() : "")
             : Urls.GET_PROFESSIONAL_FOR_SERVICE_URL,
         headerIncluded: true,
         queryParameter: map,

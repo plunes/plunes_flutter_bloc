@@ -192,7 +192,7 @@ class Urls {
 
 
   static String getProfessionalForCommaSpeciality(String serviceName, [String lat, String long]){
-    return "solution/exploreForMap?speciality=$serviceName&serviceId=&locality=All&lat$lat=&lng=$long";
+    return "solution/exploreForMap?speciality=$serviceName&serviceId=&locality=All&lat=$lat&lng=$long";
   }
 
   static const String GET_PROFESSIONAL_FOR_COMMON_SPECIALITY2 =
